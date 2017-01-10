@@ -46,17 +46,7 @@
           color: #fff;
           --app-toolbar-font-size: 24px;
         }
-        
-        app-header {
-          color: #fff;
-          background-color: var(--app-primary-color);
-          z-index: 0 !important;
-        }
 
-        app-header paper-icon-button {
-          --paper-icon-button-ink-color: white;
-        }
-        
         app-drawer {
           --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
           --app-drawer-content-container: {
@@ -81,7 +71,6 @@
         paper-tabs {
           --paper-tabs-selection-bar-color: #CDDC39;
           height: 100%;
-          max-width: 640px;
         }
         
         paper-tab {
@@ -142,7 +131,7 @@
     </custom-style>
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}" active="{{homeActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/:page" data="{{pageData}}" tail="{{pageTail}}" active="{{pageActive}}"></app-route>
     <!-- wrapper -->
     <app-drawer-layout fullbleed>
       <!-- Navbar content -->
@@ -150,22 +139,45 @@
         <img class="logo" src="../images/logo/industrial.svg" alt="logo">
         <div class="main-title">Smart MES</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="[[routeData.page]]" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
+        <iron-selector selected="[[pageData.page]]" attr-for-selected="page-name" class="drawer-list" role="navigation" fallback-selection="404">
         <template is="dom-repeat" items="{{menus}}">
-                <a name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
+                <a page-name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
          </template> 
         </iron-selector>
       </app-drawer>
-        <!-- view content area -->
+
+           <!-- start header layout -->
+      <app-header-layout fullbleed has-scrolling-region>
+        <app-header class="app-head" fixed>
+          <app-toolbar> <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button> 
+              <div main-title>{{title}} + [[page]]</div>
+            <paper-menu-button vertical-align="top" horizontal-align="right">
+              <paper-icon-button icon="account-circle" class="dropdown-trigger" alt="menu"></paper-icon-button>
+              <paper-menu class="dropdown-content">
+                <iron-selector selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="overview">
+                  <paper-item class="menu-item" name="help">
+                    <paper-icon-button icon="help" alt="help"></paper-icon-button> Help</paper-item>
+                  <paper-item class="menu-item" name="settings">
+                    <paper-icon-button icon="settings" alt="settings"></paper-icon-button> Settings</paper-item>
+                  <paper-item class="menu-item" name="logout">
+                    <paper-icon-button icon="exit-to-app" alt="logout"></paper-icon-button> Logout</paper-item>
+                </iron-selector>
+              </paper-menu>
+            </paper-menu-button>
+          </app-toolbar>
+        </app-header>   
+     </app-header-layout>
         <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
-        <iron-pages selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-overview name="overview" route="{{subroute}}"></view-overview>
-          <view-setup name="setup" route="{{subroute}}"></view-setup>
-          <view-prepro name="prepro" route="{{subroute}}"></view-prepro>
-          <view-inpro name="inpro" route="{{subroute}}"></view-inpro>
-          <view-postpro name="postpro" route="{{subroute}}"></view-postpro>
-          <view-404 name="404" route="{{subroute}}"></view-404>
+        <!-- view content area -->
+        <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-overview name="overview" route="{{pageData}}"></view-overview>
+          <view-setup name="setup" route="{{pageData}}"></view-setup>
+          <view-prepro name="prepro" route="{{pageData}}"></view-prepro>
+          <view-inpro name="inpro" route="{{pageData}}"></view-inpro>
+          <view-postpro name="postpro" route="{{pageData}}"></view-postpro>
+          <view-404 name="404" route="{{pageData}}"></view-404>
         </iron-pages>
+
     </app-drawer-layout>
   </template>
   <script>
@@ -173,29 +185,21 @@
       is: 'main-app',
       ready: function () {
         this.async(function () {
-          // If the path is blank, redirect to /
-          console.log("Path: " + this.route.path);
+          // If the path is blank, redirect to /overview
           if (!this.route.path) {
-            this.set('route.path', '/');
+            this.set('route.path', '/overview');
           }
         });
       },
+
       properties: {
         page: {
           type: String,
           reflectToAttribute: true,
           observer: '_pageChanged',
+          notify: true
         },
-        tabs: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_tabsChanged',
-        },
-        wideLayout: {
-          type: Boolean,
-          value: false,
-          observer: 'onLayoutChange',
-        },
+
         menus: {
           type: Array,
           value: function() {
@@ -231,10 +235,16 @@
             }];
           }
         },
+      },    
+          
+      wideLayout: {
+          type: Boolean,
+          value: false,
+          observer: 'onLayoutChange',
       },
 
       observers: [
-        '_routePageChanged(routeData.page)',
+        '_routePageChanged(pageData.page)',
       ],
 
       onLayoutChange: function (wide) {
@@ -246,6 +256,7 @@
 
       _routePageChanged: function (page) {
         this.page = page || 'overview';
+
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }

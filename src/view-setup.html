@@ -11,7 +11,18 @@
         /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
         --app-grid-item-height: 50%;
       }
-      
+              
+        app-header {
+          color: #fff;
+          background-color: #333;
+          z-index: 0 !important;
+        }
+
+        app-header paper-icon-button {
+          --paper-icon-button-ink-color: white;
+        }
+        
+
       ul {
         padding: 0;
         list-style: none;
@@ -23,45 +34,28 @@
       }
       } 
     </style>
-     <app-location route="{{route}}"></app-location>
-     <app-route route="{{subroute}}" pattern="/:tabs" data="{{subrouteData}}" active="{{tabsActive}}"></app-route>
+   <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}" active="{{tabsActive}}"></app-route>
            <!-- start header layout -->
-      <app-header-layout has-scrolling-region>
+      <app-header-layout fullbleed has-scrolling-region style="margin-top: 54px !important;">
         <app-header class="app-head" fixed shadow>
-          <app-toolbar>
-            <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button>
-            <div main-title>{{routeData.page}} > {{subrouteData.tabs}}</div>
-            <paper-menu-button vertical-align="top" horizontal-align="right">
-              <paper-icon-button icon="account-circle" class="dropdown-trigger" alt="menu"></paper-icon-button>
-              <paper-menu class="dropdown-content">
-                <iron-selector selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="overview">
-                  <paper-item class="menu-item" name="help">
-                    <paper-icon-button icon="help" alt="help"></paper-icon-button> Help</paper-item>
-                  <paper-item class="menu-item" name="settings">
-                    <paper-icon-button icon="settings" alt="settings"></paper-icon-button> Settings</paper-item>
-                  <paper-item class="menu-item" name="logout">
-                    <paper-icon-button icon="exit-to-app" alt="logout"></paper-icon-button> Logout</paper-item>
-                </iron-selector>
-              </paper-menu>
-            </paper-menu-button>
-          </app-toolbar>
           <!-- Sub nav -->
           <app-toolbar class="tabs-bar">
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="{{subrouteData.tabs}}" attr-for-selected="key" sticky bottom-item autoselect role="navigation">
+            <paper-tabs selected="[[subrouteData.tabs]]" attr-for-selected="tab-name" sticky bottom-item autoselect role="navigation">
               <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab key="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
+                <paper-tab tab-name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
-     </app-header-layout>
-     <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-setup-customer name="setup-customer" route="{{subroute}}"></view-setup-customer>
-          <view-setup-machine name="setup-machine" route="{{subroute}}"></view-setup-machine>
-          <view-setup-worker name="setup-worker" route="{{subroute}}"></view-setup-worker>
-          <view-prepro-job name="prepro-job" route="{{subroute}}"></view-prepro-job>
-   </iron-pages>
+             <iron-pages selected="[[subrouteData.tabs]]" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-setup-customer name="setup-customer" route="{{subrouteData}}"></view-setup-customer>
+          <view-setup-machine name="setup-machine" route="{{subrouteData}}"></view-setup-machine>
+          <view-setup-worker name="setup-worker" route="{{subrouteData}"></view-setup-worker>
+          <view-prepro-job name="prepro-job" route="{{subrouteData}}"></view-prepro-job>
+   </iron-pages> 
+        </app-header-layout>  
+
   </template>
   <script>
     Polymer({
@@ -71,6 +65,14 @@
           type: String,
           value: "Setup"
         },
+
+        tabs: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_tabsChanged',
+          notify: true
+        },
+
         submenus: {
           type: Array,
           value: function () {
@@ -114,7 +116,7 @@
        _tabsChanged: function (tabs) {
         var section = tabs.split("-")[0];
         var resolvedPageUrl = this.resolveUrl(section + '/' + 'view-' + tabs + '.html');
-        //console.log(section + '/' + 'view-' + tabs + '.html');
+        console.log(section + '/' + 'view-' + tabs + '.html');
         this.importHref(resolvedPageUrl, null, null, true);
       },
     });
