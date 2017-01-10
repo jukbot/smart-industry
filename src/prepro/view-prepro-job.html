@@ -1,0 +1,62 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../../bower_components/sortable-list/sortable-list.html">
+<dom-module id="view-prepro-job">
+  <template>
+<style include="shared-styles">
+
+    :host {
+       display: block;
+      --app-grid-columns: 1;
+      /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+      --app-grid-item-height: 50%;
+    }
+
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+
+   .flex-vertical {
+    @apply(--layout-vertical);
+    height: 220px;
+   }
+
+  </style>
+
+    <ul class="app-grid">
+    <li>
+     <div class="card">
+      <h1>Create Order</h1>
+      <sortable-list>
+  <div class="job-list" name="1">Item 1</div>
+  <div class="job-list" name="2">Item 2</div>
+  <div class="job-list" name="3">Item 3</div>
+</sortable-list>
+ </div>
+    </li>
+    <li>
+     <div class="card">
+      <h1>Process B</h1>
+      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+    </div>
+    </li>
+    <li>
+     <div class="card">
+      <h1>Process C</h1>
+      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+    </div>
+    </li>
+  </ul>
+  </template>
+
+
+  <script>
+    Polymer({
+      is: 'view-prepro-job',
+    });
+  </script>
+</dom-module>

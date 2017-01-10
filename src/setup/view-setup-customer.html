@@ -1,0 +1,59 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-setup-customer">
+  <template>
+<style include="shared-styles">
+
+    :host {
+       display: block;
+      --app-grid-columns: 3;
+      /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+      --app-grid-item-height: 50%;
+    }
+
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+
+     @media (max-width: 640px) {
+      :host {
+        --app-grid-columns: 1;
+      }
+    }
+
+  </style>
+
+    <ul class="app-grid" has-aspect-ratio>
+    <li>
+     <div class="card">
+      <h1>setup customer</h1>
+      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+    </div>
+    </li>
+    <li>
+     <div class="card">
+      <h1>Process B</h1>
+      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+    </div>
+    </li>
+    <li>
+     <div class="card">
+      <h1>Process C</h1>
+      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+    </div>
+    </li>
+  </ul>
+  </template>
+
+
+  <script>
+    Polymer({
+      is: 'view-setup-customer'
+    });
+  </script>
+</dom-module>

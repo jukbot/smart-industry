@@ -1,0 +1,131 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- shared styles for all views -->
+<dom-module id="shared-styles">
+  <template>
+    <style>
+       :host {
+        display: block;
+        padding: 10px;
+        /**
+         * The width for the expandible item is:
+         * ((100% - subPixelAdjustment) / columns * itemColumns - gutter
+         *
+         * - subPixelAdjustment: 0.1px (Required for IE 11)
+         * - gutter: var(--app-grid-gutter)
+         * - columns: var(--app-grid-columns)
+         * - itemColumn: var(--app-grid-expandible-item-columns)
+         */
+        --app-grid-expandible-item: {
+          -webkit-flex-basis: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
+          flex-basis: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
+          max-width: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
+        };
+      }
+      .flex {
+        @apply(--layout-horizontal);
+      }
+      
+      .app-grid {
+        display: -ms-flexbox;
+        display: -webkit-flex;
+        display: flex;
+        -ms-flex-direction: row;
+        -webkit-flex-direction: row;
+        flex-direction: row;
+        -ms-flex-wrap: wrap;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+        margin: var(--app-grid-margin, 0px);
+        padding-top: var(--app-grid-gutter, 0px);
+        padding-left: var(--app-grid-gutter, 0px);
+        box-sizing: border-box;
+      }
+      
+      .app-grid>* {
+        /* Required for IE 10 */
+        -ms-flex: 1 1 100%;
+        -webkit-flex: 1;
+        flex: 1;
+        /* The width for an item is: (100% - subPixelAdjustment - gutter * columns) / columns */
+        -webkit-flex-basis: calc((100% - 0.1px - (var(--app-grid-gutter, 0px) * var(--app-grid-columns, 1))) / var(--app-grid-columns, 1));
+        flex-basis: calc((100% - 0.1px - (var(--app-grid-gutter, 0px) * var(--app-grid-columns, 1))) / var(--app-grid-columns, 1));
+        max-width: calc((100% - 0.1px - (var(--app-grid-gutter, 0px) * var(--app-grid-columns, 1))) / var(--app-grid-columns, 1));
+        margin-bottom: var(--app-grid-gutter, 0px);
+        margin-right: var(--app-grid-gutter, 0px);
+        height: var(--app-grid-item-height);
+        box-sizing: border-box;
+      }
+      
+      .app-grid[has-aspect-ratio]>* {
+        position: relative;
+      }
+      
+      .app-grid[has-aspect-ratio]>*::before {
+        display: block;
+        content: "";
+        padding-top: var(--app-grid-item-height, 100%);
+      }
+      
+      .app-grid[has-aspect-ratio]>*>* {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+       @media (max-width: 640px) {
+      :host {
+        --app-grid-columns: 1;
+      }
+      }
+      
+      .card {
+        min-height: 250px;
+        margin: 10px;
+        padding: 16px;
+        color: #757575;
+        border-radius: 2px;
+        background-color: #fff;
+        flex-direction: column;
+        display: block;
+        overflow: hidden;
+        text-decoration: none;
+        position: relative;
+        z-index: 1;
+        box-sizing: border-box;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
+      }
+      
+      .circle {
+        display: inline-block;
+        width: 64px;
+        height: 64px;
+        text-align: center;
+        color: #555;
+        border-radius: 50%;
+        background: #ddd;
+        font-size: 30px;
+        line-height: 64px;
+      }
+      
+      h1 {
+        margin: 16px 0;
+        color: #212121;
+        font-size: 22px;
+      }
+      
+      .wrap-card {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-justify-content: center;
+        justify-content: center;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+    </style>
+  </template>
+</dom-module>

@@ -1,0 +1,63 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="view-404">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+       * {
+            line-height: 1.5;
+            margin: 0;
+        }
+        
+        .container {
+            color: #888;
+            text-align: center;
+            overflow-x: hidden;
+            left: 50%;
+            margin: -43px 0 0 -150px;
+            position: absolute;
+            top: 50%;
+            width: 300px;
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 2.25rem;
+            font-weight: 400;
+            margin: 0;
+        }
+        
+        p {
+            font-size: 1rem;
+            line-height: 1.2;
+        }
+        
+        @media only screen and (max-width: 270px) {
+            body {
+                margin: 10px auto;
+                position: static;
+                width: 95%;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+
+   <div class="container">
+    <h1>Page Not Found</h1>
+    <p>Sorry, but the page you were trying to view does not exist.</p><br>
+    <a href="/">Return to home</a>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'view-404',
+    });
+  </script>
+</dom-module>

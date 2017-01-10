@@ -1,0 +1,89 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-setup-machine">
+  <template>
+<style include="shared-styles">
+
+    :host {
+       display: block;
+      --app-grid-columns: 3;
+      /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+      --app-grid-item-height: 50%;
+    }
+
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+ @media (max-width: 640px) {
+      :host {
+        --app-grid-columns: 1;
+      }
+    }
+  </style>
+
+     <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1 class="setup-title">Machine 1</h1>
+          <p>Add machine to current factory.</p>
+          <form is="iron-form" method="post" action="/" id="presubmit">
+            <paper-input name="machine-name" label="Machine Name" value="noname" required></paper-input>
+            <paper-input name="machine-q" label="q" value="noname" required></paper-input>
+            <paper-input name="machine-speed" label="productivity" value="noname" required></paper-input>
+            <paper-button raised onclick="_submit(event)">Submit</paper-button>
+            <paper-button raised onclick="_reset(event)">Reset</paper-button>
+            <div class="output"></div>
+          </form>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="setup-title">Machine 2</h1>
+        <p>blablablablabla {{title}}</p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="setup-title">Machine 3</h1>
+          <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+          <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
+            soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+        </div>
+      </li>
+          <li>
+        <div class="card">
+          <h1 class="setup-title">Machine 4</h1>
+          <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+          <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
+            soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="setup-title">Machine 5</h1>
+          <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+          <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
+            soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+        </div>
+      </li>
+       <li>
+        <div class="card">
+          <h1 class="setup-title">Machine 6</h1>
+          <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+          <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
+            soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+        </div>
+      </li>
+    </ul>
+    
+  </template>
+
+
+  <script>
+    Polymer({
+      is: 'view-setup-machine',
+    });
+  </script>
+</dom-module>

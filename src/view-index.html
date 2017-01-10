@@ -1,0 +1,265 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/notification-icons.html">
+
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+
+<link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
+<link rel="import" href="../bower_components/vaadin-charts/vaadin-bar-chart.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="main-app">
+  <template>
+    <custom-style>
+      <style>
+        :host {
+          --app-primary-color: #CDDC39;
+          --app-secondary-color: black;
+          display: block;
+        }
+        
+        app-toolbar {
+          /* Toolbar is the main header, so give it some color */
+          background-color: #333;
+          font-family: 'Roboto', Helvetica, sans-serif;
+          color: #fff;
+          --app-toolbar-font-size: 24px;
+        }
+        
+        app-header {
+          color: #fff;
+          background-color: var(--app-primary-color);
+          z-index: 0 !important;
+        }
+
+        app-header paper-icon-button {
+          --paper-icon-button-ink-color: white;
+        }
+        
+        app-drawer {
+          --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
+          --app-drawer-content-container: {
+            box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);
+          }
+        }
+        
+        paper-button {
+          display: block;
+          background: #4285f4;
+          color: #fff;
+        }
+        
+        paper-menu {
+          display: block;
+        }
+        
+        paper-menu-button {
+          margin: auto;
+        }
+        
+        paper-tabs {
+          --paper-tabs-selection-bar-color: #CDDC39;
+          height: 100%;
+          max-width: 640px;
+        }
+        
+        paper-tab {
+          --paper-tab-ink: #444;
+          text-transform: uppercase;
+        }
+        
+        [hidden] {
+          display: none !important;
+        }
+        
+        paper-icon-button+[main-title] {
+          margin: 32px;
+        }
+        
+        iron-icon {
+        color: #333;
+        }
+
+        .menu-item {
+          min-width: 120px;
+        }
+        
+        .drawer-list {
+          margin: 0 20px;
+        }
+        
+        .drawer-list a {
+          display: block;
+          padding: 0 16px;
+          text-decoration: none;
+          color: var(--app-secondary-color);
+          line-height: 40px;
+        }
+        
+        .drawer-list a.iron-selected {
+          color: black;
+          font-weight: bold;
+        }
+        
+        .main-header {
+          box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
+        }
+        
+        .main-title {
+          font-size: 2.25rem;
+          text-align: center;
+        }
+        
+        .logo {
+          margin: 0 auto;
+          padding: 30px 0 15px 0;
+          width: 50%;
+          height: auto;
+          display: block;
+        }
+      </style>
+    </custom-style>
+    <!-- app-location binds to the app's URL -->
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}" active="{{homeActive}}"></app-route>
+    <!-- wrapper -->
+    <app-drawer-layout fullbleed>
+      <!-- Navbar content -->
+      <app-drawer id="drawer" swipe-open>
+        <img class="logo" src="../images/logo/industrial.svg" alt="logo">
+        <div class="main-title">Smart MES</div>
+        <!-- sidebar hightlighter -->
+        <iron-selector selected="[[routeData.page]]" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
+        <template is="dom-repeat" items="{{menus}}">
+                <a name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
+         </template> 
+        </iron-selector>
+      </app-drawer>
+        <!-- view content area -->
+        <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
+        <iron-pages selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-overview name="overview" route="{{subroute}}"></view-overview>
+          <view-setup name="setup" route="{{subroute}}"></view-setup>
+          <view-prepro name="prepro" route="{{subroute}}"></view-prepro>
+          <view-inpro name="inpro" route="{{subroute}}"></view-inpro>
+          <view-postpro name="postpro" route="{{subroute}}"></view-postpro>
+          <view-404 name="404" route="{{subroute}}"></view-404>
+        </iron-pages>
+    </app-drawer-layout>
+  </template>
+  <script>
+    Polymer({
+      is: 'main-app',
+      ready: function () {
+        this.async(function () {
+          // If the path is blank, redirect to /
+          console.log("Path: " + this.route.path);
+          if (!this.route.path) {
+            this.set('route.path', '/');
+          }
+        });
+      },
+      properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged',
+        },
+        tabs: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_tabsChanged',
+        },
+        wideLayout: {
+          type: Boolean,
+          value: false,
+          observer: 'onLayoutChange',
+        },
+        menus: {
+          type: Array,
+          value: function() {
+            return [{
+              'url': 'overview',
+              'title': 'Overview',
+              'view': 'overview',
+              'icon': 'icons:dashboard'
+            },
+            { 
+              'url': 'setup',
+              'title': 'Setup',
+              'view': 'setup',
+              'icon': 'icons:build'
+            },
+            {
+              'url': 'prepro',
+              'title': 'Pre-Production',
+              'view': 'prepro',
+              'icon': 'icons:track-changes'
+            },
+            {
+              'url': 'inpro',
+              'title': 'In-Production',
+              'view': 'inpro',
+              'icon': 'image:tune'
+            },
+            {
+              'url': 'postpro',
+              'title': 'Post-Production',
+              'view': 'postpro',
+              'icon': 'icons:verified-user'
+            }];
+          }
+        },
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)',
+      ],
+
+      onLayoutChange: function (wide) {
+        var drawer = this.$.drawer;
+        if (wide && drawer.opened) {
+          drawer.opened = false;
+        }
+      },
+
+      _routePageChanged: function (page) {
+        this.page = page || 'overview';
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      },
+      
+      _pageChanged: function (page) {
+        // Load page import on demand. Show 404 page if fails
+        var resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
+      },
+
+      _showPage404: function () {
+        this.page = '404';
+      }
+    });
+  </script>
+</dom-module>

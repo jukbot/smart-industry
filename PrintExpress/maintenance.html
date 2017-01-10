@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Print Express | Digital Printing Services</title>
+	<meta charset="UTF-8">
+	<meta name="author" content="Print Express Co., Ltd.">
+    <meta name="description" content="Digital Printing Expert Since 2002">
+    <meta name="keywords" content="พิมพ์งาน, ราคาถูก, ปริ้นงาน, คุุุุุณภาพ, จัดส่งฟรี, นามบัตร, ตรายาง, โบชัวร์, ใบปลิว, หนังสือ, ฉลากสินค้า, สติกเกอร์ติดสินค้า, ป้ายผ้าใบไวนิล, ป้ายธงญี่ปุ่น, ป้ายราคา, ออกแบบกราฟฟิก, สื่อสิ่งพิมพ์, ที่สุดในประเทศไทย">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="robots" content="index, follow">
+	<link rel="canonical" href="https://www.printexpress.in.th/maintenance">
+	<link rel="icon" sizes="128x128" href="https://www.google.com/images/icons/product/chrome-128.png">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300">
+   <!--[if lt IE 9]>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	<style>
+		body {
+			margin: 0;
+			color: #333;
+			background: #fff;
+			font-family: Roboto, Sukhumvit Set, Kanit, sans-serif;
+			font-style: normal;
+			font-weight: 300;
+			overflow-x: hidden;
+		}
+		
+		*,
+		:after,
+		:before {
+			box-sizing: border-box
+		}
+		
+		p {
+			text-align: center;
+		}
+
+		.pull-left {
+			float: left
+		}
+		
+		.pull-right {
+			float: right
+		}
+		
+		.clearfix:after,
+		.clearfix:before {
+			content: '';
+			display: table
+		}
+		
+		.clearfix:after {
+			clear: both;
+			display: block
+		}
+		
+		.title {
+			font-size: 2.25rem;
+			line-height: 3rem;
+			text-align: center;
+			color: #333;
+		}
+		
+		.machine-wrap {
+			top: 45%;
+			left: 50%;
+			width: 475px;
+			height: 145px;
+			position: absolute;
+			margin-top: -72.5px;
+			margin-left: -237.5px;
+			border-bottom: 5px solid #333;
+		}
+		
+		.machine {
+			width: 475px;
+			height: 145px;
+			padding-bottom: 20px;
+		}
+		
+		.machine .machine-roof,
+		.machine .machine-main {
+			margin: auto;
+		}
+		
+		.machine-wrap .road .mud:before,
+		.machine-wrap .road .mud:after,
+		.machine .machine-roof .machine-silencer:before,
+		.machine .machine-roof .machine-silencer:after,
+		.machine .machine-body:before,
+		.machine .machine-body:after,
+		.machine .machine-main .machine-back:before,
+		.machine .machine-main .machine-back:after,
+		.machine .machine-main .machine-front:after {
+			content: '';
+			position: absolute;
+		}
+		
+		.machine .machine-roof {
+			width: 80px;
+			height: 60px;
+			bottom: -1px;
+			position: relative;
+			background: #fff;
+			border: 15px solid #333;
+			border-bottom: none;
+		}
+		
+		.machine .machine-roof .machine-silencer {
+			width: 14px;
+			left: -50px;
+			height: 12px;
+			bottom: -1px;
+			position: absolute;
+			background: #333;
+		}
+		
+		.machine .machine-roof .machine-silencer:before {
+			height: 0;
+			bottom: 100%;
+			width: inherit;
+			border: 6px solid #333;
+			border-top: 4px solid transparent;
+			border-left: 8px solid transparent;
+		}
+		
+		.machine .machine-roof .machine-silencer:after {
+			left: 4px;
+			width: 5px;
+			height: 12px;
+			bottom: 100%;
+			background: inherit;
+			transform: skewY(-35deg);
+		}
+		
+		.machine .machine-roof .machine-silencer .machine-smoke {
+			left: -5px;
+			width: 16px;
+			height: 16px;
+			bottom: 20px;
+			border-radius: 50%;
+			position: absolute;
+			background: #333;
+			transform: scale(0);
+			animation: moveSmoke .5s linear infinite;
+		}
+		
+		.machine-main {
+			height: 60px;
+			width: 185px;
+			position: relative;
+		}
+		
+		.machine .machine-main .machine-body {
+			height: inherit;
+			width: inherit;
+			position: relative;
+			background: #333;
+		}
+		
+		.machine .machine-main .machine-body:before {
+			left: -15px;
+			width: 30px;
+			height: inherit;
+			background: inherit;
+			transform: skewX(-20deg);
+		}
+		
+		.machine .machine-main .machine-body:after {
+			bottom: 0;
+			right: 15px;
+			width: 35px;
+			height: 41px;
+			background: #fff;
+		}
+		
+		.machine .machine-main .machine-back {
+			bottom: -1px;
+			width: 75px;
+			height: 45px;
+			position: absolute;
+		}
+		
+		.machine .machine-main .machine-back:before {
+			width: 75px;
+			height: 45px;
+			background: #fff;
+			border-radius: 50% 50% 0 0 / 85% 85% 0 0;
+		}
+		
+		.machine .machine-main .machine-back:after {
+			top: 50%;
+			left: 50%;
+			width: 60px;
+			height: 60px;
+			border-radius: 50%;
+			margin-top: -15px;
+			margin-left: -30px;
+			background: transparent;
+			border: 15px solid #333;
+		}
+		
+		.machine .machine-main .machine-front {
+			z-index: 1;
+			width: 60px;
+			height: 60px;
+			right: -24px;
+			bottom: -20px;
+			border-radius: 50%;
+			position: absolute;
+			background: #333;
+			border-top: 2px solid #fff;
+		}
+		
+		.machine .machine-main .machine-front:after {
+			top: 50%;
+			left: 50%;
+			width: 80px;
+			height: 20px;
+			margin-top: -10px;
+			margin-left: -40px;
+			background: inherit;
+			border: 2px solid #fff;
+		}
+		
+		.machine-wrap .road {
+			right: 0;
+			bottom: 0;
+			height: 15px;
+			width: 140px;
+			overflow: hidden;
+			position: absolute;
+		}
+		
+		.machine-wrap .road .mud-wrap {
+			width: 160px;
+			position: absolute;
+			animation: moveRoad .3s linear infinite;
+		}
+		
+		.machine-wrap .road .mud {
+			bottom: 0;
+			width: 40px;
+			float: left;
+			height: 15px;
+			position: relative;
+			display: inline-block;
+		}
+		
+		.machine-wrap .road .mud:before,
+		.machine-wrap .road .mud:after {
+			width: 20px;
+			height: 20px;
+			border-radius: 4px;
+			background: #333;
+			transform: rotate(45deg);
+		}
+		
+		.machine-wrap .road .mud:before {
+			left: 0;
+			bottom: -17px;
+		}
+		
+		.machine-wrap .road .mud:after {
+			right: 0;
+			bottom: -20px;
+		}
+		
+		.machine-wrap .machine-roof,
+		.machine-wrap .machine-body,
+		.machine-wrap .machine-silencer,
+		.machine-wrap .machine-back:before,
+		.machine-wrap .machine-front {
+			animation: upDown .6s linear infinite;
+		}
+		
+		.machine-wrap .machine-silencer {
+			animation-duration: .5s;
+		}
+		
+		.machine-wrap .machine-front {
+			animation-duration: .3s;
+		}
+		
+		.machine-wrap .machine-back {
+			animation: upDown .8s linear infinite;
+		}
+		
+		@keyframes moveRoad {
+			0% {
+				right: -40px;
+			}
+			100% {
+				right: 0;
+			}
+		}
+		
+		@keyframes moveSmoke {
+			0% {
+				opacity: 0;
+				transform: scale(0) translate(0);
+			}
+			60% {
+				transform: scale(.5) translate(0);
+			}
+			100% {
+				opacity: .6;
+				transform: scale(1) translate(-10px, -40px);
+			}
+		}
+		
+		@keyframes upDown {
+			0% {
+				transform: translateY(0);
+			}
+			50% {
+				transform: translateY(2px);
+			}
+			100% {
+				transform: translateY(0);
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="machine-wrap">
+		<div class="machine">
+			<div class="machine-roof">
+				<div class="machine-silencer">
+					<div class="machine-smoke"></div>
+				</div>
+			</div>
+			<div class="machine-main">
+				<div class="machine-body"></div>
+				<div class="machine-back"></div>
+				<div class="machine-front"></div>
+			</div>
+		</div>
+		<div class="road">
+			<div class="mud-wrap clearfix">
+				<div class="mud"></div>
+				<div class="mud"></div>
+				<div class="mud"></div>
+				<div class="mud"></div>
+			</div>
+		</div>
+		<h1 class="title">Temporarity down for Maintenance</h1>
+		<p>E-mail: contact@printexpresss.in.th</p>
+		<p>&copy;
+			<script>
+				document.write(new Date().getFullYear());
+			</script> Print Express Co., Ltd.</p>
+	</div>
+</body>
+</html>
