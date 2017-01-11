@@ -40,13 +40,6 @@
           value: "Setup"
         },
 
-        tabs: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_tabsChanged',
-          notify: true
-        },
-
         submenus: {
           type: Array,
           value: function () {
@@ -86,17 +79,16 @@
       _routeTabsChanged: function (tabs) {
         if (!tabs) {
             this.set('route.path', '/');
+            return;
         }
         this.tabs = tabs;
-      },
-
-       _tabsChanged: function (tabs) {
-        alert('dd');
         var section = tabs.split("-")[0];
         var resolvedPageUrl = this.resolveUrl(section + '/' + 'view-' + tabs + '.html');
         console.log(resolvedPageUrl);
         this.importHref(resolvedPageUrl, null, null, true);
+
       },
+
     });
   </script>
 </dom-module>
