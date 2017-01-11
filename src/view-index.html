@@ -148,7 +148,7 @@
         <img class="logo" src="../images/logo/industrial.svg" alt="logo">
         <div class="main-title">SMART MES</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="{{routeData.page}}" attr-for-selected="page-name" class="drawer-list" role="navigation" fallback-selection="404">
+        <iron-selector selected="{{routeData.page}}" attr-for-selected="pageName" class="drawer-list" role="navigation" fallback-selection="404">
         <template is="dom-repeat" items="{{menus}}">
                 <a page-name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
          </template> 
