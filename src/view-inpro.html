@@ -1,51 +1,189 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-inpro">
   <template>
-<style include="shared-styles">
-
-    :host {
-       display: block;
-      --app-grid-columns: 3;
-      /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
-      --app-grid-item-height: 50%;
-    }
-
-    ul {
-      padding: 0;
-      list-style: none;
-    }
-    
-
-  </style>
-
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-columns: 3;
+        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+        --app-grid-item-height: 50%;
+      }
+      
+      ul {
+        padding: 0;
+        list-style: none;
+      }
+    </style>
     <ul class="app-grid">
-    <li>
-     <div class="card">
-      <h1>Process A</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+      <li>
+        <div class="card">
+          <h1>Tracking</h1>
+          N/A
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>Monitoring A</h1>
+          N/A
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>Monitoring B</h1>
+          N/A</div>
+      </li>
+    </ul>
+    <div class="card">
+      <vaadin-gauge-chart id="angular-gauge">
+        <chart plot-background-color="null" plot-background-image="null" plot-border-width="0" plot-shadow="false"></chart>
+        <chart-title>Productivity Speed (units/hr)</chart-title>
+        <pane pane="0" center='["25%", "50%"]' size="250" start-angle="-150" end-angle="150">
+          <background border-width="0" border-radius="109%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background border-width="1" border-radius="107%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background>
+          </background>
+          <background background-color="#DDD" border-width="0" outer-radius="105%" inner-radius="103%">
+          </background>
+        </pane>
+        <pane pane="1" center='["50%", "50%"]' size="250" start-angle="-150" end-angle="150">
+          <background border-width="0" border-radius="109%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background border-width="1" border-radius="107%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background>
+          </background>
+          <background background-color="#DDD" border-width="0" outer-radius="105%" inner-radius="103%">
+          </background>
+        </pane>
+        <pane pane="2" center='["75%", "50%"]' size="250" start-angle="-150" end-angle="150">
+          <background border-width="0" border-radius="109%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background border-width="1" border-radius="107%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background>
+          </background>
+          <background background-color="#DDD" border-width="0" outer-radius="105%" inner-radius="103%">
+          </background>
+        </pane>
+        <y-axis min="0" max="10000" minor-tick-interval="auto" minor-tick-width="1" minor-tick-lenght="10" minor-tick-position="inside"
+          tick-pixel-interval="30" tick-width="2" tick-position="inside" tick-length="10" tick-color="#666" grid-line-width="0"
+          pane="0">
+          <labels step="2" rotation="auto"></labels>
+          <chart-title>Machine A</chart-title>
+          <plot-bands from="0" to="5000" color="#55BF3B" pane="0"></plot-bands>
+          <plot-bands from="5000" to="8000" color="#DDDF0D" pane="0"></plot-bands>
+          <plot-bands from="8000" to="10000" color="#DF5353" pane="0"></plot-bands>
+          </y-axis>
+          <y-axis min="0" max="10000" minor-tick-interval="auto" minor-tick-width="1" minor-tick-lenght="10" minor-tick-position="inside"
+            tick-pixel-interval="30" tick-width="2" tick-position="inside" tick-length="10" tick-color="#666" grid-line-width="0"
+            pane="1">
+            <labels step="2" rotation="auto"></labels>
+            <chart-title>Machine B</chart-title>
+            <plot-bands from="0" to="5000" color="#55BF3B" pane="1"></plot-bands>
+            <plot-bands from="5000" to="8000" color="#DDDF0D" pane="1"></plot-bands>
+            <plot-bands from="8000" to="10000" color="#DF5353" pane="1"></plot-bands>
+            </y-axis>
+            <y-axis min="0" max="10000" minor-tick-interval="auto" minor-tick-width="1" minor-tick-lenght="10" minor-tick-position="inside"
+              tick-pixel-interval="30" tick-width="2" tick-position="inside" tick-length="10" tick-color="#666" grid-line-width="0"
+              pane="2">
+              <labels step="2" rotation="auto"></labels>
+              <chart-title>Machine C</chart-title>
+              <plot-bands from="0" to="5000" color="#55BF3B" pane="2"></plot-bands>
+              <plot-bands from="5000" to="8000" color="#DDDF0D" pane="2"></plot-bands>
+              <plot-bands from="8000" to="10000" color="#DF5353" pane="2"></plot-bands>
+              </y-axis>
+              <data-series name="Speed" y-axis="0">
+                <data>0</data>
+              </data-series>
+              <data-series y-axis="1">
+                <data>0</data>
+              </data-series>
+              <data-series y-axis="2">
+                <data>0</data>
+              </data-series>
+      </vaadin-gauge-chart>
     </div>
-    </li>
-    <li>
-     <div class="card">
-      <h1>Process B</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+    <div class="card">
+      <vaadin-gauge-chart id="vu-meter">
+        <chart plot-border-width="1" height="200" plot-background-color="#FFF"></chart>
+        <chart-title>Machine Input Voltage (V.)</chart-title>
+        <pane start-angle="-45" end-angle="45" center='["25%", "145%"]' size="300" background="null"></pane>
+        <pane start-angle="-45" end-angle="45" center='["50%", "145%"]' size="300" background="null"></pane>
+        <pane start-angle="-45" end-angle="45" center='["75%", "145%"]' size="300" background="null"></pane>
+        <y-axis min="0" max="300" minor-tick-position="outside" tick-position="outside" pane="0">
+          <labels rotation="auto" distance="20"></labels>
+          <plot-bands from="240" to="300" color="#C02316" inner-radius="100%" outer-radius="105%" pane="0"></plot-bands>
+          <chart-title y="-40">Phase 1</chart-title>
+        </y-axis>
+        <y-axis min="0" max="300" minor-tick-position="outside" tick-position="outside" pane="1">
+          <labels rotation="auto" distance="20"></labels>
+          <plot-bands from="240" to="300" color="#C02316" inner-radius="100%" outer-radius="105%" pane="1"></plot-bands>
+          <chart-title y="-40">Phase 2</chart-title>
+        </y-axis>
+        <y-axis min="0" max="300" minor-tick-position="outside" tick-position="outside" pane="2">
+          <labels rotation="auto" distance="20"></labels>
+          <plot-bands from="240" to="300" color="#C02316" inner-radius="100%" outer-radius="105%" pane="2"></plot-bands>
+          <chart-title y="-40">Phase 3</chart-title>
+        </y-axis>
+        <plot-options>
+          <gauge>
+            <data-labels enabled="false"></data-labels>
+            <dial radius="100%"></dial>
+          </gauge>
+        </plot-options>
+        <tooltip enabled="false"></tooltip>
+        <data-series y-axis="0">
+          <data>0</data>
+        </data-series>
+        <data-series y-axis="1">
+          <data>0</data>
+        </data-series>
+        <data-series y-axis="2">
+          <data>0</data>
+        </data-series>
+      </vaadin-gauge-chart>
     </div>
-    </li>
-    <li>
-     <div class="card">
-      <h1>Process C</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
-    </div>
-    </li>
-  </ul>
   </template>
-
-
   <script>
     Polymer({
       is: 'view-inpro'

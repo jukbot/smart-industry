@@ -6,6 +6,7 @@
        :host {
         display: block;
         padding: 10px;
+        color: #212121;
         /**
          * The width for the expandible item is:
          * ((100% - subPixelAdjustment) / columns * itemColumns - gutter
@@ -21,6 +22,36 @@
           max-width: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
         };
       }
+       
+        app-router {
+            position: relative;
+        }
+
+        app-header {
+          color: white;
+          background-color: #333;
+          z-index: 0;
+        }
+
+        app-header paper-icon-button {
+          --paper-icon-button-ink-color: white;
+        }
+
+        app-toolbar {
+          /* Toolbar is the main header, so give it some color */
+          background-color: #333;
+          font-family: 'Roboto', Helvetica, sans-serif;
+          color: #fff;
+          --app-toolbar-font-size: 24px;
+        }
+
+        app-drawer {
+          --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
+          --app-drawer-content-container: {
+            box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);
+          }
+        }
+
       .flex {
         @apply(--layout-horizontal);
       }
@@ -78,43 +109,8 @@
       :host {
         --app-grid-columns: 1;
       }
-      }
-      
-      .card {
-        min-height: 250px;
-        margin: 10px;
-        padding: 16px;
-        color: #757575;
-        border-radius: 2px;
-        background-color: #fff;
-        flex-direction: column;
-        display: block;
-        overflow: hidden;
-        text-decoration: none;
-        position: relative;
-        z-index: 1;
-        box-sizing: border-box;
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
-      }
-      
-      .circle {
-        display: inline-block;
-        width: 64px;
-        height: 64px;
-        text-align: center;
-        color: #555;
-        border-radius: 50%;
-        background: #ddd;
-        font-size: 30px;
-        line-height: 64px;
-      }
-      
-      h1 {
-        margin: 16px 0;
-        color: #212121;
-        font-size: 22px;
-      }
-      
+      }  
+
       .wrap-card {
         display: -webkit-flex;
         display: flex;
@@ -126,6 +122,49 @@
         -moz-box-sizing: border-box;
         box-sizing: border-box;
       }
+
+      .card {
+        min-height: 250px;
+        margin: 10px 10px 10px 10px;
+        padding: 16px;
+        color: #757575;
+        border-radius: 2px;
+        background-color: #fff;
+        flex-direction: column;
+        overflow: hidden;
+        text-decoration: none;
+        position: relative;
+        box-sizing: border-box;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
+      }
+      
+      .circle {
+        display: inline-block;
+        width: 64px;
+        height: 64px;
+        text-align: center;
+        color: #212121;
+        border-radius: 50%;
+        background: #ddd;
+        font-size: 30px;
+        line-height: 64px;
+      }
+
+      h1 {
+        margin: 0;
+        color: #212121;
+        font-size: 22px;
+      }
+      
+      ul {
+      padding: 0;
+      list-style: none;
+      }
+
+        paper-button {
+        margin: 0;
+        padding: 12px 30px;
+        }
     </style>
   </template>
 </dom-module>

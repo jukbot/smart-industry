@@ -1,21 +1,32 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- app module -->
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-
+<!-- iron module -->
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-icons/image-icons.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/notification-icons.html">
 
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<!-- paper module -->
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -23,33 +34,26 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<!-- neon module -->
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<!-- 3rd party module -->
+<link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
+<link rel="import" href="../bower_components/vaadin-charts/vaadin-charts.html"/>
 
-<link rel="import" href="../bower_components/vaadin-date-picker/vaadin-date-picker.html">
-<link rel="import" href="../bower_components/vaadin-charts/vaadin-bar-chart.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="main-app">
   <template>
-    <custom-style>
-      <style>
+    <style include="shared-styles">
         :host {
           --app-primary-color: #CDDC39;
           --app-secondary-color: black;
           display: block;
-        }
-        
-        app-toolbar {
-          /* Toolbar is the main header, so give it some color */
-          background-color: #333;
-          font-family: 'Roboto', Helvetica, sans-serif;
-          color: #fff;
-          --app-toolbar-font-size: 24px;
-        }
-
-        app-drawer {
-          --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
-          --app-drawer-content-container: {
-            box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);
+          --paper-menu-button-dropdown: {
+             margin-top: 50px;
+          }
+          --paper-menu-button-content: {
+             z-index: 1;
           }
         }
         
@@ -85,6 +89,11 @@
           margin: 32px;
         }
         
+        paper-dropdown-menu {
+        width: 200px;
+        margin-right: 20px;
+        }
+
         iron-icon {
         color: #333;
         }
@@ -126,19 +135,20 @@
           height: auto;
           display: block;
         }
+  
       </style>
-    </custom-style>
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{pageData}}" tail="{{pageTail}}" active="{{pageActive}}"></app-route>
+
     <!-- wrapper -->
     <app-drawer-layout fullbleed>
       <!-- Navbar content -->
       <app-drawer id="drawer" swipe-open>
         <img class="logo" src="../images/logo/industrial.svg" alt="logo">
-        <div class="main-title">Smart MES</div>
+        <div class="main-title">SMART MES</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="[[pageData.page]]" attr-for-selected="page-name" class="drawer-list" role="navigation" fallback-selection="404">
+        <iron-selector selected="[[page]]" attr-for-selected="page-name" class="drawer-list" role="navigation" fallback-selection="404">
         <template is="dom-repeat" items="{{menus}}">
                 <a page-name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
          </template> 
@@ -149,11 +159,11 @@
       <app-header-layout fullbleed has-scrolling-region>
         <app-header class="app-head" fixed>
           <app-toolbar> <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button> 
-              <div main-title>{{title}} + [[page]]</div>
+              <div main-title>[[page]]</div>
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="account-circle" class="dropdown-trigger" alt="menu"></paper-icon-button>
               <paper-menu class="dropdown-content">
-                <iron-selector selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="overview">
+                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="overview">
                   <paper-item class="menu-item" name="help">
                     <paper-icon-button icon="help" alt="help"></paper-icon-button> Help</paper-item>
                   <paper-item class="menu-item" name="settings">
@@ -168,23 +178,22 @@
      </app-header-layout>
         <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
         <!-- view content area -->
-        <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-overview name="overview" route="{{pageData}}"></view-overview>
-          <view-setup name="setup" route="{{pageData}}"></view-setup>
-          <view-prepro name="prepro" route="{{pageData}}"></view-prepro>
-          <view-inpro name="inpro" route="{{pageData}}"></view-inpro>
-          <view-postpro name="postpro" route="{{pageData}}"></view-postpro>
-          <view-404 name="404" route="{{pageData}}"></view-404>
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-overview name="overview"></view-overview>
+          <view-setup name="setup"></view-setup>
+          <view-prepro name="prepro"></view-prepro>
+          <view-inpro name="inpro"></view-inpro>
+          <view-postpro name="postpro"></view-postpro>
+          <view-404 name="404"></view-404>
         </iron-pages>
-
     </app-drawer-layout>
   </template>
   <script>
     Polymer({
       is: 'main-app',
-      ready: function () {
-        this.async(function () {
-          // If the path is blank, redirect to /overview
+      ready: function() {
+        this.async(function() {
+          // If the path is blank, redirect to /
           if (!this.route.path) {
             this.set('route.path', '/overview');
           }
@@ -203,34 +212,34 @@
           type: Array,
           value: function() {
             return [{
-              'url': 'overview',
-              'title': 'Overview',
-              'view': 'overview',
-              'icon': 'icons:dashboard'
+              url: 'overview',
+              title: 'Overview',
+              view: 'overview',
+              icon: 'icons:dashboard'
             },
             { 
-              'url': 'setup',
-              'title': 'Setup',
-              'view': 'setup',
-              'icon': 'icons:build'
+              url: 'setup',
+              title: 'Setup',
+              view: 'setup',
+              icon: 'icons:build'
             },
             {
-              'url': 'prepro',
-              'title': 'Pre-Production',
-              'view': 'prepro',
-              'icon': 'icons:track-changes'
+              url: 'prepro',
+              title: 'Pre-Production',
+              view: 'prepro',
+              icon: 'icons:track-changes'
             },
             {
-              'url': 'inpro',
-              'title': 'In-Production',
-              'view': 'inpro',
-              'icon': 'image:tune'
+              url: 'inpro',
+              title: 'In-Production',
+              view: 'inpro',
+              icon: 'image:tune'
             },
             {
-              'url': 'postpro',
-              'title': 'Post-Production',
-              'view': 'postpro',
-              'icon': 'icons:verified-user'
+              url: 'postpro',
+              title: 'Post-Production',
+              view: 'postpro',
+              icon: 'icons:verified-user'
             }];
           }
         },

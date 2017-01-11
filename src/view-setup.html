@@ -7,55 +7,29 @@
     <style include="shared-styles">
        :host {
         display: block;
-        --app-grid-columns: 3;
-        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
-        --app-grid-item-height: 50%;
       }
-              
-        app-header {
-          color: #fff;
-          background-color: #333;
-          z-index: 0 !important;
-        }
-
-        app-header paper-icon-button {
-          --paper-icon-button-ink-color: white;
-        }
-        
-
-      ul {
-        padding: 0;
-        list-style: none;
-      }
-
-       @media (max-width: 640px) {
-      :host {
-        --app-grid-columns: 1;
-      }
-      } 
     </style>
-   <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}" active="{{tabsActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}" tail="{{subrouteTail}}"></app-route>
            <!-- start header layout -->
-      <app-header-layout fullbleed has-scrolling-region style="margin-top: 54px !important;">
-        <app-header class="app-head" fixed shadow>
+      <app-header-layout fullbleed has-scrolling-region style="margin-top: 54px !important; ">
+        <app-header fixed shadow>
           <!-- Sub nav -->
-          <app-toolbar class="tabs-bar">
+          <app-toolbar sticky class="tabs-bar">
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="[[subrouteData.tabs]]" attr-for-selected="tab-name" sticky bottom-item autoselect role="navigation">
+            <paper-tabs selected="[[tabs]]" attr-for-selected="name" sticky bottom-item autoselect role="navigation">
               <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab tab-name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
+                <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
-             <iron-pages selected="[[subrouteData.tabs]]" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-setup-customer name="setup-customer" route="{{subrouteData}}"></view-setup-customer>
-          <view-setup-machine name="setup-machine" route="{{subrouteData}}"></view-setup-machine>
-          <view-setup-worker name="setup-worker" route="{{subrouteData}"></view-setup-worker>
-          <view-prepro-job name="prepro-job" route="{{subrouteData}}"></view-prepro-job>
-   </iron-pages> 
+             <iron-pages selected="[[tabs]]" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-setup-customer name="setup-customer" route="{{pageTail}}"></view-setup-customer>
+          <view-setup-machine name="setup-machine" route="{{subrouteTail}}"></view-setup-machine>
+          <view-setup-worker name="setup-worker" route="{{subrouteTail}"></view-setup-worker>
+          <view-prepro-job name="prepro-job" route="{{subrouteTail}}"></view-prepro-job>
+         </iron-pages> 
         </app-header-layout>  
-
   </template>
   <script>
     Polymer({
@@ -110,13 +84,17 @@
       ],
 
       _routeTabsChanged: function (tabs) {
+        if (!tabs) {
+            this.set('route.path', '/');
+        }
         this.tabs = tabs;
       },
 
        _tabsChanged: function (tabs) {
+        alert('dd');
         var section = tabs.split("-")[0];
         var resolvedPageUrl = this.resolveUrl(section + '/' + 'view-' + tabs + '.html');
-        console.log(section + '/' + 'view-' + tabs + '.html');
+        console.log(resolvedPageUrl);
         this.importHref(resolvedPageUrl, null, null, true);
       },
     });

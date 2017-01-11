@@ -1,58 +1,285 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/sortable-list/sortable-list.html">
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
-
 <dom-module id="view-prepro">
-  <template id="scope">
+  <template>
     <style include="shared-styles">
-      html {
+       :host {
         display: block;
+        --app-grid-columns: 2;
+        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+        --app-grid-item-height: 50%;
       }
-      .card {
+      
+      @media (max-width: 640px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+      
+      ul {
+        padding: 0;
+        list-style: none;
+      }
+      
+      paper-button.fancy {
+        background: indigo;
+        color: white;
+      }
+      
+      paper-button.fancy:hover {
+        background: purple;
+      }
+     
+      paper-button.smart {
+        background: seagreen;
+        color: white;
+      }
+      
+      paper-button.smart:hover {
+        background: lightseagreen;
+      }
+      
+      .form-wrapper {
         width: 100%;
       }
-      paper-dropdown-menu {
-        width: 200px;
-        margin-right: 20px;
-     }
-     paper-button.fancy {
-       background: indigo;
-       color: white;
-     }
-     paper-button.fancy:hover {
-       background: purple;
-     } 
+      /* fixed size while drag and drop */
+      .fixed-card {
+        width: 100%;
+      }
+      
+      #job-scheduling-table data-table-row {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      cursor: pointer;
+      border-bottom: 1px solid #e3e3e3;
+      }
+
+       #job-scheduling-table .index {
+       color: red;
+       margin-left: 10px;
+       }
+
+      sortable-list div {
+        background: #ddd;
+        display: inline-block;
+        float: left;
+        height: 100px;
+        margin: 10px 10px 0 0;
+        text-align: center;
+        vertical-align: top;
+        width: 150px;
+      }
+      
+      sortable-list div img {
+        height: 100%;
+        width: auto;
+      }
     </style>
- <div class="wrap-card">
-    <div class="card">
-      <h1>Create Order</h1>
-<form is="iron-form" id="create-order-form" method="post">
-   <div class="form-wrapper">
-   
-<paper-input label="Order Number" value="0" always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
-<paper-input label="Order Name" value="test" always-float-label auto-validate allowed-pattern="[a-zA-Z]"></paper-input>
-<paper-input label="Amount" always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
-<vaadin-date-picker label="Delivery Date" always-float-label autoValidate></vaadin-date-picker><br>
-<paper-button raised class="fancy" onclick="submitForm()">Create</paper-button> <vaadin-combo-box name='name' required label="Element"></vaadin-combo-box>
-  </div>
-</form>
-    </div>
-
+    <ul class="app-grid">
+      <li>
         <div class="card">
-      <h1>Jobs Scheduling</h1>
-      <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam, est id tempor laoreet.Pro saepe pertinax ei, ad pri animal labores suscipiantur.</p>
-    </div>
-
+          <h1>Create Order</h1>
+          <form is="iron-form" id="create-order-form" method="post">
+            <div class="form-wrapper">
+              <paper-input label="Order Number" name="order-no" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <paper-input label="Order Name" name="order-name" required always-float-label auto-validate></paper-input>
+              <paper-input label="Amount" name="amount" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
+              min="2017-01-01" id="delivery-selector"></vaadin-date-picker>
+              <vaadin-combo-box label="Priority Type" items="[[priority]]" id="priority-select" name="priority" 
+                item-label-path="name"
+                item-value-path="symbol" always-float-label></vaadin-combo-box>
+                <p>Selected priority type: <span id="element-name"></span></p>
+                <p>Value: <span id="element-value"></span></p>
+                <br>
+                <paper-button raised class="fancy" onclick="createOrder()">Create</paper-button>
+                <paper-button raised class="smart" onclick="calculateOrder()">Calculate</paper-button>
+            </div>
+          </form>
+        </div>
+      </li>
+      <li>
         <div class="card">
-      <h1>Jobs Performance</h1>
-       </div>
+          <h1>Jobs Performance</h1>
+           
+     
+        </div>
+      </li>
+    </ul>
+    <div class="wrap-card">
+      <div class="fized-card card">
+        <h1>Job Priority Comparision</h1>
+    <vaadin-column-chart id="basic-column">
+    <chart-title>Priority Comparision</chart-title>
+    <subtitle>Less is better</subtitle>
+    <x-axis crosshair="true">
+        <categories>Order A, Order B, Order C</categories>
+    </x-axis>
+    <y-axis min="0">
+        <chart-title>Duration (hrs.)</chart-title>
+    </y-axis>
+    <legend layout="vertical" align="left" vertical-align="top" x="100" y="70" floating="true" border-width="1"
+            background-color="#FFFFFF" shadow="true"></legend>
+    <tooltip header-format="<span style='font-size:10px'>{point.key}</span><table>"
+             point-format="<tr><td style='color:{series.color};padding:0'>{series.name}: </td>  <td style='padding:0'><b>{point.y:.1f} Hrs.</b></td>    </tr>"
+             footer-format="</table>" shared="true" use-html="true"></tooltip>
+    <plot-options>
+        <column point-padding="0.1">
+        </column>
+    </plot-options>
+    <data-series name="FCFS">
+        <data>9.9, 7.5, 10.4, 
+        </data>
+    </data-series>
+    <data-series name="SPT">
+        <data>8.6, 8.8, 8.5,
+        </data>
+    </data-series>
+    <data-series name="EDD">
+        <data>8.9, 8.8, 9.3,
+        </data>
+    </data-series>
+    <data-series name="LPT">
+        <data>8.4, 3.2, 4.5, 
+        </data>
+    </data-series>
+</vaadin-column-chart>
+      </div>
+    <div class="fixed-card card">
+      <h1>Job Scheduling</h1>
+     <template is="dom-bind">
+  <iron-ajax url="json/user.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
+  <iron-data-table id="job-scheduling-table" items="[[users.results]]">
+    <data-table-column name="Rank" width="30px" flex="0">
+      <template>
+        <div class="index">[[index]]</div>
+      </template>
+    </data-table-column>
+    <data-table-column name="Customer" width="50px" flex="0">
+      <template>
+        <img src="[[item.user.picture.thumbnail]]">
+      </template>
+    </data-table-column>
+    <data-table-column name="First Name">
+      <template>[[item.user.name.first]]</template>
+    </data-table-column>
+    <data-table-column name="Last Name">
+      <template>[[item.user.name.last]]</template>
+    </data-table-column>
+    <data-table-column name="First Name">
+      <template>[[item.user.name.first]]</template>
+    </data-table-column>
+    <data-table-column name="Delivery Date">
+      <template>[[item.user.email]]</template>
+    </data-table-column>
+  </iron-data-table>
+</template>
+    </div>
+    <div class="fixed-card card">
+      <h1>Job Queue</h1>
+      <sortable-list>
+        <template is="dom-repeat" items="[[items]]">
+          <div>
+            <img src$="[[item]]"/>
+          </div>
+        </template>
+      </sortable-list>
+    </div>
     </div>
   </template>
-
+  <script src="../bower_components/sugar/dist/sugar.min.js"></script>
   <script>
     Polymer({
       is: 'view-prepro',
-    });   
-  </script>  
+      ready: function() {
+         Sugar.Date.setLocale('en-GB');
+         let datepicker = this.$$('#delivery-selector');
+         // querySelector ==> this.shadowRoot.querySelector('')
+       datepicker.i18n = {
+      week: 'Week',
+      calendar: 'Calendar',
+      clear: 'Clear',
+      today: 'Today',
+      cancel: 'Cancel',
+      firstDayOfWeek: 1,
+      monthNames:
+       'มกราคม_helmikuu_maaliskuu_huhtikuu_toukokuu_kesäkuu_heinäkuu_elokuu_syyskuu_lokakuu_marraskuu_joulukuu'.split('_'),
+      weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
+      weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
+      formatDate: function(date) {
+        return Sugar.Date.format(date, '{short}');
+      },
+      formatTitle: function(monthName, fullYear) {
+        return monthName + ' ' + fullYear;
+      },
+      parseDate: function(dateString) {
+        let matches = datepicker.i18n.monthNames.filter(function(monthName) {
+          return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
+        });
+        dateString = matches.length === 1 ? matches[0] : dateString;
+        // Parse the date
+        return Sugar.Date.create(dateString);
+      }
+      }
+  },
+      properties: {
+        items: {
+          type: Array,
+          value: function () {
+            return [
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9dog2_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9tuqui_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9panda_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9elephant_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9lion_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9foxy_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9kitty_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9ratty_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9froggy_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9ducky_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9batty_trans.png",
+              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9penguino_trans.png"
+            ];
+          }
+        },
+        priority: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'First Come First Serve',
+                symbol: 'FCFS',
+                number: 1
+              },
+              {
+                name: 'Shortage Processing Time',
+                symbol: 'SPT',
+                number: 2
+              },
+              {
+                name: 'Earliest Due Date',
+                symbol: 'EDD',
+                number: 3
+              },
+              {
+                name: 'Longest Processing Time',
+                symbol: 'LPT',
+                number: 4
+              }
+            ]
+          }
+        }
+      },
+
+    });
+    function calculateOrder() {
+      alert("ใส่ข้อมูลก่อนสิ")
+    }
+    function createOrder() {
+      alert("ยังไม่ได้ต่อ firebase เลยมึง")
+    }
+  </script>
 </dom-module>

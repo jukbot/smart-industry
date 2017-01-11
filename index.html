@@ -37,6 +37,8 @@
         dom: 'shadow',
         lazyRegister: true,
       };
+      
+      window.performance && performance.mark && performance.mark('index.html');
 
       // Load webcomponentsjs polyfill if browser does not support native
       // Web Components
@@ -62,7 +64,7 @@
         if (!webComponentsSupported) {
           var script = document.createElement('script');
           script.async = true;
-          script.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+          script.src = '/bower_components/webcomponentsjs/webcomponents.min.js';
           script.onload = onload;
           document.head.appendChild(script);
         } else {
