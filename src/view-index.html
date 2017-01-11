@@ -180,7 +180,7 @@
         <!-- view content area -->
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
           <view-overview name="overview"></view-overview>
-          <view-setup name="setup"></view-setup>
+          <view-setup name="setup" route="{{pageTail}}"></view-setup>
           <view-prepro name="prepro"></view-prepro>
           <view-inpro name="inpro"></view-inpro>
           <view-postpro name="postpro"></view-postpro>
