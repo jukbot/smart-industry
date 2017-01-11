@@ -148,9 +148,9 @@
         <img class="logo" src="../images/logo/industrial.svg" alt="logo">
         <div class="main-title">SMART MES</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="{{routeData.page}}" attr-for-selected="page-name" class="drawer-list" role="navigation" fallback-selection="404">
+        <iron-selector selected="{{routeData.page}}" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
         <template is="dom-repeat" items="{{menus}}">
-                <a page-name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
+                <a name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
          </template> 
         </iron-selector>
       </app-drawer>
@@ -163,7 +163,7 @@
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="account-circle" class="dropdown-trigger" alt="menu"></paper-icon-button>
               <paper-menu class="dropdown-content">
-                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="overview">
+                <iron-selector selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="overview">
                   <paper-item class="menu-item" name="help">
                     <paper-icon-button icon="help" alt="help"></paper-icon-button> Help</paper-item>
                   <paper-item class="menu-item" name="settings">
@@ -179,7 +179,7 @@
         <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
         <!-- view content area -->
         <iron-pages selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-overview name="overview"></view-overview>
+          <view-overview name="overview" route="{{routeTail}}"></view-overview>
           <view-setup name="setup" route="{{routeTail}}"></view-setup>
           <view-prepro name="prepro" route="{{routeTail}}"></view-prepro>
           <view-inpro name="inpro" route="{{routeTail}}"></view-inpro>
@@ -263,11 +263,10 @@
       },
 
       _routePageChanged: function (page) {
-        this.page = page || 'overview';
-
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
+          this.page = page || 'overview';
       },
       
       _pageChanged: function (page) {
