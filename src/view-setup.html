@@ -24,10 +24,10 @@
           </app-toolbar>
         </app-header>
              <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-setup-customer name="setup-customer" route="{{pageTail}}"></view-setup-customer>
-          <view-setup-machine name="setup-machine" route="{{subrouteTail}}"></view-setup-machine>
-          <view-setup-worker name="setup-worker" route="{{subrouteTail}"></view-setup-worker>
-          <view-prepro-job name="prepro-job" route="{{subrouteTail}}"></view-prepro-job>
+          <view-setup-customer name="setup-customer" route="{{routeTail}}"></view-setup-customer>
+          <view-setup-machine name="setup-machine" route="{{routeTail}}"></view-setup-machine>
+          <view-setup-worker name="setup-worker" route="{{routeTail}"></view-setup-worker>
+          <view-prepro-job name="prepro-job" route="{{routeTail}}"></view-prepro-job>
          </iron-pages> 
         </app-header-layout>  
   </template>
@@ -78,10 +78,11 @@
 
       _routeTabsChanged: function (tabs) {
         if (!tabs) {
-            this.set('route.path', '/');
+            this.set('route.path', '/setup-customer');
             return;
         }
-        this.tabs = tabs;
+        this.tabs = tabs || 'setup-customer';
+        
         var section = tabs.split("-")[0];
         var resolvedPageUrl = this.resolveUrl(section + '/' + 'view-' + tabs + '.html');
         console.log(resolvedPageUrl);

@@ -139,7 +139,7 @@
       </style>
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:page" data="{{pageData}}" tail="{{pageTail}}" active="{{pageActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}" active="{{pageActive}}"></app-route>
 
     <!-- wrapper -->
     <app-drawer-layout fullbleed>
@@ -148,7 +148,7 @@
         <img class="logo" src="../images/logo/industrial.svg" alt="logo">
         <div class="main-title">SMART MES</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="[[page]]" attr-for-selected="page-name" class="drawer-list" role="navigation" fallback-selection="404">
+        <iron-selector selected="{{routeData.page}}" attr-for-selected="page-name" class="drawer-list" role="navigation" fallback-selection="404">
         <template is="dom-repeat" items="{{menus}}">
                 <a page-name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
          </template> 
@@ -159,7 +159,7 @@
       <app-header-layout fullbleed has-scrolling-region>
         <app-header class="app-head" fixed>
           <app-toolbar> <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button> 
-              <div main-title>[[page]]</div>
+              <div main-title>{{routeData.page}}</div>
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="account-circle" class="dropdown-trigger" alt="menu"></paper-icon-button>
               <paper-menu class="dropdown-content">
@@ -178,12 +178,12 @@
      </app-header-layout>
         <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
         <!-- view content area -->
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
+        <iron-pages selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404" role="main">
           <view-overview name="overview"></view-overview>
-          <view-setup name="setup" route="{{pageTail}}"></view-setup>
-          <view-prepro name="prepro"></view-prepro>
-          <view-inpro name="inpro"></view-inpro>
-          <view-postpro name="postpro"></view-postpro>
+          <view-setup name="setup" route="{{routeTail}}"></view-setup>
+          <view-prepro name="prepro" route="{{routeTail}}"></view-prepro>
+          <view-inpro name="inpro" route="{{routeTail}}"></view-inpro>
+          <view-postpro name="postpro" route="{{routeTail}}"></view-postpro>
           <view-404 name="404"></view-404>
         </iron-pages>
     </app-drawer-layout>
@@ -252,7 +252,7 @@
       },
 
       observers: [
-        '_routePageChanged(pageData.page)',
+        '_routePageChanged(routeData.page)',
       ],
 
       onLayoutChange: function (wide) {
