@@ -16,14 +16,14 @@
           <!-- Sub nav -->
           <app-toolbar sticky class="tabs-bar">
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="[[tabs]]" attr-for-selected="name" sticky bottom-item autoselect role="navigation">
+            <paper-tabs selected="{{subrouteData.tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation">
               <template is="dom-repeat" items="{{submenus}}">
                 <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
-             <iron-pages selected="[[tabs]]" attr-for-selected="name" fallback-selection="404" role="main">
+             <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
           <view-setup-customer name="setup-customer" route="{{pageTail}}"></view-setup-customer>
           <view-setup-machine name="setup-machine" route="{{subrouteTail}}"></view-setup-machine>
           <view-setup-worker name="setup-worker" route="{{subrouteTail}"></view-setup-worker>
