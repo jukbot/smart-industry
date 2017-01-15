@@ -20,7 +20,6 @@
 <link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/notification-icons.html">
-
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 <!-- paper module -->
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
@@ -128,6 +127,10 @@
           text-align: center;
         }
         
+        .page-title {
+          text-transform: uppercase;
+        }
+        
         .logo {
           margin: 0 auto;
           padding: 30px 0 15px 0;
@@ -140,7 +143,6 @@
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}" active="{{pageActive}}"></app-route>
-
     <!-- wrapper -->
     <app-drawer-layout fullbleed>
       <!-- Navbar content -->
@@ -159,7 +161,7 @@
       <app-header-layout fullbleed has-scrolling-region>
         <app-header class="app-head" fixed>
           <app-toolbar> <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button> 
-              <div main-title>{{routeData.page}}</div>
+              <div class="page-title" main-title>{{routeData.page}}</div>
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="account-circle" class="dropdown-trigger" alt="menu"></paper-icon-button>
               <paper-menu class="dropdown-content">
@@ -179,11 +181,12 @@
         <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
         <!-- view content area -->
         <iron-pages selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-overview name="overview" route="{{routeTail}}"></view-overview>
+          <view-dashboard name="dashboard" route="{{routeTail}}"></view-dashboard>
           <view-setup name="setup" route="{{routeTail}}"></view-setup>
-          <view-prepro name="prepro" route="{{routeTail}}"></view-prepro>
-          <view-inpro name="inpro" route="{{routeTail}}"></view-inpro>
-          <view-postpro name="postpro" route="{{routeTail}}"></view-postpro>
+          <view-planning name="planning" route="{{routeTail}}"></view-planning>
+          <view-tracking name="tracking" route="{{routeTail}}"></view-tracking>
+          <view-controlling name="controlling" route="{{routeTail}}"></view-controlling>
+          <view-verifying name="verifying" route="{{routeTail}}"></view-verifying>
           <view-404 name="404"></view-404>
         </iron-pages>
     </app-drawer-layout>
@@ -195,7 +198,7 @@
         this.async(function() {
           // If the path is blank, redirect to /
           if (!this.route.path) {
-            this.set('route.path', '/overview');
+            this.set('route.path', '/dashboard');
           }
         });
       },
@@ -212,33 +215,39 @@
           type: Array,
           value: function() {
             return [{
-              url: 'overview',
-              title: 'Overview',
-              view: 'overview',
+              url: 'dashboard',
+              title: 'DASHBOARD',
+              view: 'dashboard',
               icon: 'icons:dashboard'
             },
             { 
               url: 'setup',
-              title: 'Setup',
+              title: 'SETUP',
               view: 'setup',
               icon: 'icons:build'
             },
             {
-              url: 'prepro',
-              title: 'Pre-Production',
-              view: 'prepro',
-              icon: 'icons:track-changes'
+              url: 'planning',
+              title: 'PLAN',
+              view: 'planning',
+              icon: 'icons:view-module'
             },
-            {
-              url: 'inpro',
-              title: 'In-Production',
-              view: 'inpro',
+           {
+              url: 'controlling',
+              title: 'CONTROL',
+              view: 'controlling',
               icon: 'image:tune'
             },
             {
-              url: 'postpro',
-              title: 'Post-Production',
-              view: 'postpro',
+              url: 'tracking',
+              title: 'TRACK',
+              view: 'tracking',
+              icon: 'icons:track-changes'
+            },
+            {
+              url: 'verifying',
+              title: 'VERIFY',
+              view: 'verifying',
               icon: 'icons:verified-user'
             }];
           }
@@ -266,7 +275,11 @@
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
-          this.page = page || 'overview';
+        if (!page) {
+            this.set('route.path', '/dashboard');
+            return;
+        }
+          this.page = page || 'dashboard';
       },
       
       _pageChanged: function (page) {

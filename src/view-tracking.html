@@ -2,7 +2,7 @@
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="view-setup">
+<dom-module id="view-tracking">
   <template>
     <style include="shared-styles">
        :host {
@@ -22,48 +22,42 @@
             </paper-tabs>
           </app-toolbar>
         </app-header>
-             <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-setup-customer name="setup-customer" route="{{subrouteTail}}"></view-setup-customer>
-          <view-setup-machine name="setup-machine" route="{{subrouteTail}}"></view-setup-machine>
-          <view-setup-worker name="setup-worker" route="{{subrouteTail}"></view-setup-worker>
-          <view-setup-stock name="setup-stock" route="{{subrouteTail}}"></view-setup-stock>
+          <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-track-production name="track-production" route="{{subrouteTail}}"></view-track-production>
+          <view-track-machine name="track-machine" route="{{subrouteTail}}"></view-track-machine>
+          <view-track-stock name="track-stock" route="{{subrouteTail}}"></view-track-stock>
+          <view-404 name="404"></view-404>
          </iron-pages> 
         </app-header-layout>  
   </template>
   <script>
     Polymer({
-      is: 'view-setup',
+      is: 'view-tracking',
       properties: {
         title: {
           type: String,
-          value: "Setup"
+          value: "Tracking"
         },
 
         submenus: {
           type: Array,
           value: function () {
             return [{
-                'section': 'setup',
-                'title': 'CUSTOMER',
-                'view': 'setup-customer',
+                'section': 'tracking',
+                'title': 'PRODUCTION',
+                'view': 'track-production',
                 'icon': 'help'
               },
               {
-                'section': 'setup',
+                'section': 'tracking',
                 'title': 'MACHINE',
-                'view': 'setup-machine',
+                'view': 'track-machine',
                 'icon': 'help'
               },
               {
-                'section': 'setup',
-                'title': 'WORKER',
-                'view': 'setup-worker',
-                'icon': 'assignment-ind'
-              },
-              {
-                'section': 'prepro',
+                'section': 'tracking',
                 'title': 'STOCK',
-                'view': 'setup-stock',
+                'view': 'track-stock',
                 'icon': 'help'
               }
             ];
@@ -77,16 +71,19 @@
 
       _routeTabsChanged: function (tabs) {
         if (!tabs) {
-            this.set('route.path', '/setup-customer');
+            this.set('route.path', '/track-production');
             return;
         }
-        this.tabs = tabs || 'setup-customer';
+        this.tabs = tabs || 'track-production';
         
         const section = tabs.split("-")[0];
         const resolvedPageUrl = this.resolveUrl(section + '/' + 'view-' + tabs + '.html');
         console.log(resolvedPageUrl);
-        this.importHref(resolvedPageUrl, null, null, true);
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
+       _showPage404: function () {
+        this.page = '404';
+      }
     });
   </script>
 </dom-module>

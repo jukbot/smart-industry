@@ -1,0 +1,42 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-track-production">
+<template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-columns: 2;
+        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+        --app-grid-item-height: 50%;
+      }
+      
+      ul {
+        padding: 0;
+        list-style: none;
+      }
+    </style>
+    <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1>Efficiency tracking</h1>
+          N/A
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>Stock</h1>
+          N/A
+        </div>
+      </li>
+    </ul>
+    <div class="card">
+      Production Line A Progress
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-track-stock',
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,35 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="view-index.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="view-controlling">
+  <template>
+ <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-columns: 2;
+        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+        --app-grid-item-height: 50%;
+      }
+      
+      @media (max-width: 640px) {
+      :host {
+          --app-grid-columns: 1;
+        }
+      }
+  </style>
+    <div class="card">
+      <div class="circle">7</div>
+      <h1>Controlling</h1>
+      <p>This secion is in developing</p>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'view-controlling',
+    });
+  </script>
+</dom-module>
+
+

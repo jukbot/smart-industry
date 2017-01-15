@@ -2,12 +2,21 @@
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="view-postpro">
+<dom-module id="view-verifying">
   <template>
  <style include="shared-styles">
-    host: {
+       :host {
         display: block;
-    }
+        --app-grid-columns: 2;
+        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+        --app-grid-item-height: 50%;
+      }
+      
+      @media (max-width: 640px) {
+      :host {
+          --app-grid-columns: 1;
+        }
+      }
     body {
 display: flex;
 align-items: center;
@@ -89,6 +98,7 @@ margin: 10px;
     </div>
   </div>
 </paper-card>
+
     <div class="card">
       <div class="circle">7</div>
       <h1>Post-Production</h1>
@@ -98,7 +108,7 @@ margin: 10px;
 
   <script>
     Polymer({
-      is: 'view-postpro',
+      is: 'view-verifying',
     });
   </script>
 </dom-module>
