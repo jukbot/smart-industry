@@ -83,10 +83,11 @@
         this.tabs = tabs || 'setup-customer';
         
         const section = tabs.split("-")[0];
-        const resolvedPageUrl = this.resolveUrl(section + '/' + 'view-' + tabs + '.html');
+        const resolvedPageUrl = this.resolveUrl('setup/' + 'view-' + tabs + '.html');
         console.log(resolvedPageUrl);
         this.importHref(resolvedPageUrl, null, null, true);
       },
     });
   </script>
 </dom-module>
+

@@ -77,7 +77,7 @@
         this.tabs = tabs || 'track-production';
         
         const section = tabs.split("-")[0];
-        const resolvedPageUrl = this.resolveUrl(section + '/' + 'view-' + tabs + '.html');
+        const resolvedPageUrl = this.resolveUrl('track/' + 'view-' + tabs + '.html');
         console.log(resolvedPageUrl);
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
