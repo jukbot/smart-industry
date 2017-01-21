@@ -151,7 +151,7 @@
     <div class="fixed-card card">
       <h1>Job Scheduling</h1>
      <template is="dom-bind">
-  <iron-ajax url="json/user.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
+  <iron-ajax url="../json/user.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
   <iron-data-table id="job-scheduling-table" items="[[users.results]]">
     <data-table-column name="Rank" width="30px" flex="0">
       <template>
@@ -190,7 +190,6 @@
     </div>
     </div>
   </template>
-  <script src="../../bower_components/sugar/dist/sugar.min.js"></script>
   <script>
     Polymer({
       is: 'view-plan-scheduling',
