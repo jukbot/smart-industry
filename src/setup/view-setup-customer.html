@@ -2,7 +2,7 @@
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="view-setup-customer">
-  <template>
+<template>
 <style include="shared-styles">
 
     :host {
@@ -24,7 +24,14 @@
     }
 
   </style>
-
+<div class="card">
+<paper-stepper id="stepper" vertical="[[vertical]]">
+  <paper-step label="step 1"></paper-step>
+  <paper-step label="step 2"></paper-step>
+  <paper-step label="step 3"></paper-step>
+  <paper-step label="step 4"></paper-step>
+</paper-stepper>
+</div>
     <ul class="app-grid" has-aspect-ratio>
     <li>
      <div class="card">
@@ -46,7 +53,7 @@
 
   <script>
     Polymer({
-      is: 'view-setup-customer'
+      is: 'view-setup-customer',
     });
   </script>
 </dom-module>

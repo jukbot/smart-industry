@@ -35,7 +35,17 @@
   </style>
    <div class="card">
      <h1>Add Worker</h1>
-     </div>
+<paper-input label="First name" always-float-label></paper-input>
+<paper-input label="Last name" always-float-label></paper-input>
+<paper-input label="E-mail" always-float-label></paper-input>
+<paper-input label="Position" always-float-label></paper-input>
+<paper-input label="username" always-float-label id="inputWithButton">
+  <iron-icon icon="mail" prefix></iron-icon>
+  <div suffix>@gmail.com</div>
+  <paper-icon-button suffix onclick="clearInput()" icon="clear" alt="clear" title="clear">
+  </paper-icon-button>
+</paper-input>
+</div>
  <div class="card">
        <template is="dom-bind">
   <iron-ajax url="../json/user.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
