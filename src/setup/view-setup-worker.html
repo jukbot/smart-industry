@@ -24,7 +24,16 @@
       #worker-table .index {
        color: red;
        margin-left: 10px;
-       
+      }
+
+     paper-button.fancy {
+        background: indigo;
+        color: white;
+      }
+      
+      paper-button.fancy:hover {
+        background: purple;
+      }
 
      @media (max-width: 640px) {
       :host {
@@ -45,6 +54,7 @@
   <paper-icon-button suffix onclick="clearInput()" icon="clear" alt="clear" title="clear">
   </paper-icon-button>
 </paper-input>
+<paper-button raised class="fancy" onclick="addOrder()">Add</paper-button>
 </div>
  <div class="card">
        <template is="dom-bind">
