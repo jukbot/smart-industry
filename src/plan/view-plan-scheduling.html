@@ -48,6 +48,7 @@
         width: 100%;
       }
       
+      /* table */
       #job-scheduling-table data-table-row {
       width: 100%;
       display: flex;
@@ -61,7 +62,7 @@
        color: red;
        margin-left: 10px;
        }
-
+       /* sort queue */
       sortable-list div {
         background: #ddd;
         display: inline-block;
@@ -76,6 +77,10 @@
       sortable-list div img {
         height: 100%;
         width: auto;
+      } 
+
+      .chart {
+        width: 100%;
       }
     </style>
     <ul class="app-grid">
@@ -110,9 +115,9 @@
       </li>
     </ul>
     <div class="wrap-card">
-      <div class="fized-card card">
+      <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
-    <vaadin-column-chart id="basic-column">
+    <vaadin-column-chart id="basic-column" class="chart">
     <chart-title>Priority Comparision</chart-title>
     <subtitle>Less is better</subtitle>
     <x-axis crosshair="true">
@@ -148,6 +153,25 @@
     </data-series>
 </vaadin-column-chart>
       </div>
+
+      <div class="fixed-card card">
+  <vaadin-column-chart id="column-with-negative-values">
+    <chart-title>Earnings</chart-title>
+    <subtitle>2011 - 2014</subtitle>
+    <x-axis>
+      <categories>2011, 2012, 2013, 2014</categories>
+    </x-axis>
+    <y-axis>
+      <chart-title>B€</chart-title>
+    </y-axis>
+    <tooltip point-format="{series.name}: {point.y} B€"></tooltip>
+    <data-series name="Revenue" data="[[revenueSeries]]"></data-series>
+    <data-series name="Expenses" data="[[expensesData]]"></data-series>
+    <data-series name="Net income" data="[[netData]]"></data-series>
+  </vaadin-column-chart>
+      </div>
+
+      
     <div class="fixed-card card">
       <h1>Job Scheduling</h1>
      <template is="dom-bind">
@@ -205,7 +229,7 @@
       cancel: 'Cancel',
       firstDayOfWeek: 1,
       monthNames:
-       'มกราคม_helmikuu_maaliskuu_huhtikuu_toukokuu_kesäkuu_heinäkuu_elokuu_syyskuu_lokakuu_marraskuu_joulukuu'.split('_'),
+       'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
       weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
       weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
       formatDate: function(date) {
@@ -269,9 +293,23 @@
               }
             ]
           }
-        }
-      },
-
+        },
+         revenueSeries: {
+            type: Array,
+            notify: true,
+            value: [ 1.5, 1.8, 1.2, 2.3 ]
+          },
+          expensesData: {
+            type: Array,
+            notify: true,
+            value: [ 1.2, 1.1, 1.3, 0.9 ]
+          },
+          netData: {
+            type: Array,
+            notify: true,
+            value: [ -0.3, 0.7, -0.1, 1.4 ]
+          }
+      }
     });
     function calculateOrder() {
       alert("ใส่ข้อมูลก่อนสิ")
