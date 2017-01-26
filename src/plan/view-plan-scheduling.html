@@ -80,14 +80,13 @@
                 <p>Order workload:</p>
         </div>
       </li>
-    </ul>
-    <div class="wrap-card">
-      <div class="fixed-card card">
+      <li>
+          <div class="card">
       <h1>Order Production Workflow</h1>
 <vaadin-date-picker style="width: 300px;" label="Working Date" name="workdate" always-float-label autoValidate
               min="2017-01-01" class="date-selector" id="workdate-selector"></vaadin-date-picker>
 <vaadin-columnrange-chart id="column-range-resource-usage">
-    <chart inverted="true"></chart>
+    <chart width="1000" inverted="true"></chart>
     <chart-title>Order Production Workflow</chart-title>
     <x-axis>
         <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
@@ -136,7 +135,9 @@
     </data-series>
 </vaadin-columnrange-chart>
         </div>
-  <div class="fixed-card card">
+      </li>
+      <li>
+ <div class="card">
       <h1>Job Scheduling</h1>
      <template is="dom-bind">
   <iron-ajax url="../json/user.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
@@ -164,6 +165,11 @@
   </iron-data-table>
 </template>
     </div>
+      </li>
+    </ul>
+    <div class="wrap-card">
+    
+ 
       <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
    <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority"  item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
@@ -202,23 +208,6 @@
         </data>
     </data-series>
 </vaadin-column-chart>
-      </div>
-
-<div class="fixed-card card">
-  <vaadin-column-chart id="column-with-negative-values">
-    <chart-title>Earnings</chart-title>
-    <subtitle>2011 - 2014</subtitle>
-    <x-axis>
-      <categories>2011, 2012, 2013, 2014</categories>
-    </x-axis>
-    <y-axis>
-      <chart-title>B€</chart-title>
-    </y-axis>
-    <tooltip point-format="{series.name}: {point.y} B€"></tooltip>
-    <data-series name="Revenue" data="[[revenueSeries]]"></data-series>
-    <data-series name="Expenses" data="[[expensesData]]"></data-series>
-    <data-series name="Net income" data="[[netData]]"></data-series>
-  </vaadin-column-chart>
       </div>
     <div class="fixed-card card">
       <h1>Job Queue</h1>
