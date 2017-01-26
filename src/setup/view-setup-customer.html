@@ -17,6 +17,19 @@
       list-style: none;
     }
 
+      #customer-table data-table-row {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      cursor: pointer;
+      border-bottom: 1px solid #e3e3e3;
+      }
+
+      #customer-table .index {
+       margin-left: 10px;
+      }
+
      @media (max-width: 640px) {
       :host {
         --app-grid-columns: 1;
@@ -32,19 +45,38 @@
   <paper-step label="step 4"></paper-step>
 </paper-stepper>
 </div>
+ <div class="card">
+  <template is="dom-bind">
+  <iron-ajax url="https://smart-mes.firebaseio.com/customer/list.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
+  <iron-data-table id="customer-table" items="[[users.0]]">
+    <data-table-column name="Index" width="30px" flex="0">
+      <template>
+        <div class="index">[[index]]</div>
+      </template>
+    </data-table-column>
+    <data-table-column name="First Name">
+      <template>[[item.user.name.first]]</template>
+    </data-table-column>
+    <data-table-column name="Last Name">
+      <template>[[item.user.name.last]]</template>
+    </data-table-column>
+    <data-table-column name="Mobile">
+      <template>[[item.user.cell]]</template>
+    </data-table-column>
+     <data-table-column name="E-mail">
+      <template>[[item.user.email]]</template>
+    </data-table-column>
+  </iron-data-table>
+</template>
+</div>
     <ul class="app-grid" has-aspect-ratio>
     <li>
      <div class="card">
-      <h1>Setup Customer</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
-    </div>
+      <h1>BLANK CARD</h1>
     </li>
     <li>
      <div class="card">
-      <h1>Process C</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+      <h1>BLANK CARD</h1>
     </div>
     </li>
   </ul>

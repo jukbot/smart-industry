@@ -2,24 +2,84 @@
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="view-dashboard">
-  <template>
+    <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
       }
     </style>
-
-    <div class="card">
-      <div class="circle">1</div>
-      <h1>Overview</h1>
-      <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-      <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-    </div>
+    <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}" tail="{{subrouteTail}}"></app-route>
+      <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
+        <app-header fixed shadow>
+          <!-- Sub nav -->
+          <app-toolbar sticky class="tabs-bar">
+            <!-- Nav on desktop: tabs -->
+            <paper-tabs selected="{{subrouteData.tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+              <template is="dom-repeat" items="{{submenus}}">
+                <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
+              </template>
+            </paper-tabs>
+          </app-toolbar>
+        </app-header>
+          <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-dashboard-overview name="dashboard-overview" route="{{subrouteTail}}"></view-dashboard-overview>
+          <view-404 name="404"></view-404>
+         </iron-pages> 
+        </app-header-layout>  
   </template>
-
   <script>
     Polymer({
       is: 'view-dashboard',
+      properties: {
+        title: {
+          type: String,
+          value: "Dashboard"
+        },
+
+        submenus: {
+          type: Array,
+          value: function () {
+            return [{
+                'section': 'dashboard',
+                'title': 'OVERVIEW',
+                'view': 'dashboard-overview',
+                'icon': 'help'
+              },
+              {
+                'section': 'dashboard',
+                'title': 'REPORT',
+                'view': 'dashboard-report',
+                'icon': 'help'
+              },
+              {
+                'section': 'dashboard',
+                'title': 'STATISTIC',
+                'view': 'dashboard-statistic',
+                'icon': 'help'
+              }
+            ];
+          }
+        }
+      },
+
+      observers: [
+        '_routeTabsChanged(subrouteData.tabs)'
+      ],
+
+      _routeTabsChanged: function (tabs) {
+        if (!tabs) {
+            this.set('route.path', '/dashboard-overview');
+            return;
+        }
+        this.tabs = tabs || 'dashboard-overview';
+        
+        const section = tabs.split("-")[0];
+        const resolvedPageUrl = this.resolveUrl('dashboard/' + 'view-' + tabs + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
+      },
+       _showPage404: function () {
+        this.page = '404';
+      }
     });
   </script>
 </dom-module>

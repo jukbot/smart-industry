@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
+
 <dom-module id="view-setup-machine">
   <template>
 <style include="shared-styles">
@@ -16,64 +17,47 @@
       padding: 0;
       list-style: none;
     }
+   
  @media (max-width: 640px) {
       :host {
         --app-grid-columns: 1;
       }
     }
+
+    paper-dialog {
+      width: 25%;
+    }
   </style>
 
      <ul class="app-grid">
       <li>
-        <div class="card">
-          <h1 class="setup-title">Machine 1</h1>
-          <p>Add machine to current factory.</p>
-          <form is="iron-form" method="post" action="/" id="presubmit">
-            <paper-input name="machine-name" label="Machine Name" value="noname" required></paper-input>
-            <paper-input name="machine-q" label="q" value="noname" required></paper-input>
-            <paper-input name="machine-speed" label="productivity" value="noname" required></paper-input>
-            <paper-button raised onclick="_submit(event)">Submit</paper-button>
-            <paper-button raised onclick="_reset(event)">Reset</paper-button>
-            <div class="output"></div>
-          </form>
+        <div class="stitched">
+          <paper-button raised on-tap="toggleDialog" class="new-machine magic">Add machine</paper-button>
+          <paper-dialog id="createMachine" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
+           <h2>Add machine</h2>
+           <form is="iron-form" method="post" action="/" id="presubmit">
+            <paper-input name="machine-name" label="Machine Name" value="default" required></paper-input>
+            <paper-input name="machine-effi" label="Efficiency" value="100" required></paper-input>
+            <paper-input name="machine-type" label="Type" value="" required></paper-input>
+    <div class="buttons">
+    <paper-button dialog-dismiss>Dismiss</paper-button>
+    <paper-button class="candy" dialog-confirm autofocus>Create</paper-button>
+  </div>
+  </form>
+</paper-dialog>
         </div>
       </li>
       <li>
-        <div class="card">
-          <h1 class="setup-title">Machine 2</h1>
-        <p>blablablablabla {{title}}</p>
+        <div class="card machine">
+          <h1>Machine 1</h1>
+        <p>Name: Milling Machine</p>
+        <p>Type: Milling</p>
+        <p>Efficiency: 100%</p>
         </div>
       </li>
       <li>
-        <div class="card">
-          <h1 class="setup-title">Machine 3</h1>
-          <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-          <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
-            soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
-        </div>
-      </li>
-          <li>
-        <div class="card">
-          <h1 class="setup-title">Machine 4</h1>
-          <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-          <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
-            soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <h1 class="setup-title">Machine 5</h1>
-          <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-          <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
-            soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
-        </div>
-      </li>
-       <li>
-        <div class="card">
-          <h1 class="setup-title">Machine 6</h1>
-          <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-          <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
-            soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+        <div class="card machine ">
+          <h1>Machine 3</h1>
         </div>
       </li>
     </ul>
@@ -83,6 +67,10 @@
   <script>
     Polymer({
       is: 'view-setup-machine',
+      toggleDialog: function() {
+            this.$.createMachine.open();
+        },
     });
+
   </script>
 </dom-module>

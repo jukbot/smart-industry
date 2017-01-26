@@ -2,7 +2,7 @@
 <!-- shared styles for all views -->
 <dom-module id="shared-styles">
   <template>
-    <style>
+    <style is="custom-style">
        :host {
         display: block;
         padding: 10px;
@@ -29,7 +29,7 @@
 
         app-header {
           color: white;
-          z-index: 0;
+          z-index: 0 !important;
         }
 
         app-header paper-icon-button {
@@ -123,20 +123,48 @@
       }
 
       .card {
-        min-height: 250px;
+        height: auto;
+        min-height: 100%;
+        display: flex;
+        overflow: hidden;
         margin: 10px 10px 10px 10px;
         padding: 16px;
         color: #757575;
         border-radius: 2px;
         background-color: #fff;
         flex-direction: column;
-        overflow: hidden;
         text-decoration: none;
         position: relative;
         box-sizing: border-box;
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
       }
       
+     /* fixed size while drag and drop */
+      .fixed-card {
+        width: 100%;
+      }
+
+      .stitched {
+        height: auto;
+        min-height: 450px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 10px 10px 10px 10px;
+        padding: 16px;
+        color: #757575;
+        border: 4px dashed #757575;
+        border-radius: 2px;
+        flex-direction: column;
+        text-decoration: none;
+        position: relative;
+        box-sizing: border-box;
+     }
+     .machine { min-height: 450px; }
+     .machine h1 { text-align: center; }
+     .new-machine { margin: 0 }
+
       .circle {
         display: inline-block;
         width: 64px;
@@ -153,6 +181,10 @@
         margin-top: 54px !important;
       }
         
+      .form-wrapper {
+        width: 100%;
+      }
+      
       h1 {
         margin: 0;
         color: #212121;
@@ -168,6 +200,51 @@
         margin: 0;
         padding: 12px 30px;
       }
+
+      paper-button.smart {
+        background: seagreen;
+        color: white;
+      }
+      
+      paper-button.smart:hover {
+        background: lightseagreen;
+      }
+
+      paper-button.fancy {
+        background: indigo;
+        color: white;
+      }
+      
+      paper-button.fancy:hover {
+        background: purple;
+      }
+     
+      paper-button.smart {
+        background: seagreen;
+        color: white;
+      }
+      
+      paper-button.smart:hover {
+        background: lightseagreen;
+      }
+  
+      paper-button.magic {
+        background: coral;
+        color: white;
+      }
+      
+      paper-button.magic:hover {
+        background: lightcoral;
+      }
+
+      paper-button.candy {
+        background: goldenrod;
+        color: white;
+      }
+      
+      paper-button.candy:hover {
+        background: gold;
+      }  
     </style>
   </template>
 </dom-module>

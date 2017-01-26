@@ -7,7 +7,7 @@
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
@@ -33,6 +33,7 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <!-- neon module -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party module -->
@@ -145,11 +146,11 @@
       </style>
     <!-- app-firebase -->
     <firebase-app
-  auth-domain="polymerfire-test.firebaseapp.com"
-  database-url="https://polymerfire-test.firebaseio.com/"
-  api-key="AIzaSyDTP-eiQezleFsV2WddFBAhF_WEzx_8v_g"
-  storage-bucket="polymerfire-test.appspot.com"
-  messaging-sender-id="544817973908">
+  auth-domain="smart-mes.firebaseapp.com"
+  database-url="https://smart-mes.firebaseio.com"
+  api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
+  storage-bucket="smart-mes.appspot.com"
+  messaging-sender-id="253401775445">
 </firebase-app>
 <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError">
 </firebase-auth>
@@ -228,7 +229,7 @@
           type: Array,
           value: function() {
             return [{
-              url: 'dashboard',
+              url: 'dashboard/dashboard-overview',
               title: 'DASHBOARD',
               view: 'dashboard',
               icon: 'icons:dashboard'
@@ -246,7 +247,7 @@
               icon: 'icons:view-module'
             },
            {
-              url: 'controlling',
+              url: 'controlling/',
               title: 'CONTROL',
               view: 'controlling',
               icon: 'image:tune'
@@ -299,6 +300,7 @@
         // Load page import on demand. Show 404 page if fails
         const section = page.split("-")[0];
         var resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+        console.log("Main: " + resolvedPageUrl);
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
 

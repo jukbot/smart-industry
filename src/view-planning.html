@@ -23,7 +23,6 @@
         </app-header>
           <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
           <view-plan-scheduling name="plan-scheduling" route="{{subrouteTail}}"></view-plan-scheduling>
-          <view-404 name="404"></view-404>
          </iron-pages> 
         </app-header-layout>  
   </template>
@@ -67,10 +66,10 @@
       ],
 
       _routeTabsChanged: function (tabs) {
-        if (!tabs) {
-            this.set('route.path', '/plan-scheduling');
-            return;
-        }
+    //    if (!tabs) {
+    //        this.set('route.path', '/plan-scheduling');
+    //        return;
+     //   }
         this.tabs = tabs || 'plan-scheduling';
         
         const section = tabs.split("-")[0];

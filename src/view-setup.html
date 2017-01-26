@@ -76,15 +76,15 @@
       ],
 
       _routeTabsChanged: function (tabs) {
-        if (!tabs) {
-            this.set('route.path', '/setup-customer');
-            return;
-        }
+   //     if (!tabs) {
+   //         this.set('route.path', '/setup-customer');
+    //        return;
+     //   }
         this.tabs = tabs || 'setup-customer';
         
         const section = tabs.split("-")[0];
         const resolvedPageUrl = this.resolveUrl('setup/' + 'view-' + tabs + '.html');
-        console.log(resolvedPageUrl);
+        console.log("Hey: " + resolvedPageUrl);
         this.importHref(resolvedPageUrl, null, null, true);
       },
     });

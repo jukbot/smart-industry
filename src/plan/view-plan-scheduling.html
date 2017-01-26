@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../../bower_components/sortable-list/sortable-list.html">
+<link rel="import" href="../view-index.html">
 <dom-module id="view-plan-scheduling">
  <template>
     <style include="shared-styles">
@@ -15,37 +15,6 @@
          :host {
           --app-grid-columns: 1;
         }
-      }
-      
-      ul {
-        padding: 0;
-        list-style: none;
-      }
-      
-      paper-button.fancy {
-        background: indigo;
-        color: white;
-      }
-      
-      paper-button.fancy:hover {
-        background: purple;
-      }
-     
-      paper-button.smart {
-        background: seagreen;
-        color: white;
-      }
-      
-      paper-button.smart:hover {
-        background: lightseagreen;
-      }
-      
-      .form-wrapper {
-        width: 100%;
-      }
-      /* fixed size while drag and drop */
-      .fixed-card {
-        width: 100%;
       }
       
       /* table */
@@ -66,7 +35,6 @@
       sortable-list div {
         background: #ddd;
         display: inline-block;
-        float: left;
         height: 100px;
         margin: 10px 10px 0 0;
         text-align: center;
@@ -79,9 +47,6 @@
         width: auto;
       } 
 
-      .chart {
-        width: 100%;
-      }
     </style>
     <ul class="app-grid">
       <li>
@@ -92,13 +57,9 @@
               <paper-input label="Order Number" name="order-no" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
               <paper-input label="Order Name" name="order-name" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="amount" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <vaadin-combo-box label="Product" name="product" items="[[product]]" id="product-select" name="product"  item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
               <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
-              min="2017-01-01" id="delivery-selector"></vaadin-date-picker>
-              <vaadin-combo-box label="Priority Type" items="[[priority]]" id="priority-select" name="priority" 
-                item-label-path="name"
-                item-value-path="symbol" always-float-label></vaadin-combo-box>
-                <p>Selected priority type: <span id="element-name"></span></p>
-                <p>Value: <span id="element-value"></span></p>
+              min="2017-01-01" class="date-selector" id="delivery-selector"></vaadin-date-picker>
                 <br>
                 <paper-button raised class="fancy" onclick="createOrder()">Create</paper-button>
                 <paper-button raised class="smart" onclick="calculateOrder()">Calculate</paper-button>
@@ -108,17 +69,106 @@
       </li>
       <li>
         <div class="card">
-          <h1>Jobs Performance</h1>
-           
-     
+          <h1>Order Information</h1>
+                <p>Job Priority Type: FCFS <span id="priority-type"></span></p>
+                <p>Production Start: <span id="production-start"></span></p>
+                <p>Production Finish: <span id="production-finish"></span></p>
+                <p>Estimate Delivery: <span id="estimate-delivery"></span></p>
+                <p>Estimate Duration: <span id="estimate-duration"></span></p>
+                <p>Machines Used: <span id="used-machine"></span></p>
+                <p>Queue number:</p>
+                <p>Order workload:</p>
         </div>
       </li>
     </ul>
     <div class="wrap-card">
       <div class="fixed-card card">
+      <h1>Order Production Workflow</h1>
+<vaadin-date-picker style="width: 300px;" label="Working Date" name="workdate" always-float-label autoValidate
+              min="2017-01-01" class="date-selector" id="workdate-selector"></vaadin-date-picker>
+<vaadin-columnrange-chart id="column-range-resource-usage">
+    <chart inverted="true"></chart>
+    <chart-title>Order Production Workflow</chart-title>
+    <x-axis>
+        <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
+    </x-axis>
+    <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
+    <tooltip
+            formatter="function () {return this.series.name +': '+ Highcharts.dateFormat('%H:%M', this.point.low) + ' - ' + Highcharts.dateFormat('%H:%M', this.point.high)}"></tooltip>
+    <plot-options>
+        <columnrange grouping="false">
+            <data-labels enabled="true" inside="true" color="white"
+                         formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
+        </columnrange>
+    </plot-options>
+    <data-series name="Order #1">
+        <color>rgba(255, 60, 125, 0.8)</color>
+        <data>
+            [Date.UTC(2017,01,02,08,00,00),Date.UTC(2017,01,02,09,00,00)],
+            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
+            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
+            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
+            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,00,00)],
+            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)]
+        </data>
+    </data-series>
+    <data-series name="Order #2">
+        <color>rgba(60, 125, 255, 0.8)</color>
+        <data>
+            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
+            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,11,00,00)],
+            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
+            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,30,00)],
+            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)],
+            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,17,00,00)]
+        </data>
+    </data-series>
+    <data-series name="Order #3">
+        <color>rgba(164, 208, 95, 0.8)</color>
+        <data>
+            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
+            [Date.UTC(2017,01,02,11,00,00),Date.UTC(2017,01,02,13,00,00)],
+            null,
+            [Date.UTC(2017,01,02,15,30,00),Date.UTC(2017,01,02,16,00,00)],
+            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,16,30,00)],
+            null
+        </data>
+    </data-series>
+</vaadin-columnrange-chart>
+        </div>
+  <div class="fixed-card card">
+      <h1>Job Scheduling</h1>
+     <template is="dom-bind">
+  <iron-ajax url="../json/user.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
+  <iron-data-table id="job-scheduling-table" items="[[users.results]]">
+    <data-table-column name="Queue#" width="30px" flex="0">
+      <template>
+        <div class="index">[[index]]</div>
+      </template>
+    </data-table-column>
+    <data-table-column name="Product" flex="0">
+        <template>[[item.user.name.first]]</template>
+    </data-table-column>
+    <data-table-column name="Order Name">
+      <template>[[item.user.username]]</template>
+    </data-table-column>
+    <data-table-column name="Order Number">
+      <template>[[item.user.dob]]</template>
+    </data-table-column>
+    <data-table-column name="Quantity">
+      <template>[[item.user.location.zip]]</template>
+    </data-table-column>
+    <data-table-column name="Delivery Date">
+      <template>[[item.user.password]]</template>
+    </data-table-column>
+  </iron-data-table>
+</template>
+    </div>
+      <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
-    <vaadin-column-chart id="basic-column" class="chart">
-    <chart-title>Priority Comparision</chart-title>
+   <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority"  item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
+    <vaadin-column-chart id="basic-column">
+    <chart-title>Job Priority Comparision</chart-title>
     <subtitle>Less is better</subtitle>
     <x-axis crosshair="true">
         <categories>Order A, Order B, Order C</categories>
@@ -154,7 +204,7 @@
 </vaadin-column-chart>
       </div>
 
-      <div class="fixed-card card">
+<div class="fixed-card card">
   <vaadin-column-chart id="column-with-negative-values">
     <chart-title>Earnings</chart-title>
     <subtitle>2011 - 2014</subtitle>
@@ -170,38 +220,6 @@
     <data-series name="Net income" data="[[netData]]"></data-series>
   </vaadin-column-chart>
       </div>
-
-      
-    <div class="fixed-card card">
-      <h1>Job Scheduling</h1>
-     <template is="dom-bind">
-  <iron-ajax url="../json/user.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
-  <iron-data-table id="job-scheduling-table" items="[[users.results]]">
-    <data-table-column name="Rank" width="30px" flex="0">
-      <template>
-        <div class="index">[[index]]</div>
-      </template>
-    </data-table-column>
-    <data-table-column name="Customer" width="50px" flex="0">
-      <template>
-        <img src="[[item.user.picture.thumbnail]]">
-      </template>
-    </data-table-column>
-    <data-table-column name="First Name">
-      <template>[[item.user.name.first]]</template>
-    </data-table-column>
-    <data-table-column name="Last Name">
-      <template>[[item.user.name.last]]</template>
-    </data-table-column>
-    <data-table-column name="First Name">
-      <template>[[item.user.name.first]]</template>
-    </data-table-column>
-    <data-table-column name="Delivery Date">
-      <template>[[item.user.email]]</template>
-    </data-table-column>
-  </iron-data-table>
-</template>
-    </div>
     <div class="fixed-card card">
       <h1>Job Queue</h1>
       <sortable-list>
@@ -219,35 +237,67 @@
       is: 'view-plan-scheduling',
       ready: function() {
          Sugar.Date.setLocale('en-GB');
-         let datepicker = this.$$('#delivery-selector');
+         let estdelivery = this.$$('#estimate-delivery');
+         let deliverypicker = this.$$("#delivery-selector");
+         let workdatepicker = this.$$('#workdate-selector');
          // querySelector ==> this.shadowRoot.querySelector('')
-       datepicker.i18n = {
-      week: 'Week',
-      calendar: 'Calendar',
-      clear: 'Clear',
-      today: 'Today',
-      cancel: 'Cancel',
-      firstDayOfWeek: 1,
-      monthNames:
-       'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
-      weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
-      weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
-      formatDate: function(date) {
-        return Sugar.Date.format(date, '{short}');
-      },
-      formatTitle: function(monthName, fullYear) {
-        return monthName + ' ' + fullYear;
-      },
-      parseDate: function(dateString) {
-        let matches = datepicker.i18n.monthNames.filter(function(monthName) {
-          return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
-        });
-        dateString = matches.length === 1 ? matches[0] : dateString;
-        // Parse the date
-        return Sugar.Date.create(dateString);
-      }
-      }
-  },
+          deliverypicker.addEventListener('value-changed', function() {
+            console.log('Selected date: ' + deliverypicker.value);
+            estdelivery.innerHTML = deliverypicker.value.split("-").reverse().join("-");
+           });
+         deliverypicker.i18n = {
+          week: 'Week',
+          calendar: 'Calendar',
+          clear: 'Clear',
+          today: 'Today',
+          cancel: 'Cancel',
+          firstDayOfWeek: 1,
+          monthNames:
+          'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
+          weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
+          weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
+          formatDate: function(date) {
+            return Sugar.Date.format(date, '{short}');
+          },
+          formatTitle: function(monthName, fullYear) {
+            return monthName + ' ' + fullYear;
+          },
+          parseDate: function(dateString) {
+            let matches = datepicker.i18n.monthNames.filter(function(monthName) {
+              return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
+            });
+            dateString = matches.length === 1 ? matches[0] : dateString;
+            // Parse the date
+            return Sugar.Date.create(dateString);
+          }
+        };
+       workdatepicker.i18n = {
+          week: 'Week',
+          calendar: 'Calendar',
+          clear: 'Clear',
+          today: 'Today',
+          cancel: 'Cancel',
+          firstDayOfWeek: 1,
+          monthNames:
+          'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
+          weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
+          weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
+          formatDate: function(date) {
+            return Sugar.Date.format(date, '{short}');
+          },
+          formatTitle: function(monthName, fullYear) {
+            return monthName + ' ' + fullYear;
+          },
+          parseDate: function(dateString) {
+            let matches = datepicker.i18n.monthNames.filter(function(monthName) {
+              return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
+            });
+            dateString = matches.length === 1 ? matches[0] : dateString;
+            // Parse the date
+            return Sugar.Date.create(dateString);
+          }
+        };
+    },
       properties: {
         items: {
           type: Array,
@@ -268,7 +318,33 @@
             ];
           }
         },
-        priority: {
+        product: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'Gear',
+                symbol: 'GR',
+                number: 1
+              },
+              {
+                name: 'C-Clamp',
+                symbol: 'CC',
+                number: 2
+              },
+              {
+                name: 'Steel Table',
+                symbol: 'ST',
+                number: 3
+              },
+              {
+                name: 'Steel Shelves',
+                symbol: 'SS',
+                number: 4
+              }
+            ]
+          }
+        },
+         priority: {
           type: Array,
           value: function () {
             return [{
@@ -315,7 +391,7 @@
       alert("ใส่ข้อมูลก่อนสิ")
     }
     function createOrder() {
-      alert("ยังไม่ได้ต่อ firebase เลยมึง")
+      alert("ยังไม่ได้ต่อ firebase เลย")
     }
   </script>
 </dom-module>
