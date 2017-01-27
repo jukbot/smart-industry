@@ -80,20 +80,21 @@
                 <p>Order workload:</p>
         </div>
       </li>
-      <li>
+    </ul>
           <div class="card">
       <h1>Order Production Workflow</h1>
 <vaadin-date-picker style="width: 300px;" label="Working Date" name="workdate" always-float-label autoValidate
               min="2017-01-01" class="date-selector" id="workdate-selector"></vaadin-date-picker>
 <vaadin-columnrange-chart id="column-range-resource-usage">
-    <chart width="1000" inverted="true"></chart>
-    <chart-title>Order Production Workflow</chart-title>
+    <chart width="1200" inverted="true"></chart>
+    <chart-title>Daily Order Production Workflow</chart-title>
     <x-axis>
         <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
     </x-axis>
     <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
-    <tooltip
-            formatter="function () {return this.series.name +': '+ Highcharts.dateFormat('%H:%M', this.point.low) + ' - ' + Highcharts.dateFormat('%H:%M', this.point.high)}"></tooltip>
+    <tooltip use-html="true"
+             formatter="function () {return this.series.name +': ' + ' Duration ' + Highcharts.dateFormat('%H:%M', this.point.high-this.point.low) + ' hr.'}"></tooltip>
+
     <plot-options>
         <columnrange grouping="false">
             <data-labels enabled="true" inside="true" color="white"
@@ -135,8 +136,8 @@
     </data-series>
 </vaadin-columnrange-chart>
         </div>
-      </li>
-      <li>
+    
+  
  <div class="card">
       <h1>Job Scheduling</h1>
      <template is="dom-bind">
@@ -164,9 +165,7 @@
     </data-table-column>
   </iron-data-table>
 </template>
-    </div>
-      </li>
-    </ul>
+ </div>
     <div class="wrap-card">
     
  
@@ -232,7 +231,7 @@
          // querySelector ==> this.shadowRoot.querySelector('')
           deliverypicker.addEventListener('value-changed', function() {
             console.log('Selected date: ' + deliverypicker.value);
-            estdelivery.innerHTML = deliverypicker.value.split("-").reverse().join("-");
+            estdelivery.innerHTML = deliverypicker.value.split("-").reverse().join("/");
            });
          deliverypicker.i18n = {
           week: 'Week',
