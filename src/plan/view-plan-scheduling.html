@@ -33,7 +33,7 @@
        }
        /* sort queue */
       sortable-list div {
-        background: #ddd;
+        background-color: #ddd;
         display: inline-block;
         height: 100px;
         margin: 10px 10px 0 0;
@@ -62,8 +62,9 @@
      }
 
       #priorityType {
-        color: deeppink;
+        color: deeppink;      
       }
+
     </style>
     <firebase-auth user="{{user}}"></firebase-auth>
     <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
@@ -78,7 +79,7 @@
             <div class="form-wrapper">
               <paper-input label="Order Number" name="order-no" id="orderNumber" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
               <paper-input label="Order Name" name="order-name" id="orderName" required always-float-label auto-validate></paper-input>
-              <paper-input label="Amount" name="order-quantity" id="quantity" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="quantity" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
               <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="$key" required always-float-label></vaadin-combo-box>
               <vaadin-combo-box label="Size" name="size" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="cycle" required always-float-label></vaadin-combo-box>
               <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
@@ -95,8 +96,8 @@
                 <vaadin-upload id="rawDemo"></vaadin-upload>
               </template>
                <div class="button-group">
-               <paper-button raised class="fancy" on-tap="createOrder">Create</paper-button>
-                <paper-button raised class="smart" on-tap="calculateOrder">Calculate</paper-button>
+               <paper-button raised class="smart" on-tap="createOrder">Create</paper-button>
+                <paper-button raised class="fancy" on-tap="calculateOrder">Calculate</paper-button>
                </div>
             </div>
           </form>
@@ -106,14 +107,15 @@
         <div class="card order-info">
                 <h1>Order Information</h1>
                 <p>Job Priority Type: <span id="priorityType">[[factoryStandard.priority]]</span></p>
-                <p>Product Name: </p>
+                <p>Product Name: [[productName]]</p>
                 <p>Real Quantity: </p>
                 <p>Production Start: <span id="productionStart">[[proRef]]</span></p>
                 <p>Processes Used: <span id="usedProcess">[[productQuery]]</span></p>
                 <p>Machine Used: <span id="usedMachine"></span></p>
-                <p>Estimate Delivery: <span id="estimateDelivery"></span></p>
+                <p>Expect Delivery: <span id="estimateDelivery"></span></p>
                 <p>Estimate Duration: <span id="estimateDuration"></span></p>
                 <p>Queue number:</p>
+                <p>Waiting Queue:</p>
                 <p>Order workload:</p>
         </div>
       </li>
@@ -206,7 +208,7 @@
     <div class="wrap-card">
       <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
-   <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
+   <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
     <vaadin-column-chart id="basic-column">
     <chart-title>Job Priority Comparision</chart-title>
     <subtitle>Less is better</subtitle>
