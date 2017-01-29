@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/sortable-list/sortable-list.html">
 <link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
 <dom-module id="view-plan-scheduling">
  <template>
     <style include="shared-styles">
@@ -47,35 +47,72 @@
         width: auto;
       } 
 
+      .order-info p {
+        margin: 10px 0;
+      }
+
+     .button-group {
+       margin-top: 16px;
+     }
+     .button-group paper-button {
+       display: inline-flex;
+       width: 49.5%;
+       align-items: center; 
+       justify-content: center; 
+     }
+
+      #priorityType {
+        color: deeppink;
+      }
     </style>
+    <firebase-auth user="{{user}}"></firebase-auth>
+    <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
+    <firebase-query id="factoryQuery" path="/factory/standard" data="{{factoryStandard}}"></firebase-query>
+    <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
+    <firebase-document path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <ul class="app-grid">
       <li>
         <div class="card">
           <h1>Create Order</h1>
           <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
-              <paper-input label="Order Number" name="order-no" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
-              <paper-input label="Order Name" name="order-name" required always-float-label auto-validate></paper-input>
-              <paper-input label="Amount" name="amount" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
-              <vaadin-combo-box label="Product" name="product" items="[[product]]" id="product-select" name="product"  item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
+              <paper-input label="Order Number" name="order-no" id="orderNumber" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <paper-input label="Order Name" name="order-name" id="orderName" required always-float-label auto-validate></paper-input>
+              <paper-input label="Amount" name="order-quantity" id="quantity" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="$key" required always-float-label></vaadin-combo-box>
+              <vaadin-combo-box label="Size" name="size" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="cycle" required always-float-label></vaadin-combo-box>
+              <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
+                <template>
+                <paper-checkbox>Checkbox</paper-checkbox>
+                <b>[[item.name]], <sub>[[item.effi]]</sub>[[item.type]]</b><br>
+                array index: [[index]], selected: [[selected]], focused: [[focused]]
+                </template>
+              </vaadin-combo-box>
               <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
-              min="2017-01-01" class="date-selector" id="delivery-selector"></vaadin-date-picker>
+              min="2017-01-01" class="date-selector" id="deliverySelector"></vaadin-date-picker>
                 <br>
-                <paper-button raised class="fancy" onclick="createOrder()">Create</paper-button>
-                <paper-button raised class="smart" onclick="calculateOrder()">Calculate</paper-button>
+              <template is="dom-bind">
+                <vaadin-upload id="rawDemo"></vaadin-upload>
+              </template>
+               <div class="button-group">
+               <paper-button raised class="fancy" on-tap="createOrder">Create</paper-button>
+                <paper-button raised class="smart" on-tap="calculateOrder">Calculate</paper-button>
+               </div>
             </div>
           </form>
         </div>
       </li>
       <li>
-        <div class="card">
-          <h1>Order Information</h1>
-                <p>Job Priority Type: FCFS <span id="priority-type"></span></p>
-                <p>Production Start: <span id="production-start"></span></p>
-                <p>Production Finish: <span id="production-finish"></span></p>
-                <p>Estimate Delivery: <span id="estimate-delivery"></span></p>
-                <p>Estimate Duration: <span id="estimate-duration"></span></p>
-                <p>Machines Used: <span id="used-machine"></span></p>
+        <div class="card order-info">
+                <h1>Order Information</h1>
+                <p>Job Priority Type: <span id="priorityType">[[factoryStandard.priority]]</span></p>
+                <p>Product Name: </p>
+                <p>Real Quantity: </p>
+                <p>Production Start: <span id="productionStart">[[proRef]]</span></p>
+                <p>Processes Used: <span id="usedProcess">[[productQuery]]</span></p>
+                <p>Machine Used: <span id="usedMachine"></span></p>
+                <p>Estimate Delivery: <span id="estimateDelivery"></span></p>
+                <p>Estimate Duration: <span id="estimateDuration"></span></p>
                 <p>Queue number:</p>
                 <p>Order workload:</p>
         </div>
@@ -167,11 +204,9 @@
 </template>
  </div>
     <div class="wrap-card">
-    
- 
       <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
-   <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority"  item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
+   <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
     <vaadin-column-chart id="basic-column">
     <chart-title>Job Priority Comparision</chart-title>
     <subtitle>Less is better</subtitle>
@@ -223,11 +258,55 @@
   <script>
     Polymer({
       is: 'view-plan-scheduling',
+      calculateOrder: function() {
+        alert("Disabled!!")
+      },
+      createOrder: function() {
+        alert("No data")
+      },
+      selectProduct: function() {
+          let today = new Date();
+          let dd = today.getDate();
+          let mm = today.getMonth() + 1; //January is 0!
+          let yyyy = today.getFullYear();
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        today = dd + '/' + mm + '/' + yyyy;
+           const productpicker = this.$.productSelector;
+           const sizePicker = this.$.sizeSelector;
+           const usedProcess =  this.$.usedProcess;
+           let productionStart = this.$.productionStart;
+           productpicker.addEventListener('value-changed', function() {
+              let key = productpicker.value;   
+              usedProcess.innerHTML = this.$.productQuery.ref(key + '/process/').$val;
+              productionStart = today;
+              console.log('Select product: ' + key);
+              console.log(productpicker.items);
+              if(product != null) {
+                 const selectProductQuery = this.$.productQuery.ref.child(key);
+                 console.log(selectProductQuery.ref('/size/'));
+                 //selectProductQuery.on('value', snap => console.log(snap.val()));
+                 sizePicker.items = null;
+                 if(sizePicker.items != null) {
+                   sizePicker.disabled = false;
+                 }
+              }
+           });
+      },
+      selectSize: function() {
+        let size = this.$.sizeSelector.value;
+        console.log('Select size:' + size);
+      },
       ready: function() {
          Sugar.Date.setLocale('en-GB');
          let estdelivery = this.$$('#estimate-delivery');
-         let deliverypicker = this.$$("#delivery-selector");
+         let deliverypicker = this.$$("#deliverySelector");
          let workdatepicker = this.$$('#workdate-selector');
+         
          // querySelector ==> this.shadowRoot.querySelector('')
           deliverypicker.addEventListener('value-changed', function() {
             console.log('Selected date: ' + deliverypicker.value);
@@ -251,7 +330,7 @@
             return monthName + ' ' + fullYear;
           },
           parseDate: function(dateString) {
-            let matches = datepicker.i18n.monthNames.filter(function(monthName) {
+            let matches = deliverypicker.i18n.monthNames.filter(function(monthName) {
               return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
             });
             dateString = matches.length === 1 ? matches[0] : dateString;
@@ -259,6 +338,7 @@
             return Sugar.Date.create(dateString);
           }
         };
+       workdatepicker.value = "29/01/2017";
        workdatepicker.i18n = {
           week: 'Week',
           calendar: 'Calendar',
@@ -277,7 +357,7 @@
             return monthName + ' ' + fullYear;
           },
           parseDate: function(dateString) {
-            let matches = datepicker.i18n.monthNames.filter(function(monthName) {
+            let matches = workdatepicker.i18n.monthNames.filter(function(monthName) {
               return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
             });
             dateString = matches.length === 1 ? matches[0] : dateString;
@@ -285,6 +365,9 @@
             return Sugar.Date.create(dateString);
           }
         };
+    },
+    dataChanged: function (newData, oldData) {
+          console.info("Data has been loaded!!");
     },
       properties: {
         items: {
@@ -332,6 +415,22 @@
             ]
           }
         },
+        machineItems: {
+          type: Object,
+          notify: true,
+          observer: 'dataChanged'
+        },
+        productItems: {
+          type: Object,
+          notify: true,
+          observer: 'dataChanged'
+        },
+        productQuery: {
+          type: Object
+        },
+        factoryStandard: {
+          type: Object
+        },
          priority: {
           type: Array,
           value: function () {
@@ -375,11 +474,5 @@
           }
       }
     });
-    function calculateOrder() {
-      alert("ใส่ข้อมูลก่อนสิ")
-    }
-    function createOrder() {
-      alert("ยังไม่ได้ต่อ firebase เลย")
-    }
   </script>
 </dom-module>

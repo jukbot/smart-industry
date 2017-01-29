@@ -104,11 +104,66 @@
         left: 0;
       }
 
-       @media (max-width: 640px) {
-      :host {
-        --app-grid-columns: 1;
+      .animated {
+        -webkit-animation-duration: 0.25s;
+        animation-duration: 0.25s;
+        -webkit-animation-fill-mode: both;
+        animation-fill-mode: both;
       }
-      }  
+
+          @-webkit-keyframes zoomIn {
+      from {
+        opacity: 0;
+        -webkit-transform: scale3d(.3, .3, .3);
+        transform: scale3d(.3, .3, .3);
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes zoomIn {
+      from {
+        opacity: 0;
+        -webkit-transform: scale3d(.3, .3, .3);
+        transform: scale3d(.3, .3, .3);
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    .zoomIn {
+      -webkit-animation-name: zoomIn;
+      animation-name: zoomIn;
+    }
+
+
+       @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+       @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 4;
+        }
+      }
+
 
       .wrap-card {
         display: -webkit-flex;
@@ -143,27 +198,6 @@
       .fixed-card {
         width: 100%;
       }
-
-      .stitched {
-        height: auto;
-        min-height: 400px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        margin: 10px 10px 10px 10px;
-        padding: 16px;
-        color: #757575;
-        border: 4px dashed #757575;
-        border-radius: 2px;
-        flex-direction: column;
-        text-decoration: none;
-        position: relative;
-        box-sizing: border-box;
-     }
-     .machine { min-height: 400px; }
-     .machine h1 { text-align: center; }
-     .new-machine { margin: 0; padding: 20px 40px; font-size: 1.25rem; }
 
       .circle {
         display: inline-block;
@@ -245,6 +279,25 @@
       paper-button.candy:hover {
         background: lightcoral;
       }  
+
+      paper-button.chilli {
+        background: firebrick;
+        color: white;
+      }
+
+      paper-button.chilli:hover {
+        background: red;
+      }
+
+      paper-button.water {
+        background: dodgerblue;
+        color: white;
+      }
+
+      paper-button.water:hover {
+        background: deepskyblue;
+      }
+      
     </style>
   </template>
 </dom-module>

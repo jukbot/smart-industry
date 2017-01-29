@@ -38,12 +38,30 @@
 
   </style>
 <div class="card">
-<paper-stepper id="stepper" vertical="[[vertical]]">
+ <!-- <paper-stepper id="stepper" vertical="[[vertical]]">
   <paper-step label="step 1"></paper-step>
   <paper-step label="step 2"></paper-step>
   <paper-step label="step 3"></paper-step>
   <paper-step label="step 4"></paper-step>
-</paper-stepper>
+</paper-stepper> -->
+<h1>Factory Initialize</h1>
+ <form is="iron-form" id="create-order-form" method="post">
+            <div class="form-wrapper">
+              <paper-input label="Acceptable Waste" name="accept-waste" id="acceptWaste" value="0.02" required always-float-label auto-validate></paper-input>
+              <vaadin-combo-box label="Priority Type" items="[[priority]]" id="priority-select" value="FCFS" name="priority" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
+              <paper-input label="Operation start" name="op-start" on-tap="toggleTimeDialog" id="opStart" required always-float-label auto-validate></paper-input>
+              <paper-input label="Operation end" name="op-start" on-tap="toggleTimeDialog" id="opEnd" required always-float-label auto-validate></paper-input>
+              <paper-dialog id="setupFactoryDialog" class="paper-time-picker-dialog" alwaysOnTop="true"
+            role="dialog">
+          <paper-time-picker id="timePicker" time="[[time]]"></paper-time-picker>
+          <div class="buttons">
+            <paper-button dialog-dismiss>Cancel</paper-button>
+            <paper-button on-tap="setTime" dialog-confirm>OK</paper-button>
+          </div>
+        </paper-dialog>
+                <paper-button raised class="fancy" on-tap="saveValue">Save</paper-button>
+            </div>
+          </form>
 </div>
  <div class="card">
   <template is="dom-bind">
@@ -72,20 +90,57 @@
     <ul class="app-grid" has-aspect-ratio>
     <li>
      <div class="card">
-      <h1>BLANK CARD</h1>
+      <h1>Customer Setup</h1>
     </li>
     <li>
      <div class="card">
-      <h1>BLANK CARD</h1>
+      <h1>Customer Report</h1>
     </div>
     </li>
   </ul>
   </template>
-
-
   <script>
     Polymer({
       is: 'view-setup-customer',
+       toggleTimeDialog: function (e) {
+        this.$.setupFactoryDialog.open();
+         let target = e.currentTarget;
+         let id = target.id;
+         console.log(id);
+      },
+      setTime: function (e) {
+           let timepicker = this.$.timePicker;
+           let time = timepicker.time;
+           this.$.id.value = time;
+      },
+      properties: {
+          priority: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'First Come First Serve',
+                symbol: 'FCFS',
+                number: 1
+              },
+              {
+                name: 'Shortage Processing Time',
+                symbol: 'SPT',
+                number: 2
+              },
+              {
+                name: 'Earliest Due Date',
+                symbol: 'EDD',
+                number: 3
+              },
+              {
+                name: 'Longest Processing Time',
+                symbol: 'LPT',
+                number: 4
+              }
+            ]
+          }
+        },
+      }
     });
   </script>
 </dom-module>

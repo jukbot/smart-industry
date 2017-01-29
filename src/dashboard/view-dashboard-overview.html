@@ -7,13 +7,31 @@
     <style include="shared-styles">
       :host {
         display: block;
+        --app-grid-columns: 3;
+        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+        --app-grid-item-height: 50%;
       }
     </style>
 
-    <div class="card">
-      <div class="circle">1</div>
-      <h1>Overview</h1>
-      </div>
+    <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1>In-Production</h1>
+          N/A
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>Order Status</h1>
+          N/A
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>Stock Available</h1>
+          N/A</div>
+      </li>
+    </ul>
   </template>
 
   <script>

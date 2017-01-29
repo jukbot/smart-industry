@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
-<dom-module id="view-plan-production">
+<dom-module id="view-plan-maintenance">
  <template>
     <style include="shared-styles">
        :host {
@@ -19,25 +19,12 @@
       
     </style>
    <div class="fixed-card card">
-  <vaadin-column-chart id="column-with-negative-values">
-    <chart-title>Monthly Order Plan</chart-title>
-    <subtitle>2017</subtitle>
-    <x-axis>
-      <categories>Jan, Feb, March, April, May, June, July, Aug, Sep, Oct, Nov, Dec</categories>
-    </x-axis>
-    <y-axis>
-      <chart-title>Orders</chart-title>
-    </y-axis>
-    <tooltip point-format="{series.name}: {point.y} Orders"></tooltip>
-    <data-series name="C-Clamp" data="[[revenueSeries]]"></data-series>
-    <data-series name="Gear" data="[[expensesData]]"></data-series>
-    <data-series name="Steel-Shelf" data="[[netData]]"></data-series>
-  </vaadin-column-chart>
+<h1>Maintenance</h1>
       </div>
   </template>
   <script>
     Polymer({
-      is: 'view-plan-production',
+      is: 'view-plan-maintenance',
       properties: {
         product: {
           type: Array,
@@ -68,17 +55,17 @@
          revenueSeries: {
             type: Array,
             notify: true,
-            value: [ 15, 28, 32, 23, 21 ]
+            value: [ 1.5, 1.8, 1.2, 2.3 ]
           },
           expensesData: {
             type: Array,
             notify: true,
-            value: [ 12, 11, 13, 9, 15 ]
+            value: [ 1.2, 1.1, 1.3, 0.9 ]
           },
           netData: {
             type: Array,
             notify: true,
-            value: [ 23, 7, 3, 14, 12 ]
+            value: [ -0.3, 0.7, -0.1, 1.4 ]
           }
       }
     });

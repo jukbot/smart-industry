@@ -3,6 +3,7 @@
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <!-- iron module -->
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
@@ -34,164 +35,205 @@
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-time-picker/paper-time-picker.html">
 <!-- neon module -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party module -->
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
-<link rel="import" href="../bower_components/vaadin-charts/vaadin-charts.html"/>
+<link rel="import" href="../bower_components/vaadin-charts/vaadin-charts.html">
+<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../bower_components/sortable-list/sortable-list.html">
 <link rel="import" href="../bower_components/paper-stepper/paper-stepper.html">
 <link rel="import" href="../bower_components/paper-stepper/paper-step.html">
-
+<!-- Firebase module -->
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="shared-styles.html">
-
 <dom-module id="main-app">
   <template>
     <style include="shared-styles">
-        :host {
-          --app-primary-color: #CDDC39;
-          --app-secondary-color: black;
-          display: block;
-          --paper-menu-button-dropdown: {
-             margin-top: 50px;
-          }
-          --paper-menu-button-content: {
-             z-index: 1;
-          }
+       :host {
+        --app-primary-color: #CDDC39;
+        --app-secondary-color: black;
+        display: block;
+        --paper-menu-button-dropdown: {
+          margin-top: 50px;
         }
-        
-        paper-button {
-          display: block;
-          background: #4285f4;
-          color: #fff;
+        --paper-menu-button-content: {
+          z-index: 1;
         }
-        
-        paper-menu {
-          display: block;
-        }
-        
-        paper-menu-button {
-          margin: auto;
-        }
-        
-        paper-tabs {
-          --paper-tabs-selection-bar-color: var(--app-primary-color);
-          height: 100%;
-        }
-        
-        paper-tab {
-          --paper-tab-ink: #2d3238;
-          text-transform: uppercase;
-        }
-        
-        [hidden] {
-          display: none !important;
-        }
-        
-        paper-icon-button+[main-title] {
-          margin: 32px;
-        }
-        
-        paper-dropdown-menu {
+      }
+      
+      paper-button {
+        display: block;
+        background: #4285f4;
+        color: #fff;
+      }
+      
+      paper-menu {
+        display: block;
+      }
+      
+      paper-menu-button {
+        margin: auto;
+      }
+      
+      paper-tabs {
+        --paper-tabs-selection-bar-color: var(--app-primary-color);
+        height: 100%;
+      }
+      
+      paper-tab {
+        --paper-tab-ink: #2d3238;
+        text-transform: uppercase;
+      }
+      
+      [hidden] {
+        display: none !important;
+      }
+      
+      paper-icon-button+[main-title] {
+        margin: 32px;
+      }
+      
+      paper-dropdown-menu {
         width: 200px;
         margin-right: 20px;
-        }
-
-        iron-icon {
+      }
+      
+      iron-icon {
         color: #333333;
-        }
+      }
+      
+      .menu-item {
+        min-width: 120px;
+      }
+      
+      .drawer-list {
+        margin: 0 20px;
+      }
+      
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+        line-height: 40px;
+      }
+      
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
+      
+      .main-header {
+        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
+      }
+      
+      .main-title {
+        font-size: 2.25rem;
+        text-align: center;
+      }
+      
+      .page-title {
+        text-transform: uppercase;
+      }
+      
+      .logo {
+        margin: 0 auto;
+        padding: 30px 0 15px 0;
+        width: 50%;
+        height: auto;
+        display: block;
+      }
 
-        .menu-item {
-          min-width: 120px;
-        }
-        
-        .drawer-list {
-          margin: 0 20px;
-        }
-        
-        .drawer-list a {
-          display: block;
-          padding: 0 16px;
-          text-decoration: none;
-          color: var(--app-secondary-color);
-          line-height: 40px;
-        }
-        
-        .drawer-list a.iron-selected {
-          color: black;
-          font-weight: bold;
-        }
-        
-        .main-header {
-          box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
-        }
-        
-        .main-title {
-          font-size: 2.25rem;
-          text-align: center;
-        }
-        
-        .page-title {
-          text-transform: uppercase;
-        }
-        
-        .logo {
-          margin: 0 auto;
-          padding: 30px 0 15px 0;
-          width: 50%;
-          height: auto;
-          display: block;
-        }
-  
-      </style>
+      .account-btn {
+        margin: 0;
+        padding: 4px;
+      }
+      .display-name {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .center-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 5em;
+      }
+      .login-btn, .logout-btn {
+        margin: 0;
+        display: inline-block;
+        text-align: center;
+      }
+
+      div.sidebar-menu {
+         border-bottom: 1px solid #d6d6d6;
+         margin: 10px;
+      }
+    </style>
     <!-- app-firebase -->
-    <firebase-app
-  auth-domain="smart-mes.firebaseapp.com"
-  database-url="https://smart-mes.firebaseio.com"
-  api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
-  storage-bucket="smart-mes.appspot.com"
-  messaging-sender-id="253401775445">
-</firebase-app>
-<firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError">
-</firebase-auth>
-    <!-- app-location binds to the app's URL -->
-    <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}" active="{{pageActive}}"></app-route>
-    <!-- wrapper -->
-    <app-drawer-layout fullbleed>
-      <!-- Navbar content -->
-      <app-drawer id="drawer" swipe-open>
-        <img class="logo" src="../images/logo/industrial.svg" alt="logo">
-        <div class="main-title">SMART MES</div>
-        <!-- sidebar hightlighter -->
-        <iron-selector selected="{{routeData.page}}" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
-        <template is="dom-repeat" items="{{menus}}">
-                <a name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
-         </template> 
-        </iron-selector>
-      </app-drawer>
-
-           <!-- start header layout -->
-      <app-header-layout fullbleed has-scrolling-region>
-        <app-header class="app-head" fixed>
-          <app-toolbar> <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button> 
-              <div class="page-title" main-title>{{routeData.page}}</div>
-            <paper-menu-button vertical-align="top" horizontal-align="right">
-              <paper-icon-button icon="account-circle" class="dropdown-trigger" alt="menu"></paper-icon-button>
-              <paper-menu class="dropdown-content">
-                <iron-selector selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="overview">
-                  <paper-item class="menu-item" name="help">
-                    <paper-icon-button icon="help" alt="help"></paper-icon-button> Help</paper-item>
-                  <paper-item class="menu-item" name="settings">
-                    <paper-icon-button icon="settings" alt="settings"></paper-icon-button> Settings</paper-item>
-                  <paper-item class="menu-item" name="logout">
-                    <paper-icon-button icon="exit-to-app" alt="logout"></paper-icon-button> Logout</paper-item>
-                </iron-selector>
-              </paper-menu>
-            </paper-menu-button>
-          </app-toolbar>
-        </app-header>   
-     </app-header-layout>
+    <firebase-app auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
+      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445">
+      </firebase-app>
+      <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
+      </firebase-auth>
+      <firebase-document path="/metadata" data="{{metadata}}"></firebase-document>
+      <!-- app-location binds to the app's URL -->
+      <app-location route="{{route}}"></app-location>
+      <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}" active="{{pageActive}}"></app-route>
+      <!-- wrapper -->
+      <app-drawer-layout fullbleed>
+        <!-- Navbar content -->
+        <app-drawer id="drawer" swipe-open>
+          <img class="logo" src="../images/logo/industrial.svg" alt="logo">
+          <div class="main-title">SMART MES</div>
+          <!-- sidebar hightlighter -->
+          <iron-selector selected="{{routeData.page}}" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
+            <template is="dom-repeat" items="{{menus}}">
+              <a name="{{item.view}}" href="/{{item.url}}">
+                <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
+            </template>
+          </iron-selector>
+          <div class="sidebar-menu"></div>
+          <div class="center-box">
+          <paper-button raised class="chilli login-btn" on-tap="login" hidden$="[[user]]">Sign in</paper-button>
+          <paper-button raised class="chilli logout-btn" on-tap="logout" hidden$="[[!user]]">Sign out</paper-button>
+          </div>
+            <template is="dom-if" if="[[user]]">
+            <p>Welcome:[[user.displayName]]</p>
+            <p>Provider: [[user.providerId]]</p>
+            <p>E-mail: [[user.email]]</p>
+            <p>E-mail verify: [[user.emailVerified]]</p>
+            <p>UID: [[user.uid]]</p>
+            <p>Anonymous: [[user.isAnonymous]]</p>
+            <p>App: [[metadata.appName]]</p>
+            <p>Develop by: [[metadata.appDeveloper]]</p>
+          </template>
+        </app-drawer>
+        <!-- start header layout -->
+        <app-header-layout fullbleed has-scrolling-region>
+          <app-header class="app-head" fixed>
+            <app-toolbar>
+              <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button>
+              <div class="page-title" main-title>{{routeData.page}}</div> 
+              <paper-menu-button vertical-align="top" horizontal-align="right">
+                <paper-icon-button icon="account-circle" class="account-btn dropdown-trigger" alt="menu"></paper-icon-button>
+                <paper-menu class="dropdown-content">
+                  <iron-selector selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="overview">
+                    <paper-item class="menu-item" name="help">
+                      <paper-icon-button icon="help" alt="help"></paper-icon-button> Help</paper-item>
+                    <paper-item class="menu-item" name="settings">
+                      <paper-icon-button icon="settings" alt="settings"></paper-icon-button> Settings</paper-item>
+                    <paper-item class="menu-item" name="logout">
+                      <paper-icon-button icon="exit-to-app" alt="logout"></paper-icon-button> Logout</paper-item>
+                  </iron-selector>
+                </paper-menu>
+              </paper-menu-button>
+              <template is="dom-if" if="[[user]]" hidden$="[[!user]]"><p class="display-name">[[user.displayName]]</p></template>
+            </app-toolbar>
+          </app-header>
+        </app-header-layout>
         <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
         <!-- view content area -->
         <iron-pages selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404" role="main">
@@ -203,21 +245,55 @@
           <view-verifying name="verifying" route="{{routeTail}}"></view-verifying>
           <view-404 name="404"></view-404>
         </iron-pages>
-    </app-drawer-layout>
+      </app-drawer-layout>
   </template>
   <script>
     Polymer({
       is: 'main-app',
-      ready: function() {
-        this.async(function() {
+      ready: function () {
+        this.async(function () {
           // If the path is blank, redirect to /
           if (!this.route.path) {
             this.set('route.path', '/dashboard');
           }
         });
       },
-
+      login: function () {
+        const promise = this.$.auth.signInWithPopup();
+        promise.then(function () {
+          console.info("Login successful");
+        }).catch(error => {
+          // Handle Errors here.
+          let errorCode = error.code;
+          let errorMessage = error.message;
+          alert("Error code: " + errorCode + " | " + errorMessage);
+          console.error("Error code: " + errorCode + " | " + errorMessage);
+        });
+      },
+      logout: function () {
+        this.$.auth.signOut().then(function () {
+          console.info("Logout successful");
+        }).catch(error => {
+          let errorCode = error.code;
+          let errorMessage = error.message;
+          alert("Error code: " + errorCode + " | " + errorMessage);
+          console.error("Error code: " + errorCode + " | " + errorMessage);
+        });
+      },
+      handleError: function(e) {
+        alert("Authenticate error: " + e);
+        console.error("Authenticate error:" + e);
+      },
       properties: {
+        user: {
+          type: Object
+        },
+        statusKnown: {
+          type: Object
+        },
+        metadata: {
+          type: Object
+        },
         page: {
           type: String,
           reflectToAttribute: true,
@@ -227,51 +303,52 @@
 
         menus: {
           type: Array,
-          value: function() {
+          value: function () {
             return [{
-              url: 'dashboard/dashboard-overview',
-              title: 'DASHBOARD',
-              view: 'dashboard',
-              icon: 'icons:dashboard'
-            },
-            { 
-              url: 'setup/setup-customer',
-              title: 'SETUP',
-              view: 'setup',
-              icon: 'icons:build'
-            },
-            {
-              url: 'planning/plan-scheduling',
-              title: 'PLAN',
-              view: 'planning',
-              icon: 'icons:view-module'
-            },
-           {
-              url: 'controlling/',
-              title: 'CONTROL',
-              view: 'controlling',
-              icon: 'image:tune'
-            },
-            {
-              url: 'tracking/track-production',
-              title: 'TRACK',
-              view: 'tracking',
-              icon: 'icons:track-changes'
-            },
-            {
-              url: 'verifying',
-              title: 'VERIFY',
-              view: 'verifying',
-              icon: 'icons:verified-user'
-            }];
+                url: 'dashboard/dashboard-overview',
+                title: 'DASHBOARD',
+                view: 'dashboard',
+                icon: 'icons:dashboard'
+              },
+              {
+                url: 'setup/setup-customer',
+                title: 'SETUP',
+                view: 'setup',
+                icon: 'icons:build'
+              },
+              {
+                url: 'planning/plan-scheduling',
+                title: 'PLAN',
+                view: 'planning',
+                icon: 'icons:view-module'
+              },
+              {
+                url: 'controlling/',
+                title: 'CONTROL',
+                view: 'controlling',
+                icon: 'image:tune'
+              },
+              {
+                url: 'tracking/track-production',
+                title: 'TRACK',
+                view: 'tracking',
+                icon: 'icons:track-changes'
+              },
+              {
+                url: 'verifying',
+                title: 'VERIFY',
+                view: 'verifying',
+                icon: 'icons:verified-user'
+              }
+            ];
           }
         },
-      },    
-          
+      },
+
       wideLayout: {
-          type: Boolean,
-          value: false,
-          observer: 'onLayoutChange',
+        type: Boolean,
+        value: false,
+        observer: 'onLayoutChange',
       },
 
       observers: [
@@ -290,12 +367,12 @@
           this.$.drawer.close();
         }
         if (!page) {
-            this.set('route.path', '/dashboard');
-            return;
+          this.set('route.path', '/dashboard');
+          return;
         }
-          this.page = page || 'dashboard';
+        this.page = page || 'dashboard';
       },
-      
+
       _pageChanged: function (page) {
         // Load page import on demand. Show 404 page if fails
         const section = page.split("-")[0];
