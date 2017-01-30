@@ -34,6 +34,11 @@
     <data-series name="Steel-Shelf" data="[[netData]]"></data-series>
   </vaadin-column-chart>
       </div>
+      <div class="fixed-card card">
+        <h1>Production Building Block</h1>
+         <vaadin-combo-box style="width:300px;" label="Product" name="product" items="[[product]]" id="productSelector" value="All" item-label-path="name" item-value-path="[[symbol]]" required always-float-label></vaadin-combo-box>
+        <img style="height:auto; width:100%;" src="buildingblock.png" alt="">
+      </div>
   </template>
   <script>
     Polymer({

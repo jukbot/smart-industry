@@ -1,6 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+
 <dom-module id="view-setup-customer">
 <template>
 <style include="shared-styles">
@@ -30,6 +32,12 @@
        margin-left: 10px;
       }
 
+      paper-material {
+        background-color: white;
+        margin: 24px;
+        padding: 16px;
+      }
+
      @media (max-width: 640px) {
       :host {
         --app-grid-columns: 1;
@@ -38,26 +46,27 @@
 
      #frozen {
     height: 300px;
-  }
+    }
 
   </style>
  <div class="card">
-<vaadin-grid id="frozen" frozen-columns="2">
-  <table>
-    <colgroup>
-      <col name="firstName"/>
-      <col name="lastName"/>
-      <col name="email" width="250"/>
-      <col name="address.phone" hidable/>
-      <col name="address.street" hidable/>
-      <col name="address.city" hidable/>
-      <col name="address.state" hidable/>
-      <col name="address.zip" hidable/>
-      <col name="address.country" hidable hidden/>
-    </colgroup>
-  </table>
-</vaadin-grid>
+ <iron-ajax
+      auto
+      url="employees.json"
+      handle-as="json"
+      last-response="{{_employees}}"></iron-ajax>
+      <vaadin-combo-box label="Filter by first name" items="[[_names]]" value="{{_filterValue}}"></vaadin-combo-box>
+      <vaadin-grid id="grid">
+        <table>
+          <colgroup>
+            <col name="firstName">
+            <col name="lastName">
+            <col name="email">
+          </colgroup>
+        </table>
+      </vaadin-grid>
 </div>
+
     <ul class="app-grid" has-aspect-ratio>
     <li>
      <div class="card">
@@ -73,27 +82,38 @@
   <script>
     Polymer({
       is: 'view-setup-customer',
-    });
-     (function() {
-    HTMLImports.whenReady(function() {
-      var grid = document.querySelector('#frozen');
-
-      getJSON('https://demo.vaadin.com/demo-data/1.0/people', function(json) {
-        grid.items = json.result;
-      });
-
-    });
-
-    function getJSON(url, callback) {
-      var xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
-          callback(JSON.parse(xhr.responseText));
+      properties: {
+        _names: {
+          type: Array,
+          value: function() {
+            return ['Aiden', 'Jace', 'Michael', 'Sarah'];
+          }
+        },
+        _employees: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
+        _filterValue: {
+          type: String,
+          value: ''
         }
-      };
-      xhr.open('GET', url, true);
-      xhr.send();
-    }
-  })();
+      },
+
+      observers: [
+        '_applyFilter(_filterValue, _employees)'
+      ],
+
+      _applyFilter: function(filterValue, employees) {
+        this.$.grid.items = employees.filter(function(item) {
+          if (filterValue) {
+            return (item.firstName.toLowerCase()).indexOf(filterValue.toLowerCase()) > -1;
+          } else {
+            return true;
+          }
+        }.bind(this));
+      }
+    });
   </script>
 </dom-module>

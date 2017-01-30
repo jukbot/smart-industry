@@ -82,7 +82,7 @@
     <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
     <firebase-query id="factoryQuery" path="/factory/standard" data="{{factoryStandard}}"></firebase-query>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
-    <firebase-document path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+    <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -90,12 +90,12 @@
           <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
               <paper-input label="Order Number" name="order-no" id="orderNumber" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
-              <paper-input label="Order Name" name="order-name" id="orderName" required always-float-label auto-validate></paper-input>
+              <paper-input label="Customer Name" name="order-name" id="orderName" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="quantity" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
-              <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="{{process}}" required always-float-label></vaadin-combo-box>
-              <vaadin-combo-box label="Size" name="size" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="cycle" required always-float-label></vaadin-combo-box>
-              <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
-                <template>
+              <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="process" required always-float-label></vaadin-combo-box>
+              <vaadin-combo-box label="Size" name="size"  items="[[productSize]]"  id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="cycle" required always-float-label></vaadin-combo-box>
+             <!-- <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
+              -->  <template>
                 <paper-checkbox>Checkbox</paper-checkbox>
                 <b>[[item.name]], <sub>[[item.effi]]</sub>[[item.type]]</b><br>
                 array index: [[index]], selected: [[selected]], focused: [[focused]]
@@ -119,24 +119,24 @@
         <div class="card order-info">
                 <h1>Order Information</h1>
                 <p>Job Priority Type: <span id="priorityType">[[factoryStandard.priority]]</span></p>
-                <p>Product Name: [[productName]]</p>
-                <p>Actual Quantity: </p>
+                <p>Product Name: <span id="product"></span></p>
+                <p>Actual Quantity: <span id="actualQuantity"></span></p>
                 <p>Production Start: <span id="productionStart">[[proRef]]</span></p>
                 <p>Processes Used: <span id="usedProcess">[[productQuery]]</span></p>
                 <p>Machine Used: <span id="usedMachine"></span></p>
                 <p>Expect Delivery: <span id="estimateDelivery"></span></p>
                 <p>Estimate Duration: <span id="estimateDuration"></span></p>
-                <p>Queue number:</p>
-                <p>Waiting Queue:</p>
-                <p>Order Workload:</p>
-                <p>Recommended:</p>
+                <p>Queue number: <span id="estimateDuration"></span></p>
+                <p>Waiting Queue: <span id="estimateDuration"></span></p>
+                <p>Order Workload: <span id="estimateDuration"></span></p>
+                <p>Raw Material Required: <span id="rawMaterial"></span></p>
         </div>
       </li>
     </ul>
           <div class="card">
       <h1>Order Production Workflow</h1>
 <vaadin-date-picker style="width: 300px;" label="Working Date" name="workdate" always-float-label autoValidate
-              min="2017-01-01" class="date-selector" id="workdate-selector"></vaadin-date-picker>
+              min="2017-01-01" class="date-selector" id="workdateSelector"></vaadin-date-picker>
 <vaadin-columnrange-chart id="column-range-resource-usage">
     <chart width="1200" inverted="true"></chart>
     <chart-title>Daily Order Production Workflow</chart-title>
@@ -291,20 +291,22 @@
           mm = '0' + mm
         }
         today = dd + '/' + mm + '/' + yyyy;
-           const productpicker = this.$.productSelector;
+           let productpicker = this.$.productSelector;
            const sizePicker = this.$.sizeSelector;
            const usedProcess =  this.$.usedProcess;
            let productionStart = this.$.productionStart;
+           let product = this.$.product;
            productpicker.addEventListener('value-changed', function() {
               let key = productpicker.value;   
              // usedProcess.innerHTML = this.$.productQuery.ref(key + '/process/').$val;
               productionStart = today;
-              console.log(productpicker.items);
-              if(product != null) {
-                 const selectProductQuery = this.$.productQuery.ref.child(key);
-                 console.log(selectProductQuery.ref('/size/'));
+              console.log("PRODUCT" + key);
+              if(key != null) {
+              //  const selectProductQuery = this.$.productQuery.ref.child(key);
+                 //console.log(selectProductQuery.ref('/size/'));
                  //selectProductQuery.on('value', snap => console.log(snap.val()));
-                 sizePicker.items = null;
+                 //sizePicker.items = null;
+                product.innerHTML = key;
                  if(sizePicker.items != null) {
                    sizePicker.disabled = false;
                  }
@@ -324,10 +326,14 @@
       },
       ready: function() {
          Sugar.Date.setLocale('en-GB');
-         let estdelivery = this.$$('#estimate-delivery');
+         let estdelivery = this.$$('#estimateDelivery');
          let deliverypicker = this.$$("#deliverySelector");
-         let workdatepicker = this.$$('#workdate-selector');
-         
+         let workdatepicker = this.$$('#workdateSelector');
+         let actualquantity = this.$$('#actualQuantity');
+         let quantity = this.$$('#quantity');
+         quantity.addEventListener('value-changed', function() {
+           actualquantity.innerHTML = quantity.value;
+         });
          // querySelector ==> this.shadowRoot.querySelector('')
           deliverypicker.addEventListener('value-changed', function() {
             console.log('Selected date: ' + deliverypicker.value);
@@ -424,6 +430,22 @@
                 symbol: 'SS',
                 number: 4
               }
+            ]
+          }
+        },
+        productSize: {
+          type: Array,
+          value: function () {
+            return [{
+                name: '50 cm',
+                cycle: '50',
+                number: 1
+              },
+              {
+                name: '80 cm',
+                cycle: '80',
+                number: 2
+              },
             ]
           }
         },

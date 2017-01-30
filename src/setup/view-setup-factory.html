@@ -17,26 +17,22 @@
       list-style: none;
     }
 
-      #customer-table data-table-row {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      opacity: 1;
-      cursor: pointer;
-      border-bottom: 1px solid #e3e3e3;
-      }
-
-      #customer-table .index {
-       margin-left: 10px;
-      }
-
      @media (max-width: 640px) {
       :host {
         --app-grid-columns: 1;
       }
     }
 
+    .factory-rule p {
+      margin: 12px 0;
+    }
+
   </style>
+    <firebase-auth user="{{user}}"></firebase-auth>
+    <firebase-query path="/factory/standard" data="{{factoryData}}"></firebase-query>
+    <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+    <firebase-document id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
+    <firebase-document id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
 <ul class="app-grid">
     <li>
      <div class="card">
@@ -44,9 +40,20 @@
       <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
               <paper-input label="Acceptable Waste" name="accept-waste" id="acceptWaste" value="0.02" required always-float-label auto-validate></paper-input>
-              <vaadin-combo-box label="Priority Type" items="[[priority]]" id="priority-select" value="FCFS" name="priority" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
-              <paper-input label="Operation start" name="op-start" on-tap="toggleTimeDialog" id="opStart" required always-float-label auto-validate></paper-input>
-              <paper-input label="Operation end" name="op-start" on-tap="toggleTimeDialog" id="opEnd" required always-float-label auto-validate></paper-input>
+              <vaadin-combo-box label="Priority Type" items="[[priority]]" id="priorityTypePicker" value="FCFS" name="priority" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
+              <paper-input label="Operation start" name="op-start" on-tap="toggleTimeDialog" id="opStart" value="8:00" required always-float-label auto-validate></paper-input>
+              <paper-input label="Operation end" name="op-end" on-tap="toggleTimeDialog" id="opEnd" value="17:00" required always-float-label auto-validate></paper-input>
+               <paper-input label="Over Time start" name="oะ-start" on-tap="toggleTimeDialog" id="oะStart" value="8:00" required always-float-label auto-validate></paper-input>
+              <paper-input label="Over Time end" name="oะ-end" on-tap="toggleTimeDialog" id="oะEnd" value="17:00" required always-float-label auto-validate></paper-input>
+              <div>
+              <paper-checkbox>Sun</paper-checkbox>
+              <paper-checkbox checked>Mon</paper-checkbox>
+              <paper-checkbox checked>Tue</paper-checkbox>
+              <paper-checkbox checked>Wed</paper-checkbox>
+              <paper-checkbox checked>Thu</paper-checkbox>
+              <paper-checkbox checked>Fri</paper-checkbox>
+              <paper-checkbox>Sat</paper-checkbox>
+              </div><br>
               <paper-dialog id="setupFactoryDialog" class="paper-time-picker-dialog" alwaysOnTop="true"
             role="dialog">
           <paper-time-picker id="timePicker" time="[[time]]"></paper-time-picker>
@@ -55,19 +62,27 @@
             <paper-button on-tap="setTime" dialog-confirm>OK</paper-button>
           </div>
         </paper-dialog>
-                <paper-button raised class="fancy" on-tap="saveValue">Save</paper-button>
+                <paper-button raised class="fancy" on-tap="saveValue">Save</paper-button>  <paper-button raised class="water" on-tap="resetValue">Restore</paper-button>
             </div>
           </form>
     </li>
     <li>
-     <div class="card">
-      <h1>Factory Report</h1>
- <paper-stepper id="stepper" vertical="[[vertical]]">
+     <div class="card factory-rule">
+      <h1>Factory Global Rules</h1>
+ <!-- <paper-stepper id="stepper" vertical="[[vertical]]">
   <paper-step label="step 1"></paper-step>
   <paper-step label="step 2"></paper-step>
   <paper-step label="step 3"></paper-step>
   <paper-step label="step 4"></paper-step>
-</paper-stepper> 
+</paper-stepper> -->
+<p>Priority Rule: <span id="priorityType">[[factoryStandard.priority]]</span></p>
+<p>Operation Start: <span>[[factoryOperation.op_start]]</span></p>
+<p>Operation End: <span>[[factoryOperation.op_end]]</span></p>
+<p>OT Start: <span>[[factoryOperation.ot_start]]</span></p>
+<p>OT End: <spa>[[factoryOperation.ot_start]]</span></p>
+<p>Operation Days: <span>[[factoryOperation.weekly]]</span></p>
+<p>User Workload: <span>[[factoryPerformance.uw]] %</span></p>
+<p>Acceptable Waste: <span>[[factoryPerformance.aw]]</span></p>
     </div>
     </li>
   </ul>
@@ -81,10 +96,16 @@
          let id = target.id;
          console.log(id);
       },
-      setTime: function (e) {
+      setTime: function () {
            let timepicker = this.$.timePicker;
            let time = timepicker.time;
            this.$.id.value = time;
+      },
+      saveValue: function () {
+          let prio = this.$.priorityTypePicker.value;
+          this.$.factoryStandard.path = null;
+          this.$.factoryStandard.data = {priority: prio};
+          this.$.factoryStandrad.save('/factory/standard');
       },
       properties: {
           priority: {
@@ -112,6 +133,18 @@
               }
             ]
           }
+        },
+        factoryStandard: {
+          type: Object
+        },
+       factoryOperation: {
+          type: Object
+        },
+       factoryPerformance: {
+          type: Object
+        },
+        factoryData: {
+          type: Object
         },
       }
     });
