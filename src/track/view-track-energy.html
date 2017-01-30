@@ -1,0 +1,105 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-track-energy">
+<template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-columns: 2;
+        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+        --app-grid-item-height: 50%;
+      }
+      
+      ul {
+        padding: 0;
+        list-style: none;
+      }
+    </style>
+ <div class="card">
+      <vaadin-gauge-chart id="vu-meter">
+        <chart plot-border-width="1" height="200" plot-background-color="#FFF"></chart>
+        <chart-title>Machine Input Voltage (V.)</chart-title>
+        <pane start-angle="-45" end-angle="45" center='["25%", "145%"]' size="300" background="null"></pane>
+        <pane start-angle="-45" end-angle="45" center='["50%", "145%"]' size="300" background="null"></pane>
+        <pane start-angle="-45" end-angle="45" center='["75%", "145%"]' size="300" background="null"></pane>
+        <y-axis min="0" max="300" minor-tick-position="outside" tick-position="outside" pane="0">
+          <labels rotation="auto" distance="20"></labels>
+          <plot-bands from="240" to="300" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="0"></plot-bands>
+          <chart-title y="-40">Phase 1</chart-title>
+        </y-axis>
+        <y-axis min="0" max="300" minor-tick-position="outside" tick-position="outside" pane="1">
+          <labels rotation="auto" distance="20"></labels>
+          <plot-bands from="240" to="300" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="1"></plot-bands>
+          <chart-title y="-40">Phase 2</chart-title>
+        </y-axis>
+        <y-axis min="0" max="300" minor-tick-position="outside" tick-position="outside" pane="2">
+          <labels rotation="auto" distance="20"></labels>
+          <plot-bands from="240" to="300" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="2"></plot-bands>
+          <chart-title y="-40">Phase 3</chart-title>
+        </y-axis>
+        <plot-options>
+          <gauge>
+            <data-labels enabled="false"></data-labels>
+            <dial radius="100%"></dial>
+          </gauge>
+        </plot-options>
+        <tooltip enabled="false"></tooltip>
+        <data-series y-axis="0">
+          <data>0</data>
+        </data-series>
+        <data-series y-axis="1">
+          <data>0</data>
+        </data-series>
+        <data-series y-axis="2">
+          <data>0</data>
+        </data-series>
+      </vaadin-gauge-chart>
+    </div>
+        <div class="card">
+      <vaadin-gauge-chart id="vu-meter">
+        <chart plot-border-width="1" height="200" plot-background-color="#FFF"></chart>
+        <chart-title>Machine Current Ampere (A.)</chart-title>
+        <pane start-angle="-45" end-angle="45" center='["25%", "145%"]' size="300" background="null"></pane>
+        <pane start-angle="-45" end-angle="45" center='["50%", "145%"]' size="300" background="null"></pane>
+        <pane start-angle="-45" end-angle="45" center='["75%", "145%"]' size="300" background="null"></pane>
+        <y-axis min="0" max="30" minor-tick-position="outside" tick-position="outside" pane="0">
+          <labels rotation="auto" distance="20"></labels>
+          <plot-bands from="24" to="30" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="0"></plot-bands>
+          <chart-title y="-40">Phase 1</chart-title>
+        </y-axis>
+        <y-axis min="0" max="30" minor-tick-position="outside" tick-position="outside" pane="1">
+          <labels rotation="auto" distance="20"></labels>
+          <plot-bands from="24" to="300" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="1"></plot-bands>
+          <chart-title y="-40">Phase 2</chart-title>
+        </y-axis>
+        <y-axis min="0" max="30" minor-tick-position="outside" tick-position="outside" pane="2">
+          <labels rotation="auto" distance="20"></labels>
+          <plot-bands from="24" to="30" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="2"></plot-bands>
+          <chart-title y="-40">Phase 3</chart-title>
+        </y-axis>
+        <plot-options>
+          <gauge>
+            <data-labels enabled="false"></data-labels>
+            <dial radius="100%"></dial>
+          </gauge>
+        </plot-options>
+        <tooltip enabled="false"></tooltip>
+        <data-series y-axis="0">
+          <data>0</data>
+        </data-series>
+        <data-series y-axis="1">
+          <data>0</data>
+        </data-series>
+        <data-series y-axis="2">
+          <data>0</data>
+        </data-series>
+      </vaadin-gauge-chart>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-track-energy',
+    });
+  </script>
+</dom-module>

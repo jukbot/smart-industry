@@ -36,56 +36,27 @@
       }
     }
 
+     #frozen {
+    height: 300px;
+  }
+
   </style>
-<div class="card">
- <!-- <paper-stepper id="stepper" vertical="[[vertical]]">
-  <paper-step label="step 1"></paper-step>
-  <paper-step label="step 2"></paper-step>
-  <paper-step label="step 3"></paper-step>
-  <paper-step label="step 4"></paper-step>
-</paper-stepper> -->
-<h1>Factory Initialize</h1>
- <form is="iron-form" id="create-order-form" method="post">
-            <div class="form-wrapper">
-              <paper-input label="Acceptable Waste" name="accept-waste" id="acceptWaste" value="0.02" required always-float-label auto-validate></paper-input>
-              <vaadin-combo-box label="Priority Type" items="[[priority]]" id="priority-select" value="FCFS" name="priority" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
-              <paper-input label="Operation start" name="op-start" on-tap="toggleTimeDialog" id="opStart" required always-float-label auto-validate></paper-input>
-              <paper-input label="Operation end" name="op-start" on-tap="toggleTimeDialog" id="opEnd" required always-float-label auto-validate></paper-input>
-              <paper-dialog id="setupFactoryDialog" class="paper-time-picker-dialog" alwaysOnTop="true"
-            role="dialog">
-          <paper-time-picker id="timePicker" time="[[time]]"></paper-time-picker>
-          <div class="buttons">
-            <paper-button dialog-dismiss>Cancel</paper-button>
-            <paper-button on-tap="setTime" dialog-confirm>OK</paper-button>
-          </div>
-        </paper-dialog>
-                <paper-button raised class="fancy" on-tap="saveValue">Save</paper-button>
-            </div>
-          </form>
-</div>
  <div class="card">
-  <template is="dom-bind">
-  <iron-ajax url="https://smart-mes.firebaseio.com/customer/list.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
-  <iron-data-table id="customer-table" items="[[users.0]]">
-    <data-table-column name="Index" width="30px" flex="0">
-      <template>
-        <div class="index">[[index]]</div>
-      </template>
-    </data-table-column>
-    <data-table-column name="First Name">
-      <template>[[item.user.name.first]]</template>
-    </data-table-column>
-    <data-table-column name="Last Name">
-      <template>[[item.user.name.last]]</template>
-    </data-table-column>
-    <data-table-column name="Mobile">
-      <template>[[item.user.cell]]</template>
-    </data-table-column>
-     <data-table-column name="E-mail">
-      <template>[[item.user.email]]</template>
-    </data-table-column>
-  </iron-data-table>
-</template>
+<vaadin-grid id="frozen" frozen-columns="2">
+  <table>
+    <colgroup>
+      <col name="firstName"/>
+      <col name="lastName"/>
+      <col name="email" width="250"/>
+      <col name="address.phone" hidable/>
+      <col name="address.street" hidable/>
+      <col name="address.city" hidable/>
+      <col name="address.state" hidable/>
+      <col name="address.zip" hidable/>
+      <col name="address.country" hidable hidden/>
+    </colgroup>
+  </table>
+</vaadin-grid>
 </div>
     <ul class="app-grid" has-aspect-ratio>
     <li>
@@ -102,45 +73,27 @@
   <script>
     Polymer({
       is: 'view-setup-customer',
-       toggleTimeDialog: function (e) {
-        this.$.setupFactoryDialog.open();
-         let target = e.currentTarget;
-         let id = target.id;
-         console.log(id);
-      },
-      setTime: function (e) {
-           let timepicker = this.$.timePicker;
-           let time = timepicker.time;
-           this.$.id.value = time;
-      },
-      properties: {
-          priority: {
-          type: Array,
-          value: function () {
-            return [{
-                name: 'First Come First Serve',
-                symbol: 'FCFS',
-                number: 1
-              },
-              {
-                name: 'Shortage Processing Time',
-                symbol: 'SPT',
-                number: 2
-              },
-              {
-                name: 'Earliest Due Date',
-                symbol: 'EDD',
-                number: 3
-              },
-              {
-                name: 'Longest Processing Time',
-                symbol: 'LPT',
-                number: 4
-              }
-            ]
-          }
-        },
-      }
     });
+     (function() {
+    HTMLImports.whenReady(function() {
+      var grid = document.querySelector('#frozen');
+
+      getJSON('https://demo.vaadin.com/demo-data/1.0/people', function(json) {
+        grid.items = json.result;
+      });
+
+    });
+
+    function getJSON(url, callback) {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+          callback(JSON.parse(xhr.responseText));
+        }
+      };
+      xhr.open('GET', url, true);
+      xhr.send();
+    }
+  })();
   </script>
 </dom-module>

@@ -22,11 +22,12 @@
             </paper-tabs>
           </app-toolbar>
         </app-header>
-             <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
+          <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
           <view-setup-customer name="setup-customer" route="{{subrouteTail}}"></view-setup-customer>
+          <view-setup-factory name="setup-factory" route="{{subrouteTail}"></view-setup-factory>
+          <view-setup-inventory name="setup-inventory" route="{{subrouteTail}}"></view-setup-inventory>
           <view-setup-machine name="setup-machine" route="{{subrouteTail}}"></view-setup-machine>
           <view-setup-worker name="setup-worker" route="{{subrouteTail}"></view-setup-worker>
-          <view-setup-inventory name="setup-inventory" route="{{subrouteTail}}"></view-setup-inventory>
          </iron-pages> 
         </app-header-layout>  
   </template>
@@ -46,31 +47,31 @@
                 'section': 'setup',
                 'title': 'CUSTOMER',
                 'view': 'setup-customer',
-                'icon': 'help'
+                'icon': 'vaadin-icons:user'
               },
               {
                 'section': 'setup',
-                'title': 'MACHINE',
-                'view': 'setup-machine',
-                'icon': 'help'
-              },
-              {
-                'section': 'setup',
-                'title': 'WORKER',
-                'view': 'setup-worker',
-                'icon': 'assignment-ind'
-              },
-              {
-                'section': 'setup',
-                'title': 'PRODUCT',
-                'view': 'setup-product',
-                'icon': 'help'
+                'title': 'FACTORY',
+                'view': 'setup-factory',
+                'icon': 'vaadin-icons:factory'
               },
               {
                 'section': 'setup',
                 'title': 'INVENTORY',
                 'view': 'setup-inventory',
-                'icon': 'help'
+                'icon': 'vaadin-icons:stock'
+              },
+              {
+                'section': 'setup',
+                'title': 'MACHINE',
+                'view': 'setup-machine',
+                'icon': 'vaadin-icons:automation'
+              },
+              {
+                'section': 'setup',
+                'title': 'WORKER',
+                'view': 'setup-worker',
+                'icon': 'vaadin-icons:clipboard-user'
               }
             ];
           }
@@ -84,8 +85,8 @@
       _routeTabsChanged: function (tabs) {
    //     if (!tabs) {
    //         this.set('route.path', '/setup-customer');
-    //        return;
-     //   }
+  //        return;
+  //   }
         this.tabs = tabs || 'setup-customer';
         
         const section = tabs.split("-")[0];

@@ -61,6 +61,18 @@
        justify-content: center; 
      }
 
+     .item-box {
+      height: 10em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center
+     }
+
+     .item {
+       margin:0;
+       width: 50%;
+       height: 50%;
+     }
       #priorityType {
         color: deeppink;      
       }
@@ -80,7 +92,7 @@
               <paper-input label="Order Number" name="order-no" id="orderNumber" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
               <paper-input label="Order Name" name="order-name" id="orderName" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="quantity" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
-              <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="$key" required always-float-label></vaadin-combo-box>
+              <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="{{process}}" required always-float-label></vaadin-combo-box>
               <vaadin-combo-box label="Size" name="size" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="cycle" required always-float-label></vaadin-combo-box>
               <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
                 <template>
@@ -93,7 +105,7 @@
               min="2017-01-01" class="date-selector" id="deliverySelector"></vaadin-date-picker>
                 <br>
               <template is="dom-bind">
-                <vaadin-upload id="rawDemo"></vaadin-upload>
+                <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
               </template>
                <div class="button-group">
                <paper-button raised class="smart" on-tap="createOrder">Create</paper-button>
@@ -108,7 +120,7 @@
                 <h1>Order Information</h1>
                 <p>Job Priority Type: <span id="priorityType">[[factoryStandard.priority]]</span></p>
                 <p>Product Name: [[productName]]</p>
-                <p>Real Quantity: </p>
+                <p>Actual Quantity: </p>
                 <p>Production Start: <span id="productionStart">[[proRef]]</span></p>
                 <p>Processes Used: <span id="usedProcess">[[productQuery]]</span></p>
                 <p>Machine Used: <span id="usedMachine"></span></p>
@@ -116,7 +128,8 @@
                 <p>Estimate Duration: <span id="estimateDuration"></span></p>
                 <p>Queue number:</p>
                 <p>Waiting Queue:</p>
-                <p>Order workload:</p>
+                <p>Order Workload:</p>
+                <p>Recommended:</p>
         </div>
       </li>
     </ul>
@@ -249,8 +262,8 @@
       <h1>Job Queue</h1>
       <sortable-list>
         <template is="dom-repeat" items="[[items]]">
-          <div>
-            <img src$="[[item]]"/>
+          <div class="item-box">
+            <iron-icon class="item" icon$="[[item]]"></iron-icon>
           </div>
         </template>
       </sortable-list>
@@ -284,9 +297,8 @@
            let productionStart = this.$.productionStart;
            productpicker.addEventListener('value-changed', function() {
               let key = productpicker.value;   
-              usedProcess.innerHTML = this.$.productQuery.ref(key + '/process/').$val;
+             // usedProcess.innerHTML = this.$.productQuery.ref(key + '/process/').$val;
               productionStart = today;
-              console.log('Select product: ' + key);
               console.log(productpicker.items);
               if(product != null) {
                  const selectProductQuery = this.$.productQuery.ref.child(key);
@@ -302,6 +314,13 @@
       selectSize: function() {
         let size = this.$.sizeSelector.value;
         console.log('Select size:' + size);
+      },
+      uploadFile: function() {
+         var upload = this.$.uploadOrder;
+        upload.addEventListener('upload-request', e => {
+            e.preventDefault();
+            e.detail.xhr.send(e.detail.file);
+         });
       },
       ready: function() {
          Sugar.Date.setLocale('en-GB');
@@ -340,7 +359,6 @@
             return Sugar.Date.create(dateString);
           }
         };
-       workdatepicker.value = "29/01/2017";
        workdatepicker.i18n = {
           week: 'Week',
           calendar: 'Calendar',
@@ -376,18 +394,10 @@
           type: Array,
           value: function () {
             return [
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9dog2_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9tuqui_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9panda_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9elephant_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9lion_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9foxy_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9kitty_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9ratty_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9froggy_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9ducky_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9batty_trans.png",
-              "https://cdn2.iconfinder.com/data/icons/cutecritters/t9penguino_trans.png"
+              "vaadin-icons:package",
+              "vaadin-icons:cog",
+              "vaadin-icons:package",
+              "vaadin-icons:package"
             ];
           }
         },

@@ -1,8 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
-<dom-module id="view-plan-maintenance">
-  <template>
+<dom-module id="view-control-machine">
+<template>
     <style include="shared-styles">
        :host {
         display: block;
@@ -79,22 +79,17 @@
             <p>Machine Status: <span class="machine-status">[[machineItem.status]]</span></p>
             </div>
              <div class="button-group">
-            <paper-button raised class="water" value="[[machineItem.$key]]" on-tap="viewMachineReport">VIEW DETAIL</paper-button>
+            <paper-button raised class="smart" value="[[machineItem.$key]]" on-tap="setMachine">SETTINGS</paper-button>
+            <paper-button raised class="chilli" value="[[machineItem.$key]]" on-tap="poweroffMachine" style="margin-bottom: 10px;">POWER OFF</paper-button>
             </div>
           </div>
         </li>
       </template>
     </ul>
   </template>
-  <script>
+<script>
     Polymer({
-      is: 'view-plan-maintenance',
-      ready: function () {
-     
-      },
-      viewMachineReport: function () {
-         alert("No machine information");
-      },
+      is: 'view-control-machine',
       properties: {
         machineItems: {
           type: Object

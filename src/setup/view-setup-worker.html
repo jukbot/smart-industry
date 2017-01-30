@@ -21,40 +21,33 @@
       border-bottom: 1px solid #e3e3e3;
       }
 
-      #worker-table .index {
-       color: red;
-       margin-left: 10px;
-      }
-
-      paper-button.fancy {
-        background: indigo;
-        color: white;
-      }
-      
-      paper-button.fancy:hover {
-        background: purple;
-      }
-
      @media (max-width: 640px) {
       :host {
         --app-grid-columns: 1;
       }
     }
-
+     .button-group {
+       margin-top: auto;
+     }
+     .button-group paper-button {
+       display: inline-flex;
+       width: 49.5%;
+       align-items: center; 
+       justify-content: center; 
+     }
   </style>
    <div class="card">
      <h1>Add Worker</h1>
 <paper-input label="First name" always-float-label></paper-input>
 <paper-input label="Last name" always-float-label></paper-input>
-<paper-input label="E-mail" always-float-label></paper-input>
+<paper-input label="E-mail" type="email" always-float-label><iron-icon icon="mail" prefix></iron-icon> <div suffix>@gmail.com</div>  
+<paper-icon-button suffix onclick="clearInput()" icon="clear" alt="clear" title="clear"></paper-icon-button></paper-input>
 <paper-input label="Position" always-float-label></paper-input>
-<paper-input label="username" always-float-label id="inputWithButton">
-  <iron-icon icon="mail" prefix></iron-icon>
-  <div suffix>@gmail.com</div>
-  <paper-icon-button suffix onclick="clearInput()" icon="clear" alt="clear" title="clear">
-  </paper-icon-button>
-</paper-input>
-<paper-button raised class="fancy" onclick="addOrder()">Add</paper-button>
+<paper-input label="Username" always-float-label id="inputWithButton"></paper-input>
+<div class="button-group">
+<paper-button raised class="fancy" onclick="addWorker()">Add</paper-button>
+<paper-button raised class="smart" onclick="clear()">Clear</paper-button>
+</div>
 </div>
  <div class="card">
        <template is="dom-bind">

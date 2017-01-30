@@ -21,6 +21,7 @@
 <link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
 <link rel="import" href="../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../bower_components/iron-icons/notification-icons.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 <!-- paper module -->
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
@@ -36,15 +37,15 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-time-picker/paper-time-picker.html">
+<link rel="import" href="../bower_components/paper-stepper/paper-stepper.html">
+<link rel="import" href="../bower_components/paper-stepper/paper-step.html">
 <!-- neon module -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party module -->
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
 <link rel="import" href="../bower_components/vaadin-charts/vaadin-charts.html">
-<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../bower_components/sortable-list/sortable-list.html">
-<link rel="import" href="../bower_components/paper-stepper/paper-stepper.html">
-<link rel="import" href="../bower_components/paper-stepper/paper-step.html">
+
 <!-- Firebase module -->
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="shared-styles.html">
@@ -200,7 +201,8 @@
           <paper-button raised class="chilli login-btn" on-tap="login" hidden$="[[user]]">Sign in</paper-button>
           <paper-button raised class="chilli logout-btn" on-tap="logout" hidden$="[[!user]]">Sign out</paper-button>
           </div>
-            <template is="dom-if" if="[[user]]">
+           <!-- DEBUG USER Authenticate
+           <template is="dom-if" if="[[user]]">
             <p>Welcome:[[user.displayName]]</p>
             <p>Provider: [[user.providerId]]</p>
             <p>E-mail: [[user.email]]</p>
@@ -209,7 +211,7 @@
             <p>Anonymous: [[user.isAnonymous]]</p>
             <p>App: [[metadata.appName]]</p>
             <p>Develop by: [[metadata.appDeveloper]]</p>
-          </template>
+          </template> -->
         </app-drawer>
         <!-- start header layout -->
         <app-header-layout fullbleed has-scrolling-region>
@@ -308,37 +310,37 @@
                 url: 'dashboard/dashboard-overview',
                 title: 'DASHBOARD',
                 view: 'dashboard',
-                icon: 'icons:dashboard'
+                icon: 'vaadin-icons:dashboard'
               },
               {
                 url: 'setup/setup-customer',
                 title: 'SETUP',
                 view: 'setup',
-                icon: 'icons:build'
+                icon: 'vaadin-icons:cogs'
               },
               {
                 url: 'planning/plan-scheduling',
                 title: 'PLAN',
                 view: 'planning',
-                icon: 'icons:view-module'
+                icon: 'vaadin-icons:calendar-clock'
               },
               {
                 url: 'controlling/',
                 title: 'CONTROL',
                 view: 'controlling',
-                icon: 'image:tune'
+                icon: 'vaadin-icons:sliders'
               },
               {
                 url: 'tracking/track-production',
                 title: 'TRACK',
                 view: 'tracking',
-                icon: 'icons:track-changes'
+                icon: 'vaadin-icons:timer'
               },
               {
                 url: 'verifying',
                 title: 'VERIFY',
                 view: 'verifying',
-                icon: 'icons:verified-user'
+                icon: 'vaadin-icons:user-check'
               }
             ];
           }
@@ -377,7 +379,6 @@
         // Load page import on demand. Show 404 page if fails
         const section = page.split("-")[0];
         var resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
-        console.log("Main: " + resolvedPageUrl);
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
 

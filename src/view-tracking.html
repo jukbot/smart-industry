@@ -25,7 +25,8 @@
           <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
           <view-track-production name="track-production" route="{{subrouteTail}}"></view-track-production>
           <view-track-machine name="track-machine" route="{{subrouteTail}}"></view-track-machine>
-          <view-track-stock name="track-stock" route="{{subrouteTail}}"></view-track-stock>
+          <view-track-inventory name="track-inventory" route="{{subrouteTail}}"></view-track-inventory>
+          <view-track-energy name="track-energy" route="{{subrouteTail}}"></view-track-energy>
           <view-404 name="404"></view-404>
          </iron-pages> 
         </app-header-layout>  
@@ -46,19 +47,25 @@
                 'section': 'tracking',
                 'title': 'PRODUCTION',
                 'view': 'track-production',
-                'icon': 'help'
+                'icon': 'vaadin-icons:progressbar'
               },
               {
                 'section': 'tracking',
                 'title': 'MACHINE',
                 'view': 'track-machine',
-                'icon': 'help'
+                'icon': 'vaadin-icons:automation'
               },
               {
                 'section': 'tracking',
-                'title': 'STOCK',
-                'view': 'track-stock',
-                'icon': 'help'
+                'title': 'INVENTORY',
+                'view': 'track-inventory',
+                'icon': 'vaadin-icons:stock'
+              },
+              {
+                'section': 'tracking',
+                'title': 'ENERGY',
+                'view': 'track-energy',
+                'icon': 'vaadin-icons:bolt'
               }
             ];
           }

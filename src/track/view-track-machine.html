@@ -11,218 +11,95 @@
         --app-grid-item-height: 50%;
       }
       
+      ul {
+        padding: 0;
+        list-style: none;
+      }
+      
+       @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+       @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 4;
+        }
+      }
+
+      .machine-dialog {
+        width: 35%;
+        padding: 10px;
+      }
+     .machine { min-height: 330px; height: auto; }
+     .machine h1 { text-align: center; }
+     .new-machine { margin: 0; padding: 20px 40px; font-size: 1.25rem; }
+     .machine p {
+        margin: 12px 0;
+      }
+     .machine-info-group {
+       margin-bottom: auto;
+     }
+     .button-group {
+       margin-top: auto;
+     }
+     .button-group paper-button {
+       display: flex;
+       align-items: center; 
+       justify-content: center; 
+     }
+     paper-dialog .buttons {
+       padding-top: 20px !important;
+     }
+     
     </style>
+    <firebase-auth user="{{user}}"></firebase-auth>
+    <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
     <ul class="app-grid">
-      <li>
-        <div class="card">
-          <h1>Tracking</h1>
-          N/A
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <h1>Monitoring A</h1>
-          N/A
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <h1>Monitoring B</h1>
-          N/A</div>
-      </li>
+      <template is="dom-repeat" items="{{machineItems}}" as="machineItem">
+        <li>  
+          <div class="card machine">
+            <div class="machine-info-group">
+            <h1 class="name">[[machineItem.name]]</h1>
+            <p>Machine Type: [[machineItem.type]]</p>
+            <p>Current Efficiency: [[machineItem.effi]] &#37;</p>
+            <p>Installed date: [[machineItem.install]]</p>
+            <p>Machine Status: <span class="machine-status">[[machineItem.status]]</span></p>
+            </div>
+             <div class="button-group">
+            <paper-button raised class="candy" value="[[machineItem.$key]]" on-tap="viewMachineJob" style="margin-bottom: 10px;">JOB QUEUE</paper-button>
+            </div>
+          </div>
+        </li>
+      </template>
     </ul>
-    <div class="card">
-      <vaadin-gauge-chart id="angular-gauge">
-        <chart plot-background-color="null" plot-background-image="null" plot-border-width="0" plot-shadow="false"></chart>
-        <chart-title>Productivity Speed (units/hr)</chart-title>
-        <pane pane="0" center='["25%", "50%"]' size="250" start-angle="-150" end-angle="150">
-          <background border-width="0" border-radius="109%">
-            <background-color>
-              <linear-gradient x1="0" y1="0" x2="0" y2="1">
-              </linear-gradient>
-              <stops>0, #ffffff</stops>
-              <stops>1, #333333</stops>
-            </background-color>
-          </background>
-          <background border-width="1" border-radius="107%">
-            <background-color>
-              <linear-gradient x1="0" y1="0" x2="0" y2="1">
-              </linear-gradient>
-              <stops>0, #ffffff</stops>
-              <stops>1, #333333</stops>
-            </background-color>
-          </background>
-          <background>
-          </background>
-          <background background-color="#DDD" border-width="0" outer-radius="105%" inner-radius="103%">
-          </background>
-        </pane>
-        <pane pane="1" center='["50%", "50%"]' size="250" start-angle="-150" end-angle="150">
-          <background border-width="0" border-radius="109%">
-            <background-color>
-              <linear-gradient x1="0" y1="0" x2="0" y2="1">
-              </linear-gradient>
-              <stops>0, #ffffff</stops>
-              <stops>1, #333333</stops>
-            </background-color>
-          </background>
-          <background border-width="1" border-radius="107%">
-            <background-color>
-              <linear-gradient x1="0" y1="0" x2="0" y2="1">
-              </linear-gradient>
-              <stops>0, #ffffff</stops>
-              <stops>1, #333333</stops>
-            </background-color>
-          </background>
-          <background>
-          </background>
-          <background background-color="#DDD" border-width="0" outer-radius="105%" inner-radius="103%">
-          </background>
-        </pane>
-        <pane pane="2" center='["75%", "50%"]' size="250" start-angle="-150" end-angle="150">
-          <background border-width="0" border-radius="109%">
-            <background-color>
-              <linear-gradient x1="0" y1="0" x2="0" y2="1">
-              </linear-gradient>
-              <stops>0, #ffffff</stops>
-              <stops>1, #333333</stops>
-            </background-color>
-          </background>
-          <background border-width="1" border-radius="107%">
-            <background-color>
-              <linear-gradient x1="0" y1="0" x2="0" y2="1">
-              </linear-gradient>
-              <stops>0, #ffffff</stops>
-              <stops>1, #333333</stops>
-            </background-color>
-          </background>
-          <background>
-          </background>
-          <background background-color="#DDD" border-width="0" outer-radius="105%" inner-radius="103%">
-          </background>
-        </pane>
-        <y-axis min="0" max="10000" minor-tick-interval="auto" minor-tick-width="1" minor-tick-lenght="10" minor-tick-position="inside"
-          tick-pixel-interval="30" tick-width="2" tick-position="inside" tick-length="10" tick-color="#666" grid-line-width="0"
-          pane="0">
-          <labels step="2" rotation="auto"></labels>
-          <chart-title>Machine A</chart-title>
-          <plot-bands from="0" to="5000" color="#55BF3B" pane="0"></plot-bands>
-          <plot-bands from="5000" to="8000" color="#DDDF0D" pane="0"></plot-bands>
-          <plot-bands from="8000" to="10000" color="#DF5353" pane="0"></plot-bands>
-          </y-axis>
-          <y-axis min="0" max="10000" minor-tick-interval="auto" minor-tick-width="1" minor-tick-lenght="10" minor-tick-position="inside"
-            tick-pixel-interval="30" tick-width="2" tick-position="inside" tick-length="10" tick-color="#666" grid-line-width="0"
-            pane="1">
-            <labels step="2" rotation="auto"></labels>
-            <chart-title>Machine B</chart-title>
-            <plot-bands from="0" to="5000" color="#55BF3B" pane="1"></plot-bands>
-            <plot-bands from="5000" to="8000" color="#DDDF0D" pane="1"></plot-bands>
-            <plot-bands from="8000" to="10000" color="#DF5353" pane="1"></plot-bands>
-            </y-axis>
-            <y-axis min="0" max="10000" minor-tick-interval="auto" minor-tick-width="1" minor-tick-lenght="10" minor-tick-position="inside"
-              tick-pixel-interval="30" tick-width="2" tick-position="inside" tick-length="10" tick-color="#666" grid-line-width="0"
-              pane="2">
-              <labels step="2" rotation="auto"></labels>
-              <chart-title>Machine C</chart-title>
-              <plot-bands from="0" to="5000" color="#55BF3B" pane="2"></plot-bands>
-              <plot-bands from="5000" to="8000" color="#DDDF0D" pane="2"></plot-bands>
-              <plot-bands from="8000" to="10000" color="#DF5353" pane="2"></plot-bands>
-              </y-axis>
-              <data-series name="Speed" y-axis="0">
-                <data>0</data>
-              </data-series>
-              <data-series y-axis="1">
-                <data>0</data>
-              </data-series>
-              <data-series y-axis="2">
-                <data>0</data>
-              </data-series>
-      </vaadin-gauge-chart>
-    </div>
-    <div class="card">
-      <vaadin-gauge-chart id="vu-meter">
-        <chart plot-border-width="1" height="200" plot-background-color="#FFF"></chart>
-        <chart-title>Machine Input Voltage (V.)</chart-title>
-        <pane start-angle="-45" end-angle="45" center='["25%", "145%"]' size="300" background="null"></pane>
-        <pane start-angle="-45" end-angle="45" center='["50%", "145%"]' size="300" background="null"></pane>
-        <pane start-angle="-45" end-angle="45" center='["75%", "145%"]' size="300" background="null"></pane>
-        <y-axis min="0" max="300" minor-tick-position="outside" tick-position="outside" pane="0">
-          <labels rotation="auto" distance="20"></labels>
-          <plot-bands from="240" to="300" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="0"></plot-bands>
-          <chart-title y="-40">Phase 1</chart-title>
-        </y-axis>
-        <y-axis min="0" max="300" minor-tick-position="outside" tick-position="outside" pane="1">
-          <labels rotation="auto" distance="20"></labels>
-          <plot-bands from="240" to="300" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="1"></plot-bands>
-          <chart-title y="-40">Phase 2</chart-title>
-        </y-axis>
-        <y-axis min="0" max="300" minor-tick-position="outside" tick-position="outside" pane="2">
-          <labels rotation="auto" distance="20"></labels>
-          <plot-bands from="240" to="300" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="2"></plot-bands>
-          <chart-title y="-40">Phase 3</chart-title>
-        </y-axis>
-        <plot-options>
-          <gauge>
-            <data-labels enabled="false"></data-labels>
-            <dial radius="100%"></dial>
-          </gauge>
-        </plot-options>
-        <tooltip enabled="false"></tooltip>
-        <data-series y-axis="0">
-          <data>0</data>
-        </data-series>
-        <data-series y-axis="1">
-          <data>0</data>
-        </data-series>
-        <data-series y-axis="2">
-          <data>0</data>
-        </data-series>
-      </vaadin-gauge-chart>
-    </div>
-        <div class="card">
-      <vaadin-gauge-chart id="vu-meter">
-        <chart plot-border-width="1" height="200" plot-background-color="#FFF"></chart>
-        <chart-title>Machine Current Ampere (A.)</chart-title>
-        <pane start-angle="-45" end-angle="45" center='["25%", "145%"]' size="300" background="null"></pane>
-        <pane start-angle="-45" end-angle="45" center='["50%", "145%"]' size="300" background="null"></pane>
-        <pane start-angle="-45" end-angle="45" center='["75%", "145%"]' size="300" background="null"></pane>
-        <y-axis min="0" max="30" minor-tick-position="outside" tick-position="outside" pane="0">
-          <labels rotation="auto" distance="20"></labels>
-          <plot-bands from="24" to="30" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="0"></plot-bands>
-          <chart-title y="-40">Phase 1</chart-title>
-        </y-axis>
-        <y-axis min="0" max="30" minor-tick-position="outside" tick-position="outside" pane="1">
-          <labels rotation="auto" distance="20"></labels>
-          <plot-bands from="24" to="300" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="1"></plot-bands>
-          <chart-title y="-40">Phase 2</chart-title>
-        </y-axis>
-        <y-axis min="0" max="30" minor-tick-position="outside" tick-position="outside" pane="2">
-          <labels rotation="auto" distance="20"></labels>
-          <plot-bands from="24" to="30" color="#DF5353" inner-radius="100%" outer-radius="105%" pane="2"></plot-bands>
-          <chart-title y="-40">Phase 3</chart-title>
-        </y-axis>
-        <plot-options>
-          <gauge>
-            <data-labels enabled="false"></data-labels>
-            <dial radius="100%"></dial>
-          </gauge>
-        </plot-options>
-        <tooltip enabled="false"></tooltip>
-        <data-series y-axis="0">
-          <data>0</data>
-        </data-series>
-        <data-series y-axis="1">
-          <data>0</data>
-        </data-series>
-        <data-series y-axis="2">
-          <data>0</data>
-        </data-series>
-      </vaadin-gauge-chart>
-    </div>
   </template>
-  <script>
+<script>
     Polymer({
       is: 'view-track-machine',
+      ready: function () {
+     
+      },
+      viewMachineJob: function () {
+         alert("No machine jobs information");
+      },
+      properties: {
+        machineItems: {
+          type: Object
+        },
+      }
     });
   </script>
 </dom-module>

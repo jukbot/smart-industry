@@ -15,28 +15,159 @@
         padding: 0;
         list-style: none;
       }
+      .percent {
+        font-size: 7rem;
+        color: #333;
+        text-align: center;
+      }
+
+      .port-status {
+        text-align: center;
+        font-size: 3rem;
+      }
+      .card h1 {
+        font-size: 1.75rem;
+        text-align: center;
+      }
+      .icon {
+        width: 60px;
+        height: 60px;
+      }
     </style>
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1>Efficiency tracking</h1>
-          N/A
+          <h1>Production Efficiency</h1>
+            <p class="percent">100%</p>
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>Availablity tracking</h1>
-          N/A
+          <h1>Machine Availablity</h1>
+          <p class="percent">99%</p>
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>Energy tracking</h1>
-          N/A</div>
+          <h1>Worker Availibility</h1>
+          <p class="percent">95%</p></div>
       </li>
     </ul>
-    <div class="card">
-       No WebUSB device found.
+    <div class="wrap-card">
+    <div class="card fixed-card">
+      <div class="port-status">
+      <iron-icon class="icon" icon="vaadin-icons:warning"></iron-icon>
+      <p>No WebUSB device found.</p> 
+      </div>
+    </div>
+      <div class="card fixed-card">
+      <vaadin-gauge-chart id="angular-gauge">
+        <chart plot-background-color="null" plot-background-image="null" plot-border-width="0" plot-shadow="false"></chart>
+        <chart-title>Productivity Speed (units/hr)</chart-title>
+        <pane pane="0" center='["25%", "50%"]' size="250" start-angle="-150" end-angle="150">
+          <background border-width="0" border-radius="109%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background border-width="1" border-radius="107%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background>
+          </background>
+          <background background-color="#DDD" border-width="0" outer-radius="105%" inner-radius="103%">
+          </background>
+        </pane>
+        <pane pane="1" center='["50%", "50%"]' size="250" start-angle="-150" end-angle="150">
+          <background border-width="0" border-radius="109%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background border-width="1" border-radius="107%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background>
+          </background>
+          <background background-color="#DDD" border-width="0" outer-radius="105%" inner-radius="103%">
+          </background>
+        </pane>
+        <pane pane="2" center='["75%", "50%"]' size="250" start-angle="-150" end-angle="150">
+          <background border-width="0" border-radius="109%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background border-width="1" border-radius="107%">
+            <background-color>
+              <linear-gradient x1="0" y1="0" x2="0" y2="1">
+              </linear-gradient>
+              <stops>0, #ffffff</stops>
+              <stops>1, #333333</stops>
+            </background-color>
+          </background>
+          <background>
+          </background>
+          <background background-color="#DDD" border-width="0" outer-radius="105%" inner-radius="103%">
+          </background>
+        </pane>
+        <y-axis min="0" max="10000" minor-tick-interval="auto" minor-tick-width="1" minor-tick-lenght="10" minor-tick-position="inside"
+          tick-pixel-interval="30" tick-width="2" tick-position="inside" tick-length="10" tick-color="#666" grid-line-width="0"
+          pane="0">
+          <labels step="2" rotation="auto"></labels>
+          <chart-title>Machine A</chart-title>
+          <plot-bands from="0" to="5000" color="#55BF3B" pane="0"></plot-bands>
+          <plot-bands from="5000" to="8000" color="#DDDF0D" pane="0"></plot-bands>
+          <plot-bands from="8000" to="10000" color="#DF5353" pane="0"></plot-bands>
+          </y-axis>
+          <y-axis min="0" max="10000" minor-tick-interval="auto" minor-tick-width="1" minor-tick-lenght="10" minor-tick-position="inside"
+            tick-pixel-interval="30" tick-width="2" tick-position="inside" tick-length="10" tick-color="#666" grid-line-width="0"
+            pane="1">
+            <labels step="2" rotation="auto"></labels>
+            <chart-title>Machine B</chart-title>
+            <plot-bands from="0" to="5000" color="#55BF3B" pane="1"></plot-bands>
+            <plot-bands from="5000" to="8000" color="#DDDF0D" pane="1"></plot-bands>
+            <plot-bands from="8000" to="10000" color="#DF5353" pane="1"></plot-bands>
+            </y-axis>
+            <y-axis min="0" max="10000" minor-tick-interval="auto" minor-tick-width="1" minor-tick-lenght="10" minor-tick-position="inside"
+              tick-pixel-interval="30" tick-width="2" tick-position="inside" tick-length="10" tick-color="#666" grid-line-width="0"
+              pane="2">
+              <labels step="2" rotation="auto"></labels>
+              <chart-title>Machine C</chart-title>
+              <plot-bands from="0" to="5000" color="#55BF3B" pane="2"></plot-bands>
+              <plot-bands from="5000" to="8000" color="#DDDF0D" pane="2"></plot-bands>
+              <plot-bands from="8000" to="10000" color="#DF5353" pane="2"></plot-bands>
+              </y-axis>
+              <data-series name="Speed" y-axis="0">
+                <data>0</data>
+              </data-series>
+              <data-series y-axis="1">
+                <data>0</data>
+              </data-series>
+              <data-series y-axis="2">
+                <data>0</data>
+              </data-series>
+      </vaadin-gauge-chart>
+    </div>
     </div>
   </template>
   <script>

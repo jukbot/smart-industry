@@ -108,9 +108,9 @@
             <div class="machine-info-group">
             <h1 class="name">[[machineItem.name]]</h1>
             <p>Machine Type: [[machineItem.type]]</p>
-            <p>Current Efficiency: [[machineItem.effi]]</p>
+            <p>Current Efficiency: [[machineItem.effi]] &#37;</p>
             <p>Installed date: [[machineItem.install]]</p>
-            <p>Machine Status: [[machineItem.status]]</p>
+            <p>Machine Status: <span class="machine-status">[[machineItem.status]]</span></p>
             </div>
             <paper-dialog id="[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
             <h2>Edit machine</h2>
@@ -126,8 +126,8 @@
               </div>
               </paper-dialog>
              <div class="button-group">
-            <paper-button raised class="water" value="[[machineItem.$key]]" on-tap="editMachine" style="margin-bottom: 10px;">Edit</paper-button>
-            <paper-button raised class="chilli" value="[[machineItem.$key]]" on-tap="removeMachine">Remove</paper-button>
+            <paper-button raised class="water" value="[[machineItem.$key]]" on-tap="editMachine" style="margin-bottom: 10px;">EDIT</paper-button>
+            <paper-button raised class="chilli" value="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
             </div>
           </div>
         </li>
@@ -158,7 +158,7 @@
           install: today,
           name: this.$.machineName.value,
           queue: 0,
-          status: 'stopped',
+          status: 'Stopped',
           type: this.$.machineType.value,
         }).key;
         this.$.machineName.value = null;

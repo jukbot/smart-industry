@@ -1,0 +1,119 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-setup-factory">
+<template>
+<style include="shared-styles">
+
+    :host {
+       display: block;
+      --app-grid-columns: 2;
+      /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+      --app-grid-item-height: 50%;
+    }
+
+    ul {
+      padding: 0;
+      list-style: none;
+    }
+
+      #customer-table data-table-row {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      cursor: pointer;
+      border-bottom: 1px solid #e3e3e3;
+      }
+
+      #customer-table .index {
+       margin-left: 10px;
+      }
+
+     @media (max-width: 640px) {
+      :host {
+        --app-grid-columns: 1;
+      }
+    }
+
+  </style>
+<ul class="app-grid">
+    <li>
+     <div class="card">
+    <h1>Factory Initialize</h1>
+      <form is="iron-form" id="create-order-form" method="post">
+            <div class="form-wrapper">
+              <paper-input label="Acceptable Waste" name="accept-waste" id="acceptWaste" value="0.02" required always-float-label auto-validate></paper-input>
+              <vaadin-combo-box label="Priority Type" items="[[priority]]" id="priority-select" value="FCFS" name="priority" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
+              <paper-input label="Operation start" name="op-start" on-tap="toggleTimeDialog" id="opStart" required always-float-label auto-validate></paper-input>
+              <paper-input label="Operation end" name="op-start" on-tap="toggleTimeDialog" id="opEnd" required always-float-label auto-validate></paper-input>
+              <paper-dialog id="setupFactoryDialog" class="paper-time-picker-dialog" alwaysOnTop="true"
+            role="dialog">
+          <paper-time-picker id="timePicker" time="[[time]]"></paper-time-picker>
+          <div class="buttons">
+            <paper-button dialog-dismiss>Cancel</paper-button>
+            <paper-button on-tap="setTime" dialog-confirm>OK</paper-button>
+          </div>
+        </paper-dialog>
+                <paper-button raised class="fancy" on-tap="saveValue">Save</paper-button>
+            </div>
+          </form>
+    </li>
+    <li>
+     <div class="card">
+      <h1>Factory Report</h1>
+ <paper-stepper id="stepper" vertical="[[vertical]]">
+  <paper-step label="step 1"></paper-step>
+  <paper-step label="step 2"></paper-step>
+  <paper-step label="step 3"></paper-step>
+  <paper-step label="step 4"></paper-step>
+</paper-stepper> 
+    </div>
+    </li>
+  </ul>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-setup-factory',
+       toggleTimeDialog: function (e) {
+        this.$.setupFactoryDialog.open();
+         let target = e.currentTarget;
+         let id = target.id;
+         console.log(id);
+      },
+      setTime: function (e) {
+           let timepicker = this.$.timePicker;
+           let time = timepicker.time;
+           this.$.id.value = time;
+      },
+      properties: {
+          priority: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'First Come First Serve',
+                symbol: 'FCFS',
+                number: 1
+              },
+              {
+                name: 'Shortage Processing Time',
+                symbol: 'SPT',
+                number: 2
+              },
+              {
+                name: 'Earliest Due Date',
+                symbol: 'EDD',
+                number: 3
+              },
+              {
+                name: 'Longest Processing Time',
+                symbol: 'LPT',
+                number: 4
+              }
+            ]
+          }
+        },
+      }
+    });
+  </script>
+</dom-module>
