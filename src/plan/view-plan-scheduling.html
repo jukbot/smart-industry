@@ -79,10 +79,9 @@
 
     </style>
     <firebase-auth user="{{user}}"></firebase-auth>
-    <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
+    <firebase-query id="orderQuery" path="/order" orderByChild="order_no" data="{{orderQuery}}"></firebase-query>
     <firebase-query id="factoryQuery" path="/factory/standard" data="{{factoryStandard}}"></firebase-query>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
-    <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -91,7 +90,7 @@
             <div class="form-wrapper">
               <paper-input label="Order Number" name="order-no" id="orderNumber" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
               <paper-input label="Customer Name" name="order-name" id="orderName" required always-float-label auto-validate></paper-input>
-              <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="quantity" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="orderQuantity" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
               <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="process" required always-float-label></vaadin-combo-box>
               <vaadin-combo-box label="Size" name="size"  items="[[productSize]]"  id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="cycle" required always-float-label></vaadin-combo-box>
              <!-- <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
@@ -130,6 +129,7 @@
                 <p>Waiting Queue: <span id="estimateDuration"></span></p>
                 <p>Order Workload: <span id="estimateDuration"></span></p>
                 <p>Raw Material Required: <span id="rawMaterial"></span></p>
+                <p>Total Order: </p>
         </div>
       </li>
     </ul>
@@ -276,8 +276,27 @@
       calculateOrder: function() {
         alert("Disabled!!")
       },
-      createOrder: function() {
-        alert("No data")
+      createOrder: function () {
+          let today = new Date();
+          let dd = today.getDate();
+          let mm = today.getMonth() + 1; //January is 0!
+          let yyyy = today.getFullYear();
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        today = dd + '/' + mm + '/' + yyyy;
+
+        this.$.orderQuery.ref.push({
+          order_date: today,
+          order_no: this.$.orderQuantity.value,
+          order_name: this.$.orderName.value,
+          order_product: this.$.productSelector.value,
+        }).key;
+     //   this.$.machineName.value = null;
+    //    this.$.machineType.value = null;
       },
       selectProduct: function() {
           let today = new Date();
@@ -330,7 +349,7 @@
          let deliverypicker = this.$$("#deliverySelector");
          let workdatepicker = this.$$('#workdateSelector');
          let actualquantity = this.$$('#actualQuantity');
-         let quantity = this.$$('#quantity');
+         let quantity = this.$$('#orderQuantity');
          quantity.addEventListener('value-changed', function() {
            actualquantity.innerHTML = quantity.value;
          });
@@ -463,6 +482,9 @@
           type: Object
         },
         factoryStandard: {
+          type: Object
+        },
+        orderQuery: {
           type: Object
         },
          priority: {
