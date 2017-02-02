@@ -145,7 +145,7 @@
     </x-axis>
     <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
     <tooltip use-html="true"
-             formatter="function () {return this.series.name +': ' + ' Duration ' + Highcharts.dateFormat('%H:%M', this.point.high-this.point.low) + ' hr.'}"></tooltip>
+             formatter="function () {return this.series.name +': ' + ' Duration ' + Highcharts.dateFormat('%H:%M', this.point.high-this.point.low) + ' hr.'} + { this.point.stackTotal } "></tooltip>
 
     <plot-options>
         <columnrange grouping="false">

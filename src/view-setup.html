@@ -23,11 +23,12 @@
           </app-toolbar>
         </app-header>
           <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-setup-customer name="setup-customer" route="{{subrouteTail}}"></view-setup-customer>
-          <view-setup-factory name="setup-factory" route="{{subrouteTail}"></view-setup-factory>
-          <view-setup-inventory name="setup-inventory" route="{{subrouteTail}}"></view-setup-inventory>
-          <view-setup-machine name="setup-machine" route="{{subrouteTail}}"></view-setup-machine>
-          <view-setup-worker name="setup-worker" route="{{subrouteTail}"></view-setup-worker>
+          <view-setup-customer name="customer" route="{{subrouteTail}}"></view-setup-customer>
+          <view-setup-factory name="factory" route="{{subrouteTail}"></view-setup-factory>
+          <view-setup-inventory name="inventory" route="{{subrouteTail}}"></view-setup-inventory>
+          <view-setup-machine name="machine" route="{{subrouteTail}}"></view-setup-machine>
+          <view-setup-product name="product" route="{{subrouteTail}}"></view-setup-product>
+          <view-setup-worker name="worker" route="{{subrouteTail}"></view-setup-worker>
          </iron-pages> 
         </app-header-layout>  
   </template>
@@ -46,31 +47,37 @@
             return [{
                 'section': 'setup',
                 'title': 'CUSTOMER',
-                'view': 'setup-customer',
+                'view': 'customer',
                 'icon': 'vaadin-icons:user'
               },
               {
                 'section': 'setup',
                 'title': 'FACTORY',
-                'view': 'setup-factory',
+                'view': 'factory',
                 'icon': 'vaadin-icons:factory'
               },
               {
                 'section': 'setup',
                 'title': 'INVENTORY',
-                'view': 'setup-inventory',
+                'view': 'inventory',
                 'icon': 'vaadin-icons:stock'
               },
               {
                 'section': 'setup',
                 'title': 'MACHINE',
-                'view': 'setup-machine',
+                'view': 'machine',
                 'icon': 'vaadin-icons:automation'
               },
               {
                 'section': 'setup',
+                'title': 'PRODUCT',
+                'view': 'product',
+                'icon': 'vaadin-icons:barcode'
+              },
+              {
+                'section': 'setup',
                 'title': 'WORKER',
-                'view': 'setup-worker',
+                'view': 'worker',
                 'icon': 'vaadin-icons:clipboard-user'
               }
             ];
@@ -83,15 +90,13 @@
       ],
 
       _routeTabsChanged: function (tabs) {
-   //     if (!tabs) {
-   //         this.set('route.path', '/setup-customer');
-  //        return;
-  //   }
-        this.tabs = tabs || 'setup-customer';
+       if (!tabs) {
+            this.set('route.path', '/customer');
+          return;
+     }
+      //  this.tabs = tabs || 'customer';
         
-        const section = tabs.split("-")[0];
-        const resolvedPageUrl = this.resolveUrl('setup/' + 'view-' + tabs + '.html');
-        //console.log("Hey: " + resolvedPageUrl);
+        const resolvedPageUrl = this.resolveUrl('setup/' + 'view-setup-' + tabs + '.html');
         this.importHref(resolvedPageUrl, null, null, true);
       },
     });

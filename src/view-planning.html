@@ -22,9 +22,9 @@
           </app-toolbar>
         </app-header>
           <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-plan-scheduling name="plan-scheduling" route="{{subrouteTail}}"></view-plan-scheduling>
-          <view-plan-production name="plan-production" route="{{subrouteTail}}"></view-plan-production>
-         <view-plan-maintenance name="plan-maintenance" route="{{subrouteTail}}"></view-plan-maintenance>
+          <view-plan-scheduling name="scheduling" route="{{subrouteTail}}"></view-plan-scheduling>
+          <view-plan-production name="production" route="{{subrouteTail}}"></view-plan-production>
+         <view-plan-maintenance name="maintenance" route="{{subrouteTail}}"></view-plan-maintenance>
          </iron-pages> 
         </app-header-layout>  
   </template>
@@ -43,19 +43,19 @@
             return [{
                 'section': 'planning',
                 'title': 'SCHEDULING',
-                'view': 'plan-scheduling',
+                'view': 'scheduling',
                 'icon': 'vaadin-icons:date-input'
               },
               {
                 'section': 'planning',
                 'title': 'PRODUCTION',
-                'view': 'plan-production',
+                'view': 'production',
                 'icon': 'vaadin-icons:tasks'
               },
               {
                 'section': 'planning',
-                'title': 'MAINTENACE',
-                'view': 'plan-maintenance',
+                'title': 'MAINTENANCE',
+                'view': 'maintenance',
                 'icon': 'vaadin-icons:wrench'
               }
             ];
@@ -72,10 +72,10 @@
     //        this.set('route.path', '/plan-scheduling');
     //        return;
      //   }
-        this.tabs = tabs || 'plan-scheduling';
+        this.tabs = tabs || 'scheduling';
         
         const section = tabs.split("-")[0];
-        const resolvedPageUrl = this.resolveUrl('plan/' + 'view-' + tabs + '.html');
+        const resolvedPageUrl = this.resolveUrl('plan/' + 'view-plan-' + tabs + '.html');
         console.log(resolvedPageUrl);
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },

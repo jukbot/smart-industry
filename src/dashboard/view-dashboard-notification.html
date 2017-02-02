@@ -1,42 +1,42 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
-<dom-module id="view-track-inventory">
-<template>
+
+<dom-module id="view-dashboard-notification">
+  <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
-        --app-grid-columns: 2;
+        --app-grid-columns: 3;
         /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
         --app-grid-item-height: 50%;
       }
-      
-      ul {
-        padding: 0;
-        list-style: none;
-      }
     </style>
+
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1>track stock</h1>
+          <h1>In-Production</h1>
+          Notification
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>Order Status</h1>
           N/A
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>Stock</h1>
-          N/A
-        </div>
+          <h1>Stock Available</h1>
+          N/A</div>
       </li>
     </ul>
-    <div class="card">
-      Stock information
-    </div>
   </template>
+
   <script>
     Polymer({
-      is: 'view-track-inventory',
+      is: 'view-dashboard-notification',
     });
   </script>
 </dom-module>

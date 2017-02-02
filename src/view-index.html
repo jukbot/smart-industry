@@ -321,37 +321,37 @@
           type: Array,
           value: function () {
             return [{
-                url: 'dashboard/dashboard-overview',
+                url: 'dashboard/overview',
                 title: 'DASHBOARD',
                 view: 'dashboard',
                 icon: 'vaadin-icons:dashboard'
               },
               {
-                url: 'setup/setup-customer',
+                url: 'setup/customer',
                 title: 'SETUP',
                 view: 'setup',
                 icon: 'vaadin-icons:cogs'
               },
               {
-                url: 'planning/plan-scheduling',
+                url: 'planning/scheduling',
                 title: 'PLAN',
                 view: 'planning',
                 icon: 'vaadin-icons:calendar-clock'
               },
               {
-                url: 'controlling/',
+                url: 'controlling/machine',
                 title: 'CONTROL',
                 view: 'controlling',
                 icon: 'vaadin-icons:sliders'
               },
               {
-                url: 'tracking/track-production',
+                url: 'tracking/production',
                 title: 'TRACK',
                 view: 'tracking',
                 icon: 'vaadin-icons:timer'
               },
               {
-                url: 'verifying',
+                url: 'verifying/production',
                 title: 'VERIFY',
                 view: 'verifying',
                 icon: 'vaadin-icons:user-check'
@@ -382,16 +382,16 @@
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
-        if (!page) {
-          this.set('route.path', '/dashboard');
-          return;
-        }
+      //  if (!page) {
+        //  this.set('route.path', '/dashboard');
+        //  return;
+       // }
         this.page = page || 'dashboard';
       },
 
       _pageChanged: function (page) {
         // Load page import on demand. Show 404 page if fails
-        const section = page.split("-")[0];
+        console.log("PAGE " + page);
         var resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },

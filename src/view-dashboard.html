@@ -22,8 +22,9 @@
           </app-toolbar>
         </app-header>
           <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-dashboard-overview name="dashboard-overview" route="{{subrouteTail}}"></view-dashboard-overview>
-          <view-404 name="404"></view-404>
+          <view-dashboard-overview name="overview" route="{{subrouteTail}}"></view-dashboard-overview>
+          <view-dashboard-notification name="notification" route="{{subrouteTail}}"></view-dashboard-notification>
+          <view-dashboard-statistic name="statistic" route="{{subrouteTail}}"></view-dashboard-statistic>
          </iron-pages> 
         </app-header-layout>  
   </template>
@@ -42,19 +43,19 @@
             return [{
                 'section': 'dashboard',
                 'title': 'OVERVIEW',
-                'view': 'dashboard-overview',
+                'view': 'overview',
                 'icon': 'vaadin-icons:grid-small'
               },
               {
-                'section': 'dashobard',
+                'section': 'dashboard',
                 'title': 'NOTIFICATION',
-                'view': 'dashboard-notification',
+                'view': 'notification',
                 'icon': 'vaadin-icons:bell-o'
               },
               {
                 'section': 'dashboard',
                 'title': 'STATISTIC',
-                'view': 'dashboard-statistic',
+                'view': 'statistic',
                 'icon': 'vaadin-icons:chart'
               }
             ];
@@ -68,13 +69,13 @@
 
       _routeTabsChanged: function (tabs) {
         if (!tabs) {
-            this.set('route.path', '/dashboard-overview');
+            this.set('route.path', '/overview');
             return;
         }
-        this.tabs = tabs || 'dashboard-overview';
+        this.tabs = tabs || 'overview';
         
         const section = tabs.split("-")[0];
-        const resolvedPageUrl = this.resolveUrl('dashboard/' + 'view-' + tabs + '.html');
+        const resolvedPageUrl = this.resolveUrl('dashboard/' + 'view-dashboard-' + tabs + '.html');
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
        _showPage404: function () {

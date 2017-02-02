@@ -39,12 +39,12 @@
     <h1>Factory Initialize</h1>
       <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
-              <paper-input label="Acceptable Waste" name="accept-waste" id="acceptWaste" value="0.02" required always-float-label auto-validate></paper-input>
-              <vaadin-combo-box label="Priority Type" items="[[priority]]" id="priorityTypePicker" value="FCFS" name="priority" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
-              <paper-input label="Operation start" name="op-start" on-tap="toggleTimeDialog" id="opStart" value="8:00" required always-float-label auto-validate></paper-input>
-              <paper-input label="Operation end" name="op-end" on-tap="toggleTimeDialog" id="opEnd" value="17:00" required always-float-label auto-validate></paper-input>
-               <paper-input label="Over Time start" name="oะ-start" on-tap="toggleTimeDialog" id="oะStart" value="8:00" required always-float-label auto-validate></paper-input>
-              <paper-input label="Over Time end" name="oะ-end" on-tap="toggleTimeDialog" id="oะEnd" value="17:00" required always-float-label auto-validate></paper-input>
+              <paper-input label="Acceptable Waste" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]" required always-float-label auto-validate></paper-input>
+              <vaadin-combo-box label="Priority Type" name="priority" items="[[priority]]" id="priorityTypePicker" value="[[factoryStandard.priority]]" required item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
+              <paper-input label="Operation start" name="opstart" on-tap="toggleTimeDialog" id="opStart" value="[[factoryOperation.op_start]]" required always-float-label auto-validate></paper-input>
+              <paper-input label="Operation end" name="opend" on-tap="toggleTimeDialog" id="opEnd" value="[[factoryOperation.op_end]]" required always-float-label auto-validate></paper-input>
+              <paper-input label="Over Time start" name="otstart" on-tap="toggleTimeDialog" id="otStart" value="[[factoryOperation.ot_start]]" required always-float-label auto-validate></paper-input>
+              <paper-input label="Over Time end" name="otend" on-tap="toggleTimeDialog" id="otEnd" value="[[factoryOperation.ot_end]]" required always-float-label auto-validate></paper-input>
               <div>
               <paper-checkbox>Sun</paper-checkbox>
               <paper-checkbox checked>Mon</paper-checkbox>
@@ -54,6 +54,9 @@
               <paper-checkbox checked>Fri</paper-checkbox>
               <paper-checkbox>Sat</paper-checkbox>
               </div><br>
+              
+              <paper-input label="Reschedule" name="reschedule" id="reschedule" value="1" required always-float-label auto-validate></paper-input>
+              
               <paper-dialog id="setupFactoryDialog" class="paper-time-picker-dialog" alwaysOnTop="true"
             role="dialog">
           <paper-time-picker id="timePicker" time="[[time]]"></paper-time-picker>

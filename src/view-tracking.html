@@ -23,10 +23,9 @@
           </app-toolbar>
         </app-header>
           <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-track-production name="track-production" route="{{subrouteTail}}"></view-track-production>
-          <view-track-machine name="track-machine" route="{{subrouteTail}}"></view-track-machine>
-          <view-track-inventory name="track-inventory" route="{{subrouteTail}}"></view-track-inventory>
-          <view-track-energy name="track-energy" route="{{subrouteTail}}"></view-track-energy>
+          <view-track-production name="production" route="{{subrouteTail}}"></view-track-production>
+          <view-track-machine name="machine" route="{{subrouteTail}}"></view-track-machine>
+          <view-track-energy name="energy" route="{{subrouteTail}}"></view-track-energy>
           <view-404 name="404"></view-404>
          </iron-pages> 
         </app-header-layout>  
@@ -46,25 +45,19 @@
             return [{
                 'section': 'tracking',
                 'title': 'PRODUCTION',
-                'view': 'track-production',
+                'view': 'production',
                 'icon': 'vaadin-icons:progressbar'
               },
               {
                 'section': 'tracking',
                 'title': 'MACHINE',
-                'view': 'track-machine',
+                'view': 'machine',
                 'icon': 'vaadin-icons:automation'
               },
               {
                 'section': 'tracking',
-                'title': 'INVENTORY',
-                'view': 'track-inventory',
-                'icon': 'vaadin-icons:stock'
-              },
-              {
-                'section': 'tracking',
                 'title': 'ENERGY',
-                'view': 'track-energy',
+                'view': 'energy',
                 'icon': 'vaadin-icons:bolt'
               }
             ];
@@ -77,14 +70,13 @@
       ],
 
       _routeTabsChanged: function (tabs) {
-        if (!tabs) {
-            this.set('route.path', '/track-production');
-            return;
-        }
-        this.tabs = tabs || 'track-production';
-        
-        const section = tabs.split("-")[0];
-        const resolvedPageUrl = this.resolveUrl('track/' + 'view-' + tabs + '.html');
+      //  if (!tabs) {
+       //     this.set('route.path', '/production');
+       //     return;
+      //  }
+        this.tabs = tabs || '/production';
+ 
+        const resolvedPageUrl = this.resolveUrl('track/' + 'view-track-' + tabs + '.html');
         console.log(resolvedPageUrl);
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
