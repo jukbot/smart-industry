@@ -67,10 +67,20 @@
       </vaadin-grid>
 </div>
 
-    <ul class="app-grid" has-aspect-ratio>
+    <ul class="app-grid">
     <li>
-     <div class="card">
-      <h1>Customer Setup</h1>
+      <div class="card">
+     <h1>Add Customer</h1>
+<paper-input label="First name" always-float-label></paper-input>
+<paper-input label="Last name" always-float-label></paper-input>
+<paper-input label="E-mail" type="email" always-float-label><iron-icon icon="mail" prefix></iron-icon> <div suffix>@gmail.com</div>  
+<paper-icon-button suffix onclick="clearInput()" icon="clear" alt="clear" title="clear"></paper-icon-button></paper-input>
+<paper-input label="Mobile" always-float-label></paper-input>
+<div class="button-group">
+<paper-button raised class="fancy" onclick="addWorker()">Add</paper-button>
+<paper-button raised class="smart" onclick="clear()">Clear</paper-button>
+</div>
+</div>
     </li>
     <li>
      <div class="card">

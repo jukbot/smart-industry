@@ -68,19 +68,12 @@
       ],
 
       _routeTabsChanged: function (tabs) {
-    //    if (!tabs) {
-    //        this.set('route.path', '/plan-scheduling');
-    //        return;
-     //   }
         this.tabs = tabs || 'scheduling';
         
         const section = tabs.split("-")[0];
         const resolvedPageUrl = this.resolveUrl('plan/' + 'view-plan-' + tabs + '.html');
         console.log(resolvedPageUrl);
-        this.importHref(resolvedPageUrl, null, this._showPage404, true);
-      },
-       _showPage404: function () {
-        this.page = '404';
+        this.importHref(resolvedPageUrl, null, null, true);
       }
     });
   </script>

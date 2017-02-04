@@ -39,7 +39,7 @@
         }
       }
 
-      .machine-dialog {
+      .product-dialog {
         width: 35%;
         padding: 10px;
       }
@@ -60,15 +60,12 @@
         position: relative;
         box-sizing: border-box;
      }
-     .machine { min-height: 330px; height: auto; }
-     .machine h1 { text-align: center; }
-     .new-machine { margin: 0; padding: 20px 40px; font-size: 1.25rem; }
-     .machine p {
+     .product{ min-height: 330px; height: auto; }
+     .product h1 { text-align: center; }
+     .new-product { margin: 0; padding: 20px 40px; font-size: 1.25rem; }
+     .product p {
         margin: 12px 0;
       }
-     .machine-info-group {
-       margin-bottom: auto;
-     }
      .button-group {
        margin-top: auto;
      }
@@ -83,51 +80,49 @@
      
     </style>
     <firebase-auth user="{{user}}"></firebase-auth>
-    <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
+    <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
+    <firebase-query id="productSizeQuery" path="/product/[[productItems.$key]]/size" data="{{productSizes}}"></firebase-query>
     <ul class="app-grid">
       <li>
         <div class="stitched">
-          <paper-button raised on-tap="toggleDialog" class="new-machine magic">Add machine</paper-button>
-          <paper-dialog id="createMachineDialog" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true"
+          <paper-button raised on-tap="createProductDialog" class="new-product water">ADD PRODUCT</paper-button>
+          <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true"
             role="dialog">
-            <h2>Add machine</h2>
-            <paper-input name="machine-name" id="machineName" label="Machine Name" required always-float-label></paper-input>
-            <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number"  min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>%</div></paper-input>
-            <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" id="product-select" name="machineType" item-label-path="name"
-              item-value-path="symbol" item-code-path="number" required always-float-label></vaadin-combo-box>
+            <h2>Add product</h2>
+            <paper-input name="product-name" id="productName" label="product Name" required always-float-label></paper-input>
+            <paper-input name="product-effi" id="productEffi" label="Efficiency" type="number"  min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>%</div></paper-input>
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
-                <paper-button on-tap="addMachine" dialog-confirm autofocus>Create</paper-button>
+                <paper-button on-tap="addproduct" dialog-confirm autofocus>Create</paper-button>
               </div>
               </paper-dialog>
         </div>
       </li>
-      <template is="dom-repeat" items="{{machineItems}}" as="machineItem">
+      <template is="dom-repeat" items="{{productItems}}" as="productItem">
         <li>  
-          <div class="card machine">
-            <div class="machine-info-group">
-            <h1 class="name">[[machineItem.name]]</h1>
-            <p>Machine Type: [[machineItem.type]]</p>
-            <p>Current Efficiency: [[machineItem.effi]] &#37;</p>
-            <p>Installed date: [[machineItem.install]]</p>
-            <p>Machine Status: <span class="machine-status">[[machineItem.status]]</span></p>
+          <div class="card product">
+            <div class="product-info-group">
+            <h1 class="name">[[productItem.name]]</h1>
+            <p>Product Process: [[productItem.process]]</p>
+            <p>Raw material: [[productItem.raw_material.0.type]]</p>
+            <p>Product Size: w <template is="dom-repeat" items="{{productSizes}}" as="productSize">[[productSize.name]]</template></p>
             </div>
-            <paper-dialog id="[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
-            <h2>Edit machine</h2>
-            <paper-input name="machine-name" class="editmachineName" value="[[machineItem.name]]" label="Machine Name" always-float-label></paper-input>
-            <paper-input name="machine-effi" class="editmachineEffi" value="[[machineItem.effi]]" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
+            <paper-dialog id="[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
+            <h2>Edit Product</h2>
+            <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
+            <paper-input name="product-effi" class="editproductEffi" value="[[productItem.effi]]" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
             <div suffix>%</div> 
             </paper-input>
-            <vaadin-combo-box label="Type" class="editmachineType" value="[[machineItem.type]]" items="[[machineType]]" name="machineType" item-label-path="name"
+            <vaadin-combo-box label="Type" class="editproductType" value="[[productItem.type]]" items="[[productType]]" name="productType" item-label-path="name"
               item-value-path="symbol" item-code-path="number" always-float-label></vaadin-combo-box>
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
-                <paper-button on-tap="saveMachine" dialog-confirm autofocus>Save</paper-button>
+                <paper-button on-tap="saveproduct" dialog-confirm autofocus>Save</paper-button>
               </div>
               </paper-dialog>
              <div class="button-group">
-            <paper-button raised class="water" value="[[machineItem.$key]]" on-tap="editMachine" style="margin-bottom: 10px;">EDIT</paper-button>
-            <paper-button raised class="chilli" value="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
+            <paper-button raised class="water" value="[[productItem.$key]]" on-tap="editproduct" style="margin-bottom: 10px;">EDIT</paper-button>
+            <paper-button raised class="chilli" value="[[productItem.$key]]" on-tap="removeproduct">REMOVE</paper-button>
             </div>
           </div>
         </li>
@@ -137,10 +132,10 @@
   <script>
     Polymer({
       is: 'view-setup-product',
-      toggleDialog: function () {
-        this.$.createMachineDialog.open();
+      createProductDialog: function () {
+        this.$.createproductDialog.open();
       },
-      addMachine: function () {
+      addproduct: function () {
           let today = new Date();
           let dd = today.getDate();
           let mm = today.getMonth() + 1; //January is 0!
@@ -153,65 +148,65 @@
         }
         today = dd + '/' + mm + '/' + yyyy;
 
-        this.$.machineQuery.ref.push({
-          effi: this.$.machineEffi.value,
+        this.$.productQuery.ref.push({
+          name: this.$.productName.value,
           install: today,
-          name: this.$.machineName.value,
+          name: this.$.productName.value,
           queue: 0,
           status: 'Stopped',
-          type: this.$.machineType.value,
+          type: this.$.productType.value,
         }).key;
-        this.$.machineName.value = null;
-        this.$.machineType.value = null;
+        this.$.productName.value = null;
+        this.$.productType.value = null;
       },
-      editMachine: function(e) {
-         let targetKey = e.currentTarget.value;
-         this.$.targetKey.open();
-        console.log(targetKey);
-
-      },
-      removeMachine: function(e) {
+      editproduct: function(e) {
         let targetKey = e.currentTarget.value;
-        console.log(targetKey);
-        this.$.machineQuery.ref.child(targetKey).remove();
+        this.$.targetKey.open();
       },
-      saveMachine: function(e) {
+      removeproduct: function(e) {
+        let targetKey = e.currentTarget.value;
+        this.$.productQuery.ref.child(targetKey).remove();
+      },
+      saveproduct: function(e) {
 
       },
       properties: {
-        machineItems: {
+        productItems: {
           type: Object
         },
-        machineType: {
+        productSizes: {
+          type: Object
+        },
+        productType: {
           type: Array,
           value: function () {
             return [{
-                name: 'Milling Machine',
+                name: 'Milling product',
                 symbol: 'Milling',
                 number: 0
               },
               {
-                name: 'Drilling Machine',
+                name: 'Drilling product',
                 symbol: 'Drilling',
                 number: 1
               },
               {
-                name: 'Trimming Machine',
+                name: 'Trimming product',
                 symbol: 'Trimming',
                 number: 2
               },
               {
-                name: 'Polishing Machine',
+                name: 'Polishing product',
                 symbol: 'Polishing',
                 number: 3
               },
               {
-                name: 'Welding Machine',
+                name: 'Welding product',
                 symbol: 'Welding',
                 number: 4
               },
               {
-                name: 'Packing Machine',
+                name: 'Packing product',
                 symbol: 'Packing',
                 number: 5
               }

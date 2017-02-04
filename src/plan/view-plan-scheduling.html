@@ -91,14 +91,10 @@
               <paper-input label="Order Number" name="order-no" id="orderNumber" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
               <paper-input label="Customer Name" name="order-name" id="orderName" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="orderQuantity" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
-              <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="process" required always-float-label></vaadin-combo-box>
-              <vaadin-combo-box label="Size" name="size"  items="[[productSize]]"  id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="cycle" required always-float-label></vaadin-combo-box>
+              <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" required always-float-label selected-item='{{x}}'></vaadin-combo-box>
+              <vaadin-combo-box label="Size" name="size"  items="[[x.size]]"  id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
              <!-- <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
-              -->  <template>
-                <paper-checkbox>Checkbox</paper-checkbox>
-                <b>[[item.name]], <sub>[[item.effi]]</sub>[[item.type]]</b><br>
-                array index: [[index]], selected: [[selected]], focused: [[focused]]
-                </template>
+              --> 
               </vaadin-combo-box>
               <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
               min="2017-01-01" class="date-selector" id="deliverySelector"></vaadin-date-picker>
@@ -127,7 +123,7 @@
                 <p>Estimate Duration: <span id="estimateDuration"></span></p>
                 <p>Queue number: <span id="estimateDuration"></span></p>
                 <p>Waiting Queue: <span id="estimateDuration"></span></p>
-                <p>Order Workload: <span id="estimateDuration"></span></p>
+                <p>Order Workload: <span id="estimateDuration"></span> [[loop(y.cycle)]]</p>
                 <p>Raw Material Required: <span id="rawMaterial"></span></p>
                 <p>Total Order: </p>
         </div>
@@ -137,9 +133,113 @@
       <h1>Order Production Workflow</h1>
 <vaadin-date-picker style="width: 300px;" label="Working Date" name="workdate" always-float-label autoValidate
               min="2017-01-01" class="date-selector" id="workdateSelector"></vaadin-date-picker>
+<vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
+  
 <vaadin-columnrange-chart id="column-range-resource-usage">
     <chart width="1200" inverted="true"></chart>
     <chart-title>Daily Order Production Workflow</chart-title>
+    <x-axis>
+        <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
+    </x-axis>
+    <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
+    <tooltip use-html="true"
+             formatter="function () {return this.series.name +': ' + ' Duration ' + Highcharts.dateFormat('%H:%M', this.point.high-this.point.low) + ' hr.'} + { this.point.stackTotal } "></tooltip>
+
+    <plot-options>
+        <columnrange grouping="false">
+            <data-labels enabled="true" inside="true" color="white"
+                         formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
+        </columnrange>
+    </plot-options>
+    <data-series name="Order #1">
+        <color>rgba(255, 60, 125, 0.8)</color>
+        <data>
+            [Date.UTC(2017,01,02,08,00,00),Date.UTC(2017,01,02,09,00,00)],
+            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
+            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
+            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
+            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,00,00)],
+            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)]
+        </data>
+    </data-series>
+    <data-series name="Order #2">
+        <color>rgba(60, 125, 255, 0.8)</color>
+        <data>
+            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
+            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,11,00,00)],
+            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
+            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,30,00)],
+            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)],
+            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,17,00,00)]
+        </data>
+    </data-series>
+    <data-series name="Order #3">
+        <color>rgba(164, 208, 95, 0.8)</color>
+        <data>
+            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
+            [Date.UTC(2017,01,02,11,00,00),Date.UTC(2017,01,02,13,00,00)],
+            null,
+            [Date.UTC(2017,01,02,15,30,00),Date.UTC(2017,01,02,16,00,00)],
+            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,16,30,00)],
+            null
+        </data>
+    </data-series>
+</vaadin-columnrange-chart>
+  
+<vaadin-columnrange-chart id="column-range-resource-usage">
+    <chart width="1200" inverted="true"></chart>
+    <chart-title>EDD Daily Order Production Workflow</chart-title>
+    <x-axis>
+        <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
+    </x-axis>
+    <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
+    <tooltip use-html="true"
+             formatter="function () {return this.series.name +': ' + ' Duration ' + Highcharts.dateFormat('%H:%M', this.point.high-this.point.low) + ' hr.'} + { this.point.stackTotal } "></tooltip>
+
+    <plot-options>
+        <columnrange grouping="false">
+            <data-labels enabled="true" inside="true" color="white"
+                         formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
+        </columnrange>
+    </plot-options>
+    <data-series name="Order #1">
+        <color>rgba(255, 60, 125, 0.8)</color>
+        <data>
+            [Date.UTC(2017,01,02,08,00,00),Date.UTC(2017,01,02,09,00,00)],
+            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
+            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
+            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
+            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,00,00)],
+            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)]
+        </data>
+    </data-series>
+    <data-series name="Order #2">
+        <color>rgba(60, 125, 255, 0.8)</color>
+        <data>
+            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
+            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,11,00,00)],
+            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
+            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,30,00)],
+            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)],
+            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,17,00,00)]
+        </data>
+    </data-series>
+    <data-series name="Order #3">
+        <color>rgba(164, 208, 95, 0.8)</color>
+        <data>
+            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
+            [Date.UTC(2017,01,02,11,00,00),Date.UTC(2017,01,02,13,00,00)],
+            null,
+            [Date.UTC(2017,01,02,15,30,00),Date.UTC(2017,01,02,16,00,00)],
+            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,16,30,00)],
+            null
+        </data>
+    </data-series>
+</vaadin-columnrange-chart>
+  
+<vaadin-columnrange-chart id="column-range-resource-usage">
+    <chart width="1200" inverted="true"></chart>
+    <chart-title>SPT Daily Order Production Workflow</chart-title>
     <x-axis>
         <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
     </x-axis>
@@ -226,7 +326,7 @@
     <chart-title>Job Priority Comparision</chart-title>
     <subtitle>Less is better</subtitle>
     <x-axis crosshair="true">
-        <categories>Order A, Order B, Order C</categories>
+        <categories>Plan</categories>
     </x-axis>
     <y-axis min="0">
         <chart-title>Duration (hrs.)</chart-title>
@@ -241,19 +341,19 @@
         </column>
     </plot-options>
     <data-series name="FCFS">
-        <data>9.9, 7.5, 10.4, 
+        <data>9.9 
         </data>
     </data-series>
     <data-series name="SPT">
-        <data>8.6, 8.8, 8.5,
+        <data>8.6
         </data>
     </data-series>
     <data-series name="EDD">
-        <data>8.9, 8.8, 9.3,
+        <data>8.9
         </data>
     </data-series>
     <data-series name="LPT">
-        <data>8.4, 3.2, 4.5, 
+        <data>8.4
         </data>
     </data-series>
 </vaadin-column-chart>
@@ -326,9 +426,9 @@
                  //selectProductQuery.on('value', snap => console.log(snap.val()));
                  //sizePicker.items = null;
                 product.innerHTML = key;
-                 if(sizePicker.items != null) {
+                 //if(sizePicker.items != null) {
                    sizePicker.disabled = false;
-                 }
+                 //}
               }
            });
       },
@@ -453,30 +553,13 @@
           }
         },
         productSize: {
-          type: Array,
-          value: function () {
-            return [{
-                name: '50 cm',
-                cycle: '50',
-                number: 1
-              },
-              {
-                name: '80 cm',
-                cycle: '80',
-                number: 2
-              },
-            ]
-          }
+          type: Object
         },
         machineItems: {
-          type: Object,
-          notify: true,
-          observer: 'dataChanged'
+          type: Object
         },
         productItems: {
-          type: Object,
-          notify: true,
-          observer: 'dataChanged'
+          type: Object
         },
         productQuery: {
           type: Object
@@ -491,22 +574,22 @@
           type: Array,
           value: function () {
             return [{
-                name: 'First Come First Serve',
-                symbol: 'FCFS',
+                name: 'Early Delivery (EDD)',
+                symbol: 'EDD',
                 number: 1
               },
               {
-                name: 'Shortage Processing Time',
-                symbol: 'SPT',
+                name: 'Order Date (FCFS)',
+                symbol: 'FCFS',
                 number: 2
               },
               {
-                name: 'Earliest Due Date',
-                symbol: 'EDD',
+                name: 'Shortest Duration First (SPT)',
+                symbol: 'SPT',
                 number: 3
-              },
+              },  
               {
-                name: 'Longest Processing Time',
+                name: 'Longest Duration First (LPT)',
                 symbol: 'LPT',
                 number: 4
               }
@@ -528,7 +611,11 @@
             notify: true,
             value: [ -0.3, 0.7, -0.1, 1.4 ]
           }
-      }
+      },
+      loop: function (cycle) {
+            if (!cycle) return ''
+            return cycle.mill + cycle.drill + ',' + cycle.polish
+          }
     });
   </script>
 </dom-module>

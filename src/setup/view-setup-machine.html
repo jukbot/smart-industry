@@ -92,7 +92,7 @@
             role="dialog">
             <h2>Add machine</h2>
             <paper-input name="machine-name" id="machineName" label="Machine Name" required always-float-label></paper-input>
-            <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number"  min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>%</div></paper-input>
+            <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number"  min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>&#37;</div></paper-input>
             <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" id="product-select" name="machineType" item-label-path="name"
               item-value-path="symbol" item-code-path="number" required always-float-label></vaadin-combo-box>
               <div class="buttons">
@@ -102,20 +102,21 @@
               </paper-dialog>
         </div>
       </li>
-      <template is="dom-repeat" items="{{machineItems}}" as="machineItem">
+      <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
         <li>  
           <div class="card machine">
             <div class="machine-info-group">
-            <h1 class="name">[[machineItem.name]]</h1>
-            <p>Machine Type: [[machineItem.type]]</p>
-            <p>Current Efficiency: [[machineItem.effi]] &#37;</p>
-            <p>Installed date: [[machineItem.install]]</p>
-            <p>Machine Status: <span class="machine-status">[[machineItem.status]]</span></p>
+            <h1 class="name">{{machineItem.name}}</h1>
+            <p>Machine Type: {{machineItem.type}}</p>
+            <p>Current Efficiency: {{machineItem.effi}} &#37;</p>
+            <p>Installed date: {{machineItem.install}}</p>
+            <p>Machine Status: <span class="machine-status">{{machineItem.status}}</span></p>
             </div>
+
             <paper-dialog id="[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
             <h2>Edit machine</h2>
-            <paper-input name="machine-name" class="editmachineName" value="[[machineItem.name]]" label="Machine Name" always-float-label></paper-input>
-            <paper-input name="machine-effi" class="editmachineEffi" value="[[machineItem.effi]]" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
+            <paper-input name="machine-name" class="editmachineName" value="{{machineItem.name}}" label="Machine Name" always-float-label></paper-input>
+            <paper-input name="machine-effi" class="editmachineEffi" value="{{machineItem.effi}}" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
             <div suffix>%</div> 
             </paper-input>
             <vaadin-combo-box label="Type" class="editmachineType" value="[[machineItem.type]]" items="[[machineType]]" name="machineType" item-label-path="name"
@@ -125,9 +126,10 @@
                 <paper-button on-tap="saveMachine" dialog-confirm autofocus>Save</paper-button>
               </div>
               </paper-dialog>
+
              <div class="button-group">
-            <paper-button raised class="water" value="[[machineItem.$key]]" on-tap="editMachine" style="margin-bottom: 10px;">EDIT</paper-button>
-            <paper-button raised class="chilli" value="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
+            <paper-button raised class="water" key="[[machineItem.$key]]" on-tap="editMachine" style="margin-bottom: 10px;">EDIT</paper-button>
+            <paper-button raised class="chilli" key="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
             </div>
           </div>
         </li>
@@ -165,13 +167,14 @@
         this.$.machineType.value = null;
       },
       editMachine: function(e) {
-         let targetKey = e.currentTarget.value;
-         this.$.targetKey.open();
-        console.log(targetKey);
+        let targetEditKey = e.currentTarget.key;
+        //this.$.createMachineDialog.open();
+        this.$$('#targetEditkey').open();
+        console.log(targetEditKey);
 
       },
       removeMachine: function(e) {
-        let targetKey = e.currentTarget.value;
+        let targetKey = e.currentTarget.key;
         console.log(targetKey);
         this.$.machineQuery.ref.child(targetKey).remove();
       },

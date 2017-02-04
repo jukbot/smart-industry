@@ -68,13 +68,9 @@
       ],
 
       _routeTabsChanged: function (tabs) {
-        if (!tabs) {
-            this.set('route.path', '/overview');
-            return;
-        }
         this.tabs = tabs || 'overview';
         
-        const section = tabs.split("-")[0];
+      //  const section = tabs.split("-")[0];
         const resolvedPageUrl = this.resolveUrl('dashboard/' + 'view-dashboard-' + tabs + '.html');
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
       },
