@@ -59,67 +59,12 @@
         }
       }
 
-      app-header {
-        color: #fff;
-        background-color: var(--app-primary-color);
-      }
-      app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
-        width: 32px;
-        height: 32px;
-      }
-
-      .drawer-list {
-        margin: 0 20px;
-      }
-      
-      paper-button {
-        display: inline-block;
-        background: #4285f4;
-        color: #fff;
-      }
-      
-      paper-menu {
-        display: inline-block;
-      }
-      
-      paper-menu-button {
-        margin: auto;
-      }
-      
-      paper-tabs {
-        --paper-tabs-selection-bar-color: var(--app-primary-color);
-        height: 100%;
-      }
-      
-      paper-tab {
-        --paper-tab-ink: #2d3238;
-        text-transform: uppercase;
-      }
-      
-      [hidden] {
-        display: none !important;
-      }
-      
-      paper-icon-button+[main-title] {
-        margin: 32px;
-      }
-      
-      paper-dropdown-menu {
-        width: 200px;
-        margin-right: 20px;
-      }
-      
-      iron-icon {
-        color: #333333;
-      }
-      
       .menu-item {
         min-width: 120px;
       }
       
       .drawer-list {
-        margin: 0 20px;
+        margin: 0;
       }
       
       .drawer-list a {
@@ -137,7 +82,7 @@
       
       .main-header {
         box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
-      }
+      } 
       
       .main-title {
         font-size: 2.25rem;
@@ -197,7 +142,7 @@
         <!-- Navbar content -->
         <app-drawer id="drawer" swipe-open>
           <img class="logo" src="../images/logo/industrial.svg" alt="logo">
-          <div class="main-title">SMART MES</div>
+          <div class="main-title" main-title>SMART MES</div>
           <!-- sidebar hightlighter -->
           <iron-selector selected="{{routeData.page}}" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
             <template is="dom-repeat" items="{{menus}}">
@@ -210,17 +155,15 @@
           <paper-button raised class="chilli login-btn" on-tap="login" hidden$="[[user]]">Sign in</paper-button>
           <paper-button raised class="chilli logout-btn" on-tap="logout" hidden$="[[!user]]">Sign out</paper-button>
           </div>
-           <!-- DEBUG USER Authenticate
            <template is="dom-if" if="[[user]]">
-            <p>Welcome:[[user.displayName]]</p>
-            <p>Provider: [[user.providerId]]</p>
+            <p>Debug user:[[user.displayName]]</p>
             <p>E-mail: [[user.email]]</p>
             <p>E-mail verify: [[user.emailVerified]]</p>
             <p>UID: [[user.uid]]</p>
             <p>Anonymous: [[user.isAnonymous]]</p>
             <p>App: [[metadata.appName]]</p>
             <p>Develop by: [[metadata.appDeveloper]]</p>
-          </template> -->
+          </template> 
         </app-drawer>
         <!-- start header layout -->
         <app-header-layout fullbleed has-scrolling-region>
@@ -244,7 +187,6 @@
               <template is="dom-if" if="[[user]]" hidden$="[[!user]]"><p class="display-name">[[user.displayName]]</p></template>
             </app-toolbar>
           </app-header>
-                <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
         <!-- view content area -->
         <iron-pages selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404" role="main">
           <view-dashboard name="dashboard" route="{{routeTail}}"></view-dashboard>
@@ -256,8 +198,8 @@
           <view-404 name="404"></view-404>
         </iron-pages>
         </app-header-layout>
-  
       </app-drawer-layout>
+  <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
     Polymer({

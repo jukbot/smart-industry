@@ -81,7 +81,6 @@
     </style>
     <firebase-auth user="{{user}}"></firebase-auth>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
-    <firebase-query id="productSizeQuery" path="/product/[[productItems.$key]]/size" data="{{productSizes}}"></firebase-query>
     <ul class="app-grid">
       <li>
         <div class="stitched">
@@ -105,24 +104,20 @@
             <h1 class="name">[[productItem.name]]</h1>
             <p>Product Process: [[productItem.process]]</p>
             <p>Raw material: [[productItem.raw_material.0.type]]</p>
-            <p>Product Size: w <template is="dom-repeat" items="{{productSizes}}" as="productSize">[[productSize.name]]</template></p>
+            <p>Product Size: <template is="dom-repeat" items="{{productItems.size}}" as="productSize">[[productSize.name]]</template></p>
             </div>
             <paper-dialog id="[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
             <h2>Edit Product</h2>
             <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
-            <paper-input name="product-effi" class="editproductEffi" value="[[productItem.effi]]" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
-            <div suffix>%</div> 
             </paper-input>
-            <vaadin-combo-box label="Type" class="editproductType" value="[[productItem.type]]" items="[[productType]]" name="productType" item-label-path="name"
-              item-value-path="symbol" item-code-path="number" always-float-label></vaadin-combo-box>
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
-                <paper-button on-tap="saveproduct" dialog-confirm autofocus>Save</paper-button>
+                <paper-button on-tap="saveProduct" dialog-confirm autofocus>Save</paper-button>
               </div>
               </paper-dialog>
              <div class="button-group">
-            <paper-button raised class="water" value="[[productItem.$key]]" on-tap="editproduct" style="margin-bottom: 10px;">EDIT</paper-button>
-            <paper-button raised class="chilli" value="[[productItem.$key]]" on-tap="removeproduct">REMOVE</paper-button>
+            <paper-button raised class="water" value="[[productItem.$key]]" on-tap="editProduct" style="margin-bottom: 10px;">EDIT</paper-button>
+            <paper-button raised class="chilli" value="[[productItem.$key]]" on-tap="removeProduct">REMOVE</paper-button>
             </div>
           </div>
         </li>
@@ -135,7 +130,7 @@
       createProductDialog: function () {
         this.$.createproductDialog.open();
       },
-      addproduct: function () {
+      addProduct: function () {
           let today = new Date();
           let dd = today.getDate();
           let mm = today.getMonth() + 1; //January is 0!
@@ -159,15 +154,15 @@
         this.$.productName.value = null;
         this.$.productType.value = null;
       },
-      editproduct: function(e) {
+      editProduct: function(e) {
         let targetKey = e.currentTarget.value;
         this.$.targetKey.open();
       },
-      removeproduct: function(e) {
+      removeProduct: function(e) {
         let targetKey = e.currentTarget.value;
         this.$.productQuery.ref.child(targetKey).remove();
       },
-      saveproduct: function(e) {
+      saveProduct: function(e) {
 
       },
       properties: {

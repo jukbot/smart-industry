@@ -90,9 +90,9 @@
             <div class="form-wrapper">
               <paper-input label="Order Number" name="order-no" id="orderNumber" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
               <paper-input label="Customer Name" name="order-name" id="orderName" required always-float-label auto-validate></paper-input>
-              <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="orderQuantity" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="orderQuantity" required always-float-label auto-validate allowed-pattern="[0-9]" value='{{a}}'></paper-input>
               <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" required always-float-label selected-item='{{x}}'></vaadin-combo-box>
-              <vaadin-combo-box label="Size" name="size"  items="[[x.size]]"  id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
+              <vaadin-combo-box label="Size" name="size"  items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
              <!-- <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
               --> 
               </vaadin-combo-box>
@@ -115,15 +115,16 @@
                 <h1>Order Information</h1>
                 <p>Job Priority Type: <span id="priorityType">[[factoryStandard.priority]]</span></p>
                 <p>Product Name: <span id="product"></span></p>
-                <p>Actual Quantity: <span id="actualQuantity"></span></p>
-                <p>Production Start: <span id="productionStart">[[proRef]]</span></p>
+                <p>Actual Quantity: <span id="actualQuantity"></span> [[a]]</p>
+                <p>Create Order Date: <span id="createOrder"></span></p>
+                <p>Production Start: <span id="productionStart"></span></p>
                 <p>Processes Used: <span id="usedProcess">[[productQuery]]</span></p>
                 <p>Machine Used: <span id="usedMachine"></span></p>
                 <p>Expect Delivery: <span id="estimateDelivery"></span></p>
-                <p>Estimate Duration: <span id="estimateDuration"></span></p>
+                <p>Estimate Duration: <span id="estimateDuration">[[calCycleTime(y.cycle, a)]]</span></p>
                 <p>Queue number: <span id="estimateDuration"></span></p>
                 <p>Waiting Queue: <span id="estimateDuration"></span></p>
-                <p>Order Workload: <span id="estimateDuration"></span> [[loop(y.cycle)]]</p>
+                <p>Order Workload: <span id="estimateDuration"></span></p>
                 <p>Raw Material Required: <span id="rawMaterial"></span></p>
                 <p>Total Order: </p>
         </div>
@@ -399,42 +400,10 @@
     //    this.$.machineType.value = null;
       },
       selectProduct: function() {
-          let today = new Date();
-          let dd = today.getDate();
-          let mm = today.getMonth() + 1; //January is 0!
-          let yyyy = today.getFullYear();
-        if (dd < 10) {
-          dd = '0' + dd
-        }
-        if (mm < 10) {
-          mm = '0' + mm
-        }
-        today = dd + '/' + mm + '/' + yyyy;
-           let productpicker = this.$.productSelector;
-           const sizePicker = this.$.sizeSelector;
-           const usedProcess =  this.$.usedProcess;
-           let productionStart = this.$.productionStart;
-           let product = this.$.product;
-           productpicker.addEventListener('value-changed', function() {
-              let key = productpicker.value;   
-             // usedProcess.innerHTML = this.$.productQuery.ref(key + '/process/').$val;
-              productionStart = today;
-              console.log("PRODUCT" + key);
-              if(key != null) {
-              //  const selectProductQuery = this.$.productQuery.ref.child(key);
-                 //console.log(selectProductQuery.ref('/size/'));
-                 //selectProductQuery.on('value', snap => console.log(snap.val()));
-                 //sizePicker.items = null;
-                product.innerHTML = key;
-                 //if(sizePicker.items != null) {
-                   sizePicker.disabled = false;
-                 //}
-              }
-           });
+     
       },
       selectSize: function() {
-        let size = this.$.sizeSelector.value;
-        console.log('Select size:' + size);
+         
       },
       uploadFile: function() {
          var upload = this.$.uploadOrder;
@@ -510,6 +479,47 @@
             return Sugar.Date.create(dateString);
           }
         };
+          
+          let today = new Date();
+          let dd = today.getDate();
+          let mm = today.getMonth() + 1; //January is 0!
+          let yyyy = today.getFullYear();
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        today = dd + '/' + mm + '/' + yyyy;
+           let productpicker = this.$$('#productSelector');
+           let sizePicker = this.$$('#sizeSelector');
+           let usedProcess =  this.$$('#usedProcess');
+           let createOrder = this.$$('#createOrder');
+           let productionStart = this.$$('#productionStart');
+           let product = this.$$('#product');
+           let orderQuantity = this.$$('#orderQuantity');
+
+           productpicker.addEventListener('value-changed', function() {
+              let key = productpicker.value;   
+             // usedProcess.innerHTML = this.$.productQuery.ref(key + '/process/').$val;
+              createOrder.innerHTML = today;
+              console.log("PRODUCT" + key);
+              if(key != null) {
+                 //  const selectProductQuery = this.$.productQuery.ref.child(key);
+                 //console.log(selectProductQuery.ref('/size/'));
+                 //selectProductQuery.on('value', snap => console.log(snap.val()));
+                 //sizePicker.items = null;
+                   product.innerHTML = key;
+                 //if(sizePicker.items != null) {
+                   sizePicker.disabled = false;
+                 //}
+              }
+           });
+
+          sizePicker.addEventListener('value-changed', function() {
+              let size = sizePicker.value;   
+              console.log('Select size:' + size);
+        });
     },
     dataChanged: function (newData, oldData) {
           console.info("Data has been loaded!!");
@@ -612,9 +622,9 @@
             value: [ -0.3, 0.7, -0.1, 1.4 ]
           }
       },
-      loop: function (cycle) {
-            if (!cycle) return ''
-            return cycle.mill + cycle.drill + ',' + cycle.polish
+      calCycleTime: function (cycle,amount) {
+            if (!cycle) return '';
+            return (cycle.drill + cycle.mill + cycle.pack + cycle.polish + cycle.trim + cycle.weld)*amount
           }
     });
   </script>

@@ -18,22 +18,6 @@
       }
       
     </style>
-   <div class="fixed-card card">
-  <vaadin-column-chart id="column-with-negative-values">
-    <chart-title>Monthly Order Plan</chart-title>
-    <subtitle>2017</subtitle>
-    <x-axis>
-      <categories>Jan, Feb, March, April, May, June, July, Aug, Sep, Oct, Nov, Dec</categories>
-    </x-axis>
-    <y-axis>
-      <chart-title>Orders</chart-title>
-    </y-axis>
-    <tooltip point-format="{series.name}: {point.y} Orders"></tooltip>
-    <data-series name="C-Clamp" data="[[revenueSeries]]"></data-series>
-    <data-series name="Gear" data="[[expensesData]]"></data-series>
-    <data-series name="Steel-Shelf" data="[[netData]]"></data-series>
-  </vaadin-column-chart>
-      </div>
       <div class="fixed-card card">
         <h1>Production Building Block</h1>
          <vaadin-combo-box style="width:300px;" label="Product" name="product" items="[[product]]" id="productSelector" value="All" item-label-path="name" item-value-path="[[symbol]]" required always-float-label></vaadin-combo-box>
@@ -70,21 +54,7 @@
             ]
           }
         },
-         revenueSeries: {
-            type: Array,
-            notify: true,
-            value: [ 15, 28, 32, 23, 21 ]
-          },
-          expensesData: {
-            type: Array,
-            notify: true,
-            value: [ 12, 11, 13, 9, 15 ]
-          },
-          netData: {
-            type: Array,
-            notify: true,
-            value: [ 23, 7, 3, 14, 12 ]
-          }
+  
       }
     });
   </script>

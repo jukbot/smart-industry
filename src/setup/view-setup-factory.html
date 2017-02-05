@@ -40,6 +40,7 @@
       <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
               <paper-input label="Acceptable Waste (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]" type="number" min="0" max="1" step="0.01" required always-float-label auto-validate></paper-input>
+              <paper-input label="Job Reschedule (days)" name="reschedule" id="reschedule" value="1" required always-float-label auto-validate></paper-input>  
               <paper-input label="Operation start" name="opstart" on-tap="toggleTimeDialog" id="opStart" value="[[factoryOperation.op_start]]" required always-float-label auto-validate></paper-input>
               <paper-input label="Operation end" name="opend" on-tap="toggleTimeDialog" id="opEnd" value="[[factoryOperation.op_end]]" required always-float-label auto-validate></paper-input>
               <paper-input label="Over Time start" name="otstart" on-tap="toggleTimeDialog" id="otStart" value="[[factoryOperation.ot_start]]" required always-float-label auto-validate></paper-input>
@@ -53,8 +54,6 @@
               <paper-checkbox checked>Fri</paper-checkbox>
               <paper-checkbox>Sat</paper-checkbox>
               </div><br>
-              
-              <paper-input label="Reschedule" name="reschedule" id="reschedule" value="1" required always-float-label auto-validate></paper-input>  
               <paper-dialog id="setupFactoryDialog" class="paper-time-picker-dialog" alwaysOnTop="true"
             role="dialog">
           <paper-time-picker id="timePicker" time="[[time]]"></paper-time-picker>

@@ -20,36 +20,158 @@
           -webkit-flex-basis: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
           flex-basis: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
           max-width: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
-        };
+        }
+        ;
       }
-       
-        app-router {
-            position: relative;
+      
+      app-header {
+        color: #fff;
+        background-color: var(--app-primary-color);
+      }
+      
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+        width: 32px;
+        height: 32px;
+      }
+      
+      app-router {
+        position: relative;
+      }
+      
+      app-toolbar {
+        /* Toolbar is the main header, so give it some color */
+        background-color: #333333;
+        font-family: 'Roboto', Helvetica, sans-serif;
+        color: #fff;
+        --app-toolbar-font-size: 24px;
+      }
+      
+      app-drawer {
+        --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
+        --app-drawer-content-container: {
+          box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);
         }
+      }
+          
+      iron-icon {
+        color: #333333;
+      }
 
-        app-header {
-          color: white;
-        }
+      paper-menu {
+        display: inline-block;
+      }
+      
+      paper-menu-button {
+        margin: auto;
+      }
+      
+      paper-tabs {
+        --paper-tabs-selection-bar-color: var(--app-primary-color);
+        height: 100%;
+      }
+      
+      paper-tab {
+        --paper-tab-ink: #2d3238;
+        text-transform: uppercase;
+      }
+      
+      [hidden] {
+        display: none !important;
+      }
+      
+      paper-icon-button+[main-title] {
+        margin: 32px;
+      }
+      
+      paper-dropdown-menu {
+        width: 200px;
+        margin-right: 20px;
+      }
 
-        app-header paper-icon-button {
-          --paper-icon-button-ink-color: white;
-        }
+      paper-button {
+        display: inline-block;
+        margin: 0;
+      }
+      
+      paper-button.smart {
+        background-color: seagreen;
+        color: white;
+      }
+      
+      paper-button.smart:hover {
+        background: lightseagreen;
+      }
+      
+      paper-button.fancy {
+        background: indigo;
+        color: white;
+      }
+      
+      paper-button.fancy:hover {
+        background-color: purple;
+      }
+      
+      paper-button.smart {
+        background-color: seagreen;
+        color: white;
+      }
+      
+      paper-button.smart:hover {
+        background-color: lightseagreen;
+      }
+      
+      paper-button.magic {
+        background-color: green;
+        color: white;
+      }
+      
+      paper-button.magic:hover {
+        background-color: yellowgreen;
+      }
+      
+      paper-button.candy {
+        background-color: hotpink;
+        color: white;
+      }
+      
+      paper-button.candy:hover {
+        background-color: deeppink;
+      }
+      
+      paper-button.chilli {
+        background-color: firebrick;
+        color: white;
+      }
+      
+      paper-button.chilli:hover {
+        background-color: red;
+      }
+      
+      paper-button.water {
+        background-color: dodgerblue;
+        color: white;
+      }
+      
+      paper-button.water:hover {
+        background-color: deepskyblue;
+      }
+      
+      p {
+        margin: 0;
+      }
 
-        app-toolbar {
-          /* Toolbar is the main header, so give it some color */
-          background-color: #333333;
-          font-family: 'Roboto', Helvetica, sans-serif;
-          color: #fff;
-          --app-toolbar-font-size: 24px;
-        }
-
-        app-drawer {
-          --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
-          --app-drawer-content-container: {
-            box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);
-          }
-        }
-
+      h1 {
+        margin: 0;
+        color: #212121;
+        font-size: 22px;
+      }
+      
+      ul {
+        padding: 0;
+        list-style: none;
+      }
+      
       .flex {
         @apply(--layout-horizontal);
       }
@@ -102,68 +224,7 @@
         bottom: 0;
         left: 0;
       }
-
-      .animated {
-        -webkit-animation-duration: 0.25s;
-        animation-duration: 0.25s;
-        -webkit-animation-fill-mode: both;
-        animation-fill-mode: both;
-      }
-
-          @-webkit-keyframes zoomIn {
-      from {
-        opacity: 0;
-        -webkit-transform: scale3d(.3, .3, .3);
-        transform: scale3d(.3, .3, .3);
-      }
-
-      50% {
-        opacity: 1;
-      }
-    }
-
-    @keyframes zoomIn {
-      from {
-        opacity: 0;
-        -webkit-transform: scale3d(.3, .3, .3);
-        transform: scale3d(.3, .3, .3);
-      }
-
-      50% {
-        opacity: 1;
-      }
-    }
-
-    .zoomIn {
-      -webkit-animation-name: zoomIn;
-      animation-name: zoomIn;
-    }
-
-
-       @media (min-width: 360px) and (max-width: 768px) {
-         :host {
-          --app-grid-columns: 1;
-        }
-      }
-
-      @media (min-width: 769px) and (max-width: 1024px) {
-         :host {
-          --app-grid-columns: 2;
-        }
-      }
-
-      @media (min-width: 1025px) and (max-width: 1200px) {
-         :host {
-          --app-grid-columns: 3;
-        }
-      }
-       @media (min-width: 1201px) and (max-width: 2560px) {
-         :host {
-          --app-grid-columns: 4;
-        }
-      }
-
-
+      
       .wrap-card {
         display: -webkit-flex;
         display: flex;
@@ -175,7 +236,7 @@
         -moz-box-sizing: border-box;
         box-sizing: border-box;
       }
-
+      
       .card {
         height: auto;
         min-height: 100%;
@@ -192,12 +253,12 @@
         box-sizing: border-box;
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
       }
+      /* fixed size while drag and drop */
       
-     /* fixed size while drag and drop */
       .fixed-card {
         width: 100%;
       }
-
+      
       .circle {
         display: inline-block;
         width: 64px;
@@ -209,90 +270,10 @@
         font-size: 30px;
         line-height: 64px;
       }
-        
+      
       .form-wrapper {
         width: 100%;
       }
-      
-      h1 {
-        margin: 0;
-        color: #212121;
-        font-size: 22px;
-      }
-      
-      ul {
-      padding: 0;
-      list-style: none;
-      }
-
-      paper-button {
-        margin: 0;
-        padding: 12px 30px;
-      }
-
-      paper-button.smart {
-        background-color: seagreen;
-        color: white;
-      }
-      
-      paper-button.smart:hover {
-        background: lightseagreen;
-      }
-
-      paper-button.fancy {
-        background: indigo;
-        color: white;
-      }
-      
-      paper-button.fancy:hover {
-        background-color: purple;
-      }
-     
-      paper-button.smart {
-        background-color: seagreen;
-        color: white;
-      }
-      
-      paper-button.smart:hover {
-        background-color: lightseagreen;
-      }
-  
-      paper-button.magic {
-        background-color: green;
-        color: white;
-      }
-      
-      paper-button.magic:hover {
-        background-color: yellowgreen;
-      }
-
-      paper-button.candy {
-        background-color: hotpink;
-        color: white;
-      }
-      
-      paper-button.candy:hover {
-        background-color: deeppink;
-      }  
-
-      paper-button.chilli {
-        background-color: firebrick;
-        color: white;
-      }
-
-      paper-button.chilli:hover {
-        background-color: red;
-      }
-
-      paper-button.water {
-        background-color: dodgerblue;
-        color: white;
-      }
-
-      paper-button.water:hover {
-        background-color: deepskyblue;
-      }
-      
     </style>
   </template>
 </dom-module>
