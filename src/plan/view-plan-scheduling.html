@@ -117,7 +117,6 @@
                 <p>Create Order Date: <span id="createOrder"></span></p>
                 <p>Production Start: <span id="productionStart"></span></p>
                 <p>Processes Used: <span id="usedProcess">[[x.process]]</span></p>
-                <p>Machine Used: <span id="usedMachine"></span></p>
                 <p>Expect Delivery: <span id="estimateDelivery"></span></p>
                 <p>Estimate Duration: <span id="estimateDuration">[[calCycleTime(y.cycle, amount)]]</span></p>
                 <p>Queue number: <span id="estimateDuration"></span></p>
@@ -498,9 +497,7 @@
               createOrder.innerHTML = today;
           
               if(product_list != null) {
-                console.log("juk");
                  if(sizePicker.items != null) {
-                   console.log("jame");
                      sizePicker.disabled = false;
                  }
               }
