@@ -90,12 +90,11 @@
             <div class="form-wrapper">
               <paper-input label="Order Number" name="order-no" id="orderNumber" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
               <paper-input label="Customer Name" name="order-name" id="orderName" required always-float-label auto-validate></paper-input>
-              <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="orderQuantity" required always-float-label auto-validate allowed-pattern="[0-9]" value='{{a}}'></paper-input>
-              <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" required always-float-label selected-item='{{x}}'></vaadin-combo-box>
-              <vaadin-combo-box label="Size" name="size"  items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
+              <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="orderQuantity" required always-float-label auto-validate allowed-pattern="[0-9]" value='{{amount}}'></paper-input>
+              <vaadin-combo-box label="Product" name="product" value="{{p_name}}" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
+              <vaadin-combo-box label="Size" name="size" value="{{p_size}}" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
              <!-- <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
-              --> 
-              </vaadin-combo-box>
+              </vaadin-combo-box> -->
               <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
               min="2017-01-01" class="date-selector" id="deliverySelector"></vaadin-date-picker>
                 <br>
@@ -103,7 +102,7 @@
                 <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
               </template>
                <div class="button-group">
-               <paper-button raised class="smart" on-tap="createOrder">Create</paper-button>
+                <paper-button raised class="smart" on-tap="createOrder">Create</paper-button>
                 <paper-button raised class="fancy" on-tap="calculateOrder">Calculate</paper-button>
                </div>
             </div>
@@ -113,15 +112,14 @@
       <li>
         <div class="card order-info">
                 <h1>Order Information</h1>
-                <p>Job Priority Type: <span id="priorityType">[[factoryStandard.priority]]</span></p>
-                <p>Product Name: <span id="product"></span></p>
-                <p>Actual Quantity: <span id="actualQuantity"></span> [[a]]</p>
+                <p>Product Name: <span id="product">[[p_name]] [[y.name]]</span></p>
+                <p>Actual Quantity: <span id="actualQuantity">[[amount]]</span></p>
                 <p>Create Order Date: <span id="createOrder"></span></p>
                 <p>Production Start: <span id="productionStart"></span></p>
-                <p>Processes Used: <span id="usedProcess">[[productQuery]]</span></p>
+                <p>Processes Used: <span id="usedProcess">[[x.process]]</span></p>
                 <p>Machine Used: <span id="usedMachine"></span></p>
                 <p>Expect Delivery: <span id="estimateDelivery"></span></p>
-                <p>Estimate Duration: <span id="estimateDuration">[[calCycleTime(y.cycle, a)]]</span></p>
+                <p>Estimate Duration: <span id="estimateDuration">[[calCycleTime(y.cycle, amount)]]</span></p>
                 <p>Queue number: <span id="estimateDuration"></span></p>
                 <p>Waiting Queue: <span id="estimateDuration"></span></p>
                 <p>Order Workload: <span id="estimateDuration"></span></p>
@@ -418,10 +416,7 @@
          let deliverypicker = this.$$("#deliverySelector");
          let workdatepicker = this.$$('#workdateSelector');
          let actualquantity = this.$$('#actualQuantity');
-         let quantity = this.$$('#orderQuantity');
-         quantity.addEventListener('value-changed', function() {
-           actualquantity.innerHTML = quantity.value;
-         });
+         let quantity = this.$$('#orderQuantity'); 
          // querySelector ==> this.shadowRoot.querySelector('')
           deliverypicker.addEventListener('value-changed', function() {
             console.log('Selected date: ' + deliverypicker.value);
@@ -496,23 +491,18 @@
            let usedProcess =  this.$$('#usedProcess');
            let createOrder = this.$$('#createOrder');
            let productionStart = this.$$('#productionStart');
-           let product = this.$$('#product');
            let orderQuantity = this.$$('#orderQuantity');
 
            productpicker.addEventListener('value-changed', function() {
-              let key = productpicker.value;   
-             // usedProcess.innerHTML = this.$.productQuery.ref(key + '/process/').$val;
+              let product_list = productpicker.value;   
               createOrder.innerHTML = today;
-              console.log("PRODUCT" + key);
-              if(key != null) {
-                 //  const selectProductQuery = this.$.productQuery.ref.child(key);
-                 //console.log(selectProductQuery.ref('/size/'));
-                 //selectProductQuery.on('value', snap => console.log(snap.val()));
-                 //sizePicker.items = null;
-                   product.innerHTML = key;
-                 //if(sizePicker.items != null) {
-                   sizePicker.disabled = false;
-                 //}
+          
+              if(product_list != null) {
+                console.log("juk");
+                 if(sizePicker.items != null) {
+                   console.log("jame");
+                     sizePicker.disabled = false;
+                 }
               }
            });
 
@@ -624,6 +614,7 @@
       },
       calCycleTime: function (cycle,amount) {
             if (!cycle) return '';
+            console.log("Size of obj: " + Object.keys(cycle).length);
             return (cycle.drill + cycle.mill + cycle.pack + cycle.polish + cycle.trim + cycle.weld)*amount
           }
     });
