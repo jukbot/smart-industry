@@ -1,4 +1,4 @@
-# Polymer App Toolbox - Starter Kit
+# Polymer App Starter Kit
 
 [![Build Status](https://travis-ci.org/PolymerElements/polymer-starter-kit.svg?branch=master)](https://travis-ci.org/PolymerElements/polymer-starter-kit)
 
@@ -26,15 +26,18 @@ The PRPL pattern, in a nutshell:
 
 ##### Prerequisites
 
+NodeJS version >= 6.x
+
+    https://nodejs.org/en/
+
 Install [polymer-cli](https://github.com/Polymer/polymer-cli):
 
     npm install -g polymer-cli
 
-##### Initialize project from template
+Install bower:
 
-    mkdir my-app
-    cd my-app
-    polymer init starter-kit
+    npm install -g bower
+
 
 ### Start the development server
 
