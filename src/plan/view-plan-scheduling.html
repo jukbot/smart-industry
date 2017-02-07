@@ -611,6 +611,11 @@
       calCycleTime: function (cycle,amount) {
             if (!cycle) return '';
             console.log("Size of obj: " + Object.keys(cycle).length);
+            var summed = 0;
+            for (var key in cycle) {
+              summed += cycle[key];
+            };
+            console.log("sum : " + summed*amount);
             return (cycle.drill + cycle.mill + cycle.pack + cycle.polish + cycle.trim + cycle.weld)*amount
           }
     });
