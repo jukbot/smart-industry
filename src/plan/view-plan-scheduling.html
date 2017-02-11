@@ -87,9 +87,9 @@
           <h1>Create Order</h1>
           <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
-              <paper-input label="Order Number" name="order-no" id="orderNumber" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
-              <paper-input label="Customer Name" name="order-name" id="orderName" required always-float-label auto-validate></paper-input>
-              <paper-input label="Amount" name="order-quantity" type="number" min="0" max="10000" id="orderQuantity" required always-float-label auto-validate allowed-pattern="[0-9]" value='{{amount}}'></paper-input>
+              <paper-input label="Order Number" name="order-no" id="orderNumber" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <paper-input label="Customer Name" name="order-name" type="text" id="orderName" required always-float-label auto-validate></paper-input>
+              <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
               <vaadin-combo-box label="Product" name="product" value="{{p_name}}" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
               <vaadin-combo-box label="Size" name="size" value="{{p_size}}" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
              <!-- <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
@@ -101,7 +101,7 @@
                 <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
               </template>
                <div class="button-group">
-                <paper-button raised class="smart" on-tap="createOrder">Create</paper-button>
+                <paper-button raised class="smart" disabled on-tap="createOrder">Create</paper-button>
                 <paper-button raised class="fancy" on-tap="calculateOrder">Calculate</paper-button>
                </div>
             </div>
@@ -139,109 +139,7 @@
     </x-axis>
     <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
     <tooltip use-html="true"
-             formatter="function () {return this.series.name +': ' + ' Duration ' + Highcharts.dateFormat('%H:%M', this.point.high-this.point.low) + ' hr.'} + { this.point.stackTotal } "></tooltip>
-
-    <plot-options>
-        <columnrange grouping="false">
-            <data-labels enabled="true" inside="true" color="white"
-                         formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
-        </columnrange>
-    </plot-options>
-    <data-series name="Order #1">
-        <color>rgba(255, 60, 125, 0.8)</color>
-        <data>
-            [Date.UTC(2017,01,02,08,00,00),Date.UTC(2017,01,02,09,00,00)],
-            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
-            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
-            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
-            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,00,00)],
-            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)]
-        </data>
-    </data-series>
-    <data-series name="Order #2">
-        <color>rgba(60, 125, 255, 0.8)</color>
-        <data>
-            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
-            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,11,00,00)],
-            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
-            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,30,00)],
-            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)],
-            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,17,00,00)]
-        </data>
-    </data-series>
-    <data-series name="Order #3">
-        <color>rgba(164, 208, 95, 0.8)</color>
-        <data>
-            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
-            [Date.UTC(2017,01,02,11,00,00),Date.UTC(2017,01,02,13,00,00)],
-            null,
-            [Date.UTC(2017,01,02,15,30,00),Date.UTC(2017,01,02,16,00,00)],
-            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,16,30,00)],
-            null
-        </data>
-    </data-series>
-</vaadin-columnrange-chart>
-  
-<vaadin-columnrange-chart id="column-range-resource-usage">
-    <chart width="1200" inverted="true"></chart>
-    <chart-title>EDD Daily Order Production Workflow</chart-title>
-    <x-axis>
-        <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
-    </x-axis>
-    <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
-    <tooltip use-html="true"
-             formatter="function () {return this.series.name +': ' + ' Duration ' + Highcharts.dateFormat('%H:%M', this.point.high-this.point.low) + ' hr.'} + { this.point.stackTotal } "></tooltip>
-
-    <plot-options>
-        <columnrange grouping="false">
-            <data-labels enabled="true" inside="true" color="white"
-                         formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
-        </columnrange>
-    </plot-options>
-    <data-series name="Order #1">
-        <color>rgba(255, 60, 125, 0.8)</color>
-        <data>
-            [Date.UTC(2017,01,02,08,00,00),Date.UTC(2017,01,02,09,00,00)],
-            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
-            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
-            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
-            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,00,00)],
-            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)]
-        </data>
-    </data-series>
-    <data-series name="Order #2">
-        <color>rgba(60, 125, 255, 0.8)</color>
-        <data>
-            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
-            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,11,00,00)],
-            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
-            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,30,00)],
-            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)],
-            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,17,00,00)]
-        </data>
-    </data-series>
-    <data-series name="Order #3">
-        <color>rgba(164, 208, 95, 0.8)</color>
-        <data>
-            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
-            [Date.UTC(2017,01,02,11,00,00),Date.UTC(2017,01,02,13,00,00)],
-            null,
-            [Date.UTC(2017,01,02,15,30,00),Date.UTC(2017,01,02,16,00,00)],
-            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,16,30,00)],
-            null
-        </data>
-    </data-series>
-</vaadin-columnrange-chart>
-  
-<vaadin-columnrange-chart id="column-range-resource-usage">
-    <chart width="1200" inverted="true"></chart>
-    <chart-title>SPT Daily Order Production Workflow</chart-title>
-    <x-axis>
-        <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
-    </x-axis>
-    <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
-    <tooltip use-html="true"
-             formatter="function () {return this.series.name +': ' + ' Duration ' + Highcharts.dateFormat('%H:%M', this.point.high-this.point.low) + ' hr.'} + { this.point.stackTotal } "></tooltip>
+             formatter="function () {return this.series.name +': ' + ' Duration ' + Highcharts.dateFormat('%H:%M', this.point.high-this.point.low) + ' hr.'}"></tooltip>
 
     <plot-options>
         <columnrange grouping="false">
@@ -519,7 +417,7 @@
             };
             console.log("sum : " + summed*amount);
             let cycletime =  (cycle.drill + cycle.mill + cycle.pack + cycle.polish + cycle.trim + cycle.weld)*amount/3600.00;
-            return cycletime;
+            return cycletime.toFixed(2) + "Hrs.";
      },
 
       properties: {
