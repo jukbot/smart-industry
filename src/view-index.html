@@ -211,6 +211,7 @@
           if (!this.route.path) {
             this.set('route.path', 'dashboard');
           }
+          //this.route.path = 'dashboard';
         });
       },
       login: function () {
@@ -320,11 +321,11 @@
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
-        if (!page) {
+     /*   if (!page) {
           this.set('route.path', 'dashboard');
           return;
-        }
-        this.page = page || 'dashboard';
+        }*/
+       this.page = page || 'dashboard';
       },
 
       _pageChanged: function (page) {

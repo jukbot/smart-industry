@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="view-dashboard">
@@ -70,12 +71,8 @@
       _routeTabsChanged: function (tabs) {
         this.tabs = tabs || 'overview';
         
-      //  const section = tabs.split("-")[0];
         const resolvedPageUrl = this.resolveUrl('dashboard/' + 'view-dashboard-' + tabs + '.html');
-        this.importHref(resolvedPageUrl, null, this._showPage404, true);
-      },
-       _showPage404: function () {
-        this.page = '404';
+        this.importHref(resolvedPageUrl, null, null, true);
       }
     });
   </script>
