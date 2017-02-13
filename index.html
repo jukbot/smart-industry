@@ -8,9 +8,9 @@
     <meta name="description" content="Smart Manufacturing Execution Systems for Production in Industry v1.0">
     <meta name="author" content="KMUTT">
     <meta name="robots" content="index, follow">
-    <link rel="icon" href="images/favicon.ico">
+    <link rel="icon" href="/images/favicon.ico">
     <!-- See https://goo.gl/OOhYW5 -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <!-- See https://goo.gl/qRE0vM -->
     <meta name="theme-color" content="#333">
     <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
@@ -21,11 +21,11 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Smart MES">
     <!-- Homescreen icons -->
-    <link rel="apple-touch-icon" href="images/manifest/icon-48x48.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="images/manifest/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="96x96" href="images/manifest/icon-96x96.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png">
+    <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
     <!-- Tile icon for Windows 8 (144x144 + tile color) -->
     <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
     <meta name="msapplication-TileColor" content="#333">
@@ -37,8 +37,6 @@
         dom: 'shadow',
         lazyRegister: true,
       };
-      
-      window.performance && performance.mark && performance.mark('index.html');
 
       // Load webcomponentsjs polyfill if browser does not support native
       // Web Components
@@ -64,7 +62,7 @@
         if (!webComponentsSupported) {
           var script = document.createElement('script');
           script.async = true;
-          script.src = 'bower_components/webcomponentsjs/webcomponents.min.js';
+          script.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
           script.onload = onload;
           document.head.appendChild(script);
         } else {
@@ -72,35 +70,33 @@
         }
       })();
 
-      // Load pre-caching Service Worker for work offline
+      // Load pre-caching Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('/service-worker.js');
         });
       }
     </script>
-    <link rel="import" href="src/view-index.html">
+    <link rel="import" href="/src/view-index.html">
     <style>   
    body {
      margin: 0;
      font-family: 'Roboto', 'Noto', sans-serif;
      line-height: 1.5;
-     min-height: 100vh;
+     min-height: 1vh;
      background-color: #f1f1f1;
      -webkit-font-smoothing: antialiased;
    }
-
    
 .wrapper {
+  margin: 250px 0 0 0;
   font-size: 1.6rem;
-  width: 100%;
-  height: 100%;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
@@ -136,7 +132,6 @@
 }
 
 .hourglass {
-  display: block;
   margin: 0;
   width: 2em;
   height: 4em;
@@ -195,9 +190,8 @@
     <svg class="hourglass" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 206" preserveAspectRatio="none">
         <path class="middle" d="M120 0H0v206h120V0zM77.1 133.2C87.5 140.9 92 145 92 152.6V178H28v-25.4c0-7.6 4.5-11.7 14.9-19.4 6-4.5 13-9.6 17.1-17 4.1 7.4 11.1 12.6 17.1 17zM60 89.7c-4.1-7.3-11.1-12.5-17.1-17C32.5 65.1 28 61 28 53.4V28h64v25.4c0 7.6-4.5 11.7-14.9 19.4-6 4.4-13 9.6-17.1 16.9z"/>
         <path class="outer" d="M93.7 95.3c10.5-7.7 26.3-19.4 26.3-41.9V0H0v53.4c0 22.5 15.8 34.2 26.3 41.9 3 2.2 7.9 5.8 9 7.7-1.1 1.9-6 5.5-9 7.7C15.8 118.4 0 130.1 0 152.6V206h120v-53.4c0-22.5-15.8-34.2-26.3-41.9-3-2.2-7.9-5.8-9-7.7 1.1-2 6-5.5 9-7.7zM70.6 103c0 18 35.4 21.8 35.4 49.6V192H14v-39.4c0-27.9 35.4-31.6 35.4-49.6S14 81.2 14 53.4V14h92v39.4C106 81.2 70.6 85 70.6 103z"/>
-    </svgLoading
-</div></main-app>
-    
-
+    </svg>
+</div>
+</main-app>
   </body>
 </html>

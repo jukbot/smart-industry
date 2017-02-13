@@ -1,49 +1,47 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<!-- app module -->
+<!-- app modules - used for core functions -->
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-<!-- iron module -->
-<link rel="import" href="../bower_components/iron-form/iron-form.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
-<link rel="import" href="../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
-<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
-<!-- paper module -->
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<!-- paper modules - used for user interface -->
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
-<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../bower_components/paper-time-picker/paper-time-picker.html">
-<link rel="import" href="../bower_components/paper-stepper/paper-stepper.html">
-<link rel="import" href="../bower_components/paper-stepper/paper-step.html">
-<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
-<!-- neon module -->
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-stepper/paper-step.html">
+<link rel="import" href="../bower_components/paper-stepper/paper-stepper.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-time-picker/paper-time-picker.html">
+<!-- neon modules - used for animation -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
-<!-- 3rd party module -->
+<!-- 3rd party modules -->
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/sortable-list/sortable-list.html">
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
 <link rel="import" href="../bower_components/vaadin-charts/vaadin-charts.html">
-<link rel="import" href="../bower_components/sortable-list/sortable-list.html">
-
-<!-- Firebase module -->
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<!-- shared style -->
 <link rel="import" href="shared-styles.html">
 <dom-module id="main-app">
   <template>
@@ -59,7 +57,7 @@
           z-index: 1;
         }
       }
-
+      
       .menu-item {
         min-width: 120px;
       }
@@ -83,7 +81,7 @@
       
       .main-header {
         box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
-      } 
+      }
       
       .main-title {
         font-size: 2.25rem;
@@ -101,95 +99,99 @@
         height: auto;
         display: block;
       }
-
+      
       .account-btn {
         margin: 0;
         padding: 4px;
       }
+      
       .display-name {
         margin: 0;
         font-size: 1rem;
       }
-
+      
       .center-box {
         display: flex;
         align-items: center;
         justify-content: center;
         height: 5em;
       }
-      .login-btn, .logout-btn {
+      
+      .login-btn,
+      .logout-btn {
         margin: 0;
         display: inline-block;
         text-align: center;
       }
-
+      
       div.sidebar-menu {
-         border-bottom: 1px solid #d6d6d6;
-         margin: 10px;
+        border-bottom: 1px solid #d6d6d6;
+        margin: 10px;
       }
     </style>
-    <!-- app-firebase -->
     <firebase-app auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445">
-      </firebase-app>
-      <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
-      </firebase-auth>
-      <firebase-document id="factoryStandard" path="/metadata" data="{{metadata}}"></firebase-document>
-      <!-- app-location binds to the app's URL -->
-      <app-location route="{{route}}"></app-location>
-      <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}" active="{{pageActive}}"></app-route>
-      <!-- wrapper -->
-      <app-drawer-layout fullbleed>
-        <!-- Navbar content -->
-        <app-drawer id="drawer" swipe-open>
-          <img class="logo" src="../images/logo/industrial.svg" alt="logo">
-          <div class="main-title" main-title>SMART MES</div>
-          <!-- sidebar hightlighter -->
-          <iron-selector selected="{{routeData.page}}" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
-            <template is="dom-repeat" items="{{menus}}">
-              <a name="{{item.view}}" href="/{{item.url}}">
-                <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
-            </template>
-          </iron-selector>
-          <div class="sidebar-menu"></div>
-          <div class="center-box">
+    </firebase-app>
+    <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
+    </firebase-auth>
+    <firebase-document id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
+    <!-- app-location binds to the app's URL -->
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}" active="{{pageActive}}"></app-route>
+    <!-- wrapper -->
+    <app-drawer-layout fullbleed>
+      <!-- Navbar content -->
+      <app-drawer id="drawer" swipe-open>
+        <img class="logo" src="../images/logo/industrial.svg" alt="logo">
+        <div class="main-title" main-title>SMART MES</div>
+        <!-- sidebar hightlighter -->
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
+          <template is="dom-repeat" items="{{menus}}">
+            <a name="{{item.view}}" href="/{{item.url}}">
+              <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
+          </template>
+        </iron-selector>
+        <div class="sidebar-menu"></div>
+        <div class="center-box">
           <paper-button raised class="chilli login-btn" on-tap="login" hidden$="[[user]]">Sign in</paper-button>
           <paper-button raised class="chilli logout-btn" on-tap="logout" hidden$="[[!user]]">Sign out</paper-button>
-          </div>
-           <template is="dom-if" if="[[user]]">
-            <p>Debug user:[[user.displayName]]</p>
-            <p>E-mail: [[user.email]]</p>
-            <p>E-mail verify: [[user.emailVerified]]</p>
-            <p>UID: [[user.uid]]</p>
-            <p>Anonymous: [[user.isAnonymous]]</p>
-            <p>App: [[metadata.appName]]</p>
-            <p>Develop by: [[metadata.appDeveloper]]</p>
-          </template> 
-        </app-drawer>
-        <!-- start header layout -->
-        <app-header-layout fullbleed has-scrolling-region>
-          <app-header class="app-head" fixed>
-            <app-toolbar>
-              <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button>
-              <div class="page-title" main-title>{{routeData.page}}</div> 
-              <paper-menu-button vertical-align="top" horizontal-align="right">
-                <paper-icon-button icon="account-circle" class="account-btn dropdown-trigger" alt="menu"></paper-icon-button>
-                <paper-menu class="dropdown-content">
-                  <iron-selector selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="overview">
-                    <paper-item class="menu-item" name="help">
-                      <paper-icon-button icon="help" alt="help"></paper-icon-button> Help</paper-item>
-                    <paper-item class="menu-item" name="settings">
-                      <paper-icon-button icon="settings" alt="settings"></paper-icon-button> Settings</paper-item>
-                    <paper-item class="menu-item" name="logout">
-                      <paper-icon-button icon="exit-to-app" alt="logout"></paper-icon-button> Logout</paper-item>
-                  </iron-selector>
-                </paper-menu>
-              </paper-menu-button>
-              <template is="dom-if" if="[[user]]" hidden$="[[!user]]"><p class="display-name">[[user.displayName]]</p></template>
-            </app-toolbar>
-          </app-header>
+        </div>
+        <template is="dom-if" if="[[user]]">
+          <p>Debug user:[[user.displayName]]</p>
+          <p>E-mail: [[user.email]]</p>
+          <p>E-mail verify: [[user.emailVerified]]</p>
+          <p>UID: [[user.uid]]</p>
+          <p>Anonymous: [[user.isAnonymous]]</p>
+          <p>App: [[metadata.appName]]</p>
+          <p>Develop by: [[metadata.appDeveloper]]</p>
+        </template>
+      </app-drawer>
+      <!-- start header layout -->
+      <app-header-layout fullbleed has-scrolling-region>
+        <app-header class="app-head" fixed>
+          <app-toolbar>
+            <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button>
+            <div class="page-title" main-title>{{routeData.page}}</div>
+            <paper-menu-button vertical-align="top" horizontal-align="right">
+              <paper-icon-button icon="account-circle" class="account-btn dropdown-trigger" alt="menu"></paper-icon-button>
+              <paper-menu class="dropdown-content">
+                <iron-selector selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="overview">
+                  <paper-item class="menu-item" name="help">
+                    <paper-icon-button icon="help" alt="help"></paper-icon-button> Help</paper-item>
+                  <paper-item class="menu-item" name="settings">
+                    <paper-icon-button icon="settings" alt="settings"></paper-icon-button> Settings</paper-item>
+                  <paper-item class="menu-item" name="logout">
+                    <paper-icon-button icon="exit-to-app" alt="logout"></paper-icon-button> Logout</paper-item>
+                </iron-selector>
+              </paper-menu>
+            </paper-menu-button>
+            <template is="dom-if" if="[[user]]" hidden$="[[!user]]">
+              <p class="display-name">[[user.displayName]]</p>
+            </template>
+          </app-toolbar>
+        </app-header>
         <!-- view content area -->
-        <iron-pages selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404" role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
           <view-dashboard name="dashboard" route="{{routeTail}}"></view-dashboard>
           <view-setup name="setup" route="{{routeTail}}"></view-setup>
           <view-planning name="planning" route="{{routeTail}}"></view-planning>
@@ -198,9 +200,9 @@
           <view-verifying name="verifying" route="{{routeTail}}"></view-verifying>
           <view-404 name="404"></view-404>
         </iron-pages>
-        </app-header-layout>
-      </app-drawer-layout>
-  <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
+      </app-header-layout>
+    </app-drawer-layout>
+    <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
     Polymer({
@@ -208,9 +210,9 @@
       ready: function () {
         this.async(function () {
           // If the path is blank, redirect to /
-          if (!this.route.path) {
+         /* if (!this.route.path) {
             this.set('route.path', 'dashboard');
-          }
+          }*/
           //this.route.path = 'dashboard';
         });
       },
@@ -236,11 +238,44 @@
           console.error("Error code: " + errorCode + " | " + errorMessage);
         });
       },
-      handleError: function(e) {
+      handleError: function (e) {
         alert("Authenticate error: " + e);
         console.error("Authenticate error:" + e);
       },
+      onLayoutChange: function (wide) {
+        var drawer = this.$.drawer;
+        if (wide && drawer.opened) {
+          drawer.opened = false;
+        }
+      },
+
+      _routePageChanged: function (page) {
+        this.page = page || 'dashboard';
+
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+        /*   if (!page) {
+             this.set('route.path', 'dashboard');
+             return;
+           }*/
+      },
+
+      _pageChanged: function (page) {
+        let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404, true);
+      },
+
+      _showPage404: function () {
+        this.page = '404';
+      },
+
       properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged',
+        },
         user: {
           type: Object
         },
@@ -249,11 +284,6 @@
         },
         metadata: {
           type: Object
-        },
-        page: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_pageChanged',
         },
 
         menus: {
@@ -300,43 +330,17 @@
         },
       },
 
+      observers: [
+        '_routePageChanged(routeData.page)',
+      ],
+
       wideLayout: {
         type: Boolean,
         value: false,
         observer: 'onLayoutChange',
       },
-
-      observers: [
-        '_routePageChanged(routeData.page)',
-      ],
-
-      onLayoutChange: function (wide) {
-        var drawer = this.$.drawer;
-        if (wide && drawer.opened) {
-          drawer.opened = false;
-        }
-      },
-
-      _routePageChanged: function (page) {
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
-     /*   if (!page) {
-          this.set('route.path', 'dashboard');
-          return;
-        }*/
-       this.page = page || 'dashboard';
-      },
-
-      _pageChanged: function (page) {
-        var resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
-        this.importHref(resolvedPageUrl, null, this._showPage404, true);
-      },
-
-      _showPage404: function () {
-        this.page = '404';
-      }
     });
   </script>
-  <script src="../bower_components/sugar/dist/sugar.min.js"></script> <!-- Load Calendar API -->
+  <script src="../bower_components/sugar/dist/sugar.min.js"></script>
+  <!-- Load Calendar API -->
 </dom-module>
