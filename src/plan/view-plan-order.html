@@ -1,0 +1,348 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-plan-order">
+ <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-columns: 2;
+        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
+        --app-grid-item-height: 50%;
+      }
+      
+      @media (max-width: 640px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      #job-scheduling-table data-table-row {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      cursor: pointer;
+      border-bottom: 1px solid #e3e3e3;
+      }
+
+       #job-scheduling-table .index {
+       color: red;
+       margin-left: 10px;
+       }
+       /* sort queue */
+      sortable-list div {
+        background-color: #ddd;
+        display: inline-block;
+        height: 100px;
+        margin: 10px 10px 0 0;
+        text-align: center;
+        vertical-align: top;
+        width: 150px;
+      }
+      
+      sortable-list div img {
+        height: 100%;
+        width: auto;
+      } 
+
+      .order-info p {
+        margin: 10px 0;
+      }
+
+     .button-group {
+       margin-top: 16px;
+     }
+     .button-group paper-button {
+       display: inline-flex;
+       width: 49.5%;
+       align-items: center; 
+       justify-content: center; 
+     }
+
+     .item-box {
+      height: 10em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center
+     }
+
+     .item {
+       margin:0;
+       width: 50%;
+       height: 50%;
+     }
+      #priorityType {
+        color: deeppink;      
+      }
+
+    </style>
+    <firebase-auth user="{{user}}"></firebase-auth>
+    <firebase-query id="orderQuery" path="/order" orderByChild="order_no" data="{{orderQuery}}"></firebase-query>
+    <firebase-query id="factoryQuery" path="/factory/standard" data="{{factoryStandard}}"></firebase-query>
+    <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
+    <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1>Create Order</h1>
+          <form is="iron-form" id="create-order-form" method="post">
+            <div class="form-wrapper">
+              <paper-input label="Order Number" name="order-no" id="orderNumber" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <paper-input label="Customer Name" name="order-name" type="text" id="orderName" required always-float-label auto-validate></paper-input>
+              <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
+              <vaadin-combo-box label="Product" name="product" value="{{p_name}}" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
+              <vaadin-combo-box label="Size" name="size" value="{{p_size}}" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
+             <!-- <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
+              </vaadin-combo-box> -->
+              <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
+              min="2017-01-01" class="date-selector" id="deliverySelector"></vaadin-date-picker>
+                <br>
+              <template is="dom-bind">
+                <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
+              </template>
+               <div class="button-group">
+                <paper-button raised class="smart" disabled on-tap="createOrder">Create</paper-button>
+                <paper-button raised class="fancy" on-tap="calculateOrder">Calculate</paper-button>
+               </div>
+            </div>
+          </form>
+        </div>
+      </li>
+      <li>
+        <div class="card order-info">
+                <h1>Order Information</h1>
+                <p>Product Name: <span id="product">[[p_name]] [[y.name]]</span></p>
+                <p>Actual Quantity: <span id="actualQuantity">[[amount]]</span></p>
+                <p>Create Order Date: <span id="createOrder"></span></p>
+                <p>Production Start: <span id="productionStart"></span></p>
+                <p>Processes Used: <span id="usedProcess">[[x.process]]</span></p>
+                <p>Expect Delivery: <span id="estimateDelivery"></span></p>
+                <p>Estimate Duration: <span id="estimateDuration">[[calCycleTime(y.cycle, amount)]]</span></p>
+                <p>Queue number: <span id="estimateDuration"></span></p>
+                <p>Waiting Queue: <span id="estimateDuration"></span></p>
+                <p>Order Workload: <span id="estimateDuration"></span></p>
+                <p>Raw Material Required: <span id="rawMaterial"></span></p>
+                <p>Total Order: [[today]]</p>
+        </div>
+      </li>
+    </ul>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-plan-order',
+      calculateOrder: function() {
+        alert("Disabled!!")
+      },
+      createOrder: function () {
+          let today = new Date();
+          let dd = today.getDate();
+          let mm = today.getMonth() + 1; //January is 0!
+          let yyyy = today.getFullYear();
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        today = dd + '/' + mm + '/' + yyyy;
+
+        this.$.orderQuery.ref.push({
+          order_date: today,
+          order_no: this.$.orderQuantity.value,
+          order_name: this.$.orderName.value,
+          order_product: this.$.productSelector.value,
+        }).key;
+     //   this.$.machineName.value = null;
+    //    this.$.machineType.value = null;
+      },
+      selectProduct: function() {
+     
+      },
+      selectSize: function() {
+         
+      },
+      uploadFile: function() {
+         var upload = this.$.uploadOrder;
+         upload.addEventListener('upload-request', e => {
+            e.preventDefault();
+            e.detail.xhr.send(e.detail.file);
+         });
+      },
+      ready: function() {
+         Sugar.Date.setLocale('en-GB');
+         let estdelivery = this.$$('#estimateDelivery');
+         let deliverypicker = this.$$("#deliverySelector");
+         let actualquantity = this.$$('#actualQuantity');
+         let orderQuantity = this.$$('#orderQuantity'); 
+         // querySelector ==> this.shadowRoot.querySelector('')
+          deliverypicker.addEventListener('value-changed', function() {
+            console.log('Selected date: ' + deliverypicker.value);
+            estdelivery.innerHTML = deliverypicker.value.split("-").reverse().join("/");
+           });
+         deliverypicker.i18n = {
+          week: 'Week',
+          calendar: 'Calendar',
+          clear: 'Clear',
+          today: 'Today',
+          cancel: 'Cancel',
+          firstDayOfWeek: 1,
+          monthNames:
+          'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
+          weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
+          weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
+          formatDate: function(date) {
+            return Sugar.Date.format(date, '{short}');
+          },
+          formatTitle: function(monthName, fullYear) {
+            return monthName + ' ' + fullYear;
+          },
+          parseDate: function(dateString) {
+            let matches = deliverypicker.i18n.monthNames.filter(function(monthName) {
+              return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
+            });
+            dateString = matches.length === 1 ? matches[0] : dateString;
+            // Parse the date
+            return Sugar.Date.create(dateString);
+          }
+        };
+       workdatepicker.i18n = {
+          week: 'Week',
+          calendar: 'Calendar',
+          clear: 'Clear',
+          today: 'Today',
+          cancel: 'Cancel',
+          firstDayOfWeek: 1,
+          monthNames:
+          'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
+          weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
+          weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
+          formatDate: function(date) {
+            return Sugar.Date.format(date, '{short}');
+          },
+          formatTitle: function(monthName, fullYear) {
+            return monthName + ' ' + fullYear;
+          },
+          parseDate: function(dateString) {
+            let matches = workdatepicker.i18n.monthNames.filter(function(monthName) {
+              return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
+            });
+            dateString = matches.length === 1 ? matches[0] : dateString;
+            // Parse the date
+            return Sugar.Date.create(dateString);
+          }
+        };
+          
+          let today = new Date();
+          let dd = today.getDate();
+          let mm = today.getMonth() + 1; //January is 0!
+          let yyyy = today.getFullYear();
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        today = dd + '/' + mm + '/' + yyyy;
+           let productpicker = this.$$('#productSelector');
+           let sizePicker = this.$$('#sizeSelector');
+           let usedProcess =  this.$$('#usedProcess');
+           let createOrder = this.$$('#createOrder');
+           let productionStart = this.$$('#productionStart');
+
+           productpicker.addEventListener('value-changed', function() {
+              let product_list = productpicker.value;   
+              createOrder.innerHTML = today;
+          
+              if(product_list != null) {
+                 if(sizePicker.items != null) {
+                     sizePicker.disabled = false;
+                 }
+              }
+           });
+
+          sizePicker.addEventListener('value-changed', function() {
+              let size = sizePicker.value;   
+              console.log('Select size:' + size);
+        });
+    },
+    dataChanged: function (newData, oldData) {
+          console.info("Data has been loaded!!");
+    },
+
+    calCycleTime: function (cycle,amount) {
+            if (!cycle) return '';
+            console.log("Size of obj: " + Object.keys(cycle).length);
+            let summed = 0;
+            for (var key in cycle) {
+              summed += cycle[key];
+            };
+            console.log("sum : " + summed*amount);
+            let cycletime =  (cycle.drill + cycle.mill + cycle.pack + cycle.polish + cycle.trim + cycle.weld)*amount/3600.00;
+            return cycletime.toFixed(2) + "Hrs.";
+     },
+      properties: {
+        productSize: {
+          type: Object
+        },
+        machineItems: {
+          type: Object
+        },
+        productItems: {
+          type: Object
+        },
+        productQuery: {
+          type: Object
+        },
+        factoryStandard: {
+          type: Object
+        },
+        orderQuery: {
+          type: Object
+        },
+        priority: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'Early Delivery (EDD)',
+                symbol: 'EDD',
+                number: 1
+              },
+              {
+                name: 'Order Date (FCFS)',
+                symbol: 'FCFS',
+                number: 2
+              },
+              {
+                name: 'Shortest Duration First (SPT)',
+                symbol: 'SPT',
+                number: 3
+              },  
+              {
+                name: 'Longest Duration First (LPT)',
+                symbol: 'LPT',
+                number: 4
+              }
+            ]
+          }
+        },
+        today: {
+          type: Object,
+          value: function () {  
+          let today = new Date();
+          let dd = today.getDate();
+          let mm = today.getMonth() + 1; //January is 0!
+          let yyyy = today.getFullYear();
+           if (dd < 10) {
+              dd = '0' + dd
+           }
+            if (mm < 10) {
+             mm = '0' + mm
+           }
+             today = dd + '/' + mm + '/' + yyyy;
+             return today;
+         }
+        },
+      }
+    });
+  </script>
+</dom-module>

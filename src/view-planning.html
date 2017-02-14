@@ -22,9 +22,9 @@
           </app-toolbar>
         </app-header>
           <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-plan-order name="order" route="{{subrouteTail}}"></view-plan-order>
           <view-plan-scheduling name="scheduling" route="{{subrouteTail}}"></view-plan-scheduling>
           <view-plan-production name="production" route="{{subrouteTail}}"></view-plan-production>
-          <view-plan-maintenance name="maintenance" route="{{subrouteTail}}"></view-plan-maintenance>
          </iron-pages> 
         </app-header-layout>  
   </template>
@@ -42,6 +42,12 @@
           value: function () {
             return [{
                 'section': 'planning',
+                'title': 'ORDER',
+                'view': 'order',
+                'icon': 'vaadin-icons:calendar-briefcase'
+              },
+              {
+                'section': 'planning',
                 'title': 'SCHEDULING',
                 'view': 'scheduling',
                 'icon': 'vaadin-icons:date-input'
@@ -52,12 +58,6 @@
                 'view': 'production',
                 'icon': 'vaadin-icons:tasks'
               },
-              {
-                'section': 'planning',
-                'title': 'MAINTENANCE',
-                'view': 'maintenance',
-                'icon': 'vaadin-icons:wrench'
-              }
             ];
           }
         }
