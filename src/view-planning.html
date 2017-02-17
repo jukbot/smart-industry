@@ -68,8 +68,7 @@
       ],
 
       _routeTabsChanged: function (tabs) {
-        this.tabs = tabs || 'scheduling';
-        
+        this.tabs = tabs || 'scheduling'; 
         const section = tabs.split("-")[0];
         const resolvedPageUrl = this.resolveUrl('plan/' + 'view-plan-' + tabs + '.html');
         console.log(resolvedPageUrl);

@@ -205,32 +205,6 @@
             return Sugar.Date.create(dateString);
           }
         };
-       workdatepicker.i18n = {
-          week: 'Week',
-          calendar: 'Calendar',
-          clear: 'Clear',
-          today: 'Today',
-          cancel: 'Cancel',
-          firstDayOfWeek: 1,
-          monthNames:
-          'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
-          weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
-          weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
-          formatDate: function(date) {
-            return Sugar.Date.format(date, '{short}');
-          },
-          formatTitle: function(monthName, fullYear) {
-            return monthName + ' ' + fullYear;
-          },
-          parseDate: function(dateString) {
-            let matches = workdatepicker.i18n.monthNames.filter(function(monthName) {
-              return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
-            });
-            dateString = matches.length === 1 ? matches[0] : dateString;
-            // Parse the date
-            return Sugar.Date.create(dateString);
-          }
-        };
           
           let today = new Date();
           let dd = today.getDate();
