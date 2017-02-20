@@ -75,20 +75,18 @@
       #priorityType {
         color: deeppink;      
       }
-
     </style>
-    <firebase-auth user="{{user}}"></firebase-auth>
     <firebase-query id="orderQuery" path="/order" orderByChild="order_no" data="{{orderQuery}}"></firebase-query>
     <firebase-query id="factoryQuery" path="/factory/standard" data="{{factoryStandard}}"></firebase-query>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
-          <div class="card">
-      <h1>Order Production Workflow</h1>
+      <div class="card">
+      <h1>Daily Jobs Production Scheduling</h1>
 <vaadin-date-picker style="width: 300px;" label="Working Date" name="workdate" always-float-label autoValidate
               min="2017-01-01" class="date-selector" id="workdateSelector"></vaadin-date-picker>
-
+<h3>Priority Used: FCFS</h3>
 <vaadin-columnrange-chart id="column-range-resource-usage">
     <chart width="1200" inverted="true"></chart>
-    <chart-title>Daily Order Production Workflow</chart-title>
+    <chart-title>Daily Jobs Production Scheduling</chart-title>
     <x-axis>
         <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
     </x-axis>
@@ -140,7 +138,7 @@
     
   
  <div class="card">
-      <h1>Job Scheduling</h1>
+      <h1>Order Scheduling</h1>
      <template is="dom-bind">
   <iron-ajax url="../json/user.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
   <iron-data-table id="job-scheduling-table" items="[[users.results]]">
@@ -282,39 +280,13 @@
             ];
           }
         },
-        product: {
-          type: Array,
-          value: function () {
-            return [{
-                name: 'Gear',
-                symbol: 'GR',
-                number: 1
-              },
-              {
-                name: 'C-Clamp',
-                symbol: 'CC',
-                number: 2
-              },
-              {
-                name: 'Steel Table',
-                symbol: 'ST',
-                number: 3
-              },
-              {
-                name: 'Steel Shelves',
-                symbol: 'SS',
-                number: 4
-              }
-            ]
-          }
+        productItems: {
+          type: Object
         },
         productSize: {
           type: Object
         },
         machineItems: {
-          type: Object
-        },
-        productItems: {
           type: Object
         },
         productQuery: {

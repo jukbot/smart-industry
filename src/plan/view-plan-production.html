@@ -18,43 +18,21 @@
       }
       
     </style>
+      <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
       <div class="fixed-card card">
         <h1>Production Building Block</h1>
-         <vaadin-combo-box style="width:300px;" label="Product" name="product" items="[[product]]" id="productSelector" value="All" item-label-path="name" item-value-path="[[symbol]]" required always-float-label></vaadin-combo-box>
-        <img style="height:auto; width:100%;" src="buildingblock.png" alt="">
+              <vaadin-combo-box label="Product" name="product" value="{{p_name}}" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
+              <vaadin-combo-box label="Size" name="size" value="{{p_size}}" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
+             <img style="height:auto; width:100%;" src="buildingblock.png" alt="">
       </div>
   </template>
   <script>
     Polymer({
       is: 'view-plan-production',
       properties: {
-        product: {
-          type: Array,
-          value: function () {
-            return [{
-                name: 'Gear',
-                symbol: 'GR',
-                number: 1
-              },
-              {
-                name: 'C-Clamp',
-                symbol: 'CC',
-                number: 2
-              },
-              {
-                name: 'Steel Table',
-                symbol: 'ST',
-                number: 3
-              },
-              {
-                name: 'Steel Shelves',
-                symbol: 'SS',
-                number: 4
-              }
-            ]
-          }
+        productItems: {
+          type: Object
         },
-  
       }
     });
   </script>

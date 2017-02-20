@@ -66,33 +66,29 @@
      .product p {
         margin: 12px 0;
       }
-     .button-group {
-       margin-top: auto;
+     .product-info-group {
+       margin-bottom: auto;
      }
      .button-group paper-button {
-       display: flex;
-       align-items: center; 
-       justify-content: center; 
+       width: 49%;
      }
-     paper-dialog .buttons {
-       padding-top: 20px !important;
-     }
-     
     </style>
     <firebase-auth user="{{user}}"></firebase-auth>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
     <ul class="app-grid">
       <li>
         <div class="stitched">
-          <paper-button raised on-tap="createProductDialog" class="new-product water">ADD PRODUCT</paper-button>
+          <paper-button raised on-tap="toggleDialog" class="new-product water">ADD PRODUCT</paper-button>
           <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true"
             role="dialog">
             <h2>Add product</h2>
-            <paper-input name="product-name" id="productName" label="product Name" required always-float-label></paper-input>
-            <paper-input name="product-effi" id="productEffi" label="Efficiency" type="number"  min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>%</div></paper-input>
+            <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
+            <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
+            <paper-input name="product-process" id="productProcess" label="Product Process" required always-float-label></paper-input>
+            <paper-input name="product-raw" id="productRaw" label="Raw Material" required always-float-label></paper-input>
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
-                <paper-button on-tap="addproduct" dialog-confirm autofocus>Create</paper-button>
+                <paper-button on-tap="addProduct" dialog-confirm autofocus>Create</paper-button>
               </div>
               </paper-dialog>
         </div>
@@ -103,8 +99,9 @@
             <div class="product-info-group">
             <h1 class="name">[[productItem.name]]</h1>
             <p>Product Process: [[productItem.process]]</p>
-            <p>Raw material: [[productItem.raw_material.0.type]]</p>
-            <p>Product Size: <template is="dom-repeat" items="{{productItems.size}}" as="productSize">[[productSize.name]]</template></p>
+            <p>SKU Number: [[productItem.sku]]</p>
+            <p>Raw material: [[materialProduct(productItem.raw_material)]]</p>
+            <p>Product Size: [[sizeProduct(productItem.size)]]</p>
             </div>
             <paper-dialog id="[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
             <h2>Edit Product</h2>
@@ -127,8 +124,8 @@
   <script>
     Polymer({
       is: 'view-setup-product',
-      createProductDialog: function () {
-        this.$.createproductDialog.open();
+      toggleDialog: function () {
+        this.$.createProductDialog.open();
       },
       addProduct: function () {
           let today = new Date();
@@ -144,15 +141,17 @@
         today = dd + '/' + mm + '/' + yyyy;
 
         this.$.productQuery.ref.push({
+          add: today,
           name: this.$.productName.value,
-          install: today,
-          name: this.$.productName.value,
-          queue: 0,
-          status: 'Stopped',
-          type: this.$.productType.value,
+          sku: this.$.productSku.value,
+          raw: this.$.productRaw.value,
+          process: this.$.productProcess.value,
+          size: "null"
         }).key;
         this.$.productName.value = null;
-        this.$.productType.value = null;
+        this.$.productSku.value = null;
+        this.$.productRaw.value = null;
+        this.$.productProcess.value = null;
       },
       editProduct: function(e) {
         let targetKey = e.currentTarget.value;
@@ -164,6 +163,20 @@
       },
       saveProduct: function(e) {
 
+      },
+      materialProduct: function(material) {
+          let praw = [];
+          for (let key in material) {
+              praw[key] = material[key].type;
+          }
+          return praw;
+      },
+      sizeProduct: function(size) {
+          let psize = [];
+          for (let key in size) {
+              psize[key] = size[key].name;
+          };
+          return psize;
       },
       properties: {
         productItems: {

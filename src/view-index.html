@@ -25,6 +25,7 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
@@ -171,17 +172,24 @@
         <app-header class="app-head" fixed>
           <app-toolbar>
             <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button>
-            <div class="page-title" main-title>{{routeData.page}}</div>
+            <div class="page-title" main-title>[[page]]</div>
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="account-circle" class="account-btn dropdown-trigger" alt="menu"></paper-icon-button>
               <paper-menu class="dropdown-content">
-                <iron-selector selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="overview">
-                  <paper-item class="menu-item" name="help">
-                    <paper-icon-button icon="help" alt="help"></paper-icon-button> Help</paper-item>
-                  <paper-item class="menu-item" name="settings">
-                    <paper-icon-button icon="settings" alt="settings"></paper-icon-button> Settings</paper-item>
-                  <paper-item class="menu-item" name="logout">
-                    <paper-icon-button icon="exit-to-app" alt="logout"></paper-icon-button> Logout</paper-item>
+                <iron-selector selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404">
+  <paper-icon-item class="menu-item" name="help">
+    <iron-icon  icon="help" alt="help" item-icon></iron-icon>
+    Help
+  </paper-icon-item>
+  <paper-icon-item class="menu-item" name="settings">
+    <iron-icon icon="settings" alt="settings" item-icon></iron-icon>
+    Settings
+  </paper-icon-item>
+  <paper-icon-item class="menu-item" name="logout">
+    <iron-icon icon="exit-to-app" alt="logout" item-icon></iron-icon>
+    Logout
+  </paper-icon-item>
+
                 </iron-selector>
               </paper-menu>
             </paper-menu-button>
@@ -191,7 +199,7 @@
           </app-toolbar>
         </app-header>
         <!-- view content area -->
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404">
           <view-dashboard name="dashboard" route="{{routeTail}}"></view-dashboard>
           <view-setup name="setup" route="{{routeTail}}"></view-setup>
           <view-planning name="planning" route="{{routeTail}}"></view-planning>
@@ -210,9 +218,9 @@
       ready: function () {
         this.async(function () {
           // If the path is blank, redirect to /
-         /* if (!this.route.path) {
-            this.set('route.path', 'dashboard');
-          }*/
+          if (!this.route.path) {
+            this.set('route.path', '/dashboard');
+          }
           //this.route.path = 'dashboard';
         });
       },
@@ -302,7 +310,7 @@
                 icon: 'vaadin-icons:cogs'
               },
               {
-                url: 'planning/scheduling',
+                url: 'planning/order',
                 title: 'PLAN',
                 view: 'planning',
                 icon: 'vaadin-icons:calendar-clock'
@@ -319,12 +327,7 @@
                 view: 'tracking',
                 icon: 'vaadin-icons:timer'
               },
-              {
-                url: 'verifying/production',
-                title: 'VERIFY',
-                view: 'verifying',
-                icon: 'vaadin-icons:user-check'
-              }
+   
             ];
           }
         },

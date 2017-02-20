@@ -50,6 +50,16 @@
         margin: 10px 0;
       }
 
+     .button-group {
+       margin-top: 16px;
+     }
+     .button-group paper-button {
+       display: inline-flex;
+       width: 49.5%;
+       align-items: center; 
+       justify-content: center; 
+     }
+
      .item-box {
       height: 10em;
       display: inline-flex;
@@ -238,7 +248,7 @@
             if (!cycle) return '';
             console.log("Size of obj: " + Object.keys(cycle).length);
             let summed = 0;
-            for (let key in cycle) {
+            for (var key in cycle) {
               summed += cycle[key];
             };
             let cycletime =  (cycle.drill + cycle.mill + cycle.pack + cycle.polish + cycle.trim + cycle.weld)*amount/3600.00;

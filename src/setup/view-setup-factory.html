@@ -62,7 +62,10 @@
             <paper-button on-tap="setTime" dialog-confirm>OK</paper-button>
           </div>
         </paper-dialog>
-                <paper-button raised class="fancy" on-tap="saveValue">Save</paper-button>  <paper-button raised class="water" on-tap="resetValue">Restore</paper-button>
+         <div class="button-group">
+                <paper-button raised class="fancy" on-tap="saveValue">Save</paper-button> 
+                <paper-button raised class="water" on-tap="resetValue">Restore</paper-button>
+         </div>          
             </div>
           </form>
     </li>
@@ -79,7 +82,7 @@
 <p>Operation End: <span>[[factoryOperation.op_end]]</span></p>
 <p>OT Start: <span>[[factoryOperation.ot_start]]</span></p>
 <p>OT End: <spa>[[factoryOperation.ot_end]]</span></p>
-<p>Operation Days: <span>[[factoryOperation.weekly]]</span></p>
+<p>Operation Days: <span id="opWeek">[[factoryOperation.weekly]]</span></p>
 <p>User Workload: <span>[[factoryPerformance.uw]] %</span></p>
 <p>Acceptable Waste: <span>[[factoryPerformance.aw]]</span></p>
     </div>
@@ -102,10 +105,15 @@
       },
       saveValue: function () {
           let aw = this.$.acceptWaste.value;
-        //  this.$.factoryStandard.path = null;
           this.set('factoryPerformance.aw', aw);
           //this.$.factoryStandrad.save('/factory/standard');
           console.log(this.$.sunday.checked);
+          console.log("Weekly: " + this.$.opWeek.innerText);
+           // let summed = 0;
+           // for (var key in cycle) {
+            //  summed += cycle[key];
+           // };
+          //  console.log("sum : " + summed*amount);
       },
       properties: {
         factoryStandard: {

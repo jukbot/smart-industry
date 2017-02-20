@@ -69,16 +69,8 @@
      .machine-info-group {
        margin-bottom: auto;
      }
-     .button-group {
-       margin-top: auto;
-     }
      .button-group paper-button {
-       display: flex;
-       align-items: center; 
-       justify-content: center; 
-     }
-     paper-dialog .buttons {
-       padding-top: 20px !important;
+       width: 49%;
      }
      
     </style>
@@ -128,7 +120,7 @@
               </paper-dialog>
 
              <div class="button-group">
-            <paper-button raised class="water" key="[[machineItem.$key]]" on-tap="editMachine" style="margin-bottom: 10px;">EDIT</paper-button>
+            <paper-button raised class="water" key="[[machineItem.$key]]" on-tap="editMachine">EDIT</paper-button>
             <paper-button raised class="chilli" key="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
             </div>
           </div>
@@ -165,6 +157,7 @@
         }).key;
         this.$.machineName.value = null;
         this.$.machineType.value = null;
+        this.$.machineEffi.value = null;
       },
       editMachine: function(e) {
         let targetEditKey = e.currentTarget.key;
