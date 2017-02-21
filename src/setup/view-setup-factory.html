@@ -27,6 +27,16 @@
       margin: 12px 0;
     }
 
+     #visualResponsiveWidth {
+    width: 500px;
+    max-width: 100%;
+    height: 4px;
+    background: var(--primary-color);
+  }
+  #responsiveStepper {
+    --paper-stepper-vertical-responsive-width: 500px;
+  }
+
   </style>
     <firebase-auth user="{{user}}"></firebase-auth>
     <firebase-query path="/factory/standard" data="{{factoryData}}"></firebase-query>
@@ -72,12 +82,6 @@
     <li>
      <div class="card factory-rule">
       <h1>Factory Global Rules</h1>
- <!-- <paper-stepper id="stepper" vertical="[[vertical]]">
-  <paper-step label="step 1"></paper-step>
-  <paper-step label="step 2"></paper-step>
-  <paper-step label="step 3"></paper-step>
-  <paper-step label="step 4"></paper-step>
-</paper-stepper> -->
 <p>Operation Start: <span>[[factoryOperation.op_start]]</span></p>
 <p>Operation End: <span>[[factoryOperation.op_end]]</span></p>
 <p>OT Start: <span>[[factoryOperation.ot_start]]</span></p>
@@ -85,9 +89,18 @@
 <p>Operation Days: <span id="opWeek">[[factoryOperation.weekly]]</span></p>
 <p>User Workload: <span>[[factoryPerformance.uw]] %</span></p>
 <p>Acceptable Waste: <span>[[factoryPerformance.aw]]</span></p>
-    </div>
-    </li>
+  </div>
+  </li>
   </ul>
+  <div class="card">
+  <paper-stepper id="responsiveStepper" alternative-label responsive-check-frequence="500">
+  <paper-step label="step 1"></paper-step>
+  <paper-step label="step 2"></paper-step>
+  <paper-step label="step 3"></paper-step>
+  <paper-step label="step 4"></paper-step>
+  <paper-step label="step 5"></paper-step>
+</paper-stepper>
+  </div>
   </template>
   <script>
     Polymer({
