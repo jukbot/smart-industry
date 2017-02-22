@@ -71,7 +71,7 @@
     <firebase-query id="orderQuery" path="/order" orderByChild="order_no" data="{{orderQuery}}"></firebase-query>
     <firebase-query id="factoryQuery" path="/factory/standard" data="{{factoryStandard}}"></firebase-query>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
-    <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+    <firebase-document id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -103,11 +103,11 @@
         <div class="card order-info">
                 <h1>Order Information</h1>
                 <p>Product Name: <span id="product">[[p_name]] [[y.name]]</span></p>
-                <p>Actual Quantity: <span id="actualQuantity">[[amount]]</span></p>
+                <p>Actual Quantity: <span id="actualQuantity">[[calActualQuantity(factoryPerformance.aw, amount)]]</span></p>
                 <p>Create Order Date: <span id="createOrder"></span></p>
                 <p>Production Start: <span id="productionStart"></span></p>
                 <p>Processes Used: <span id="usedProcess">[[x.process]]</span></p>
-                <p>Expect Delivery: <span id="estimateDelivery"></span></p>
+                <p>Expect Delivery: <span id="estimateDelivery">[[calEstDelivery(y.cycle, amount)]]</span></p>
                 <p>Estimate Duration: <span id="estimateDuration">[[calCycleTime(y.cycle, amount)]]</span></p>
                 <p>Queue number: <span id="estimateDuration"></span></p>
                 <p>Waiting Queue: <span id="estimateDuration"></span></p>
@@ -145,6 +145,7 @@
         }).key;
      //   this.$.machineName.value = null;
     //    this.$.machineType.value = null;
+      alert("Order has been added to production schedule successfully");
       },
       selectProduct: function() {
      
@@ -233,13 +234,40 @@
 
     calCycleTime: function (cycle,amount) {
             if (!cycle) return '';
-            console.log("Size of obj: " + Object.keys(cycle).length);
             let summed = 0;
             for (let key in cycle) {
               summed += cycle[key];
             };
-            let cycletime =  (cycle.drill + cycle.mill + cycle.pack + cycle.polish + cycle.trim + cycle.weld)*amount/3600.00;
-            return cycletime.toFixed(2) + "Hrs.";
+            let cycletime = ((summed*amount)/3600.00).toFixed(2);
+            console.log("Size of obj: " + Object.keys(cycle).length);
+            return cycletime + " Hrs.";
+     },
+
+     calEstDelivery: function (cycle,amount) {
+          if (!cycle) return '';
+          let summ = 0;
+            for (let key in cycle) {
+              summ += cycle[key];
+            };
+            let time = ((summ*amount)/3600.00).toFixed(2);
+            let day = (time*0.0416666667).toFixed(2);
+            let date = 22;
+            if(day > 1 ) { date = 22 + 1; }
+            if(day > 2 ) { date = 22 + 2; }
+            if(day > 3 ) { date = 22 + 3; }
+            if(day > 4 ) { date = 22 + 4; }
+            if(day > 5 ) { date = 22 + 5; }
+            if(day > 6 ) { date = 22 + 6; }
+            if(day > 7 ) { date = 22 + 7; }
+            let month = "03";
+            let year = "2017";
+          return date + "/" + month + "/" + year;
+     },
+     calActualQuantity: function (aw,amount) {
+        if(!amount) return '';
+        let aq = (amount/(1-aw)).toFixed(2);
+        let aq_result = Math.ceil(aq);
+        return aq_result;
      },
       properties: {
         productSize: {
@@ -254,7 +282,7 @@
         productQuery: {
           type: Object
         },
-        factoryStandard: {
+        factoryPerformance: {
           type: Object
         },
         orderQuery: {
