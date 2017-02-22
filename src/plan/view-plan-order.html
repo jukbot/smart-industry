@@ -86,7 +86,7 @@
              <!-- <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
               </vaadin-combo-box> -->
               <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
-              min="2017-01-01" class="date-selector" id="deliverySelector"></vaadin-date-picker>
+              min="2017-01-01" class="date-selector" id="deliverySelector" value="[[calEstDelivery(y.cycle, amount)]]"></vaadin-date-picker>
                 <br>
               <template is="dom-bind">
                 <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
