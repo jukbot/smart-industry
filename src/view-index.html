@@ -159,6 +159,7 @@
         </div>
         <template is="dom-if" if="[[user]]">
           <p>Debug user:[[user.displayName]]</p>
+          <img style="width: 150px;" src="{{user.photoURL}}" alt="user photo">
           <p>E-mail: [[user.email]]</p>
           <p>E-mail verify: [[user.emailVerified]]</p>
           <p>UID: [[user.uid]]</p>
@@ -207,6 +208,7 @@
           <view-controlling name="controlling" route="{{routeTail}}"></view-controlling>
           <view-verifying name="verifying" route="{{routeTail}}"></view-verifying>
           <view-404 name="404"></view-404>
+          <view-settings name="settings"><view-settings>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -224,21 +226,27 @@
           //this.route.path = 'dashboard';
         });
       },
+      // Signin Action
       login: function () {
         const promise = this.$.auth.signInWithPopup();
-        promise.then(function () {
+        promise.then(function() {
           console.info("Login successful");
+          //console.info("Username:" + result.user);
+         //alert("Welcome " + result.user);
         }).catch(error => {
           // Handle Errors here.
           let errorCode = error.code;
           let errorMessage = error.message;
+          let errorEmail = error.email;
           alert("Error code: " + errorCode + " | " + errorMessage);
           console.error("Error code: " + errorCode + " | " + errorMessage);
         });
       },
+      // Signout Action
       logout: function () {
         this.$.auth.signOut().then(function () {
           console.info("Logout successful");
+          alert("Signout successfully");
         }).catch(error => {
           let errorCode = error.code;
           let errorMessage = error.message;
@@ -246,9 +254,10 @@
           console.error("Error code: " + errorCode + " | " + errorMessage);
         });
       },
+      // Handle Error
       handleError: function (e) {
-        alert("Authenticate error: " + e);
-        console.error("Authenticate error:" + e);
+        alert("Authenticate error: " + e.message);
+        console.error("Authenticate error:" + e.message);
       },
       onLayoutChange: function (wide) {
         var drawer = this.$.drawer;

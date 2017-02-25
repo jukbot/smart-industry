@@ -68,7 +68,7 @@
 
     </style>
     <firebase-auth user="{{user}}"></firebase-auth>
-    <firebase-query id="orderQuery" path="/order" orderByChild="order_no" data="{{orderQuery}}"></firebase-query>
+    <firebase-query id="orderQuery" path="/order" orderByChild="order_date" data="{{orderQuery}}"></firebase-query>
     <firebase-query id="factoryQuery" path="/factory/standard" data="{{factoryStandard}}"></firebase-query>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
     <firebase-document id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
@@ -86,13 +86,13 @@
              <!-- <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
               </vaadin-combo-box> -->
               <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
-              min="2017-01-01" class="date-selector" id="deliverySelector" value="[[calEstDelivery(y.cycle, amount)]]"></vaadin-date-picker>
+              min="2017-01-01" class="date-selector" id="deliverySelector"></vaadin-date-picker>
                 <br>
               <template is="dom-bind">
                 <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
               </template>
                <div class="button-group">
-                <paper-button raised class="smart" disabled on-tap="createOrder">Create</paper-button>
+                <paper-button raised class="smart" on-tap="createOrder">Create</paper-button>
                 <paper-button raised class="fancy" on-tap="calculateOrder">Calculate</paper-button>
                </div>
             </div>
@@ -138,7 +138,7 @@
         today = dd + '/' + mm + '/' + yyyy;
 
         this.$.orderQuery.ref.push({
-          order_date: today,
+          order_date: Math.round(new Date().getTime()/1000.0),
           order_no: this.$.orderQuantity.value,
           order_name: this.$.orderName.value,
           order_product: this.$.productSelector.value,
@@ -245,23 +245,30 @@
 
      calEstDelivery: function (cycle,amount) {
           if (!cycle) return '';
+          
           let summ = 0;
             for (let key in cycle) {
               summ += cycle[key];
-            };
+          };
+
+          let today = new Date();
+          let dd = today.getDate();
+          let mm = today.getMonth() + 1; //January is 0!
+          let yyyy = today.getFullYear();
+          if (dd < 10) {
+              dd = '0' + dd
+           }
+          if (mm < 10) {
+             mm = '0' + mm
+          }
             let time = ((summ*amount)/3600.00).toFixed(2);
-            let day = (time*0.0416666667).toFixed(2);
-            let date = 22;
-            if(day > 1 ) { date = 22 + 1; }
-            if(day > 2 ) { date = 22 + 2; }
-            if(day > 3 ) { date = 22 + 3; }
-            if(day > 4 ) { date = 22 + 4; }
-            if(day > 5 ) { date = 22 + 5; }
-            if(day > 6 ) { date = 22 + 6; }
-            if(day > 7 ) { date = 22 + 7; }
+            let day = (time*0.0416666667);
+            console.log("Day:" + day + dd);
+
+            if(day >= 1 && day <= 30) { dd = (dd+day); }
             let month = "03";
             let year = "2017";
-          return date + "/" + month + "/" + year;
+          return Math.ceil(dd) + "/" + month + "/" + year;
      },
      calActualQuantity: function (aw,amount) {
         if(!amount) return '';

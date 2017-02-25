@@ -141,7 +141,7 @@
         today = dd + '/' + mm + '/' + yyyy;
 
         this.$.productQuery.ref.push({
-          add: today,
+          add: Math.round(new Date().getTime()/1000.0),
           name: this.$.productName.value,
           sku: this.$.productSku.value,
           raw: this.$.productRaw.value,
