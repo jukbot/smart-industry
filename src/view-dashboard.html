@@ -69,11 +69,14 @@
       ],
 
       _routeTabsChanged: function (tabs) {
+         if (tabs == null) {
         this.tabs = tabs || 'overview';
-        
+         } else {
         const resolvedPageUrl = this.resolveUrl('dashboard/' + 'view-dashboard-' + tabs + '.html');
         this.importHref(resolvedPageUrl, null, null, true);
+        }
       }
+
     });
   </script>
 </dom-module>

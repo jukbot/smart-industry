@@ -2,6 +2,8 @@
 <!-- app modules - used for core functions -->
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/app-storage/app-storage-behavior.html">
+<link rel="import" href="../bower_components/app-storage/app-network-status-behavior.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <!-- iron modules -used for component functions -->
@@ -133,12 +135,12 @@
     <firebase-app auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445">
     </firebase-app>
-    <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusKnown}}" on-error="handleError">
+    <firebase-auth id="auth" user="{{user}}" provider="google" signed-in="{{signedIn}}" on-error="{{handleError}}">
     </firebase-auth>
     <firebase-document id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}" active="{{pageActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}"></app-route>
     <!-- wrapper -->
     <app-drawer-layout fullbleed>
       <!-- Navbar content -->
@@ -154,8 +156,8 @@
         </iron-selector>
         <div class="sidebar-menu"></div>
         <div class="center-box">
-          <paper-button raised class="chilli login-btn" on-tap="login" hidden$="[[user]]">Sign in</paper-button>
-          <paper-button raised class="chilli logout-btn" on-tap="logout" hidden$="[[!user]]">Sign out</paper-button>
+          <paper-button raised class="chilli login-btn" on-tap="login" hidden$="[[signedIn]]">Sign in</paper-button>
+          <paper-button raised class="chilli logout-btn" on-tap="logout" hidden$="[[!signedIn]]">Sign out</paper-button>
         </div>
         <template is="dom-if" if="[[user]]">
           <p>Debug user:[[user.displayName]]</p>
@@ -178,18 +180,18 @@
               <paper-icon-button icon="account-circle" class="account-btn dropdown-trigger" alt="menu"></paper-icon-button>
               <paper-menu class="dropdown-content">
                 <iron-selector selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404">
-  <paper-icon-item class="menu-item" name="help">
-    <iron-icon  icon="help" alt="help" item-icon></iron-icon>
-    Help
-  </paper-icon-item>
-  <paper-icon-item class="menu-item" name="settings">
-    <iron-icon icon="settings" alt="settings" item-icon></iron-icon>
-    Settings
-  </paper-icon-item>
-  <paper-icon-item class="menu-item" name="logout">
-    <iron-icon icon="exit-to-app" alt="logout" item-icon></iron-icon>
-    Logout
-  </paper-icon-item>
+                  <paper-icon-item class="menu-item" name="help">
+                    <iron-icon icon="help" alt="help" item-icon></iron-icon>
+                    Help
+                  </paper-icon-item>
+                  <paper-icon-item class="menu-item" name="settings">
+                    <iron-icon icon="settings" alt="settings" item-icon></iron-icon>
+                    Settings
+                  </paper-icon-item>
+                  <paper-icon-item class="menu-item" name="logout">
+                    <iron-icon icon="exit-to-app" alt="logout" item-icon></iron-icon>
+                    Logout
+                  </paper-icon-item>
 
                 </iron-selector>
               </paper-menu>
@@ -199,8 +201,7 @@
             </template>
           </app-toolbar>
         </app-header>
-        <!-- view content area -->
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404">
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
           <view-dashboard name="dashboard" route="{{routeTail}}"></view-dashboard>
           <view-setup name="setup" route="{{routeTail}}"></view-setup>
           <view-planning name="planning" route="{{routeTail}}"></view-planning>
@@ -208,7 +209,8 @@
           <view-controlling name="controlling" route="{{routeTail}}"></view-controlling>
           <view-verifying name="verifying" route="{{routeTail}}"></view-verifying>
           <view-404 name="404"></view-404>
-          <view-settings name="settings"><view-settings>
+          <view-settings name="settings">
+            <view-settings>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -218,49 +220,52 @@
     Polymer({
       is: 'main-app',
       ready: function () {
-        this.async(function () {
+       /* this.async(function () {
           // If the path is blank, redirect to /
           if (!this.route.path) {
             this.set('route.path', '/dashboard');
           }
           //this.route.path = 'dashboard';
-        });
+        });*/
       },
       // Signin Action
       login: function () {
-        const promise = this.$.auth.signInWithPopup();
-        promise.then(function() {
+        this.$.auth.signInWithPopup()
+        .then(function () {
           console.info("Login successful");
           //console.info("Username:" + result.user);
-         //alert("Welcome " + result.user);
-        }).catch(error => {
+          //alert("Welcome " + result.user);
+        })
+        .catch(error => {
           // Handle Errors here.
           let errorCode = error.code;
           let errorMessage = error.message;
           let errorEmail = error.email;
-          alert("Error code: " + errorCode + " | " + errorMessage);
-          console.error("Error code: " + errorCode + " | " + errorMessage);
+          alert("Authenticate Failed: " + errorMessage);
+          console.error("Authenticate Failed: " + errorCode);
         });
       },
       // Signout Action
       logout: function () {
-        this.$.auth.signOut().then(function () {
+        this.$.auth.signOut()
+        .then(function () {
           console.info("Logout successful");
           alert("Signout successfully");
-        }).catch(error => {
+        })
+        .catch(error => {
           let errorCode = error.code;
           let errorMessage = error.message;
-          alert("Error code: " + errorCode + " | " + errorMessage);
-          console.error("Error code: " + errorCode + " | " + errorMessage);
+          alert("Authenticate Failed: " + errorMessage);
+          console.error("Authenticate Failed: " + errorCode);
         });
       },
       // Handle Error
-      handleError: function (e) {
-        alert("Authenticate error: " + e.message);
-        console.error("Authenticate error:" + e.message);
+      handleError: function(e) {
+        console.info("Authenticate error:" + e.message);
       },
+
       onLayoutChange: function (wide) {
-        var drawer = this.$.drawer;
+        const drawer = this.$.drawer;
         if (wide && drawer.opened) {
           drawer.opened = false;
         }
@@ -269,18 +274,22 @@
       _routePageChanged: function (page) {
         this.page = page || 'dashboard';
 
+        // Scroll to the top of the page on every *route* change. Use `Polymer.AppLayout.scroll`
+        // with `behavior: 'silent'` to disable header scroll effects during the scroll.
+        Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
+        // Close the drawer - in case the *route* change came from a link in the drawer.
+        this.drawerOpened = false;
+
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
-        /*   if (!page) {
-             this.set('route.path', 'dashboard');
-             return;
-           }*/
       },
 
       _pageChanged: function (page) {
+        if (page != null) {
         let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
+          }
       },
 
       _showPage404: function () {
@@ -336,7 +345,7 @@
                 view: 'tracking',
                 icon: 'vaadin-icons:timer'
               },
-   
+
             ];
           }
         },
