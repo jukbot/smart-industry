@@ -106,7 +106,6 @@
             <paper-dialog id="[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
             <h2>Edit Product</h2>
             <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
-            </paper-input>
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="saveProduct" dialog-confirm autofocus>Save</paper-button>
@@ -114,7 +113,7 @@
               </paper-dialog>
              <div class="button-group">
             <paper-button raised class="water" value="[[productItem.$key]]" on-tap="editProduct" style="margin-bottom: 10px;">EDIT</paper-button>
-            <paper-button raised class="chilli" value="[[productItem.$key]]" on-tap="removeProduct">REMOVE</paper-button>
+            <paper-button raised class="chilli"value="[[productItem.$key]]" on-tap="removeProduct">REMOVE</paper-button>
             </div>
           </div>
         </li>
@@ -124,6 +123,50 @@
   <script>
     Polymer({
       is: 'view-setup-product',
+        properties: {
+        productItems: {
+          type: Object
+        },
+        productSizes: {
+          type: Object
+        },
+        productType: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'Milling product',
+                symbol: 'Milling',
+                number: 0
+              },
+              {
+                name: 'Drilling product',
+                symbol: 'Drilling',
+                number: 1
+              },
+              {
+                name: 'Trimming product',
+                symbol: 'Trimming',
+                number: 2
+              },
+              {
+                name: 'Polishing product',
+                symbol: 'Polishing',
+                number: 3
+              },
+              {
+                name: 'Welding product',
+                symbol: 'Welding',
+                number: 4
+              },
+              {
+                name: 'Packing product',
+                symbol: 'Packing',
+                number: 5
+              }
+            ]
+          }
+        }
+      },
       toggleDialog: function () {
         this.$.createProductDialog.open();
       },
@@ -178,50 +221,7 @@
           };
           return psize;
       },
-      properties: {
-        productItems: {
-          type: Object
-        },
-        productSizes: {
-          type: Object
-        },
-        productType: {
-          type: Array,
-          value: function () {
-            return [{
-                name: 'Milling product',
-                symbol: 'Milling',
-                number: 0
-              },
-              {
-                name: 'Drilling product',
-                symbol: 'Drilling',
-                number: 1
-              },
-              {
-                name: 'Trimming product',
-                symbol: 'Trimming',
-                number: 2
-              },
-              {
-                name: 'Polishing product',
-                symbol: 'Polishing',
-                number: 3
-              },
-              {
-                name: 'Welding product',
-                symbol: 'Welding',
-                number: 4
-              },
-              {
-                name: 'Packing product',
-                symbol: 'Packing',
-                number: 5
-              }
-            ]
-          }
-        }
-      }
+
     });
   </script>
 </dom-module>
