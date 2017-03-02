@@ -140,27 +140,30 @@
  <div class="card">
       <h1>Order Scheduling</h1>
      <template is="dom-bind">
-  <iron-ajax url="../json/user.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
+  <iron-ajax url="../json/order.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
   <iron-data-table id="job-scheduling-table" items="[[users.results]]">
     <data-table-column name="Queue#" width="30px" flex="0">
       <template>
         <div class="index">[[index]]</div>
       </template>
     </data-table-column>
-    <data-table-column name="Product" flex="0">
-        <template>[[item.user.name.first]]</template>
-    </data-table-column>
-    <data-table-column name="Order Name">
-      <template>[[item.user.username]]</template>
-    </data-table-column>
     <data-table-column name="Order Number">
-      <template>[[item.user.dob]]</template>
+      <template>[[item.user.order.no]]</template>
+    </data-table-column>
+    <data-table-column name="Product name" flex="0">
+        <template>[[item.user.order.product]]</template>
+    </data-table-column>
+    <data-table-column name="Size">
+    <template>[[item.user.order.size]]</template>
     </data-table-column>
     <data-table-column name="Quantity">
-      <template>[[item.user.location.zip]]</template>
+      <template>[[item.user.order.quantity]]</template>
+    </data-table-column>
+    <data-table-column name="Customer Name">
+      <template>[[item.user.name.first]]</template>
     </data-table-column>
     <data-table-column name="Delivery Date">
-      <template>[[item.user.password]]</template>
+      <template>[[item.user.order.delivery]]</template>
     </data-table-column>
   </iron-data-table>
 </template>

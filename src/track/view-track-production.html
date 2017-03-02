@@ -33,12 +33,37 @@
         width: 60px;
         height: 60px;
       }
+
+       material-progress-bars {
+            width: 100%;
+            @apply(--paper-font-body2);
+          }
+          material-progress-bars > .bar > span {
+            text-align: end;
+            font-size: 0.9em;
+            @apply(--layout-flex);
+          }
+          .bar {
+            background-color: var(--paper-deep-orange-500);
+          }
+          .bar.a {
+            background-color: var(--paper-purple-500);
+          }
+          .bar.b {
+            background-color: var(--paper-cyan-500);
+          }
+          .bar.c {
+            background-color: var(--paper-orange-500);
+          }
+          .bar.d {
+            background-color: var(--paper-pink-500);
+          }
     </style>
     <ul class="app-grid">
       <li>
         <div class="card">
           <h1>Production Efficiency</h1>
-            <p class="percent">100%</p>
+            <p class="percent">90%</p>
         </div>
       </li>
       <li>
@@ -49,11 +74,59 @@
       </li>
       <li>
         <div class="card">
-          <h1>Worker Availibility</h1>
-          <p class="percent">95%</p></div>
+          <h1>OEE</h1>
+          <p class="percent">85%</p></div>
       </li>
     </ul>
     <div class="wrap-card">
+ <div class="card fixed-card">
+   <h2>Order 001 (Status: Completed)</h2>
+  <material-progress-bars max="100" bar-height="22" animated="true" legend-label="Process used">
+  <div class="bar" data-value="10" data-legend="Milling">
+    <span>Mill</span>
+  </div>
+  <div class="bar a" data-value="15" data-legend="Trimming">
+    <span>Trim</span>
+  </div>
+  <div class="bar b" data-value="50" data-legend="Polishing">
+    <span>Polish</span>
+  </div>
+    <div class="bar c" data-value="10" data-legend="Drilling">
+    <span>Drill</span>
+  </div>
+  <div class="bar d" data-value="15" data-legend="Packing">
+    <span>Pack</span>
+  </div>
+</material-progress-bars>
+   <h2>Order 002 (Status: In-progress)</h2>
+  <material-progress-bars max="100" bar-height="22" animated="true" legend-label="Process used">
+  <div class="bar" data-value="10" data-legend="Milling">
+    <span>Mill</span>
+  </div>
+  <div class="bar a" data-value="15" data-legend="Trimming">
+    <span>Trim</span>
+  </div>
+  <div class="bar b" data-value="50" data-legend="Polishing">
+    <span>Polish</span>
+  </div>
+    <div class="bar c" data-value="8" data-legend="Drilling">
+    <span>Drill</span>
+  </div>
+</material-progress-bars>
+  <h2>Order 003 (Status: In-progress)</h2>
+  <material-progress-bars max="100" bar-height="22" animated="true" sum="200" legend-label="Process used">
+  <div class="bar" data-value="10" data-legend="Milling">
+    <span>Mill</span>
+  </div>
+  <div class="bar a" data-value="15" data-legend="Trimming">
+    <span>Trim</span>
+  </div>
+  <div class="bar b" data-value="36" data-legend="Polishing">
+    <span>Polish</span>
+  </div>
+</material-progress-bars>
+
+ </div>
     <div class="card fixed-card">
       <div class="port-status">
       <iron-icon class="icon" icon="vaadin-icons:warning"></iron-icon>
