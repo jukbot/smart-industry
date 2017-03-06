@@ -69,9 +69,7 @@
 
       _routeTabsChanged: function (tabs) {
         this.tabs = tabs || 'order'; 
-        const section = tabs.split("-")[0];
-        const resolvedPageUrl = this.resolveUrl('plan/' + 'view-plan-' + tabs + '.html');
-        console.log(resolvedPageUrl);
+        let resolvedPageUrl = this.resolveUrl('plan/' + 'view-plan-' + tabs + '.html');
         this.importHref(resolvedPageUrl, null, null, true);
       }
     });

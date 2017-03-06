@@ -85,13 +85,8 @@
       ],
 
       _routeTabsChanged: function (tabs) {
-    //   if (!tabs) {
-     //       this.set('route.path', '/customer');
-     //     return;
-    // }
         this.tabs = tabs || 'customer';
-        
-        const resolvedPageUrl = this.resolveUrl('setup/' + 'view-setup-' + tabs + '.html');
+        let resolvedPageUrl = this.resolveUrl('setup/' + 'view-setup-' + tabs + '.html');
         this.importHref(resolvedPageUrl, null, null, true);
       },
     });

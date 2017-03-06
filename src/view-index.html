@@ -1,19 +1,14 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <!-- app modules - used for core functions -->
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-<link rel="import" href="../bower_components/app-storage/app-storage-behavior.html">
-<link rel="import" href="../bower_components/app-storage/app-network-status-behavior.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
@@ -29,11 +24,8 @@
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/paper-stepper/paper-step.html">
-<link rel="import" href="../bower_components/paper-stepper/paper-stepper.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-styles/color.html">
@@ -62,7 +54,7 @@
           z-index: 1;
         }
       }
-      
+
       .menu-item {
         min-width: 120px;
       }
@@ -142,7 +134,7 @@
     <firebase-document id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{routeTail}}"></app-route>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <!-- wrapper -->
     <app-drawer-layout fullbleed>
       <!-- Navbar content -->
@@ -174,7 +166,7 @@
       </app-drawer>
       <!-- start header layout -->
       <app-header-layout fullbleed has-scrolling-region>
-        <app-header class="app-head" fixed>
+        <app-header condenses reveals fixed>
           <app-toolbar>
             <paper-icon-button icon="menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button>
             <div class="page-title" main-title>[[page]]</div>
@@ -203,16 +195,15 @@
             </template>
           </app-toolbar>
         </app-header>
-        <iron-pages role="main" selected="[[page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
-          <view-dashboard name="dashboard" route="{{routeTail}}"></view-dashboard>
-          <view-setup name="setup" route="{{routeTail}}"></view-setup>
-          <view-planning name="planning" route="{{routeTail}}"></view-planning>
-          <view-tracking name="tracking" route="{{routeTail}}"></view-tracking>
-          <view-controlling name="controlling" route="{{routeTail}}"></view-controlling>
-          <view-verifying name="verifying" route="{{routeTail}}"></view-verifying>
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name" fallback-selection="404">
+          <view-dashboard name="dashboard" route="{{subroute}}"></view-dashboard>
+          <view-setup name="setup" route="{{subroute}}"></view-setup>
+          <view-planning name="planning" route="{{subroute}}"></view-planning>
+          <view-tracking name="tracking" route="{{subroute}}"></view-tracking>
+          <view-controlling name="controlling" route="{{subroute}}"></view-controlling>
+          <view-verifying name="verifying" route="{{subroute}}"></view-verifying>
           <view-404 name="404"></view-404>
-          <view-settings name="settings">
-            <view-settings>
+          <view-settings name="settings"><view-settings>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -222,13 +213,12 @@
     Polymer({
       is: 'main-app',
       ready: function () {
-       /* this.async(function () {
+        this.async(function () {
           // If the path is blank, redirect to /
           if (!this.route.path) {
             this.set('route.path', '/dashboard');
           }
-          //this.route.path = 'dashboard';
-        });*/
+        });
       },
       // Signin Action
       login: function () {
@@ -288,10 +278,9 @@
       },
 
       _pageChanged: function (page) {
-        if (page != null) {
+        this.page = page || 'dashboard';
         let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
         this.importHref(resolvedPageUrl, null, this._showPage404, true);
-          }
       },
 
       _showPage404: function () {
@@ -313,8 +302,12 @@
         metadata: {
           type: Object
         },
-
-        menus: {
+       wideLayout: {
+        type: Boolean,
+        value: false,
+        observer: 'onLayoutChange',
+       },
+      menus: {
           type: Array,
           value: function () {
             return [{
@@ -352,16 +345,9 @@
           }
         },
       },
-
       observers: [
         '_routePageChanged(routeData.page)',
-      ],
-
-      wideLayout: {
-        type: Boolean,
-        value: false,
-        observer: 'onLayoutChange',
-      },
+      ]
     });
   </script>
   <script src="../bower_components/sugar/dist/sugar.min.js"></script>
