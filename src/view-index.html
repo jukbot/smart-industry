@@ -142,7 +142,7 @@
         <img class="logo" src="../images/logo/industrial.svg" alt="logo">
         <div class="main-title" main-title>SMART MES</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
+        <iron-selector selected="{{routeData.page}}" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
           <template is="dom-repeat" items="{{menus}}">
             <a name="{{item.view}}" href="/{{item.url}}">
               <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
@@ -195,7 +195,7 @@
             </template>
           </app-toolbar>
         </app-header>
-        <iron-pages role="main" selected="[[page]]" attr-for-selected="name" fallback-selection="404">
+        <iron-pages role="main" selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404">
           <view-dashboard name="dashboard" route="{{subroute}}"></view-dashboard>
           <view-setup name="setup" route="{{subroute}}"></view-setup>
           <view-planning name="planning" route="{{subroute}}"></view-planning>
@@ -215,7 +215,7 @@
       ready: function () {
         this.async(function () {
           // If the path is blank, redirect to /
-          if (!this.route.path) {
+          if (this.route.path === '') {
             this.set('route.path', '/dashboard');
           }
         });
@@ -291,6 +291,7 @@
         page: {
           type: String,
           reflectToAttribute: true,
+          notify: true,
           observer: '_pageChanged',
         },
         user: {
@@ -307,7 +308,7 @@
         value: false,
         observer: 'onLayoutChange',
        },
-      menus: {
+     menus: {
           type: Array,
           value: function () {
             return [{

@@ -8,7 +8,7 @@
         display: block;
       }
     </style>
-    <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}" tail="{{subrouteTail}}"></app-route>
+     <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}"></app-route>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <!-- Sub nav -->
@@ -21,10 +21,10 @@
             </paper-tabs>
           </app-toolbar>
         </app-header>
-          <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-plan-order name="order" route="{{subrouteTail}}"></view-plan-order>
-          <view-plan-scheduling name="scheduling" route="{{subrouteTail}}"></view-plan-scheduling>
-          <view-plan-production name="production" route="{{subrouteTail}}"></view-plan-production>
+          <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" role="main">
+          <view-plan-order name="order"></view-plan-order>
+          <view-plan-scheduling name="scheduling"></view-plan-scheduling>
+          <view-plan-production name="production"></view-plan-production>
          </iron-pages> 
         </app-header-layout>  
   </template>
