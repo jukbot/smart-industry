@@ -42,21 +42,31 @@
 <link rel="import" href="../bower_components/vaadin-charts/vaadin-charts.html">
 <!-- shared style -->
 <link rel="import" href="shared-styles.html">
-<dom-module id="main-app">
+<dom-module id="view-index">
   <template>
-    <style is="custom-style" include="shared-styles">
-       :host {
+    <style>  
+      :host {
         --app-primary-color: #CDDC39;
-        --app-secondary-color: black;
+        --app-secondary-color: #333333;
         display: block;
         --paper-menu-button-dropdown: {
           margin-top: 50px;
         }
-        --paper-menu-button-content: {
-          z-index: 1;
-        }
       }
 
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      app-header {
+        color: #fff;
+        background-color: var(--app-secondary-color);
+      }
+
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+ 
       .menu-item {
         min-width: 120px;
       }
@@ -65,8 +75,9 @@
         color: inherit;
         text-decoration: none;
       }
+      
       .drawer-list {
-        margin: 0;
+        margin: 0 20px;
       }
       
       .drawer-list a {
@@ -140,20 +151,20 @@
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
-    <!-- wrapper -->
     <app-drawer-layout fullbleed>
       <!-- Navbar content -->
-      <app-drawer id="drawer" swipe-open>
+      <app-drawer id="drawer" slot="drawer" swipe-open>
         <img class="logo" src="../images/logo/industrial.svg" alt="logo">
         <div class="main-title" main-title>SMART MES</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="{{routeData.page}}" attr-for-selected="name" class="drawer-list" role="navigation" fallback-selection="404">
-          <template is="dom-repeat" items="{{menus}}">
-            <a name="{{item.view}}" href="/{{item.url}}">
-              <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</a>
-          </template>
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+        <template is="dom-repeat" items="{{menus}}">
+          <a name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}"></paper-icon-button> {{item.title}}</a>
+        </template>
         </iron-selector>
+
         <div class="sidebar-menu"></div>
+
         <div class="center-box">
           <paper-button raised class="chilli authen-btn" on-tap="login" hidden$="[[signedIn]]">Sign In</paper-button>
           <paper-button raised class="chilli authen-btn" on-tap="logout" hidden$="[[!signedIn]]">Sign Out</paper-button>
@@ -199,7 +210,7 @@
             </template>
           </app-toolbar>
         </app-header>
-        <iron-pages role="main" selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
           <view-dashboard name="dashboard" route="{{subroute}}"></view-dashboard>
           <view-setup name="setup" route="{{subroute}}"></view-setup>
           <view-planning name="planning" route="{{subroute}}"></view-planning>
@@ -214,104 +225,29 @@
   </template>
   <script>
     Polymer({
-      is: 'main-app',
-      ready: function () {
-        this.async(function () {
-          // If the path is blank, redirect to /
-          if (this.route.path === '') {
-            this.set('route.path', '/dashboard');
-          }
-        });
-      },
-      // Signin Action
-      login: function () {
-        this.$.auth.signInWithPopup()
-        .then(function () {
-          console.info("Login successful");
-          //console.info("Username:" + result.user);
-          //alert("Welcome " + result.user);
-        })
-        .catch(error => {
-          // Handle Errors here.
-          let errorCode = error.code;
-          let errorMessage = error.message;
-          let errorEmail = error.email;
-          alert("Authenticate Failed: " + errorMessage);
-          console.error("Authenticate Failed: " + errorCode);
-        });
-      },
-      // Signout Action
-      logout: function () {
-        this.$.auth.signOut()
-        .then(function () {
-          console.info("Logout successful");
-          alert("Signout successfully");
-        })
-        .catch(error => {
-          let errorCode = error.code;
-          let errorMessage = error.message;
-          alert("Authenticate Failed: " + errorMessage);
-          console.error("Authenticate Failed: " + errorCode);
-        });
-      },
-      // Handle Error
-      handleError: function(e) {
-        console.info("Authenticate error:" + e.message);
-      },
-
-      onLayoutChange: function (wide) {
-        const drawer = this.$.drawer;
-        if (wide && drawer.opened) {
-          drawer.opened = false;
-        }
-      },
-
-      _routePageChanged: function (page) {
-        this.page = page || 'dashboard';
-
-        // Scroll to the top of the page on every *route* change. Use `Polymer.AppLayout.scroll`
-        // with `behavior: 'silent'` to disable header scroll effects during the scroll.
-        Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
-        // Close the drawer - in case the *route* change came from a link in the drawer.
-        this.drawerOpened = false;
-
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
-      },
-
-      _pageChanged: function (page) {
-        this.page = page || 'dashboard';
-        let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
-        this.importHref(resolvedPageUrl, null, this._showPage404, true);
-      },
-
-      _showPage404: function () {
-        this.page = '404';
-      },
-
+      is: 'view-index',
       properties: {
         page: {
           type: String,
           reflectToAttribute: true,
-          notify: true,
           observer: '_pageChanged',
         },
+
         user: {
           type: Object
         },
-        statusKnown: {
-          type: Object
-        },
+
         metadata: {
           type: Object
         },
+
        wideLayout: {
-        type: Boolean,
-        value: false,
-        observer: 'onLayoutChange',
+          type: Boolean,
+          value: false,
+          observer: '_onLayoutChange',
        },
-     menus: {
+
+       menus: {
           type: Array,
           value: function () {
             return [{
@@ -333,7 +269,7 @@
                 icon: 'vaadin-icons:calendar-clock'
               },
               {
-                url: 'controlling/machine',
+                url: 'controlling',
                 title: 'CONTROL',
                 view: 'controlling',
                 icon: 'vaadin-icons:sliders'
@@ -344,14 +280,84 @@
                 view: 'tracking',
                 icon: 'vaadin-icons:timer'
               },
-
             ];
           }
         },
       },
+
       observers: [
         '_routePageChanged(routeData.page)',
-      ]
+      ],
+
+      _routePageChanged: function (page) {
+        if (page === undefined) {
+          return;
+        }
+        
+        this.page = page || 'dashboard';
+
+        // Scroll to the top of the page on every *route* change. Use `Polymer.AppLayout.scroll`
+        // with `behavior: 'silent'` to disable header scroll effects during the scroll.
+        Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
+        // Close the drawer - in case the *route* change came from a link in the drawer.
+        this.drawerOpened = false;
+
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      },
+
+      _pageChanged: function (page) { 
+       var resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+       this.importHref(resolvedPageUrl, null, this._showPage404.bind(this), true);
+       resolvedPageUrl = null;
+      },
+
+      _showPage404: function () {
+        this.page = '404';
+      },
+
+      _onLayoutChange: function (wide) {
+        const drawer = this.$.drawer;
+        if (wide && drawer.opened) {
+          drawer.opened = false;
+        }
+      },
+
+      // Signin Action
+      login: function () {
+        this.$.auth.signInWithPopup()
+        .then(function () {
+          console.info("Login successful");
+          //redirect
+        })
+        .catch(error => {
+          // Handle Errors here.
+          let errorCode = error.code;
+          let errorMessage = error.message;
+          let errorEmail = error.email;
+          alert("Authenticate Failed: " + errorMessage);
+          console.error("Authenticate Failed: " + errorCode);
+        });
+      },
+      // Signout Action
+      logout: function () {
+        this.$.auth.signOut()
+        .then(function () {
+          alert("Signout successfully");
+          console.info("Logout successful");
+        })
+        .catch(error => {
+          let errorCode = error.code;
+          let errorMessage = error.message;
+          alert("Authenticate Failed: " + errorMessage);
+          console.error("Authenticate Failed: " + errorCode);
+        });
+      },
+      // Handle Error
+      handleError: function(e) {
+        console.info("Authenticate error:" + e.message);
+      }
     });
   </script>
   <script src="../bower_components/sugar/dist/sugar.min.js"></script>

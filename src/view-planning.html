@@ -37,6 +37,12 @@
           value: "Planning"
         },
 
+        tabs: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_tabsChanged',
+        },
+
         submenus: {
           type: Array,
           value: function () {
@@ -67,10 +73,17 @@
         '_routeTabsChanged(subrouteData.tabs)'
       ],
 
-      _routeTabsChanged: function (tabs) {
-        this.tabs = tabs || 'order'; 
-        let resolvedPageUrl = this.resolveUrl('plan/' + 'view-plan-' + tabs + '.html');
-        this.importHref(resolvedPageUrl, null, null, true);
+       _routeTabsChanged: function (tabs) {
+        if (tabs === undefined) {
+          return 'order';
+        }
+        this.tabs = tabs || 'order';
+      },
+
+      _tabsChanged: function (tabs) {
+        var resolvedTabsUrl = this.resolveUrl('plan/' + 'view-plan-' + tabs + '.html');
+        this.importHref(resolvedTabsUrl, null, null, true); 
+        resolvedTabsUrl = null;   
       }
     });
   </script>

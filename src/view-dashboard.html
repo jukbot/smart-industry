@@ -1,7 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
-
 <dom-module id="view-dashboard">
     <template>
     <style include="shared-styles">
@@ -9,23 +8,23 @@
         display: block;
       }
     </style>
-    <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}" tail="{{subrouteTail}}"></app-route>
+    <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}"></app-route>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <!-- Sub nav -->
           <app-toolbar sticky class="tabs-bar">
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="{{subrouteData.tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+            <paper-tabs selected="[[tabs]]" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
                 <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
-          <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-dashboard-overview name="overview" route="{{subrouteTail}}"></view-dashboard-overview>
-          <view-dashboard-notification name="notification" route="{{subrouteTail}}"></view-dashboard-notification>
-          <view-dashboard-statistic name="statistic" route="{{subrouteTail}}"></view-dashboard-statistic>
+          <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
+          <view-dashboard-overview name="overview"></view-dashboard-overview>
+          <view-dashboard-notification name="notification"></view-dashboard-notification>
+          <view-dashboard-statistic name="statistic"></view-dashboard-statistic>
          </iron-pages> 
         </app-header-layout>  
   </template>
@@ -38,23 +37,26 @@
           value: "Dashboard"
         },
 
+        tabs: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_tabsChanged',
+        },
+
         submenus: {
           type: Array,
           value: function () {
             return [{
-                'section': 'dashboard',
                 'title': 'OVERVIEW',
                 'view': 'overview',
                 'icon': 'vaadin-icons:grid-small'
               },
               {
-                'section': 'dashboard',
                 'title': 'NOTIFICATION',
                 'view': 'notification',
                 'icon': 'vaadin-icons:bell-o'
               },
               {
-                'section': 'dashboard',
                 'title': 'REPORT',
                 'view': 'report',
                 'icon': 'vaadin-icons:chart'
@@ -69,12 +71,17 @@
       ],
 
       _routeTabsChanged: function (tabs) {
+        if (tabs === undefined) {
+          return 'overview';
+        }
         this.tabs = tabs || 'overview';
-        let resolvedPageUrl = this.resolveUrl('dashboard/' + 'view-dashboard-' + tabs + '.html');
-        this.importHref(resolvedPageUrl, null, null, true);
-        
-      }
+      },
 
+      _tabsChanged: function (tabs) {
+        var resolvedTabsUrl = this.resolveUrl('dashboard/' + 'view-dashboard-' + tabs + '.html');
+        this.importHref(resolvedTabsUrl, null, null, true);
+        resolvedTabsUrl = null;  
+      }
     });
   </script>
 </dom-module>

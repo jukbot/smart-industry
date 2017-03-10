@@ -9,7 +9,7 @@
         display: block;
       }
     </style>
-    <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}" tail="{{subrouteTail}}"></app-route>
+    <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}"></app-route>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <!-- Sub nav -->
@@ -23,12 +23,12 @@
           </app-toolbar>
         </app-header>
           <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-setup-customer name="customer" route="{{subrouteTail}}"></view-setup-customer>
-          <view-setup-factory name="factory" route="{{subrouteTail}"></view-setup-factory>
-          <view-setup-inventory name="inventory" route="{{subrouteTail}}"></view-setup-inventory>
-          <view-setup-machine name="machine" route="{{subrouteTail}}"></view-setup-machine>
-          <view-setup-product name="product" route="{{subrouteTail}}"></view-setup-product>
-          <view-setup-worker name="worker" route="{{subrouteTail}"></view-setup-worker>
+          <view-setup-customer name="customer"></view-setup-customer>
+          <view-setup-factory name="factory"></view-setup-factory>
+          <view-setup-inventory name="inventory"></view-setup-inventory>
+          <view-setup-machine name="machine"></view-setup-machine>
+          <view-setup-product name="product"></view-setup-product>
+          <view-setup-worker name="worker"</view-setup-worker>
          </iron-pages> 
         </app-header-layout>  
   </template>
