@@ -1,36 +1,42 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="generator" content="Polymer 1.0">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=1">
-    <title>SMART MES</title>
-    <meta name="description" content="Smart Manufacturing Execution Systems for Production in Industry v1.0">
-    <meta name="author" content="KMUTT">
-    <meta name="robots" content="index, follow">
-    <link rel="icon" href="/images/favicon.ico">
-    <!-- See https://goo.gl/OOhYW5 -->
-    <link rel="manifest" href="/manifest.json">
-    <!-- See https://goo.gl/qRE0vM -->
-    <meta name="theme-color" content="#333">
-    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Smart MES">
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Smart MES">
-    <!-- Homescreen icons -->
-    <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
-    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
-    <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
-    <meta name="msapplication-TileColor" content="#333">
-    <meta name="msapplication-tap-highlight" content="no">
 
+<head>
+  <meta charset="UTF-8">
+  <meta name="generator" content="Polymer 2.0">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=1">
+  <title>SMART MES</title>
+  <meta name="description" content="Smart Manufacturing Execution Systems for Production">
+  <meta name="author" content="KMUTT">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#333">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Smart MES">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Smart MES">
+  <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
+  <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#333">
+  <meta name="msapplication-tap-highlight" content="no">
+  <!-- Load and register pre-caching Service Worker -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/service-worker.js');
+      });
+    }
+  </script>
+  <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+  <!-- POLYMER 2.0 ONLY <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script> -->
+
+  <!-- DELETE FOLLOWING SCRIPT IF UNINSTALL POLYMER 1.0 -- >
     <script>
       // Setup Polymer options
       window.Polymer = {
@@ -69,14 +75,8 @@
           onload();
         }
       })();
-
-      // Load pre-caching Service Worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/service-worker.js');
-        });
-      }
     </script>
+
     <link rel="import" href="/src/view-index.html">
     <style>   
    body {
@@ -85,7 +85,6 @@
      line-height: 1.5;
      min-height: 1vh;
      background-color: #f1f1f1;
-     -webkit-font-smoothing: antialiased;
    }
    
 .wrapper {

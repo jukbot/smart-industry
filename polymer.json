@@ -2,15 +2,11 @@
   "entrypoint": "index.html",
   "shell": "src/view-index.html",
   "fragments": [
-    "src/view-index.html",
-    "src/view-overview.html",
+    "src/view-dashboard.html",
     "src/view-setup.html",
-    "src/view-prepro.html",
-    "src/view-inpro.html",
-    "src/view-postpro.html",
-    "src/view-settings.html",
-    "src/view-help.html",
-    "src/view-login.html",
+    "src/view-planning.html",
+    "src/view-controlling.html",
+    "src/view-tracking.html",
     "src/view-404.html"
   ],
   "sourceGlobs": [
@@ -18,8 +14,11 @@
     "images/**/*",
     "bower.json"
   ],
-  "includeDependencies": [
+  "extraDependencies": [
     "manifest.json",
-    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
-  ]
+    "bower_components/webcomponentsjs/*.js"
+  ],
+  "lint": {
+    "rules": ["polymer-2"]
+  }
 }
