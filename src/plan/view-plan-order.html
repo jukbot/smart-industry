@@ -46,6 +46,17 @@
         width: auto;
       } 
 
+     .button-group {
+       margin-top: 16px;
+     }
+
+     .button-group paper-button {
+       display: inline-flex;
+       width: 49.5%;
+       align-items: center; 
+       justify-content: center; 
+     }
+
       .order-info p {
         margin: 10px 0;
       }
@@ -69,8 +80,8 @@
     </style>
     <firebase-auth user="{{user}}"></firebase-auth>
     <firebase-query id="orderQuery" path="/order" orderByChild="order_date" data="{{orderQuery}}"></firebase-query>
-    <firebase-query id="factoryQuery" path="/factory/standard" data="{{factoryStandard}}"></firebase-query>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
+    <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <ul class="app-grid">
       <li>
@@ -290,6 +301,9 @@
           type: Object
         },
         factoryPerformance: {
+          type: Object
+        },
+        factoryStandard: {
           type: Object
         },
         orderQuery: {

@@ -50,14 +50,18 @@
         margin: 10px 0;
       }
 
-     .button-group {
-       margin-top: 16px;
-     }
-     .button-group paper-button {
+       paper-button {
        display: inline-flex;
-       width: 49.5%;
        align-items: center; 
        justify-content: center; 
+     }
+     
+     .priority-btn {
+       width: 150px;
+     }
+
+     .priority-dialog {
+       width: 30%;
      }
 
      .item-box {
@@ -77,13 +81,15 @@
       }
     </style>
     <firebase-query id="orderQuery" path="/order" orderByChild="order_no" data="{{orderQuery}}"></firebase-query>
-    <firebase-query id="factoryQuery" path="/factory/standard" data="{{factoryStandard}}"></firebase-query>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
+    <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
       <div class="card">
       <h1>Daily Jobs Production Scheduling</h1>
 <vaadin-date-picker style="width: 300px;" label="Working Date" name="workdate" always-float-label autoValidate
               min="2017-01-01" class="date-selector" id="workdateSelector"></vaadin-date-picker>
-<h3>Current Priority Used: FCFS</h3>
+<h3>Current Priority Used: [[factoryStandard.priority]]</h3>
+<paper-button raised class="chilli priority-btn" raised on-tap="togglePriority">Change</paper-button>
+<br>
 <vaadin-columnrange-chart id="column-range-resource-usage">
     <chart width="1200" inverted="true"></chart>
     <chart-title>Daily Jobs Production Scheduling</chart-title>
@@ -219,6 +225,17 @@
       </sortable-list>
     </div>
     </div>
+    <paper-dialog class="priority-dialog" id="changePriorityDialog">
+  <p>Warning !! Changing priority will affect other orders scheduling. This cannot change the jobs scheduling that are currently running.</p>
+  <paper-radio-group selected="[[factoryStandard.priority]]">
+  <paper-radio-button name="FCFS" value="FCFS">FCFS</paper-radio-button>
+  <paper-radio-button name="SPT" value="SPT">SPT</paper-radio-button>
+</paper-radio-group>
+  <div class="buttons">
+      <paper-button dialog-dismiss>Cancel</paper-button>
+      <paper-button class="bold" on-tap="savePriority" dialog-confirm>Apply</paper-button>
+  </div>
+</paper-dialog>
   </template>
   <script>
     Polymer({
@@ -269,6 +286,10 @@
 
     dataChanged: function (newData, oldData) {
           console.info("Data has been loaded!!");
+    },
+
+    togglePriority: function () {
+       this.$.changePriorityDialog.open();
     },
 
       properties: {
