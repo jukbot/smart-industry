@@ -81,9 +81,8 @@
       },
 
       _tabsChanged: function (tabs) {
-        var resolvedTabsUrl = this.resolveUrl('plan/' + 'view-plan-' + tabs + '.html');
+        let resolvedTabsUrl = this.resolveUrl('plan/' + 'view-plan-' + tabs + '.html');
         this.importHref(resolvedTabsUrl, null, null, true); 
-        resolvedTabsUrl = null;   
       }
     });
   </script>

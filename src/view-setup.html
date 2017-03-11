@@ -86,8 +86,8 @@
 
       _routeTabsChanged: function (tabs) {
         this.tabs = tabs || 'customer';
-        let resolvedPageUrl = this.resolveUrl('setup/' + 'view-setup-' + tabs + '.html');
-        this.importHref(resolvedPageUrl, null, null, true);
+        let resolvedTabsUrl = this.resolveUrl('setup/' + 'view-setup-' + tabs + '.html');
+        this.importHref(resolvedTabsUrl, null, null, true);
       },
     });
   </script>

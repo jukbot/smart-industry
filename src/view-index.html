@@ -44,7 +44,7 @@
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-index">
   <template>
-    <style>  
+    <style include="shared-styles">  
       :host {
         --app-primary-color: #CDDC39;
         --app-secondary-color: #333333;
@@ -308,9 +308,8 @@
       },
 
       _pageChanged: function (page) { 
-       var resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+       let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
        this.importHref(resolvedPageUrl, null, this._showPage404.bind(this), true);
-       resolvedPageUrl = null;
       },
 
       _showPage404: function () {
