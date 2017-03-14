@@ -15,14 +15,14 @@
           <!-- Sub nav -->
           <app-toolbar sticky class="tabs-bar">
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="[[tabs]]" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+            <paper-tabs selected="{{subrouteData.tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
                 <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
-          <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
+          <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" role="main">
           <view-track-production name="production"></view-track-production>
           <view-track-machine name="machine"></view-track-machine>
           <view-track-energy name="energy"></view-track-energy>
@@ -48,19 +48,16 @@
           type: Array,
           value: function () {
             return [{
-                'section': 'tracking',
                 'title': 'PRODUCTION',
                 'view': 'production',
                 'icon': 'vaadin-icons:progressbar'
               },
               {
-                'section': 'tracking',
                 'title': 'MACHINE',
                 'view': 'machine',
                 'icon': 'vaadin-icons:automation'
               },
               {
-                'section': 'tracking',
                 'title': 'ENERGY',
                 'view': 'energy',
                 'icon': 'vaadin-icons:bolt'
