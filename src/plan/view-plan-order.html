@@ -83,6 +83,7 @@
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
     <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
+    <firebase-document id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -90,14 +91,12 @@
           <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
               <paper-input label="Order Number" name="order-no" id="orderNumber" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
-              <paper-input label="Customer Name" name="order-name" type="text" id="orderName" required always-float-label auto-validate></paper-input>
+              <paper-input label="Customer Name" name="order-name" type="text" id="customerName" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
               <vaadin-combo-box label="Product" name="product" value="{{p_name}}" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
               <vaadin-combo-box label="Size" name="size" value="{{p_size}}" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
-             <!-- <vaadin-combo-box label="Machine" name="machine" items="[[machineItems]]" id="machineSelector" item-label-path="name" item-value-path="type" loading="true" required always-float-label>
-              </vaadin-combo-box> -->
               <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
-              min="2017-01-01" class="date-selector" id="deliverySelector"></vaadin-date-picker>
+              class="date-selector" id="deliverySelector"></vaadin-date-picker>
                 <br>
               <template is="dom-bind">
                 <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
@@ -113,18 +112,18 @@
       <li>
         <div class="card order-info">
                 <h1>Order Information</h1>
-                <p>Product Name: <span id="product">[[p_name]] [[y.name]]</span></p>
-                <p>Actual Quantity: <span id="actualQuantity">[[calActualQuantity(factoryPerformance.aw, amount)]]</span></p>
-                <p>Create Order Date: <span id="createOrder"></span></p>
+                <p>Product Name: <span id="product">[[x.name]] [[y.name]]</span></p>
+                <p>Actual Quantity: <span id="actualQuantity" value="{{q}}">[[calActualQuantity(factoryPerformance.aw, amount)]]</span></p>
+                <p>Create Order Date: <span id="createOrder">[[today]]</span></p>
                 <p>Production Start: <span id="productionStart"></span></p>
                 <p>Processes Used: <span id="usedProcess">[[x.process]]</span></p>
-                <p>Expect Delivery: <span id="estimateDelivery">[[calEstDelivery(y.cycle, amount)]]</span></p>
-                <p>Estimate Duration: <span id="estimateDuration">[[calCycleTime(y.cycle, amount)]]</span></p>
-                <p>Queue number: <span id="estimateDuration"></span></p>
-                <p>Waiting Queue: <span id="estimateDuration"></span></p>
-                <p>Order Workload: <span id="estimateDuration"></span></p>
-                <p>Raw Material Required: <span id="rawMaterial"></span></p>
-                <p>Total Order: [[today]]</p>
+                <p>Expect Delivery: <span id="estimateDelivery">[[calEstDelivery(y.cycle, amount, orderQuery)]]</span></p>
+                <p>Estimate Duration (Hrs): <span id="estimateDuration" value="{{tc}}">[[calCycleTime(y.cycle, amount)]]</span></p>
+                <p>Queue number: <span id="queueNumber"></span></p>
+                <p>Order Workload: <span id="orderWorkload">[[calWorkLoad(q, tc, mc)]]</span></p>
+                <p>Raw Material Use: <span id="rawMaterial">Null</span></p>
+                <p>Machine Use: <span id="usedMachine">Null</span></p>
+                <p>Operation hours: <span id="operationHours" >[[calOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</span></p>
         </div>
       </li>
     </ul>
@@ -146,17 +145,21 @@
         if (mm < 10) {
           mm = '0' + mm
         }
-        today = dd + '/' + mm + '/' + yyyy;
-
+       
+        let timestamp = Math.round(new Date().getTime()/1000.0);
+        let startprod = dd+1 
         this.$.orderQuery.ref.push({
-          order_date: Math.round(new Date().getTime()/1000.0),
-          order_no: this.$.orderQuantity.value,
-          order_name: this.$.orderName.value,
+          order_date: timestamp,
+          order_no: this.$.orderNumber.value,
+          order_customer: this.$.customerName.value,
           order_product: this.$.productSelector.value,
+          order_size: this.$.sizeSelector.value,
+          order_quantity: this.$.orderQuantity.value,
+          order_start: timestamp + 86400, // timestamp + 1 day
+          order_duration: this.$.estimateDuration.innerHTML,
+          order_delivery: this.$.estimateDelivery.innerHTML
         }).key;
-     //   this.$.machineName.value = null;
-    //    this.$.machineType.value = null;
-      alert("Order has been added to production schedule successfully");
+      alert("Added to order schedule successfully");
       },
       selectProduct: function() {
      
@@ -177,11 +180,16 @@
          let deliverypicker = this.$$("#deliverySelector");
          let actualquantity = this.$$('#actualQuantity');
          let orderQuantity = this.$$('#orderQuantity'); 
+
          // querySelector ==> this.shadowRoot.querySelector('')
           deliverypicker.addEventListener('value-changed', function() {
-            console.log('Selected date: ' + deliverypicker.value);
-            estdelivery.innerHTML = deliverypicker.value.split("-").reverse().join("/");
+            if(deliverypicker.value != null) {
+            //estdelivery.innerHTML = deliverypicker.value.split("-").reverse().join("/")
+            let datestr = deliverypicker.value;
+            estdelivery.innerHTML = (new Date(datestr).getTime())/1000;
+            }
            });
+
          deliverypicker.i18n = {
           week: 'Week',
           calendar: 'Calendar',
@@ -219,18 +227,18 @@
         if (mm < 10) {
           mm = '0' + mm
         }
-        today = dd + '/' + mm + '/' + yyyy;
-           let productpicker = this.$$('#productSelector');
-           let sizePicker = this.$$('#sizeSelector');
-           let usedProcess =  this.$$('#usedProcess');
-           let createOrder = this.$$('#createOrder');
-           let productionStart = this.$$('#productionStart');
+        let timestamp = Math.round(new Date().getTime()/1000.0);
+        let today_date = dd + '/' + mm + '/' + yyyy;
+        let order_start_date = timestamp + 86400;
+        let productpicker = this.$$('#productSelector');
+        let sizePicker = this.$$('#sizeSelector');
+        let usedProcess =  this.$$('#usedProcess');
+        let productionStart = this.$$('#productionStart');
 
-           productpicker.addEventListener('value-changed', function() {
-              let product_list = productpicker.value;   
-              createOrder.innerHTML = today;
-          
-              if(product_list != null) {
+        productpicker.addEventListener('value-changed', function() {
+          let product_list = productpicker.value;   
+          productionStart.innerHTML = order_start_date;  
+          if(product_list != null) {
                  if(sizePicker.items != null) {
                      sizePicker.disabled = false;
                  }
@@ -239,7 +247,6 @@
 
           sizePicker.addEventListener('value-changed', function() {
               let size = sizePicker.value;   
-              console.log('Select size:' + size);
         });
     },
 
@@ -251,41 +258,52 @@
             };
             let cycletime = ((summed*amount)/3600.00).toFixed(2);
             console.log("Size of obj: " + Object.keys(cycle).length);
-            return cycletime + " Hrs.";
+            return cycletime; // Hours
      },
 
-     calEstDelivery: function (cycle,amount) {
-          if (!cycle) return '';
-          
+     calEstDelivery: function (cycle,amount,order) {
+          if (!cycle || !amount) return '';  
+          let ophours = this.$$('#operationHours');
+          let productionStart = this.$$('#productionStart');
           let summ = 0;
             for (let key in cycle) {
               summ += cycle[key];
           };
 
-          let today = new Date();
-          let dd = today.getDate();
-          let mm = today.getMonth() + 1; //January is 0!
-          let yyyy = today.getFullYear();
+          let cycletime = ((summ*amount)/3600.00).toFixed(2);
+          console.log(Object.keys(order).length);
+     //     if(Object.getOwnPropertyNames(order).length == 0) {
+          let estdelivery_stp = Math.ceil(parseInt(productionStart.innerHTML) + ((cycletime/ophours.innerHTML)*86400));
+          console.log(estdelivery_stp);
+          return estdelivery_stp;
+       /*   let dd = estdelivery_stp.getDate();
+          let mm = estdelivery_stp.getMonth() + 1;
+          let yyyy = estdelivery_stp.getFullYear();
           if (dd < 10) {
-              dd = '0' + dd
-           }
-          if (mm < 10) {
-             mm = '0' + mm
+          dd = '0' + dd
           }
-            let time = ((summ*amount)/3600.00).toFixed(2);
-            let day = (time*0.0416666667);
-            console.log("Day:" + day + dd);
-
-            if(day >= 1 && day <= 30) { dd = (dd+day); }
-            let month = "03";
-            let year = "2017";
-          return Math.ceil(dd) + "/" + month + "/" + year;
+          if (mm < 10) {
+          mm = '0' + mm
+          }
+          return dd + "/" + mm + "/" + yyyy; */
+      //    } else {
+            // get estdelivery from scheduling
+      //      return "scheduling table";
+       //   }
+       //   return null;
      },
      calActualQuantity: function (aw,amount) {
-        if(!amount) return '';
+        if(!amount || !aw) return '';
         let aq = (amount/(1-aw)).toFixed(2);
         let aq_result = Math.ceil(aq);
         return aq_result;
+     },
+     calOpTime: function (end, start) {
+        if(!end || !start) return '';
+        let endtime =  end.replace(/\:/g,'.')
+        let starttime = start.replace(/\:/g,'.')
+        let optime = endtime - starttime;
+        return optime;
      },
       properties: {
         productSize: {
@@ -306,6 +324,9 @@
         factoryStandard: {
           type: Object
         },
+        factoryOperation: {
+          type: Object
+        },
         orderQuery: {
           type: Object
         },
@@ -318,19 +339,9 @@
                 number: 1
               },
               {
-                name: 'Order Date (FCFS)',
-                symbol: 'FCFS',
-                number: 2
-              },
-              {
                 name: 'Shortest Duration First (SPT)',
                 symbol: 'SPT',
-                number: 3
-              },  
-              {
-                name: 'Longest Duration First (LPT)',
-                symbol: 'LPT',
-                number: 4
+                number: 2
               }
             ]
           }
@@ -351,6 +362,23 @@
              today = dd + '/' + mm + '/' + yyyy;
              return today;
          }
+        },
+        todayDate: {
+          type: Object,     
+          value: function () {
+          let date = new Date();
+          let dd = date.getDate();
+          let mm = date.getMonth() + 1; //January is 0!
+          let yyyy = date.getFullYear();
+          if (dd < 10) {
+            dd = '0' + dd
+          }
+          if (mm < 10) {
+            mm = '0' + mm
+         }
+          date = yyyy + '-' + mm  + '-' + dd;
+          return date;
+          }
         },
       }
     });
