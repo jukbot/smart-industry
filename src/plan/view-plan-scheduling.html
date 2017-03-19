@@ -80,15 +80,15 @@
         color: deeppink;      
       }
     </style>
-    <firebase-query id="orderQuery" path="/order" data="{{orderItems}}" order-by-child="order_duration" order-by-value="true"></firebase-query>
-    <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
+    <firebase-query id="orderQuery" path="/order" data="{{orderItems}}" order-by-child="{{orderType(factoryStandard.priority)}}" order-by-value="true"></firebase-query>
+    <firebase-query id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
+    <firebase-query id="processQuery" path="/product/CC/size" data="{{orderProcess}}"></firebase-query>
     <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
       <div class="card">
-      <h1>Daily Jobs Production Scheduling [[todayDate]] [[today]]</h1>
+      <h1>Daily Jobs Production Scheduling of [[today]]</h1>
 <vaadin-date-picker style="width: 300px;" name="workdate" always-float-label autoValidate
               min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
 <h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
-<h3>OT Jobs:</h3>
 <paper-button raised class="chilli priority-btn" raised on-tap="togglePriority">Change</paper-button>
 <br>
 <vaadin-columnrange-chart id="column-range-resource-usage">
@@ -145,7 +145,6 @@
  <div class="card">
     <h1>Order Scheduling Table</h1>
     <h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
-    <h3>OT Jobs:</h3>
    <vaadin-grid id="grid-objects-source">
   <table>
     <colgroup>
@@ -171,7 +170,7 @@
     <tbody>
       <template is="dom-repeat" items="{{orderItems}}" as="list">
         <tr>
-        <td>1</td>
+        <td>[[index]]</td>
         <td>[[list.order_no]]</td>
         <td>[[list.order_product]]</td>
         <td>[[list.order_size]]</td>
@@ -184,7 +183,14 @@
   </table>
 </vaadin-grid>
  </div>   
-  
+  <table><thead><tr><th>Machine</th><th>Cycle Time (second)</th></tr></thead>
+      <tbody>
+        <template is="dom-repeat" items="{{orderProcess}}" as="processes">
+        <tr><td>[[processes.cycle]]</td><td>[[processes.value]]</td></tr>
+        </template>
+      </tbody>
+      </table>
+ 
 <!-- <div class="card">
  <h1>Order Scheduling</h1>
   <template is="dom-bind">
@@ -262,7 +268,7 @@
     </div>
     <paper-dialog class="priority-dialog" id="changePriorityDialog">
   <p>Warning !! Changing priority will affect other orders scheduling. This cannot change the jobs scheduling that are currently running.</p>
-  <paper-radio-group selected="[[factoryStandard.priority]]">
+  <paper-radio-group id="priorityType" selected="[[factoryStandard.priority]]">
   <paper-radio-button name="EDD" value="EDD">EDD</paper-radio-button>
   <paper-radio-button name="SPT" value="SPT">SPT</paper-radio-button>
 </paper-radio-group>
@@ -324,9 +330,19 @@
     },
 
     togglePriority: function () {
-       this.$.changePriorityDialog.open();
+        this.$.changePriorityDialog.open();
     },
 
+    orderType: function (type) {
+        if(type === "SPT") { return "order_duration" }
+        else if(type === "EDD") { return "order_delivery" }
+        else return "";
+    },
+    savePriority: function () {
+         let value = this.$.priorityType.selected;  // this.$$('#priorityType').selectedItem;  //
+         console.log(value);
+         this.set('factoryStandard.priority', value);
+    },
       properties: {
         items: {
           type: Array,
