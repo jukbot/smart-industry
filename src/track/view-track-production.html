@@ -26,38 +26,54 @@
         font-size: 3rem;
       }
       .card h1 {
-        font-size: 1.75rem;
+        font-size: 1.6rem;
         text-align: center;
       }
       .icon {
         width: 60px;
         height: 60px;
       }
+      .btn {
+        width: 120px;
+      }
+      .order-header {
+        margin-top: 0;
+      }
+      .button-group {
+       text-align: center;
+       margin-bottom: 10px;
+       }
 
-       material-progress-bars {
-            width: 100%;
-            @apply(--paper-font-body2);
-          }
-          material-progress-bars > .bar > span {
-            text-align: end;
-            font-size: 0.9em;
-            @apply(--layout-flex);
-          }
-          .bar {
-            background-color: var(--paper-deep-orange-500);
-          }
-          .bar.a {
-            background-color: var(--paper-purple-500);
-          }
-          .bar.b {
-            background-color: var(--paper-cyan-500);
-          }
-          .bar.c {
-            background-color: var(--paper-orange-500);
-          }
-          .bar.d {
-            background-color: var(--paper-pink-500);
-          }
+     .button-group paper-button {
+       display: inline-flex;
+       width: 250px;
+       align-items: center; 
+       justify-content: center; 
+     }
+    material-progress-bars {
+        width: 100%;
+        @apply(--paper-font-body2);
+      }
+      material-progress-bars > .bar > span {
+        text-align: end;
+        font-size: 0.9em;
+        @apply(--layout-flex);
+      }
+      .bar {
+        background-color: var(--paper-deep-orange-500);
+      }
+      .bar.a {
+        background-color: var(--paper-purple-500);
+      }
+      .bar.b {
+        background-color: var(--paper-cyan-500);
+      }
+      .bar.c {
+        background-color: var(--paper-orange-500);
+      }
+      .bar.d {
+        background-color: var(--paper-pink-500);
+      }
     </style>
     <ul class="app-grid">
       <li>
@@ -69,18 +85,27 @@
       <li>
         <div class="card">
           <h1>Machine Availablity</h1>
-          <p class="percent">99%</p>
+          <p class="percent" id="maOutput">N/A</p>
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>OEE</h1>
-          <p class="percent">85%</p></div>
+          <h1>Overall Equipment Effectiveness</h1>
+          <p class="percent" id="oeeOutput">N/A</p></div>
       </li>
     </ul>
     <div class="wrap-card">
+     <div class="card fixed-card">
+    <h1>Manual Overall Equipment Effectiveness Calculation</h1>
+    <paper-input id="planRuntime" label="Planned Total Runtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
+    <paper-input id="downTime" label="Total Downtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-labeld></paper-input>
+    <paper-input id="cycleTime" label="Cycle Time Per unit (seconds)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
+    <paper-input id="totalUnit" label="Total Units Produced (items)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
+    <paper-input id="rejectUnit" label="Reject Units Produced (items)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
+    <div class="button-group"><paper-button raised class="fancy" on-tap="calOEE">Calculate</paper-button></div>
+   </div>
  <div class="card fixed-card">
-   <h2>Order 001 (Status: Completed)</h2>
+   <h2 class="order-header">Order 001 (Status: Completed)</h2>
   <material-progress-bars max="100" bar-height="22" animated="true" legend-label="Process used">
   <div class="bar" data-value="10" data-legend="Milling">
     <span>Mill</span>
@@ -98,7 +123,10 @@
     <span>Pack</span>
   </div>
 </material-progress-bars>
-   <h2>Order 002 (Status: In-progress)</h2>
+   <paper-button raised class="smart btn" on-tap="view-oee">View Detail</paper-button>
+   </div>
+    <div class="card fixed-card">
+   <h2 class="order-header">Order 002 (Status: In-progress)</h2>
   <material-progress-bars max="100" bar-height="22" animated="true" legend-label="Process used">
   <div class="bar" data-value="10" data-legend="Milling">
     <span>Mill</span>
@@ -113,7 +141,10 @@
     <span>Drill</span>
   </div>
 </material-progress-bars>
-  <h2>Order 003 (Status: In-progress)</h2>
+   <paper-button raised class="smart btn" on-tap="view-oee">View Detail</paper-button>
+</div>
+ <div class="card fixed-card">
+  <h2 class="order-header">Order 003 (Status: In-progress)</h2>
   <material-progress-bars max="100" bar-height="22" animated="true" sum="200" legend-label="Process used">
   <div class="bar" data-value="10" data-legend="Milling">
     <span>Mill</span>
@@ -125,14 +156,15 @@
     <span>Polish</span>
   </div>
 </material-progress-bars>
-
+   <paper-button raised class="smart btn" on-tap="view-oee">View Detail</paper-button>
  </div>
-    <div class="card fixed-card">
+  <div class="card fixed-card">
       <div class="port-status">
       <iron-icon class="icon" icon="vaadin-icons:warning"></iron-icon>
       <p>No WebUSB device found.</p> 
       </div>
-    </div>
+  </div>
+    <!-- 
       <div class="card fixed-card">
       <vaadin-gauge-chart id="angular-gauge">
         <chart plot-background-color="null" plot-background-image="null" plot-border-width="0" plot-shadow="false"></chart>
@@ -242,10 +274,27 @@
       </vaadin-gauge-chart>
     </div>
     </div>
+    -->
   </template>
   <script>
     Polymer({
       is: 'view-track-production',
+      calOEE: function() {
+         let plan = this.$.planRuntime.value;
+         let down = this.$.downTime.value;
+         let cycle = this.$.cycleTime.value;
+         let total = this.$.totalUnit.value;
+         let reject = this.$.rejectUnit.value;
+         if(plan != "" && down != "" && cycle != "" && total != "" && reject != "") {
+         let availability = (plan - down)/plan;
+         let performance = (cycle*total)/((plan - down)*60);
+         let quality = (total-reject)/total;
+         let oee = ((availability*performance*quality)*100).toFixed(1);
+         this.$.oeeOutput.innerHTML = oee + "%";
+         } else {
+           alert("Input field cannot be blank, please fill in completely.");
+         }
+      },
     });
   </script>
 </dom-module>

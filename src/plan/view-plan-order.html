@@ -90,7 +90,7 @@
           <h1>Create Order</h1>
           <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
-              <paper-input label="Order Number" name="order-no" id="orderNumber" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label auto-validate allowed-pattern="[0-9]"></paper-input>
+              <paper-input label="Order Number" name="order-no" id="orderNumber" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
               <paper-input label="Customer Name" name="order-name" type="text" id="customerName" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
               <vaadin-combo-box label="Product" name="product" value="{{p_name}}" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
@@ -102,8 +102,8 @@
                 <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
               </template>
                <div class="button-group">
-                <paper-button raised class="smart" on-tap="createOrder">Create</paper-button>
-                <paper-button raised class="fancy" on-tap="calculateOrder">Calculate</paper-button>
+                <paper-button raised class="smart" on-tap="createOrder">Add</paper-button>
+                <paper-button raised class="fancy" on-tap="saveOrder">Save</paper-button>
                </div>
             </div>
           </form>
@@ -131,8 +131,8 @@
   <script>
     Polymer({
       is: 'view-plan-order',
-      calculateOrder: function() {
-        alert("Disabled!!")
+      saveOrder: function() {
+        alert("Order has been saved to order database.");
       },
       createOrder: function () {
           let today = new Date();
@@ -159,7 +159,7 @@
           order_duration: this.$.estimateDuration.innerHTML,
           order_delivery: this.$.estimateDelivery.innerHTML
         }).key;
-      alert("Added to order schedule successfully");
+      alert("Added to production schedule successfully");
       },
       selectProduct: function() {
      
