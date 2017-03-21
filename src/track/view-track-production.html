@@ -98,11 +98,11 @@
     <div class="wrap-card">
      <div class="card fixed-card">
     <h1>Manual Overall Equipment Effectiveness Calculation</h1>
-    <vaadin-combo-box label="Order no." name="order" value="{{order_no}}" items="[[orderQuery]]" id="orderSelector" item-label-path="name" item-value-path="name" selected-item='{{m}}' required always-float-label></vaadin-combo-box>
+    <vaadin-combo-box label="Order no." name="order" value="{{order_detail}}" items="[[orderQuery]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' required always-float-label></vaadin-combo-box>
     <paper-input id="planRuntime" label="Planned Total Runtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
     <paper-input id="downTime" label="Total Downtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
     <paper-input id="cycleTime" label="Cycle Time Per unit (seconds)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
-    <paper-input id="totalUnit" label="Total Units Produced (items)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
+    <paper-input id="totalUnit" label="Total Units Produced (items)" value="{{o.order_quantity}}" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
     <paper-input id="rejectUnit" label="Reject Units Produced (items)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
     <div class="button-group"><paper-button raised class="fancy" on-tap="calOEE">Calculate</paper-button></div>
    </div>
