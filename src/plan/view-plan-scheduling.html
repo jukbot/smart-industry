@@ -84,13 +84,60 @@
     <firebase-query id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
     <firebase-query id="processQuery" path="/product/CC/size" data="{{orderProcess}}"></firebase-query>
     <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+ 
+ <div class="card">
+    <h1>Order Scheduling Table</h1>
+    <h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
+    <paper-button raised class="chilli priority-btn" raised on-tap="togglePriority">Change</paper-button>
+<br>
+   <vaadin-grid id="grid-objects-source">
+  <table>
+    <colgroup>
+      <col>
+      <col>
+      <col>
+      <col>
+      <col>
+      <col>
+      <col>
+      <col>
+    </colgroup>
+    <thead>
+      <tr>
+        <th>Queue</th>
+        <th>Order No.</th>
+        <th>Product name</th>
+        <th>Size</th>
+        <th>Quantity</th>
+        <th>Customer name</th>
+        <th>Duration (Hrs.)</th>
+        <th>Delivery date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <template is="dom-repeat" items="{{orderItems}}" as="list">
+        <tr>
+        <td>[[index]]</td>
+        <td>[[list.order_no]]</td>
+        <td>[[list.order_product]]</td>
+        <td>[[list.order_size]]</td>
+        <td>[[list.order_quantity]]</td>
+        <td>[[list.order_customer]]</td>
+        <td>[[list.order_duration]]</td>
+        <td>[[getDeliveryDate(list.order_delivery)]]</td>
+        </tr>
+</template>
+    </tbody>
+  </table>
+</vaadin-grid>
+ </div> 
+
       <div class="card">
       <h1>Daily Jobs Production Scheduling of [[today]]</h1>
 <vaadin-date-picker style="width: 300px;" name="workdate" always-float-label autoValidate
               min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
 <h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
-<paper-button raised class="chilli priority-btn" raised on-tap="togglePriority">Change</paper-button>
-<br>
+
 <vaadin-columnrange-chart id="column-range-resource-usage">
     <chart width="1200" inverted="true"></chart>
     <chart-title>Daily Jobs Production Scheduling</chart-title>
@@ -141,48 +188,7 @@
     </data-series>
 </vaadin-columnrange-chart>
         </div>
- 
- <div class="card">
-    <h1>Order Scheduling Table</h1>
-    <h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
-   <vaadin-grid id="grid-objects-source">
-  <table>
-    <colgroup>
-      <col>
-      <col>
-      <col>
-      <col>
-      <col>
-      <col>
-      <col>
-    </colgroup>
-    <thead>
-      <tr>
-        <th>Queue</th>
-        <th>Order No.</th>
-        <th>Product name</th>
-        <th>Size</th>
-        <th>Quantity</th>
-        <th>Customer name</th>
-        <th>Delivery date</th>
-      </tr>
-    </thead>
-    <tbody>
-      <template is="dom-repeat" items="{{orderItems}}" as="list">
-        <tr>
-        <td>[[index]]</td>
-        <td>[[list.order_no]]</td>
-        <td>[[list.order_product]]</td>
-        <td>[[list.order_size]]</td>
-        <td>[[list.order_quantity]]</td>
-        <td>[[list.order_customer]]</td>
-        <td>[[list.order_delivery]]</td>
-        </tr>
-</template>
-    </tbody>
-  </table>
-</vaadin-grid>
- </div>   
+
   <table><thead><tr><th>Machine</th><th>Cycle Time (second)</th></tr></thead>
       <tbody>
         <template is="dom-repeat" items="{{orderProcess}}" as="processes">
@@ -190,39 +196,7 @@
         </template>
       </tbody>
       </table>
- 
-<!-- <div class="card">
- <h1>Order Scheduling</h1>
-  <template is="dom-bind">
-  <iron-ajax url="https://smart-mes.firebaseio.com/order.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
-  <iron-data-table id="job-scheduling-table" items="[[users.results]]">
-    <data-table-column name="Queue#" width="30px" flex="0">
-      <template>
-        <div class="index">[[index]]</div>
-      </template>
-    </data-table-column>
-    <data-table-column name="Order Number">
-      <template>[[item.user.order.no]]</template>
-    </data-table-column>
-    <data-table-column name="Product name" flex="0">
-        <template>[[item.user.order.product]]</template>
-    </data-table-column>
-    <data-table-column name="Size">
-    <template>[[item.user.order.size]]</template>
-    </data-table-column>
-    <data-table-column name="Quantity">
-      <template>[[item.user.order.quantity]]</template>
-    </data-table-column>
-    <data-table-column name="Customer Name">
-      <template>[[item.user.name.first]]</template>
-    </data-table-column>
-    <data-table-column name="Delivery Date">
-      <template>[[item.user.order.delivery]]</template>
-    </data-table-column>
-  </iron-data-table>
-</template>
- </div> -->
- 
+
     <div class="wrap-card">
       <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
@@ -255,7 +229,7 @@
     </data-series>
 </vaadin-column-chart>
       </div>
-    <div class="fixed-card card">
+    <!-- <div class="fixed-card card">
       <h1>Job Queue</h1>
       <sortable-list>
         <template is="dom-repeat" items="[[items]]">
@@ -264,9 +238,42 @@
           </div>
         </template>
       </sortable-list>
+    </div> -->
     </div>
-    </div>
-    <paper-dialog class="priority-dialog" id="changePriorityDialog">
+
+<!-- <div class="card">
+ <h1>Order Scheduling</h1>
+  <template is="dom-bind">
+  <iron-ajax url="https://smart-mes.firebaseio.com/order.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
+  <iron-data-table id="job-scheduling-table" items="[[users.results]]">
+    <data-table-column name="Queue#" width="30px" flex="0">
+      <template>
+        <div class="index">[[index]]</div>
+      </template>
+    </data-table-column>
+    <data-table-column name="Order Number">
+      <template>[[item.user.order.no]]</template>
+    </data-table-column>
+    <data-table-column name="Product name" flex="0">
+        <template>[[item.user.order.product]]</template>
+    </data-table-column>
+    <data-table-column name="Size">
+    <template>[[item.user.order.size]]</template>
+    </data-table-column>
+    <data-table-column name="Quantity">
+      <template>[[item.user.order.quantity]]</template>
+    </data-table-column>
+    <data-table-column name="Customer Name">
+      <template>[[item.user.name.first]]</template>
+    </data-table-column>
+    <data-table-column name="Delivery Date">
+      <template>[[item.user.order.delivery]]</template>
+    </data-table-column>
+  </iron-data-table>
+</template>
+ </div> -->
+ 
+ <paper-dialog class="priority-dialog" id="changePriorityDialog">
   <p>Warning !! Changing priority will affect other orders scheduling. This cannot change the jobs scheduling that are currently running.</p>
   <paper-radio-group id="priorityType" selected="[[factoryStandard.priority]]">
   <paper-radio-button name="EDD" value="EDD">EDD</paper-radio-button>
@@ -325,8 +332,19 @@
         today = dd + '/' + mm + '/' + yyyy;
     },
 
-    dataChanged: function (newData, oldData) {
-          console.info("Data has been loaded!!");
+    getDeliveryDate: function (timestamp) {
+          let today = new Date(timestamp*1000);
+          let dd = today.getDate();
+          let mm = today.getMonth() + 1; //January is 0!
+          let yyyy = today.getFullYear();
+          if (dd < 10) {
+           dd = '0' + dd
+          }
+          if (mm < 10) {
+           mm = '0' + mm
+         }
+         let deliveryDate = dd + '/' + mm + '/' + yyyy;
+         return deliveryDate;
     },
 
     togglePriority: function () {
@@ -339,8 +357,7 @@
         else return "";
     },
     savePriority: function () {
-         let value = this.$.priorityType.selected;  // this.$$('#priorityType').selectedItem;  //
-         console.log(value);
+         let value = this.$.priorityType.selected; 
          this.set('factoryStandard.priority', value);
     },
       properties: {

@@ -79,22 +79,24 @@
 
     </style>
     <firebase-auth user="{{user}}"></firebase-auth>
-    <firebase-query id="orderQuery" path="/order" orderByChild="order_date" data="{{orderQuery}}"></firebase-query>
-    <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
+    <firebase-query id="orderQuery" path="/order" order-by-child="order_no" data="{{orderQuery}}" order-by-value="true"></firebase-query>
+    <firebase-query id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
+    <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
     <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <firebase-document id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1>Create Order</h1>
+          <h1>Create Order [[productItems.order_no]]</h1>
           <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
-              <paper-input label="Order Number" name="order-no" id="orderNumber" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
+              <paper-input label="Order Number" name="order-no" id="orderNumber" value="" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
               <paper-input label="Customer Name" name="order-name" type="text" id="customerName" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
               <vaadin-combo-box label="Product" name="product" value="{{p_name}}" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
               <vaadin-combo-box label="Size" name="size" value="{{p_size}}" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
+              <vaadin-combo-box label="Machine" name="machine" value="{{ma_name}}" items="[[machineItems.name]]" id="machineSelector" on-tap="selectMachine" disabled="true" item-label-path="name" item-value-path="name" selected-item='{{m}}' required always-float-label></vaadin-combo-box>
               <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
               class="date-selector" id="deliverySelector"></vaadin-date-picker>
                 <br>
@@ -113,17 +115,16 @@
         <div class="card order-info">
                 <h1>Order Information</h1>
                 <p>Product Name: <span id="product">[[x.name]] [[y.name]]</span></p>
-                <p>Actual Quantity: <span id="actualQuantity" value="{{q}}">[[calActualQuantity(factoryPerformance.aw, amount)]]</span></p>
-                <p>Create Order Date: <span id="createOrder">[[today]]</span></p>
-                <p>Production Start: <span id="productionStart"></span></p>
+                <p>Actual Quantity: <span id="actualQuantity">[[calActualQuantity(factoryPerformance.aw, amount)]]</span></p>
+                <p>Production Start: <span id="productionStart">[[calStartProd(orderQuery)]]</span></p>
                 <p>Processes Used: <span id="usedProcess">[[x.process]]</span></p>
                 <p>Expect Delivery: <span id="estimateDelivery">[[calEstDelivery(y.cycle, amount, orderQuery)]]</span></p>
-                <p>Estimate Duration (Hrs): <span id="estimateDuration" value="{{tc}}">[[calCycleTime(y.cycle, amount)]]</span></p>
+                <p>Estimate Duration (Hrs): <span id="estimateDuration">[[calCycleTime(y.cycle, y.setup, amount,x.process)]]</span></p>
                 <p>Queue number: <span id="queueNumber"></span></p>
-                <p>Order Workload: <span id="orderWorkload">[[calWorkLoad(q, tc, mc)]]</span></p>
+                <p>Order Workload: <span id="orderWorkload">[[calWorkLoad(factoryPerformance.aw, amount, y.cycle, x.process)]]</span></p>
                 <p>Raw Material Use: <span id="rawMaterial">Null</span></p>
-                <p>Machine Use: <span id="usedMachine">Null</span></p>
-                <p>Operation hours: <span id="operationHours" >[[calOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</span></p>
+                <p>Machine Use: <span id="usedMachine">[[x.process]]</span></p>
+                <p>Operation hours: <span id="operationHours">[[calOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</span></p>
         </div>
       </li>
     </ul>
@@ -134,32 +135,41 @@
       saveOrder: function() {
         alert("Order has been saved to order database.");
       },
-      createOrder: function () {
+      createOrder: function (order) {
+        let orderNo = this.$.orderNumber.value;
+        let customerName = this.$.customerName.value;
+        let orderDateSTP = Math.round(new Date().getTime()/1000.0);
+        let orderProduct = this.$.productSelector.value;
+        let orderSize = this.$.sizeSelector.value;
+        let orderQuantity = this.$.orderQuantity.value;
+        let orderDuration = this.$.estimateDuration.innerHTML;
+        let orderDelivery = this.$.estimateDelivery.innerHTML;
+      if(orderNo != "" && customerName != "" && orderProduct != "" && orderSize != "" && orderQuantity != "") {
           let today = new Date();
           let dd = today.getDate();
           let mm = today.getMonth() + 1; //January is 0!
           let yyyy = today.getFullYear();
-        if (dd < 10) {
-          dd = '0' + dd
-        }
-        if (mm < 10) {
-          mm = '0' + mm
-        }
-       
-        let timestamp = Math.round(new Date().getTime()/1000.0);
-        let startprod = dd+1 
-        this.$.orderQuery.ref.push({
-          order_date: timestamp,
-          order_no: this.$.orderNumber.value,
-          order_customer: this.$.customerName.value,
-          order_product: this.$.productSelector.value,
-          order_size: this.$.sizeSelector.value,
-          order_quantity: this.$.orderQuantity.value,
-          order_start: timestamp + 86400, // timestamp + 1 day
-          order_duration: this.$.estimateDuration.innerHTML,
-          order_delivery: this.$.estimateDelivery.innerHTML
+          if (dd < 10) {
+           dd = '0' + dd
+          }
+          if (mm < 10) {
+            mm = '0' + mm
+          }
+          this.$.orderQuery.ref.push({
+          order_date: orderDateSTP,
+          order_no: orderNo,
+          order_customer: customerName,
+          order_product: orderProduct,
+          order_size: orderSize,
+          order_quantity: orderQuantity,
+          order_start: orderDateSTP + 86400, // sec timestamp + 1 day
+          order_duration: orderDuration,
+          order_delivery: orderDelivery
         }).key;
       alert("Added to production schedule successfully");
+      } else {
+           alert("Input field cannot be blank, please fill in completely.");
+      }
       },
       selectProduct: function() {
      
@@ -216,81 +226,98 @@
             return Sugar.Date.create(dateString);
           }
         };
-          
-          let today = new Date();
-          let dd = today.getDate();
-          let mm = today.getMonth() + 1; //January is 0!
-          let yyyy = today.getFullYear();
-        if (dd < 10) {
-          dd = '0' + dd
-        }
-        if (mm < 10) {
-          mm = '0' + mm
-        }
-        let timestamp = Math.round(new Date().getTime()/1000.0);
-        let today_date = dd + '/' + mm + '/' + yyyy;
-        let order_start_date = timestamp + 86400;
+
         let productpicker = this.$$('#productSelector');
         let sizePicker = this.$$('#sizeSelector');
-        let usedProcess =  this.$$('#usedProcess');
-        let productionStart = this.$$('#productionStart');
-
+        let machinePicker = this.$$('#machineSelector');
         productpicker.addEventListener('value-changed', function() {
-          let product_list = productpicker.value;   
-          productionStart.innerHTML = order_start_date;  
+          let product_list = productpicker.value;    
           if(product_list != null) {
-                 if(sizePicker.items != null) {
+               if(sizePicker.items != null) {
                      sizePicker.disabled = false;
+                   //  if(machinePicker.items != null) {
+                         machinePicker.disabled = false;
+                    // }
                  }
               }
            });
 
-          sizePicker.addEventListener('value-changed', function() {
-              let size = sizePicker.value;   
-        });
     },
 
-    calCycleTime: function (cycle,amount) {
-            if (!cycle) return '';
+    calCycleTime: function (cycle, setup, amount, process) {
+            if (!cycle || !setup) return '';
             let summed = 0;
+            let setuptime = 0;
             for (let key in cycle) {
               summed += cycle[key];
             };
-            let cycletime = ((summed*amount)/3600.00).toFixed(2);
-            console.log("Size of obj: " + Object.keys(cycle).length);
-            return cycletime; // Hours
+            for (let fuck in setup) {
+                  setuptime += setup[fuck];
+               };
+           console.log(setup);
+            console.log(setuptime);
+            let str_array = process.split(',');
+            for(var i = 0; i < str_array.length; i++) {
+             // Trim the excess whitespace.
+            
+          //  if(str_array[i] = setup[i]) {
+           //     for (let fuck in setup) {
+           //       setuptime += setup[fuck];
+           //    };
+           // }
+            // Add additional code here, such as:
+             console.log(str_array[i]);
+             }
+            
+            let cycletime = ((summed*amount)).toFixed(2);
+            return cycletime; 
      },
 
      calEstDelivery: function (cycle,amount,order) {
           if (!cycle || !amount) return '';  
-          let ophours = this.$$('#operationHours');
-          let productionStart = this.$$('#productionStart');
+          let ophours = this.$.operationHours.innerHTML;
+          let start = this.$.productionStart.innerHTML;
+          var timestamp = (new Date(start.split("/").reverse().join("-")).getTime());
           let summ = 0;
             for (let key in cycle) {
               summ += cycle[key];
           };
 
-          let cycletime = ((summ*amount)/3600.00).toFixed(2);
+          let cycletime = ((summ*amount)).toFixed(2);
+          let estdelivery_stp = timestamp + (cycletime/ophours)*86400000;
           console.log(Object.keys(order).length);
-     //     if(Object.getOwnPropertyNames(order).length == 0) {
-          let estdelivery_stp = Math.ceil(parseInt(productionStart.innerHTML) + ((cycletime/ophours.innerHTML)*86400));
-          console.log(estdelivery_stp);
-          return estdelivery_stp;
-       /*   let dd = estdelivery_stp.getDate();
-          let mm = estdelivery_stp.getMonth() + 1;
-          let yyyy = estdelivery_stp.getFullYear();
+          console.log(JSON.stringify(order));
+          //console.log(Object.getOwnPropertyNames(order).length == 0);
+          let today = new Date(estdelivery_stp);
+          let dd = today.getDate();
+          let mm = today.getMonth() + 1; //January is 0!
+          let yyyy = today.getFullYear();
           if (dd < 10) {
-          dd = '0' + dd
+           dd = '0' + dd
           }
           if (mm < 10) {
+           mm = '0' + mm
+         }
+         let deliveryDate = dd + '/' + mm + '/' + yyyy;
+         return deliveryDate;
+     },
+
+     calStartProd: function (order) {
+        let orderSize = Object.keys(order).length;
+      //  if(orderSize > 0) { } else { }
+        let timestamp = Math.round(new Date().getTime()) + 86400000;
+        let today = new Date(timestamp);
+        let dd = today.getDate();
+        let mm = today.getMonth() + 1; //January is 0!
+        let yyyy = today.getFullYear();
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
           mm = '0' + mm
-          }
-          return dd + "/" + mm + "/" + yyyy; */
-      //    } else {
-            // get estdelivery from scheduling
-      //      return "scheduling table";
-       //   }
-       //   return null;
+        }      
+        let startDate = dd + '/' + mm + '/' + yyyy;
+        return startDate;
      },
      calActualQuantity: function (aw,amount) {
         if(!amount || !aw) return '';
@@ -305,6 +332,20 @@
         let optime = endtime - starttime;
         return optime;
      },
+     calWorkLoad: function (aw, q, cycle, mc) {
+        if(!aw || !cycle || !q) return '';
+        let summed = 0;
+        for (let key in cycle) {
+            summed += cycle[key];
+        };  
+        let cycletime = ((summed*q)/3600.00).toFixed(2);
+        let aq = (q/(1-aw)).toFixed(2);
+        let aq_result = Math.ceil(aq);
+        let machine = mc.length;
+        let workload = (aq_result *cycletime)/machine;
+        return workload.toFixed(2);
+     },
+
       properties: {
         productSize: {
           type: Object
@@ -330,6 +371,10 @@
         orderQuery: {
           type: Object
         },
+        amount: {
+          type: Object,
+          notify: true
+        },
         priority: {
           type: Array,
           value: function () {
@@ -345,23 +390,6 @@
               }
             ]
           }
-        },
-        today: {
-          type: Object,
-          value: function () {  
-          let today = new Date();
-          let dd = today.getDate();
-          let mm = today.getMonth() + 1; //January is 0!
-          let yyyy = today.getFullYear();
-           if (dd < 10) {
-              dd = '0' + dd
-           }
-            if (mm < 10) {
-             mm = '0' + mm
-           }
-             today = dd + '/' + mm + '/' + yyyy;
-             return today;
-         }
         },
         todayDate: {
           type: Object,     

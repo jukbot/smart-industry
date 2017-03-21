@@ -74,7 +74,6 @@
      }
      
     </style>
-    <firebase-auth user="{{user}}"></firebase-auth>
     <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
     <ul class="app-grid">
       <li>
@@ -104,25 +103,23 @@
             <p>Installed date: {{machineItem.install}}</p>
             <p>Machine Status: <span class="machine-status">{{machineItem.status}}</span></p>
             </div>
-
-            <paper-dialog id="[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
+             <div class="button-group">
+            <paper-button raised class="magic" id="[[machineItem.$key]]" on-tap="editMachine">EDIT</paper-button>
+            <paper-button raised class="chilli" id="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
+            </div>
+            <paper-dialog id="edit_[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
             <h2>Edit machine</h2>
-            <paper-input name="machine-name" class="editmachineName" value="{{machineItem.name}}" label="Machine Name" always-float-label></paper-input>
-            <paper-input name="machine-effi" class="editmachineEffi" value="{{machineItem.effi}}" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
+            <paper-input id="machineName" name="machine-name" class="editmachineName" value="{{machineItem.name}}" label="Machine Name" always-float-label></paper-input>
+            <paper-input id="machineEffi" name="machine-effi" class="editmachineEffi" value="{{machineItem.effi}}" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
             <div suffix>%</div> 
             </paper-input>
-            <vaadin-combo-box label="Type" class="editmachineType" value="[[machineItem.type]]" items="[[machineType]]" name="machineType" item-label-path="name"
+            <vaadin-combo-box label="Type" class="editmachineType" value="{{machineItem.type}}" items="[[machineType]]" name="machineType" item-label-path="name"
               item-value-path="symbol" item-code-path="number" always-float-label></vaadin-combo-box>
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="saveMachine" dialog-confirm autofocus>Save</paper-button>
               </div>
               </paper-dialog>
-
-             <div class="button-group">
-            <paper-button raised class="magic" key="[[machineItem.$key]]" on-tap="editMachine">EDIT</paper-button>
-            <paper-button raised class="chilli" key="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
-            </div>
           </div>
         </li>
       </template>
@@ -135,18 +132,7 @@
         this.$.createMachineDialog.open();
       },
       addMachine: function () {
-          let today = new Date();
-          let dd = today.getDate();
-          let mm = today.getMonth() + 1; //January is 0!
-          let yyyy = today.getFullYear();
-        if (dd < 10) {
-          dd = '0' + dd
-        }
-        if (mm < 10) {
-          mm = '0' + mm
-        }
-        today = dd + '/' + mm + '/' + yyyy;
-
+        let today = new Date();
         this.$.machineQuery.ref.push({
           effi: this.$.machineEffi.value,
           install: today,
@@ -160,19 +146,18 @@
         this.$.machineEffi.value = null;
       },
       editMachine: function(e) {
-        let targetEditKey = e.currentTarget.key;
-        //this.$.createMachineDialog.open();
-        this.$$('#targetEditkey').open();
-        console.log(targetEditKey);
-
+        console.log(e.target.id);
+        this.$$('#edit_'+e.target.id).open();
       },
       removeMachine: function(e) {
-        let targetKey = e.currentTarget.key;
-        console.log(targetKey);
+        let targetKey = e.currentTarget.id;
         this.$.machineQuery.ref.child(targetKey).remove();
       },
       saveMachine: function(e) {
-
+        let machineName = this.$.machineName.value;
+        let machineEffi = this.$.machineEffi.value;
+        let machineType = this.$.machineType.value;
+     //   this.$.machineQuery.ref
       },
       properties: {
         machineItems: {
