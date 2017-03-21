@@ -87,7 +87,7 @@
             <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" id="product-select" name="machineType" item-label-path="name"
               item-value-path="symbol" item-code-path="number" required always-float-label></vaadin-combo-box>
               <div class="buttons">
-                <paper-button dialog-dismiss>Dismiss</paper-button>
+                <paper-button on-tap="dismissAddMachine" dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="addMachine" dialog-confirm autofocus>Create</paper-button>
               </div>
               </paper-dialog>
@@ -116,8 +116,8 @@
             <vaadin-combo-box label="Type" class="editmachineType" value="{{machineItem.type}}" items="[[machineType]]" name="machineType" item-label-path="name"
               item-value-path="symbol" item-code-path="number" always-float-label></vaadin-combo-box>
               <div class="buttons">
-                <paper-button dialog-dismiss>Dismiss</paper-button>
-                <paper-button on-tap="saveMachine" dialog-confirm autofocus>Save</paper-button>
+                <paper-button on-tap="dismissEditMachine" dialog-dismiss>Dismiss</paper-button>
+                <paper-button on-tap="saveEditMachine" dialog-confirm autofocus>Save</paper-button>
               </div>
               </paper-dialog>
           </div>
@@ -145,15 +145,13 @@
         this.$.machineType.value = null;
         this.$.machineEffi.value = null;
       },
+      removeMachine: function(e) {
+        this.$.machineQuery.ref.child(e.target.id).remove();
+      },
       editMachine: function(e) {
-        console.log(e.target.id);
         this.$$('#edit_'+e.target.id).open();
       },
-      removeMachine: function(e) {
-        let targetKey = e.currentTarget.id;
-        this.$.machineQuery.ref.child(targetKey).remove();
-      },
-      saveMachine: function(e) {
+      saveEditMachine: function(e) {
         let machineName = this.$.machineName.value;
         let machineEffi = this.$.machineEffi.value;
         let machineType = this.$.machineType.value;

@@ -49,67 +49,53 @@
       :host {
         --app-primary-color: #CDDC39;
         --app-secondary-color: #333333;
+        --app-tertiary-color: #FFFFFF;
+
         display: block;
         --paper-menu-button-dropdown: {
           margin-top: 50px;
         }
       }
-
-      app-drawer-layout:not([narrow]) [drawer-toggle] {
-        display: none;
-      }
-
-      app-header {
-        color: #fff;
-        background-color: var(--app-secondary-color);
-      }
-
-      app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
-      }
  
       .menu-item {
         min-width: 120px;
       }
-      
-      .paper-item-link {
-        color: inherit;
-        text-decoration: none;
+            
+      .main-title {
+        font-size: 2.25rem;
+        text-align: center;
+        margin-bottom: 10px;
       }
-      
-      .drawer-list {
-        margin: 0 20px;
+
+      .paper-item-link {
+        text-decoration: none;
       }
       
       .drawer-list a {
         display: block;
-        padding: 0 16px;
+        padding: 10px 30px;
         text-decoration: none;
         color: var(--app-secondary-color);
-        line-height: 40px;
+        line-height: 0;
+      }
+
+      .drawer-list a:hover {
+         background-color: #eeeeee;
       }
       
       .drawer-list a.iron-selected {
-        color: black;
+        color: var(--app-tertiary-color);
         font-weight: bold;
+        background-color: var(--app-secondary-color);
       }
       
       .main-header {
         box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
       }
       
-      .main-title {
-        font-size: 2.25rem;
-        text-align: center;
-      }
-      
-      .page-title {
-        text-transform: uppercase;
-      }
-      
       .logo {
         margin: 0 auto;
-        padding: 30px 0 15px 0;
+        padding: 15px 0;
         width: 50%;
         height: auto;
         display: block;
@@ -133,9 +119,8 @@
       }
       
       .authen-btn {
-        margin: 0;
-        display: inline-block;
         text-align: center;
+        width: 60%;
       }
 
       .profile {
@@ -167,9 +152,7 @@
           <a name="{{item.view}}" href="/{{item.url}}"><paper-icon-button icon="{{item.icon}}"></paper-icon-button> {{item.title}}</a>
         </template>
         </iron-selector>
-
         <div class="sidebar-menu-line"></div>
-
         <div class="center-box">
           <paper-button raised class="chilli authen-btn" on-tap="login" hidden$="[[signedIn]]">Sign In</paper-button>
           <paper-button raised class="chilli authen-btn" on-tap="logout" hidden$="[[!signedIn]]">Sign Out</paper-button>

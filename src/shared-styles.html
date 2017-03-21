@@ -25,16 +25,32 @@
       }
       
       app-header {
-        color: #fff;
+        color: #FFFFFF;
         background-color: #333333;
       }
       
       app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
-        width: 32px;
-        height: 32px;
-      }
+        --paper-icon-button-ink-color: #FFFFFF;
       
+      }
+
+      app-header {
+        color: #FFFFFF;
+        background-color: #333333;
+      }
+
+      
+      app-drawer {
+        --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
+        --app-drawer-content-container: {
+          box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);
+        }
+      }
+        
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
       app-toolbar {
         /* Toolbar is the main header, so give it some color */
         background-color: #333333;
@@ -43,13 +59,6 @@
         --app-toolbar-font-size: 24px;
       }
       
-      app-drawer {
-        --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
-        --app-drawer-content-container: {
-          box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);
-        }
-      }
-          
       iron-icon {
         color: #333333;
       }

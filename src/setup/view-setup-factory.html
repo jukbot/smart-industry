@@ -49,11 +49,12 @@
       <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
               <paper-input label="Acceptable Waste (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]" type="number" min="0" max="1" step="0.01" required always-float-label auto-validate></paper-input>
-              <paper-input label="Job Reschedule (days)" name="reschedule" id="reschedule" value="1" required always-float-label auto-validate></paper-input>  
+              <paper-input label="Worker Utilization (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]" type="number" min="0" max="100" step="10" required always-float-label auto-validate></paper-input>
               <paper-input label="Operation start" name="opstart" on-tap="toggleTimeDialog" id="opStart" value="[[factoryOperation.op_start]]" required always-float-label auto-validate></paper-input>
               <paper-input label="Operation end" name="opend" on-tap="toggleTimeDialog" id="opEnd" value="[[factoryOperation.op_end]]" required always-float-label auto-validate></paper-input>
               <paper-input label="Over Time start" name="otstart" on-tap="toggleTimeDialog" id="otStart" value="[[factoryOperation.ot_start]]" required always-float-label auto-validate></paper-input>
               <paper-input label="Over Time end" name="otend" on-tap="toggleTimeDialog" id="otEnd" value="[[factoryOperation.ot_end]]" required always-float-label auto-validate></paper-input>
+              <paper-input label="Reschedule Interval (days)" name="workerUtilize" id="scheduleInterval" value="[[factoryStandard.interval]]" type="number" min="1" max="30" step="1" required always-float-label auto-validate></paper-input>   
               <div>
               <paper-checkbox id="sunday" value="sun">Sun</paper-checkbox>
               <paper-checkbox checked>Mon</paper-checkbox>
@@ -117,7 +118,11 @@
       },
       saveValue: function () {
           let aw = this.$.acceptWaste.value;
+          let wu = this.$.workerUtilize.value;
+          let interval = this.$.scheduleInterval.value;
           this.set('factoryPerformance.aw', aw);
+          this.set('factoryPerformance.wu', wu);
+          this.set('factoryStandard.interval', interval);
           //this.$.factoryStandrad.save('/factory/standard');
           console.log(this.$.sunday.checked);
           console.log("Weekly: " + this.$.opWeek.innerText);
