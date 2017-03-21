@@ -88,7 +88,7 @@
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1>Create Order [[productItems.order_no]]</h1>
+          <h1>Create Order {{test(3,4)}}</h1>
           <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
               <paper-input label="Order Number" name="order-no" id="orderNumber" value="" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
@@ -300,6 +300,12 @@
              timestamp = (new Date(start.split("/").reverse().join("-")).getTime());
           }
           else {
+              for (let g in order) {
+              let arr = Object.values(order[g]);
+              let min = Math.min(...arr);
+              let max = Math.max(...arr);
+
+              };
               for (let key in cycle) {
                   summ += cycle[key];
               };
@@ -312,7 +318,6 @@
               console.log(timestamp);
               let estdelivery_stp = Math.round(timestamp + (cycletime/ophours)*86400000);
               console.log(estdelivery_stp);
-
     
               console.log(JSON.stringify(order));
               //console.log(Object.getOwnPropertyNames(order).length == 0);
@@ -385,7 +390,6 @@
         },
         amount: {
           type: Object,
-          notify: true
         },
         priority: {
           type: Array,
@@ -401,6 +405,13 @@
                 number: 2
               }
             ]
+          }
+        },
+        test: {
+          type: Object,
+          notify: true,
+          value: function (a,b) {
+            return a*b;
           }
         },
         todayDate: {
