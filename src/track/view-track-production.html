@@ -44,13 +44,13 @@
        margin-bottom: 10px;
        }
 
-     .button-group paper-button {
+      .button-group paper-button {
        display: inline-flex;
        width: 250px;
        align-items: center; 
        justify-content: center; 
      }
-    material-progress-bars {
+     material-progress-bars {
         width: 100%;
         @apply(--paper-font-body2);
       }
@@ -75,6 +75,7 @@
         background-color: var(--paper-pink-500);
       }
     </style>
+    <firebase-query id="orderQuery" path="/order" order-by-child="order_no" data="{{orderQuery}}" order-by-value="true"></firebase-query>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -97,8 +98,9 @@
     <div class="wrap-card">
      <div class="card fixed-card">
     <h1>Manual Overall Equipment Effectiveness Calculation</h1>
+    <vaadin-combo-box label="Order no." name="order" value="{{order_no}}" items="[[orderQuery]]" id="orderSelector" item-label-path="name" item-value-path="name" selected-item='{{m}}' required always-float-label></vaadin-combo-box>
     <paper-input id="planRuntime" label="Planned Total Runtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
-    <paper-input id="downTime" label="Total Downtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-labeld></paper-input>
+    <paper-input id="downTime" label="Total Downtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
     <paper-input id="cycleTime" label="Cycle Time Per unit (seconds)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
     <paper-input id="totalUnit" label="Total Units Produced (items)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
     <paper-input id="rejectUnit" label="Reject Units Produced (items)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
@@ -295,6 +297,11 @@
            alert("Input field cannot be blank, please fill in completely.");
          }
       },
+      properties: {
+        orderQuery: {
+          type: Object
+        },
+      }
     });
   </script>
 </dom-module>

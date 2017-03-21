@@ -38,7 +38,6 @@
   }
 
   </style>
-    <firebase-auth user="{{user}}"></firebase-auth>
     <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
     <firebase-document id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
@@ -49,7 +48,7 @@
       <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
               <paper-input label="Acceptable Waste (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]" type="number" min="0" max="1" step="0.01" required always-float-label auto-validate></paper-input>
-              <paper-input label="Worker Utilization (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]" type="number" min="0" max="100" step="10" required always-float-label auto-validate></paper-input>
+              <paper-input label="Worker Utilization (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]" type="number" min="0" max="100" step="5" required always-float-label auto-validate></paper-input>
               <paper-input label="Operation start" name="opstart" on-tap="toggleTimeDialog" id="opStart" value="[[factoryOperation.op_start]]" required always-float-label auto-validate></paper-input>
               <paper-input label="Operation end" name="opend" on-tap="toggleTimeDialog" id="opEnd" value="[[factoryOperation.op_end]]" required always-float-label auto-validate></paper-input>
               <paper-input label="Over Time start" name="otstart" on-tap="toggleTimeDialog" id="otStart" value="[[factoryOperation.ot_start]]" required always-float-label auto-validate></paper-input>
@@ -87,8 +86,9 @@
 <p>OT Start: <span>[[factoryOperation.ot_start]]</span></p>
 <p>OT End: <spa>[[factoryOperation.ot_end]]</span></p>
 <p>Operation Days: <span id="opWeek">[[factoryOperation.weekly]]</span></p>
-<p>User Workload: <span>[[factoryPerformance.uw]] %</span></p>
+<p>User Workload: <span>[[factoryPerformance.wu]] %</span></p>
 <p>Acceptable Waste: <span>[[factoryPerformance.aw]]</span></p>
+<p>Reschedule Interval: <span>[[factoryStandard.interval]] %</span></p>
   </div>
   </li>
   </ul>
@@ -135,9 +135,6 @@
           type: Object
         },
        factoryPerformance: {
-          type: Object
-        },
-        factoryData: {
           type: Object
         },
       }

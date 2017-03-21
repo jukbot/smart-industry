@@ -132,17 +132,24 @@
 </vaadin-grid>
  </div> 
 
+<google-chart
+  type='pie'
+  options='{"title": "Distribution of days in 2001Q1"}'
+  cols='[{"label":"Month", "type":"string"}, {"label":"Days", "type":"number"}]'
+  rows='[["Jan", 31],["Feb", 28],["Mar", 31]]'>
+</google-chart>
+
       <div class="card">
       <h1>Daily Jobs Production Scheduling of [[today]]</h1>
 <vaadin-date-picker style="width: 300px;" name="workdate" always-float-label autoValidate
-              min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
-<h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
+ min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
+ <h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
 
 <vaadin-columnrange-chart id="column-range-resource-usage">
     <chart width="1200" inverted="true"></chart>
     <chart-title>Daily Jobs Production Scheduling</chart-title>
     <x-axis>
-        <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
+    <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
     </x-axis>
     <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
     <tooltip use-html="true"
