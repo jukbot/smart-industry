@@ -205,13 +205,12 @@
             </template>
           </app-toolbar>
         </app-header>
-        <iron-pages selected="[[routeData.page]]" selected-atribute="active" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-dashboard name="dashboard" route="[[subroute]]"></view-dashboard>
-          <view-setup name="setup" route="[[subroute]]"></view-setup>
-          <view-planning name="planning" route="[[subroute]]"></view-planning>
-          <view-tracking name="tracking" route="[[subroute]]"></view-tracking>
-          <view-controlling name="controlling" route="[[subroute]]"></view-controlling>
-          <view-verifying name="verifying" route="[[subroute]]"></view-verifying>
+        <iron-pages selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-dashboard name="dashboard" route="{{subroute}}"></view-dashboard>
+          <view-setup name="setup" route="{{subroute}}"></view-setup>
+          <view-planning name="planning" route="{{subroute}}"></view-planning>
+          <view-tracking name="tracking" route="{{subroute}}"></view-tracking>
+          <view-controlling name="controlling" route="{{subroute}}"></view-controlling>
           <view-404 name="404"></view-404>
         </iron-pages>
       </app-header-layout>
@@ -305,7 +304,7 @@
       },
 
       _pageChanged: function (page) { 
-       let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+       var resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
        this.importHref(resolvedPageUrl, null, this._showPage404.bind(this), true);
       },
 
