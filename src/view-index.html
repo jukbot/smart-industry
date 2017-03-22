@@ -35,6 +35,7 @@
 <!-- neon modules - used for animation -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-database-behavior.html">
 <link rel="import" href="../bower_components/material-progress/material-progress.html">
@@ -204,13 +205,13 @@
             </template>
           </app-toolbar>
         </app-header>
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
-          <view-dashboard name="dashboard" route="{{subroute}}"></view-dashboard>
-          <view-setup name="setup" route="{{subroute}}"></view-setup>
-          <view-planning name="planning" route="{{subroute}}"></view-planning>
-          <view-tracking name="tracking" route="{{subroute}}"></view-tracking>
-          <view-controlling name="controlling" route="{{subroute}}"></view-controlling>
-          <view-verifying name="verifying" route="{{subroute}}"></view-verifying>
+        <iron-pages selected="[[routeData.page]]" selected-atribute="active" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-dashboard name="dashboard" route="[[subroute]]"></view-dashboard>
+          <view-setup name="setup" route="[[subroute]]"></view-setup>
+          <view-planning name="planning" route="[[subroute]]"></view-planning>
+          <view-tracking name="tracking" route="[[subroute]]"></view-tracking>
+          <view-controlling name="controlling" route="[[subroute]]"></view-controlling>
+          <view-verifying name="verifying" route="[[subroute]]"></view-verifying>
           <view-404 name="404"></view-404>
         </iron-pages>
       </app-header-layout>
@@ -218,6 +219,8 @@
     <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
+    (function() {
+      'use strict';
     Polymer({
       is: 'view-index',
       properties: {
@@ -351,9 +354,9 @@
       handleError: function(e) {
         console.info("Authenticate error:" + e.message);
       }
-    });
+     });
+     })();
   </script>
   <script src="https://gojs.net/latest/release/go.js"></script>
   <script src="../bower_components/sugar/dist/sugar.min.js"></script>
-  <!-- Load Calendar API -->
 </dom-module>
