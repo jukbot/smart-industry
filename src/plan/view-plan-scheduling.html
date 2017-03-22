@@ -131,14 +131,6 @@
   </table>
 </vaadin-grid>
  </div> 
-
-<google-chart
-  type='pie'
-  options='{"title": "Distribution of days in 2001Q1"}'
-  cols='[{"label":"Month", "type":"string"}, {"label":"Days", "type":"number"}]'
-  rows='[["Jan", 31],["Feb", 28],["Mar", 31]]'>
-</google-chart>
-
       <div class="card">
       <h1>Daily Jobs Production Scheduling of [[today]]</h1>
 <vaadin-date-picker style="width: 300px;" name="workdate" always-float-label autoValidate
@@ -237,39 +229,6 @@
 </vaadin-column-chart>
       </div>
     </div>
-
-<!-- <div class="card">
- <h1>Order Scheduling</h1>
-  <template is="dom-bind">
-  <iron-ajax url="https://smart-mes.firebaseio.com/order.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
-  <iron-data-table id="job-scheduling-table" items="[[users.results]]">
-    <data-table-column name="Queue#" width="30px" flex="0">
-      <template>
-        <div class="index">[[index]]</div>
-      </template>
-    </data-table-column>
-    <data-table-column name="Order Number">
-      <template>[[item.user.order.no]]</template>
-    </data-table-column>
-    <data-table-column name="Product name" flex="0">
-        <template>[[item.user.order.product]]</template>
-    </data-table-column>
-    <data-table-column name="Size">
-    <template>[[item.user.order.size]]</template>
-    </data-table-column>
-    <data-table-column name="Quantity">
-      <template>[[item.user.order.quantity]]</template>
-    </data-table-column>
-    <data-table-column name="Customer Name">
-      <template>[[item.user.name.first]]</template>
-    </data-table-column>
-    <data-table-column name="Delivery Date">
-      <template>[[item.user.order.delivery]]</template>
-    </data-table-column>
-  </iron-data-table>
-</template>
- </div> -->
- 
  <paper-dialog class="priority-dialog" id="changePriorityDialog">
   <p>Warning !! Changing priority will affect other orders scheduling. This cannot change the jobs scheduling that are currently running.</p>
   <paper-radio-group id="priorityType" selected="[[factoryStandard.priority]]">
