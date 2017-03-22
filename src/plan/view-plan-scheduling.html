@@ -236,16 +236,6 @@
     </data-series>
 </vaadin-column-chart>
       </div>
-    <!-- <div class="fixed-card card">
-      <h1>Job Queue</h1>
-      <sortable-list>
-        <template is="dom-repeat" items="[[items]]">
-          <div class="item-box">
-            <iron-icon class="item" icon$="[[item]]"></iron-icon>
-          </div>
-        </template>
-      </sortable-list>
-    </div> -->
     </div>
 
 <!-- <div class="card">
@@ -367,7 +357,8 @@
          let value = this.$.priorityType.selected; 
          this.set('factoryStandard.priority', value);
     },
-      properties: {
+
+    properties: {
         items: {
           type: Array,
           value: function () {
