@@ -137,55 +137,6 @@
  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
  <h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
 
-<vaadin-columnrange-chart id="column-range-resource-usage">
-    <chart width="1200" inverted="true"></chart>
-    <chart-title>Daily Jobs Production Scheduling</chart-title>
-    <x-axis>
-    <categories>Milling machine, Trimming machine, Polishing machine, Drilling machine, Welding machine, Packing machine</categories>
-    </x-axis>
-    <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
-    <tooltip use-html="true"
-             formatter="function () {return this.series.name +': ' + ' Duration ' + Highcharts.dateFormat('%H:%M', this.point.high-this.point.low) + ' hr.'}"></tooltip>
-    <plot-options>
-        <columnrange grouping="false">
-            <data-labels enabled="true" inside="true" color="white"
-                         formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
-        </columnrange>
-    </plot-options>
-    <data-series name="Order #1">
-        <color>rgba(255, 60, 125, 0.8)</color>
-        <data>
-            [Date.UTC(2017,01,02,08,00,00),Date.UTC(2017,01,02,09,00,00)],
-            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
-            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
-            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
-            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,00,00)],
-            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)]
-        </data>
-    </data-series>
-    <data-series name="Order #2">
-        <color>rgba(60, 125, 255, 0.8)</color>
-        <data>
-            [Date.UTC(2017,01,02,09,00,00),Date.UTC(2017,01,02,10,00,00)],
-            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,11,00,00)],
-            [Date.UTC(2017,01,02,12,00,00),Date.UTC(2017,01,02,13,30,00)],
-            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,15,30,00)],
-            [Date.UTC(2017,01,02,15,00,00),Date.UTC(2017,01,02,16,00,00)],
-            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,17,00,00)]
-        </data>
-    </data-series>
-    <data-series name="Order #3">
-        <color>rgba(164, 208, 95, 0.8)</color>
-        <data>
-            [Date.UTC(2017,01,02,10,00,00),Date.UTC(2017,01,02,12,00,00)],
-            [Date.UTC(2017,01,02,11,00,00),Date.UTC(2017,01,02,13,00,00)],
-            [Date.UTC(2017,01,02,13,30,00),Date.UTC(2017,01,02,14,00,00)],
-            [Date.UTC(2017,01,02,15,30,00),Date.UTC(2017,01,02,16,00,00)],
-            [Date.UTC(2017,01,02,16,00,00),Date.UTC(2017,01,02,16,30,00)],
-            null
-        </data>
-    </data-series>
-</vaadin-columnrange-chart>
         </div>
 
   <table><thead><tr><th>Machine</th><th>Cycle Time (second)</th></tr></thead>
@@ -200,33 +151,6 @@
       <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
    <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
-    <vaadin-column-chart id="basic-column">
-    <chart-title>Job Priority Comparision</chart-title>
-    <subtitle>Less is better</subtitle>
-    <x-axis crosshair="true">
-        <categories>Plan</categories>
-    </x-axis>
-    <y-axis min="0">
-        <chart-title>Duration (hrs.)</chart-title>
-    </y-axis>
-    <legend layout="vertical" align="left" vertical-align="top" x="100" y="70" floating="true" border-width="1"
-            background-color="#FFFFFF" shadow="true"></legend>
-    <tooltip header-format="<span style='font-size:10px'>{point.key}</span><table>"
-             point-format="<tr><td style='color:{series.color};padding:0'>{series.name}: </td>  <td style='padding:0'><b>{point.y:.1f} Hrs.</b></td>    </tr>"
-             footer-format="</table>" shared="true" use-html="true"></tooltip>
-    <plot-options>
-        <column point-padding="0.1">
-        </column>
-    </plot-options>
-    <data-series name="SPT">
-        <data>8.6
-        </data>
-    </data-series>
-    <data-series name="EDD">
-        <data>8.9
-        </data>
-    </data-series>
-</vaadin-column-chart>
       </div>
     </div>
  <paper-dialog class="priority-dialog" id="changePriorityDialog">
@@ -240,7 +164,7 @@
       <paper-button class="bold" on-tap="savePriority" dialog-confirm>Apply</paper-button>
   </div>
 </paper-dialog>
-  </template>
+</template>
   <script>
     Polymer({
       is: 'view-plan-scheduling',
@@ -270,22 +194,9 @@
               return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
             });
             dateString = matches.length === 1 ? matches[0] : dateString;
-            // Parse the date
             return Sugar.Date.create(dateString);
           }
         };
-          
-          let today = new Date();
-          let dd = today.getDate();
-          let mm = today.getMonth() + 1; //January is 0!
-          let yyyy = today.getFullYear();
-        if (dd < 10) {
-          dd = '0' + dd
-        }
-        if (mm < 10) {
-          mm = '0' + mm
-        }
-        today = dd + '/' + mm + '/' + yyyy;
     },
 
     getDeliveryDate: function (timestamp) {
@@ -318,17 +229,6 @@
     },
 
     properties: {
-        items: {
-          type: Array,
-          value: function () {
-            return [
-              "vaadin-icons:package",
-              "vaadin-icons:cog",
-              "vaadin-icons:package",
-              "vaadin-icons:package"
-            ];
-          }
-        },
         productItems: {
           type: Object
         },
@@ -388,21 +288,6 @@
           return date;
           }
         },
-         revenueSeries: {
-            type: Array,
-            notify: true,
-            value: [ 1.5, 1.8, 1.2, 2.3 ]
-          },
-          expensesData: {
-            type: Array,
-            notify: true,
-            value: [ 1.2, 1.1, 1.3, 0.9 ]
-          },
-          netData: {
-            type: Array,
-            notify: true,
-            value: [ -0.3, 0.7, -0.1, 1.4 ]
-          }
       }
     });
   </script>
