@@ -28,10 +28,10 @@
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../bower_components/paper-styles/color.html">
 <link rel="import" href="../bower_components/paper-time-picker/paper-time-picker.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <!-- neon modules - used for animation -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
@@ -138,7 +138,7 @@
     <firebase-app auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445">
     </firebase-app>
-    <firebase-auth id="auth" user="{{user}}" provider="google" signed-in="{{signedIn}}" on-error="{{handleError}}">
+    <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusknown}}" on-error="handleError">
     </firebase-auth>
     <firebase-document id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <!-- app-location binds to the app's URL -->
@@ -157,8 +157,8 @@
         </iron-selector>
         <div class="sidebar-menu-line"></div>
         <div class="center-box">
-          <paper-button raised class="chilli authen-btn" on-tap="login" hidden$="[[signedIn]]">Sign In</paper-button>
-          <paper-button raised class="chilli authen-btn" on-tap="logout" hidden$="[[!signedIn]]">Sign Out</paper-button>
+          <paper-button raised class="chilli authen-btn" on-tap="login" hidden$="[[user]]">Sign In</paper-button>
+          <paper-button raised class="chilli authen-btn" on-tap="logout" hidden$="[[!user]]">Sign Out</paper-button>
         </div>
         <template is="dom-if" if="[[user]]">
           <div class="profile">
@@ -169,7 +169,6 @@
           <p>Anonymous: [[user.isAnonymous]]</p>
           </div>
          <div class="profile">
-          <div class="sidebar-menu-line"></div>
           <p>[[metadata.appName]]</p>
           <p>Develop by: [[metadata.appDeveloper]]</p>
           </div>
@@ -194,7 +193,7 @@
                     <iron-icon icon="vaadin-icons:cog" alt="settings" item-icon></iron-icon>
                     Settings
                   </paper-icon-item>
-                  <paper-icon-item class="menu-item" name="logout" on-tap="logout" hidden$="[[!signedIn]]">
+                  <paper-icon-item class="menu-item" name="logout" on-tap="logout" hidden$="[[!user]]">
                     <iron-icon icon="vaadin-icons:sign-out" alt="logout" item-icon></iron-icon>
                     Log Out
                   </paper-icon-item>
@@ -205,7 +204,7 @@
             </template>
           </app-toolbar>
         </app-header>
-        <iron-pages selected="{{routeData.page}}" attr-for-selected="name" fallback-selection="404" role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
           <view-dashboard name="dashboard" route="{{subroute}}"></view-dashboard>
           <view-setup name="setup" route="{{subroute}}"></view-setup>
           <view-planning name="planning" route="{{subroute}}"></view-planning>
@@ -215,7 +214,6 @@
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
-    <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
     (function() {
@@ -233,6 +231,9 @@
           type: Object
         },
 
+        statusknown: {
+          type: Object
+        },
         metadata: {
           type: Object
         },
@@ -330,9 +331,8 @@
           // Handle Errors here.
           let errorCode = error.code;
           let errorMessage = error.message;
-          let errorEmail = error.email;
           alert("Authenticate Failed: " + errorMessage);
-          console.error("Authenticate Failed: " + errorCode);
+          console.log("Authenticate Failed: " + errorCode);
         });
       },
       // Signout Action
@@ -346,7 +346,7 @@
           let errorCode = error.code;
           let errorMessage = error.message;
           alert("Authenticate Failed: " + errorMessage);
-          console.error("Authenticate Failed: " + errorCode);
+          console.log("Authenticate Failed: " + errorCode);
         });
       },
       // Handle Error
