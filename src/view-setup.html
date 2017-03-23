@@ -1,7 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
-
 <dom-module id="view-setup">
   <template>
     <style include="shared-styles">
@@ -12,17 +11,16 @@
     <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}"></app-route>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
-          <!-- Sub nav -->
-          <app-toolbar sticky class="tabs-bar">
+          <app-toolbar sticky>
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="{{subrouteData.tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+            <paper-tabs selected="[[tabs]]" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
                 <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
-          <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" role="main">
+          <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
           <view-setup-customer name="customer"></view-setup-customer>
           <view-setup-factory name="factory"></view-setup-factory>
           <view-setup-inventory name="inventory"></view-setup-inventory>
