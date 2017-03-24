@@ -36,6 +36,7 @@
 <!-- 3rd party modules -->
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/google-chart/google-chart.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-database-behavior.html">
 <link rel="import" href="../bower_components/material-progress/material-progress.html">
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
@@ -322,7 +323,7 @@
       login: function () {
         this.$.auth.signInWithPopup()
         .then(response => {
-          console.info(JSON.stringify(response) + "Login successful");
+          // console.info(JSON.stringify(response) + "Login successful");
           //redirect
         })
         .catch(error => {
@@ -355,5 +356,4 @@
      })();
   </script>
   <script src="../bower_components/sugar/dist/sugar.min.js"></script>
-
 </dom-module>

@@ -151,6 +151,38 @@
       <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
    <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
+<style>
+    /* Phone and tablet */
+    #resizing-chart {
+      height: 300px;
+      width: 400px;
+    }
+    /* Desktop */
+    @media screen and (min-width: 1024px) {
+      #resizing-chart {
+        width: 800px;
+      }
+    }
+  </style>
+
+  <google-chart
+    id="resizing-chart"
+    type="column"
+    options='{"title": "Responsive chart",
+              "vAxis": {"minValue" : 0, "maxValue": 10}
+              }'
+    cols='[{"label": "Data", "type": "string"},{"label": "Value", "type": "number"}]'
+    rows='[ ["Col1", 5.0],["Col2", 5.0],["Col3", 5.0] ]'>
+  </google-chart>
+
+  <script>
+    var media = window.matchMedia('(min-width: 1024px)');
+    media.addListener(function() {
+      document.getElementById('resizing-chart').redraw();
+    });
+  </script>
+
+
       </div>
     </div>
  <paper-dialog class="priority-dialog" id="changePriorityDialog">
