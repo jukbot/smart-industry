@@ -202,19 +202,16 @@
     Polymer({
       is: 'view-plan-scheduling',
       attached: function() {
-  // create an instance with createElement:
+      google.charts.load('current', {'packages':['gantt']});
+      google.charts.setOnLoadCallback(drawChart);
+      function toMilliseconds(minutes) {
+        return minutes * 60 * 1000;
+      }
 
-    google.charts.load('current', {'packages':['gantt']});
-    google.charts.setOnLoadCallback(drawChart);
-
-    function toMilliseconds(minutes) {
-      return minutes * 60 * 1000;
-    }
-
-    function drawChart() {
+      function drawChart() {
 
       var otherData = new google.visualization.DataTable();
-      otherData.addColumn('string', 'Task ID');
+      otherData.addColumn('string', 'Order ID');
       otherData.addColumn('string', 'Task Name');
       otherData.addColumn('string', 'Resource');
       otherData.addColumn('date', 'Start');
@@ -241,7 +238,6 @@
       };
 
       var chart = new google.visualization.Gantt(document.querySelector('#chart_div'));
-
       chart.draw(otherData, options);
     }
   },
