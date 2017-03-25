@@ -11,32 +11,23 @@
         /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
         --app-grid-item-height: 50%;
       }
+      .status {
+        text-align: center;
+        font-size: 2rem;
+      }
     </style>
-   <div class="fixed-card card">
-No information
+   <div class="card">
+      <div class="status">
+      <p>No report information found, create one?</p> 
       </div>
+ <paper-button raised class="smart" on-tap="createReport">Create</paper-button>
+   </div>
   </template>
 
   <script>
     Polymer({
       is: 'view-dashboard-report',
-      properties: {
-          revenueSeries: {
-            type: Array,
-            notify: true,
-            value: [ 15, 28, 32, 23, 21 ]
-          },
-          expensesData: {
-            type: Array,
-            notify: true,
-            value: [ 12, 11, 13, 9, 15 ]
-          },
-          netData: {
-            type: Array,
-            notify: true,
-            value: [ 23, 7, 3, 14, 12 ]
-          }
-      }
+ 
     });
   </script>
 </dom-module>

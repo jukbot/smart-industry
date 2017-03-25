@@ -16,15 +16,45 @@
           --app-grid-columns: 1;
         }
       }
+
+      .button-group {
+       margin-top: 16px;
+       }
+
+     .button-group paper-button {
+       display: inline-flex;
+       width: 25%;
+       align-items: center; 
+       justify-content: center; 
+     }
       
     </style>
       <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
       <div class="fixed-card card">
-        <h1>Production Building Block</h1>
-              <vaadin-combo-box label="Product" name="product" value="{{p_name}}" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
-              <vaadin-combo-box label="Size" name="size" value="{{p_size}}" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
+        <h1>Production Block Simulation</h1>
+        <vaadin-combo-box label="Product" name="product" value="{{p_name}}" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
+        <vaadin-combo-box label="Size" name="size" value="{{p_size}}" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
+        <vaadin-combo-box label="Load Plan" name="plan" value="N/A" items="[[h]]" id="planSelector" on-tap="selectPlan" disabled="true" item-label-path="name" item-value-path="name" selected-item='{{z}}' required always-float-label></vaadin-combo-box>
 
-  <div id="myDiagramDiv" style="border: solid 1px black; width: 100%; height: 600px; overflow:hidden;"></div>
+<vaadin-context-menu selector=".has-menu">
+  <template>
+    <paper-menu>
+      <paper-item>Setup</paper-item>
+      <paper-item>Add machine</paper-item>
+      <paper-item>Rename machine</paper-item>
+      <paper-item>Delete machine</paper-item>
+    </paper-menu>
+  </template>  
+  <div id="myDiagramDiv" class="has-menu" style="border: solid 1px #333333; margin-top:30px; width: 100%; height: 600px; overflow:hidden;"></div>
+  </vaadin-context-menu>
+   <div class="button-group">
+      <paper-button raised class="burn" on-tap="simulate">Simulate</paper-button>
+      <paper-button raised class="magic" on-tap="savePlan">Save</paper-button>
+  </div>
+   </div>
+   
+    <div class="fixed-card card">
+      DEBUG CONSOLE
     <div>
       <button id="SaveButton" onclick="save()">Save</button>
       <button onclick="load()">Load</button>

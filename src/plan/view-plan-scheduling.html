@@ -102,8 +102,8 @@
  <div class="card">
     <h1>Order Scheduling Table</h1>
     <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
-    <paper-button raised class="chilli priority-btn" raised on-tap="togglePriority">Change</paper-button>
-<br>
+    <paper-button raised class="chilli priority-btn" on-tap="togglePriority">Change</paper-button>
+    <p>Note: Changing the priority will affect other job schedules.</p>
    <vaadin-grid id="grid-objects-source">
   <table>
     <colgroup>
