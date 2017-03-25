@@ -76,9 +76,23 @@
        width: 50%;
        height: 50%;
      }
-      #priorityType {
-        color: deeppink;      
+     
+     .priorityType {
+        color: orangered;      
       }
+
+        /* Phone and tablet */
+    #resizing-chart {
+      height: 300px;
+      width: 400px;
+    }
+    /* Desktop */
+    @media screen and (min-width: 1024px) {
+      #resizing-chart {
+        width: 800px;
+      }
+    }
+
     </style>
     <firebase-query id="orderQuery" path="/order" data="{{orderItems}}" order-by-child="{{orderType(factoryStandard.priority)}}" order-by-value="true"></firebase-query>
     <firebase-query id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
@@ -87,7 +101,7 @@
  
  <div class="card">
     <h1>Order Scheduling Table</h1>
-    <h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
+    <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
     <paper-button raised class="chilli priority-btn" raised on-tap="togglePriority">Change</paper-button>
 <br>
    <vaadin-grid id="grid-objects-source">
@@ -135,7 +149,7 @@
       <h1>Daily Jobs Production Scheduling of [[today]]</h1>
 <vaadin-date-picker style="width: 300px;" name="workdate" always-float-label autoValidate
  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
- <h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
+ <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
  <div id="chart_div"></div>
  </div>
 
@@ -151,34 +165,22 @@
       <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
    <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
-<style>
-    /* Phone and tablet */
-    #resizing-chart {
-      height: 300px;
-      width: 400px;
-    }
-    /* Desktop */
-    @media screen and (min-width: 1024px) {
-      #resizing-chart {
-        width: 800px;
-      }
-    }
-  </style>
 
-  <google-chart
+ <google-chart
     id="resizing-chart"
     type="column"
-    options='{"title": "Job priority type Comparision",
+    options='{
+              "title": "Responsive chart",
               "vAxis": {"minValue" : 0, "maxValue": 10}
               }'
     cols='[{"label": "Data", "type": "string"},{"label": "Value", "type": "number"}]'
-    rows='[ ["SPT", 5],["EDD", 4],["FCFS", 7] ]'>
+    rows='[ ["Col1", 5.0],["Col2", 5.0],["Col3", 5.0] ]'>
   </google-chart>
 
   <script>
     var media = window.matchMedia('(min-width: 1024px)');
     media.addListener(function() {
-      document.getElementById('resizing-chart').redraw();
+      document.querySelector('#resizing-chart').redraw();
     });
   </script>
 

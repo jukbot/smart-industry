@@ -87,26 +87,17 @@
           <p>Operation Start: <span>[[factoryOperation.op_start]]</span></p>
           <p>Operation End: <span>[[factoryOperation.op_end]]</span></p>
           <p>OT Start: <span>[[factoryOperation.ot_start]]</span></p>
-          <p>OT End:
-            <spa>[[factoryOperation.ot_end]]</span>
-          </p>
+          <p>OT End: <span>[[factoryOperation.ot_end]]</span></p>
           <p>Operation Days: <span id="opWeek">[[factoryOperation.weekly]]</span></p>
+          </div>
+          <div class="card factory-rule">
           <h1>Factory Global Standard</h1>
           <p>User Workload: <span>[[factoryPerformance.wu]] %</span></p>
           <p>Acceptable Waste: <span>[[factoryPerformance.aw]]</span></p>
-          <p>Reschedule Interval: <span>[[factoryStandard.interval]] %</span></p>
+          <p>Reschedule Interval: <span>[[factoryStandard.interval]]</span></p>
         </div>
       </li>
     </ul>
-    <div class="card">
-      <paper-stepper id="responsiveStepper" alternative-label responsive-check-frequence="500">
-        <paper-step label="step 1"></paper-step>
-        <paper-step label="step 2"></paper-step>
-        <paper-step label="step 3"></paper-step>
-        <paper-step label="step 4"></paper-step>
-        <paper-step label="step 5"></paper-step>
-      </paper-stepper>
-    </div>
   </template>
   <script>
     Polymer({

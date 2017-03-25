@@ -85,7 +85,7 @@
             <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
             <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
             <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required always-float-label></paper-input>
-            <paper-input name="product-raw" id="productRaw" label="Raw Material" required always-float-label></paper-input>
+            <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="addProduct" dialog-confirm autofocus>Create</paper-button>
@@ -100,20 +100,23 @@
             <h1 class="name">[[productItem.name]]</h1>
             <p>Product Process: [[productItem.process]]</p>
             <p>SKU Number: [[productItem.sku]]</p>
-            <p>Raw material: [[materialProduct(productItem.raw_material)]]</p>
+            <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
             <p>Product Size: [[sizeProduct(productItem.size)]]</p>
             </div>
             <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
             <h2>Edit Product</h2>
             <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
-              <div class="buttons">
+            <paper-input name="sku-number" class="editproductSku" value="[[productItem.sku]]" label="SKU Number" always-float-label></paper-input>
+            <paper-input name="product-process" class="editproductProcess" value="[[productItem.process]]" label="Process (use comma to separate)" always-float-label></paper-input>
+            <paper-input name="raw-material" class="editproductRaw" value="[[productItem.raw]]" label="Raw Material (use comma to separate)" always-float-label></paper-input>
+             <div class="buttons">
                 <paper-button on-tap="dismissEditProduct"  dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="saveProduct" dialog-confirm autofocus>Save</paper-button>
               </div>
               </paper-dialog>
              <div class="button-group">
-            <paper-button raised class="water" id="[[machineItem.$key]]" on-tap="editProduct" style="margin-bottom: 10px;">EDIT</paper-button>
-            <paper-button raised class="chilli" id="[[machineItem.$key]]" on-tap="removeProduct">REMOVE</paper-button>
+            <paper-button raised class="water" id="[[productItem.$key]]" on-tap="editProduct" style="margin-bottom: 10px;">EDIT</paper-button>
+            <paper-button raised class="chilli" id="[[productItem.$key]]" on-tap="removeProduct">REMOVE</paper-button>
             </div>
           </div>
         </li>
@@ -205,7 +208,7 @@
       saveProduct: function(e) {
 
       },
-      dismissEditProduct: function(e) {
+      dismissEditProduct: function() {
         this.$.productName.value = null;
         this.$.productSku.value = null;
         this.$.productRaw.value = null;
