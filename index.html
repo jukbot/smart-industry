@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="generator" content="Polymer 1.0">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=1">
-    <title>SMART MES</title>
+    <title>ASTUTO</title>
     <meta name="description" content="Smart Manufacturing Execution Systems for Production in Industry v1.0">
     <meta name="author" content="KMUTT">
     <meta name="robots" content="index, follow">
@@ -15,11 +15,11 @@
     <meta name="theme-color" content="#3333333">
     <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Smart MES">
+    <meta name="application-name" content="Astuto">
     <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Smart MES">
+    <meta name="apple-mobile-web-app-title" content="Astuto">
     <!-- Homescreen icons -->
     <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
@@ -30,8 +30,7 @@
     <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
     <meta name="msapplication-TileColor" content="#3333333">
     <meta name="msapplication-tap-highlight" content="no">
-
-     <!-- Load and register pre-caching Service Worker -->
+    <!-- Load and register pre-caching Service Worker -->
  <script>
       // Setup Polymer options
       window.Polymer = {
@@ -73,15 +72,13 @@
         });
       }
     </script>
-    <link rel="import" href="src/view-index.html">
-    <style>   
+   <style>   
    body {
      color: #333333;
      font-family: 'Roboto', 'Noto', sans-serif;
      line-height: 1.5;
      min-height: 100vh;
      background-color: #f1f1f1;
-     -webkit-font-smoothing: antialiased;
    }
 .loader,
 .loader__figure {
@@ -119,7 +116,8 @@
   -o-transform: translateX(-50%);
   transform: translateX(-50%);
   margin: 0.5em 0 0 50%;
-  font-size: 1em;
+  font-size: 1.2em;
+  font-weight: 300;
   letter-spacing: 0.1em;
   line-height: 1.5em;
   color: #333333;
@@ -234,10 +232,12 @@
   }
 }
  </style>
+ 
+<link rel="import" href="src/view-index.html">
 </head>
 <body>
 <view-index>
-<div class="loader"><div class="loader__figure"></div><p class="loader__label">Loading your application</p></div>
+<div class="loader"><div class="loader__figure"></div><p class="loader__label">Your application is currently building</p></div>
 </view-index>
 </body>
 </html>

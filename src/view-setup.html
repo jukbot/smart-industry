@@ -8,12 +8,11 @@
         display: block;
       }
     </style>
-    <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}"></app-route>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <app-toolbar sticky>
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="[[tabs]]" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+            <paper-tabs selected="{{tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
                 <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
               </template>
@@ -34,7 +33,13 @@
     Polymer({
       is: 'view-setup',
       properties: {
-        submenus: {
+        tabs: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_tabsChanged',
+          selected: 0
+        },
+       submenus: {
           type: Array,
           value: function () {
             return [{
@@ -72,18 +77,10 @@
         }
       },
 
-      observers: [
-        '_routeTabsChanged(subrouteData.tabs)'
-      ],
-
-      _routeTabsChanged: function (tabs) {
-        if (tabs === undefined) {
-          return 'customer';
-        }
-        this.tabs = tabs || 'customer';
-        let resolvedTabsUrl = this.resolveUrl('setup/' + 'view-setup-' + tabs + '.html');
-        this.importHref(resolvedTabsUrl, null, null, true);
-      },
+       _tabsChanged: function (tabs) { 
+       let resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
+       this.importHref(resolvedTabsUrl, null, null, true);
+      }, 
     });
   </script>
 </dom-module>

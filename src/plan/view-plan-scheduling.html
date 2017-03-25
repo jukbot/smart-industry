@@ -221,13 +221,12 @@
       otherData.addColumn('string', 'Dependencies');
 
       otherData.addRows([
-        ['toTrain', 'Walk to train stop', 'walk', null, null, toMilliseconds(5), 100, null],
+        ['toTrain', 'Milling', 'walk', null, null, toMilliseconds(5), 100, null],
         ['music', 'Listen to music', 'music', null, null, toMilliseconds(70), 100, null],
         ['wait', 'Wait for train', 'wait', null, null, toMilliseconds(10), 100, 'toTrain'],
         ['train', 'Train ride', 'train', null, null, toMilliseconds(45), 75, 'wait'],
         ['toWork', 'Walk to work', 'walk', null, null, toMilliseconds(10), 0, 'train'],
         ['work', 'Sit down at desk', null, null, null, toMilliseconds(2), 0, 'toWork'],
-
       ]);
 
       var options = {

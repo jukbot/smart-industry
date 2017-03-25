@@ -9,20 +9,19 @@
         display: block;
       }
     </style>
-    <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}"></app-route>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <!-- Sub nav -->
           <app-toolbar sticky class="tabs-bar">
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="{{subrouteData.tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+            <paper-tabs selected="{{tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
                 <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
-          <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" role="main">
+          <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
           <view-track-production name="production"></view-track-production>
           <view-track-machine name="machine"></view-track-machine>
           <view-track-energy name="energy"></view-track-energy>
@@ -33,15 +32,11 @@
     Polymer({
       is: 'view-tracking',
       properties: {
-        title: {
-          type: String,
-          value: "Tracking"
-        },
-
         tabs: {
           type: String,
           reflectToAttribute: true,
           observer: '_tabsChanged',
+          selected: 0
         },
 
         submenus: {
@@ -67,21 +62,9 @@
         }
       },
 
-      observers: [
-        '_routeTabsChanged(subrouteData.tabs)'
-      ],
-
-      _routeTabsChanged: function (tabs) {
-        if (tabs === undefined) {
-          return 'production';
-        }
-        this.tabs = tabs || 'production';
-      },
-
       _tabsChanged: function (tabs) {
-        let resolvedTabsUrl = this.resolveUrl('track/' + 'view-track-' + tabs + '.html');
+        let resolvedTabsUrl = this.resolveUrl('track/view-track-' + tabs + '.html');
         this.importHref(resolvedTabsUrl, null, null, true);
-        resolvedTabsUrl = null;  
       }
     });
   </script>

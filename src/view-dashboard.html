@@ -8,13 +8,12 @@
         display: block;
       }
     </style>
-    <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}"></app-route>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <!-- Sub nav -->
           <app-toolbar sticky class="tabs-bar">
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="[[tabs]]" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+            <paper-tabs selected="{{tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
                 <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
               </template>
@@ -24,7 +23,7 @@
           <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
           <view-dashboard-overview name="overview"></view-dashboard-overview>
           <view-dashboard-notification name="notification"></view-dashboard-notification>
-          <view-dashboard-statistic name="statistic"></view-dashboard-statistic>
+          <view-dashboard-report name="report"></view-dashboard-report>
          </iron-pages> 
         </app-header-layout>  
   </template>
@@ -32,15 +31,11 @@
     Polymer({
       is: 'view-dashboard',
       properties: {
-        title: {
-          type: String,
-          value: "Dashboard"
-        },
-
         tabs: {
           type: String,
           reflectToAttribute: true,
           observer: '_tabsChanged',
+          selected: 0
         },
 
         submenus: {
@@ -66,22 +61,11 @@
         }
       },
 
-      observers: [
-        '_routeTabsChanged(subrouteData.tabs)'
-      ],
-
-      _routeTabsChanged: function (tabs) {
-        if (tabs === undefined) {
-          return 'overview';
-        }
-        this.tabs = tabs || 'overview';
-      },
-
       _tabsChanged: function (tabs) {
-        var resolvedTabsUrl = this.resolveUrl('dashboard/' + 'view-dashboard-' + tabs + '.html');
-        this.importHref(resolvedTabsUrl, null, null, true);
-        resolvedTabsUrl = null; 
+        let resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html');
+        this.importHref(resolvedTabsUrl, null, null, true); 
       }
+
     });
   </script>
 </dom-module>

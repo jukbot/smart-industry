@@ -8,20 +8,19 @@
         display: block;
       }
     </style>
-     <app-route route="{{route}}" pattern="/:tabs" data="{{subrouteData}}"></app-route>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <!-- Sub nav -->
           <app-toolbar sticky class="tabs-bar">
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="{{subrouteData.tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
+            <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
                 <paper-tab id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
-          <iron-pages selected="{{subrouteData.tabs}}" attr-for-selected="name" role="main">
+          <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
           <view-plan-order name="order"></view-plan-order>
           <view-plan-scheduling name="scheduling"></view-plan-scheduling>
           <view-plan-production name="production"></view-plan-production>
@@ -32,15 +31,11 @@
     Polymer({
       is: 'view-planning',
       properties: {
-        title: {
-          type: String,
-          value: "Planning"
-        },
-
         tabs: {
           type: String,
           reflectToAttribute: true,
           observer: '_tabsChanged',
+          selected: 0
         },
 
         submenus: {
@@ -66,19 +61,8 @@
         }
       },
 
-      observers: [
-        '_routeTabsChanged(subrouteData.tabs)'
-      ],
-
-       _routeTabsChanged: function (tabs) {
-        if (tabs === undefined) {
-          return 'order';
-        }
-        this.tabs = tabs || 'order';
-      },
-
       _tabsChanged: function (tabs) {
-        let resolvedTabsUrl = this.resolveUrl('plan/' + 'view-plan-' + tabs + '.html');
+        let resolvedTabsUrl = this.resolveUrl('plan/view-plan-' + tabs + '.html');
         this.importHref(resolvedTabsUrl, null, null, true); 
       }
     });
