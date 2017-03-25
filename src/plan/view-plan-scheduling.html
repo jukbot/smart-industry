@@ -136,8 +136,8 @@
 <vaadin-date-picker style="width: 300px;" name="workdate" always-float-label autoValidate
  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
  <h3>Current Jobs Priority: [[factoryStandard.priority]]</h3>
-
-        </div>
+ <div id="chart_div"></div>
+ </div>
 
   <table><thead><tr><th>Machine</th><th>Cycle Time (second)</th></tr></thead>
       <tbody>
@@ -168,11 +168,11 @@
   <google-chart
     id="resizing-chart"
     type="column"
-    options='{"title": "Responsive chart",
+    options='{"title": "Job priority type Comparision",
               "vAxis": {"minValue" : 0, "maxValue": 10}
               }'
     cols='[{"label": "Data", "type": "string"},{"label": "Value", "type": "number"}]'
-    rows='[ ["Col1", 5.0],["Col2", 5.0],["Col3", 5.0] ]'>
+    rows='[ ["SPT", 5],["EDD", 4],["FCFS", 7] ]'>
   </google-chart>
 
   <script>
@@ -197,9 +197,54 @@
   </div>
 </paper-dialog>
 </template>
+
   <script>
     Polymer({
       is: 'view-plan-scheduling',
+      attached: function() {
+  // create an instance with createElement:
+
+    google.charts.load('current', {'packages':['gantt']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function toMilliseconds(minutes) {
+      return minutes * 60 * 1000;
+    }
+
+    function drawChart() {
+
+      var otherData = new google.visualization.DataTable();
+      otherData.addColumn('string', 'Task ID');
+      otherData.addColumn('string', 'Task Name');
+      otherData.addColumn('string', 'Resource');
+      otherData.addColumn('date', 'Start');
+      otherData.addColumn('date', 'End');
+      otherData.addColumn('number', 'Duration');
+      otherData.addColumn('number', 'Percent Complete');
+      otherData.addColumn('string', 'Dependencies');
+
+      otherData.addRows([
+        ['toTrain', 'Walk to train stop', 'walk', null, null, toMilliseconds(5), 100, null],
+        ['music', 'Listen to music', 'music', null, null, toMilliseconds(70), 100, null],
+        ['wait', 'Wait for train', 'wait', null, null, toMilliseconds(10), 100, 'toTrain'],
+        ['train', 'Train ride', 'train', null, null, toMilliseconds(45), 75, 'wait'],
+        ['toWork', 'Walk to work', 'walk', null, null, toMilliseconds(10), 0, 'train'],
+        ['work', 'Sit down at desk', null, null, null, toMilliseconds(2), 0, 'toWork'],
+
+      ]);
+
+      var options = {
+        height: 275,
+        gantt: {
+          defaultStartDateMillis: new Date(2015, 3, 28)
+        }
+      };
+
+      var chart = new google.visualization.Gantt(document.querySelector('#chart_div'));
+
+      chart.draw(otherData, options);
+    }
+  },
       ready: function() {
          Sugar.Date.setLocale('en-GB');
          let workdatepicker = this.$$('#workdateSelector');

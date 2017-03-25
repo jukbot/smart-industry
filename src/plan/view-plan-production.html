@@ -23,15 +23,65 @@
         <h1>Production Building Block</h1>
               <vaadin-combo-box label="Product" name="product" value="{{p_name}}" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
               <vaadin-combo-box label="Size" name="size" value="{{p_size}}" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.4/go-debug.js"></script>
-<script>
- window.onload = init;
+
+  <div id="myDiagramDiv" style="border: solid 1px black; width: 100%; height: 600px; overflow:hidden;"></div>
+    <div>
+      <button id="SaveButton" onclick="save()">Save</button>
+      <button onclick="load()">Load</button>
+      Diagram Model saved in JSON format:
+    </div>
+    <textarea id="mySavedModel" style="width:100%;height:300px">
+{ "class": "go.GraphLinksModel",
+  "nodeCategoryProperty": "type",
+  "linkFromPortIdProperty": "frompid",
+  "linkToPortIdProperty": "topid",
+  "nodeDataArray": [
+{"key":1, "type":"Table", "name":"Product"},
+{"key":2, "type":"Table", "name":"Sales"},
+{"key":3, "type":"Table", "name":"Period"},
+{"key":4, "type":"Table", "name":"Store"},
+{"key":11, "type":"Join", "name":"Product, Class"},
+{"key":12, "type":"Join", "name":"Period"},
+{"key":13, "type":"Join", "name":"Store"},
+{"key":21, "type":"Project", "name":"Product, Class"},
+{"key":31, "type":"Filter", "name":"Boston, Jan2014"},
+{"key":32, "type":"Filter", "name":"Boston, 2014"},
+{"key":41, "type":"Group", "name":"Sales"},
+{"key":42, "type":"Group", "name":"Total Sales"},
+{"key":51, "type":"Join", "name":"Product Name"},
+{"key":61, "type":"Sort", "name":"Product Name"},
+{"key":71, "type":"Export", "name":"File"}
+  ],
+  "linkDataArray": [
+{"from":1, "frompid":"OUT", "to":11, "topid":"L"},
+{"from":2, "frompid":"OUT", "to":11, "topid":"R"},
+{"from":3, "frompid":"OUT", "to":12, "topid":"R"},
+{"from":4, "frompid":"OUT", "to":13, "topid":"R"},
+{"from":11, "frompid":"M", "to":12, "topid":"L"},
+{"from":12, "frompid":"M", "to":13, "topid":"L"},
+{"from":13, "frompid":"M", "to":21},
+{"from":21, "frompid":"OUT", "to":31},
+{"from":21, "frompid":"OUT", "to":32},
+{"from":31, "frompid":"OUT", "to":41},
+{"from":32, "frompid":"OUT", "to":42},
+{"from":41, "frompid":"OUT", "to":51, "topid":"L"},
+{"from":42, "frompid":"OUT", "to":51, "topid":"R"},
+{"from":51, "frompid":"OUT", "to":61},
+{"from":61, "frompid":"OUT", "to":71}
+  ]}
+    </textarea>
+      </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-plan-production',
+      attached: function() {
+        window.onload = init;
 
  function init() {
     if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
     var $ = go.GraphObject.make;
-
-    myDiagram =
+    var myDiagramDiv = document.querySelector('#myDiagramDiv');
       $(go.Diagram, "myDiagramDiv",
         {
           initialContentAlignment: go.Spot.Left,
@@ -186,58 +236,7 @@
   function load() {
     myDiagram.model = go.Model.fromJson(document.getElementById("mySavedModel").value);
   }
-</script>
-  <div id="myDiagramDiv" style="border: solid 1px black; width: 100%; height: 600px; overflow:hidden;"></div>
-    <div>
-      <button id="SaveButton" onclick="save()">Save</button>
-      <button onclick="load()">Load</button>
-      Diagram Model saved in JSON format:
-    </div>
-    <textarea id="mySavedModel" style="width:100%;height:300px">
-{ "class": "go.GraphLinksModel",
-  "nodeCategoryProperty": "type",
-  "linkFromPortIdProperty": "frompid",
-  "linkToPortIdProperty": "topid",
-  "nodeDataArray": [
-{"key":1, "type":"Table", "name":"Product"},
-{"key":2, "type":"Table", "name":"Sales"},
-{"key":3, "type":"Table", "name":"Period"},
-{"key":4, "type":"Table", "name":"Store"},
-{"key":11, "type":"Join", "name":"Product, Class"},
-{"key":12, "type":"Join", "name":"Period"},
-{"key":13, "type":"Join", "name":"Store"},
-{"key":21, "type":"Project", "name":"Product, Class"},
-{"key":31, "type":"Filter", "name":"Boston, Jan2014"},
-{"key":32, "type":"Filter", "name":"Boston, 2014"},
-{"key":41, "type":"Group", "name":"Sales"},
-{"key":42, "type":"Group", "name":"Total Sales"},
-{"key":51, "type":"Join", "name":"Product Name"},
-{"key":61, "type":"Sort", "name":"Product Name"},
-{"key":71, "type":"Export", "name":"File"}
-  ],
-  "linkDataArray": [
-{"from":1, "frompid":"OUT", "to":11, "topid":"L"},
-{"from":2, "frompid":"OUT", "to":11, "topid":"R"},
-{"from":3, "frompid":"OUT", "to":12, "topid":"R"},
-{"from":4, "frompid":"OUT", "to":13, "topid":"R"},
-{"from":11, "frompid":"M", "to":12, "topid":"L"},
-{"from":12, "frompid":"M", "to":13, "topid":"L"},
-{"from":13, "frompid":"M", "to":21},
-{"from":21, "frompid":"OUT", "to":31},
-{"from":21, "frompid":"OUT", "to":32},
-{"from":31, "frompid":"OUT", "to":41},
-{"from":32, "frompid":"OUT", "to":42},
-{"from":41, "frompid":"OUT", "to":51, "topid":"L"},
-{"from":42, "frompid":"OUT", "to":51, "topid":"R"},
-{"from":51, "frompid":"OUT", "to":61},
-{"from":61, "frompid":"OUT", "to":71}
-  ]}
-    </textarea>
-      </div>
-  </template>
-  <script>
-    Polymer({
-      is: 'view-plan-production',
+      },
       properties: {
         productItems: {
           type: Object
