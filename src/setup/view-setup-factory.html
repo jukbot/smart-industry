@@ -48,7 +48,7 @@
             <div class="form-wrapper">
               <paper-input label="Factory Name" name="factory-name" id="factoryName" value="[[factoryOperation.name]]"
                 type="text" required always-float-label auto-validate></paper-input>
-              <vaadin-combo-box label="Factory Type" name="factory-type" id="factoryType" value="{{f_type}}" items="[[factoryType]]" item-label-path="name" item-value-path="name" selected-item='{{test}}' required always-float-label></vaadin-combo-box>
+              <vaadin-combo-box label="Factory Type" name="factory-type" id="factoryType" value="[[factoryOperation.type]]" items="[[factoryType]]" item-label-path="name" item-value-path="name" selected-item='{{test}}' required always-float-label></vaadin-combo-box>
               <paper-input label="Acceptable Waste (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]"
                 type="number" min="0" max="1" step="0.01" required always-float-label auto-validate></paper-input>
               <paper-input label="Worker Utilization (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
@@ -81,7 +81,9 @@
       </li>
       <li>
         <div class="card factory-rule">
-          <h1>Factory Global Rules</h1>
+          <h1>Factory Information</h1>
+          <p>Factory Name: <span>[[factoryOperation.name]]</span></p>
+          <p>Factory Type: <span>[[factoryOperation.type]]</span></p>
           <p>Operation Start: <span>[[factoryOperation.op_start]]</span></p>
           <p>Operation End: <span>[[factoryOperation.op_end]]</span></p>
           <p>OT Start: <span>[[factoryOperation.ot_start]]</span></p>
@@ -89,6 +91,7 @@
             <spa>[[factoryOperation.ot_end]]</span>
           </p>
           <p>Operation Days: <span id="opWeek">[[factoryOperation.weekly]]</span></p>
+          <h1>Factory Global Standard</h1>
           <p>User Workload: <span>[[factoryPerformance.wu]] %</span></p>
           <p>Acceptable Waste: <span>[[factoryPerformance.aw]]</span></p>
           <p>Reschedule Interval: <span>[[factoryStandard.interval]] %</span></p>
@@ -133,6 +136,22 @@
         factoryPerformance: {
           type: Object
         },
+        factoryType: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'Job Shop',
+                symbol: 'JS',
+                code: 1
+              },
+              {
+                name: 'Flow Shop',
+                symbol: 'FS',
+                code: 2
+              }
+            ]
+          }
+        }
       }
     });
   </script>

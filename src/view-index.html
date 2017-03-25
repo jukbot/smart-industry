@@ -40,20 +40,20 @@
 <link rel="import" href="../bower_components/google-chart/google-chart.html">
 <link rel="import" href="../bower_components/material-progress/material-progress.html">
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
+<link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
 <!-- shared style -->
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-index">
   <template>
     <style include="shared-styles">  
       :host {
+        display: block;
         --app-primary-color: #CDDC39;
         --app-secondary-color: #333333;
         --app-tertiary-color: #FFFFFF;
-
-        display: block;
         --paper-menu-button-dropdown: {
           margin-top: 50px;
-        }
+        } 
       }
  
       .menu-item {
@@ -138,10 +138,6 @@
         text-align: center;
       }
             
-      .paper-tab {
-        font-weight: 300;
-      }
-
       div.sidebar-menu-line {
         border-bottom: 1px solid #d6d6d6;
       }
@@ -158,7 +154,7 @@
     <app-drawer-layout fullbleed>
       <!-- Navbar content -->
       <app-drawer id="drawer" slot="drawer" swipe-open>
-        <img class="logo" src="../images/logo/industrial.svg" alt="logo">
+        <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
         <div class="main-title" main-title>ASTUTO</div>
         <div class="main-describe">Smart Industry Helper</div>
         <!-- sidebar hightlighter -->
