@@ -176,15 +176,6 @@
     cols='[{"label": "Data", "type": "string"},{"label": "Value", "type": "number"}]'
     rows='[ ["Col1", 5.0],["Col2", 5.0],["Col3", 5.0] ]'>
   </google-chart>
-
-  <script>
-    var media = window.matchMedia('(min-width: 1024px)');
-    media.addListener(function() {
-      document.querySelector('#resizing-chart').redraw();
-    });
-  </script>
-
-
       </div>
     </div>
  <paper-dialog class="priority-dialog" id="changePriorityDialog">
@@ -241,6 +232,12 @@
       var chart = new google.visualization.Gantt(document.querySelector('#chart_div'));
       chart.draw(otherData, options);
     }
+
+      var media = window.matchMedia('(min-width: 1024px)');
+      media.addListener(function() {
+      document.querySelector('#resizing-chart').redraw();
+    });
+
   },
       ready: function() {
          Sugar.Date.setLocale('en-GB');
