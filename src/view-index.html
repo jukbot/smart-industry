@@ -32,6 +32,7 @@
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
 <!-- neon modules - used for animation -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
@@ -41,6 +42,7 @@
 <link rel="import" href="../bower_components/google-chart/google-chart.html">
 <link rel="import" href="../bower_components/material-progress/material-progress.html">
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
+<link rel="import" href="../bower_components/vaadin/vaadin.html">
 <!-- shared style -->
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-index">
@@ -159,11 +161,11 @@
         <div class="main-describe">Smart Industry Helper</div>
         <!-- sidebar hightlighter -->
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-        <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin-icons:dashboard"></paper-icon-button> DASHBOARD</a>
-        <a name="setup" href="/setup"><paper-icon-button icon="vaadin-icons:cogs"></paper-icon-button> SETUP</a>
-        <a name="planning" href="/planning"><paper-icon-button icon="vaadin-icons:calendar-clock"></paper-icon-button> PLAN</a>
-        <a name="controlling" href="/controlling"><paper-icon-button icon="vaadin-icons:sliders"></paper-icon-button> CONTROL</a>
-        <a name="tracking" href="/tracking"><paper-icon-button icon="vaadin-icons:clock"></paper-icon-button> TRACK</a>
+        <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> DASHBOARD</a>
+        <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> SETUP</a>
+        <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> PLAN</a>
+        <a name="controlling" href="/controlling"><paper-icon-button icon="vaadin:sliders"></paper-icon-button> CONTROL</a>
+        <a name="tracking" href="/tracking"><paper-icon-button icon="vaadin:clock"></paper-icon-button> TRACK</a>
         </iron-selector>
         <div class="sidebar-menu-line"></div>
         <div class="center-box">
@@ -188,23 +190,23 @@
       <app-header-layout fullbleed has-scrolling-region>
         <app-header slot="header" condenses reveals fixed>
           <app-toolbar>
-            <paper-icon-button icon="vaadin-icons:menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button>
+            <paper-icon-button icon="vaadin:menu" hidden$="{{wideLayout}}" drawer-toggle></paper-icon-button>
             <div class="page-title" main-title>[[page]]</div>
             <paper-menu-button vertical-align="top" horizontal-align="right">
-              <paper-icon-button icon="vaadin-icons:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
+              <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-menu class="dropdown-content">
                   <a class="paper-item-link" href="https://github.com/jukbot/smart-industry" target="_blank" tabindex="-1">
                   <paper-icon-item class="menu-item" name="help">
-                    <iron-icon icon="vaadin-icons:question-circle" alt="help" item-icon></iron-icon>
+                    <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
                     Help
                   </paper-icon-item>
                   </a>
                   <paper-icon-item class="menu-item" name="settings">
-                    <iron-icon icon="vaadin-icons:cog" alt="settings" item-icon></iron-icon>
+                    <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
                     Settings
                   </paper-icon-item>
                   <paper-icon-item class="menu-item" name="logout" on-tap="logout" hidden$="[[!user]]">
-                    <iron-icon icon="vaadin-icons:sign-out" alt="logout" item-icon></iron-icon>
+                    <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
                     Log Out
                   </paper-icon-item>
               </paper-menu>
@@ -228,29 +230,13 @@
   <script>
     Polymer({
       is: 'view-index',
-      properties: {
-        page: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_pageChanged',
-        },
-
-        user: {
-          type: Object
-        },
-
-        statusknown: {
-          type: Object
-        },
-        metadata: {
-          type: Object
-        },
-
-       wideLayout: {
-          type: Boolean,
-          value: false,
-          observer: '_onLayoutChange',
-       },
+      ready: function() {
+        this.async(function() {
+          // If the path is blank, redirect to /
+          if (!this.route.path) {
+            this.set('route.path', '/dashboard');
+          }
+        });
       },
 
       observers: [
@@ -325,7 +311,28 @@
       // Handle Error
       handleError: function(e) {
         console.info("Authenticate error:" + e.message);
-      }
+      },
+      properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged',
+        },
+        user: {
+          type: Object
+        },
+        statusknown: {
+          type: Object
+        },
+        metadata: {
+          type: Object
+        },
+        wideLayout: {
+          type: Boolean,
+          value: false,
+          observer: '_onLayoutChange',
+       },
+      },
      });
   </script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.4/go-debug.js"></script>

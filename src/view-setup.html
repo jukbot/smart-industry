@@ -20,7 +20,7 @@
           </app-toolbar>
         </app-header>
           <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
-          <view-setup-customer name="customer"><i class="icon">&#xe80d;</i></view-setup-customer>
+          <view-setup-customer name="customer"></view-setup-customer>
           <view-setup-factory name="factory"></view-setup-factory>
           <view-setup-inventory name="inventory"></view-setup-inventory>
           <view-setup-machine name="machine"></view-setup-machine>
@@ -45,32 +45,32 @@
             return [{
                 'title': 'CUSTOMER',
                 'view': 'customer',
-                'icon': 'vaadin-icons:user-card'
+                'icon': 'vaadin:user-card'
               },
               {
                 'title': 'FACTORY',
                 'view': 'factory',
-                'icon': 'vaadin-icons:factory'
+                'icon': 'vaadin:factory'
               },
               {
                 'title': 'INVENTORY',
                 'view': 'inventory',
-                'icon': 'vaadin-icons:stock'
+                'icon': 'vaadin:storage'
               },
               {
                 'title': 'MACHINE',
                 'view': 'machine',
-                'icon': 'vaadin-icons:automation'
+                'icon': 'vaadin:automation'
               },
               {
                 'title': 'PRODUCT',
                 'view': 'product',
-                'icon': 'vaadin-icons:barcode'
+                'icon': 'vaadin:barcode'
               },
               {
                 'title': 'WORKER',
                 'view': 'worker',
-                'icon': 'vaadin-icons:clipboard-user'
+                'icon': 'vaadin:clipboard-user'
               }
             ];
           }
