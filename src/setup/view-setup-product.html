@@ -73,7 +73,6 @@
        width: 49%;
      }
     </style>
-    <firebase-auth user="{{user}}"></firebase-auth>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
     <ul class="app-grid">
       <li>
@@ -103,6 +102,10 @@
             <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
             <p>Product Size: [[sizeProduct(productItem.size)]]</p>
             </div>
+             <div class="button-group">
+            <paper-button raised class="water" id="[[productItem.$key]]" on-tap="editProduct">EDIT</paper-button>
+            <paper-button raised class="chilli" id="[[productItem.$key]]" on-tap="removeProduct">REMOVE</paper-button>
+            </div>
             <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
             <h2>Edit Product</h2>
             <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
@@ -114,10 +117,6 @@
                 <paper-button on-tap="saveProduct" dialog-confirm autofocus>Save</paper-button>
               </div>
               </paper-dialog>
-             <div class="button-group">
-            <paper-button raised class="water" id="[[productItem.$key]]" on-tap="editProduct" style="margin-bottom: 10px;">EDIT</paper-button>
-            <paper-button raised class="chilli" id="[[productItem.$key]]" on-tap="removeProduct">REMOVE</paper-button>
-            </div>
           </div>
         </li>
       </template>

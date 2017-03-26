@@ -53,19 +53,19 @@
                 type="number" min="0" max="1" step="0.01" required always-float-label auto-validate></paper-input>
               <paper-input label="Worker Utilization (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
                 type="number" min="0" max="100" step="5" required always-float-label auto-validate></paper-input>
-              <paper-input label="Operation start" name="opstart" on-tap="toggleTimeDialog" id="opStart" value="[[factoryOperation.op_start]]"
+              <paper-input label="Operation start" name="opstart" id="opStart" value="[[factoryOperation.op_start]]"
                 required always-float-label auto-validate></paper-input>
-              <paper-input label="Operation end" name="opend" on-tap="toggleTimeDialog" id="opEnd" value="[[factoryOperation.op_end]]"
+              <paper-time-input label="Operation Start" name="opstart" id="opStart" value="{{opStart}}" required always-float-label auto-validate></paper-time-input>
+              <paper-input label="Operation end" name="opend" id="opEnd" value="[[factoryOperation.op_end]]"
                 required always-float-label auto-validate></paper-input>
-              <paper-input label="Over Time start" name="otstart" on-tap="toggleTimeDialog" id="otStart" value="[[factoryOperation.ot_start]]"
+              <paper-input label="Over Time start" name="otstart" id="otStart" value="[[factoryOperation.ot_start]]"
                 required always-float-label auto-validate></paper-input>
-              <paper-input label="Over Time end" name="otend" on-tap="toggleTimeDialog" id="otEnd" value="[[factoryOperation.ot_end]]"
+              <paper-input label="Over Time end" name="otend" id="otEnd" value="[[factoryOperation.ot_end]]"
                 required always-float-label auto-validate></paper-input>
               <paper-input label="Reschedule Interval (days)" name="workerUtilize" id="scheduleInterval" value="[[factoryStandard.interval]]"
                 type="number" min="1" max="30" step="1" required always-float-label auto-validate></paper-input>
-                <paper-time-input value="{{h}}"></paper-time-input>
               <div>
-                [[h]]
+               
                 <paper-checkbox id="sunday" value="sun">Sun</paper-checkbox>
                 <paper-checkbox checked>Mon</paper-checkbox>
                 <paper-checkbox checked>Tue</paper-checkbox>
@@ -86,7 +86,7 @@
           <h1>Factory Information</h1>
           <p>Factory Name: <span>[[factoryOperation.name]]</span></p>
           <p>Factory Type: <span>[[factoryOperation.type]]</span></p>
-          <p>Operation Start: <span>[[factoryOperation.op_start]]</span></p>
+          <p>Operation Start: <span>[[factoryOperation.op_start]] [[opStart]]</span></p>
           <p>Operation End: <span>[[factoryOperation.op_end]]</span></p>
           <p>OT Start: <span>[[factoryOperation.ot_start]]</span></p>
           <p>OT End: <span>[[factoryOperation.ot_end]]</span></p>
