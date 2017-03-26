@@ -93,7 +93,7 @@
       .drawer-list a:hover {
          background-color: #eeeeee;
       }
-      
+
       .drawer-list a.iron-selected {
         color: var(--app-tertiary-color);
         font-weight: 400;
@@ -163,7 +163,7 @@
         <a name="setup" href="/setup"><paper-icon-button icon="vaadin-icons:cogs"></paper-icon-button> SETUP</a>
         <a name="planning" href="/planning"><paper-icon-button icon="vaadin-icons:calendar-clock"></paper-icon-button> PLAN</a>
         <a name="controlling" href="/controlling"><paper-icon-button icon="vaadin-icons:sliders"></paper-icon-button> CONTROL</a>
-        <a name="tracking" href="/tracking"><paper-icon-button icon="vaadin-icons:clock"></paper-icon-button> SETUP</a>
+        <a name="tracking" href="/tracking"><paper-icon-button icon="vaadin-icons:clock"></paper-icon-button> TRACK</a>
         </iron-selector>
         <div class="sidebar-menu-line"></div>
         <div class="center-box">
@@ -214,7 +214,7 @@
             </template>
           </app-toolbar>
         </app-header>
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
           <view-dashboard name="dashboard" route="[[subroute]]" offline="[[offline]]"></view-dashboard>
           <view-setup name="setup" route="[[subroute]]" offline="[[offline]]"></view-setup>
           <view-planning name="planning" route="[[subroute]]" offline="[[offline]]"></view-planning>
