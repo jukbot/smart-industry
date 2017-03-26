@@ -13,13 +13,17 @@
       }
     </style>
     <div class="card">
-      Error: Push notification API require HTTPS connection.
+      <paper-button raised on-click="openToast">Notification Test</paper-button>
+      <paper-toast id="toast" always-on-top horizontal-align="right" text="Hello world!"></paper-toast>
    </div>
   </template>
 
   <script>
     Polymer({
       is: 'view-dashboard-notification',
+      openToast: function() {
+        this.$.toast.open(); 
+       }
     });
   </script>
 </dom-module>

@@ -170,11 +170,11 @@
     id="resizing-chart"
     type="column"
     options='{
-              "title": "Responsive chart",
+              "title": "Priority Comparision",
               "vAxis": {"minValue" : 0, "maxValue": 10}
               }'
-    cols='[{"label": "Data", "type": "string"},{"label": "Value", "type": "number"}]'
-    rows='[ ["Col1", 5.0],["Col2", 5.0],["Col3", 5.0] ]'>
+    cols='[{"label": "Priority", "type": "string"},{"label": "Duration", "type": "number"}]'
+    rows='[ ["EDD", 5],["SPT", 6] ]'>
   </google-chart>
       </div>
     </div>
@@ -214,18 +214,18 @@
       otherData.addColumn('string', 'Dependencies');
 
       otherData.addRows([
-        ['toTrain', 'Milling', 'walk', null, null, toMilliseconds(5), 100, null],
-        ['music', 'Listen to music', 'music', null, null, toMilliseconds(70), 100, null],
-        ['wait', 'Wait for train', 'wait', null, null, toMilliseconds(10), 100, 'toTrain'],
-        ['train', 'Train ride', 'train', null, null, toMilliseconds(45), 75, 'wait'],
-        ['toWork', 'Walk to work', 'walk', null, null, toMilliseconds(10), 0, 'train'],
-        ['work', 'Sit down at desk', null, null, null, toMilliseconds(2), 0, 'toWork'],
+        ['toTrain', 'Milling', 'finished', null, null, toMilliseconds(5), 100, null],
+        ['music', 'Trimming', 'in progress', null, null, toMilliseconds(70), 90, 'toTrain'],
+        ['wait', 'Drilling', 'waiting', null, null, toMilliseconds(10), 30, 'music'],
+        ['train', 'Welding', 'in progress', null, null, toMilliseconds(45), 75, 'wait'],
+        ['toWork', 'Polishing', 'in progress', null, null, toMilliseconds(10), 0, 'train'],
+        ['work', 'Packing', 'waiting', null, null, toMilliseconds(2), 0, 'toWork'],
       ]);
 
       var options = {
         height: 275,
         gantt: {
-          defaultStartDateMillis: new Date(2015, 3, 28)
+          defaultStartDateMillis: new Date(2017, 3, 26)
         }
       };
 
