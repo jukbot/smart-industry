@@ -115,7 +115,7 @@
         <div class="card order-info">
                 <h1>Order Information</h1>
                 <p>Product Name: <span id="product">[[x.name]] [[y.name]]</span></p>
-                <p>SKU Number: <span id="product">[[x.sku]]</span></p>
+                <p>SKU Number: <span id="sku">[[x.sku]]</span></p>
                 <p>Actual Quantity: <span id="actualQuantity">[[calActualQuantity(factoryPerformance.aw, amount)]]</span></p>
                 <p>Production Start: <span id="productionStart">[[calStartProd(orderQuery)]]</span></p>
                 <p>Processes Used: <span id="usedProcess">[[x.process]]</span></p>
@@ -136,11 +136,12 @@
       saveOrder: function() {
         alert("Order has been saved to order database.");
       },
-      createOrder: function (order) {
+      createOrder: function () {
         let orderNo = this.$.orderNumber.value;
         let customerName = this.$.customerName.value;
         let orderDateSTP = Math.round(new Date().getTime()/1000.0);
         let orderProduct = this.$.productSelector.value;
+        let orderSKU = this.$.sku.innerHTML;
         let orderSize = this.$.sizeSelector.value;
         let orderQuantity = this.$.orderQuantity.value;
         let orderDuration = this.$.estimateDuration.innerHTML;
@@ -161,6 +162,7 @@
           order_no: orderNo,
           order_customer: customerName,
           order_product: orderProduct,
+          order_sku: orderSKU,
           order_size: orderSize,
           order_quantity: orderQuantity,
           order_start: orderDateSTP + 86400, // sec timestamp + 1 day
