@@ -49,9 +49,6 @@
     <style include="shared-styles">  
       :host {
         display: block;
-        --app-primary-color: #CDDC39;
-        --app-secondary-color: #333333;
-        --app-tertiary-color: #FFFFFF;
         --paper-menu-button-dropdown: {
           margin-top: 50px;
         } 
@@ -63,6 +60,7 @@
             
       .main-title {
         font-size: 2.75rem;
+        font-weight: 400;
         line-height: normal;
         text-align: center;
       }
@@ -79,16 +77,9 @@
         text-transform: uppercase
       }
 
-      .paper-item-link {
-        text-decoration: none;
-      }
-      
       .drawer-list a {
         display: block;
         padding: 10px 30px;
-        text-decoration: none;
-        color: var(--app-secondary-color);
-        line-height: 0;
       }
 
       .drawer-list a:hover {
@@ -96,9 +87,9 @@
       }
 
       .drawer-list a.iron-selected {
-        color: var(--app-tertiary-color);
+        color: #ffffff;
         font-weight: 400;
-        background-color: var(--app-secondary-color);
+        background-color: #333333;
       }
       
       .main-header {
@@ -139,7 +130,7 @@
         text-align: center;
       }
             
-      div.sidebar-menu-line {
+      .sidebar-menu-line {
         border-bottom: 1px solid #d6d6d6;
       }
     </style>
@@ -194,7 +185,7 @@
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-menu class="dropdown-content">
-                  <a class="paper-item-link" href="https://github.com/jukbot/smart-industry" target="_blank" tabindex="-1">
+                  <a href="https://github.com/jukbot/smart-industry" target="_blank" tabindex="-1">
                   <paper-icon-item class="menu-item" name="help">
                     <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
                     Help

@@ -40,32 +40,15 @@
       }
 
       .product-dialog {
-        width: 35%;
+        width: 60%;
         padding: 10px;
+        overflow: auto;
       }
-      .stitched {
-        height: auto;
-        min-height: 330px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        margin: 10px 10px 10px 10px;
-        padding: 16px;
-        color: #757575;
-        border: 4px dashed #757575;
-        border-radius: 2px;
-        flex-direction: column;
-        text-decoration: none;
-        position: relative;
-        box-sizing: border-box;
-     }
-     .product{ min-height: 330px; height: auto; }
-     .product h1 { text-align: center; }
-     .new-product { margin: 0; padding: 20px 40px; font-size: 1.25rem; }
+     .product{ min-height: 350px; height: auto; }
      .product p {
         margin: 12px 0;
       }
+     .product h1 { text-align: center; }
      .product-info-group {
        margin-bottom: auto;
      }
@@ -77,14 +60,26 @@
     <ul class="app-grid">
       <li>
         <div class="stitched">
-          <paper-button raised on-tap="toggleDialog" class="new-product water">ADD PRODUCT</paper-button>
+          <paper-button raised on-tap="toggleDialog" class="big-btn water">ADD PRODUCT</paper-button>
           <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true"
             role="dialog">
-            <h2>Add product</h2>
+            <h1>Add Product</h1>
             <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
             <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
             <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required always-float-label></paper-input>
             <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
+          
+            <template is="dom-repeat" items="{{foodArray}}" as="food">
+                <div class="horizontal layout flex" >
+								<paper-input label="Size name" value="[[food.name]]" required always-float-label></paper-input>
+								<paper-input label="Cycle time" value="{{food.unit}}" required always-float-label></paper-input>
+                <paper-input label="Cost" value="{{food.cost}}" required always-float-label></paper-input>
+								<paper-button on-click="saveFood">Save</paper-button>
+								<paper-button on-click="deleteFood">Delete</paper-button>	
+                </div>
+			    	</template>
+	  
+					<paper-button on-click="addFood">Add</paper-button>
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="addProduct" dialog-confirm autofocus>Create</paper-button>
@@ -96,7 +91,7 @@
         <li>  
           <div class="card product">
             <div class="product-info-group">
-            <h1 class="name">[[productItem.name]]</h1>
+            <h1 class="card-title">[[productItem.name]]</h1>
             <p>Product Process: [[productItem.process]]</p>
             <p>SKU Number: [[productItem.sku]]</p>
             <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
@@ -131,6 +126,16 @@
         },
         productSizes: {
           type: Object
+        },
+        foodArray: {
+          type: Array,
+          value: function () {
+            return [{
+              name: '',
+              unit: '',
+              cost: ''
+            }]
+          }
         },
         productType: {
           type: Array,
@@ -198,6 +203,16 @@
         this.$.productRaw.value = null;
         this.$.productProcess.value = null;
       },
+       addFood:function(){
+    this.push('foodArray',{name:"",unit:""});
+ },
+  deleteFood:function(e){
+    this.splice('foodArray',e.model.index,1);
+ },
+  saveFood:function(e) {
+    // Save food from array with index: e.model.index
+    // Data is accessible via this.foodArray[index], or just the current row: e.model.food.*
+ },
       editProduct: function(e) {
         this.$$('#edit_'+e.target.id).open();
       },
@@ -205,7 +220,11 @@
         this.$.machineQuery.ref.child(e.target.id).remove();
       },
       saveProduct: function(e) {
-
+         this.$.document.save("/product/"+e.target.id).then(function () {
+        // after document saved, path will be changed to the new ref
+        // any change of data will sent back up and stored
+        alert("Save successful");
+      });
       },
       dismissEditProduct: function() {
         this.$.productName.value = null;

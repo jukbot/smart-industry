@@ -88,9 +88,7 @@
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1>Create Order {{test(3,4)}}</h1>
-          <form is="iron-form" id="create-order-form" method="post">
-            <div class="form-wrapper">
+          <h1>Create Order</h1>
               <paper-input label="Order Number" name="order-no" id="orderNumber" value="" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
               <paper-input label="Customer Name" name="order-name" type="text" id="customerName" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
@@ -107,8 +105,6 @@
                 <paper-button raised class="smart" on-tap="createOrder">Add</paper-button>
                 <paper-button raised class="fancy" on-tap="saveOrder">Save</paper-button>
                </div>
-            </div>
-          </form>
         </div>
       </li>
       <li>
@@ -408,13 +404,6 @@
                 number: 2
               }
             ]
-          }
-        },
-        test: {
-          type: Object,
-          notify: true,
-          value: function (a,b) {
-            return a*b;
           }
         },
         todayDate: {
