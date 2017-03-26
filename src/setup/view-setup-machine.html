@@ -57,6 +57,7 @@
      
     </style>
     <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
+    <app-indexeddb-mirror key="machineDataCache" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
     <ul class="app-grid">
       <li>
         <div class="stitched">
@@ -75,7 +76,7 @@
               </paper-dialog>
         </div>
       </li>
-      <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
+      <template is="dom-repeat" items="[[persistedMachineData]]" as="machineItem">
         <li>  
           <div class="card machine">
             <div class="machine-info-group">

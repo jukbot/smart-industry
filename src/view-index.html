@@ -3,6 +3,8 @@
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+
 <!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
@@ -33,6 +35,7 @@
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
+<link rel="import" href="../bower_components/paper-multi-select/paper-multi-select.html">
 <!-- neon modules - used for animation -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
@@ -135,48 +138,13 @@
       }
     </style>
     <firebase-app auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
-      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445">
-    </firebase-app>
-    <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusknown}}" on-error="handleError">
-    </firebase-auth>
+      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
+    <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusknown}}" on-error="handleError"></firebase-auth>
     <firebase-document id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <app-drawer-layout fullbleed>
-      <!-- Navbar content -->
-      <app-drawer id="drawer" slot="drawer" swipe-open>
-        <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
-        <div class="main-title" main-title>ASTUTO</div>
-        <div class="main-describe">Smart Industry Helper</div>
-        <!-- sidebar hightlighter -->
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-        <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> DASHBOARD</a>
-        <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> SETUP</a>
-        <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> PLAN</a>
-        <a name="controlling" href="/controlling"><paper-icon-button icon="vaadin:sliders"></paper-icon-button> CONTROL</a>
-        <a name="tracking" href="/tracking"><paper-icon-button icon="vaadin:timer"></paper-icon-button> TRACK</a>
-        </iron-selector>
-        <div class="sidebar-menu-line"></div>
-        <div class="center-box">
-          <paper-button raised class="chilli authen-btn" on-tap="login" hidden$="[[user]]">Sign In</paper-button>
-          <paper-button raised class="chilli authen-btn" on-tap="logout" hidden$="[[!user]]">Sign Out</paper-button>
-        </div>
-        <template is="dom-if" if="[[user]]">
-          <div class="profile">
-          <img style="width: 150px;" src="{{user.photoURL}}" alt="user photo">
-          <p>[[user.displayName]]</p>
-          <p>E-mail: [[user.email]]</p>
-          <p>Verify: [[user.emailVerified]]</p>
-          <p>Anonymous: [[user.isAnonymous]]</p>
-          </div>
-         <div class="profile">
-          <p>[[metadata.appName]]</p>
-          <p>Develop by: [[metadata.appDeveloper]]</p>
-          </div>
-        </template>
-      </app-drawer>
-      <!-- start header layout -->
       <app-header-layout fullbleed has-scrolling-region>
         <app-header slot="header" condenses reveals fixed>
           <app-toolbar>
@@ -212,9 +180,41 @@
           <view-planning name="planning" route="[[subroute]]" offline="[[offline]]"></view-planning>
           <view-tracking name="tracking" route="[[subroute]]" offline="[[offline]]"></view-tracking>
           <view-controlling name="controlling" route="[[subroute]]" offline="[[offline]]"></view-controlling>
-          <view-404 name="404"></view-404>
+          <view-404 name="404" offline="[[offline]]"></view-404>
         </iron-pages>
       </app-header-layout>
+      <!-- Navbar content -->
+      <app-drawer id="drawer" slot="drawer" swipe-open>
+        <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
+        <div class="main-title" main-title>PRONTO</div>
+        <div class="main-describe">Smart Industry Helper</div>
+        <!-- sidebar hightlighter -->
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+        <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> DASHBOARD</a>
+        <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> SETUP</a>
+        <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> PLAN</a>
+        <a name="controlling" href="/controlling"><paper-icon-button icon="vaadin:sliders"></paper-icon-button> CONTROL</a>
+        <a name="tracking" href="/tracking"><paper-icon-button icon="vaadin:timer"></paper-icon-button> TRACK</a>
+        </iron-selector>
+        <div class="sidebar-menu-line"></div>
+        <div class="center-box">
+          <paper-button raised class="chilli authen-btn" on-tap="login" hidden$="[[user]]">Sign In</paper-button>
+          <paper-button raised class="chilli authen-btn" on-tap="logout" hidden$="[[!user]]">Sign Out</paper-button>
+        </div>
+        <template is="dom-if" if="[[user]]">
+          <div class="profile">
+          <img style="width: 150px;" src="{{user.photoURL}}" alt="user photo">
+          <p>[[user.displayName]]</p>
+          <p>E-mail: [[user.email]]</p>
+          <p>Verify: [[user.emailVerified]]</p>
+          <p>Anonymous: [[user.uid]]</p>
+          </div>
+         <div class="profile">
+          <p>[[metadata.appName]]</p>
+          <p>Develop by: [[metadata.appDeveloper]]</p>
+          </div>
+        </template>
+      </app-drawer>
     </app-drawer-layout>
   </template>
   <script>

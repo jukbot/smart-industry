@@ -1,37 +1,38 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="generator" content="Polymer 1.0">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=1">
-    <title>ASTUTO</title>
-    <meta name="description" content="Smart Manufacturing Execution Systems for Production in Industry v1.0">
-    <meta name="author" content="KMUTT">
-    <meta name="robots" content="index, nofollow">
-    <link rel="icon" href="/images/favicon.ico">
-    <!-- See https://goo.gl/OOhYW5 -->
-    <link rel="manifest" href="/manifest.json">
-    <!-- See https://goo.gl/qRE0vM -->
-    <meta name="theme-color" content="#3333333">
-    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Astuto">
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Astuto">
-    <!-- Homescreen icons -->
-    <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
-    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
-    <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
-    <meta name="msapplication-TileColor" content="#3333333">
-    <meta name="msapplication-tap-highlight" content="no">
-    <!-- Load and register pre-caching Service Worker -->
- <script>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="generator" content="Polymer 1.0">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=1">
+  <title>Pronto</title>
+  <meta name="description" content="Smart Manufacturing Execution Systems for Production in Industry v1.0">
+  <meta name="author" content="KMUTT">
+  <meta name="robots" content="index, nofollow">
+  <link rel="icon" href="/images/favicon.ico">
+  <!-- See https://goo.gl/OOhYW5 -->
+  <link rel="manifest" href="/manifest.json">
+  <!-- See https://goo.gl/qRE0vM -->
+  <meta name="theme-color" content="#3333333">
+  <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Pronto">
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pronto">
+  <!-- Homescreen icons -->
+  <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
+  <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#3333333">
+  <meta name="msapplication-tap-highlight" content="no">
+  <!-- Load and register pre-caching Service Worker -->
+  <script>
       // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
@@ -72,178 +73,191 @@
         });
       }
     </script>
-   <style>   
-   html {
-     -ms-text-size-adjust: 100%; 
-     -webkit-text-size-adjust: 100%; 
-   }
+    <link rel="import" href="/src/view-index.html">
+  <style>
+    html {
+      -ms-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
 
-   body {
-     margin: 0px; 
-     padding: 0px;
-     font-family: 'Roboto', 'Noto', sans-serif;
-     color: #333333;
-     line-height: 1.5;
-     min-height: 100vh;
-     background-color: #f1f1f1;
-   }
-.loader,
-.loader__figure {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-}
-.loader {
-  overflow: visible;
-  padding-top: 2em;
-  height: 0;
-  width: 2em;
-}
-.loader__figure {
-  height: 0;
-  width: 0;
-  box-sizing: border-box;
-  border: 0 solid #333333;
-  border-radius: 50%;
-  -webkit-animation: loader-figure 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-  -moz-animation: loader-figure 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-  animation: loader-figure 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-}
-.loader__label {
-  float: left;
-  margin-left: 50%;
-  -webkit-transform: translateX(-50%);
-  -moz-transform: translateX(-50%);
-  -ms-transform: translateX(-50%);
-  -o-transform: translateX(-50%);
-  transform: translateX(-50%);
-  margin: 0.5em 0 0 50%;
-  font-size: 1.2em;
-  font-weight: 300;
-  line-height: 1.5;
-  color: #333333;
-  white-space: nowrap;
-  -webkit-animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-  -moz-animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-  animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-}
-@-webkit-keyframes loader-figure {
-  0% {
-    height: 0;
-    width: 0;
-    background-color: #333333;
-  }
-  29% {
-    background-color: #333333;
-  }
-  30% {
-    height: 2em;
-    width: 2em;
-    background-color: transparent;
-    border-width: 1em;
-    opacity: 1;
-  }
-  100% {
-    height: 2em;
-    width: 2em;
-    border-width: 0;
-    opacity: 0;
-    background-color: transparent;
-  }
-}
-@-moz-keyframes loader-figure {
-  0% {
-    height: 0;
-    width: 0;
-    background-color: #333333;
-  }
-  29% {
-    background-color: #333333;
-  }
-  30% {
-    height: 2em;
-    width: 2em;
-    background-color: transparent;
-    border-width: 1em;
-    opacity: 1;
-  }
-  100% {
-    height: 2em;
-    width: 2em;
-    border-width: 0;
-    opacity: 0;
-    background-color: transparent;
-  }
-}
-@keyframes loader-figure {
-  0% {
-    height: 0;
-    width: 0;
-    background-color: #333333;
-  }
-  29% {
-    background-color: #333333;
-  }
-  30% {
-    height: 2em;
-    width: 2em;
-    background-color: transparent;
-    border-width: 1em;
-    opacity: 1;
-  }
-  100% {
-    height: 2em;
-    width: 2em;
-    border-width: 0;
-    opacity: 0;
-    background-color: transparent;
-  }
-}
-@-webkit-keyframes loader-label {
-  0% {
-    opacity: 0.25;
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.25;
-  }
-}
-@-moz-keyframes loader-label {
-  0% {
-    opacity: 0.25;
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.25;
-  }
-}
-@keyframes loader-label {
-  0% {
-    opacity: 0.25;
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.25;
-  }
-}
- </style>
- 
-<link rel="import" href="src/view-index.html">
+    body {
+      margin: 0px;
+      padding: 0px;
+      font-family: 'Roboto', 'Noto', sans-serif;
+      color: #333333;
+      line-height: 1.5;
+      min-height: 100vh;
+      background-color: #f1f1f1;
+    }
+
+    .loader,
+    .loader__figure {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translate(-50%, -50%);
+      -moz-transform: translate(-50%, -50%);
+      -ms-transform: translate(-50%, -50%);
+      -o-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+
+    .loader {
+      overflow: visible;
+      padding-top: 2em;
+      height: 0;
+      width: 2em;
+    }
+
+    .loader__figure {
+      height: 0;
+      width: 0;
+      box-sizing: border-box;
+      border: 0 solid #333333;
+      border-radius: 50%;
+      -webkit-animation: loader-figure 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+      -moz-animation: loader-figure 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+      animation: loader-figure 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    .loader__label {
+      float: left;
+      margin-left: 50%;
+      -webkit-transform: translateX(-50%);
+      -moz-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+      -o-transform: translateX(-50%);
+      transform: translateX(-50%);
+      margin: 0.5em 0 0 50%;
+      font-size: 1.2em;
+      font-weight: 300;
+      line-height: 1.5;
+      color: #333333;
+      white-space: nowrap;
+      -webkit-animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+      -moz-animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+      animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    }
+
+    @-webkit-keyframes loader-figure {
+      0% {
+        height: 0;
+        width: 0;
+        background-color: #333333;
+      }
+      29% {
+        background-color: #333333;
+      }
+      30% {
+        height: 2em;
+        width: 2em;
+        background-color: transparent;
+        border-width: 1em;
+        opacity: 1;
+      }
+      100% {
+        height: 2em;
+        width: 2em;
+        border-width: 0;
+        opacity: 0;
+        background-color: transparent;
+      }
+    }
+
+    @-moz-keyframes loader-figure {
+      0% {
+        height: 0;
+        width: 0;
+        background-color: #333333;
+      }
+      29% {
+        background-color: #333333;
+      }
+      30% {
+        height: 2em;
+        width: 2em;
+        background-color: transparent;
+        border-width: 1em;
+        opacity: 1;
+      }
+      100% {
+        height: 2em;
+        width: 2em;
+        border-width: 0;
+        opacity: 0;
+        background-color: transparent;
+      }
+    }
+
+    @keyframes loader-figure {
+      0% {
+        height: 0;
+        width: 0;
+        background-color: #333333;
+      }
+      29% {
+        background-color: #333333;
+      }
+      30% {
+        height: 2em;
+        width: 2em;
+        background-color: transparent;
+        border-width: 1em;
+        opacity: 1;
+      }
+      100% {
+        height: 2em;
+        width: 2em;
+        border-width: 0;
+        opacity: 0;
+        background-color: transparent;
+      }
+    }
+
+    @-webkit-keyframes loader-label {
+      0% {
+        opacity: 0.25;
+      }
+      30% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.25;
+      }
+    }
+
+    @-moz-keyframes loader-label {
+      0% {
+        opacity: 0.25;
+      }
+      30% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.25;
+      }
+    }
+
+    @keyframes loader-label {
+      0% {
+        opacity: 0.25;
+      }
+      30% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.25;
+      }
+    }
+  </style>
 </head>
 <body>
-<view-index>
-<div class="loader"><div class="loader__figure"></div><p class="loader__label">Building your application</p></div>
-</view-index>
+  <view-index>
+    <div class="loader">
+      <div class="loader__figure"></div>
+      <p class="loader__label">Building your application</p>
+    </div>
+  </view-index>
 </body>
+
 </html>

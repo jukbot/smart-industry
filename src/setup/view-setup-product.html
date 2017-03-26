@@ -7,10 +7,15 @@
        :host {
         display: block;
         --app-grid-columns: 3;
-        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
         --app-grid-item-height: 50%;
       }
-      
+       .flex-horizontal {
+        @apply(--layout-horizontal);
+       }
+       .flexchild {
+        @apply(--layout-flex);
+       }
+
       ul {
         padding: 0;
         list-style: none;
@@ -52,11 +57,15 @@
      .product-info-group {
        margin-bottom: auto;
      }
+     .product-size {
+       margin-right: 10px;
+     }
      .button-group paper-button {
        width: 49%;
      }
     </style>
     <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
+    <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
     <ul class="app-grid">
       <li>
         <div class="stitched">
@@ -68,18 +77,17 @@
             <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
             <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required always-float-label></paper-input>
             <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
-          
+            <input type="file" value="upload" on-change="upld" id="fileUpload"/>
             <template is="dom-repeat" items="{{foodArray}}" as="food">
-                <div class="horizontal layout flex" >
-								<paper-input label="Size name" value="[[food.name]]" required always-float-label></paper-input>
-								<paper-input label="Cycle time" value="{{food.unit}}" required always-float-label></paper-input>
-                <paper-input label="Cost" value="{{food.cost}}" required always-float-label></paper-input>
-								<paper-button on-click="saveFood">Save</paper-button>
-								<paper-button on-click="deleteFood">Delete</paper-button>	
+                <div class="container flex-horizontal">
+								<paper-input class="product-size flex-child" label="Size name" value="[[food.name]]" required always-float-label></paper-input>
+								<paper-input class="product-size" label="Cycle time" value="{{food.unit}}" required always-float-label></paper-input>
+                <paper-input class="product-size" label="Cost" value="{{food.cost}}" required always-float-label></paper-input>	
+								<iron-icon on-click="deleteSize" icon="vaadin:close"></iron-icon>	
                 </div>
 			    	</template>
 	  
-					<paper-button on-click="addFood">Add</paper-button>
+					<paper-button on-click="addFood">Add Size</paper-button>
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="addProduct" dialog-confirm autofocus>Create</paper-button>
@@ -87,7 +95,7 @@
               </paper-dialog>
         </div>
       </li>
-      <template is="dom-repeat" items="{{productItems}}" as="productItem">
+      <template is="dom-repeat" items="{{persistedProductData}}" as="productItem">
         <li>  
           <div class="card product">
             <div class="product-info-group">
@@ -177,7 +185,7 @@
       toggleDialog: function () {
         this.$.createProductDialog.open();
       },
-      addProduct: function () {
+      addProduct: function (a) {
           let today = new Date();
           let dd = today.getDate();
           let mm = today.getMonth() + 1; //January is 0!
@@ -189,6 +197,12 @@
           mm = '0' + mm
         }
         today = dd + '/' + mm + '/' + yyyy;
+
+       var file = a.target.files[0];
+      //create a storage reference
+      var storageRef = firebase.storage().ref('images/' + file.name);
+     //store the image
+     var task = storageRef.put(file);
 
         this.$.productQuery.ref.push({
           add: Math.round(new Date().getTime()/1000.0),
@@ -203,10 +217,11 @@
         this.$.productRaw.value = null;
         this.$.productProcess.value = null;
       },
-       addFood:function(){
+ 
+  addFood:function(){
     this.push('foodArray',{name:"",unit:""});
  },
-  deleteFood:function(e){
+  deleteSize:function(e){
     this.splice('foodArray',e.model.index,1);
  },
   saveFood:function(e) {
