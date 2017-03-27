@@ -9,11 +9,13 @@ addons:
     packages:
       - google-chrome-stable
 node_js:
-  - 'node'
   - '7'
   - '6'
 before_script:
-  - npm install -g bower polymer-cli web-component-tester firebase-tool
+  - npm install -g bower 
+  - npm install -g polymer-cli 
+  - npm install -g web-component-tester 
+  - npm install -g firebase-tool
   - npm install
   - bower install
   - polymer build --add-service-worker
