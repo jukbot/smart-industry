@@ -1,0 +1,335 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- app modules - used for core functions -->
+<link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+
+<!-- iron modules -used for component functions -->
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<!-- paper modules - used for user interface -->
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu/paper-menu.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
+<link rel="import" href="../bower_components/paper-tags/paper-tags.html">
+<link rel="import" href="../bower_components/paper-tags/paper-tags-input.html">
+<link rel="import" href="../bower_components/paper-tags/paper-tags-dropdown.html">
+<!-- neon modules - used for animation -->
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<!-- 3rd party modules -->
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-database-behavior.html">
+<link rel="import" href="../bower_components/google-chart/google-chart.html">
+<link rel="import" href="../bower_components/material-progress/material-progress.html">
+<link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
+<!-- shared style -->
+<link rel="import" href="shared-styles.html">
+<dom-module id="view-index">
+  <template>
+    <style include="shared-styles">  
+      :host {
+        display: block;
+        --paper-menu-button-dropdown: {
+          margin-top: 50px;
+        } 
+      }
+ 
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      .menu-item {
+        min-width: 120px;
+      }
+            
+      .main-title {
+        font-size: 2.75rem;
+        font-weight: 400;
+        line-height: normal;
+        text-align: center;
+      }
+
+      .main-describe {
+        font-size: 1.25rem;
+        text-align: center;
+        color: #7b7b7b;
+        margin-bottom: 20px;
+        font-weight: 300;
+      }
+
+      .page-title {
+        text-transform: uppercase
+      }
+
+      .drawer-list a {
+        display: block;
+        padding: 10px 30px;
+      }
+
+      .drawer-list a:hover {
+         background-color: #eeeeee;
+      }
+
+      .drawer-list a.iron-selected {
+        color: #ffffff;
+        font-weight: 400;
+        background-color: #333333;
+      }
+      
+      .main-header {
+        box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
+      }
+      
+      .logo {
+        margin: 0 auto;
+        padding: 15px 0;
+        width: 50%;
+        height: auto;
+        display: block;
+      }
+      
+      .account-btn {
+        margin: 0;
+        padding: 4px;
+      }
+      
+      .display-name {
+        margin: 0;
+        font-size: 1rem;
+      }
+      
+      .center-box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 5em;
+      }
+      
+      .authen-btn {
+        text-align: center;
+        width: 60%;
+      }
+
+      .profile {
+        text-align: center;
+      }
+            
+      .sidebar-menu-line {
+        border-bottom: 1px solid #d6d6d6;
+      }
+    </style>
+    <firebase-app app-name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
+      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" provider="google" status-known="{{statusknown}}" on-error="handleError"></firebase-auth>
+    <firebase-document id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
+    <!-- app-location binds to the app's URL -->
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+    <app-drawer-layout fullbleed>
+            <app-drawer id="drawer" slot="drawer" swipe-open>
+        <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
+        <div class="main-title" main-title>PRONTO</div>
+        <div class="main-describe">Smart Industry Helper</div>
+        <!-- sidebar hightlighter -->
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+        <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> DASHBOARD</a>
+        <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> SETUP</a>
+        <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> PLAN</a>
+        <a name="controlling" href="/controlling"><paper-icon-button icon="vaadin:sliders"></paper-icon-button> CONTROL</a>
+        <a name="tracking" href="/tracking"><paper-icon-button icon="vaadin:timer"></paper-icon-button> TRACK</a>
+        </iron-selector>
+        <div class="sidebar-menu-line"></div>
+        <div class="center-box">
+          <paper-button raised class="chilli authen-btn" on-tap="login" hidden$="[[user]]">Sign In</paper-button>
+          <paper-button raised class="chilli authen-btn" on-tap="logout" hidden$="[[!user]]">Sign Out</paper-button>
+        </div>
+        <template is="dom-if" if="[[user]]">
+          <div class="profile">
+          <img style="width: 150px;" src="{{user.photoURL}}" alt="user photo">
+          <p>[[user.displayName]]</p>
+          <p>E-mail: [[user.email]]</p>
+          <p>Verify: [[user.emailVerified]]</p>
+          </div>
+         <div class="profile">
+          <p>[[metadata.appName]]</p>
+          <p>Develop by: [[metadata.appDeveloper]]</p>
+          </div>
+        </template>
+      </app-drawer>
+
+      <app-header-layout fullbleed has-scrolling-region>
+        <app-header slot="header" condenses reveals fixed>
+          <app-toolbar>
+            <paper-icon-button icon="vaadin:menu" drawer-toggle></paper-icon-button>
+            <div class="page-title" main-title>[[page]]</div>
+            <paper-menu-button vertical-align="top" horizontal-align="right">
+              <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
+              <paper-menu class="dropdown-content">
+                  <a href="https://github.com/jukbot/smart-industry" target="_blank" tabindex="-1">
+                  <paper-icon-item class="menu-item" name="help">
+                    <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
+                    Help
+                  </paper-icon-item>
+                  </a>
+                  <paper-icon-item class="menu-item" name="settings">
+                    <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
+                    Settings
+                  </paper-icon-item>
+                  <paper-icon-item class="menu-item" name="logout" on-tap="logout" hidden$="[[!user]]">
+                    <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
+                    Log Out
+                  </paper-icon-item>
+              </paper-menu>
+            </paper-menu-button>
+            <template is="dom-if" if="[[user]]" hidden$="[[!user]]">
+              <p class="display-name">[[user.displayName]]</p>
+            </template>
+          </app-toolbar>
+        </app-header>
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+          <view-dashboard name="dashboard" route="[[subroute]]" offline="[[offline]]"></view-dashboard>
+          <view-setup name="setup" route="[[subroute]]" offline="[[offline]]"></view-setup>
+          <view-planning name="planning" route="[[subroute]]" offline="[[offline]]"></view-planning>
+          <view-tracking name="tracking" route="[[subroute]]" offline="[[offline]]"></view-tracking>
+          <view-controlling name="controlling" route="[[subroute]]" offline="[[offline]]"></view-controlling>
+          <view-404 name="404" offline="[[offline]]"></view-404>
+        </iron-pages>
+      </app-header-layout>
+    </app-drawer-layout>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-index',
+      ready: function() {
+        this.async(function() {
+          // If the path is blank, redirect to /
+          if (!this.route.path) {
+            this.set('route.path', '/dashboard');
+          }
+        });
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)',
+      ],
+
+      _routePageChanged: function (page) {
+        if (page === undefined) {
+          return;
+        }    
+        this.page = page || 'dashboard';
+        // Scroll to the top of the page on every *route* change. Use `Polymer.AppLayout.scroll`
+        // with `behavior: 'silent'` to disable header scroll effects during the scroll.
+        Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
+        // Close the drawer - in case the *route* change came from a link in the drawer.
+        this.drawerOpened = false;
+
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      },
+
+      _pageChanged: function (page) { 
+       let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+       this.importHref(
+       resolvedPageUrl, 
+       null, 
+       this._showPage404.bind(this), 
+       true);
+      },
+
+      _showPage404: function () {
+        this.page = '404';
+      },
+
+      _onLayoutChange: function (wide) {
+        const drawer = this.$.drawer;
+        if (wide && drawer.opened) {
+          drawer.opened = false;
+        }
+      },
+
+      // Signin Action
+      login: function () {
+        this.$.auth.signInWithPopup()
+        .then(response => {
+          // console.info(JSON.stringify(response) + "Login successful");
+          //redirect
+        })
+        .catch(error => {
+          // Handle Errors here.
+          let errorCode = error.code;
+          let errorMessage = error.message;
+          alert("Authenticate Failed: " + errorMessage);
+          console.log("Authenticate Failed: " + errorCode);
+        });
+      },
+      // Signout Action
+      logout: function () {
+        this.$.auth.signOut()
+        .then(function () {
+          alert("Signout successfully");
+          console.info("Logout successful");
+        })
+        .catch(error => {
+          let errorCode = error.code;
+          let errorMessage = error.message;
+          alert("Authenticate Failed: " + errorMessage);
+          console.log("Authenticate Failed: " + errorCode);
+        });
+      },
+      // Handle Error
+      handleError: function(e) {
+        console.info("Authenticate error:" + e.message);
+      },
+      properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged',
+        },
+        user: {
+          type: Object
+        },
+        statusknown: {
+          type: Object
+        },
+        metadata: {
+          type: Object
+        },
+        wideLayout: {
+          type: Boolean,
+          value: false,
+          observer: '_onLayoutChange',
+       },
+      },
+     });
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.4/go-debug.js"></script>
+  <script src="../bower_components/sugar/dist/sugar.min.js"></script>
+</dom-module>

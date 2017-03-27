@@ -1,0 +1,89 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="view-index.html">
+<link rel="import" href="shared-styles.html">
+<dom-module id="view-setup">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+      }
+    </style>
+      <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
+        <app-header fixed shadow>
+          <app-toolbar sticky>
+            <!-- Nav on desktop: tabs -->
+            <paper-tabs selected="{{tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+              <template is="dom-repeat" items="{{submenus}}">
+                <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
+              </template>
+            </paper-tabs>
+          </app-toolbar>
+        </app-header>
+          <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
+          <view-setup-customer name="customer"></view-setup-customer>
+          <view-setup-factory name="factory"></view-setup-factory>
+          <view-setup-inventory name="inventory"></view-setup-inventory>
+          <view-setup-machine name="machine"></view-setup-machine>
+          <view-setup-product name="product"></view-setup-product>
+          <view-setup-worker name="worker"></view-setup-worker>
+         </iron-pages> 
+        </app-header-layout>  
+  </template>
+  <script>
+    Polymer({
+      is: 'view-setup',
+      properties: {
+        tabs: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_tabsChanged',
+        },
+         selected: {
+            value: 'customer'
+        },
+       submenus: {
+          type: Array,
+          value: function () {
+            return [{
+                'title': 'CUSTOMER',
+                'view': 'customer',
+                'icon': 'vaadin:user-card'
+              },
+              {
+                'title': 'FACTORY',
+                'view': 'factory',
+                'icon': 'vaadin:factory'
+              },
+              {
+                'title': 'INVENTORY',
+                'view': 'inventory',
+                'icon': 'vaadin:storage'
+              },
+              {
+                'title': 'MACHINE',
+                'view': 'machine',
+                'icon': 'vaadin:automation'
+              },
+              {
+                'title': 'PRODUCT',
+                'view': 'product',
+                'icon': 'vaadin:barcode'
+              },
+              {
+                'title': 'WORKER',
+                'view': 'worker',
+                'icon': 'vaadin:clipboard-user'
+              }
+            ];
+          }
+        }
+      },
+
+       _tabsChanged: function (tabs) { 
+       let resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
+       this.importHref(resolvedTabsUrl, null, null, true);
+      }, 
+    });
+  </script>
+</dom-module>
+

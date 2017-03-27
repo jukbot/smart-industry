@@ -1,0 +1,72 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="view-index.html">
+<link rel="import" href="shared-styles.html">
+<dom-module id="view-dashboard">
+    <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+      }
+    </style>
+      <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
+        <app-header fixed shadow>
+          <!-- Sub nav -->
+          <app-toolbar sticky class="tabs-bar">
+            <!-- Nav on desktop: tabs -->
+            <paper-tabs selected="{{tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+              <template is="dom-repeat" items="{{submenus}}">
+                <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
+              </template>
+            </paper-tabs>
+          </app-toolbar>
+        </app-header>
+          <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
+          <view-dashboard-overview name="overview"></view-dashboard-overview>
+          <view-dashboard-notification name="notification"></view-dashboard-notification>
+          <view-dashboard-report name="report"></view-dashboard-report>
+         </iron-pages> 
+        </app-header-layout>  
+  </template>
+  <script>
+    Polymer({
+      is: 'view-dashboard',
+      properties: {
+        tabs: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_tabsChanged',
+        },
+        selected: {
+            value: 'overview'
+        },
+        submenus: {
+          type: Array,
+          value: function () {
+            return [{
+                'title': 'OVERVIEW',
+                'view': 'overview',
+                'icon': 'vaadin:grid-small'
+              },
+              {
+                'title': 'NOTIFICATION',
+                'view': 'notification',
+                'icon': 'vaadin:bell-o'
+              },
+              {
+                'title': 'REPORT',
+                'view': 'report',
+                'icon': 'vaadin:chart'
+              }
+            ];
+          }
+        }
+      },
+
+      _tabsChanged: function (tabs) {
+        let resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html');
+        this.importHref(resolvedTabsUrl, null, null, true); 
+      }
+
+    });
+  </script>
+</dom-module>
