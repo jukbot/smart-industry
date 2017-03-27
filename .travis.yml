@@ -10,10 +10,10 @@ addons:
       - google-chrome-stable
 node_js:
   - '6'
-  - '5'
-  - '4'
+  - '7'
 before_script:
   - npm install -g bower polymer-cli
   - bower install
+  - npm build --add-service-worker
 script:
   - xvfb-run npm test
