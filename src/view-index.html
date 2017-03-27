@@ -1,6 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <!-- app modules - used for core functions -->
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
@@ -41,7 +43,7 @@
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-database-behavior.html">
-
+<link rel="import" href="../bower_components/google-chart/google-chart.html">
 <link rel="import" href="../bower_components/material-progress/material-progress.html">
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
 <!-- shared style -->
@@ -54,10 +56,6 @@
         --paper-menu-button-dropdown: {
           margin-top: 50px;
         } 
-      }
- 
-      app-drawer-layout:not([narrow]) [drawer-toggle] {
-        display: none;
       }
 
       .menu-item {
@@ -81,6 +79,10 @@
 
       .page-title {
         text-transform: uppercase;
+      }
+
+      paper-icon-button+[main-title] {
+        margin: 25px;
       }
 
       .drawer-list a {
@@ -149,6 +151,7 @@
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <app-drawer-layout fullbleed>
        <app-drawer id="drawer" slot="drawer" swipe-open>
+        <div style="height: 100%; overflow: auto;">
         <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
         <div class="main-title" main-title>PRONTO</div>
         <div class="main-describe">Smart Industry Helper</div>
@@ -177,12 +180,13 @@
           <p>Develop by: [[metadata.appDeveloper]]</p>
           </div>
         </template>
+        </div>
       </app-drawer>
 
       <app-header-layout fullbleed has-scrolling-region>
         <app-header slot="header" condenses fixed>
           <app-toolbar>
-            <paper-icon-button vertical-align="top" horizontal-align="left" icon="vaadin:menu" alt="menu" drawer-toggle></paper-icon-button>
+            <paper-icon-button icon="vaadin:menu" alt="menu" drawer-toggle></paper-icon-button>
             <div class="page-title" main-title>[[page]]</div>
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
@@ -323,7 +327,6 @@
       },
      });
   </script>
-  <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.4/go-debug.js"></script>
   <script src="../bower_components/sugar/dist/sugar.min.js"></script>
 </dom-module>

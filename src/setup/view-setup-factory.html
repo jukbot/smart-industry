@@ -6,19 +6,29 @@
     <style include="shared-styles">
        :host {
         display: block;
-        --app-grid-columns: 2;
-        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
         --app-grid-item-height: 50%;
       }
 
-      ul {
-        padding: 0;
-        list-style: none;
-      }
-
-      @media (max-width: 640px) {
+       @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+       @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 2;
         }
       }
 
@@ -26,16 +36,10 @@
         margin: 12px 0;
       }
 
-      #visualResponsiveWidth {
-        width: 500px;
-        max-width: 100%;
-        height: 4px;
-        background: var(--primary-color);
-      }
+      .button-group paper-button {
+       width: 49%;
+     }
 
-      #responsiveStepper {
-        --paper-stepper-vertical-responsive-width: 500px;
-      }
     </style>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
@@ -50,11 +54,11 @@
                 type="text" required always-float-label auto-validate></paper-input>
               <vaadin-combo-box label="Factory Type" name="factory-type" id="factoryType" value="[[factoryOperation.type]]" items="[[factoryType]]" item-label-path="name" item-value-path="name" selected-item='{{test}}' required always-float-label></vaadin-combo-box>
               <paper-input label="Acceptable Waste (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]"
-                type="number" min="0" max="1" step="0.01" required always-float-label auto-validate></paper-input>
+                type="number" min="0" max="1" step="0.01"  required always-float-label auto-validate></paper-input>
               <paper-input label="Worker Utilization (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
-                type="number" min="0" max="100" step="5" required always-float-label auto-validate></paper-input>
+                type="number" min="0" max="100" step="5"  required always-float-label auto-validate></paper-input>
               <paper-input label="Operation start" name="opstart" id="opStart" value="[[factoryOperation.op_start]]"
-                required always-float-label auto-validate></paper-input>
+               required always-float-label auto-validate></paper-input>
               <paper-time-input label="Operation Start" name="opstart" id="opStart" value="{{opStart}}" required always-float-label auto-validate></paper-time-input>
               <paper-input label="Operation end" name="opend" id="opEnd" value="[[factoryOperation.op_end]]"
                 required always-float-label auto-validate></paper-input>
@@ -63,9 +67,9 @@
               <paper-input label="Over Time end" name="otend" id="otEnd" value="[[factoryOperation.ot_end]]"
                 required always-float-label auto-validate></paper-input>
               <paper-input label="Reschedule Interval (days)" name="workerUtilize" id="scheduleInterval" value="[[factoryStandard.interval]]"
-                type="number" min="1" max="30" step="1" required always-float-label auto-validate></paper-input>
+                type="number" min="1" max="30" step="1"  required always-float-label auto-validate></paper-input>
               <div>
-               
+               [[test]]
                 <paper-checkbox id="sunday" value="sun">Sun</paper-checkbox>
                 <paper-checkbox checked>Mon</paper-checkbox>
                 <paper-checkbox checked>Tue</paper-checkbox>
@@ -76,7 +80,7 @@
               </div><br>
               <div class="button-group">
                 <paper-button raised class="fancy" on-tap="saveValue">Save</paper-button>
-                <paper-button raised class="water" on-tap="resetValue">Restore</paper-button>
+                <paper-button raised class="burn" on-tap="resetValue">Restore</paper-button>
               </div>
             </div>
           </form>
@@ -109,15 +113,22 @@
         let ft = this.$.factoryType.value;
         let aw = this.$.acceptWaste.value;
         let wu = this.$.workerUtilize.value;
-        let interval = this.$.scheduleInterval.value;
+        let inte = this.$.scheduleInterval.value;
         this.set('factoryOperation.name', fc);
         this.set('factoryPerformance.aw', aw);
         this.set('factoryPerformance.wu', wu);
-        this.set('factoryStandard.interval', interval);
+        this.set('factoryStandard.interval', inte);
         this.set('factoryOperation.type', ft);
         //this.$.factoryStandrad.save('/factory/standard');
         console.log(this.$.sunday.checked);
         console.log("Weekly: " + this.$.opWeek.innerText);
+      },
+      resetValue: function () {
+        this.$.factoryName.value = "Example factory";
+        this.$.factoryType.value = "Flow Shop";
+        this.$.acceptWaste.value = "0.02";
+        this.$.workerUtilize.value = 85;
+        this.$.scheduleInterval.value = 7;
       },
       properties: {
         factoryStandard: {
@@ -134,13 +145,11 @@
           value: function () {
             return [{
                 name: 'Job Shop',
-                symbol: 'JS',
-                code: 1
+                value: 'JS',
               },
               {
                 name: 'Flow Shop',
-                symbol: 'FS',
-                code: 2
+                value: 'FS',
               }
             ]
           }

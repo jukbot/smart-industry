@@ -7,9 +7,30 @@
     <style include="shared-styles">
       :host {
         display: block;
-        --app-grid-columns: 3;
-        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
         --app-grid-item-height: 50%;
+      }
+      
+       @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+       @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 4;
+        }
       }
       .status {
         text-align: center;

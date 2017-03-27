@@ -6,19 +6,7 @@
     <style include="shared-styles">
        :host {
         display: block;
-        --app-grid-columns: 3;
         --app-grid-item-height: 50%;
-      }
-       .flex-horizontal {
-        @apply(--layout-horizontal);
-       }
-       .flexchild {
-        @apply(--layout-flex);
-       }
-
-      ul {
-        padding: 0;
-        list-style: none;
       }
       
        @media (min-width: 360px) and (max-width: 768px) {
@@ -43,6 +31,13 @@
           --app-grid-columns: 4;
         }
       }
+       .flex-horizontal {
+        @apply(--layout-horizontal);
+       }
+
+       .flexchild {
+        @apply(--layout-flex);
+       }
 
       .product-dialog {
         width: 60%;

@@ -141,8 +141,8 @@ paper-fab.error, paper-fab.btn-error, paper-fab[error] { background-color: #ff6e
 paper-fab[disabled] { color: #313238 !important; background: #afb1b9 !important; }
 
 paper-toolbar a, paper-toolbar a:hover, paper-toolbar a:active, paper-toolbar a:visited, paper-toolbar a:focus { color: #ffffff; }
-paper-tabs { background-color: #333333; color: #ffffff; height: 100%; text-transform: uppercase; font-weight: 300; }
-paper-menu { display: inline-block; }
+paper-tabs { background-color: #333333; color: #ffffff; height: 100%; text-transform: uppercase; font-weight: 500; }
+paper-menu { display: inline-block; background-color: #ffffff; }
 paper-menu-button { margin: auto; }
 paper-dropdown-menu { width: 200px; margin-right: 20px; }
 
@@ -152,6 +152,25 @@ app-drawer { --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
             --app-drawer-content-container: { box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);  }
 }
 
+     @media (min-width: 360px) and (max-width: 768px) {
+         .tab-title, .display-name {
+           display: none;
+         }
+         .page-title {
+           font-size: 1rem;
+         }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+     
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+  
+      }
+       @media (min-width: 1201px) and (max-width: 2560px) {
+        
+      }
         .stitched {
         height: auto;
         min-height: 350px;

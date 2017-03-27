@@ -15,14 +15,14 @@
             <!-- Nav on desktop: tabs -->
             <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
+                <paper-tab id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
           <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
-          <view-plan-order name="order"></view-plan-order>
           <view-plan-scheduling name="scheduling"></view-plan-scheduling>
+          <view-plan-order name="order"></view-plan-order>
           <view-plan-production name="production"></view-plan-production>
          </iron-pages> 
         </app-header-layout>  
@@ -35,22 +35,20 @@
           type: String,
           reflectToAttribute: true,
           observer: '_tabsChanged',
-        },
-        selected: {
-            value: 'order'
+          value: 'scheduling'
         },
         submenus: {
           type: Array,
           value: function () {
             return [{
-                'title': 'ORDER',
-                'view': 'order',
-                'icon': 'vaadin:calendar-briefcase'
-              },
-              {
                 'title': 'SCHEDULING',
                 'view': 'scheduling',
                 'icon': 'vaadin:date-input'
+              },
+              {
+                'title': 'ORDER',
+                'view': 'order',
+                'icon': 'vaadin:calendar-briefcase'
               },
               {
                 'title': 'PRODUCTION',

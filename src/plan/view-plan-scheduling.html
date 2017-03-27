@@ -4,16 +4,31 @@
 <dom-module id="view-plan-scheduling">
  <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
-        --app-grid-columns: 2;
-        /* 50% the width of the item is equivalent to 2:1 aspect ratio*/
         --app-grid-item-height: 50%;
       }
       
-      @media (max-width: 640px) {
+       @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+       @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 2;
         }
       }
 
@@ -185,92 +200,7 @@
   <script>
     Polymer({
       is: 'view-plan-scheduling',
-      attached: function() {
-
-    google.charts.load('current', {'packages':['gantt']});
-    google.charts.setOnLoadCallback(drawChart);
-
-    function toMilliseconds(minutes) {
-      return minutes * 60 * 1000;
-    }
-
-    function drawChart() {
-
-      var otherData = new google.visualization.DataTable();
-      otherData.addColumn('string', 'Task ID');
-      otherData.addColumn('string', 'Task Name');
-      otherData.addColumn('string', 'Resource');
-      otherData.addColumn('date', 'Start');
-      otherData.addColumn('date', 'End');
-      otherData.addColumn('number', 'Duration');
-      otherData.addColumn('number', 'Percent Complete');
-      otherData.addColumn('string', 'Dependencies');
-
-      otherData.addRows([
-        ['toTrain', 'Walk to train stop', 'walk', null, null, toMilliseconds(5), 100, null],
-        ['music', 'Listen to music', 'music', null, null, toMilliseconds(70), 100, null],
-        ['wait', 'Wait for train', 'wait', null, null, toMilliseconds(10), 100, 'toTrain'],
-        ['train', 'Train ride', 'train', null, null, toMilliseconds(45), 75, 'wait'],
-        ['toWork', 'Walk to work', 'walk', null, null, toMilliseconds(10), 0, 'train'],
-        ['work', 'Sit down at desk', null, null, null, toMilliseconds(2), 0, 'toWork'],
-      ]);
-
-      var options = {
-        height: 275,
-        gantt: {
-          defaultStartDateMillis: new Date(2015, 3, 28)
-        }
-      };
-
-      var chart = new google.visualization.Gantt(document.querySelector('#chart_div'));
-
-      chart.draw(otherData, options);
-    }
-/*
-      google.charts.load('current', {'packages':['gantt']});
-      google.charts.setOnLoadCallback(drawChart);
-      function toMilliseconds(minutes) {
-        return minutes * 60 * 1000;
-      }
-
-      function drawChart() {
-
-      var otherData = new google.visualization.DataTable();
-      otherData.addColumn('string', 'Order ID');
-      otherData.addColumn('string', 'Task Name');
-      otherData.addColumn('string', 'Resource');
-      otherData.addColumn('date', 'Start');
-      otherData.addColumn('date', 'End');
-      otherData.addColumn('number', 'Duration');
-      otherData.addColumn('number', 'Percent Complete');
-      otherData.addColumn('string', 'Dependencies');
-
-      otherData.addRows([
-        ['toTrain', 'Milling', 'finished', new Date(2017, 3, 26), null, toMilliseconds(5), 100, null],
-        ['music', 'Trimming', 'in progress', null, null, toMilliseconds(70), 90, 'toTrain'],
-        ['wait', 'Drilling', 'waiting', null, null, toMilliseconds(10), 30, 'music'],
-        ['train', 'Welding', 'in progress', null, null, toMilliseconds(45), 75, 'wait'],
-        ['toWork', 'Polishing', 'in progress', null, null, toMilliseconds(10), 0, 'train'],
-        ['work', 'Packing', 'waiting', null, null, toMilliseconds(2), 0, 'toWork'],
-      ]);
-
-      var options = {
-        height: 275,
-        gantt: {
-          defaultStartDateMillis: new Date(2017, 3, 26)
-        }
-      };
-
-      var chart = new google.visualization.Gantt(document.querySelector('#chart_div'));
-      chart.draw(otherData, options);
-    }
-
-      var media = window.matchMedia('(min-width: 1024px)');
-      media.addListener(function() {
-      document.querySelector('#resizing-chart').redraw();
-    });
-*/
-  },
+  
       ready: function() {
          Sugar.Date.setLocale('en-GB');
          let workdatepicker = this.$$('#workdateSelector');
@@ -301,7 +231,9 @@
           }
         };
     },
+    attached: function() {
 
+  },
     getDeliveryDate: function (timestamp) {
           let today = new Date(timestamp*1000);
           let dd = today.getDate();

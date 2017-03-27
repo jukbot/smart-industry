@@ -7,6 +7,7 @@
        :host {
         display: block;
       }
+
     </style>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
@@ -14,7 +15,7 @@
             <!-- Nav on desktop: tabs -->
             <paper-tabs selected="{{tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button> {{item.title}}</paper-tab>
+                <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
@@ -37,9 +38,7 @@
           type: String,
           reflectToAttribute: true,
           observer: '_tabsChanged',
-        },
-         selected: {
-            value: 'customer'
+          value: 'customer'
         },
        submenus: {
           type: Array,
