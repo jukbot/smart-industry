@@ -144,10 +144,10 @@
         border-bottom: 1px solid #d6d6d6;
       }
     </style>
-    <firebase-app auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
+    <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" status-known="{{statusknown}}" on-error="handleError"></firebase-auth>
-    <firebase-document id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
+    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" status-known="{{statusknown}}" on-error="handleError"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
@@ -187,7 +187,8 @@
         <app-header slot="header" condenses reveals fixed>
           <app-toolbar>
             
-            <div class="page-title" main-title>[[page]]</div><paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+            <div class="page-title" main-title>[[page]]</div>
+            <paper-icon-button icon="menu" drawer-toggle>X</paper-icon-button>
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-menu class="dropdown-content">
@@ -238,12 +239,12 @@
         statusKnown: {
           type: Object
         },
+        metadata: {
+          type: Object
+        },
         signedIn: {
           type: Boolean,
           observer: '_signedInChanged',
-        },
-        metadata: {
-          type: Object
         },
         wideLayout: {
           type: Boolean,
@@ -304,7 +305,6 @@
           //redirect
         })
         .catch(error => {
-          // Handle Errors here.
           let errorCode = error.code;
           let errorMessage = error.message;
           alert("Authenticate Failed: " + errorMessage);

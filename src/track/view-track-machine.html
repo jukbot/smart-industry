@@ -57,8 +57,7 @@
      }
      
     </style>
-    <firebase-auth user="{{user}}"></firebase-auth>
-    <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
     <ul class="app-grid">
       <template is="dom-repeat" items="{{machineItems}}" as="machineItem">
         <li>  

@@ -56,7 +56,7 @@
      }
      
     </style>
-    <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
     <app-indexeddb-mirror key="machineDataCache" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
     <ul class="app-grid">
       <li>
@@ -67,8 +67,7 @@
             <h1>Add Machine</h1>
             <paper-input name="machine-name" id="machineName" label="Machine Name" required always-float-label></paper-input>
             <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number"  min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>&#37;</div></paper-input>
-            <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" id="product-select" name="machineType" item-label-path="name"
-              item-value-path="value" required always-float-label></vaadin-combo-box>
+            <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" name="machineType" item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box>
               <div class="buttons">
                 <paper-button on-tap="dismissAddMachine" dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="addMachine" dialog-confirm autofocus>Create</paper-button>
@@ -90,14 +89,14 @@
             <paper-button raised class="magic" id="[[machineItem.$key]]" on-tap="editMachine">EDIT</paper-button>
             <paper-button raised class="chilli" id="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
             </div>
-            <paper-dialog id="edit_[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
+            <paper-dialog id="edit_[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" no-cancel-on-outside-click role="dialog">
             <h2>Edit machine</h2>
             <paper-input id="name_[[machineItem.$key]]" name="machine-name" class="editmachineName" value="[[machineItem.name]]" label="Machine Name" always-float-label></paper-input>
             <paper-input id="effi_[[machineItem.$key]]" name="machine-effi" class="editmachineEffi" value="[[machineItem.effi]]" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
             <div suffix>%</div> 
             </paper-input>
-            <vaadin-combo-box id="type_[[machineItem.$key]]" label="Type" class="editmachineType" selected-item="[[machineItem.type]]"  value="[[machineItem.code]]_[[machineItem.type]]" items="[[machineType]]" name="machineType" item-label-path="name"
-              item-value-path="value" always-float-label></vaadin-combo-box>
+            <vaadin-combo-box id="type_[[machineItem.$key]]" label="Machine Type" class="editmachineType" value="[[machineItem.code]]_[[machineItem.type]]" 
+            selected-item="[[machineItem.type]]" items="[[machineType]]" name="machineType" item-label-path="name" item-value-path="value" always-float-label></vaadin-combo-box>
               <div class="buttons">
                 <paper-button id="[[machineItem.$key]]" on-tap="dismissEditMachine" dialog-dismiss>Dismiss</paper-button>
                 <paper-button id="[[machineItem.$key]]" on-tap="saveEditMachine" dialog-confirm autofocus>Save</paper-button>
@@ -154,14 +153,9 @@
         this.$.machineEffi.value = 100;
         this.$.machineType.value = null;
       },
-      dataChanged: function (newData, oldData) {
-         console.log("new data " +newData);
-         console.log("old data " +oldData);
-      },
       properties: {
         machineItems: {
           type: Object,
-          observer: 'dataChanged'
         },
         machineType: {
           type: Array,

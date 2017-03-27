@@ -76,15 +76,13 @@
       #priorityType {
         color: deeppink;      
       }
-
     </style>
-    <firebase-auth user="{{user}}"></firebase-auth>
-    <firebase-query id="orderQuery" path="/order" order-by-child="order_no" data="{{orderQuery}}" order-by-value="true"></firebase-query>
-    <firebase-query id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
-    <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
-    <firebase-document id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
-    <firebase-document id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
-    <firebase-document id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
+    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderQuery}}" order-by-value="true"></firebase-query>
+    <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
+    <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -101,10 +99,10 @@
                   <paper-item>[[machineItem.name]]</paper-item>
                 </template>
               </paper-menu>
-              [[a]]<br>
-              [[e]]<br>
-              [[g]]<br>
-              [[f]]<br>
+              [[a.name]]<br>
+              [[e.name]]<br>
+              [[g.name]]<br>
+              [[f.name]]<br>
               <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
               class="date-selector" id="deliverySelector"></vaadin-date-picker>
                 <br>

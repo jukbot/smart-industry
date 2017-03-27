@@ -2,7 +2,7 @@
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="view-controlling">
+<dom-module id="view-setting">
 <template>
  <style include="shared-styles">
        :host {
@@ -41,9 +41,10 @@ margin: 10px;
   }
   iron-icon.star:last-of-type { color: var(--paper-grey-500); }
   </style>
+      <firebase-auth app-name="smart-mes" user="{{user}}"></firebase-auth>
       <div class="card">
       <div class="circle">0</div>
-      <p>This secion is about verify the production line productivity. To optimize the current job.</p>
+      <p>[[user.uid]]</p>
     </div>
 <paper-card image="images/cafe.png">
   <div class="card-content">
@@ -77,7 +78,12 @@ margin: 10px;
 
   <script>
     Polymer({
-      is: 'view-controlling',
+      is: 'view-setting',
+      properties: {
+        user: {
+          type: Object
+        },
+      }
     });
   </script>
 </dom-module>
