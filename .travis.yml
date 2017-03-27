@@ -9,7 +9,6 @@ addons:
     packages:
       - google-chrome-stable
 node_js:
-  - '7'
   - '6'
 before_script:
   - npm install -g bower 
@@ -17,6 +16,6 @@ before_script:
   - npm install -g web-component-tester 
   - npm install
   - bower install
-  - polymer build --add-service-worker
+  - polymer build
 script:
   - polymer serve
