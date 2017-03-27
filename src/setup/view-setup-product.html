@@ -71,7 +71,7 @@
         <div class="stitched">
           <paper-button raised on-tap="toggleDialog" class="big-btn water">ADD PRODUCT</paper-button>
           <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true"
-            role="dialog">
+            role="dialog" no-cancel-on-outside-click>
             <h1>Add Product</h1>
             <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
             <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
@@ -199,10 +199,7 @@
         today = dd + '/' + mm + '/' + yyyy;
 
        var file = a.target.files[0];
-      //create a storage reference
-      var storageRef = firebase.storage().ref('images/' + file.name);
-     //store the image
-     var task = storageRef.put(file);
+       var task = firebase.storage().ref('images/' + file.name).put(file);
 
         this.$.productQuery.ref.push({
           add: Math.round(new Date().getTime()/1000.0),
@@ -242,6 +239,10 @@
       });
       },
       dismissEditProduct: function() {
+        this.clearField();
+        this.$.createMachineDialog.close();
+      },
+      clearField: function () {
         this.$.productName.value = null;
         this.$.productSku.value = null;
         this.$.productRaw.value = null;

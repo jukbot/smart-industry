@@ -143,9 +143,9 @@
         border-bottom: 1px solid #d6d6d6;
       }
     </style>
-    <firebase-app auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
+    <firebase-app app-name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth id="auth" user="{{user}}" provider="google" status-known="{{statusknown}}" on-error="handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" provider="google" status-known="{{statusknown}}" on-error="handleError"></firebase-auth>
     <firebase-document id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>

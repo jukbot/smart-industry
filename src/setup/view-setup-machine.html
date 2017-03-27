@@ -63,12 +63,12 @@
         <div class="stitched">
           <paper-button raised on-tap="toggleDialog" class="big-btn magic">ADD MACHINE</paper-button>
           <paper-dialog id="createMachineDialog" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true"
-            role="dialog">
+            role="dialog" no-cancel-on-outside-click>
             <h1>Add Machine</h1>
             <paper-input name="machine-name" id="machineName" label="Machine Name" required always-float-label></paper-input>
             <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number"  min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>&#37;</div></paper-input>
             <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" id="product-select" name="machineType" item-label-path="name"
-              item-value-path="symbol" item-code-path="number" required always-float-label></vaadin-combo-box>
+              item-value-path="value" required always-float-label></vaadin-combo-box>
               <div class="buttons">
                 <paper-button on-tap="dismissAddMachine" dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="addMachine" dialog-confirm autofocus>Create</paper-button>
@@ -96,11 +96,11 @@
             <paper-input id="effi_[[machineItem.$key]]" name="machine-effi" class="editmachineEffi" value="[[machineItem.effi]]" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
             <div suffix>%</div> 
             </paper-input>
-            <vaadin-combo-box id="type_[[machineItem.$key]]" loading="true" label="Type" class="editmachineType" value="[[machineItem.type]]" items="[[machineType]]" name="machineType" item-label-path="name"
-              item-value-path="name" item-code-path="symbol" always-float-label></vaadin-combo-box>
+            <vaadin-combo-box id="type_[[machineItem.$key]]" label="Type" class="editmachineType" selected-item="[[machineItem.type]]"  value="[[machineItem.code]]_[[machineItem.type]]" items="[[machineType]]" name="machineType" item-label-path="name"
+              item-value-path="value" always-float-label></vaadin-combo-box>
               <div class="buttons">
-                <paper-button on-tap="dismissEditMachine" dialog-dismiss>Dismiss</paper-button>
-                <paper-button on-tap="saveEditMachine" dialog-confirm autofocus>Save</paper-button>
+                <paper-button id="[[machineItem.$key]]" on-tap="dismissEditMachine" dialog-dismiss>Dismiss</paper-button>
+                <paper-button id="[[machineItem.$key]]" on-tap="saveEditMachine" dialog-confirm autofocus>Save</paper-button>
               </div>
               </paper-dialog>
           </div>
@@ -115,80 +115,80 @@
         this.$.createMachineDialog.open();
       },
       addMachine: function () {
+        let mtype = this.$.machineType.value.split("_");
+        
         this.$.machineQuery.ref.push({
           effi: this.$.machineEffi.value,
           install: Math.round(new Date().getTime()/1000.0),
           name: this.$.machineName.value,
           queue: 0,
           status: 'Stopped',
-          type: this.$.machineType.value,
-        }).key;
+          type: mtype[0],
+          code: mtype[1]
+        });
         this.clearField();
+      },
+      editMachine: function(e) {
+        this.$$('#edit_'+e.target.id).open();  
       },
       removeMachine: function(e) {
         this.$.machineQuery.ref.child(e.target.id).remove();
       },
-      editMachine: function(e) {
-        this.$$('#edit_'+e.target.id).open();
-      },
       saveEditMachine: function(e) {
-        let machineName = this.$$('#name_'+e.target.id).value;
-        let machineEffi = this.$$('#effi_'+e.target.id).value;
-        let machineType = this.$$('#type_'+e.target.id).value;
-        this.set('machineItems.name', machineName);
-        this.set('machineItems.effi', machineEffi);
-        this.set('machineItems.type', machineType);
-     //   this.$.machineQuery.ref
+         this.$.machineQuery.save("/machine/"+e.target.id).then(function () {
+        // after document saved, path will be changed to the new ref
+        // any change of data will sent back up and stored
+        alert("Save successful");
+          //this.$.machineQuery.refreshNetworkStatus();
+      });
       },
       dismissEditMachine: function(e) {
-        this.$$('#name_'+e.target.id).value = null;
-        this.$$('#effi_'+e.target.id).value = null;
-        this.$$('#type_'+e.target.id).value = null;
+        this.$.createMachineDialog.cancel();
       },
       dismissAddMachine: function() {
         this.clearField();
+        this.$.createMachineDialog.cancel();
       },
       clearField: function () {
         this.$.machineName.value = null;
+        this.$.machineEffi.value = 100;
         this.$.machineType.value = null;
-        this.$.machineEffi.value = null;
+      },
+      dataChanged: function (newData, oldData) {
+         console.log("new data " +newData);
+         console.log("old data " +oldData);
       },
       properties: {
         machineItems: {
-          type: Object
+          type: Object,
+          observer: 'dataChanged'
         },
         machineType: {
           type: Array,
           value: function () {
             return [{
                 name: 'Milling',
-                symbol: 'mill',
-                number: 0
+                value: 'mill_Milling'
               },
               {
                 name: 'Drilling',
-                symbol: 'drill',
-                number: 1
+                value: 'drill_Drilling'
               },
               {
                 name: 'Trimming',
-                symbol: 'trim',
-                number: 2
+                value: 'trim_Trimming'
               },
               {
                 name: 'Polishing',
-                symbol: 'polish',
-                number: 3
+                value: 'polish_Polishing'
               },
               {
                 name: 'Welding',
-                symbol: 'weld',
-                number: 4
+                value: 'weld_Welding'
               },
               {
                 name: 'Packing',
-                symbol: 'pack',
-                number: 5
+                value: 'pack_Packing'
               }
             ]
           }
