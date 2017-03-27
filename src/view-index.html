@@ -4,7 +4,7 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-data-table/iron-data-table.html">
@@ -38,6 +38,7 @@
 <link rel="import" href="../bower_components/paper-tags/paper-tags.html">
 <link rel="import" href="../bower_components/paper-tags/paper-tags-input.html">
 <link rel="import" href="../bower_components/paper-tags/paper-tags-dropdown.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <!-- neon modules - used for animation -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
@@ -143,15 +144,15 @@
         border-bottom: 1px solid #d6d6d6;
       }
     </style>
-    <firebase-app app-name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
+    <firebase-app auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" provider="google" status-known="{{statusknown}}" on-error="handleError"></firebase-auth>
+    <firebase-auth id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" status-known="{{statusknown}}" on-error="handleError"></firebase-auth>
     <firebase-document id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <app-drawer-layout fullbleed>
-            <app-drawer id="drawer" slot="drawer" swipe-open>
+       <app-drawer id="drawer" slot="drawer" swipe-open>
         <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
         <div class="main-title" main-title>PRONTO</div>
         <div class="main-describe">Smart Industry Helper</div>
@@ -165,8 +166,8 @@
         </iron-selector>
         <div class="sidebar-menu-line"></div>
         <div class="center-box">
-          <paper-button raised class="chilli authen-btn" on-tap="login" hidden$="[[user]]">Sign In</paper-button>
-          <paper-button raised class="chilli authen-btn" on-tap="logout" hidden$="[[!user]]">Sign Out</paper-button>
+          <paper-button raised class="chilli authen-btn" on-tap="_login" hidden$="[[user]]">Sign In</paper-button>
+          <paper-button raised class="chilli authen-btn" on-tap="_logout" hidden$="[[!user]]">Sign Out</paper-button>
         </div>
         <template is="dom-if" if="[[user]]">
           <div class="profile">
@@ -185,8 +186,8 @@
       <app-header-layout fullbleed has-scrolling-region>
         <app-header slot="header" condenses reveals fixed>
           <app-toolbar>
-            <paper-icon-button icon="vaadin:menu" drawer-toggle></paper-icon-button>
-            <div class="page-title" main-title>[[page]]</div>
+            
+            <div class="page-title" main-title>[[page]]</div><paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-menu class="dropdown-content">
@@ -200,7 +201,7 @@
                     <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
                     Settings
                   </paper-icon-item>
-                  <paper-icon-item class="menu-item" name="logout" on-tap="logout" hidden$="[[!user]]">
+                  <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
                     <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
                     Log Out
                   </paper-icon-item>
@@ -225,6 +226,31 @@
   <script>
     Polymer({
       is: 'view-index',
+      properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged',
+        },
+        user: {
+          type: Object
+        },
+        statusKnown: {
+          type: Object
+        },
+        signedIn: {
+          type: Boolean,
+          observer: '_signedInChanged',
+        },
+        metadata: {
+          type: Object
+        },
+        wideLayout: {
+          type: Boolean,
+          value: false,
+          observer: '_onLayoutChange',
+       },
+      },
       ready: function() {
         this.async(function() {
           // If the path is blank, redirect to /
@@ -240,13 +266,9 @@
 
       _routePageChanged: function (page) {
         if (page === undefined) {
-          return;
+          return 'dashboard';
         }    
         this.page = page || 'dashboard';
-        // Scroll to the top of the page on every *route* change. Use `Polymer.AppLayout.scroll`
-        // with `behavior: 'silent'` to disable header scroll effects during the scroll.
-        Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
-        // Close the drawer - in case the *route* change came from a link in the drawer.
         this.drawerOpened = false;
 
         if (!this.$.drawer.persistent) {
@@ -275,7 +297,7 @@
       },
 
       // Signin Action
-      login: function () {
+      _login: function () {
         this.$.auth.signInWithPopup()
         .then(response => {
           // console.info(JSON.stringify(response) + "Login successful");
@@ -290,7 +312,7 @@
         });
       },
       // Signout Action
-      logout: function () {
+      _logout: function () {
         this.$.auth.signOut()
         .then(function () {
           alert("Signout successfully");
@@ -303,30 +325,24 @@
           console.log("Authenticate Failed: " + errorCode);
         });
       },
+      // Check authentication 
+       _signedInChanged: function(signIn) {
+        if (signIn) {
+        //  this.page = 'login';
+        //  this.set('route.path', '/login');
+          console.log('Welcome to Pronto');
+        } else {
+          console.log('Please login before continue');
+        }
+      },
+      // Redirect to Register page
+      _register: function() {
+        this.page = 'register';
+        this.set('route.path', '/register');
+      },
       // Handle Error
       handleError: function(e) {
         console.info("Authenticate error:" + e.message);
-      },
-      properties: {
-        page: {
-          type: String,
-          reflectToAttribute: true,
-          observer: '_pageChanged',
-        },
-        user: {
-          type: Object
-        },
-        statusknown: {
-          type: Object
-        },
-        metadata: {
-          type: Object
-        },
-        wideLayout: {
-          type: Boolean,
-          value: false,
-          observer: '_onLayoutChange',
-       },
       },
      });
   </script>
