@@ -1,0 +1,69 @@
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] CLI Version:  3.5.0
+[debug] Platform:     darwin
+[debug] Node Version: v6.10.0
+[debug] Time:         Tue Mar 28 2017 03:59:09 GMT+0700 (ICT)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[debug] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token { refresh_token: '1/CYmZSWFCfHQN9mgYtNrwJCjO-lzYp9H5THmBPXQRBNU',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Tue Mar 28 2017 03:59:09 GMT+0700 (ICT)
+[debug] <<< HTTP RESPONSE 200
+[debug] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/smart-mes  
+ Tue Mar 28 2017 03:59:09 GMT+0700 (ICT)
+[debug] <<< HTTP RESPONSE 200
+[debug] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/smart-mes/tokens  
+ Tue Mar 28 2017 03:59:11 GMT+0700 (ICT)
+[debug] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'smart-mes'...
+[info] 
+[info] i  deploying database, functions, hosting
+[info] ✔  database: rules ready to deploy.
+[debug] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "dependencies": {
+    "firebase-admin": "^4.1.2",
+    "firebase-functions": "^0.5"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[info] i  runtimeconfig: ensuring necessary APIs are enabled...
+[debug] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/smart-mes?view=CONSUMER_VIEW  
+ Tue Mar 28 2017 03:59:15 GMT+0700 (ICT)
+[debug] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/smart-mes?view=CONSUMER_VIEW  
+ Tue Mar 28 2017 03:59:15 GMT+0700 (ICT)
+[debug] <<< HTTP RESPONSE 200
+[info] ✔  runtimeconfig: all necessary APIs are enabled
+[debug] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/smart-mes  
+ Tue Mar 28 2017 03:59:17 GMT+0700 (ICT)
+[debug] >>> HTTP REQUEST GET https://apikeys.googleapis.com/v1/projects/smart-mes/apiKeys  
+ Tue Mar 28 2017 03:59:17 GMT+0700 (ICT)
+[debug] <<< HTTP RESPONSE 200
+[debug] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/smart-mes/configs  
+ Tue Mar 28 2017 03:59:20 GMT+0700 (ICT)
+[debug] <<< HTTP RESPONSE 200
+[debug] > [functions] runtime config materialized as: {
+  "firebase": {
+    "databaseURL": "https://smart-mes.firebaseio.com",
+    "storageBucket": "smart-mes.appspot.com",
+    "apiKey": "AIzaSyBhIseOZZ5KQoJvQbdo0RVBoFL_hHyavco",
+    "authDomain": "smart-mes.firebaseapp.com"
+  }
+}
+[debug] > [functions] parsed triggers: []
+[info] i  hosting: preparing build/default directory for upload...
+[debug] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/smart-mes/uploads/-KgGZCvMlRoAtCAy0_u4?fileCount=273&message=  
+ Tue Mar 28 2017 03:59:21 GMT+0700 (ICT)
