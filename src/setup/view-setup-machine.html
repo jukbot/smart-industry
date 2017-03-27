@@ -92,12 +92,12 @@
             </div>
             <paper-dialog id="edit_[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" role="dialog">
             <h2>Edit machine</h2>
-            <paper-input id="machineName" name="machine-name" class="editmachineName" value="{{machineItem.name}}" label="Machine Name" always-float-label></paper-input>
-            <paper-input id="machineEffi" name="machine-effi" class="editmachineEffi" value="{{machineItem.effi}}" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
+            <paper-input id="name_[[machineItem.$key]]" name="machine-name" class="editmachineName" value="[[machineItem.name]]" label="Machine Name" always-float-label></paper-input>
+            <paper-input id="effi_[[machineItem.$key]]" name="machine-effi" class="editmachineEffi" value="[[machineItem.effi]]" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
             <div suffix>%</div> 
             </paper-input>
-            <vaadin-combo-box label="Type" class="editmachineType" value="{{machineItem.type}}" items="[[machineType]]" name="machineType" item-label-path="name"
-              item-value-path="symbol" item-code-path="number" always-float-label></vaadin-combo-box>
+            <vaadin-combo-box id="type_[[machineItem.$key]]" loading="true" label="Type" class="editmachineType" value="[[machineItem.type]]" items="[[machineType]]" name="machineType" item-label-path="name"
+              item-value-path="name" item-code-path="symbol" always-float-label></vaadin-combo-box>
               <div class="buttons">
                 <paper-button on-tap="dismissEditMachine" dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="saveEditMachine" dialog-confirm autofocus>Save</paper-button>
@@ -115,18 +115,15 @@
         this.$.createMachineDialog.open();
       },
       addMachine: function () {
-        let today = new Date();
         this.$.machineQuery.ref.push({
           effi: this.$.machineEffi.value,
-          install: today,
+          install: Math.round(new Date().getTime()/1000.0),
           name: this.$.machineName.value,
           queue: 0,
           status: 'Stopped',
           type: this.$.machineType.value,
         }).key;
-        this.$.machineName.value = null;
-        this.$.machineType.value = null;
-        this.$.machineEffi.value = null;
+        this.clearField();
       },
       removeMachine: function(e) {
         this.$.machineQuery.ref.child(e.target.id).remove();
@@ -135,15 +132,23 @@
         this.$$('#edit_'+e.target.id).open();
       },
       saveEditMachine: function(e) {
-        let machineName = this.$.machineName.value;
-        let machineEffi = this.$.machineEffi.value;
-        let machineType = this.$.machineType.value;
+        let machineName = this.$$('#name_'+e.target.id).value;
+        let machineEffi = this.$$('#effi_'+e.target.id).value;
+        let machineType = this.$$('#type_'+e.target.id).value;
         this.set('machineItems.name', machineName);
         this.set('machineItems.effi', machineEffi);
         this.set('machineItems.type', machineType);
      //   this.$.machineQuery.ref
       },
-      dismissEditMachine: function() {
+      dismissEditMachine: function(e) {
+        this.$$('#name_'+e.target.id).value = null;
+        this.$$('#effi_'+e.target.id).value = null;
+        this.$$('#type_'+e.target.id).value = null;
+      },
+      dismissAddMachine: function() {
+        this.clearField();
+      },
+      clearField: function () {
         this.$.machineName.value = null;
         this.$.machineType.value = null;
         this.$.machineEffi.value = null;
@@ -156,33 +161,33 @@
           type: Array,
           value: function () {
             return [{
-                name: 'Milling Machine',
-                symbol: 'Milling',
+                name: 'Milling',
+                symbol: 'mill',
                 number: 0
               },
               {
-                name: 'Drilling Machine',
-                symbol: 'Drilling',
+                name: 'Drilling',
+                symbol: 'drill',
                 number: 1
               },
               {
-                name: 'Trimming Machine',
-                symbol: 'Trimming',
+                name: 'Trimming',
+                symbol: 'trim',
                 number: 2
               },
               {
-                name: 'Polishing Machine',
-                symbol: 'Polishing',
+                name: 'Polishing',
+                symbol: 'polish',
                 number: 3
               },
               {
-                name: 'Welding Machine',
-                symbol: 'Welding',
+                name: 'Welding',
+                symbol: 'weld',
                 number: 4
               },
               {
-                name: 'Packing Machine',
-                symbol: 'Packing',
+                name: 'Packing',
+                symbol: 'pack',
                 number: 5
               }
             ]

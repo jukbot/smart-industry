@@ -96,6 +96,15 @@
               <vaadin-combo-box label="Size" name="size" value="{{p_size}}" items="[[x.size]]" id="sizeSelector" disabled="true" item-label-path="name" item-value-path="name" selected-item='{{y}}' required always-float-label></vaadin-combo-box>
               <vaadin-combo-box label="Machine" name="machine" value="{{ma_name}}" items="[[machineItems]]" id="machineSelector" disabled="true" item-label-path="name" item-value-path="name" selected-item='{{m}}' required always-float-label></vaadin-combo-box>
               <paper-tags-dropdown label="Machine selector" items="[[machineItems.name]]" item-label-path="name" noink required always-float-label></paper-tags-dropdown>
+              <paper-menu multi selected="{{f}}" selected-items="{{g}}" selected-item="{{e}}" selected-values="{{a}}">
+                <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
+                  <paper-item>[[machineItem.name]]</paper-item>
+                </template>
+              </paper-menu>
+              [[a]]<br>
+              [[e]]<br>
+              [[g]]<br>
+              [[f]]<br>
               <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
               class="date-selector" id="deliverySelector"></vaadin-date-picker>
                 <br>
