@@ -96,7 +96,7 @@
     </style>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderItems}}" order-by-child="{{orderType(factoryStandard.priority)}}" order-by-value="true"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
-    <firebase-document  app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
  
  <div class="card">
     <h1>Order Scheduling Table</h1>
@@ -166,6 +166,7 @@
     cols='[{"label": "Priority", "type": "string"},{"label": "Duration", "type": "number"}]'
     rows='[ ["EDD", 5],["SPT", 6] ]'>
   </google-chart>
+  
       </div>
     </div>
  <paper-dialog class="priority-dialog" id="changePriorityDialog">
@@ -185,6 +186,47 @@
     Polymer({
       is: 'view-plan-scheduling',
       attached: function() {
+
+    google.charts.load('current', {'packages':['gantt']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function toMilliseconds(minutes) {
+      return minutes * 60 * 1000;
+    }
+
+    function drawChart() {
+
+      var otherData = new google.visualization.DataTable();
+      otherData.addColumn('string', 'Task ID');
+      otherData.addColumn('string', 'Task Name');
+      otherData.addColumn('string', 'Resource');
+      otherData.addColumn('date', 'Start');
+      otherData.addColumn('date', 'End');
+      otherData.addColumn('number', 'Duration');
+      otherData.addColumn('number', 'Percent Complete');
+      otherData.addColumn('string', 'Dependencies');
+
+      otherData.addRows([
+        ['toTrain', 'Walk to train stop', 'walk', null, null, toMilliseconds(5), 100, null],
+        ['music', 'Listen to music', 'music', null, null, toMilliseconds(70), 100, null],
+        ['wait', 'Wait for train', 'wait', null, null, toMilliseconds(10), 100, 'toTrain'],
+        ['train', 'Train ride', 'train', null, null, toMilliseconds(45), 75, 'wait'],
+        ['toWork', 'Walk to work', 'walk', null, null, toMilliseconds(10), 0, 'train'],
+        ['work', 'Sit down at desk', null, null, null, toMilliseconds(2), 0, 'toWork'],
+      ]);
+
+      var options = {
+        height: 275,
+        gantt: {
+          defaultStartDateMillis: new Date(2015, 3, 28)
+        }
+      };
+
+      var chart = new google.visualization.Gantt(document.querySelector('#chart_div'));
+
+      chart.draw(otherData, options);
+    }
+/*
       google.charts.load('current', {'packages':['gantt']});
       google.charts.setOnLoadCallback(drawChart);
       function toMilliseconds(minutes) {
@@ -227,7 +269,7 @@
       media.addListener(function() {
       document.querySelector('#resizing-chart').redraw();
     });
-
+*/
   },
       ready: function() {
          Sugar.Date.setLocale('en-GB');
@@ -297,9 +339,6 @@
           type: Object
         },
         machineItems: {
-          type: Object
-        },
-        productQuery: {
           type: Object
         },
         factoryStandard: {

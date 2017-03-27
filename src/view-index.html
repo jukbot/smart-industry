@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <!-- app modules - used for core functions -->
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
@@ -40,7 +41,7 @@
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-database-behavior.html">
-<link rel="import" href="../bower_components/google-chart/google-chart.html">
+
 <link rel="import" href="../bower_components/material-progress/material-progress.html">
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
 <!-- shared style -->
@@ -79,7 +80,7 @@
       }
 
       .page-title {
-        text-transform: uppercase
+        text-transform: uppercase;
       }
 
       .drawer-list a {
@@ -152,7 +153,7 @@
         <div class="main-title" main-title>PRONTO</div>
         <div class="main-describe">Smart Industry Helper</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
         <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> DASHBOARD</a>
         <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> SETUP</a>
         <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> PLAN</a>
@@ -179,11 +180,10 @@
       </app-drawer>
 
       <app-header-layout fullbleed has-scrolling-region>
-        <app-header slot="header" condenses reveals fixed>
+        <app-header slot="header" condenses fixed>
           <app-toolbar>
-            
+            <paper-icon-button vertical-align="top" horizontal-align="left" icon="vaadin:menu" alt="menu" drawer-toggle></paper-icon-button>
             <div class="page-title" main-title>[[page]]</div>
-            <paper-icon-button icon="menu" drawer-toggle>X</paper-icon-button>
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-menu class="dropdown-content">
@@ -245,11 +245,6 @@
         signedIn: {
           type: Boolean,
         },
-        wideLayout: {
-          type: Boolean,
-          value: false,
-          observer: '_onLayoutChange',
-       },
       },
       ready: function() {
         this.async(function() {
@@ -287,13 +282,6 @@
 
       _showPage404: function () {
         this.page = '404';
-      },
-
-      _onLayoutChange: function (wide) {
-        const drawer = this.$.drawer;
-        if (wide && drawer.opened) {
-          drawer.opened = false;
-        }
       },
 
       // Signin Action
@@ -335,6 +323,7 @@
       },
      });
   </script>
+  <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.4/go-debug.js"></script>
   <script src="../bower_components/sugar/dist/sugar.min.js"></script>
 </dom-module>

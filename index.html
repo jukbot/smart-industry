@@ -39,17 +39,18 @@
   ga('create', 'UA-51514677-9', 'auto');
   ga('send', 'pageview');
 </script>
-  <!-- Load and register pre-caching Service Worker -->
-  <script>
+<script>
       // Setup Polymer options
       window.Polymer = {
         dom: 'shadow',
         lazyRegister: true,
       };
+
       // Load webcomponentsjs polyfill if browser does not support native
       // Web Components
       (function() {
         'use strict';
+
         var onload = function() {
           // For native Imports, manually fire WebComponentsReady so user code
           // can use the same code path for native and polyfill'd imports.
@@ -59,11 +60,13 @@
             );
           }
         };
+
         var webComponentsSupported = (
           'registerElement' in document
           && 'import' in document.createElement('link')
           && 'content' in document.createElement('template')
         );
+
         if (!webComponentsSupported) {
           var script = document.createElement('script');
           script.async = true;
@@ -74,18 +77,16 @@
           onload();
         }
       })();
-    </script>
 
-  
-    <!-- Load and register pre-caching Service Worker -->
-    <script>
+      // Load pre-caching Service Worker
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('/service-worker.js');
         });
       }
     </script>
-    <link rel="import" href="/src/view-index.html">
+
+  <link rel="import" href="/src/view-index.html">
   <style>
     html {
       -ms-text-size-adjust: 100%;
