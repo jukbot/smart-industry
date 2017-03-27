@@ -152,21 +152,12 @@
  <div id="chart_div"></div>
  </div>
 
-  <table><thead><tr><th>Machine</th><th>Cycle Time (second)</th></tr></thead>
-      <tbody>
-        <template is="dom-repeat" items="{{orderProcess}}" as="processes">
-        <tr><td>[[processes.cycle]]</td><td>[[processes.value]]</td></tr>
-        </template>
-      </tbody>
-      </table>
-
     <div class="wrap-card">
       <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
    <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
 
- <google-chart
-    id="resizing-chart"
+ <google-chart id="resizing-chart"
     type="column"
     options='{
               "title": "Priority Comparision",

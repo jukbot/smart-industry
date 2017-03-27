@@ -74,7 +74,11 @@
           onload();
         }
       })();
-      // Load pre-caching Service Worker
+    </script>
+
+  
+    <!-- Load and register pre-caching Service Worker -->
+    <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('/service-worker.js');
