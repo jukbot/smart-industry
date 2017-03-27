@@ -192,16 +192,20 @@
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-menu class="dropdown-content">
-                  <a href="https://github.com/jukbot/smart-industry" target="_blank" tabindex="-1">
+                  <a href="https://github.com/jukbot/smart-industry" target="_blank">
                   <paper-icon-item class="menu-item" name="help">
                     <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
                     Help
                   </paper-icon-item>
                   </a>
+                  <iron-selector selected="[[page]]" attr-for-selected="name">
+                  <a href="/setting">
                   <paper-icon-item class="menu-item" name="settings">
                     <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
                     Settings
                   </paper-icon-item>
+                  </a>
+                  </iron-selector>
                   <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
                     <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
                     Log Out
@@ -214,12 +218,13 @@
           </app-toolbar>
         </app-header>
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
-          <view-dashboard name="dashboard" route="[[subroute]]" offline="[[offline]]"></view-dashboard>
-          <view-setup name="setup" route="[[subroute]]" offline="[[offline]]"></view-setup>
-          <view-planning name="planning" route="[[subroute]]" offline="[[offline]]"></view-planning>
-          <view-tracking name="tracking" route="[[subroute]]" offline="[[offline]]"></view-tracking>
-          <view-controlling name="controlling" route="[[subroute]]" offline="[[offline]]"></view-controlling>
-          <view-404 name="404" offline="[[offline]]"></view-404>
+          <view-dashboard name="dashboard" route="[[subroute]]" ></view-dashboard>
+          <view-setup name="setup" route="[[subroute]]" ></view-setup>
+          <view-planning name="planning" route="[[subroute]]" ></view-planning>
+          <view-tracking name="tracking" route="[[subroute]]" ></view-tracking>
+          <view-controlling name="controlling" route="[[subroute]]" ></view-controlling>
+          <view-404 name="404" ></view-404>
+          <view-setting name="setting"></view-setting>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
