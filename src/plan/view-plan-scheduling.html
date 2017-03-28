@@ -164,9 +164,9 @@
 <vaadin-date-picker style="width: 300px;" name="workdate" always-float-label autoValidate
  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
  <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
- <div id="chart_div"></div>
- </div>
 
+ </div>
+ 
     <div class="wrap-card">
       <div class="fixed-card card">
         <h1>Job Priority Comparision</h1>
@@ -200,7 +200,14 @@
   <script>
     Polymer({
       is: 'view-plan-scheduling',
-  
+      attached: function() { 
+  // create an instance with createElement: 
+ 
+      var media = window.matchMedia('(min-width: 1024px)'); 
+      media.addListener(function() { 
+      document.querySelector('#resizing-chart').redraw(); 
+      }); 
+  },
       ready: function() {
          Sugar.Date.setLocale('en-GB');
          let workdatepicker = this.$$('#workdateSelector');
@@ -231,9 +238,8 @@
           }
         };
     },
-    attached: function() {
+   
 
-  },
     getDeliveryDate: function (timestamp) {
           let today = new Date(timestamp*1000);
           let dd = today.getDate();
