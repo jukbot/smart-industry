@@ -52,7 +52,7 @@
         <h1>Production Block Simulation</h1>
         <vaadin-combo-box label="Product" name="product"  items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
         <vaadin-combo-box label="Size" name="size"  items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length"  required always-float-label></vaadin-combo-box>
-        <vaadin-combo-box label="Load Plan" name="plan" value="N/A" items="[[h]]" id="planSelector" on-tap="selectPlan" disabled="true" item-label-path="name" item-value-path="name"  required always-float-label></vaadin-combo-box>
+        <vaadin-combo-box label="Load Plan" name="plan" items="" id="planSelector" on-tap="selectPlan" disabled="true" item-label-path="name" item-value-path="name"  required always-float-label></vaadin-combo-box>
 
 <vaadin-context-menu selector=".has-menu">
   <template>
