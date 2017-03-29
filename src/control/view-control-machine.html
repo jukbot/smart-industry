@@ -65,8 +65,7 @@
      }
      
     </style>
-    <firebase-auth user="{{user}}"></firebase-auth>
-    <firebase-query id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
     <ul class="app-grid">
       <template is="dom-repeat" items="{{machineItems}}" as="machineItem">
         <li>  
@@ -79,8 +78,8 @@
             <p>Machine Status: <span class="machine-status">[[machineItem.status]]</span></p>
             </div>
              <div class="button-group">
-            <paper-button raised class="smart" value="[[machineItem.$key]]" on-tap="setMachine">SETTINGS</paper-button>
-            <paper-button raised class="chilli" value="[[machineItem.$key]]" on-tap="poweroffMachine" style="margin-bottom: 10px;">POWER OFF</paper-button>
+            <paper-button raised class="smart" on-tap="setMachine">SETTINGS</paper-button>
+            <paper-button raised class="chilli" on-tap="poweroffMachine" style="margin-bottom: 10px;">POWER OFF</paper-button>
             </div>
           </div>
         </li>

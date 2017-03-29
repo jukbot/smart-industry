@@ -1,6 +1,12 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="setup/view-setup-customer.html">
+<link rel="import" href="setup/view-setup-factory.html">
+<link rel="import" href="setup/view-setup-inventory.html">
+<link rel="import" href="setup/view-setup-machine.html">
+<link rel="import" href="setup/view-setup-product.html">
+<link rel="import" href="setup/view-setup-worker.html">
 <dom-module id="view-setup">
   <template>
     <style include="shared-styles">
@@ -13,9 +19,9 @@
         <app-header fixed shadow>
           <app-toolbar sticky>
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="{{tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+            <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
+                <paper-tab id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>

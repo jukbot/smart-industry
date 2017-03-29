@@ -124,13 +124,13 @@
     </style>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderItems}}" order-by-child="{{orderType(factoryStandard.priority)}}" order-by-value="true"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="jobQueueQuery" path="/queue" data="{{jobQueueItems}}" order-by-child="{{orderType(factoryStandard.priority)}}" order-by-value="true"></firebase-query>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
  
  <div class="card">
     <h1>Order Scheduling Table</h1>
     <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
     <paper-button raised class="chilli priority-btn" on-tap="togglePriority">Change</paper-button>
-    <p>Note: Changing the priority will affect other job schedules.</p>
    <vaadin-grid aria-label="Order Scheduling Table" on-active-item-changed="_onActiveItemChanged"  id="grid-objects-source">
   <table>
     <colgroup>
@@ -161,7 +161,6 @@
         <th>Delete</th>
       </tr>
     </thead>
-
     <tbody>
       <template is="dom-repeat" items="[[orderItems]]" as="list">   
         <tr>
@@ -175,7 +174,7 @@
         <td>[[list.order_duration]]</td>
         <td>[[getDeliveryDate(list.order_delivery)]]</td>
         <td><paper-icon-button id="edit_[[list.$key]]" icon="vaadin:pencil" title="edit" on-tap="editOrder"></paper-icon-button></td>
-        <td><paper-icon-button id="delete_[[list.$key]]" icon="vaadin:trash" title="delete" on-tap="deleteOrder"></paper-icon-button></td>
+        <td><paper-icon-button id="[[list.$key]]" icon="vaadin:trash" title="delete" on-tap="deleteOrder"></paper-icon-button></td>
         </tr>   
        </template>
     </tbody>
@@ -188,7 +187,7 @@
 <vaadin-date-picker style="width: 300px;" name="workdate" always-float-label autoValidate
  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
  <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
-
+<google-chart id="timeline" type="timeline" style="width: 100%;" ></google-chart>
  </div>
  
     <div class="wrap-card">
@@ -196,6 +195,7 @@
         <h1>Job Priority Comparision</h1>
    <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
 
+  
  <google-chart id="resizing-chart"
     type="column"
     options='{
@@ -221,13 +221,37 @@
   </div>
 </paper-dialog>
 </template>
-
   <script>
     Polymer({
       is: 'view-plan-scheduling',
       attached: function() { 
   // create an instance with createElement: 
- 
+   
+  google.charts.load("current", {packages:["timeline"]});
+  google.charts.setOnLoadCallback(drawChart);
+  function drawChart() {
+    var container = document.querySelector('#timeline');
+    var chart = new google.visualization.Timeline(container);
+    var dataTable = new google.visualization.DataTable();
+    dataTable.addColumn({ type: 'string', id: 'Order no.' });
+    dataTable.addColumn({ type: 'string', id: 'Name' });
+    dataTable.addColumn({ type: 'date', id: 'Start' });
+    dataTable.addColumn({ type: 'date', id: 'End' });
+    dataTable.addRows([
+      [ 'Magnolia Room', 'Beginning JavaScript',       new Date(0,0,0,12,0,0),  new Date(0,0,0,13,30,0) ],
+      [ 'Magnolia Room', 'Intermediate JavaScript',    new Date(0,0,0,14,0,0),  new Date(0,0,0,15,30,0) ],
+      [ 'Magnolia Room', 'Advanced JavaScript',        new Date(0,0,0,16,0,0),  new Date(0,0,0,17,30,0) ],
+      [ 'Willow Room',   'Beginning Google Charts',    new Date(0,0,0,12,30,0), new Date(0,0,0,14,0,0) ],
+      [ 'Willow Room',   'Intermediate Google Charts', new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0) ],
+      [ 'Willow Room',   'Advanced Google Charts',     new Date(0,0,0,16,30,0), new Date(0,0,0,18,0,0) ]]);
+
+    var options = {
+      timeline: { colorByRowLabel: true }
+    };
+
+    chart.draw(dataTable, options);
+  }
+
       var media = window.matchMedia('(min-width: 1024px)'); 
       media.addListener(function() { 
       document.querySelector('#resizing-chart').redraw(); 
@@ -280,6 +304,10 @@
          return deliveryDate;
     },
 
+    deleteOrder: function(e) {
+       this.$.machineQuery.ref.child(e.target.id).remove();
+    },
+    
     togglePriority: function () {
         this.$.changePriorityDialog.open();
     },

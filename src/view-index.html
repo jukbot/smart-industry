@@ -146,7 +146,7 @@
     </style>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" status-known="{{statusknown}}" on-error="handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <!-- app-location binds to the app's URL -->
     <app-location route="{{route}}"></app-location>
@@ -158,7 +158,7 @@
         <div class="main-title" main-title>PRONTO</div>
         <div class="main-describe">Smart Industry Helper</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
+        <iron-selector selected="[[routeData.page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
         <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> DASHBOARD</a>
         <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> SETUP</a>
         <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> PLAN</a>
@@ -199,7 +199,7 @@
                     Help
                   </paper-icon-item>
                   </a>
-                  <iron-selector selected="[[page]]" attr-for-selected="name">
+                  <iron-selector selected="[[routeData.page]]" attr-for-selected="name">
                   <a href="/setting">
                   <paper-icon-item class="menu-item" name="settings">
                     <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>

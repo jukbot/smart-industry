@@ -195,7 +195,6 @@
          let sizePicker = this.$.sizeSelector;
          let colorPicker = this.$.colorSelector;
          let machinePicker = this.$.machineSelector;
-         let machineList = this.$.machineRepeat;
          // querySelector ==> this.shadowRoot.querySelector('')
         deliverypicker.addEventListener('value-changed', function() {
             if(deliverypicker.value != null) {
@@ -211,12 +210,6 @@
                  machinePicker.disabled = false;
               }
           });
-
-          machinePicker.addEventListener('value-changed', function() {
-          let machine_list = machinePicker.value;    
-           
-          });
-
 
          deliverypicker.i18n = {
           week: 'Week',

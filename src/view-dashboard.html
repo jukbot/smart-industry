@@ -1,6 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="dashboard/view-dashboard-overview.html">
+<link rel="import" href="dashboard/view-dashboard-notification.html">
+<link rel="import" href="dashboard/view-dashboard-report.html">
 <dom-module id="view-dashboard">
     <template>
     <style include="shared-styles">
@@ -22,9 +25,9 @@
           <!-- Sub nav -->
           <app-toolbar sticky class="tabs-bar">
             <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="{{tabs}}" attr-for-selected="name" sticky bottom-item autoselect role="navigation" noink>
+            <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab name="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
+                <paper-tab id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>

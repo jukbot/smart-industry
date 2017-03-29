@@ -72,7 +72,6 @@
             <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
             <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required always-float-label></paper-input>
             <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
-            <input type="file" value="upload" on-change="upld" id="fileUpload"/>
             <template is="dom-repeat" items="{{foodArray}}" as="food">
                 <div class="container flex-horizontal">
 								<paper-input class="product-size flex-child" label="Size name" value="[[food.name]]" required always-float-label></paper-input>
@@ -82,12 +81,15 @@
                 </div>
 			    	</template>
 	  
-					<paper-button on-click="addFood">Add Size</paper-button>
+					<paper-button on-tap="addFood">Add Size</paper-button>
+            <label for="fileUpload">Product image</label>
+            <input type="file" value="upload" on-change="upld" id="fileUpload"/>
+            
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="addProduct" dialog-confirm autofocus>Create</paper-button>
               </div>
-              </paper-dialog>
+             </paper-dialog>
         </div>
       </li>
       <template is="dom-repeat" items="{{persistedProductData}}" as="productItem">
@@ -180,7 +182,7 @@
       toggleDialog: function () {
         this.$.createProductDialog.open();
       },
-      addProduct: function (a) {
+      addProduct: function () {
           let today = new Date();
           let dd = today.getDate();
           let mm = today.getMonth() + 1; //January is 0!
@@ -192,9 +194,9 @@
           mm = '0' + mm
         }
         today = dd + '/' + mm + '/' + yyyy;
-
-       var file = a.target.files[0];
-       var task = firebase.storage().ref('images/' + file.name).put(file);
+       // upload file
+       //var file = a.target.files[0];
+       //var task = firebase.storage().ref('images/' + file.name).put(file);
 
         this.$.productQuery.ref.push({
           add: Math.round(new Date().getTime()/1000.0),

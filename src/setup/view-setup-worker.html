@@ -1,10 +1,11 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
+
 <dom-module id="view-setup-worker">
-  <template>
+<template>
 <style include="shared-styles">
-       :host {
+      :host {
         display: block;
         --app-grid-item-height: 50%;
       }
@@ -23,16 +24,16 @@
 
       @media (min-width: 1025px) and (max-width: 1200px) {
          :host {
-          --app-grid-columns: 3;
+          --app-grid-columns: 2;
         }
       }
        @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
-          --app-grid-columns: 4;
+          --app-grid-columns: 2;
         }
       }
-    
-      #worker-table data-table-row {
+
+      #customer-table data-table-row {
       width: 100%;
       display: flex;
       flex-direction: column;
@@ -41,57 +42,90 @@
       border-bottom: 1px solid #e3e3e3;
       }
 
-     .button-group {
-       margin-top: auto;
-     }
-     .button-group paper-button {
-       width: 49%;
-     }
+      #customer-table .index {
+       margin-left: 10px;
+      }
+
+
   </style>
-   <div class="card">
+ <div class="card">
+ <iron-ajax
+      auto
+      url="employees.json"
+      handle-as="json"
+      last-response="{{_employees}}"></iron-ajax>
+      <vaadin-combo-box label="Filter by first name" items="[[_names]]" value="{{_filterValue}}"></vaadin-combo-box>
+      <vaadin-grid id="grid">
+        <table>
+          <colgroup>
+            <col name="firstName">
+            <col name="lastName">
+            <col name="email">
+          </colgroup>
+        </table>
+      </vaadin-grid>
+</div>
+
+    <ul class="app-grid">
+    <li>
+      <div class="card">
      <h1>Add Worker</h1>
+
 <paper-input label="First name" always-float-label></paper-input>
 <paper-input label="Last name" always-float-label></paper-input>
 <paper-input label="E-mail" type="email" always-float-label></paper-input>
+<paper-input label="Mobile" always-float-label></paper-input>
 <paper-input label="Position" always-float-label></paper-input>
+<paper-icon-button suffix onclick="clearInput()" icon="clear" alt="clear" title="clear"></paper-icon-button></paper-input>
 <div class="button-group">
-<paper-button raised class="fancy">Add</paper-button>
-<paper-button raised class="smart" onclick="clearInput()">Clear</paper-button>
+<paper-button raised class="fancy" onclick="addWorker()">Add</paper-button>
+<paper-button raised class="smart" onclick="clear()">Clear</paper-button>
 </div>
 </div>
- <div class="card">
-       <template is="dom-bind">
-  <iron-ajax url="../json/user.json" handle-as="json" last-response="{{users}}" auto></iron-ajax>
-  <iron-data-table id="worker-table" items="[[users.results]]">
-    <data-table-column name="Index" width="30px" flex="0">
-      <template>
-        <div class="index">[[index]]</div>
-      </template>
-    </data-table-column>
-    <data-table-column name="Image" width="50px" flex="0">
-      <template>
-        <img src="[[item.user.picture.thumbnail]]">
-      </template>
-    </data-table-column>
-    <data-table-column name="First Name">
-      <template>[[item.user.name.first]]</template>
-    </data-table-column>
-    <data-table-column name="Last Name">
-      <template>[[item.user.name.last]]</template>
-    </data-table-column>
-    <data-table-column name="E-mail">
-      <template>[[item.user.email]]</template>
-    </data-table-column>
-     <data-table-column name="Position">
-      <template>[[item.user.email]]</template>
-    </data-table-column>
-  </iron-data-table>
-</template>
-</div>
+    </li>
+    <li>
+     <div class="card">
+      <h1>Worker Report</h1>
+    </div>
+    </li>
+  </ul>
   </template>
   <script>
     Polymer({
       is: 'view-setup-worker',
+      properties: {
+        _names: {
+          type: Array,
+          value: function() {
+            return ['Aiden', 'Jace', 'Michael', 'Sarah'];
+          }
+        },
+        _employees: {
+          type: Array,
+          value: function() {
+            return [];
+          }
+        },
+        _filterValue: {
+          type: String,
+          value: ''
+        }
+      },
+
+      observers: [
+        '_applyFilter(_filterValue, _employees)'
+      ],
+
+      _applyFilter: function(filterValue, employees) {
+        this.$.grid.items = employees.filter(function(item) {
+          if (filterValue) {
+            return (item.firstName.toLowerCase()).indexOf(filterValue.toLowerCase()) > -1;
+          } else {
+            return true;
+          }
+        }.bind(this));
+      }
     });
   </script>
 </dom-module>
+
