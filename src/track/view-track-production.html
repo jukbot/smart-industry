@@ -114,7 +114,7 @@
     <div class="wrap-card">
      <div class="card fixed-card">
     <h1>Manual Overall Equipment Effectiveness Calculation</h1>
-    <vaadin-combo-box label="Order no." name="order" value="{{order_detail}}" items="[[orderQuery]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' required always-float-label></vaadin-combo-box>
+    <vaadin-combo-box label="Order no." name="order" items="[[orderQuery]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' required always-float-label></vaadin-combo-box>
     <paper-input id="planRuntime" label="Planned Total Runtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
     <paper-input id="downTime" label="Total Downtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
     <paper-input id="cycleTime" label="Cycle Time Per unit (seconds)" type="number" min="0" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
