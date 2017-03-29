@@ -127,7 +127,7 @@
         this.$.machineQuery.ref.child(e.target.id).remove();
       },
       saveEditMachine: function(e) {
-         this.$.machineQuery.save("/machine/"+e.target.id).then(function () {
+        this.$.machineQuery.ref.save("/machine/"+e.target.id).then(function () {
         // after document saved, path will be changed to the new ref
         // any change of data will sent back up and stored
         alert("Save successful");

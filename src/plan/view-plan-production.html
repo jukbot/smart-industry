@@ -7,6 +7,9 @@
       :host {
         display: block;
         --app-grid-item-height: 50%;
+        --vaadin-context-menu-overlay: {
+           background-color: #ffffff;
+        }
       }
       
        @media (min-width: 360px) and (max-width: 768px) {
@@ -126,8 +129,8 @@
  function init() {
     if (window.goSamples) goSamples();  // init for these samples -- you don't need to call this
     var $ = go.GraphObject.make;
-    var myDiagramDiv = document.querySelector('#myDiagramDiv');
-      $(go.Diagram, "myDiagramDiv",
+    var productionDiagram = this.shadowRoot.querySelector('myDiagramDiv');
+      $(go.Diagram, " productionDiagram:",
         {
           initialContentAlignment: go.Spot.Left,
           initialAutoScale: go.Diagram.UniformToFill,
@@ -286,6 +289,9 @@
         productItems: {
           type: Object
         },
+        productionDiagram: {
+          notify: true
+    },
       },
     });
   </script>
