@@ -103,7 +103,6 @@
     </style>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderItems}}" order-by-child="{{orderType(factoryStandard.priority)}}" order-by-value="true"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="jobQueueQuery" path="/queue" data="{{jobQueueItems}}" order-by-child="{{orderType(factoryStandard.priority)}}" order-by-value="true"></firebase-query>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
  
  <div class="card">
@@ -166,6 +165,7 @@
 <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
 <vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderItems]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
 <vaadin-date-picker style="width: 300px;" name="workdate"  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector" always-float-label></vaadin-date-picker>
+<h1>Selected job: [[o]]</h1>
 <google-chart id="timeline" type="timeline" class="chart"></google-chart>
  </div>
  

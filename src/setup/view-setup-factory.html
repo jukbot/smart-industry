@@ -68,13 +68,13 @@
               <paper-input label="Reschedule Interval (days)" name="workerUtilize" id="scheduleInterval" value="[[factoryStandard.interval]]"
                 type="number" min="1" max="30" step="1"  required always-float-label auto-validate></paper-input>
               <div id="operationDay">
-                <paper-checkbox id="sunday" value="sun">Sun</paper-checkbox>
-                <paper-checkbox id="monday" checked="[[]]" value="mon">Mon</paper-checkbox>
-                <paper-checkbox id="tuesday" checked value="tue">Tue</paper-checkbox>
-                <paper-checkbox id="wednesday" checked value="wed">Wed</paper-checkbox>
-                <paper-checkbox id="thursday" checked value="thu">Thu</paper-checkbox>
-                <paper-checkbox id="friday" checked value="fri">Fri</paper-checkbox>
-                <paper-checkbox id="saturday" value="sat">Sat</paper-checkbox>
+                <paper-checkbox id="sunday" checked="[[operationDay(0)]]" value="sun">Sun</paper-checkbox>
+                <paper-checkbox id="monday" checked="[[operationDay(1)]]" value="mon">Mon</paper-checkbox>
+                <paper-checkbox id="tuesday" checked="[[operationDay(2)]]" value="tue">Tue</paper-checkbox>
+                <paper-checkbox id="wednesday" checked="[[operationDay(3)]]" value="wed">Wed</paper-checkbox>
+                <paper-checkbox id="thursday" checked="[[operationDay(4)]]" value="thu">Thu</paper-checkbox>
+                <paper-checkbox id="friday" checked="[[operationDay(5)]]" value="fri">Fri</paper-checkbox>
+                <paper-checkbox id="saturday" checked="[[operationDay(6)]]" value="sat">Sat</paper-checkbox>
               </div><br>
               <!-- <paper-time-input label="Operation Start" name="opstart" id="opStart" value="{{opStart}}" required always-float-label auto-validate></paper-time-input> -->
               
@@ -139,6 +139,10 @@
         this.$.acceptWaste.value = "0.02";
         this.$.workerUtilize.value = 85;
         this.$.scheduleInterval.value = 7;
+      },
+      operationDay: function (number) {
+        console.log(this.factoryOperation);
+        return true;
       },
       properties: {
         factoryStandard: {

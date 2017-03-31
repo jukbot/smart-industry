@@ -165,7 +165,7 @@
         <div class="main-title" main-title>PRONTO</div>
         <div class="main-describe">Smart Industry Helper</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
+        <iron-selector selected="{{routeData.page}}" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
         <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> DASHBOARD</a>
         <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> SETUP</a>
         <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> PLAN</a>
@@ -206,7 +206,7 @@
                     Help
                   </paper-icon-item>
                   </a>
-                  <iron-selector selected="[[page]]" attr-for-selected="name">
+                  <iron-selector selected="[[routeData.page]]" attr-for-selected="name">
                   <a href="/setting">
                   <paper-icon-item class="menu-item" name="settings">
                     <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
@@ -225,12 +225,12 @@
             </template>
           </app-toolbar>
         </app-header>
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
-          <view-dashboard name="dashboard" route="[[subroute]]" ></view-dashboard>
-          <view-setup name="setup" route="[[subroute]]" ></view-setup>
-          <view-planning name="planning" route="[[subroute]]" ></view-planning>
-          <view-tracking name="tracking" route="[[subroute]]" ></view-tracking>
-          <view-controlling name="controlling" route="[[subroute]]" ></view-controlling>
+        <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+          <view-dashboard name="dashboard" route="{{subroute}}" ></view-dashboard>
+          <view-setup name="setup" route="{{subroute}}" ></view-setup>
+          <view-planning name="planning" route="{{subroute}}" ></view-planning>
+          <view-tracking name="tracking" route="{{subroute}}" ></view-tracking>
+          <view-controlling name="controlling" route="{{subroute}}" ></view-controlling>
           <view-404 name="404" ></view-404>
           <view-setting name="setting"></view-setting>
         </iron-pages>
@@ -263,7 +263,7 @@
         this.async(function() {
           // If the path is blank, redirect to /
           if (!this.route.path) {
-            this.set('route.path', '/dashboard');
+            this.set('routeData.page', 'dashboard');
           }
         });
       },
@@ -303,6 +303,7 @@
         .then(response => {
           // console.info(JSON.stringify(response) + "Login successful");
           //redirect
+           this.set('routeData.page', 'dashboard');
         })
         .catch(error => {
           alert("Authenticate Failed: " + error.message);

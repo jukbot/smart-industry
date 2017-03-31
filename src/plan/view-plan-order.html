@@ -97,7 +97,7 @@
               <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="name" selected-item='{{product}}' required always-float-label ></vaadin-combo-box>
               <vaadin-combo-box label="Size" name="size" items="[[product.size]]" id="sizeSelector" disabled="true" item-label-path="name" item-value-path="name" selected-item='{{size}}' required always-float-label></vaadin-combo-box>
               <vaadin-combo-box label="Color" name="color" items="[[product.color]]" id="colorSelector" disabled="true" item-label-path="name" item-value-path="name" selected-item='{{color}}' required always-float-label></vaadin-combo-box>              
-              <paper-dropdown-menu label="Machine" name="machine" id="machineSelector" disabled="true" selected-item="{{machine_list}}" required always-float-label>
+              <paper-dropdown-menu label="Machine" name="machine" id="machineSelector" disabled="true" required always-float-label>
               <paper-menu id="machineSelectorMenu" class="dropdown-content" multi selected-items="{{machine}}">
                 <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
                       <paper-item><paper-checkbox value="[[machineItem.code]]">[[machineItem.name]]</paper-checkbox></paper-item>
