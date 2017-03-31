@@ -110,10 +110,18 @@
         margin-top: 20px;
       }
         /* Phone and tablet */
-     #resizing-chart {
-      height: 300px;
-      width: 400px;
-    }
+      #resizing-chart {
+       height: 300px;
+       width: 400px;
+     }
+
+      input[readonly] {
+        border: 2px solid transparent;
+      }
+
+      input {
+        font: inherit;
+      }
     /* Desktop */
     @media screen and (min-width: 1024px) {
       #resizing-chart {
@@ -128,10 +136,10 @@
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
  
  <div class="card">
-    <h1>Order Scheduling Table</h1>
+    <h1>Order Scheduling Table</h1>     
     <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
     <paper-button raised class="chilli priority-btn" on-tap="togglePriority">Change</paper-button>
-   <vaadin-grid aria-label="Order Scheduling Table" on-active-item-changed="_onActiveItemChanged"  id="grid-objects-source">
+   <vaadin-grid aria-label="Order Scheduling Table" id="grid-objects-source">
   <table>
     <colgroup>
       <col>
@@ -158,7 +166,7 @@
         <th>Duration (Hrs.)</th>
         <th>Delivery date</th>
         <th>Edit</th>
-        <th>Delete</th>
+        <th><div>Delete</div></th>
       </tr>
     </thead>
     <tbody>
@@ -174,27 +182,28 @@
         <td>[[list.order_duration]]</td>
         <td>[[getDeliveryDate(list.order_delivery)]]</td>
         <td><paper-icon-button id="edit_[[list.$key]]" icon="vaadin:pencil" title="edit" on-tap="editOrder"></paper-icon-button></td>
-        <td><paper-icon-button id="[[list.$key]]" icon="vaadin:trash" title="delete" on-tap="deleteOrder"></paper-icon-button></td>
+        <td><paper-icon-button id="[[list.$key]]" icon="vaadin:trash" title="delete" on-tap="deleteOrder" ></paper-icon-button></td>
         </tr>   
        </template>
     </tbody>
-
   </table>
 </vaadin-grid>
- </div> 
-      <div class="card">
-      <h1>Daily Jobs Production Scheduling of [[today]]</h1>
+</div> 
+
+<div class="card">
+<h1>Daily Jobs Production Scheduling of [[today]]</h1>
+<vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderItems]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' required always-float-label></vaadin-combo-box>
 <vaadin-date-picker style="width: 300px;" name="workdate" always-float-label autoValidate
  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
- <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
-<google-chart id="timeline" type="timeline" style="width: 100%;" ></google-chart>
+
+<h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
+<google-chart id="timeline" type="timeline"></google-chart>
  </div>
  
-    <div class="wrap-card">
-      <div class="fixed-card card">
-        <h1>Job Priority Comparision</h1>
-   <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
-
+  <div class="wrap-card">
+  <div class="fixed-card card">
+  <h1>Job Priority Comparision</h1>
+  <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
   
  <google-chart id="resizing-chart"
     type="column"
@@ -224,11 +233,12 @@
   <script>
     Polymer({
       is: 'view-plan-scheduling',
-      attached: function() { 
+      attached: function(order) { 
   // create an instance with createElement: 
-   
+
   google.charts.load("current", {packages:["timeline"]});
   google.charts.setOnLoadCallback(drawChart);
+
   function drawChart() {
     var container = document.querySelector('#timeline');
     var chart = new google.visualization.Timeline(container);
@@ -238,18 +248,43 @@
     dataTable.addColumn({ type: 'date', id: 'Start' });
     dataTable.addColumn({ type: 'date', id: 'End' });
     dataTable.addRows([
-      [ 'Magnolia Room', 'Beginning JavaScript',       new Date(0,0,0,12,0,0),  new Date(0,0,0,13,30,0) ],
-      [ 'Magnolia Room', 'Intermediate JavaScript',    new Date(0,0,0,14,0,0),  new Date(0,0,0,15,30,0) ],
-      [ 'Magnolia Room', 'Advanced JavaScript',        new Date(0,0,0,16,0,0),  new Date(0,0,0,17,30,0) ],
-      [ 'Willow Room',   'Beginning Google Charts',    new Date(0,0,0,12,30,0), new Date(0,0,0,14,0,0) ],
-      [ 'Willow Room',   'Intermediate Google Charts', new Date(0,0,0,14,30,0), new Date(0,0,0,16,0,0) ],
-      [ 'Willow Room',   'Advanced Google Charts',     new Date(0,0,0,16,30,0), new Date(0,0,0,18,0,0) ]]);
-
+      [ 'Station 6',  'Order 5',    new Date(2017,2,31,18,24,0), new Date(2017,2,31,19,42,0) ], 
+      [ 'Station 6',  'Order 4',    new Date(2017,2,31,19,42,0), new Date(2017,2,31,20,52,0) ],
+      [ 'Station 6',  'Order 6',    new Date(2017,3,1,1,24,0),   new Date(2017,3,1,2,52,0) ],
+      [ 'Station 6',  'Order 1',    new Date(2017,3,1,2,52,0),   new Date(2017,3,1,4,4,0) ],
+      [ 'Station 6',  'Order 2',    new Date(2017,3,1,4,4,0),   new Date(2017,3,1,5,39,0) ],
+]);
+    dataTable.addRows([
+      [ 'Station 5',  'Order 5',    new Date(2017,2,31,14,9,0),  new Date(2017,2,31,18,24,0) ],
+      [ 'Station 5',  'Order 6',    new Date(2017,2,31,17,1,0),  new Date(2017,3,1,1,24,0) ],
+]);
+    dataTable.addRows([
+      [ 'Station 4',  'Order 5',    new Date(2017,2,31,14,9,0),  new Date(2017,2,31,18,24,0) ],
+      [ 'Station 4',  'Order 1',    new Date(2017,3,1,4,45,0),  new Date(2017,3,1,12,10,0) ],
+      [ 'Station 4',  'Order 2',    new Date(2017,3,1,12,10,0),  new Date(2017,3,1,18,33,0) ],
+]);
+    dataTable.addRows([
+      [ 'Station 3',  'Order 5',    new Date(2017,2,31,12,46,0), new Date(2017,2,31,14,9,0) ],
+      [ 'Station 3',  'Order 6',    new Date(2017,2,31,15,9,0),  new Date(2017,2,31,17,1,0) ],
+      [ 'Station 3',  'Order 1',    new Date(2017,3,1,2,22,0),  new Date(2017,3,1,4,45,0) ],
+      [ 'Station 3',  'Order 2',    new Date(2017,3,1,9,12,0),  new Date(2017,3,1,11,27,0) ],
+]);
+    dataTable.addRows([
+      [ 'Station 2',  'Order 5',    new Date(2017,2,31,11,33,0), new Date(2017,2,31,12,46,0) ],
+      [ 'Station 2',  'Order 6',    new Date(2017,2,31,20,22,0), new Date(2017,2,31,22,45,0) ],
+]);
+    dataTable.addRows([
+      [ 'Station 1',  'Order 5',    new Date(2017,2,31,8,0,0),   new Date(2017,2,31,11,33,0) ],
+      [ 'Station 1',  'Order 4',    new Date(2017,2,31,11,33,0), new Date(2017,2,31,14,41,0) ],
+      [ 'Station 1',  'Order 6',    new Date(2017,2,31,14,41,0), new Date(2017,2,31,20,22,0) ],
+      [ 'Station 1',  'Order 1',    new Date(2017,2,31,20,22,0), new Date(2017,3,1,2,22,0) ],
+      [ 'Station 1',  'Order 2',    new Date(2017,3,1,2,22,0), new Date(2017,3,1,9,12,0) ],
+      [ 'Station 1',  'Order 3',    new Date(2017,3,1,9,12,0), new Date(2017,3,1,20,8,0) ],
+]);
     var options = {
-      timeline: { colorByRowLabel: true }
+      width: '100%'
     };
-
-    chart.draw(dataTable, options);
+    chart.draw(dataTable,options);
   }
 
       var media = window.matchMedia('(min-width: 1024px)'); 
@@ -287,7 +322,7 @@
           }
         };
     },
-   
+  
 
     getDeliveryDate: function (timestamp) {
           let today = new Date(timestamp*1000);
@@ -304,10 +339,14 @@
          return deliveryDate;
     },
 
-    deleteOrder: function(e) {
-       this.$.machineQuery.ref.child(e.target.id).remove();
+    deleteOrder: function (e) {
+       this.$.orderQuery.ref.child(e.target.id).remove();
+       alert("Delete order successfully");
     },
     
+    test: function () {
+      alert("test");
+    },
     togglePriority: function () {
         this.$.changePriorityDialog.open();
     },
@@ -321,9 +360,8 @@
          let value = this.$.priorityType.selected; 
          this.set('factoryStandard.priority', value);
     },
-    _onActiveItemChanged: function(e) {
-          this.$.grid.expandedItems = [e.detail.value];
-    },
+
+  
     properties: {
         productItems: {
           type: Object

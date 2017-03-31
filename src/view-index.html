@@ -165,7 +165,7 @@
         <div class="main-title" main-title>PRONTO</div>
         <div class="main-describe">Smart Industry Helper</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="[[routeData.page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
         <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> DASHBOARD</a>
         <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> SETUP</a>
         <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> PLAN</a>
@@ -206,7 +206,7 @@
                     Help
                   </paper-icon-item>
                   </a>
-                  <iron-selector selected="[[routeData.page]]" attr-for-selected="name">
+                  <iron-selector selected="[[page]]" attr-for-selected="name">
                   <a href="/setting">
                   <paper-icon-item class="menu-item" name="settings">
                     <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
@@ -305,10 +305,8 @@
           //redirect
         })
         .catch(error => {
-          let errorCode = error.code;
-          let errorMessage = error.message;
-          alert("Authenticate Failed: " + errorMessage);
-          console.log("Authenticate Failed: " + errorCode);
+          alert("Authenticate Failed: " + error.message);
+          console.log("Authenticate Failed: " + error.code);
         });
       },
       // Signout Action
@@ -319,10 +317,8 @@
           console.info("Logout successful");
         })
         .catch(error => {
-          let errorCode = error.code;
-          let errorMessage = error.message;
-          alert("Authenticate Failed: " + errorMessage);
-          console.log("Authenticate Failed: " + errorCode);
+          alert("Authenticate Failed: " + error.message);
+          console.log("Authenticate Failed: " + error.code);
         });
       },
       // Redirect to Register page
@@ -333,6 +329,7 @@
       // Handle Error
       handleError: function(e) {
         console.info("Authenticate error:" + e.message);
+
       },
      });
   </script>

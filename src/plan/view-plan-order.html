@@ -91,7 +91,7 @@
       <li>
         <div class="card">
           <h1>Create Order</h1>
-              <paper-input label="Order Number" name="order-no" id="orderNumber" value="[[maxOrderNo]]" type="number" min="0" step="1" allowed-pattern="[0-9]"  required always-float-label auto-validate></paper-input>
+              <paper-input label="Order Number" name="order-no" id="orderNumber" value="[[maxOrderNo(orderQuery)]]" type="number" min="0" step="1" allowed-pattern="[0-9]"  required always-float-label auto-validate></paper-input>
               <paper-input label="Customer Name" name="order-name" type="text" id="customerName" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
               <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="name" selected-item='{{product}}' required always-float-label ></vaadin-combo-box>
@@ -126,7 +126,7 @@
                 <p>Estimate Duration (Hrs): <span id="estimateDuration">[[calLeadTime(size.cycle, size.setup, amount)]]</span></p>
                 <p>Total Setup Duration (Hrs): <span id="setupDuration">[[calSetupTime(size.setup)]]</span></p>
                 <p>Order Workload: <span id="orderWorkload">[[calWorkLoad(factoryPerformance.aw, size.cycle, size.setup, amount, machine)]]</span></p>
-                <p>Raw Material Use: <span id="rawMaterial">[[machine_list]]</span></p>
+                <p>Raw Material Use: <span id="rawMaterial"></span></p>
                 <p>Operation hours: <span id="operationHours">[[calOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</span></p>
         </div>
       </li>
@@ -261,6 +261,7 @@
             if (!cycle || !amount) return '';
             let leadTime = 0;
             leadTime = this.calCycleTime(cycle,amount) + this.calSetupTime(setup); // second to hours
+            console.log(leadTime);
             leadTime = Math.round(leadTime,2);
             return leadTime; 
           //  let str_array = process.split(',');
@@ -283,7 +284,7 @@
           let cycletime = 0; // total working time each process of the product
           let leadtime  = 0; // total setup + working duration each process of the product
           let timestamp = 0; // time stamp of estimate delivery date
-          
+          let arr = [];
           if(orderSize === 0) {
              timestamp = (Math.round(new Date().getTime()/1000.0)); // if order list is empty set time stamp to now
           }
@@ -291,12 +292,10 @@
               console.log(order);
               for (let g in order) {
               let arr = Object.values(order[g].order_quantity);
-              let min = Math.min(...arr);
-              let max = Math.max(...arr);
-              };
-              console.log("Max order quantity is" + max )
+            };
+            console.log(arr);
               this.calLeadTime(cycle,setup,amount);
-              var deliveryDate = "";
+              let deliveryDate = "";
               //console.log(JSON.stringify(order));
               //console.log(Object.getOwnPropertyNames(order).length == 0);
           //    let t = new Date(estdelivery_stp);
@@ -334,7 +333,7 @@
         let cycleTime = this.calCycleTime(cycle, 1);
         let setupTime = this.calSetupTime(setup);
         let workload = Math.ceil(amount*(cycleTime+setupTime));
-        return workload;
+        return workload/3;
      },
 
      calUsedMachine: function (g) {
@@ -349,8 +348,15 @@
         return selectedMachine;
      },
 
-     maxOrderNo: function () {
-        return "FUCKORDER"
+     maxOrderNo: function (maxOrderNo) {
+        if(!maxOrderNo) return 1;
+       // console.log(JSON.stringify(maxOrderNo));
+        //let obj = maxOrderNo;
+        //let arr = Object.values(obj.order_no);
+        //let min = Math.min(...arr);
+        //let max = Math.max(...arr);
+        //console.log(max);
+        return 1;
      },
 
       properties: {
