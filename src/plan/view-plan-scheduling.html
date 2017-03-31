@@ -45,25 +45,6 @@
        color: red;
        margin-left: 10px;
        }
-       /* sort queue */
-      sortable-list div {
-        background-color: #ddd;
-        display: inline-block;
-        height: 100px;
-        margin: 10px 10px 0 0;
-        text-align: center;
-        vertical-align: top;
-        width: 150px;
-      }
-      
-      sortable-list div img {
-        height: 100%;
-        width: auto;
-      } 
-
-     .order-info p {
-        margin: 10px 0;
-      }
 
      .priority-btn {
        width: 150px;
@@ -88,11 +69,6 @@
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14);
         font-size: 20px;
       }
-
-      img {
-        width: 80px;
-        height: 80px;
-      }
      
      .priority-dialog-title {
        font-size: 1.25rem;
@@ -112,8 +88,9 @@
         /* Phone and tablet */
       #timeline {
        margin-top: 20px;
-       height: 400px;
-       width: 100%;
+        width: 100%;
+        min-height: 100%;
+        height: auto;
      }
 
       input[readonly] {
@@ -123,14 +100,6 @@
       input {
         font: inherit;
       }
-    /* Desktop */
-    @media screen and (min-width: 1024px) {
-      #timeline {
-        width: 100%;
-        min-height: 500px;
-      }
-    }
-
     </style>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderItems}}" order-by-child="{{orderType(factoryStandard.priority)}}" order-by-value="true"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
