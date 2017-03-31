@@ -18,13 +18,188 @@
   <meta name="msapplication-TileColor" content="#3333333">
   <meta name="msapplication-tap-highlight" content="no">
   <link rel="icon" href="/images/favicon.png">
-  <link rel="stylesheet" type="text/css" href="styles.css">
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
   <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
   <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
   <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
   <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
+  <style>
+  html {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Roboto', 'Noto', sans-serif;
+    color: #333333;
+    background-color: #f1f1f1;
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+.loader,
+.loader__figure {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.loader {
+    overflow: visible;
+    padding-top: 2em;
+    height: 0;
+    width: 2em;
+}
+
+.loader__figure {
+    height: 0;
+    width: 0;
+    box-sizing: border-box;
+    border: 0 solid #333333;
+    border-radius: 50%;
+    -webkit-animation: loader-figure 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    -moz-animation: loader-figure 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation: loader-figure 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.loader__label {
+    float: left;
+    margin-left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+    margin: 0.5em 0 0 50%;
+    font-size: 1.2em;
+    font-weight: 300;
+    line-height: 1.5;
+    color: #333333;
+    white-space: nowrap;
+    -webkit-animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    -moz-animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+@-webkit-keyframes loader-figure {
+    0% {
+        height: 0;
+        width: 0;
+        background-color: #333333;
+    }
+    29% {
+        background-color: #333333;
+    }
+    30% {
+        height: 2em;
+        width: 2em;
+        background-color: transparent;
+        border-width: 1em;
+        opacity: 1;
+    }
+    100% {
+        height: 2em;
+        width: 2em;
+        border-width: 0;
+        opacity: 0;
+        background-color: transparent;
+    }
+}
+
+@-moz-keyframes loader-figure {
+    0% {
+        height: 0;
+        width: 0;
+        background-color: #333333;
+    }
+    29% {
+        background-color: #333333;
+    }
+    30% {
+        height: 2em;
+        width: 2em;
+        background-color: transparent;
+        border-width: 1em;
+        opacity: 1;
+    }
+    100% {
+        height: 2em;
+        width: 2em;
+        border-width: 0;
+        opacity: 0;
+        background-color: transparent;
+    }
+}
+
+@keyframes loader-figure {
+    0% {
+        height: 0;
+        width: 0;
+        background-color: #333333;
+    }
+    29% {
+        background-color: #333333;
+    }
+    30% {
+        height: 2em;
+        width: 2em;
+        background-color: transparent;
+        border-width: 1em;
+        opacity: 1;
+    }
+    100% {
+        height: 2em;
+        width: 2em;
+        border-width: 0;
+        opacity: 0;
+        background-color: transparent;
+    }
+}
+
+@-webkit-keyframes loader-label {
+    0% {
+        opacity: 0.25;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.25;
+    }
+}
+
+@-moz-keyframes loader-label {
+    0% {
+        opacity: 0.25;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.25;
+    }
+}
+
+@keyframes loader-label {
+    0% {
+        opacity: 0.25;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.25;
+    }
+}
+  </style>
   <script>
       window.Polymer = {
         dom: 'shadow',
@@ -54,7 +229,7 @@
         if (!webComponentsSupported) {
           var script = document.createElement('script');
           script.async = true;
-          script.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+          script.src = '/bower_components/webcomponentsjs/webcomponents-lite.js';
           script.onload = onload;
           document.head.appendChild(script);
         } else {
