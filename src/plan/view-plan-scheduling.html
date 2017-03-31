@@ -110,9 +110,10 @@
         margin-top: 20px;
       }
         /* Phone and tablet */
-      #resizing-chart {
-       height: 300px;
-       width: 400px;
+      #timeline {
+       margin-top: 20px;
+       height: 400px;
+       width: 100%;
      }
 
       input[readonly] {
@@ -124,8 +125,9 @@
       }
     /* Desktop */
     @media screen and (min-width: 1024px) {
-      #resizing-chart {
-        width: 800px;
+      #timeline {
+        width: 100%;
+        min-height: 500px;
       }
     }
 
@@ -192,12 +194,10 @@
 
 <div class="card">
 <h1>Daily Jobs Production Scheduling of [[today]]</h1>
-<vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderItems]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' required always-float-label></vaadin-combo-box>
-<vaadin-date-picker style="width: 300px;" name="workdate" always-float-label autoValidate
- min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"></vaadin-date-picker>
-
 <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
-<google-chart id="timeline" type="timeline"></google-chart>
+<vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderItems]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
+<vaadin-date-picker style="width: 300px;" name="workdate"  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector" always-float-label></vaadin-date-picker>
+<google-chart id="timeline" type="timeline" class="chart"></google-chart>
  </div>
  
   <div class="wrap-card">
@@ -233,7 +233,7 @@
   <script>
     Polymer({
       is: 'view-plan-scheduling',
-      attached: function(order) { 
+      created: function(order) { 
   // create an instance with createElement: 
 
   google.charts.load("current", {packages:["timeline"]});
@@ -250,22 +250,24 @@
     dataTable.addRows([
       [ 'Station 6',  'Order 5',    new Date(2017,2,31,18,24,0), new Date(2017,2,31,19,42,0) ], 
       [ 'Station 6',  'Order 4',    new Date(2017,2,31,19,42,0), new Date(2017,2,31,20,52,0) ],
-      [ 'Station 6',  'Order 6',    new Date(2017,3,1,1,24,0),   new Date(2017,3,1,2,52,0) ],
-      [ 'Station 6',  'Order 1',    new Date(2017,3,1,2,52,0),   new Date(2017,3,1,4,4,0) ],
-      [ 'Station 6',  'Order 2',    new Date(2017,3,1,4,4,0),   new Date(2017,3,1,5,39,0) ],
+      [ 'Station 6',  'Order 6',    new Date(2017,3,1,9,40,0),   new Date(2017,3,1,11,8,0) ],
+      [ 'Station 6',  'Order 1',    new Date(2017,3,1,12,10,0),   new Date(2017,3,1,13,22,0) ],
+      [ 'Station 6',  'Order 2',    new Date(2017,3,1,18,33,0),   new Date(2017,3,1,20,8,0) ],
+      [ 'Station 6',  'Order 3',    new Date(2017,3,2,2,8,0),  new Date(2017,3,2,4,43,0) ],
 ]);
     dataTable.addRows([
       [ 'Station 5',  'Order 5',    new Date(2017,2,31,14,9,0),  new Date(2017,2,31,18,24,0) ],
-      [ 'Station 5',  'Order 6',    new Date(2017,2,31,17,1,0),  new Date(2017,3,1,1,24,0) ],
+      [ 'Station 5',  'Order 6',    new Date(2017,3,1,1,37,0),  new Date(2017,3,1,9,40,0) ],
 ]);
     dataTable.addRows([
-      [ 'Station 4',  'Order 5',    new Date(2017,2,31,14,9,0),  new Date(2017,2,31,18,24,0) ],
+      [ 'Station 4',  'Order 4',    new Date(2017,2,31,14,41,0),  new Date(2017,2,31,16,42,0) ],
       [ 'Station 4',  'Order 1',    new Date(2017,3,1,4,45,0),  new Date(2017,3,1,12,10,0) ],
       [ 'Station 4',  'Order 2',    new Date(2017,3,1,12,10,0),  new Date(2017,3,1,18,33,0) ],
+      [ 'Station 4',  'Order 3',    new Date(2017,3,1,20,8,0), new Date(2017,3,2,2,8,0) ],
 ]);
     dataTable.addRows([
       [ 'Station 3',  'Order 5',    new Date(2017,2,31,12,46,0), new Date(2017,2,31,14,9,0) ],
-      [ 'Station 3',  'Order 6',    new Date(2017,2,31,15,9,0),  new Date(2017,2,31,17,1,0) ],
+      [ 'Station 3',  'Order 6',    new Date(2017,2,31,22,45,0),  new Date(2017,3,1,1,37,0) ],
       [ 'Station 3',  'Order 1',    new Date(2017,3,1,2,22,0),  new Date(2017,3,1,4,45,0) ],
       [ 'Station 3',  'Order 2',    new Date(2017,3,1,9,12,0),  new Date(2017,3,1,11,27,0) ],
 ]);
@@ -282,6 +284,7 @@
       [ 'Station 1',  'Order 3',    new Date(2017,3,1,9,12,0), new Date(2017,3,1,20,8,0) ],
 ]);
     var options = {
+      title: 'Jobs Schedule Timeline',
       width: '100%'
     };
     chart.draw(dataTable,options);
@@ -289,7 +292,7 @@
 
       var media = window.matchMedia('(min-width: 1024px)'); 
       media.addListener(function() { 
-      document.querySelector('#resizing-chart').redraw(); 
+      document.querySelector('#timeline').redraw(); 
       }); 
   },
       ready: function() {
