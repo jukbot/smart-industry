@@ -239,6 +239,11 @@
   google.charts.load("current", {packages:["timeline"]});
   google.charts.setOnLoadCallback(drawChart);
 
+  var media = window.matchMedia('(min-width: 1024px)'); 
+   media.addListener(function() { 
+   document.querySelector('#timeline').redraw(); 
+    }); 
+    
   function drawChart() {
     var container = document.querySelector('#timeline');
     var chart = new google.visualization.Timeline(container);
@@ -248,40 +253,41 @@
     dataTable.addColumn({ type: 'date', id: 'Start' });
     dataTable.addColumn({ type: 'date', id: 'End' });
     dataTable.addRows([
-      [ 'Station 6',  'Order 5',    new Date(2017,2,31,18,24,0), new Date(2017,2,31,19,42,0) ], 
-      [ 'Station 6',  'Order 4',    new Date(2017,2,31,19,42,0), new Date(2017,2,31,20,52,0) ],
-      [ 'Station 6',  'Order 6',    new Date(2017,3,1,9,40,0),   new Date(2017,3,1,11,8,0) ],
-      [ 'Station 6',  'Order 1',    new Date(2017,3,1,12,10,0),   new Date(2017,3,1,13,22,0) ],
-      [ 'Station 6',  'Order 2',    new Date(2017,3,1,18,33,0),   new Date(2017,3,1,20,8,0) ],
-      [ 'Station 6',  'Order 3',    new Date(2017,3,2,2,8,0),  new Date(2017,3,2,4,43,0) ],
+
+      [ 'Station 6',  'Order 4',    new Date(2017,2,31,14,16,0), new Date(2017,2,31,14,23,0) ],
+      [ 'Station 6',  'Order 5',    new Date(2017,2,31,21,32,0), new Date(2017,2,31,22,50,0) ], 
+      [ 'Station 6',  'Order 1',    new Date(2017,3,1,6,34,0),   new Date(2017,3,1,7,46,0) ],
+      [ 'Station 6',  'Order 2',    new Date(2017,3,1,12,59,0),   new Date(2017,3,1,14,34,0) ],
+      [ 'Station 6',  'Order 3',    new Date(2017,3,1,20,27,0),  new Date(2017,3,1,23,2,0) ],
+      [ 'Station 6',  'Order 6',    new Date(2017,3,2,13,4,0),   new Date(2017,3,2,14,32,0) ],
 ]);
     dataTable.addRows([
-      [ 'Station 5',  'Order 5',    new Date(2017,2,31,14,9,0),  new Date(2017,2,31,18,24,0) ],
-      [ 'Station 5',  'Order 6',    new Date(2017,3,1,1,37,0),  new Date(2017,3,1,9,40,0) ],
+      [ 'Station 5',  'Order 5',    new Date(2017,2,31,17,17,0),  new Date(2017,2,31,21,32,0) ],
+      [ 'Station 5',  'Order 6',    new Date(2017,3,2,4,41,0),  new Date(2017,3,2,13,4,0) ],
 ]);
     dataTable.addRows([
-      [ 'Station 4',  'Order 4',    new Date(2017,2,31,14,41,0),  new Date(2017,2,31,16,42,0) ],
-      [ 'Station 4',  'Order 1',    new Date(2017,3,1,4,45,0),  new Date(2017,3,1,12,10,0) ],
-      [ 'Station 4',  'Order 2',    new Date(2017,3,1,12,10,0),  new Date(2017,3,1,18,33,0) ],
-      [ 'Station 4',  'Order 3',    new Date(2017,3,1,20,8,0), new Date(2017,3,2,2,8,0) ],
+      [ 'Station 4',  'Order 4',    new Date(2017,2,31,11,8,0),  new Date(2017,2,31,14,16,0) ],
+      [ 'Station 4',  'Order 1',    new Date(2017,2,31,23,9,0),  new Date(2017,3,1,6,34,0) ],
+      [ 'Station 4',  'Order 2',    new Date(2017,3,1,6,34,0),  new Date(2017,3,1,12,59,0) ],
+      [ 'Station 4',  'Order 3',    new Date(2017,3,1,14,27,0), new Date(2017,3,1,20,27,0) ],
 ]);
     dataTable.addRows([
-      [ 'Station 3',  'Order 5',    new Date(2017,2,31,12,46,0), new Date(2017,2,31,14,9,0) ],
-      [ 'Station 3',  'Order 6',    new Date(2017,2,31,22,45,0),  new Date(2017,3,1,1,37,0) ],
-      [ 'Station 3',  'Order 1',    new Date(2017,3,1,2,22,0),  new Date(2017,3,1,4,45,0) ],
-      [ 'Station 3',  'Order 2',    new Date(2017,3,1,9,12,0),  new Date(2017,3,1,11,27,0) ],
+      [ 'Station 3',  'Order 5',    new Date(2017,2,31,15,54,0), new Date(2017,2,31,17,17,0) ],
+      [ 'Station 3',  'Order 1',    new Date(2017,2,31,20,41,0),  new Date(2017,2,31,23,9,0) ],
+      [ 'Station 3',  'Order 2',    new Date(2017,3,1,3,31,0),  new Date(2017,3,1,5,46,0) ],
+      [ 'Station 3',  'Order 6',    new Date(2017,3,2,1,49,0),  new Date(2017,3,2,4,41,0) ],
 ]);
     dataTable.addRows([
-      [ 'Station 2',  'Order 5',    new Date(2017,2,31,11,33,0), new Date(2017,2,31,12,46,0) ],
-      [ 'Station 2',  'Order 6',    new Date(2017,2,31,20,22,0), new Date(2017,2,31,22,45,0) ],
+      [ 'Station 2',  'Order 5',    new Date(2017,2,31,14,41,0), new Date(2017,2,31,15,54,0) ],
+      [ 'Station 2',  'Order 6',    new Date(2017,3,1,20,8,0), new Date(2017,3,2,1,49,0) ],
 ]);
     dataTable.addRows([
-      [ 'Station 1',  'Order 5',    new Date(2017,2,31,8,0,0),   new Date(2017,2,31,11,33,0) ],
-      [ 'Station 1',  'Order 4',    new Date(2017,2,31,11,33,0), new Date(2017,2,31,14,41,0) ],
-      [ 'Station 1',  'Order 6',    new Date(2017,2,31,14,41,0), new Date(2017,2,31,20,22,0) ],
-      [ 'Station 1',  'Order 1',    new Date(2017,2,31,20,22,0), new Date(2017,3,1,2,22,0) ],
-      [ 'Station 1',  'Order 2',    new Date(2017,3,1,2,22,0), new Date(2017,3,1,9,12,0) ],
-      [ 'Station 1',  'Order 3',    new Date(2017,3,1,9,12,0), new Date(2017,3,1,20,8,0) ],
+      [ 'Station 1',  'Order 4',    new Date(2017,2,31,8,0,0),   new Date(2017,2,31,11,8,0) ],
+      [ 'Station 1',  'Order 5',    new Date(2017,2,31,11,8,0), new Date(2017,2,31,14,41,0) ],
+      [ 'Station 1',  'Order 1',    new Date(2017,2,31,14,41,0), new Date(2017,2,31,20,41,0) ],
+      [ 'Station 1',  'Order 2',    new Date(2017,2,31,20,41,0), new Date(2017,3,1,3,31,0) ],
+      [ 'Station 1',  'Order 3',    new Date(2017,3,1,3,31,0), new Date(2017,3,1,14,27,0) ],
+      [ 'Station 1',  'Order 6',    new Date(2017,3,1,14,27,0), new Date(2017,3,1,20,8,0) ],
 ]);
     var options = {
       title: 'Jobs Schedule Timeline',
@@ -290,10 +296,6 @@
     chart.draw(dataTable,options);
   }
 
-      var media = window.matchMedia('(min-width: 1024px)'); 
-      media.addListener(function() { 
-      document.querySelector('#timeline').redraw(); 
-      }); 
   },
       ready: function() {
          Sugar.Date.setLocale('en-GB');
@@ -347,9 +349,6 @@
        alert("Delete order successfully");
     },
     
-    test: function () {
-      alert("test");
-    },
     togglePriority: function () {
         this.$.changePriorityDialog.open();
     },
@@ -360,7 +359,7 @@
         else return "";
     },
     savePriority: function () {
-         let value = this.$.priorityType.selected; 
+         let value = this.$.priorityTypeSelector.selected; 
          this.set('factoryStandard.priority', value);
     },
 
