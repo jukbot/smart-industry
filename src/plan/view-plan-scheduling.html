@@ -165,7 +165,7 @@
 <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
 <vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderItems]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
 <vaadin-date-picker style="width: 300px;" name="workdate"  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector" always-float-label></vaadin-date-picker>
-<h1>Selected job: [[o]]</h1>
+<h1>Selected job: [[o.order_no]]</h1>
 <google-chart id="timeline" type="timeline" class="chart"></google-chart>
  </div>
  
@@ -202,9 +202,9 @@
   <script>
     Polymer({
       is: 'view-plan-scheduling',
-      created: function(order) { 
+      attached: function(order) { 
   // create an instance with createElement: 
-
+ console.log(this.orderItems);
   google.charts.load("current", {packages:["timeline"]});
   google.charts.setOnLoadCallback(drawChart);
 
@@ -332,7 +332,6 @@
          this.set('factoryStandard.priority', value);
     },
 
-  
     properties: {
         productItems: {
           type: Object
@@ -346,7 +345,7 @@
         factoryStandard: {
           type: Object
         },
-        orderQuery: {
+        orderItems: {
           type: Object
         },
         priority: {

@@ -108,6 +108,39 @@
   <script>
     Polymer({
       is: 'view-setup-factory',
+      properties: {
+        factoryStandard: {
+          type: Object
+        },
+        factoryOperation: {
+          type: Object
+        },
+        factoryPerformance: {
+          type: Object
+        },
+        test: {
+          type: String,
+          value: 'fuck'
+        },
+        factoryType: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'Job Shop',
+                value: 'JS',
+              },
+              {
+                name: 'Flow Shop',
+                value: 'FS',
+              },
+              {
+                name: 'Hybrid (Job + Flow)',
+                value: 'HB'
+              }
+            ]
+          }
+        }
+      },
       saveValue: function () {
         let fc = this.$.factoryName.value;
         let ft = this.$.factoryType.value;
@@ -141,38 +174,10 @@
         this.$.scheduleInterval.value = 7;
       },
       operationDay: function (number) {
-        console.log(this.factoryOperation);
-        return true;
+         console.log("op day test: " + this.test);
+       // return true;
       },
-      properties: {
-        factoryStandard: {
-          type: Object
-        },
-        factoryOperation: {
-          type: Object
-        },
-        factoryPerformance: {
-          type: Object
-        },
-        factoryType: {
-          type: Array,
-          value: function () {
-            return [{
-                name: 'Job Shop',
-                value: 'JS',
-              },
-              {
-                name: 'Flow Shop',
-                value: 'FS',
-              },
-              {
-                name: 'Hybrid (Job + Flow)',
-                value: 'HB'
-              }
-            ]
-          }
-        }
-      }
+
     });
   </script>
 </dom-module>
