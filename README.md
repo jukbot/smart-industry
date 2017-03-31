@@ -14,7 +14,8 @@ While a majority of Thailand still utilizes Industry 2.0, it still lacks the sup
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
 
 ## System Requirement
-Operation System
+
+### Operation System
 - Windows 7 
 - Windows 8, 8.1
 - Windows 10
@@ -22,7 +23,7 @@ Operation System
 - Ubuntu 14.04, 16.04
 - CentOS 7.2
 
-Browsers
+### Browsers
 - Google Chrome 57
 - Firefox 52
 - Opera 44
