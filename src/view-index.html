@@ -59,6 +59,12 @@
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-index">
   <template>
+    <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
+      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
+    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <style include="shared-styles">  
       :host {
         display: block;
@@ -151,13 +157,6 @@
         border-bottom: 1px solid #d6d6d6;
       }
     </style>
-    <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
-      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
-    <!-- app-location binds to the app's URL -->
-    <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <app-drawer-layout fullbleed>
        <app-drawer id="drawer" slot="drawer" swipe-open>
         <div style="height: 100%; overflow: auto;">
@@ -261,7 +260,6 @@
       },
       ready: function() {
         this.async(function() {
-          // If the path is blank, redirect to /
           if (!this.route.path) {
             this.set('routeData.page', 'dashboard');
           }
@@ -301,9 +299,8 @@
       _login: function () {
         this.$.auth.signInWithPopup()
         .then(response => {
-          // console.info(JSON.stringify(response) + "Login successful");
           //redirect
-           this.set('routeData.page', 'dashboard');
+           this.set('route.path', 'dashboard');
         })
         .catch(error => {
           alert("Authenticate Failed: " + error.message);
@@ -325,7 +322,7 @@
       // Redirect to Register page
       _register: function() {
         this.page = 'register';
-        this.set('route.path', '/register');
+        this.set('route.path', 'register');
       },
       // Handle Error
       handleError: function(e) {

@@ -3,7 +3,7 @@
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="dashboard/view-dashboard-overview.html">
 <link rel="import" href="dashboard/view-dashboard-notification.html">
-<link rel="import" href="dashboard/view-dashboard-report.html">
+<link rel="import" href="dashboard/view-dashboard-statistic.html">
 <dom-module id="view-dashboard">
     <template>
     <style include="shared-styles">
@@ -35,7 +35,7 @@
           <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
           <view-dashboard-overview name="overview"></view-dashboard-overview>
           <view-dashboard-notification name="notification"></view-dashboard-notification>
-          <view-dashboard-report name="report"></view-dashboard-report>
+          <view-dashboard-statistic name="statistic"></view-dashboard-statistic>
          </iron-pages> 
         </app-header-layout>  
   </template>
@@ -63,8 +63,8 @@
                 'icon': 'vaadin:bell-o'
               },
               {
-                'title': 'REPORT',
-                'view': 'report',
+                'title': 'STATISTIC',
+                'view': 'statistic',
                 'icon': 'vaadin:chart'
               }
             ];

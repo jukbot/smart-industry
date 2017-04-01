@@ -76,8 +76,7 @@
                 <paper-checkbox id="friday" checked="[[operationDay(5)]]" value="fri">Fri</paper-checkbox>
                 <paper-checkbox id="saturday" checked="[[operationDay(6)]]" value="sat">Sat</paper-checkbox>
               </div><br>
-              <!-- <paper-time-input label="Operation Start" name="opstart" id="opStart" value="{{opStart}}" required always-float-label auto-validate></paper-time-input> -->
-              
+              <!-- <paper-time-input label="Operation Start" name="opstart" id="opStart" value="{{opStart}}" required always-float-label auto-validate></paper-time-input> --> 
               <div class="button-group">
                 <paper-button raised class="fancy" on-tap="saveValue">Save</paper-button>
                 <paper-button raised class="burn" on-tap="resetValue">Restore</paper-button>
@@ -104,6 +103,20 @@
         </div>
       </li>
     </ul>
+  <div class="card">
+     <h1>Add Worker</h1>
+
+<paper-input label="First name" always-float-label></paper-input>
+<paper-input label="Last name" always-float-label></paper-input>
+<paper-input label="E-mail" type="email" always-float-label></paper-input>
+<paper-input label="Mobile" always-float-label></paper-input>
+<paper-input label="Position" always-float-label></paper-input>
+<paper-icon-button suffix onclick="clearInput()" icon="clear" alt="clear" title="clear"></paper-icon-button>
+<div class="button-group">
+<paper-button raised class="fancy" onclick="addWorker()">Add</paper-button>
+<paper-button raised class="smart" onclick="clear()">Clear</paper-button>
+</div>
+</div>
   </template>
   <script>
     Polymer({
@@ -175,7 +188,7 @@
       },
       operationDay: function (number) {
          console.log("op day test: " + this.test);
-       // return true;
+         return true;
       },
 
     });

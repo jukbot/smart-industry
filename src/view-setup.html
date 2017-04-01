@@ -6,7 +6,7 @@
 <link rel="import" href="setup/view-setup-inventory.html">
 <link rel="import" href="setup/view-setup-machine.html">
 <link rel="import" href="setup/view-setup-product.html">
-<link rel="import" href="setup/view-setup-worker.html">
+
 <dom-module id="view-setup">
   <template>
     <style include="shared-styles">
@@ -28,10 +28,10 @@
         </app-header>
           <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
           <view-setup-factory name="factory"></view-setup-factory>
-          <view-setup-customer name="customer"></view-setup-customer>
-          <view-setup-inventory name="inventory"></view-setup-inventory>
           <view-setup-machine name="machine"></view-setup-machine>
           <view-setup-product name="product"></view-setup-product>
+          <view-setup-customer name="customer"></view-setup-customer>
+          <view-setup-inventory name="inventory"></view-setup-inventory>
           <view-setup-worker name="worker"></view-setup-worker>
          </iron-pages> 
         </app-header-layout>  
@@ -55,16 +55,6 @@
                 'icon': 'vaadin:factory'
               },
               {
-                'title': 'CUSTOMER',
-                'view': 'customer',
-                'icon': 'vaadin:user-card'
-              },
-              {
-                'title': 'INVENTORY',
-                'view': 'inventory',
-                'icon': 'vaadin:storage'
-              },
-              {
                 'title': 'MACHINE',
                 'view': 'machine',
                 'icon': 'vaadin:automation'
@@ -73,6 +63,16 @@
                 'title': 'PRODUCT',
                 'view': 'product',
                 'icon': 'vaadin:barcode'
+              },
+              {
+                'title': 'CUSTOMER',
+                'view': 'customer',
+                'icon': 'vaadin:user-card'
+              },
+              {
+                'title': 'INVENTORY',
+                'view': 'inventory',
+                'icon': 'vaadin:storage'
               },
               {
                 'title': 'WORKER',
