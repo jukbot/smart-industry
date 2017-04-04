@@ -195,7 +195,7 @@
         <app-header slot="header" condenses fixed>
           <app-toolbar>
             <paper-icon-button icon="vaadin:menu" alt="menu" drawer-toggle></paper-icon-button>
-            <div class="page-title" main-title>[[page]]</div>
+            <div class="page-title title" main-title>[[page]]</div>
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-menu class="dropdown-content">
@@ -243,7 +243,7 @@
         page: {
           type: String,
           reflectToAttribute: true,
-          observer: '_pageChanged',
+          observer: '_pageChanged'
         },
         user: {
           type: Object
@@ -255,7 +255,7 @@
           type: Object
         },
         signedIn: {
-          type: Boolean,
+          type: Boolean
         },
       },
       ready: function() {
