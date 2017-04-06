@@ -55,7 +55,7 @@
               <vaadin-combo-box label="Factory Type" name="factory-type" id="factoryType" value="[[factoryOperation.type]]" items="[[factoryType]]" item-label-path="name" item-value-path="name" required always-float-label></vaadin-combo-box>
               <paper-input label="Acceptable Waste (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]"
                 type="number" min="0" max="1" step="0.01"  required always-float-label auto-validate></paper-input>
-              <paper-input label="Worker Utilization (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
+              <paper-input label="Working Utilization (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
                 type="number" min="0" max="100" step="5"  required always-float-label auto-validate></paper-input>
               <paper-input label="Operation start (xx:xx)" name="opstart" id="opStart" value="[[factoryOperation.op_start]]"
                required always-float-label auto-validate></paper-input>
@@ -65,7 +65,7 @@
                 required always-float-label auto-validate></paper-input>
               <paper-input label="Over Time end (xx:xx)" name="otend" id="otEnd" value="[[factoryOperation.ot_end]]"
                 required always-float-label auto-validate></paper-input>
-              <paper-input label="Reschedule Interval (days)" name="workerUtilize" id="scheduleInterval" value="[[factoryStandard.interval]]"
+              <paper-input label="Reschedule Interval (days)" name="rescheduleInterval" id="scheduleInterval" value="[[factoryStandard.interval]]"
                 type="number" min="1" max="30" step="1"  required always-float-label auto-validate></paper-input>
               <div id="operationDay">
                 <paper-checkbox id="sunday" checked="[[operationDay(0)]]" value="sun">Sun</paper-checkbox>
@@ -91,13 +91,13 @@
           <p>Factory Type: <span>[[factoryOperation.type]]</span></p>
           <p>Operation Start: <span>[[factoryOperation.op_start]] </span></p>
           <p>Operation End: <span>[[factoryOperation.op_end]]</span></p>
-          <p>OT Start: <span>[[factoryOperation.ot_start]]</span></p>
-          <p>OT End: <span>[[factoryOperation.ot_end]]</span></p>
+          <p>Overtime Start: <span>[[factoryOperation.ot_start]]</span></p>
+          <p>Overtime End: <span>[[factoryOperation.ot_end]]</span></p>
           <p>Operation Days: <span id="opWeek">[[factoryOperation.weekly]]</span></p>
           </div>
           <div class="card factory-rule">
           <h1>Factory Global Standard</h1>
-          <p>User Workload: <span>[[factoryPerformance.wu]] %</span></p>
+          <p>Working Utilization: <span>[[factoryPerformance.wu]] %</span></p>
           <p>Acceptable Waste: <span>[[factoryPerformance.aw]]</span></p>
           <p>Reschedule Interval: <span>[[factoryStandard.interval]]</span></p>
         </div>
@@ -111,10 +111,9 @@
 <paper-input label="E-mail" type="email" always-float-label></paper-input>
 <paper-input label="Mobile" always-float-label></paper-input>
 <paper-input label="Position" always-float-label></paper-input>
-<paper-icon-button suffix onclick="clearInput()" icon="clear" alt="clear" title="clear"></paper-icon-button>
 <div class="button-group">
-<paper-button raised class="fancy" onclick="addWorker()">Add</paper-button>
-<paper-button raised class="smart" onclick="clear()">Clear</paper-button>
+<paper-button raised class="fancy" onclick="addWorker" alt="add_worker" title="Add Worker">Add</paper-button>
+<paper-button raised class="smart" onclick="clear" alt="clear_add_worker" title="Clear field">Clear</paper-button>
 </div>
 </div>
   </template>

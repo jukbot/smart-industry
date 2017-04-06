@@ -49,8 +49,12 @@
       
     </style>
       <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
-      <div class="fixed-card card">
-        <h1>Production Block Simulation</h1>
+  <div class="card">
+    <h1>Simulation Machine</h1>
+     <div style="border: solid 1px #333333; margin-top:30px; width: 100%; height: 300px; overflow:hidden;"></div>
+  </div>
+      <div class="card">
+        <h1>Production Simulation</h1>
         <vaadin-combo-box label="Product" name="product"  items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name" item-value-path="name" selected-item='{{x}}' required always-float-label ></vaadin-combo-box>
         <vaadin-combo-box label="Size" name="size"  items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name" item-value-path="length"  required always-float-label></vaadin-combo-box>
         <vaadin-combo-box label="Load Plan" name="plan" items="" id="planSelector" on-tap="selectPlan" disabled="true" item-label-path="name" item-value-path="name"  required always-float-label></vaadin-combo-box>
@@ -58,10 +62,10 @@
 <vaadin-context-menu selector=".has-menu">
   <template>
     <paper-menu>
-      <paper-item>Setup</paper-item>
-      <paper-item>Add machine</paper-item>
-      <paper-item>Rename machine</paper-item>
-      <paper-item>Delete machine</paper-item>
+      <paper-item>Add station..</paper-item>
+      <paper-item>Add machine..</paper-item>
+      <paper-item disabled>Rename machine</paper-item>
+      <paper-item disabled>Delete machine</paper-item>
     </paper-menu>
   </template>  
   <div id="kk" class="has-menu" style="border: solid 1px #333333; margin-top:30px; width: 100%; height: 600px; overflow:hidden;"></div>
@@ -72,7 +76,7 @@
   </div>
    </div>
    
-    <div class="fixed-card card">
+    <div class="card">
       DEBUG CONSOLE
     <div>
       <button id="SaveButton" onclick="save()">Save</button>

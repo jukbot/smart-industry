@@ -12,19 +12,10 @@
         --app-grid-columns: 3;
         --app-grid-item-height: 50%;
       }
-       .flex-horizontal {
-        @apply(--layout-horizontal);
-       }
-       .flexchild {
-        @apply(--layout-flex);
-       }
-
     </style>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
-          <!-- Sub nav -->
           <app-toolbar sticky class="tabs-bar">
-            <!-- Nav on desktop: tabs -->
             <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
                 <paper-tab id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
@@ -71,12 +62,10 @@
           }
         }
       },
-
       _tabsChanged: function (tabs) {
         let resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html');
         this.importHref(resolvedTabsUrl, null, null, true); 
       }
-
     });
   </script>
 </dom-module>

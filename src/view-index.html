@@ -7,7 +7,6 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/common-worker.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
@@ -35,6 +34,7 @@
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
@@ -44,7 +44,6 @@
 <!-- 3rd party modules -->
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-database-behavior.html">
 <link rel="import" href="../bower_components/google-chart/google-chart.html">
 <link rel="import" href="../bower_components/material-progress/material-progress.html">
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
@@ -55,16 +54,10 @@
 <link rel="import" href="view-controlling.html">
 <link rel="import" href="view-tracking.html">
 <link rel="import" href="view-404.html">
-<link rel="import" href="view-setting.html">
+<link rel="import" href="view-settings.html">
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-index">
   <template>
-    <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
-      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
-    <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <style include="shared-styles">  
       :host {
         display: block;
@@ -157,14 +150,19 @@
         border-bottom: 1px solid #d6d6d6;
       }
     </style>
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+    <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
+      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
+    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <app-drawer-layout fullbleed>
        <app-drawer id="drawer" slot="drawer" swipe-open>
-        <div style="height: 100%; overflow: auto;">
         <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
         <div class="main-title" main-title>PRONTO</div>
         <div class="main-describe">Smart Industry Helper</div>
         <!-- sidebar hightlighter -->
-        <iron-selector selected="{{routeData.page}}" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
+        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
         <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> DASHBOARD</a>
         <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> SETUP</a>
         <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> PLAN</a>
@@ -188,7 +186,6 @@
           <p>Develop by: [[metadata.appDeveloper]]</p>
           </div>
         </template>
-        </div>
       </app-drawer>
 
       <app-header-layout fullbleed has-scrolling-region>
@@ -205,14 +202,10 @@
                     Help
                   </paper-icon-item>
                   </a>
-                  <iron-selector selected="[[routeData.page]]" attr-for-selected="name">
-                  <a href="/setting">
-                  <paper-icon-item class="menu-item" name="settings">
+                  <paper-icon-item class="menu-item" name="settings" on-tap="_goToSettings">
                     <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
                     Settings
                   </paper-icon-item>
-                  </a>
-                  </iron-selector>
                   <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
                     <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
                     Log Out
@@ -224,14 +217,14 @@
             </template>
           </app-toolbar>
         </app-header>
-        <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
-          <view-dashboard name="dashboard" route="{{subroute}}" ></view-dashboard>
-          <view-setup name="setup" route="{{subroute}}" ></view-setup>
-          <view-planning name="planning" route="{{subroute}}" ></view-planning>
-          <view-tracking name="tracking" route="{{subroute}}" ></view-tracking>
-          <view-controlling name="controlling" route="{{subroute}}" ></view-controlling>
-          <view-404 name="404" ></view-404>
-          <view-setting name="setting"></view-setting>
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+          <view-dashboard name="dashboard" route="{{subroute}}"></view-dashboard>
+          <view-setup name="setup" route="{{subroute}}"></view-setup>
+          <view-planning name="planning" route="{{subroute}}"></view-planning>
+          <view-tracking name="tracking" route="{{subroute}}"></view-tracking>
+          <view-controlling name="controlling" route="{{subroute}}"></view-controlling>
+          <view-settings name="settings" route="{{subroute}}"></view-settings>
+          <view-404 name="404" route="{{subroute}}"></view-404>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -258,19 +251,20 @@
           type: Boolean
         },
       },
-      ready: function() {
+      ready() {
         this.async(function() {
           if (!this.route.path) {
             this.set('routeData.page', 'dashboard');
           }
         });
+        
       },
 
       observers: [
         '_routePageChanged(routeData.page)',
       ],
 
-      _routePageChanged: function (page) {
+      _routePageChanged(page) {
         if (page === undefined) {
           return 'dashboard';
         }    
@@ -282,7 +276,7 @@
         }
       },
 
-      _pageChanged: function (page) { 
+      _pageChanged(page){ 
        let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
        this.importHref(
        resolvedPageUrl, 
@@ -291,12 +285,12 @@
        true);
       },
 
-      _showPage404: function () {
+      _showPage404() {
         this.page = '404';
       },
 
       // Signin Action
-      _login: function () {
+      _login() {
         this.$.auth.signInWithPopup()
         .then(response => {
           //redirect
@@ -308,7 +302,7 @@
         });
       },
       // Signout Action
-      _logout: function () {
+      _logout() {
         this.$.auth.signOut()
         .then(function () {
           alert("Signout successfully");
@@ -320,14 +314,14 @@
         });
       },
       // Redirect to Register page
-      _register: function() {
+      _register() {
         this.page = 'register';
         this.set('route.path', 'register');
       },
-      // Handle Error
-      handleError: function(e) {
-        console.info("Authenticate error:" + e.message);
 
+      // Handle Error
+      handleError(e) {
+        console.info("Authenticate error:" + e.message);
       },
      });
   </script>

@@ -18,14 +18,15 @@
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <app-toolbar sticky>
-            <!-- Nav on desktop: tabs -->
-            <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
+            <paper-tabs id="setupTabs" selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
+                <paper-tab id="{{item.view}}" disabled="{{item.disable}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
+          <paper-button raised class="chilli" on-tap="selectPrevTab">PREVIOUS</paper-button>
+          <paper-button raised class="water" on-tap="selectNextTab">NEXT</paper-button>
           <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
           <view-setup-factory name="factory"></view-setup-factory>
           <view-setup-machine name="machine"></view-setup-machine>
@@ -51,33 +52,45 @@
             return [{
                 'title': 'FACTORY',
                 'view': 'factory',
-                'icon': 'vaadin:factory'
+                'icon': 'vaadin:factory',
+                'disable': false
               },
               {
                 'title': 'MACHINE',
                 'view': 'machine',
-                'icon': 'vaadin:automation'
+                'icon': 'vaadin:automation',
+                'disable': false
               },
               {
                 'title': 'PRODUCT',
                 'view': 'product',
-                'icon': 'vaadin:barcode'
+                'icon': 'vaadin:barcode',
+                'disable': false
               },
               {
                 'title': 'CUSTOMER',
                 'view': 'customer',
-                'icon': 'vaadin:user-card'
+                'icon': 'vaadin:user-card',
+                'disable': false
               },
               {
                 'title': 'INVENTORY',
                 'view': 'inventory',
-                'icon': 'vaadin:storage'
+                'icon': 'vaadin:storage',
+                'disable': false
               }
             ];
           }
         }
       },
-
+      selectNextTab: function () {
+        var pages = this.$.setupTabs;
+        pages.selectNext();
+      },
+      selectPrevTab: function () {
+        var pages = this.$.setupTabs;
+        pages.selectPrevious();
+      },
        _tabsChanged: function (tabs) { 
        let resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
        this.importHref(resolvedTabsUrl, null, null, true);

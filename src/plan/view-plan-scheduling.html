@@ -165,13 +165,11 @@
 <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
 <vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderItems]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
 <vaadin-date-picker style="width: 300px;" name="workdate"  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector" always-float-label></vaadin-date-picker>
-<h1>Selected job: [[o.order_no]]</h1>
+<h1>Selected order: [[o.order_no]]</h1>
+<h1>Current total workload:</h1>
+<h1>Overtime order !!:</h1>
 
-<google-chart id="timeline" type="timeline" class="chart" cols="[[cols]]" rows="[[rows]]" 
-    options="{
-      'title': 'Jobs Schedule Timeline',
-      'width': '100%'
-    }"></google-chart>
+<google-chart id="timeline" type="timeline" class="chart" cols="[[cols()]]" rows="[[rows()]]"></google-chart>
  </div>
  
   <div class="wrap-card">
@@ -185,8 +183,8 @@
               "title": "Priority Comparision",
               "vAxis": {"minValue" : 0, "maxValue": 10}
               }'
-    cols='[{"label": "Priority", "type": "string"},{"label": "Duration", "type": "number"}]'
-    rows='[ ["EDD", 5],["SPT", 6] ]'>
+    cols='[[test_cols]]'
+    rows='[[test_rows]]'>
   </google-chart>
   
       </div>
@@ -237,74 +235,12 @@
             return Sugar.Date.create(dateString);
           }
         };
-    },
-  
-    /*
-     attached: function(order) { 
-  // create an instance with createElement: 
-  google.charts.load("current", {packages:["timeline"]});
-  google.charts.setOnLoadCallback(drawChart);
 
-  var media = window.matchMedia('(min-width: 1024px)'); 
+   let media = window.matchMedia('(min-width: 100%)'); 
    media.addListener(function() { 
    document.querySelector('#timeline').redraw(); 
     }); 
-    
-  function drawChart() {
-    var container = document.querySelector('#timeline');
-    var chart = new google.visualization.Timeline(container);
-    var dataTable = new google.visualization.DataTable();
-    dataTable.addColumn({ type: 'string', id: 'Order no.' });
-    dataTable.addColumn({ type: 'string', id: 'Name' });
-    dataTable.addColumn({ type: 'date', id: 'Start' });
-    dataTable.addColumn({ type: 'date', id: 'End' });
-    dataTable.addRows([
-
-      [ 'Station 6',  'Order 4',    new Date(2017,2,31,14,16,0), new Date(2017,2,31,14,23,0) ],
-      [ 'Station 6',  'Order 5',    new Date(2017,2,31,21,32,0), new Date(2017,2,31,22,50,0) ], 
-      [ 'Station 6',  'Order 1',    new Date(2017,3,1,6,34,0),   new Date(2017,3,1,7,46,0) ],
-      [ 'Station 6',  'Order 2',    new Date(2017,3,1,12,59,0),   new Date(2017,3,1,14,34,0) ],
-      [ 'Station 6',  'Order 3',    new Date(2017,3,1,20,27,0),  new Date(2017,3,1,23,2,0) ],
-      [ 'Station 6',  'Order 6',    new Date(2017,3,2,13,4,0),   new Date(2017,3,2,14,32,0) ],
-]);
-    dataTable.addRows([
-      [ 'Station 5',  'Order 5',    new Date(2017,2,31,17,17,0),  new Date(2017,2,31,21,32,0) ],
-      [ 'Station 5',  'Order 6',    new Date(2017,3,2,4,41,0),  new Date(2017,3,2,13,4,0) ],
-]);
-    dataTable.addRows([
-      [ 'Station 4',  'Order 4',    new Date(2017,2,31,11,8,0),  new Date(2017,2,31,14,16,0) ],
-      [ 'Station 4',  'Order 1',    new Date(2017,2,31,23,9,0),  new Date(2017,3,1,6,34,0) ],
-      [ 'Station 4',  'Order 2',    new Date(2017,3,1,6,34,0),  new Date(2017,3,1,12,59,0) ],
-      [ 'Station 4',  'Order 3',    new Date(2017,3,1,14,27,0), new Date(2017,3,1,20,27,0) ],
-]);
-    dataTable.addRows([
-      [ 'Station 3',  'Order 5',    new Date(2017,2,31,15,54,0), new Date(2017,2,31,17,17,0) ],
-      [ 'Station 3',  'Order 1',    new Date(2017,2,31,20,41,0),  new Date(2017,2,31,23,9,0) ],
-      [ 'Station 3',  'Order 2',    new Date(2017,3,1,3,31,0),  new Date(2017,3,1,5,46,0) ],
-      [ 'Station 3',  'Order 6',    new Date(2017,3,2,1,49,0),  new Date(2017,3,2,4,41,0) ],
-]);
-    dataTable.addRows([
-      [ 'Station 2',  'Order 5',    new Date(2017,2,31,14,41,0), new Date(2017,2,31,15,54,0) ],
-      [ 'Station 2',  'Order 6',    new Date(2017,3,1,20,8,0), new Date(2017,3,2,1,49,0) ],
-]);
-    dataTable.addRows([
-      [ 'Station 1',  'Order 4',    new Date(2017,2,31,8,0,0),   new Date(2017,2,31,11,8,0) ],
-      [ 'Station 1',  'Order 5',    new Date(2017,2,31,11,8,0), new Date(2017,2,31,14,41,0) ],
-      [ 'Station 1',  'Order 1',    new Date(2017,2,31,14,41,0), new Date(2017,2,31,20,41,0) ],
-      [ 'Station 1',  'Order 2',    new Date(2017,2,31,20,41,0), new Date(2017,3,1,3,31,0) ],
-      [ 'Station 1',  'Order 3',    new Date(2017,3,1,3,31,0), new Date(2017,3,1,14,27,0) ],
-      [ 'Station 1',  'Order 6',    new Date(2017,3,1,14,27,0), new Date(2017,3,1,20,8,0) ],
-]);
-    var options = {
-      title: 'Jobs Schedule Timeline',
-      width: '100%'
-    };
-    chart.draw(dataTable,options);
-  }
-
-  },
-
-  */
+    },
   
     getDeliveryDate: function (timestamp) {
           let today = new Date(timestamp*1000);
@@ -340,7 +276,7 @@
          this.set('factoryStandard.priority', value);
     },
 
-    cols: function () {
+  cols: function () {
       var x = [{ type: 'string', id: 'Order no.' },
                { type: 'string', id: 'Name' },
                { type: 'date', id: 'Start' },
@@ -349,7 +285,7 @@
       return x;
     },
 
-    rows: function () {
+   rows: function () {
       var y = [
       [ 'Station 6',  'Order 4',    new Date(2017,2,31,14,16,0), new Date(2017,2,31,14,23,0) ],
       [ 'Station 6',  'Order 5',    new Date(2017,2,31,21,32,0), new Date(2017,2,31,22,50,0) ], 
@@ -378,6 +314,25 @@
 ];
 return y;
     },
+
+test_cols: function(){
+  let k = [{"label": "Priority", "type": "string"},{"label": "Duration", "type": "number"}];
+  return k;
+},
+
+test_rows: function() {
+ let l = [ ["EDD", 5],["SPT", 6] ];
+ return l;
+},
+
+   attached: function(order) { 
+
+  var media = window.matchMedia('(min-width: 1024px)'); 
+   media.addListener(function() { 
+   document.querySelector('#timeline').redraw(); 
+    }); 
+  },
+
 
     properties: {
         productItems: {

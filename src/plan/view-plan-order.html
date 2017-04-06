@@ -122,7 +122,7 @@
                 <p>Actual Quantity: <span id="actualQuantity">[[calActualQuantity(factoryPerformance.aw, amount)]]</span></p>
                 <p>Processes Used: <span id="usedProcess">[[product.process]]</span></p>
                 <p>Machine Used: <span id="usedMachine">[[calUsedMachine(machine)]]</span></p>
-                <p>Expect Delivery: <span id="estimateDelivery">[[calEstDelivery(factoryOperation.op_end, factoryOperation.op_start, size.cycle, size.setup, amount, orderQuery)]]</span></p>
+                <p>Delivery Date: <span id="estimateDelivery">[[calEstDelivery(factoryOperation.op_end, factoryOperation.op_start, size.cycle, size.setup, amount, orderQuery)]]</span></p>
                 <p>Estimate Duration (Hrs): <span id="estimateDuration">[[calLeadTime(size.cycle, size.setup, amount)]]</span></p>
                 <p>Total Setup Duration (Hrs): <span id="setupDuration">[[calSetupTime(size.setup)]]</span></p>
                 <p>Order Workload: <span id="orderWorkload">[[calWorkLoad(factoryPerformance.aw, size.cycle, size.setup, amount, machine)]]</span></p>

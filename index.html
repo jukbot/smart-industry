@@ -199,16 +199,16 @@ body {
         opacity: 0.25;
     }
 }
-  </style>
-  <script>
+</style>
+<script>
   window.performance && performance.mark && performance.mark('index.html');
   Polymer = {lazyRegister: true, dom: 'shadow'};
   // Load webcomponentsjs polyfill if browser does not support native Web Components
-      (function() {
+
+ (function() {
   if ('registerElement' in document
       && 'import' in document.createElement('link')
       && 'content' in document.createElement('template')) {
-    // platform is good!
   } else {
     // polyfill the platform!
     var e = document.createElement('script');
@@ -216,22 +216,26 @@ body {
     document.body.appendChild(e);
   }
 })();
+  
 // Load pre-caching Service Worker
    if ('serviceWorker' in navigator) {
         window.addEventListener('load', function() {
           navigator.serviceWorker.register('/service-worker.js');
         });
  }
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+
+</script>
+<link rel="import" href="/src/view-index.html">
+</head>
+<body>
+<view-index><div class="loader"><div class="loader__figure"></div><p class="loader__label">Building your application</p></div></view-index>
+<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
   ga('create', 'UA-51514677-9', 'auto');
   ga('send', 'pageview');
 </script>
-<link rel="import" href="/src/view-index.html">
-</head>
-<body>
-<view-index><div class="loader"><div class="loader__figure"></div><p class="loader__label">Building your application</p></div></view-index>
 </body>
 </html>
