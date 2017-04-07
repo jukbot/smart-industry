@@ -105,10 +105,10 @@
   <script>
     Polymer({
       is: 'view-setup-machine',
-      toggleDialog: function () {
+      toggleDialog() {
         this.$.createMachineDialog.open();
       },
-      addMachine: function () {
+      addMachine() {
         let mtype = this.$.machineType.value.split("_");
         let mno = Object.keys(this.machineItems).length+1;
         this.$.machineQuery.ref.push({
@@ -123,13 +123,13 @@
         });
         this.clearField();
       },
-      editMachine: function(e) {
+      editMachine(e) {
         this.$$('#edit_'+e.target.id).open();  
       },
-      removeMachine: function(e) {
+      removeMachine(e) {
         this.$.machineQuery.ref.child(e.target.id).remove();
       },
-      saveEditMachine: function(e) {
+      saveEditMachine(e) {
         this.$.machineQuery.ref.save("/machine/"+e.target.id).then(function () {
         // after document saved, path will be changed to the new ref
         // any change of data will sent back up and stored
@@ -137,14 +137,14 @@
           //this.$.machineQuery.refreshNetworkStatus();
       });
       },
-      dismissEditMachine: function(e) {
+      dismissEditMachine(e) {
         this.$.createMachineDialog.cancel();
       },
-      dismissAddMachine: function() {
+      dismissAddMachine() {
         this.clearField();
         this.$.createMachineDialog.cancel();
       },
-      clearField: function () {
+      clearField() {
         this.$.machineName.value = null;
         this.$.machineEffi.value = 100;
         this.$.machineType.value = null;

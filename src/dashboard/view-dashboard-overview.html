@@ -1,7 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
-
 <dom-module id="view-dashboard-overview">
   <template>
     <style include="shared-styles">
@@ -33,7 +32,7 @@
         }
       }
     </style>
-
+<firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderItems}}"></firebase-query>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -43,8 +42,9 @@
       </li>
       <li>
         <div class="card">
-          <h1>Order Status</h1>
-          N/A
+          <h1>Order in queue</h1>
+          [[orderCount]]
+          <paper-button raised on-tap="orderCount">T</paper-button>
         </div>
       </li>
       <li>
@@ -64,6 +64,21 @@
   <script>
     Polymer({
       is: 'view-dashboard-overview',
+      orderCount: function() {
+        let qno = Object.keys(this.orderItems).length;
+        console.log(qno);
+        if(qno == null) {
+          return 0;
+        }
+        else {
+        return qno;
+        }
+      },
+      properties: {
+        orderItems: {
+          type: Object
+        }
+      }
     });
   </script>
 </dom-module>

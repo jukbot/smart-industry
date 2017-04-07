@@ -25,6 +25,48 @@
   <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
   <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
   <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
+  <script>
+      // Setup Polymer options
+      window.Polymer = {
+        dom: 'shadow',
+        lazyRegister: true,
+      };
+      // Load webcomponentsjs polyfill if browser does not support native
+      // Web Components
+      (function() {
+        'use strict';
+        var onload = function() {
+          // For native Imports, manually fire WebComponentsReady so user code
+          // can use the same code path for native and polyfill'd imports.
+          if (!window.HTMLImports) {
+            document.dispatchEvent(
+              new CustomEvent('WebComponentsReady', {bubbles: true})
+            );
+          }
+        };
+        var webComponentsSupported = (
+          'registerElement' in document
+          && 'import' in document.createElement('link')
+          && 'content' in document.createElement('template')
+        );
+        if (!webComponentsSupported) {
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
+          script.onload = onload;
+          document.head.appendChild(script);
+        } else {
+          onload();
+        }
+      })();
+      // Load pre-caching Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/service-worker.js');
+        });
+      }
+    </script>
+<link rel="import" href="/src/view-index.html">
   <style>
 html {
     -ms-text-size-adjust: 100%;
@@ -200,35 +242,11 @@ body {
     }
 }
 </style>
-<script>
-  window.performance && performance.mark && performance.mark('index.html');
-  Polymer = {lazyRegister: true, dom: 'shadow'};
-  // Load webcomponentsjs polyfill if browser does not support native Web Components
-
- (function() {
-  if ('registerElement' in document
-      && 'import' in document.createElement('link')
-      && 'content' in document.createElement('template')) {
-  } else {
-    // polyfill the platform!
-    var e = document.createElement('script');
-    e.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js';
-    document.body.appendChild(e);
-  }
-})();
-  
-// Load pre-caching Service Worker
-   if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/service-worker.js');
-        });
- }
-
-</script>
-<link rel="import" href="/src/view-index.html">
 </head>
 <body>
-<view-index><div class="loader"><div class="loader__figure"></div><p class="loader__label">Building your application</p></div></view-index>
+<view-index>
+    <div class="loader"><div class="loader__figure"></div><p class="loader__label">Building your application</p></div>
+</view-index>
 <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

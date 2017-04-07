@@ -7,8 +7,39 @@
        :host {
         display: block;
       }
+paper-card {
+max-width: 100%;
+margin: 10px;
+  }
     </style>
-
+<paper-card image="images/cafe.png">
+  <div class="card-content">
+    <div class="cafe-header">Cafe Basilico
+      <div class="cafe-location cafe-light">
+        <iron-icon icon="communication:location-on"></iron-icon>
+        <span>250ft</span>
+      </div>
+    </div>
+    <div class="cafe-rating">
+      <iron-icon class="star" icon="star"></iron-icon>
+      <iron-icon class="star" icon="star"></iron-icon>
+      <iron-icon class="star" icon="star"></iron-icon>
+      <iron-icon class="star" icon="star"></iron-icon>
+      <iron-icon class="star" icon="star"></iron-icon>
+    </div>
+    <p>$・Italian, Cafe</p>
+    <p class="cafe-light">Small plates, salads &amp; sandwiches in an intimate setting.</p>
+  </div>
+  <div class="card-actions">
+    <div class="horizontal justified">
+      <paper-icon-button icon="icons:event"></paper-icon-button>
+      <paper-button>5:30PM</paper-button>
+      <paper-button>7:30PM</paper-button>
+      <paper-button>9:00PM</paper-button>
+      <paper-button class="cafe-reserve">Reserve</paper-button>
+    </div>
+  </div>
+</paper-card>
   </template>
   <script>
     Polymer({
