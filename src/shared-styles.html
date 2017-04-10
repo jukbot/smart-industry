@@ -29,7 +29,7 @@
 --paper-input-container-focus-color: #333333; 
 --paper-input-container-invalid-color: #ff6e40; 
 --paper-input-container-input-color: #919191; 
---paper-menu-background-color: #f2f7fa; 
+--paper-menu-background-color: #ffffff;
 --paper-menu-color: #333333; 
 --paper-menu-disabled-color: #afb1b9; 
 --paper-progress-active-color: #333333; 
@@ -79,7 +79,7 @@ p { margin: 0; }
 ul { padding: 0; list-style: none; }
 
 section { padding: 40px 0px; }
-section.hero paper-menu, section[hero] paper-menu { --paper-menu-background-color: #f2f7fa; }
+section.hero paper-menu, section[hero] paper-menu { --paper-menu-background-color: #ffffff; }
 
 paper-button { display: inline-block; margin: 0; text-align: center; }  
 paper-button.smart { background-color: seagreen; color: #ffffff; }    
@@ -172,7 +172,7 @@ app-drawer { --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
        @media (min-width: 1201px) and (max-width: 2560px) {
         
       }
-        .stitched {
+      .stitched {
         height: auto;
         min-height: 350px;
         display: flex;
@@ -189,7 +189,24 @@ app-drawer { --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
         position: relative;
         box-sizing: border-box;
      }
-     .button-group, {
+     .stationBox {
+        height: auto;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 10px 10px 10px 10px;
+        padding: 10px;
+        color: #757575;
+        border: 2px dashed #757575;
+        border-radius: 2px;
+        flex-direction: column;
+        text-decoration: none;
+        position: relative;
+        box-sizing: border-box;
+     }
+     .button-group {
        text-align: center;
      }
 

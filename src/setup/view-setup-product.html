@@ -218,10 +218,6 @@
   deleteSize:function(e){
     this.splice('foodArray',e.model.index,1);
  },
-  saveFood:function(e) {
-    // Save food from array with index: e.model.index
-    // Data is accessible via this.foodArray[index], or just the current row: e.model.food.*
- },
       editProduct: function(e) {
         this.$$('#edit_'+e.target.id).open();
       },
@@ -232,7 +228,9 @@
          this.$.document.save("/product/"+e.target.id).then(function () {
         // after document saved, path will be changed to the new ref
         // any change of data will sent back up and stored
-        alert("Save successful");
+            // Save food from array with index: e.model.index
+        // Data is accessible via this.foodArray[index], or just the current row: e.model.food.*
+        alert("Save product settings successful");
       });
       },
       dismissEditProduct: function() {
