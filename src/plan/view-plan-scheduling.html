@@ -325,15 +325,6 @@ test_rows: function() {
  return l;
 },
 
-   attached: function(order) { 
-
-  var media = window.matchMedia('(min-width: 1024px)'); 
-   media.addListener(function() { 
-   document.querySelector('#timeline').redraw(); 
-    }); 
-  },
-
-
     properties: {
         productItems: {
           type: Object
