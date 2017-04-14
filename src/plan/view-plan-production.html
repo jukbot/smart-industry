@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/vaadin-context-menu/vaadin-context-menu.html">
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="view-plan-production">
@@ -36,7 +37,7 @@
         }
       }
 
-      paper-item:hover { color: red; background-color: #333333; }
+      paper-item:hover { color: #FFFFFF; background-color: #333333; }
 
       .vertical-section-container {
         max-width: 600px;
@@ -128,27 +129,7 @@
     <div class="card">
       <h1>Production Simulation</h1>
         <paper-button raised class="magic" on-tap="_addStation">Add station</paper-button>
-        <template>
-          <paper-menu>
-            <paper-item on-tap="_addStation">New station</paper-item>
-            <paper-item on-tap="_renameStation">Rename station</paper-item>
-            <paper-item list-item="[[target]]" on-tap="_removeStation">Delete station</paper-item>
-          </paper-menu>
-        </template>
-          <vaadin-context-menu selector="li">
-      <template>
-        <paper-menu>
-          <paper-item on-tap="_appendItem">Append item</paper-item>
-          <paper-item list-item="[[target]]" on-tap="_removeItem">Remove item</paper-item>
-        </paper-menu>
-      </template>
-
-      <ul>
-        <template is="dom-repeat" items="[[items]]">
-          <li index="[[index]]">[[item]]</li>
-        </template>
-      </ul>
-    </vaadin-context-menu>
+     
       <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name"
         item-value-path="name" selected-item='{{x}}' required always-float-label></vaadin-combo-box>
       <vaadin-combo-box label="Size" name="size" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name"
@@ -156,17 +137,26 @@
       <vaadin-combo-box label="Load Plan" name="plan" items="" id="planSelector" on-tap="selectPlan" disabled="true" item-label-path="name"
         item-value-path="name" required always-float-label></vaadin-combo-box>
 
-      <vaadin-context-menu selector=".production-block">
+
+      <vaadin-context-menu selector=".stationBox">
         <template>
-          <paper-menu>
-            <paper-item on-tap="{{_addStation}}">New station</paper-item>
-            <paper-item on-tap="_renameStation">Rename station</paper-item>
-            <paper-item list-item="[[target]]" on-tap="_removeStation">Delete station</paper-item>
+          <paper-menu>      
+            <paper-item on-tap="{{_addStation}}" class="test-station">New station</paper-item>
+            <paper-item disabled="[[!stations]]" on-tap="_renameStation">Rename [[index]]</paper-item>
+            <paper-item disabled="[[!stations]]" list-item="[[target]]" on-tap="_removeStation">Delete station</paper-item>
           </paper-menu>
          </template>
+
         <div class="production-block" style="border: solid 1px #333333; border-radius: 2px; margin:30px 0; width: 100%; min-height: 500px; overflow:auto;">
           <template is="dom-repeat" items="[[stations]]" as="station">
-            <div class="stationBox" index="[[index]]"><h2>[[station.name]] [[index]]</h2></div>
+            <div class="stationBox" index="[[index]]"><h2>[[station.name]]</h2>
+            <p>Station [[index]]</p>
+            </div>
+          </template>
+          <template is="dom-if" if="[[stations]]" hidden$="[[stations]]">
+              <div class="stationBox" style="height: 100%;" index="[[index]]"><h2>No station in production block.</h2>
+              <p>Please add your first station to the block. [[stations]]</p>
+              </div>
           </template>
         </div>
       </vaadin-context-menu>
@@ -273,12 +263,6 @@
     Polymer({
       is: 'view-plan-production',
       properties: {
-        items: {
-          type: Array,
-          value: function() {
-            return ['Foo', 'Bar', 'Baz'];
-          }
-        },
         fnMoves: {
           type: Function,
           value: function () {
@@ -304,7 +288,7 @@
         stations: {
           type: Object,
           value: function() {
-            return [{name: 'Station '}, {name: 'Station '}, {name: 'Station '}];
+            return [];
           }
       },
         data: {
@@ -362,17 +346,8 @@
         //this.splice('items', listItem.index, 1);
        // this.splice('items',e.target.index,1);
        
-         this.splice('stations',e.model.index,1);
+        this.splice('stations',e.model.index,1);
         console.log("Station item removed!!" + e.currentTarget + " | " + e.model.index + " | " + e.target);
-      },
-      _appendItem: function() {
-        this.push('items', 'New item');
-      },
-
-      _removeItem: function(e) {
-        var menuItem = e.target; // `<paper-item>`
-        var listItem = menuItem.listItem; // `<li>`
-        this.splice('items', listItem.index, 1);
       },
       _savePlan: function() {
         console.log(this.stations);
