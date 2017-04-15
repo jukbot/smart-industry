@@ -1,9 +1,10 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/vaadin-context-menu/vaadin-context-menu.html">
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/polymer-dragula/polymer-dragula-styles.html">
 <dom-module id="view-plan-production">
   <template>
+    <style is="custom-style" include="polymer-dragula-styles"></style>
     <style include="shared-styles">
        :host {
         display: block;
@@ -154,7 +155,7 @@
             </div>
           </template>
           <template is="dom-if" if="[[stations]]" hidden$="[[stations]]">
-              <div class="stationBox" style="height: 100%;" index="[[index]]"><h2>No station in production block.</h2>
+              <div class="stationBox" style="min-height: 500px; height: 100%;" index="[[index]]"><h2>No station in production block.</h2>
               <p>Please add your first station to the block. [[stations]]</p>
               </div>
           </template>
@@ -165,27 +166,27 @@
         <paper-button raised class="magic" on-tap="_savePlan">Save</paper-button>
       </div>
     </div>
-    <div class="vertical-section-container centered">
-      <polymer-dragula id="column-dragger" sub-container-selector=".col-holder" fn-moves="[[fnMovesInner]]">
-        <polymer-dragula id="row-dragger" fn-moves="[[fnMoves]]">
-          <div class="row-holder">
-            <template is="dom-repeat" items="[[data.rows]]">
-              <div class$="row [[item.className]]">
-                <strong class="handle">drag handle</strong>
-                <div class="col-holder">
-                  <template is="dom-repeat" items="[[item.columns]]">
-                    <div class="column">
-                      <strong class="handle-inner">drag handle</strong>
-                      <p>[[item.body]]</p>
-                    </div>
-                  </template>
+ 
+       <polymer-dragula id="column-dragger" sub-container-selector=".col-holder" fn-moves="[[fnMovesInner]]">
+            <polymer-dragula id="row-dragger" fn-moves="[[fnMoves]]">
+                <div class="row-holder">
+                    <template is="dom-repeat" items="[[data.rows]]">
+                        <div class$="row [[item.className]]">
+                            <strong class="handle">drag handle</strong>
+                            <div class="col-holder">
+                                <template is="dom-repeat" items="[[item.columns]]">
+                                    <div class="column">
+                                        <strong class="handle-inner">drag handle</strong>
+                                        <p>[[item.body]]</p>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
                 </div>
-              </div>
-            </template>
-          </div>
+            </polymer-dragula>
         </polymer-dragula>
-      </polymer-dragula>
-    </div>
+  
     <div class="card">
       DEBUG CONSOLE
       <div>
@@ -232,6 +233,22 @@
 {"from":61, "frompid":"OUT", "to":71}
   ]}
     </textarea>
+  
+            <vaadin-context-menu selector="li">
+              <template>
+                <paper-menu>
+                  <paper-item on-tap="_appendItem">Append item</paper-item>
+                  <paper-item list-item="[[target]]" on-tap="_removeItem">Remove item</paper-item>
+                </paper-menu>
+              </template>
+
+              <ul>
+                <template is="dom-repeat" items="[[items]]">
+                  <li index="[[index]]">[[item]]</li>
+                </template>
+              </ul>
+            </vaadin-context-menu>
+        
     </div>
       <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true"
             role="dialog" no-cancel-on-outside-click>
@@ -331,8 +348,26 @@
               ]
             };
           }
-        }
-      },
+        },
+            items: {
+                  type: Array,
+                  value: function() {
+                    return ['Foo', 'Bar', 'Baz'];
+                  }
+                }
+              },
+
+              _appendItem: function() {
+                this.push('items', 'New item');
+              },
+
+              _removeItem: function(e) {
+                var menuItem = e.target; // `<paper-item>`
+                var listItem = menuItem.listItem; // `<li>`
+                this.splice('items', listItem.index, 1);
+              },
+
+
        _addStation: function() {
         this.push('stations', {name: 'New Station'});
         console.log("New station added!!");
