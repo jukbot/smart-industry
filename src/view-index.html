@@ -10,7 +10,9 @@
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
 <link rel="import" href="../bower_components/iron-component-page/iron-component-page.html">
+
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -94,10 +96,6 @@
         text-transform: uppercase;
       }
 
-      paper-icon-button+[main-title] {
-        margin: 25px;
-      }
-
       .drawer-list a {
         display: block;
         padding: 10px 30px;
@@ -164,7 +162,7 @@
     <app-drawer-layout fullbleed>
        <app-drawer id="drawer" slot="drawer" swipe-open>
         <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
-        <div class="main-title" main-title>Genius</div>
+        <div class="main-title">Genius</div>
         <div class="main-describe">Smart Industry Helper</div>
         <!-- sidebar hightlighter -->
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
@@ -197,7 +195,7 @@
         <app-header slot="header" condenses fixed>
           <app-toolbar>
             <paper-icon-button icon="vaadin:menu" alt="menu" drawer-toggle></paper-icon-button>
-            <div class="page-title title" main-title>[[page]]</div>
+            <span class="page-title title">[[page]]</span>
             <paper-menu-button vertical-align="top" horizontal-align="right">
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-menu class="dropdown-content">
@@ -306,8 +304,9 @@
       _login() {
         this.$.auth.signInWithPopup()
         .then(response => {
-          //redirect
+          //redirect to dashboard
            this.set('route.path', 'dashboard');
+           console.info("Login successful");
         })
         .catch(error => {
           alert("Authenticate Failed: " + error.message);
@@ -318,7 +317,6 @@
       _logout() {
         this.$.auth.signOut()
         .then(function () {
-          alert("Signout successfully");
           console.info("Logout successful");
         })
         .catch(error => {
@@ -328,6 +326,7 @@
       },
       // Redirect to Register page
       _register() {
+        // redirect to register page
         this.page = 'register';
         this.set('route.path', 'register');
       },

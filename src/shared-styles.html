@@ -1,8 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<!-- shared styles for all views -->
 <dom-module id="shared-styles">
   <template>
-    <style is="custom-style">
+    <style>
        :host {
         display: block;
         padding: 10px;
@@ -153,6 +152,10 @@ app-drawer { --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
             --app-drawer-content-container: { box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);  }
 }
 
+paper-icon-button+[main-title] {
+        margin: 25px;
+      }
+
      @media (min-width: 360px) and (max-width: 768px) {
          .tab-title, .display-name {
            display: none;
@@ -199,7 +202,7 @@ app-drawer { --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
         margin: 10px 10px 10px 10px;
         padding: 10px;
         color: #757575;
-        border: 2px dashed #757575;
+        border: 4px dashed #757575;
         border-radius: 2px;
         flex-direction: column;
         text-decoration: none;

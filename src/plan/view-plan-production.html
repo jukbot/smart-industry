@@ -4,7 +4,7 @@
 <link rel="import" href="../../bower_components/polymer-dragula/polymer-dragula-styles.html">
 <dom-module id="view-plan-production">
   <template>
-    <style is="custom-style" include="polymer-dragula-styles"></style>
+    <style include="polymer-dragula-styles"></style>
     <style include="shared-styles">
        :host {
         display: block;
@@ -16,25 +16,25 @@
 
       @media (min-width: 360px) and (max-width: 768px) {
          :host {
-          --app-grid-columns: 1;
+          --app-grid-columns: 3;
         }
       }
 
       @media (min-width: 769px) and (max-width: 1024px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 3;
         }
       }
 
       @media (min-width: 1025px) and (max-width: 1200px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 3;
         }
       }
 
       @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 3;
         }
       }
 
@@ -122,10 +122,26 @@
         display: inline-block;
       }
     </style>
-    <firebase-query id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
-    <div class="card">
+    <firebase-query app-name="smart-mes" id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" orderByChild="type" data="{{machineItems}}"></firebase-query>
+      <div class="card">
       <h1>Simulation Machine</h1>
-      <div style="border: solid 1px #333333; margin-top:30px; width: 100%; height: 300px; overflow:hidden;"></div>
+      <div class="machine-block" style="border: solid 1px #333333; margin:10px 0; width: 100%; height: auto; overflow:hidden;">
+        <ul class="app-grid">
+        <template is="dom-repeat" items="[[machineItems]]" as="machineItem"> 
+           <li>
+          <div class="stationBox">
+            <h1 class="card-title">[[machineItem.name]]</h1>
+            <p>Machine Number: [[machineItem.number]]</p>
+            <p>Machine Type: [[machineItem.type]]</p>
+            <p>Standard Efficiency: [[machineItem.effi]] &#37;</p>
+            <paper-button raised class="magic" id="[[machineItem.$key]]" on-tap="editMachine">EDIT</paper-button>
+            <paper-button raised class="chilli" id="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
+          </div>
+           </li>
+      </template>
+      </ul>
+      </div>
     </div>
     <div class="card">
       <h1>Production Simulation</h1>
@@ -137,29 +153,29 @@
         item-value-path="length" required always-float-label></vaadin-combo-box>
       <vaadin-combo-box label="Load Plan" name="plan" items="" id="planSelector" on-tap="selectPlan" disabled="true" item-label-path="name"
         item-value-path="name" required always-float-label></vaadin-combo-box>
-
-
+        
       <vaadin-context-menu selector=".stationBox">
         <template>
           <paper-menu>      
-            <paper-item on-tap="{{_addStation}}" class="test-station">New station</paper-item>
-            <paper-item disabled="[[!stations]]" on-tap="_renameStation">Rename [[index]]</paper-item>
+            <paper-item on-tap="_addStation">New station</paper-item>
+            <paper-item disabled="[[!stations]]" on-tap="_renameStation">Rename station</paper-item>
             <paper-item disabled="[[!stations]]" list-item="[[target]]" on-tap="_removeStation">Delete station</paper-item>
           </paper-menu>
          </template>
 
-        <div class="production-block" style="border: solid 1px #333333; border-radius: 2px; margin:30px 0; width: 100%; min-height: 500px; overflow:auto;">
+        <div class="production-block" style="border: solid 1px #333333; border-radius: 2px; margin:10px 0; width: 100%; min-height: 500px; overflow:auto;">
           <template is="dom-repeat" items="[[stations]]" as="station">
             <div class="stationBox" index="[[index]]"><h2>[[station.name]]</h2>
             <p>Station [[index]]</p>
             </div>
           </template>
-          <template is="dom-if" if="[[stations]]" hidden$="[[stations]]">
-              <div class="stationBox" style="min-height: 500px; height: 100%;" index="[[index]]"><h2>No station in production block.</h2>
-              <p>Please add your first station to the block. [[stations]]</p>
-              </div>
-          </template>
+          <template is="dom-if" if="[[!stations]]">
+            <div class="stationBox" style="min-height: 500px;"><h2>No station in production block.</h2>
+            <p>Please add your first station to the block.</p>
+            </div>   
+         </template>
         </div>
+
       </vaadin-context-menu>
       <div class="button-group">
         <paper-button raised class="burn" on-tap="_simulatePlan">Simulate</paper-button>
@@ -186,70 +202,6 @@
                 </div>
             </polymer-dragula>
         </polymer-dragula>
-  
-    <div class="card">
-      DEBUG CONSOLE
-      <div>
-        <button id="SaveButton" onclick="save()">Save</button>
-        <button onclick="load()">Load</button> Diagram Model saved in JSON format:
-      </div>
-      <textarea id="mySavedModel" style="width:100%;height:300px">
-{ "class": "go.GraphLinksModel",
-  "nodeCategoryProperty": "type",
-  "linkFromPortIdProperty": "frompid",
-  "linkToPortIdProperty": "topid",
-  "nodeDataArray": [
-{"key":1, "type":"Table", "name":"Product"},
-{"key":2, "type":"Table", "name":"Sales"},
-{"key":3, "type":"Table", "name":"Period"},
-{"key":4, "type":"Table", "name":"Store"},
-{"key":11, "type":"Join", "name":"Product, Class"},
-{"key":12, "type":"Join", "name":"Period"},
-{"key":13, "type":"Join", "name":"Store"},
-{"key":21, "type":"Project", "name":"Product, Class"},
-{"key":31, "type":"Filter", "name":"Boston, Jan2014"},
-{"key":32, "type":"Filter", "name":"Boston, 2014"},
-{"key":41, "type":"Group", "name":"Sales"},
-{"key":42, "type":"Group", "name":"Total Sales"},
-{"key":51, "type":"Join", "name":"Product Name"},
-{"key":61, "type":"Sort", "name":"Product Name"},
-{"key":71, "type":"Export", "name":"File"}
-  ],
-  "linkDataArray": [
-{"from":1, "frompid":"OUT", "to":11, "topid":"L"},
-{"from":2, "frompid":"OUT", "to":11, "topid":"R"},
-{"from":3, "frompid":"OUT", "to":12, "topid":"R"},
-{"from":4, "frompid":"OUT", "to":13, "topid":"R"},
-{"from":11, "frompid":"M", "to":12, "topid":"L"},
-{"from":12, "frompid":"M", "to":13, "topid":"L"},
-{"from":13, "frompid":"M", "to":21},
-{"from":21, "frompid":"OUT", "to":31},
-{"from":21, "frompid":"OUT", "to":32},
-{"from":31, "frompid":"OUT", "to":41},
-{"from":32, "frompid":"OUT", "to":42},
-{"from":41, "frompid":"OUT", "to":51, "topid":"L"},
-{"from":42, "frompid":"OUT", "to":51, "topid":"R"},
-{"from":51, "frompid":"OUT", "to":61},
-{"from":61, "frompid":"OUT", "to":71}
-  ]}
-    </textarea>
-  
-            <vaadin-context-menu selector="li">
-              <template>
-                <paper-menu>
-                  <paper-item on-tap="_appendItem">Append item</paper-item>
-                  <paper-item list-item="[[target]]" on-tap="_removeItem">Remove item</paper-item>
-                </paper-menu>
-              </template>
-
-              <ul>
-                <template is="dom-repeat" items="[[items]]">
-                  <li index="[[index]]">[[item]]</li>
-                </template>
-              </ul>
-            </vaadin-context-menu>
-        
-    </div>
       <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true"
             role="dialog" no-cancel-on-outside-click>
             <h1>Add Product</h1>
@@ -296,6 +248,9 @@
             }
           }
         },
+        machineItems: {
+          type: Object,
+        },
         productItems: {
           type: Object
         },
@@ -304,9 +259,7 @@
         },
         stations: {
           type: Object,
-          value: function() {
-            return [];
-          }
+          value: () => [{name: 'a'}, {name:'b'}, {name:'c'}]
       },
         data: {
           type: Object,
@@ -349,33 +302,15 @@
             };
           }
         },
-            items: {
-                  type: Array,
-                  value: function() {
-                    return ['Foo', 'Bar', 'Baz'];
-                  }
-                }
-              },
-
-              _appendItem: function() {
-                this.push('items', 'New item');
-              },
-
-              _removeItem: function(e) {
-                var menuItem = e.target; // `<paper-item>`
-                var listItem = menuItem.listItem; // `<li>`
-                this.splice('items', listItem.index, 1);
-              },
-
-
-       _addStation: function() {
+      },
+      _addStation() {
         this.push('stations', {name: 'New Station'});
         console.log("New station added!!");
       },
-      _renameStation: function(e) {
+      _renameStation(e) {
         console.log("Rename station no: " + e.model.index);
       },
-      _removeStation: function(e) {
+      _removeStation(e) {
        // let menuItem = e.target; // `<paper-item>`
        // let listItem = menuItem.listItem; // `<li>`
         //this.splice('items', listItem.index, 1);
@@ -384,8 +319,11 @@
         this.splice('stations',e.model.index,1);
         console.log("Station item removed!!" + e.currentTarget + " | " + e.model.index + " | " + e.target);
       },
-      _savePlan: function() {
-        console.log(this.stations);
+      _savePlan() {
+        console.log(this.stations.length);
+      },
+      _checkStation() {
+        return (this.stations.length > 0);
       },
       listeners: {
         'dragula-drag': 'handleEvent',
@@ -398,8 +336,8 @@
         'dragula-out': 'handleEvent',
         'dragula-cloned': 'handleEvent'
       },
-      handleEvent: function (event) {
-        console.log(event.type, event.detail);
+      handleEvent: function (e) {
+        console.log(e.type, e.detail);
       },
     });
   </script>

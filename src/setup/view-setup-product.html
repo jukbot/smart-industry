@@ -65,8 +65,8 @@
       <li>
         <div class="stitched">
           <paper-button raised on-tap="toggleDialog" class="big-btn water">ADD PRODUCT</paper-button>
-          <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true"
-            role="dialog" no-cancel-on-outside-click>
+          <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
+            no-cancel-on-outside-click auto-fit-on-attach>
             <h1>Add Product</h1>
             <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
             <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
@@ -106,17 +106,17 @@
             <paper-button raised class="water" id="[[productItem.$key]]" on-tap="editProduct">EDIT</paper-button>
             <paper-button raised class="chilli" id="[[productItem.$key]]" on-tap="removeProduct">REMOVE</paper-button>
             </div>
-            <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true" no-cancel-on-outside-click role="dialog">
+            <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click auto-fit-on-attach>
             <h2>Edit Product</h2>
             <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
             <paper-input name="sku-number" class="editproductSku" value="[[productItem.sku]]" label="SKU Number" always-float-label></paper-input>
             <paper-input name="product-process" class="editproductProcess" value="[[productItem.process]]" label="Process (use comma to separate)" always-float-label></paper-input>
             <paper-input name="raw-material" class="editproductRaw" value="[[productItem.raw]]" label="Raw Material (use comma to separate)" always-float-label></paper-input>
              <div class="buttons">
-                <paper-button on-tap="dismissEditProduct"  dialog-dismiss>Dismiss</paper-button>
-                <paper-button on-tap="saveProduct" dialog-confirm autofocus>Save</paper-button>
+                <paper-button on-tap="dismissEditProduct" id="[[productItem.$key]]" dialog-dismiss>Dismiss</paper-button>
+                <paper-button on-tap="saveProduct" id="[[productItem.$key]]" dialog-confirm autofocus>Save</paper-button>
               </div>
-              </paper-dialog>
+            </paper-dialog>
           </div>
         </li>
       </template>
@@ -182,6 +182,7 @@
       toggleDialog: function () {
         this.$.createProductDialog.open();
       },
+
       addProduct: function () {
           let today = new Date();
           let dd = today.getDate();
@@ -233,9 +234,9 @@
         alert("Save product settings successful");
       });
       },
-      dismissEditProduct: function() {
+      dismissEditProduct: function(e) {
         this.clearField();
-        this.$.createMachineDialog.close();
+        this.$$('#edit_'+e.target.id).close();
       },
       clearField: function () {
         this.$.productName.value = null;
