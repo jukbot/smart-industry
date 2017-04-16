@@ -235,10 +235,12 @@
           <view-tracking name="tracking" route="{{subroute}}"></view-tracking>
           <view-controlling name="controlling" route="{{subroute}}"></view-controlling>
           <view-settings name="settings" route="{{subroute}}"></view-settings>
-          <view-404 name="404" route="{{subroute}}"></view-404>
+          <view-404 name="404" route="{{subroute}}"></view-404> 
+          <view-test name="test" route="{{subroute}}"></view-test>          
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
+    
     <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
@@ -283,7 +285,7 @@
         Polymer.AppLocalizeBehavior
       ],
 
-      created: function() {
+      created() {
         window.performance && performance.mark && performance.mark('view-index.created');
         // Custom elements polyfill safe way to indicate an element has been upgraded.
         this.removeAttribute('unresolved');
@@ -291,7 +293,7 @@
 
       // Trigger when document DOM is loaded
       ready() {
-        this.async(function() {
+        this.async(() => {
           if (!this.route.path) {
             this.set('routeData.page', 'dashboard');
           }
@@ -304,7 +306,7 @@
       },
 
       // On create load localization language data
-      attached: function() {
+      attached() {
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
 
@@ -367,7 +369,7 @@
       },
 
       // Offline notification
-      _notifyNetworkStatus: function() {
+      _notifyNetworkStatus() {
         var oldOffline = this.offline;
         this.offline =  !navigator.onLine;
         // Show the snackbar if the user is offline when starting a new session
@@ -384,7 +386,7 @@
       },
 
       // This is for performance logging only.
-      _domChange: function(e) {
+      _domChange(e) {
         if (window.performance && performance.mark && !this.__loggedDomChange) {
           var target = Polymer.dom(e).rootTarget;
           if (target.domHost.is.match(this.page)) {

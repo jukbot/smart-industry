@@ -1,0 +1,43 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="view-index.html">
+<link rel="import" href="shared-styles.html">
+ <dom-module id="view-test">
+          <template>
+            <vaadin-context-menu selector="li">
+              <template is="dom-bind"> 
+                <paper-menu>
+                  <paper-item on-tap="_appendItem">Append item</paper-item>
+                  <paper-item list-item="[[target]]" on-tap="_removeItem">Remove item</paper-item>
+                </paper-menu>
+              </template>
+
+              <ul>
+                <template is="dom-repeat" items="[[items]]">
+                  <li index="[[index]]">[[item]]</li>
+                </template>
+              </ul>
+            </vaadin-context-menu>
+          </template>
+
+          <script>
+            Polymer({
+              is: 'view-test',
+              properties: {
+                items: {
+                  type: Array,
+                  value: function() {
+                    return ['Foo', 'Bar', 'Baz'];
+                  }
+                }
+              },
+              _appendItem: function() {
+                this.push('items', 'New item');
+              },
+              _removeItem: function(e) {
+                var menuItem = e.target; // `<paper-item>`
+                var listItem = menuItem.listItem; // `<li>`
+                this.splice('items', listItem.index, 1);
+              }
+            });
+          </script>
+</dom-module>
