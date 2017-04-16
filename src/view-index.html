@@ -10,16 +10,14 @@
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-
 <link rel="import" href="../bower_components/iron-component-page/iron-component-page.html">
-
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
@@ -239,8 +237,7 @@
           <view-test name="test" route="{{subroute}}"></view-test>          
         </iron-pages>
       </app-header-layout>
-    </app-drawer-layout>
-    
+    </app-drawer-layout> 
     <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
@@ -250,6 +247,12 @@
     Polymer({
       is: 'view-index',
       properties: {
+           items: {
+                  type: Array,
+                  value: function() {
+                    return ['Foo', 'Bar', 'Baz'];
+                  }
+                },
         language: {
           type: Object
         },

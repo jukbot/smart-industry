@@ -1,10 +1,23 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
- <dom-module id="view-test">
+<dom-module id="view-test">
           <template>
+                <style>
+        :host {
+          display: block;
+        }
+
+        #content {
+          background: #fff;
+          height: 30px;
+          width: 100px;
+          cursor: pointer;
+        }
+      </style>
+
             <vaadin-context-menu selector="li">
-              <template is="dom-bind"> 
+              <template> 
                 <paper-menu>
                   <paper-item on-tap="_appendItem">Append item</paper-item>
                   <paper-item list-item="[[target]]" on-tap="_removeItem">Remove item</paper-item>
@@ -17,6 +30,15 @@
                 </template>
               </ul>
             </vaadin-context-menu>
+             <vaadin-context-menu>
+        <template>
+          <paper-item id="content" onclick="console.log('click ok')">Menu-item</paper-item>
+        </template>
+        <div>
+          Lorem ipsum dolor sit amet. Consectetur adipiscing elit.
+        </div>
+      </vaadin-context-menu>
+      
           </template>
 
           <script>
