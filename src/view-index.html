@@ -68,6 +68,8 @@
     <style include="shared-styles">  
       :host {
         display: block;
+        position: relative;
+        min-height: 100vh;
         --paper-menu-button-dropdown: {
           margin-top: 50px;
         } 
@@ -90,10 +92,6 @@
         color: #7b7b7b;
         margin-bottom: 20px;
         font-weight: 300;
-      }
-
-      .page-title {
-        text-transform: uppercase;
       }
 
       .drawer-list a {
@@ -120,6 +118,7 @@
         padding: 15px 0;
         width: 50%;
         height: auto;
+        text-align: center;
         display: block;
       }
       
@@ -148,7 +147,11 @@
       .profile {
         text-align: center;
       }
-            
+
+      .dropdown-content {
+        min-width: 200px;
+      }  
+
       .sidebar-menu-line {
         border-bottom: 1px solid #d6d6d6;
       }
@@ -159,23 +162,24 @@
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
     <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-drawer-layout fullbleed>
        <app-drawer id="drawer" slot="drawer" swipe-open>
         <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
         <div class="main-title">Genius</div>
-        <div class="main-describe">Smart Industry Helper</div>
+        <div class="main-describe">{{localize('app-description')}}</div>
         <!-- sidebar hightlighter -->
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
-        <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> DASHBOARD</a>
-        <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> SETUP</a>
-        <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> PLAN</a>
-        <a name="controlling" href="/controlling"><paper-icon-button icon="vaadin:sliders"></paper-icon-button> CONTROL</a>
-        <a name="tracking" href="/tracking"><paper-icon-button icon="vaadin:timer"></paper-icon-button> TRACK</a>
+        <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
+        <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
+        <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
+        <a name="controlling" href="/controlling"><paper-icon-button icon="vaadin:sliders"></paper-icon-button> {{localize('view-index-menu-control')}}</a>
+        <a name="tracking" href="/tracking"><paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
         </iron-selector>
         <div class="sidebar-menu-line"></div>
         <div class="center-box">
-          <paper-button raised class="chilli authen-btn" on-tap="_login" hidden$="[[user]]">Sign In</paper-button>
-          <paper-button raised class="chilli authen-btn" on-tap="_logout" hidden$="[[!user]]">Sign Out</paper-button>
+          <paper-button raised class="chilli authen-btn" on-tap="_login" hidden$="[[user]]">{{localize('login-button')}}</paper-button>
+          <paper-button raised class="chilli authen-btn" on-tap="_logout" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button>
         </div>
         <template is="dom-if" if="[[user]]">
           <div class="profile">
@@ -194,33 +198,33 @@
       <app-header-layout fullbleed has-scrolling-region>
         <app-header slot="header" condenses fixed>
           <app-toolbar>
-            <paper-icon-button icon="vaadin:menu" alt="menu" drawer-toggle></paper-icon-button>
-            <span class="page-title title">[[page]]</span>
-            <paper-menu-button vertical-align="top" horizontal-align="right">
+            <paper-icon-button icon="vaadin:menu" alt="menu" aria-label="sidebar menu" drawer-toggle></paper-icon-button>
+            <span class="title" main-title>{{localize(page)}}</span>
+            <paper-menu-button dynamic-align>
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-menu class="dropdown-content">
                   <a href="https://github.com/jukbot/smart-industry" target="_blank">
                   <paper-icon-item class="menu-item" name="help">
                     <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
-                    Help
+                    {{localize('help')}}
                   </paper-icon-item>
                   </a>
-                   <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="dashboard" role="navigation">
+                   <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="settings" role="navigation">
                    <a name="settings" href="/settings">
                   <paper-icon-item class="menu-item" name="settings">
                     <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
-                    Settings
+                    {{localize('menu-settings')}}
                   </paper-icon-item>
                       </a>
                   </iron-selector>
                   <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
                     <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
-                    Log Out
+                    {{localize('logout')}}
                   </paper-icon-item>
               </paper-menu>
             </paper-menu-button>
             <template is="dom-if" if="[[user]]" hidden$="[[!user]]">
-              <p class="display-name">[[user.displayName]]</p>
+              <p class="display-name" hidden$="{{!wideLayout}}">[[user.displayName]]</p>
             </template>
           </app-toolbar>
         </app-header>
@@ -235,14 +239,17 @@
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
+    <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
+   // performance logging
+    window.performance && performance.mark && performance.mark('view-index - before register');
+
     Polymer({
       is: 'view-index',
       properties: {
         language: {
-          type: String,
-          value: 'en'
+          type: Object
         },
         page: {
           type: String,
@@ -262,38 +269,65 @@
           type: Boolean
         },
       },
+
+      observers: [
+        '_routePageChanged(routeData.page)',
+      ],
+
+      listeners: {
+        'dom-change': '_domChange',
+        'show-invalid-url-warning': '_showPage404'
+      },
+
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+
+      created: function() {
+        window.performance && performance.mark && performance.mark('view-index.created');
+        // Custom elements polyfill safe way to indicate an element has been upgraded.
+        this.removeAttribute('unresolved');
+      },
+
+      // Trigger when document DOM is loaded
       ready() {
         this.async(function() {
           if (!this.route.path) {
             this.set('routeData.page', 'dashboard');
           }
         });
-        
+        // listen for online/offline
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          this.listen(window, 'online', '_notifyNetworkStatus');
+          this.listen(window, 'offline', '_notifyNetworkStatus');
+        });
       },
 
-      observers: [
-        '_routePageChanged(routeData.page)',
-      ],
+      // On create load localization language data
+      attached: function() {
+        this.loadResources(this.resolveUrl('../data/locales.json'));
+      },
 
       _routePageChanged(page) {
         if (page === undefined) {
           return 'dashboard';
         }    
         this.page = page || 'dashboard';
-        this.drawerOpened = false;
 
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
       },
 
-      _pageChanged(page){ 
+      _pageChanged(page){
+         if (page != null) { 
        let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
        this.importHref(
        resolvedPageUrl, 
        null, 
        this._showPage404.bind(this), 
        true);
+         }
       },
 
       _showPage404() {
@@ -313,6 +347,7 @@
           console.log("Authenticate Failed: " + error.code);
         });
       },
+
       // Signout Action
       _logout() {
         this.$.auth.signOut()
@@ -324,11 +359,39 @@
           console.log("Authenticate Failed: " + error.code);
         });
       },
+
       // Redirect to Register page
       _register() {
-        // redirect to register page
         this.page = 'register';
         this.set('route.path', 'register');
+      },
+
+      // Offline notification
+      _notifyNetworkStatus: function() {
+        var oldOffline = this.offline;
+        this.offline =  !navigator.onLine;
+        // Show the snackbar if the user is offline when starting a new session
+        // or if the network status changed.
+        if (this.offline || (!this.offline && oldOffline === true)) {
+          if (!this._networkSnackbar) {
+            this._networkSnackbar = document.createElement('network-snackbar');
+            Polymer.dom(this.root).appendChild(this._networkSnackbar);
+          }
+          Polymer.dom(this._networkSnackbar).innerHTML = this.offline ?
+              'You are offline' : 'You are online';
+          this._networkSnackbar.open();
+        }
+      },
+
+      // This is for performance logging only.
+      _domChange: function(e) {
+        if (window.performance && performance.mark && !this.__loggedDomChange) {
+          var target = Polymer.dom(e).rootTarget;
+          if (target.domHost.is.match(this.page)) {
+            this.__loggedDomChange = true;
+            performance.mark(target.domHost.is + '.domChange');
+          }
+        }
       },
 
       // Handle Error
@@ -337,6 +400,5 @@
       },
      });
   </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.7.4/go-debug.js"></script>
   <script src="../bower_components/sugar/dist/sugar.min.js"></script>
 </dom-module>

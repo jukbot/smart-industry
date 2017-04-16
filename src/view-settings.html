@@ -12,38 +12,61 @@ max-width: 100%;
 margin: 10px;
   }
     </style>
-<paper-card image="images/cafe.png">
-  <div class="card-content">
-    <div class="cafe-header">Cafe Basilico
-      <div class="cafe-location cafe-light">
-        <iron-icon icon="communication:location-on"></iron-icon>
-        <span>250ft</span>
-      </div>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <div class="card">
+      <h1>{{localize('general-settings')}}</h1>
+      <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector" item-label-path="name" item-value-path="value" value="[[language]]" selected-item="{{k}}" on-change="_changeLanguage" required always-float-label></vaadin-combo-box>
+
+    <h4>{{localize('header_1')}}</h4>
+  
+        <div>{{localize('greeting')}}</div>
+        <div>{{localize('missing')}}</div>
+        <div>{{localize('intro', 'name', 'Batman')}}</div>
+        <div>{{localize('cats', 'numCats', 10000, 'pctBlack', 0.42)}}</div>
+        <div>{{localize('sale', 'start', 2017, 'time', 15, 'price', 10)}}</div>
+
+    <h4>{{localize('header_2')}}</h4>
+  
+        <div>{{localize('fruit', 'num', 0)}} / {{localize('fruit', 'num', 1)}}/ {{localize('fruit', 'num', 3)}}</div>
+        <div>{{localize('bananas', 'name', 'Robin', 'gender', 'male', 'num', 1)}}</div>
+        <div>{{localize('bananas', 'name', 'Robin', 'gender', 'female', 'num', 0)}}</div>
+        <div>{{localize('bananas', 'name', 'Robin', 'gender', 'other', 'num', 4)}}</div>
+
+       <paper-button class="magic" raised>{{localize('save-button')}}</paper-button> 
     </div>
-    <div class="cafe-rating">
-      <iron-icon class="star" icon="star"></iron-icon>
-      <iron-icon class="star" icon="star"></iron-icon>
-      <iron-icon class="star" icon="star"></iron-icon>
-      <iron-icon class="star" icon="star"></iron-icon>
-      <iron-icon class="star" icon="star"></iron-icon>
-    </div>
-    <p>$・Italian, Cafe</p>
-    <p class="cafe-light">Small plates, salads &amp; sandwiches in an intimate setting.</p>
-  </div>
-  <div class="card-actions">
-    <div class="horizontal justified">
-      <paper-icon-button icon="icons:event"></paper-icon-button>
-      <paper-button>5:30PM</paper-button>
-      <paper-button>7:30PM</paper-button>
-      <paper-button>9:00PM</paper-button>
-      <paper-button class="cafe-reserve">Reserve</paper-button>
-    </div>
-  </div>
-</paper-card>
   </template>
   <script>
     Polymer({
-      is: 'view-settings'
+      is: 'view-settings',
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+      properties: {
+        language: {
+          type: Object
+        },
+        languageList: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'English',
+                value: 'en'
+              },
+              {
+                name: 'ไทย',
+                value: 'th'
+              },
+            ]
+          }
+        },
+      },
+      attached: function() {
+         this.loadResources(this.resolveUrl('../data/locales.json'));
+      },
+
+      _changeLanguage: function() {
+        this.language = this.$.languageSelector.value;
+      }
     });
   </script>
 </dom-module>

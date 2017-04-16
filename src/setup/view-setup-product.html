@@ -108,10 +108,10 @@
             </div>
             <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click auto-fit-on-attach>
             <h2>Edit Product</h2>
-            <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
-            <paper-input name="sku-number" class="editproductSku" value="[[productItem.sku]]" label="SKU Number" always-float-label></paper-input>
-            <paper-input name="product-process" class="editproductProcess" value="[[productItem.process]]" label="Process (use comma to separate)" always-float-label></paper-input>
-            <paper-input name="raw-material" class="editproductRaw" value="[[productItem.raw]]" label="Raw Material (use comma to separate)" always-float-label></paper-input>
+            <paper-input name="product-name" class="editproductName" value="{{productItem.name}}" label="Product Name" always-float-label></paper-input>
+            <paper-input name="sku-number" class="editproductSku" value="{{productItem.sku}}" label="SKU Number" always-float-label></paper-input>
+            <paper-input name="product-process" class="editproductProcess" value="{{productItem.process}}" label="Process (use comma to separate)" always-float-label></paper-input>
+            <paper-input name="raw-material" class="editproductRaw" value="{{productItem.raw}}" label="Raw Material (use comma to separate)" always-float-label></paper-input>
              <div class="buttons">
                 <paper-button on-tap="dismissEditProduct" id="[[productItem.$key]]" dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="saveProduct" id="[[productItem.$key]]" dialog-confirm autofocus>Save</paper-button>

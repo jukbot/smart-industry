@@ -13,12 +13,13 @@
         --app-grid-item-height: 50%;
       }
     </style>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <app-toolbar sticky class="tabs-bar">
             <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
+                <paper-tab id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span></paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
@@ -34,6 +35,9 @@
     Polymer({
       is: 'view-dashboard',
       properties: {
+        language: {
+          type: Object
+        },
         tabs: {
           type: String,
           reflectToAttribute: true,
@@ -44,23 +48,29 @@
           type: Array,
           value: function () {
             return [{
-                'title': 'OVERVIEW',
+                'title': 'overview',
                 'view': 'overview',
                 'icon': 'vaadin:grid-small'
               },
               {
-                'title': 'NOTIFICATION',
+                'title': 'notification',
                 'view': 'notification',
                 'icon': 'vaadin:bell-o'
               },
               {
-                'title': 'STATISTIC',
+                'title': 'statistics',
                 'view': 'statistic',
                 'icon': 'vaadin:chart'
               }
             ];
           }
         }
+      },
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+      attached: function() {
+         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
       _tabsChanged: function (tabs) {
         let resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html');

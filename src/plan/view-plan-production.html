@@ -156,11 +156,12 @@
         
       <vaadin-context-menu selector=".stationBox">
         <template>
-          <paper-menu>      
+          <paper-listbox>      
             <paper-item on-tap="_addStation">New station</paper-item>
-            <paper-item disabled="[[!stations]]" on-tap="_renameStation">Rename station</paper-item>
+            <paper-item on-click="_addStation">Test</paper-item>
+            <paper-item disabled="[[!stations]]" on-tap="_renameStation">Rename station [[target.index]]</paper-item>
             <paper-item disabled="[[!stations]]" list-item="[[target]]" on-tap="_removeStation">Delete station</paper-item>
-          </paper-menu>
+          </paper-listbox>
          </template>
 
         <div class="production-block" style="border: solid 1px #333333; border-radius: 2px; margin:10px 0; width: 100%; min-height: 500px; overflow:auto;">
@@ -342,3 +343,45 @@
     });
   </script>
 </dom-module>
+   <dom-module id="my-list-view">
+          <template>
+            <vaadin-context-menu selector="li">
+              <template>
+                <paper-menu>
+                  <paper-item on-tap="_appendItem">Append item</paper-item>
+                  <paper-item list-item="[[target]]" on-tap="_removeItem">Remove item</paper-item>
+                </paper-menu>
+              </template>
+
+              <ul>
+                <template is="dom-repeat" items="[[items]]">
+                  <li index="[[index]]">[[item]]</li>
+                </template>
+              </ul>
+            </vaadin-context-menu>
+          </template>
+
+          <script>
+            Polymer({
+              is: 'my-list-view',
+              properties: {
+                items: {
+                  type: Array,
+                  value: function() {
+                    return ['Foo', 'Bar', 'Baz'];
+                  }
+                }
+              },
+              _appendItem: function() {
+                this.push('items', 'New item');
+              },
+              _removeItem: function(e) {
+                var menuItem = e.target; // `<paper-item>`
+                var listItem = menuItem.listItem; // `<li>`
+                this.splice('items', listItem.index, 1);
+              }
+            });
+          </script>
+        </dom-module>
+
+        <my-list-view></my-list-view>

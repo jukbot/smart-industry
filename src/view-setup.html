@@ -10,23 +10,29 @@
 <dom-module id="view-setup">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
       }
-
+      .button-group paper-button {
+       width: 45%;
+       margin-top: 15px; 
+     }
     </style>
+     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <app-toolbar sticky>
             <paper-tabs id="setupTabs" selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab id="{{item.view}}" disabled="{{item.disable}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
+                <paper-tab id="{{item.view}}" disabled="{{item.disable}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span></paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
         </app-header>
-          <paper-button raised class="chilli" on-tap="selectPrevTab">PREVIOUS</paper-button>
-          <paper-button raised class="water" on-tap="selectNextTab">NEXT</paper-button>
+        <div class="button-group">
+          <paper-button raised class="chilli" on-tap="selectPrevTab">{{localize('previous-button')}}</paper-button>
+          <paper-button raised class="water" on-tap="selectNextTab">{{localize('next-button')}}</paper-button>
+        </div>
           <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
           <view-setup-factory name="factory"></view-setup-factory>
           <view-setup-machine name="machine"></view-setup-machine>
@@ -40,6 +46,9 @@
     Polymer({
       is: 'view-setup',
       properties: {
+        language: {
+          type: Object
+        },
         tabs: {
           type: String,
           reflectToAttribute: true,
@@ -50,31 +59,31 @@
           type: Array,
           value: function () {
             return [{
-                'title': 'FACTORY',
+                'title': 'factory',
                 'view': 'factory',
                 'icon': 'vaadin:factory',
                 'disable': false
               },
               {
-                'title': 'MACHINE',
+                'title': 'machine',
                 'view': 'machine',
                 'icon': 'vaadin:automation',
                 'disable': false
               },
               {
-                'title': 'PRODUCT',
+                'title': 'product',
                 'view': 'product',
                 'icon': 'vaadin:barcode',
                 'disable': false
               },
               {
-                'title': 'CUSTOMER',
+                'title': 'customer',
                 'view': 'customer',
                 'icon': 'vaadin:user-card',
                 'disable': false
               },
               {
-                'title': 'INVENTORY',
+                'title': 'inventory',
                 'view': 'inventory',
                 'icon': 'vaadin:storage',
                 'disable': false
@@ -82,6 +91,12 @@
             ];
           }
         }
+      },
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+      attached: function() {
+         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
       selectNextTab: function () {
         var pages = this.$.setupTabs;
