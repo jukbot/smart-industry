@@ -17,18 +17,18 @@
 
       @media (min-width: 769px) and (max-width: 1024px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 1;
         }
       }
 
       @media (min-width: 1025px) and (max-width: 1200px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 1;
         }
       }
        @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 1;
         }
       }
 
@@ -104,7 +104,8 @@
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderItems}}" order-by-child="{{orderType(factoryStandard.priority)}}" order-by-value="true"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
- 
+  <ul class="app-grid">
+<li>
  <div class="card">
     <h1>Order Scheduling Table</h1>     
     <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
@@ -159,7 +160,8 @@
   </table>
 </vaadin-grid>
 </div> 
-
+</li>
+<li>
 <div class="card">
 <h1>Daily Jobs Production Scheduling of [[today]]</h1>
 <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
@@ -171,9 +173,9 @@
 
 <google-chart id="timeline" type="timeline" class="chart" style="width: 100%;" cols="[[cols()]]" rows="[[rows()]]"></google-chart>
  </div>
- 
-  <div class="wrap-card">
-  <div class="fixed-card card">
+ </li>
+<li>
+  <div class="card">
   <h1>Job Priority Comparision</h1>
   <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
   
@@ -186,9 +188,9 @@
     cols='[[test_cols]]'
     rows='[[test_rows]]'>
   </google-chart>
-  
       </div>
-    </div>
+</li>
+</ul>
  <paper-dialog class="priority-dialog" id="changePriorityDialog">
   <h3 class="priority-dialog-title"><iron-icon icon="vaadin:warning"></iron-icon> Warning: Schedule change<h3>
   <p class="priority-dialog-text">Changing priority will affect other orders scheduling. This cannot change the jobs scheduling that are currently running.</p>

@@ -4,36 +4,58 @@
 <dom-module id="view-settings">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
+        --app-grid-item-height: 50%;
       }
-paper-card {
-max-width: 100%;
-margin: 10px;
-  }
+      
+       @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+       @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
     </style>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
+<ul class="app-grid">
+<li>
     <div class="card">
       <h1>{{localize('general-settings')}}</h1>
-      <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector" item-label-path="name" item-value-path="value" value="[[language]]" selected-item="{{k}}" on-change="_changeLanguage" required always-float-label></vaadin-combo-box>
-
-    <h4>{{localize('header_1')}}</h4>
-  
-        <div>{{localize('greeting')}}</div>
-        <div>{{localize('missing')}}</div>
-        <div>{{localize('intro', 'name', 'Batman')}}</div>
-        <div>{{localize('cats', 'numCats', 10000, 'pctBlack', 0.42)}}</div>
-        <div>{{localize('sale', 'start', 2017, 'time', 15, 'price', 10)}}</div>
-
-    <h4>{{localize('header_2')}}</h4>
-  
-        <div>{{localize('fruit', 'num', 0)}} / {{localize('fruit', 'num', 1)}}/ {{localize('fruit', 'num', 3)}}</div>
-        <div>{{localize('bananas', 'name', 'Robin', 'gender', 'male', 'num', 1)}}</div>
-        <div>{{localize('bananas', 'name', 'Robin', 'gender', 'female', 'num', 0)}}</div>
-        <div>{{localize('bananas', 'name', 'Robin', 'gender', 'other', 'num', 4)}}</div>
-
-       <paper-button class="magic" raised>{{localize('save-button')}}</paper-button> 
+      <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector" item-label-path="name" item-value-path="value" value="[[language]]" selected-item="{{k}}" on-change="_changeLanguage" error-message="Invalid input" required auto-validate
+ always-float-label></vaadin-combo-box>
+    <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="switch" noink> {{localize('notification')}}</paper-toggle-button>
+   </div>
+</li>
+<li>
+    <div class="card">
+      <h1>{{localize('account-settings')}}</h1>
+      <paper-input label="{{localize('email')}}"></paper-input>
+      <paper-input label="{{localize('current-password')}}"></paper-input>
+      <paper-input label="{{localize('confirm-password')}}"></paper-input>
+      <paper-button class="magic" raised>{{localize('save-button')}}</paper-button> 
     </div>
+</li>
+</ul>
+  <paper-toast id="toastAlertOn" always-on-top horizontal-align="right" text="{{localize('notification-alert-on')}}"></paper-toast>
+  <paper-toast id="toastAlertOff" always-on-top horizontal-align="right" text="{{localize('notification-alert-off')}}"></paper-toast>
   </template>
   <script>
     Polymer({
@@ -43,6 +65,9 @@ margin: 10px;
       ],
       properties: {
         language: {
+          type: Object
+        },
+        notification: {
           type: Object
         },
         languageList: {
@@ -56,6 +81,18 @@ margin: 10px;
                 name: 'ไทย',
                 value: 'th'
               },
+              {
+                name: '日本語',
+                value: 'jp'
+              },
+              {
+                name: '中国',
+                value: 'en'
+              },
+              {
+                name: 'русский',
+                value: 'en'
+              }
             ]
           }
         },
@@ -66,7 +103,14 @@ margin: 10px;
 
       _changeLanguage: function() {
         this.language = this.$.languageSelector.value;
-      }
+      },
+
+      _changeNotification: function() {
+        this.notification = this.$.switch.checked ? 'true' : 'false';
+        if(this.$.switch.checked) { this.$.toastAlertOn.open(); }
+        else { this.$.toastAlertOff.open(); }
+      },
+
     });
   </script>
 </dom-module>

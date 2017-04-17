@@ -1,10 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
-<link rel="import" href="../../bower_components/polymer-dragula/polymer-dragula-styles.html">
 <dom-module id="view-plan-production">
   <template>
-    <style include="polymer-dragula-styles"></style>
     <style include="shared-styles">
        :host {
         display: block;
@@ -39,6 +37,64 @@
       }
 
       paper-item:hover { color: #FFFFFF; background-color: #333333; }
+      li {
+         display: block;
+      }
+
+     .frame {
+        border: solid 1px #757575;
+        border-radius: 2px; 
+        margin:10px 0; 
+        height: auto; 
+        overflow:hidden;
+        margin: 10px;
+        padding: 10px;
+     }
+     .production-block {
+        border: solid 1px #333333; 
+        border-radius: 2px; 
+        margin:10px; 
+        min-height: 500px; 
+        overflow:auto;
+     }
+     .stationBox {
+        height: auto;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 10px;
+        padding: 10px;
+        color: #757575;
+        border: 4px dashed #757575;
+        border-radius: 2px;
+        flex-direction: column;
+        text-decoration: none;
+        position: relative;
+        box-sizing: border-box;
+     }
+
+      .machineBox {
+        height: auto;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 10px 10px 10px 10px;
+        padding: 10px;
+        background-color: palevioletred;
+        border-radius: 2px;
+        flex-direction: column;
+        text-decoration: none;
+        position: relative;
+        box-sizing: border-box;
+        cursor: move;
+        cursor: grab;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+     }
 
       .vertical-section-container {
         max-width: 600px;
@@ -126,35 +182,58 @@
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" orderByChild="type" data="{{machineItems}}"></firebase-query>
       <div class="card">
       <h1>Simulation Machine</h1>
-      <div class="machine-block" style="border: solid 1px #333333; margin:10px 0; width: 100%; height: auto; overflow:hidden;">
-        <ul class="app-grid">
+      <div class="machine-block frame">
+       
+        <polymer-dragula>
+        <div class="row-holder">
+         <ul class="app-grid">
         <template is="dom-repeat" items="[[machineItems]]" as="machineItem"> 
-           <li>
-          <div class="stationBox">
+          <li><div class="machineBox">
             <h1 class="card-title">[[machineItem.name]]</h1>
             <p>Machine Number: [[machineItem.number]]</p>
             <p>Machine Type: [[machineItem.type]]</p>
             <p>Standard Efficiency: [[machineItem.effi]] &#37;</p>
             <paper-button raised class="magic" id="[[machineItem.$key]]" on-tap="editMachine">EDIT</paper-button>
             <paper-button raised class="chilli" id="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
-          </div>
-           </li>
+          </div></li>
       </template>
-      </ul>
+       </ul>
+       </div>
+     </polymer-dragula>
+     
       </div>
     </div>
+    
     <div class="card">
       <h1>Production Simulation</h1>
-        <paper-button raised class="magic" on-tap="_addStation">Add station</paper-button>
-     
+        <ul class="app-grid">
+          <li>
+      <div class="frame">
+      <h2>Station</h2>
+      <paper-input label="Station Name" name="stationname" id="srationName" type="text" required always-float-label auto-validate></paper-input>
+      <paper-button raised class="magic" on-tap="_addStation">Add station</paper-button>
+      </div>
+      </li>
+      <li>
+      <div class="frame">
+      <h2>Product</h2>
       <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name"
         item-value-path="name" selected-item='{{x}}' required always-float-label></vaadin-combo-box>
       <vaadin-combo-box label="Size" name="size" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name"
         item-value-path="length" required always-float-label></vaadin-combo-box>
       <vaadin-combo-box label="Load Plan" name="plan" items="" id="planSelector" on-tap="selectPlan" disabled="true" item-label-path="name"
         item-value-path="name" required always-float-label></vaadin-combo-box>
-        
-      <vaadin-context-menu selector=".stationBox">
+      </div>
+      </li>
+      <li>
+      <div class="frame">
+      <h2>Control</h2>
+      <div>Duration (Hours)</div>
+      <paper-slider min="0" step="1" max="72" max-markers="72" value="0" on-change="_changeDuration" id="duration" editable active pin noink snaps></paper-slider>
+      </div>
+      </li>
+      </ul>
+      <vaadin-context-menu selector=".block">
         <template>
           <paper-listbox>      
             <paper-item on-tap="_addStation">New station</paper-item>
@@ -164,14 +243,18 @@
           </paper-listbox>
          </template>
 
-        <div class="production-block" style="border: solid 1px #333333; border-radius: 2px; margin:10px 0; width: 100%; min-height: 500px; overflow:auto;">
+        <div class="block production-block">
           <template is="dom-repeat" items="[[stations]]" as="station">
-            <div class="stationBox" index="[[index]]"><h2>[[station.name]]</h2>
+            <li>
+            <div class="block stationBox" index="[[index]]"><h2>[[station.name]]</h2>
             <p>Station [[index]]</p>
+             <paper-icon-button icon="create" on-tap="_renameStation">Delete</paper-icon-button>
+             <paper-icon-button icon="delete" on-tap="_removeStation">Delete</paper-icon-button>
             </div>
+            </li>
           </template>
           <template is="dom-if" if="[[!stations]]">
-            <div class="stationBox" style="min-height: 500px;"><h2>No station in production block.</h2>
+            <div class="block stationBox" style="min-height: 500px;"><h2>No station in production block.</h2>
             <p>Please add your first station to the block.</p>
             </div>   
          </template>
@@ -203,31 +286,6 @@
                 </div>
             </polymer-dragula>
         </polymer-dragula>
-      <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" alwaysOnTop="true"
-            role="dialog" no-cancel-on-outside-click>
-            <h1>Add Product</h1>
-            <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
-            <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
-            <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required always-float-label></paper-input>
-            <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
-            <template is="dom-repeat" items="{{foodArray}}" as="food">
-                <div class="container flex-horizontal">
-								<paper-input class="product-size flex-child" label="Size name" value="[[food.name]]" required always-float-label></paper-input>
-								<paper-input class="product-size" label="Cycle time" value="{{food.unit}}" required always-float-label></paper-input>
-                <paper-input class="product-size" label="Cost" value="{{food.cost}}" required always-float-label></paper-input>	
-								<iron-icon on-click="deleteSize" icon="vaadin:close"></iron-icon>	
-                </div>
-			    	</template>
-	  
-					<paper-button on-tap="addFood">Add Size</paper-button>
-            <label for="fileUpload">Product image</label>
-            <input type="file" value="upload" on-change="upld" id="fileUpload"/>
-            
-              <div class="buttons">
-                <paper-button dialog-dismiss>Dismiss</paper-button>
-                <paper-button on-tap="addProduct" dialog-confirm autofocus>Create</paper-button>
-              </div>
-           </paper-dialog>
   </template>
   <script>
     Polymer({
@@ -255,12 +313,9 @@
         productItems: {
           type: Object
         },
-        productionDiagram: {
-          notify: true
-        },
         stations: {
           type: Object,
-          value: () => [{name: 'a'}, {name:'b'}, {name:'c'}]
+          value: () => [{name: 'A'}, {name:'B'}, {name:'C'}]
       },
         data: {
           type: Object,
@@ -309,22 +364,19 @@
         console.log("New station added!!");
       },
       _renameStation(e) {
-        console.log("Rename station no: " + e.model.index);
+        console.log('You pressed button ' + e.model.station.name);
       },
       _removeStation(e) {
-       // let menuItem = e.target; // `<paper-item>`
-       // let listItem = menuItem.listItem; // `<li>`
-        //this.splice('items', listItem.index, 1);
-       // this.splice('items',e.target.index,1);
-       
-        this.splice('stations',e.model.index,1);
-        console.log("Station item removed!!" + e.currentTarget + " | " + e.model.index + " | " + e.target);
+        this.splice('stations', e.model.index ,1);
       },
       _savePlan() {
         console.log(this.stations.length);
       },
       _checkStation() {
         return (this.stations.length > 0);
+      },
+      _changeDuration() {
+        console.log("Current duration: " + this.$.duration.value);
       },
       listeners: {
         'dragula-drag': 'handleEvent',
@@ -343,45 +395,6 @@
     });
   </script>
 </dom-module>
-   <dom-module id="my-list-view">
-          <template>
-            <vaadin-context-menu selector="li">
-              <template>
-                <paper-menu>
-                  <paper-item on-tap="_appendItem">Append item</paper-item>
-                  <paper-item list-item="[[target]]" on-tap="_removeItem">Remove item</paper-item>
-                </paper-menu>
-              </template>
+  
 
-              <ul>
-                <template is="dom-repeat" items="[[items]]">
-                  <li index="[[index]]">[[item]]</li>
-                </template>
-              </ul>
-            </vaadin-context-menu>
-          </template>
-
-          <script>
-            Polymer({
-              is: 'my-list-view',
-              properties: {
-                items: {
-                  type: Array,
-                  value: function() {
-                    return ['Foo', 'Bar', 'Baz'];
-                  }
-                }
-              },
-              _appendItem: function() {
-                this.push('items', 'New item');
-              },
-              _removeItem: function(e) {
-                var menuItem = e.target; // `<paper-item>`
-                var listItem = menuItem.listItem; // `<li>`
-                this.splice('items', listItem.index, 1);
-              }
-            });
-          </script>
-        </dom-module>
-
-        <my-list-view></my-list-view>
+     

@@ -38,9 +38,10 @@
 --paper-radio-button-unchecked-color: #333333; 
 --paper-radio-button-unchecked-ink-color: #333333; 
 --paper-radio-button-label-color: #333333; 
+--paper-slider-container-color: #333333; 
 --paper-slider-knob-color: #333333; 
---paper-slider-active-color: #333333; 
---paper-slider-pin-color: #333333; 
+--paper-slider-active-color: #ff4081; 
+--paper-slider-pin-color: #ff4081; 
 --paper-spinner-layer-1-color: #333333; 
 --paper-spinner-layer-2-color: #333333; 
 --paper-spinner-layer-3-color: #333333; 
@@ -192,23 +193,6 @@ paper-icon-button+[main-title] {
         position: relative;
         box-sizing: border-box;
      }
-     .stationBox {
-        height: auto;
-        min-height: 250px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        margin: 10px 10px 10px 10px;
-        padding: 10px;
-        color: #757575;
-        border: 4px dashed #757575;
-        border-radius: 2px;
-        flex-direction: column;
-        text-decoration: none;
-        position: relative;
-        box-sizing: border-box;
-     }
      .button-group {
        text-align: center;
      }
@@ -293,11 +277,11 @@ paper-icon-button+[main-title] {
       .card {
         height: auto;
         min-height: 100%;
+        width: inherit;
         display: flex;
         overflow: hidden;
-        margin: 10px 10px 10px 10px;
+        margin: 10px;
         padding: 16px;
-        color: #757575;
         border-radius: 2px;
         background-color: #ffffff;
         flex-direction: column;
