@@ -235,12 +235,12 @@
       </ul>
       <vaadin-context-menu selector=".block">
         <template>
-          <paper-listbox>      
+          <div role="listbox">    
             <paper-item on-tap="_addStation">New station</paper-item>
             <paper-item on-click="_addStation">Test</paper-item>
             <paper-item disabled="[[!stations]]" on-tap="_renameStation">Rename station [[target.index]]</paper-item>
             <paper-item disabled="[[!stations]]" list-item="[[target]]" on-tap="_removeStation">Delete station</paper-item>
-          </paper-listbox>
+          </div>
          </template>
 
         <div class="block production-block">
