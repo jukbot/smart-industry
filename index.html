@@ -39,11 +39,6 @@
     <script>
         window.performance && performance.mark && performance.mark('index.html');
 
-        Polymer = {
-            lazyRegister: true,
-            dom: 'shadow'
-        };
-
         (function () {
             if ('registerElement' in document &&
                 'import' in document.createElement('link') &&
@@ -234,6 +229,7 @@
         }
     </style>
     <link rel="import" href="/src/view-index.html">
+    <link rel="import" href="bower_components/platinum-sw/platinum-sw-elements.html">
 </head>
 <body>
     <view-index unresolved>
@@ -242,6 +238,16 @@
             <p class="loader__label">Building your application</p>
         </div>
     </view-index>
+    <platinum-sw-register
+    auto-register
+    skip-waiting
+    clients-claim
+    reload-on-install
+    href="sw-import.js">
+  <platinum-sw-cache
+      default-cache-strategy="networkFirst">
+  </platinum-sw-cache>
+</platinum-sw-register>
     <!-- <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

@@ -84,7 +84,7 @@
         overflow: hidden;
         margin: 10px 10px 10px 10px;
         padding: 10px;
-        background-color: palevioletred;
+        background-color: #eeeeee;
         border-radius: 2px;
         flex-direction: column;
         text-decoration: none;
@@ -131,7 +131,7 @@
         position: fixed !important;
         margin: 0 !important;
         z-index: 9999 !important;
-        opacity: 0.8;
+        opacity: 0.8 !important;
         -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
         filter: alpha(opacity=80);
       }
@@ -228,11 +228,19 @@
       <li>
       <div class="frame">
       <h2>Control</h2>
-      <div>Duration (Hours)</div>
+      <div>Duration (Hours)
       <paper-slider min="0" step="1" max="72" max-markers="72" value="0" on-change="_changeDuration" id="duration" editable active pin noink snaps></paper-slider>
+      </div>
+      <div>Speed (x1.00)
+      <paper-slider min="1.00" step="0.50" max="4.00" max-markers="4.00" value="0" editable active pin noink snaps></paper-slider>
+      </div>
       </div>
       </li>
       </ul>
+      <div class="button-group">
+        <paper-button raised class="burn" on-tap="_simulatePlan">Simulate</paper-button>
+        <paper-button raised class="magic" on-tap="_savePlan">Save</paper-button>
+      </div>
       <vaadin-context-menu selector=".block">
         <template>
           <div role="listbox">    
@@ -261,10 +269,6 @@
         </div>
 
       </vaadin-context-menu>
-      <div class="button-group">
-        <paper-button raised class="burn" on-tap="_simulatePlan">Simulate</paper-button>
-        <paper-button raised class="magic" on-tap="_savePlan">Save</paper-button>
-      </div>
     </div>
  
        <polymer-dragula id="column-dragger" sub-container-selector=".col-holder" fn-moves="[[fnMovesInner]]">
