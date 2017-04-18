@@ -31,7 +31,9 @@
           --app-grid-columns: 2;
         }
       }
-
+      .save-btn {
+        margin-top: 10px;
+      }
     </style>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
@@ -42,7 +44,6 @@
       <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector" item-label-path="name" item-value-path="value" value="[[language]]" selected-item="{{k}}" on-change="_changeLanguage" error-message="Invalid input" required auto-validate
  always-float-label></vaadin-combo-box>
     <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="switch" noink> {{localize('notification')}}</paper-toggle-button>
-    <paper-icon-button id="help" icon="help" alt="help"></paper-icon-button>
 </div>
 </li>
 <li>
@@ -51,11 +52,11 @@
       <paper-input label="{{localize('email')}}" type="text"></paper-input>
       <paper-input label="{{localize('current-password')}}" type="password"></paper-input>
       <paper-input label="{{localize('confirm-password')}}" type="password"></paper-input>
-      <paper-button class="magic" on-tap="_saveSettings" raised>{{localize('save-settings-button')}}</paper-button> 
+      <paper-button class="magic save-btn" on-tap="_saveSettings" raised>{{localize('save-settings-button')}}</paper-button> 
     </div>
 </li>
 </ul>
-  <paper-tooltip for="help" animation-delay="0" offset="0" position="right">Notification is feature that notify you when the system has events.</paper-tooltip>
+  <paper-tooltip for="switch" animation-delay="1000" offset="0" position="bottom">Notification is feature that notify you when the system has events.</paper-tooltip>
   <paper-toast id="toastSaveSettings" always-on-top horizontal-align="right" text="{{localize('notification-save-settings')}}"></paper-toast>
   <paper-toast id="toastAlertOn" always-on-top horizontal-align="right" text="{{localize('notification-alert-on')}}"></paper-toast>
   <paper-toast id="toastAlertOff" always-on-top horizontal-align="right" text="{{localize('notification-alert-off')}}"></paper-toast>

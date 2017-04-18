@@ -7,6 +7,9 @@
       :host {
         display: block;
         --app-grid-item-height: 50%;
+        --vaadin-grid-header-cell: { 
+           background-color: #e3e3e3;
+        }
       }
       
        @media (min-width: 360px) and (max-width: 768px) {
@@ -28,7 +31,7 @@
       }
        @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
-          --app-grid-columns: 1;
+          --app-grid-columns: 1 ;
         }
       }
 
@@ -38,7 +41,7 @@
       flex-direction: column;
       opacity: 1;
       cursor: pointer;
-      border-bottom: 1px solid #e3e3e3;
+      border-bottom: 1px solid #eeeeee;
       }
 
        #job-scheduling-table .index {
@@ -87,7 +90,7 @@
       }
         /* Phone and tablet */
       #timeline {
-       margin-top: 20px;
+        margin-top: 20px;
         width: 100%;
         min-height: 600px;
         height: auto;
@@ -100,6 +103,8 @@
       input {
         font: inherit;
       }
+
+  
     </style>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderItems}}" order-by-child="{{orderType(factoryStandard.priority)}}" order-by-value="true"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
@@ -110,55 +115,62 @@
     <h1>Order Scheduling Table</h1>     
     <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
     <paper-button raised class="chilli priority-btn" on-tap="togglePriority">Change</paper-button>
-   <vaadin-grid aria-label="Order Scheduling Table" id="grid-objects-source">
-  <table>
-    <colgroup>
-      <col>
-      <col>
-      <col>
-      <col>
-      <col>
-      <col>
-      <col>
-      <col>
-      <col>
-      <col>
-      <col>
-    </colgroup>
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Order No.</th>
-        <th>Product name</th>
-        <th>Size</th>
-        <th>Color</th>
-        <th>Quantity</th>
-        <th>Customer name</th>
-        <th>Duration (Hrs.)</th>
-        <th>Delivery date</th>
-        <th>Edit</th>
-        <th><div>Delete</div></th>
-      </tr>
-    </thead>
-    <tbody>
-      <template is="dom-repeat" items="[[orderItems]]" as="list">   
-        <tr>
-        <td>[[index]]</td>
-        <td>[[list.order_no]]</td>
-        <td>[[list.order_product]]</td>
-        <td>[[list.order_size]]</td>
-        <td>[[list.order_color]]</td>
-        <td>[[list.order_quantity]]</td>
-        <td>[[list.order_customer]]</td>
-        <td>[[list.order_duration]]</td>
-        <td>[[getDeliveryDate(list.order_delivery)]]</td>
-        <td><paper-icon-button id="edit_[[list.$key]]" icon="vaadin:pencil" title="edit" on-tap="editOrder"></paper-icon-button></td>
-        <td><paper-icon-button id="[[list.$key]]" icon="vaadin:trash" title="delete" on-tap="deleteOrder" ></paper-icon-button></td>
-        </tr>   
-       </template>
-    </tbody>
-  </table>
-</vaadin-grid>
+    <template is="dom-bind">
+  
+            <vaadin-grid aria-label="Order Scheduling Table" items="[[orderItems]]">
+              <vaadin-grid-column width="3em" flex-grow="0">
+                <template class="header">Index</template>
+                <template>[[index]]</template>
+              </vaadin-grid-column>
+               <vaadin-grid-column>
+                <template class="header">Order No</template>
+                <template>[[item.order_no]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">
+                  Product
+                </template>
+                <template>[[item.order_product]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">
+                  Size
+                </template>
+                <template>[[item.order_size]]</template>
+              </vaadin-grid-column>
+               <vaadin-grid-column>
+                <template class="header">
+                  Color
+                </template>
+                <template>[[item.order_color]]</template>
+              </vaadin-grid-column>
+               <vaadin-grid-column>
+                <template class="header">
+                  Quantity
+                </template>
+                <template>[[item.order_quantity]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">
+                  Customer
+                </template>
+                <template>[[item.order_customer]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">
+                  Work duration
+                </template>
+                <template>[[item.order_duration]]</template>
+              </vaadin-grid-column>
+               <vaadin-grid-column>
+               <template class="header">
+                  Delivery
+                </template>
+                <template>[[getDeliveryDate(item.order_delivery)]]</template>
+              </vaadin-grid-column>
+                  </vaadin-grid>
+
+</template>
 </div> 
 </li>
 <li>
@@ -171,7 +183,7 @@
 <h1>Current total workload:</h1>
 <h1>Overtime order !!:</h1>
 
-<google-chart id="timeline" type="timeline" class="chart" style="width: 100%;" cols="[[cols()]]" rows="[[rows()]]"></google-chart>
+<google-chart id="timeline" type="timeline" class="chart" style="width: 1600px;" cols="[[cols()]]" rows="[[rows()]]"></google-chart>
  </div>
  </li>
 <li>
@@ -238,10 +250,6 @@
           }
         };
 
-   let media = window.matchMedia('(min-width: 100%)'); 
-   media.addListener(function() { 
-   document.querySelector('#timeline').redraw(); 
-    }); 
     },
   
     getDeliveryDate: function (timestamp) {
@@ -271,7 +279,6 @@
     orderType: function (type) {
         if(type === "SPT") { return "order_duration" }
         else if(type === "EDD") { return "order_delivery" }
-        else return "";
     },
     savePriority: function () {
          let value = this.$.priorityTypeSelector.selected; 

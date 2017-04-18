@@ -210,7 +210,7 @@
           <li>
       <div class="frame">
       <h2>Station</h2>
-      <paper-input label="Station Name" name="stationname" id="srationName" type="text" required always-float-label auto-validate></paper-input>
+      <paper-input label="Station Name" name="stationname" id="stationName" type="text" required always-float-label auto-validate></paper-input>
       <paper-button raised class="magic" on-tap="_addStation">Add station</paper-button>
       </div>
       </li>
@@ -243,12 +243,11 @@
       </div>
       <vaadin-context-menu selector=".block">
         <template>
-          <div role="listbox">    
+          <paper-menu>    
             <paper-item on-tap="_addStation">New station</paper-item>
-            <paper-item on-click="_addStation">Test</paper-item>
             <paper-item disabled="[[!stations]]" on-tap="_renameStation">Rename station [[target.index]]</paper-item>
             <paper-item disabled="[[!stations]]" list-item="[[target]]" on-tap="_removeStation">Delete station</paper-item>
-          </div>
+          </paper-menu>
          </template>
 
         <div class="block production-block">
@@ -256,8 +255,18 @@
             <li>
             <div class="block stationBox" index="[[index]]"><h2>[[station.name]]</h2>
             <p>Station [[index]]</p>
-             <paper-icon-button icon="create" on-tap="_renameStation">Delete</paper-icon-button>
-             <paper-icon-button icon="delete" on-tap="_removeStation">Delete</paper-icon-button>
+            <div>
+            <paper-menu-button>
+             <paper-icon-button icon="add" on-tap="_addMachine" class="dropdown-trigger"></paper-icon-button>
+              <paper-menu class="dropdown-content">
+                <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
+                    <paper-item>[[machineItem.name]]</paper-item>
+                </template>
+            </paper-menu>
+            </paper-menu-button>
+             <paper-icon-button icon="create" on-tap="_renameStation"></paper-icon-button>
+             <paper-icon-button icon="delete" on-tap="_removeStation"></paper-icon-button>
+            </div>
             </div>
             </li>
           </template>
@@ -320,7 +329,7 @@
         stations: {
           type: Object,
           value: () => [{name: 'A'}, {name:'B'}, {name:'C'}]
-      },
+       },
         data: {
           type: Object,
           value: function () {
@@ -363,9 +372,29 @@
           }
         },
       },
+      ready() {
+         let productPicker = this.$.productSelector;
+         let sizePicker = this.$.sizeSelector;
+         //let colorPicker = this.$.colorSelector;
+         let machinePicker = this.$.machineSelector;
+          productPicker.addEventListener('value-changed', function() {
+          let product_list = productPicker.value;    
+          if(product_list != null && sizePicker.items != null) {
+                 sizePicker.disabled = false;
+                // colorPicker.disabled = false;
+                 machinePicker.disabled = false;
+              }
+          });
+      },
       _addStation() {
-        this.push('stations', {name: 'New Station'});
-        console.log("New station added!!");
+        let sname = this.$.stationName.value;
+        if(sname === "") {
+          alert("Station name cannot be empty");
+        }
+        else {
+          this.push('stations', {name: sname});
+          console.log("New station added!!");
+        } 
       },
       _renameStation(e) {
         console.log('You pressed button ' + e.model.station.name);
