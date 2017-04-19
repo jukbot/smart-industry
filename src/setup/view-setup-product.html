@@ -141,7 +141,8 @@
               cycle: '',
               cost: ''
             }]
-          }
+          },
+          notify: true
         },
       },
       toggleDialog: function () {
@@ -183,7 +184,7 @@
  },
 
  addSizeToArray: function() {
-
+     console.log(this.sizeArray);
  },
     deleteSize:function(e){
      this.splice('sizeArray',e.model.index,1);
@@ -222,8 +223,11 @@
       },
       sizeProduct: function(size) {
           let psize = [];
+          let cycle_size = [];
           for (let key in size) {
               psize[key] = size[key].name;
+              cycle_size[key] = size[key].cycle;
+              console.log("SIZE LOOP " + cycle_size[key]);
           };
           return psize;
       },

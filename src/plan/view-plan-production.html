@@ -208,7 +208,7 @@
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" orderByChild="type" data="{{machineItems}}"></firebase-query>
       <div class="card">
       <h1>Simulation Machine</h1>
-      <div class="machine-block frame">
+      <div class="frame">
        
         <polymer-dragula>
         <div class="row-holder">
@@ -311,27 +311,20 @@
         </div>
 
       </vaadin-context-menu>
+
+       <div class="frame">
+       <h2>Station A Output</h2>
+    <p>Total duration:</p>
+    <p>Total Workload:</p>
     </div>
- 
-       <polymer-dragula id="column-dragger" sub-container-selector=".col-holder" fn-moves="[[fnMovesInner]]">
-            <polymer-dragula id="row-dragger" fn-moves="[[fnMoves]]">
-                <div class="row-holder">
-                    <template is="dom-repeat" items="[[data.rows]]">
-                        <div class$="row [[item.className]]">
-                            <strong class="handle">drag handle</strong>
-                            <div class="col-holder">
-                                <template is="dom-repeat" items="[[item.columns]]">
-                                    <div class="column">
-                                        <strong class="handle-inner">drag handle</strong>
-                                        <p>[[item.body]]</p>
-                                    </div>
-                                </template>
-                            </div>
-                        </div>
-                    </template>
-                </div>
-            </polymer-dragula>
-        </polymer-dragula>
+       <div class="frame">
+       <h2>Output result</h2>
+    <p>Total duration:</p>
+    <p>Total Workload:</p>
+    <p>Somethings: </p>
+    </div>
+    </div>
+
   </template>
   <script>
     Polymer({
