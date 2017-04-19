@@ -1,0 +1,149 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-setup-station">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-item-height: 50%;
+      }
+      
+       @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+       @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 4;
+        }
+      }
+
+      .station-dialog {
+        width: 35%;
+        padding: 10px;
+      }
+     .station { min-height: 350px; height: auto; }
+     .station p {
+        margin: 12px 0;
+      }
+     .station h1 { text-align: center; }
+     .station-info-group {
+       margin-bottom: auto;
+     }
+     .button-group paper-button {
+       width: 49%;
+     }
+     
+    </style>
+    <firebase-query app-name="smart-mes" id="stationQuery" path="/station" orderByChild="install" data="{{stationItems}}"></firebase-query>
+    <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
+    <ul class="app-grid">
+      <li>
+        <div class="stitched">
+          <paper-button raised on-tap="toggleDialog" class="big-btn fancy">ADD STATION</paper-button>
+          <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
+            no-cancel-on-outside-click>
+            <h1>Add Station</h1>
+            <paper-input name="station-name" id="stationName" label="Station Name" required always-float-label></paper-input>
+            <div class="buttons">
+                <paper-button on-tap="dismissAddMachine" dialog-dismiss>Dismiss</paper-button>
+                <paper-button on-tap="addStation" dialog-confirm autofocus>Create</paper-button>
+              </div>
+            </paper-dialog>
+        </div>
+      </li>
+      <template is="dom-repeat" items="{{stationItems}}" as="stationItem">
+        <li>  
+            <div class="card station">
+            <div class="machine-info-group">
+            <h1 class="card-title">[[stationItem.name]]</h1>
+            <p>Station name: [[stationItem.name]]</p>
+            </div>
+            <div class="button-group">
+            <paper-button raised class="fancy" id="[[stationItem.$key]]" on-tap="editStation">EDIT</paper-button>
+            <paper-button raised class="chilli" id="[[stationItem.$key]]" on-tap="removeStation">REMOVE</paper-button>
+            </div>
+            <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click>
+            <h2>Edit station</h2>
+            <paper-input id="name_[[stationItem.$key]]" name="station-name" class="editstationName" value="{{stationItem.name}}" label="Station Name" always-float-label></paper-input>
+            <div class="buttons">
+                <paper-button id="[[stationItem.$key]]" on-tap="dismissEditStation" dialog-dismiss>Dismiss</paper-button>
+                <paper-button id="[[stationItem.$key]]" on-tap="saveEditStation" dialog-confirm autofocus>Save</paper-button>
+            </div>
+            </paper-dialog>
+          </div>
+        </li>
+      </template>
+    </ul>
+  <paper-toast id="toastAddStation" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-setup-station',
+      properties: {
+        stationItems: {
+          type: Object
+        },
+        notification: {
+          type: Object
+        }
+      },
+      toggleDialog() {
+        this.$.createStationDialog.open();
+      },
+      addStation() {
+        let sname = this.$.stationName.value;
+        if(sname != null) {
+        this.$.stationQuery.ref.push({
+          name : sname
+        });
+        this.clearField();
+          if(this.notification) {
+           this.$.toastAddStation.open(); 
+         }
+        } else {
+           alert("Station name field cannot be empty.")
+        }
+      },
+      editStation(e) {
+        this.$$('#edit_'+e.target.id).open();  
+      },
+      removeStation(e) {
+        this.$.stationQuery.ref.child(e.target.id).remove();
+      },
+      saveEditStation(e) {
+       // console.log(this.$.stationQuery.ref.child(e.target.id).value);
+        console.log(e.model.stationItem.name);
+       // this.$.stationQuery.ref.child(e.target.id+"/name").value = e.model.stationItem.name;
+        //setStoredValue(storagePath, value)
+
+        alert("Save successful");
+      },
+      dismissEditStation(e) {
+       // this.$$('#name_'+e.target.id).value = null;
+        this.$.createStationDialog.cancel();
+      },
+      dismissAddStation() {
+        this.clearField();
+        this.$.createStationDialog.cancel();
+      },
+      clearField() {
+        this.$.stationName.value = null;
+      },
+    });
+  </script>
+</dom-module>

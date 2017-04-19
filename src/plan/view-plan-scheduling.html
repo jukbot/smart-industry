@@ -91,7 +91,7 @@
         /* Phone and tablet */
       #timeline {
         margin-top: 20px;
-        width: 100%;
+        width: 1600px;
         min-height: 600px;
         height: auto;
      }
@@ -115,8 +115,7 @@
     <h1>Order Scheduling Table</h1>     
     <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
     <paper-button raised class="chilli priority-btn" on-tap="togglePriority">Change</paper-button>
-    <template is="dom-bind">
-  
+
             <vaadin-grid aria-label="Order Scheduling Table" items="[[orderItems]]">
               <vaadin-grid-column width="3em" flex-grow="0">
                 <template class="header">Index</template>
@@ -160,7 +159,7 @@
                 <template class="header">
                   Work duration
                 </template>
-                <template>[[item.order_duration]]</template>
+                <template>[[item.order_duration]] Hrs.</template>
               </vaadin-grid-column>
                <vaadin-grid-column>
                <template class="header">
@@ -170,7 +169,6 @@
               </vaadin-grid-column>
                   </vaadin-grid>
 
-</template>
 </div> 
 </li>
 <li>

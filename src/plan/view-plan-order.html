@@ -135,59 +135,78 @@
   <script>
     Polymer({
       is: 'view-plan-order',
-      saveOrder: function() {
-        alert("Order has been saved to archive order.");
-      },
-      createOrder: function () {
-        let orderNo = this.$.orderNumber.value;
-        let customerName = this.$.customerName.value;
-        let orderDateSTP = Math.round(new Date().getTime()/1000.0);
-        let orderProduct = this.$.productSelector.value;
-        let orderSKU = this.$.sku.innerHTML;
-        let orderSize = this.$.sizeSelector.value;
-        let orderQuantity = this.$.orderQuantity.value;
-        let orderDuration = this.$.estimateDuration.innerHTML;
-        let orderDelivery = this.$.estimateDelivery.innerHTML;
-        if(orderNo != "" && customerName != "" && orderProduct != "" && orderSize != "" && orderQuantity != "") {
-            let today = new Date();
-            let dd = today.getDate();
-            let mm = today.getMonth() + 1; //January is 0!
-            let yyyy = today.getFullYear();
-             if (dd < 10) {
-             dd = '0' + dd
-             }
+      properties: {
+        productSize: {
+          type: Object
+        },
+        machineItems: {
+          type: Object
+        },
+        productItems: {
+          type: Object
+        },
+        productQuery: {
+          type: Object
+        },
+        factoryPerformance: {
+          type: Object
+        },
+        factoryStandard: {
+          type: Object
+        },
+        factoryOperation: {
+          type: Object
+        },
+        orderQuery: {
+          type: Object
+        },
+        orderDelivery: {
+          type: Object
+        },
+        amount: {
+          type: Object,
+        },
+        maxOrderNo: {
+          type: Number,
+        },
+        priority: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'Early Delivery (EDD)',
+                symbol: 'EDD',
+                number: 1
+              },
+              {
+                name: 'Shortest Duration First (SPT)',
+                symbol: 'SPT',
+                number: 2
+              }
+            ]
+          }
+        },
+        todayDate: {
+          type: Object,     
+          value: function () {
+          let date = new Date();
+          let dd = date.getDate();
+          let mm = date.getMonth() + 1; //January is 0!
+          let yyyy = date.getFullYear();
+          if (dd < 10) {
+            dd = '0' + dd
+          }
           if (mm < 10) {
             mm = '0' + mm
+         }
+          date = yyyy + '-' + mm  + '-' + dd;
+          return date;
           }
-          this.$.orderQuery.ref.push({
-          order_date: orderDateSTP,
-          order_no: orderNo,
-          order_customer: customerName,
-          order_product: orderProduct,
-          order_sku: orderSKU,
-          order_size: orderSize,
-          order_quantity: orderQuantity,
-          order_duration: orderDuration,
-          order_delivery: orderDelivery
-        }).key;
-      alert("Added to production schedule successfully");
-      } else {
-           alert("Input field cannot be blank, please fill in completely.");
-      }
-      },
-
-      uploadFile: function() {
-        // upload order file to order schedule table or waiting table
-         var upload = this.$.uploadOrder;
-         upload.addEventListener('upload-request', e => {
-            e.preventDefault();
-            e.detail.xhr.send(e.detail.file);
-         });
+        },
       },
       ready: function() {
-        console.log("TEST ORDER NO " + this.orderQuery.length);
          this.$.machineSelector.ignoreSelect = true;
          Sugar.Date.setLocale('en-GB');
+         this.$.orderNumber.value = Object.keys(this.orderQuery).length+1; // Order no add when page loaded if not use in attached
          let estdelivery = this.$.estimateDelivery;
          let deliverypicker = this.$.deliverySelector;
          let actualquantity = this.$.actualQuantity;
@@ -199,7 +218,11 @@
          // querySelector ==> this.shadowRoot.querySelector('')
         deliverypicker.addEventListener('value-changed', function() {
             if(deliverypicker.value != null) {
-                 estdelivery.innerHTML = (new Date(deliverypicker.value).getTime()/1000);
+                 let deliveryTimeStamp = (new Date(deliverypicker.value).getTime()/1000);
+                 console.log(deliveryTimeStamp);
+                 this.orderDelivery = deliveryTimeStamp;
+                  estdelivery.innerHTML = deliveryTimeStamp;
+                 console.log("fuck " + this.orderDelivery);
             }
            });
 
@@ -238,6 +261,55 @@
           }
         };
     },
+      createOrder: function () {
+        let orderNo = this.$.orderNumber.value;
+        let customerName = this.$.customerName.value;
+        let orderDateSTP = Math.round(new Date().getTime()/1000.0);
+        let orderProduct = this.$.productSelector.value;
+        let orderSKU = this.$.sku.innerHTML;
+        let orderSize = this.$.sizeSelector.value;
+        let orderQuantity = this.$.orderQuantity.value;
+        let orderDuration = this.$.estimateDuration.innerHTML;
+        let orderDelivery = (new Date(this.$.deliverySelector.value).getTime()/1000);
+       
+        if(orderNo != "" && customerName != "" && orderProduct != "" && orderSize != "" && orderQuantity != "" && orderDelivery != "") {
+            let today = new Date();
+            let dd = today.getDate();
+            let mm = today.getMonth() + 1; //January is 0!
+            let yyyy = today.getFullYear();
+             if (dd < 10) {
+             dd = '0' + dd
+             }
+          if (mm < 10) {
+            mm = '0' + mm
+          }
+          this.$.orderQuery.ref.push({
+          order_date: orderDateSTP,
+          order_no: orderNo,
+          order_customer: customerName,
+          order_product: orderProduct,
+          order_sku: orderSKU,
+          order_size: orderSize,
+          order_quantity: orderQuantity,
+          order_duration: orderDuration,
+          order_delivery: orderDelivery
+        }).key;
+           alert("Added to production schedule successfully");
+      } else {
+           alert("Input field cannot be blank, please fill in completely.");
+      }
+      },
+     saveOrder: function() {
+        alert("Order has been saved to archive order.");
+      },
+      uploadFile: function() {
+        // upload order file to order schedule table or waiting table
+         var upload = this.$.uploadOrder;
+         upload.addEventListener('upload-request', e => {
+            e.preventDefault();
+            e.detail.xhr.send(e.detail.file);
+         });
+      },
 
     calSetupTime: function(setup) {
           if(!setup) return 0;
@@ -347,72 +419,6 @@
         console.log("max order no " + max);
         return 2;
      },
-
-      properties: {
-        productSize: {
-          type: Object
-        },
-        machineItems: {
-          type: Object
-        },
-        productItems: {
-          type: Object
-        },
-        productQuery: {
-          type: Object
-        },
-        factoryPerformance: {
-          type: Object
-        },
-        factoryStandard: {
-          type: Object
-        },
-        factoryOperation: {
-          type: Object
-        },
-        orderQuery: {
-          type: Object
-        },
-        amount: {
-          type: Object,
-        },
-        maxOrderNo: {
-          type: Number,
-        },
-        priority: {
-          type: Array,
-          value: function () {
-            return [{
-                name: 'Early Delivery (EDD)',
-                symbol: 'EDD',
-                number: 1
-              },
-              {
-                name: 'Shortest Duration First (SPT)',
-                symbol: 'SPT',
-                number: 2
-              }
-            ]
-          }
-        },
-        todayDate: {
-          type: Object,     
-          value: function () {
-          let date = new Date();
-          let dd = date.getDate();
-          let mm = date.getMonth() + 1; //January is 0!
-          let yyyy = date.getFullYear();
-          if (dd < 10) {
-            dd = '0' + dd
-          }
-          if (mm < 10) {
-            mm = '0' + mm
-         }
-          date = yyyy + '-' + mm  + '-' + dd;
-          return date;
-          }
-        },
-      }
     });
   </script>
 </dom-module>

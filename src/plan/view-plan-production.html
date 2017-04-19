@@ -96,6 +96,27 @@
         cursor: -webkit-grab;
      }
 
+       .machine {
+        height: auto;
+        min-height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 10px 10px 10px 10px;
+        padding: 10px;
+        background-color: #eeeeee;
+        border-radius: 2px;
+        flex-direction: row;
+        text-decoration: none;
+        position: relative;
+        box-sizing: border-box;
+        cursor: move;
+        cursor: grab;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+     }
+
      .add-machine-menu {
        overflow: auto;
        max-height: 300px;
@@ -228,6 +249,8 @@
         item-value-path="length" required always-float-label></vaadin-combo-box>
       <vaadin-combo-box label="Load Plan" name="plan" items="" id="planSelector" on-tap="selectPlan" disabled="true" item-label-path="name"
         item-value-path="name" required always-float-label></vaadin-combo-box>
+      <vaadin-combo-box label="Target station" name="station" items="[[stations]]" id="stationSelector" on-tap="selectStation" item-label-path="name"
+        item-value-path="name" required always-float-label></vaadin-combo-box>
       </div>
       </li>
       <li>
@@ -261,7 +284,7 @@
             <div class="block stationBox" index="[[index]]"><h2>[[station.name]]</h2>
             <p>Station [[index]]</p>
              <template is="dom-repeat" items="[[machines_s1]]" as="machineInStation">
-                    <div class="machineBox" value="[[machineInStation.name]]">[[machineInStation.name]]</div>
+                    <div class="machine" value="[[machineInStation.name]]">[[machineInStation.name]]</div>
             </template>
 
             <div>
@@ -387,15 +410,15 @@
         },
       },
       ready() {
-         let productPicker = this.$.productSelector;
-         let sizePicker = this.$.sizeSelector;
-         //let colorPicker = this.$.colorSelector;
-         let machinePicker = this.$.machineSelector;
+          let productPicker = this.$.productSelector;
+          let sizePicker = this.$.sizeSelector;
+          //let colorPicker = this.$.colorSelector;
+          let machinePicker = this.$.machineSelector;
           productPicker.addEventListener('value-changed', function() {
           let product_list = productPicker.value;    
           if(product_list != null && sizePicker.items != null) {
                  sizePicker.disabled = false;
-                // colorPicker.disabled = false;
+                 //colorPicker.disabled = false;
                  machinePicker.disabled = false;
               }
           });
@@ -413,7 +436,7 @@
           console.log(e.model.machineItem.name);
           let mname = e.model.machineItem.name;
           //var machines = new Array()    
-          this.push('machines_s1', {name: mname, station: 1 });
+          this.push('machines_s1', {name: mname, station: 1});
       },
       _renameStation(e) {
         console.log('You pressed button ' + e.model.station.name);
@@ -430,6 +453,7 @@
       _changeDuration() {
         console.log("Current duration: " + this.$.duration.value);
       },
+      
       listeners: {
         'dragula-drag': 'handleEvent',
         'dragula-dragend': 'handleEvent',

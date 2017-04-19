@@ -59,7 +59,7 @@
                 type="number" min="0" max="100" step="5"  required always-float-label auto-validate></paper-input>
               <paper-input label="Operation start (xx:xx)" name="opstart" id="opStart" value="[[factoryOperation.op_start]]"
                required always-float-label auto-validate></paper-input>
-             <paper-input label="Operation end (xx:xx)" name="opend" id="opEnd" value="[[factoryOperation.op_end]]"
+              <paper-input label="Operation end (xx:xx)" name="opend" id="opEnd" value="[[factoryOperation.op_end]]"
                 required always-float-label auto-validate></paper-input>
               <paper-input label="Over Time start (xx:xx)" name="otstart" id="otStart" value="[[factoryOperation.ot_start]]"
                 required always-float-label auto-validate></paper-input>
@@ -163,7 +163,7 @@
         let op_end = this.$.opEnd.value;
         let ot_start = this.$.otStart.value;
         let ot_end = this.$.otEnd.value;
-
+      if(fc != "" && ft != "" && aw != "" && wu != "" && inte != "" && op_start != "" && op_end != "") {
         this.set('factoryOperation.name', fc);
         this.set('factoryOperation.type', ft);
         this.set('factoryPerformance.aw', aw);
@@ -173,10 +173,12 @@
         this.set('factoryOperation.op_end', op_end);
         this.set('factoryOperation.ot_start', op_start);
         this.set('factoryOperation.ot_end', op_end);
-
         //this.$.factoryStandrad.save('/factory/standard');
         console.log(this.$.sunday.checked);
         console.log("Weekly: " + this.$.opWeek.innerText);
+      } else {
+          alert("Input field cannot be blank, please fill in completely.");
+      }
       },
       resetValue: function () {
         this.$.factoryName.value = "Example factory";
