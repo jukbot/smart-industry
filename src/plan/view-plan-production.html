@@ -96,6 +96,11 @@
         cursor: -webkit-grab;
      }
 
+     .add-machine-menu {
+       overflow: auto;
+       max-height: 300px;
+     }
+
       .vertical-section-container {
         max-width: 600px;
       }
@@ -244,7 +249,7 @@
       <vaadin-context-menu selector=".block">
         <template>
           <paper-menu>    
-            <paper-item on-tap="_addStation">New station</paper-item>
+            <paper-item on-tap="_addStation">Add new station</paper-item>
             <paper-item disabled="[[!stations]]" on-tap="_renameStation">Rename station [[target.index]]</paper-item>
             <paper-item disabled="[[!stations]]" list-item="[[target]]" on-tap="_removeStation">Delete station</paper-item>
           </paper-menu>
@@ -255,18 +260,23 @@
             <li>
             <div class="block stationBox" index="[[index]]"><h2>[[station.name]]</h2>
             <p>Station [[index]]</p>
+             <template is="dom-repeat" items="[[machines_s1]]" as="machineInStation">
+                    <div class="machineBox" value="[[machineInStation.name]]">[[machineInStation.name]]</div>
+            </template>
+
             <div>
             <paper-menu-button>
-             <paper-icon-button icon="add" on-tap="_addMachine" class="dropdown-trigger"></paper-icon-button>
-              <paper-menu class="dropdown-content">
+            <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
+            <paper-menu class="add-machine-menu dropdown-content">
                 <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
-                    <paper-item>[[machineItem.name]]</paper-item>
+                    <paper-item on-tap="_addMachineToStation" value="[[machineItem.name]]">[[machineItem.name]]</paper-item>
                 </template>
             </paper-menu>
             </paper-menu-button>
              <paper-icon-button icon="create" on-tap="_renameStation"></paper-icon-button>
              <paper-icon-button icon="delete" on-tap="_removeStation"></paper-icon-button>
             </div>
+
             </div>
             </li>
           </template>
@@ -329,6 +339,10 @@
         stations: {
           type: Object,
           value: () => [{name: 'A'}, {name:'B'}, {name:'C'}]
+       },
+       machines_s1: {
+         type: Object,
+         value: () => []
        },
         data: {
           type: Object,
@@ -393,8 +407,13 @@
         }
         else {
           this.push('stations', {name: sname});
-          console.log("New station added!!");
         } 
+      },
+      _addMachineToStation(e) {
+          console.log(e.model.machineItem.name);
+          let mname = e.model.machineItem.name;
+          //var machines = new Array()    
+          this.push('machines_s1', {name: mname, station: 1 });
       },
       _renameStation(e) {
         console.log('You pressed button ' + e.model.station.name);

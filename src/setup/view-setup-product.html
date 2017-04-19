@@ -72,24 +72,25 @@
             <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
             <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required always-float-label></paper-input>
             <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
-            <template is="dom-repeat" items="{{foodArray}}" as="food">
+            <template is="dom-repeat" items="{{sizeArray}}" as="size">
                 <div class="container flex-horizontal">
-								<paper-input class="product-size flex-child" label="Size name" value="[[food.name]]" required always-float-label></paper-input>
-								<paper-input class="product-size" label="Cycle time" value="{{food.unit}}" required always-float-label></paper-input>
-                <paper-input class="product-size" label="Cost" value="{{food.cost}}" required always-float-label></paper-input>	
+								<paper-input class="product-size flex-child" label="Size name" value="{{size.name}}" required always-float-label></paper-input>
+								<paper-input class="product-size" label="Cycle time" value="{{size.cycle}}" required always-float-label></paper-input>
+                <paper-input class="product-size" label="Cost" value="{{size.cost}}" required always-float-label></paper-input>	
 								<iron-icon on-click="deleteSize" icon="vaadin:close"></iron-icon>	
                 </div>
 			    	</template>
 	  
-					<paper-button on-tap="addFood">Add Size</paper-button>
-            <label for="fileUpload">Product image</label>
+					<paper-button on-tap="addSize">Add Size</paper-button>
+          	<paper-button on-tap="addSizeToArray">Add Size to obj array (temp)</paper-button>
+           <!-- <label for="fileUpload">Product image</label> 
             <input type="file" value="upload" on-change="upld" id="fileUpload"/>
-            
+            -->
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
                 <paper-button on-tap="addProduct" dialog-confirm autofocus>Create</paper-button>
               </div>
-             </paper-dialog>
+          </paper-dialog>
         </div>
       </li>
       <template is="dom-repeat" items="{{persistedProductData}}" as="productItem">
@@ -132,12 +133,12 @@
         productSizes: {
           type: Object
         },
-        foodArray: {
+        sizeArray: {
           type: Array,
           value: function () {
             return [{
               name: '',
-              unit: '',
+              cycle: '',
               cost: ''
             }]
           }
@@ -169,7 +170,7 @@
           sku: this.$.productSku.value,
           raw: this.$.productRaw.value,
           process: this.$.productProcess.value,
-          size: "null"
+          size: this.sizeArray
         }).key;
         this.$.productName.value = null;
         this.$.productSku.value = null;
@@ -177,12 +178,16 @@
         this.$.productProcess.value = null;
       },
  
-  addFood:function(){
-    this.push('foodArray',{name:"",unit:""});
+  addSize:function(){
+     this.push('sizeArray',{name:"",cycle:"",cost:""});
  },
-  deleteSize:function(e){
-    this.splice('foodArray',e.model.index,1);
+
+ addSizeToArray: function() {
+
  },
+    deleteSize:function(e){
+     this.splice('sizeArray',e.model.index,1);
+    },
       editProduct: function(e) {
         this.$$('#edit_'+e.target.id).open();
       },
@@ -194,7 +199,7 @@
         // after document saved, path will be changed to the new ref
         // any change of data will sent back up and stored
             // Save food from array with index: e.model.index
-        // Data is accessible via this.foodArray[index], or just the current row: e.model.food.*
+        // Data is accessible via this.sizeArray[index], or just the current row: e.model.food.*
         alert("Save product settings successful");
       });
       },

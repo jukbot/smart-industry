@@ -246,7 +246,7 @@
     Polymer({
       is: 'view-index',
       properties: {
-           items: {
+        items: {
                   type: Array,
                   value: function() {
                     return ['Foo', 'Bar', 'Baz'];
@@ -384,7 +384,7 @@
       },
 
       // Offline notification
-      _notifyNetworkStatus() {
+    /*  _notifyNetworkStatus() {
         var oldOffline = this.offline;
         this.offline =  !navigator.onLine;
         // Show the snackbar if the user is offline when starting a new session
@@ -398,7 +398,7 @@
               'You are offline' : 'You are online';
           this._networkSnackbar.open();
         }
-      },
+      }, */
 
       // This is for performance logging only.
       _domChange(e) {
