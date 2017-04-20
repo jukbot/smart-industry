@@ -170,7 +170,7 @@
         <a name="dashboard" href="/dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
         <a name="setup" href="/setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
         <a name="planning" href="/planning"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-        <a name="controlling" href="/controlling"><paper-icon-button icon="vaadin:sliders"></paper-icon-button> {{localize('view-index-menu-control')}}</a>
+        <!-- <a name="controlling" href="/controlling"><paper-icon-button icon="vaadin:sliders"></paper-icon-button> {{localize('view-index-menu-control')}}</a> -->
         <a name="tracking" href="/tracking"><paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
         </iron-selector>
         <div class="sidebar-menu-line"></div>
@@ -186,7 +186,8 @@
           <p>Verify: [[user.emailVerified]]</p>
           </div>
          <div class="profile">
-          <p>[[metadata.appName]] {{localize('version')}}  [[metadata.appVersion]]</p>
+          <p>[[metadata.appName]]</p>
+          <p>{{localize('version')}} [[metadata.appVersion]]</p>
           <p>{{localize('developed-by')}} [[metadata.appDeveloper]]</p>
           </div>
         </template>

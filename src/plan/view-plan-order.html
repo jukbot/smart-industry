@@ -299,8 +299,19 @@
            alert("Input field cannot be blank, please fill in completely.");
       }
       },
-     saveOrder: function() {
-        alert("Order has been saved to archive order.");
+      saveOrder: function() {
+        let orderNo = this.$.orderNumber.value;
+        let customerName = this.$.customerName.value;
+        let orderProduct = this.$.productSelector.value;
+        let orderSize = this.$.sizeSelector.value;
+        let orderQuantity = this.$.orderQuantity.value;
+        let orderDelivery = (new Date(this.$.deliverySelector.value).getTime()/1000);
+       
+      if(orderNo != "" && customerName != "" && orderProduct != "" && orderSize != "" && orderQuantity != "" && orderDelivery != "") {
+          alert("Order has been saved to archive order.");
+      } else {
+          alert("Input field cannot be blank, please fill in completely.");
+      }
       },
       uploadFile: function() {
         // upload order file to order schedule table or waiting table
