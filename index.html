@@ -27,7 +27,10 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
     <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400" rel="stylesheet">
+    
+    <script src="bower_components/web-animations-js/web-animations.min.js"></script>
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <link rel="import" href="/src/view-index.html">
     <script>
         // Load pre-caching Service Worker
         if ('serviceWorker' in navigator) {
@@ -228,7 +231,6 @@
             }
         }
     </style>
-    <link rel="import" href="/src/view-index.html">
 </head>
 <body>
     <view-index unresolved>

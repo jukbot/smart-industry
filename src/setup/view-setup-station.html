@@ -51,6 +51,9 @@
     </style>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" orderByChild="install" data="{{stationItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
+    <app-indexeddb-mirror key="stationDataCache" data="{{stationItems}}" persisted-data="{{persistedStationData}}" session="[[user.uid]]">
+</app-indexeddb-mirror>
+
     <ul class="app-grid">
       <li>
         <div class="stitched">
@@ -66,7 +69,7 @@
             </paper-dialog>
         </div>
       </li>
-      <template is="dom-repeat" items="{{stationItems}}" as="stationItem">
+      <template is="dom-repeat" items="{{persistedStationData}}" as="stationItem">
         <li>  
             <div class="card station">
             <div class="machine-info-group">
@@ -81,8 +84,7 @@
             <h2>Edit station</h2>
             <paper-input id="name_[[stationItem.$key]]" name="station-name" class="editstationName" value="{{stationItem.name}}" label="Station Name" always-float-label></paper-input>
             <div class="buttons">
-                <paper-button id="[[stationItem.$key]]" on-tap="dismissEditStation" dialog-dismiss>Dismiss</paper-button>
-                <paper-button id="[[stationItem.$key]]" on-tap="saveEditStation" dialog-confirm autofocus>Save</paper-button>
+                <paper-button id="[[stationItem.$key]]" on-tap="saveEditStation" dialog-confirm autofocus>Close</paper-button>
             </div>
             </paper-dialog>
           </div>
@@ -90,6 +92,7 @@
       </template>
     </ul>
   <paper-toast id="toastAddStation" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
+  <paper-toast id="toastSaveStation" always-on-top horizontal-align="right" text="Save station successful"></paper-toast>
   </template>
   <script>
     Polymer({
@@ -130,8 +133,7 @@
         console.log(e.model.stationItem.name);
        // this.$.stationQuery.ref.child(e.target.id+"/name").value = e.model.stationItem.name;
         //setStoredValue(storagePath, value)
-
-        alert("Save successful");
+        this.$.toastSaveStation.open(); 
       },
       dismissEditStation(e) {
        // this.$$('#name_'+e.target.id).value = null;

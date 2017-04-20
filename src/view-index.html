@@ -16,7 +16,6 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
@@ -47,6 +46,7 @@
 <!-- neon modules - used for animation -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
+<link rel="import" href="../bower_components/platinum-sw/platinum-sw-elements.html">
 <link rel="import" href="../bower_components/polymer-dragula/polymer-dragula.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
@@ -153,17 +153,20 @@
         border-bottom: 1px solid #d6d6d6;
       }
     </style>
+    <platinum-sw-register auto-register skip-waiting clients-claim reload-on-install href="../sw-import.js">
+    <platinum-sw-cache default-cache-strategy="networkFirst"></platinum-sw-cache></platinum-sw-register>
+
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]" on-error="handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-drawer-layout fullbleed>
        <app-drawer id="drawer" slot="drawer" swipe-open>
         <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
-        <div class="main-title">Genius</div>
+        <div class="main-title">Pronto</div>
         <div class="main-describe">{{localize('app-description')}}</div>
         <!-- sidebar hightlighter -->
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
@@ -278,7 +281,6 @@
           value: false,
           observer: '_onLayoutChange',
         },
-
       },
 
       observers: [
@@ -291,7 +293,10 @@
       },
 
       behaviors: [
-        Polymer.AppLocalizeBehavior
+        Polymer.AppLocalizeBehavior,
+        Polymer.FirebaseDatabaseBehavior,
+        Polymer.FirebaseCommonBehavior,
+        Polymer.AppNetworkStatusBehavior
       ],
 
       created() {
@@ -300,7 +305,6 @@
         this.removeAttribute('unresolved');
       },
 
-      // Trigger when document DOM is loaded
       ready() {
         this.async(() => {
           if (!this.route.path) {
@@ -355,12 +359,13 @@
       // Signin Action
       _login() {
         this.$.auth.signInWithPopup()
-        .then(response => {
+        .then((response) => {
           //redirect to dashboard page
            this.set('route.path', 'dashboard');
            console.info("Login successful");
+           console.log(response);
         })
-        .catch(error => {
+        .catch((error) => {
           alert("Authenticate Failed: " + error.message);
           console.log("Authenticate Failed: " + error.code);
         });
@@ -369,12 +374,12 @@
       // Signout Action
       _logout() {
         this.$.auth.signOut()
-        .then(function () {
+        .then(() => {
           //redirect to login page
           //this.set('route.path', 'login');
           console.info("Logout successful");
         })
-        .catch(error => {
+        .catch((error) => {
           alert("Authenticate Failed: " + error.message);
           console.log("Authenticate Failed: " + error.code);
         });
@@ -412,7 +417,7 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
 
 */
       // Offline notification
-    /*  _notifyNetworkStatus() {
+      _notifyNetworkStatus() {
         var oldOffline = this.offline;
         this.offline =  !navigator.onLine;
         // Show the snackbar if the user is offline when starting a new session
@@ -426,7 +431,7 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
               'You are offline' : 'You are online';
           this._networkSnackbar.open();
         }
-      }, */
+      }, 
 
       // This is for performance logging only.
       _domChange(e) {

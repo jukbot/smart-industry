@@ -91,7 +91,7 @@
       <li>
         <div class="card">
           <h1>Create Order</h1>
-              <paper-input label="Order Number" name="order-no" id="orderNumber" value="{{maxOrderNo}}" type="number" min="0" step="1" allowed-pattern="[0-9]"  required always-float-label auto-validate></paper-input>
+              <paper-input label="Order Number" name="order-no" id="orderNumber" type="number" min="0" step="1" allowed-pattern="[0-9]"  required always-float-label auto-validate></paper-input>
               <paper-input label="Customer Name" name="order-name" type="text" id="customerName" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
               <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="name" selected-item='{{product}}' required always-float-label ></vaadin-combo-box>
@@ -203,10 +203,22 @@
           }
         },
       },
-      ready: function() {
+      attached: function () {
+        let orderCount = this.orderQuery.length;
+        let orderNoInput = document.getElementById('orderNumber');
+        if(this.orderQuery != null) {
+          if (this.orderQuery.length == 0) {
+            orderNoInput.value = 1;
+          }
+          else {
+             orderNoInput.value = orderCount;
+           }
+        }
+      },
+      ready: function() {      
          this.$.machineSelector.ignoreSelect = true;
          Sugar.Date.setLocale('en-GB');
-         this.$.orderNumber.value = Object.keys(this.orderQuery).length+1; // Order no add when page loaded if not use in attached
+        
          let estdelivery = this.$.estimateDelivery;
          let deliverypicker = this.$.deliverySelector;
          let actualquantity = this.$.actualQuantity;
@@ -261,6 +273,7 @@
           }
         };
     },
+
       createOrder: function () {
         let orderNo = this.$.orderNumber.value;
         let customerName = this.$.customerName.value;
@@ -420,16 +433,6 @@
         return selectedMachine;
      },
 
-     _maxOrderNo: function () {
-        if(!this.orderQuery) return 1;
-        console.log(this.orderQuery);
-        let obj = this.orderQuery;
-        let arr = Object.values(obj.order_no);
-        let min = Math.min(...arr);
-        let max = Math.max(...arr);
-        console.log("max order no " + max);
-        return 2;
-     },
     });
   </script>
 </dom-module>

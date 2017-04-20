@@ -60,6 +60,7 @@
      }
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
+    <firebase-storage app-name="smart-mes" id="productImage" path="/product" files="[[files]]" uploaded-files="{{uploadedFiles}}" on-error="storageError"></firebase-storage>
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
     <ul class="app-grid">
       <li>
@@ -72,6 +73,23 @@
             <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
             <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required always-float-label></paper-input>
             <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
+            <vaadin-upload name="product-image" id="uploadImageFile" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg" max-file-size="2000000">
+            <div class="drop-label">
+             <iron-icon icon="cloud-upload"></iron-icon>
+             Up to 1&nbsp;JPG&nbsp;files, 2&nbsp;MB&nbsp;each
+             </div>
+              <div class="file-list">
+            <h4>Files</h4>
+           <ul>
+            <template is="dom-repeat" items="{{files}}" as="file">
+              <li>
+            <strong>[[file.name]]</strong>
+                  [[file.status]]
+             </li>
+             </template>
+           </ul>
+          </div>
+            </vaadin-upload>
             <template is="dom-repeat" items="{{sizeArray}}" as="size">
                 <div class="container flex-horizontal">
 								<paper-input class="product-size flex-child" label="Size name" value="{{size.name}}" required always-float-label></paper-input>
@@ -80,15 +98,12 @@
 								<iron-icon on-click="deleteSize" icon="vaadin:close"></iron-icon>	
                 </div>
 			    	</template>
-	  
 					<paper-button on-tap="addSize">Add Size</paper-button>
-          	<paper-button on-tap="addSizeToArray">Add Size to obj array (temp)</paper-button>
-           <!-- <label for="fileUpload">Product image</label> 
-            <input type="file" value="upload" on-change="upld" id="fileUpload"/>
-            -->
+          	<paper-button on-tap="addSizeToArray">(temp)</paper-button>
+           
               <div class="buttons">
                 <paper-button dialog-dismiss>Dismiss</paper-button>
-                <paper-button on-tap="addProduct" dialog-confirm autofocus>Create</paper-button>
+                <paper-button on-tap="testUpload" dialog-confirm autofocus>Create</paper-button>
               </div>
           </paper-dialog>
         </div>
@@ -98,7 +113,9 @@
           <div class="card product">
             <div class="product-info-group">
             <h1 class="card-title">[[productItem.name]]</h1>
-            <p>Product Process: [[productItem.process]]</p>
+            <iron-image style="width:100%; background-color: lightgray;"
+               sizing="cover" preload fade src="http://lorempixel.com/600/400"></iron-image>
+            <p>Product Process: [[productProcess(productItem.process)]]</p>
             <p>SKU Number: [[productItem.sku]]</p>
             <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
             <p>Product Size: [[sizeProduct(productItem.size)]]</p>
@@ -173,10 +190,18 @@
           process: this.$.productProcess.value,
           size: this.sizeArray
         }).key;
+        let metadata = { contentType: 'image/jpeg' };
+        let file = this.$.uploadImageFile.value;
+        this.$.productImage.storageRef.child('images/'+ this.$.productSku.value).put(file,metadata);
         this.$.productName.value = null;
         this.$.productSku.value = null;
         this.$.productRaw.value = null;
         this.$.productProcess.value = null;
+      },
+
+      testUpload: function() {
+        let file = this.$.uploadImageFile.files;
+        this.$.productImage.storageRef.child('images/'+this.$.productSku.value).put(file);
       },
  
   addSize:function(){
@@ -193,7 +218,7 @@
         this.$$('#edit_'+e.target.id).open();
       },
       removeProduct: function(e) {
-        this.$.machineQuery.ref.child(e.target.id).remove();
+        this.$.productQuery.ref.child(e.target.id).remove();
       },
       saveProduct: function(e) {
          this.$.document.save("/product/"+e.target.id).then(function () {
@@ -214,6 +239,9 @@
         this.$.productRaw.value = null;
         this.$.productProcess.value = null;
       },
+      productProcess: function(process) {
+        return process.split(',').join(' → ');
+      },
       materialProduct: function(material) {
           let praw = [];
           for (let key in material) {
@@ -231,6 +259,10 @@
           };
           return psize;
       },
+
+      storageError: function(e) {
+        console.info("Storage error:" + e.message);
+      }
 
     });
   </script>
