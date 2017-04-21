@@ -158,7 +158,9 @@
           type: Object
         },
         orderQuery: {
-          type: Object
+          type: Object,
+          notify : true,
+          observer : 'setOrderNumber'
         },
         orderDelivery: {
           type: Object
@@ -203,19 +205,22 @@
           }
         },
       },
-      attached: function () {
-        let orderCount = this.orderQuery.length;
+      setOrderNumber : function () {
+          this.async('getOrderNumber', 3000);
+      },
+      getOrderNumber :function() {
         let orderNoInput = document.getElementById('orderNumber');
-        if(this.orderQuery != null) {
+        if(this.orderQuery != null && orderNoInput != null) {   
           if (this.orderQuery.length == 0) {
             orderNoInput.value = 1;
           }
           else {
-             orderNoInput.value = orderCount;
+             orderNoInput.value = this.orderQuery.length;
            }
         }
       },
-      ready: function() {      
+      ready: function() {
+
          this.$.machineSelector.ignoreSelect = true;
          Sugar.Date.setLocale('en-GB');
         

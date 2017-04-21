@@ -250,14 +250,19 @@
     Polymer({
       is: 'view-index',
       properties: {
-        items: {
-                  type: Array,
-                  value: function() {
-                    return ['Foo', 'Bar', 'Baz'];
-                  }
-                },
         language: {
-          type: Object
+          type: Object,
+          value: function () {
+            if(localStorage.getItem("language") != null) {
+              return localStorage.getItem("language");
+            } 
+            else if(localStorage.getItem("language") == null) {
+              return "en";
+            } 
+            else {
+              return this.language;
+            }
+          }
         },
         page: {
           type: String,
@@ -316,10 +321,16 @@
           this.listen(window, 'online', '_notifyNetworkStatus');
           this.listen(window, 'offline', '_notifyNetworkStatus');
         });
+ 
       },
 
       // On create load localization language data
       attached() {
+        // set default language if not defined
+        if(this.language === "undefined") {
+           localStorage.setItem("language", "en");
+        }
+         // load localization data
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
 
@@ -363,11 +374,11 @@
           //redirect to dashboard page
            this.set('route.path', 'dashboard');
            console.info("Login successful");
-           console.log(response);
+           console.log(response);          
         })
         .catch((error) => {
-          alert("Authenticate Failed: " + error.message);
           console.log("Authenticate Failed: " + error.code);
+          alert("Authenticate Failed: " + error.message);
         });
       },
 
@@ -380,8 +391,8 @@
           console.info("Logout successful");
         })
         .catch((error) => {
-          alert("Authenticate Failed: " + error.message);
           console.log("Authenticate Failed: " + error.code);
+          alert("Authenticate Failed: " + error.message);
         });
       },
 
@@ -446,7 +457,7 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
 
       // Handle Error
       handleError(e) {
-        console.info("Authenticate error:" + e.message);
+        console.info("Authenticate Error:" + e.message);
       },
      });
   </script>

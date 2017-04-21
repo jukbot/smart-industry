@@ -51,6 +51,7 @@
     </style>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" orderByChild="install" data="{{stationItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-indexeddb-mirror key="stationDataCache" data="{{stationItems}}" persisted-data="{{persistedStationData}}" session="[[user.uid]]">
 </app-indexeddb-mirror>
 
@@ -98,12 +99,21 @@
     Polymer({
       is: 'view-setup-station',
       properties: {
+        language: {
+          type: Object
+        },
         stationItems: {
           type: Object
         },
         notification: {
           type: Object
         }
+      },
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+      attached: function() {
+         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
       toggleDialog() {
         this.$.createStationDialog.open();
