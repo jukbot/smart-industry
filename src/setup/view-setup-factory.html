@@ -68,13 +68,13 @@
               <paper-input label="Reschedule Interval (days)" name="rescheduleInterval" id="scheduleInterval" value="[[factoryStandard.interval]]"
                 type="number" min="1" max="30" step="1"  required always-float-label auto-validate></paper-input>
               <div id="operationDay">
-                <paper-checkbox id="sunday" checked="[[operationDay(0)]]" value="sun">Sun</paper-checkbox>
-                <paper-checkbox id="monday" checked="[[operationDay(1)]]" value="mon">Mon</paper-checkbox>
-                <paper-checkbox id="tuesday" checked="[[operationDay(2)]]" value="tue">Tue</paper-checkbox>
-                <paper-checkbox id="wednesday" checked="[[operationDay(3)]]" value="wed">Wed</paper-checkbox>
-                <paper-checkbox id="thursday" checked="[[operationDay(4)]]" value="thu">Thu</paper-checkbox>
-                <paper-checkbox id="friday" checked="[[operationDay(5)]]" value="fri">Fri</paper-checkbox>
-                <paper-checkbox id="saturday" checked="[[operationDay(6)]]" value="sat">Sat</paper-checkbox>
+                <paper-checkbox id="sunday" checked="[[operationDay(0)]]" on-change="operationDayChange" value="sun">Sun</paper-checkbox>
+                <paper-checkbox id="monday" checked="[[operationDay(1)]]" on-change="operationDayChange" value="mon">Mon</paper-checkbox>
+                <paper-checkbox id="tuesday" checked="[[operationDay(2)]]" on-change="operationDayChange" value="tue">Tue</paper-checkbox>
+                <paper-checkbox id="wednesday" checked="[[operationDay(3)]]" on-change="operationDayChange" value="wed">Wed</paper-checkbox>
+                <paper-checkbox id="thursday" checked="[[operationDay(4)]]" on-change="operationDayChange" value="thu">Thu</paper-checkbox>
+                <paper-checkbox id="friday" checked="[[operationDay(5)]]" on-change="operationDayChange" value="fri">Fri</paper-checkbox>
+                <paper-checkbox id="saturday" checked="[[operationDay(6)]]" on-change="operationDayChange" value="sat">Sat</paper-checkbox>
               </div><br>
               <!-- <paper-time-input label="Operation Start" name="opstart" id="opStart" value="{{opStart}}" required always-float-label auto-validate></paper-time-input> --> 
               <div class="button-group">
@@ -130,9 +130,8 @@
         factoryPerformance: {
           type: Object
         },
-        test: {
-          type: String,
-          value: 'fuck'
+        operationDay: {
+          type: Array
         },
         factoryType: {
           type: Array,
@@ -187,8 +186,8 @@
         this.$.workerUtilize.value = 85;
         this.$.scheduleInterval.value = 7;
       },
-      operationDay: function (number) {
-         console.log("op day test: " + this.test);
+      operationDayChange: function (number) {
+        
          return true;
       },
 

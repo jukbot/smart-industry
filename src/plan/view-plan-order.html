@@ -159,7 +159,7 @@
         },
         orderQuery: {
           type: Object,
-          notify : true,
+          reflectToAttribute: true,
           observer : 'setOrderNumber'
         },
         orderDelivery: {
@@ -210,7 +210,7 @@
       },
       getOrderNumber :function() {
         let orderNoInput = document.getElementById('orderNumber');
-        if(this.orderQuery != null && orderNoInput != null) {   
+        if(this.orderQuery != null) {   
           if (this.orderQuery.length == 0) {
             orderNoInput.value = 1;
           }
@@ -421,11 +421,12 @@
 
      calWorkLoad: function (accept_waste, cycle, setup, amount, g) {
         if(!accept_waste || !cycle || !setup || !amount) return '';
-        let actualQuantity = this.calActualQuantity(accept_waste,amount);
-        let cycleTime = this.calCycleTime(cycle, 1);
+        let actualQuantity = this.calActualQuantity(accept_waste,amount); 
+        let cycleTime = this.calCycleTime(cycle, amount);
         let setupTime = this.calSetupTime(setup);
         let workload = Math.ceil(amount*(cycleTime+setupTime));
-        return workload/3;
+        // workload/no of machine
+        return workload/(1-actualQuantity);
      },
 
      calUsedMachine: function (g) {

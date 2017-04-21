@@ -20,6 +20,7 @@
 <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
 <!-- paper modules - used for user interface -->
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
@@ -154,8 +155,8 @@
       }
     </style>
     <platinum-sw-register auto-register skip-waiting clients-claim reload-on-install href="../sw-import.js">
-    <platinum-sw-cache default-cache-strategy="networkFirst"></platinum-sw-cache></platinum-sw-register>
-
+    <platinum-sw-cache default-cache-strategy="networkFirst"></platinum-sw-cache>
+    </platinum-sw-register>
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"

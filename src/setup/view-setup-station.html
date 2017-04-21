@@ -58,14 +58,14 @@
     <ul class="app-grid">
       <li>
         <div class="stitched">
-          <paper-button raised on-tap="toggleDialog" class="big-btn fancy">ADD STATION</paper-button>
+          <paper-button raised on-tap="toggleDialog" class="big-btn fancy">{{localize('add-station')}}</paper-button>
           <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
             no-cancel-on-outside-click>
-            <h1>Add Station</h1>
+            <h1>{{localize('add-station')}}</h1>
             <paper-input name="station-name" id="stationName" label="Station Name" required always-float-label></paper-input>
             <div class="buttons">
-                <paper-button on-tap="dismissAddMachine" dialog-dismiss>Dismiss</paper-button>
-                <paper-button on-tap="addStation" dialog-confirm autofocus>Create</paper-button>
+                <paper-button on-tap="dismissAddMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+                <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('create')}}</paper-button>
               </div>
             </paper-dialog>
         </div>
@@ -75,17 +75,17 @@
             <div class="card station">
             <div class="machine-info-group">
             <h1 class="card-title">[[stationItem.name]]</h1>
-            <p>Station name: [[stationItem.name]]</p>
+            <p>{{localize('station-name')}}: [[stationItem.name]]</p>
             </div>
             <div class="button-group">
-            <paper-button raised class="fancy" id="[[stationItem.$key]]" on-tap="editStation">EDIT</paper-button>
-            <paper-button raised class="chilli" id="[[stationItem.$key]]" on-tap="removeStation">REMOVE</paper-button>
+            <paper-button raised class="fancy" id="[[stationItem.$key]]" on-tap="editStation">{{localize('edit')}}</paper-button>
+            <paper-button raised class="chilli" id="[[stationItem.$key]]" on-tap="removeStation">{{localize('remove')}}</paper-button>
             </div>
             <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click>
-            <h2>Edit station</h2>
+            <h2>{{localize('edit-station')}}</h2>
             <paper-input id="name_[[stationItem.$key]]" name="station-name" class="editstationName" value="{{stationItem.name}}" label="Station Name" always-float-label></paper-input>
             <div class="buttons">
-                <paper-button id="[[stationItem.$key]]" on-tap="saveEditStation" dialog-confirm autofocus>Close</paper-button>
+                <paper-button id="[[stationItem.$key]]" on-tap="saveEditStation" dialog-confirm autofocus>{{localize('close')}}</paper-button>
             </div>
             </paper-dialog>
           </div>
@@ -93,7 +93,7 @@
       </template>
     </ul>
   <paper-toast id="toastAddStation" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
-  <paper-toast id="toastSaveStation" always-on-top horizontal-align="right" text="Save station successful"></paper-toast>
+  <paper-toast id="toastSaveStation" always-on-top horizontal-align="right" text="{{localize('notification-save-station')}"></paper-toast>
   </template>
   <script>
     Polymer({
@@ -113,7 +113,7 @@
         Polymer.AppLocalizeBehavior
       ],
       attached: function() {
-         this.loadResources(this.resolveUrl('../data/locales.json'));
+         this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
       toggleDialog() {
         this.$.createStationDialog.open();
@@ -146,7 +146,6 @@
         this.$.toastSaveStation.open(); 
       },
       dismissEditStation(e) {
-       // this.$$('#name_'+e.target.id).value = null;
         this.$.createStationDialog.cancel();
       },
       dismissAddStation() {

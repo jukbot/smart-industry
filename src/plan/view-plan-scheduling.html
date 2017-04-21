@@ -112,6 +112,67 @@
   <ul class="app-grid">
 <li>
  <div class="card">
+    <h1>Station Schedule Table</h1>     
+    <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
+    <paper-button raised class="chilli priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Change</paper-button>
+
+            <vaadin-grid aria-label="Station Scheduling Table" items="[[orderItems]]">
+              <vaadin-grid-column width="3em" flex-grow="0">
+                <template class="header">Index</template>
+                <template>[[index]]</template>
+              </vaadin-grid-column>
+               <vaadin-grid-column>
+                <template class="header">Order No</template>
+                <template>[[item.order_no]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">
+                  Product
+                </template>
+                <template>[[item.order_product]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">
+                  Size
+                </template>
+                <template>[[item.order_size]]</template>
+              </vaadin-grid-column>
+               <vaadin-grid-column>
+                <template class="header">
+                  Color
+                </template>
+                <template>[[item.order_color]]</template>
+              </vaadin-grid-column>
+               <vaadin-grid-column>
+                <template class="header">
+                  Quantity
+                </template>
+                <template>[[item.order_quantity]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">
+                  Customer
+                </template>
+                <template>[[item.order_customer]]</template>
+              </vaadin-grid-column>
+              <vaadin-grid-column>
+                <template class="header">
+                  Duration
+                </template>
+                <template>[[item.order_duration]] Hrs.</template>
+              </vaadin-grid-column>
+               <vaadin-grid-column>
+               <template class="header">
+                  Delivery
+                </template>
+                <template>[[getDeliveryDate(item.order_delivery)]]</template>
+              </vaadin-grid-column>
+                  </vaadin-grid>
+
+</div> 
+</li>
+<li>
+ <div class="card">
     <h1>Order Scheduling Table</h1>     
     <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
     <paper-button raised class="chilli priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Change</paper-button>
@@ -157,7 +218,7 @@
               </vaadin-grid-column>
               <vaadin-grid-column>
                 <template class="header">
-                  Work duration
+                  Duration
                 </template>
                 <template>[[item.order_duration]] Hrs.</template>
               </vaadin-grid-column>
@@ -265,6 +326,16 @@
          let deliveryDate = dd + '/' + mm + '/' + yyyy;
          return deliveryDate;
     },
+
+   calOrderWorkLoad: function (accept_waste, cycle, setup, amount, g) {
+        if(!accept_waste || !cycle || !setup || !amount) return '';
+        let actualQuantity = this.calActualQuantity(accept_waste,amount); 
+        let cycleTime = this.calCycleTime(cycle, amount);
+        let setupTime = this.calSetupTime(setup);
+        let workload = Math.ceil(amount*(cycleTime+setupTime));
+        // workload/no of machine
+        return workload/(1-actualQuantity);
+     },
 
     deleteOrder: function (e) {
        this.$.orderQuery.ref.child(e.target.id).remove();

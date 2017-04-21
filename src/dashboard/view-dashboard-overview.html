@@ -32,7 +32,7 @@
         }
       }
     </style>
-<firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderItems}}"></firebase-query>
+<firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderQuery}}"></firebase-query>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -64,23 +64,27 @@
     Polymer({
       is: 'view-dashboard-overview',
       properties: {
-        orderItems: {
-          type: Object
+        orderQuery: {
+          type: Object,
+          observer: 'setOrderCount'
         },
          count: {
          type: Number,
-         readOnly: true,
-         notify: true
        }
       },
-      attached: function () {
-        let qno = Object.keys(this.orderItems).length;
-        if(qno == null) {
-          this.$.orderCnt.innerHTML = 0;
+      setOrderCount : function () {
+          this.async('getOrderNumber', 3000);
+      },
+      getOrderCount :function() {
+        let orderCount = document.getElementById('orderCnt');
+        if(this.orderQuery != null) {   
+          if (this.orderQuery.length == 0) {
+            orderCount.innerHTML = 1;
+          }
+          else {
+             orderCount.innerHTML = this.orderQuery.length;
+           }
         }
-        else {
-          this.$.orderCnt.innerHTML = qno;
-        } 
       },
     });
   </script>
