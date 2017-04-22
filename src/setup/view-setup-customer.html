@@ -48,6 +48,8 @@
 
 
   </style>
+ <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+ <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
  <div class="card">
  <iron-ajax
       auto
@@ -92,6 +94,20 @@
     Polymer({
       is: 'view-setup-customer',
       properties: {
+        language: {
+          type: Object,
+          value: function () {
+            if(localStorage.getItem("lang") != null) {
+              return localStorage.getItem("lang");
+            } 
+            else if(localStorage.getItem("lang") == null) {
+              return "en";
+            } 
+            else {
+              return this.language;
+            }
+          }
+        },
         _names: {
           type: Array,
           value: function() {
@@ -113,7 +129,12 @@
       observers: [
         '_applyFilter(_filterValue, _employees)'
       ],
-
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+      attached: function() {
+         this.loadResources(this.resolveUrl('../data/locales.json'));
+      },
       _applyFilter: function(filterValue, employees) {
         this.$.grid.items = employees.filter(function(item) {
           if (filterValue) {

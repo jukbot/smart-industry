@@ -17,8 +17,9 @@
        width: 45%;
        margin-top: 15px; 
      }
-    </style>
+    </style>  
      <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <app-toolbar sticky>
@@ -48,7 +49,18 @@
       is: 'view-setup',
       properties: {
         language: {
-          type: Object
+          type: Object,
+          value: function () {
+            if(localStorage.getItem("lang") != null) {
+              return localStorage.getItem("lang");
+            } 
+            else if(localStorage.getItem("lang") == null) {
+              return "en";
+            } 
+            else {
+              return this.language;
+            }
+          }
         },
         tabs: {
           type: String,
