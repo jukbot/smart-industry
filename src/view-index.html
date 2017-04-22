@@ -248,12 +248,12 @@
   <script>
    // performance logging
     window.performance && performance.mark && performance.mark('view-index - before register');
-
     Polymer({
       is: 'view-index',
       properties: {
         language: {
           type: Object,
+          notify: true,
           value: function () {
             if(localStorage.getItem("lang") != null) {
               return localStorage.getItem("lang");

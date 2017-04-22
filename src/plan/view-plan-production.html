@@ -204,8 +204,8 @@
         display: inline-block;
       }
     </style>
-    <firebase-query app-name="smart-mes" id="productQuery" path="/product" orderByChild="name" data="{{productItems}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" orderByChild="type" data="{{machineItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>
       <div class="card">
       <h1>Simulation Machine</h1>
       <div class="frame">
@@ -429,7 +429,8 @@
           console.log(e.model.machineItem.name);
           let mname = e.model.machineItem.name;
           //var machines = new Array()    
-          this.push('machines_s1', {name: mname, station: 1});
+          //this.push('machines_s1', {name: mname, station: 1});
+          this.push('stations', {name: sname});
       },
       _renameStation(e) {
         console.log('You pressed button ' + e.model.station.name);

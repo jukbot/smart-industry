@@ -73,16 +73,15 @@
        }
       },
       setOrderCount : function () {
-        //   this.async('getOrderNumber', 3000);
-      },
-      getOrderCount :function() {
-        let orderCount = document.getElementById('orderCnt');
+         let orderCount = document.getElementById('orderCnt');
         if(this.orderQuery != null) {   
           if (this.orderQuery.length == 0) {
-            orderCount.innerHTML = 1;
+            //orderCount.innerHTML = 1;
+           // console.log(1);
           }
           else {
-             orderCount.innerHTML = this.orderQuery.length;
+             //orderCount.innerHTML = this.orderQuery.length;
+           //  console.log("order count " + this.orderQuery.length)
            }
         }
       },

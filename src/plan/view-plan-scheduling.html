@@ -167,6 +167,12 @@
                 </template>
                 <template>[[getDeliveryDate(item.order_delivery)]]</template>
               </vaadin-grid-column>
+               <vaadin-grid-column>
+               <template class="header">
+                  Workload
+                </template>
+                <template>[[getOrderWorkload()]]</template>
+              </vaadin-grid-column>
                   </vaadin-grid>
 
 </div> 
@@ -279,7 +285,65 @@
   <script>
     Polymer({
       is: 'view-plan-scheduling',
- 
+      properties: {
+        productItems: {
+          type: Object
+        },
+        productSize: {
+          type: Object
+        },
+        machineItems: {
+          type: Object
+        },
+        factoryStandard: {
+          type: Object
+        },
+        orderItems: {
+          type: Object
+        },
+        priority: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'Early Delivery (EDD)',
+                symbol: 'EDD',
+                number: 1
+              },
+              {
+                name: 'Shortest Duration First (SPT)',
+                symbol: 'SPT',
+                number: 2
+              }
+            ]
+          }
+        },
+
+        today: {
+          type: Object,
+          value: function () {  
+          let today = new Date();
+          today = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+          return today;
+         }
+        },
+        todayDate: {
+          type: Object,     
+          value: function () {
+          let date = new Date();
+          let dd = date.getDate();
+          let mm = date.getMonth() + 1; //January is 0!
+          let yyyy = date.getFullYear();
+          if (dd < 10) {
+            dd = '0' + dd
+          }
+          if (mm < 10) {
+            mm = '0' + mm
+         }
+          date = yyyy + '-' + mm  + '-' + dd;
+          return date;
+          }
+        },
+      },
       ready: function() {
          Sugar.Date.setLocale('en-GB');
          let workdatepicker = this.$$('#workdateSelector');
@@ -327,7 +391,7 @@
          return deliveryDate;
     },
 
-   calOrderWorkLoad: function (accept_waste, cycle, setup, amount, g) {
+   getOrderWorkLoad: function (accept_waste, cycle, setup, amount, g) {
         if(!accept_waste || !cycle || !setup || !amount) return '';
         let actualQuantity = this.calActualQuantity(accept_waste,amount); 
         let cycleTime = this.calCycleTime(cycle, amount);
@@ -404,66 +468,7 @@ test_rows: function() {
  return l;
 },
 
-    properties: {
-        productItems: {
-          type: Object
-        },
-        productSize: {
-          type: Object
-        },
-        machineItems: {
-          type: Object
-        },
-        factoryStandard: {
-          type: Object
-        },
-        orderItems: {
-          type: Object
-        },
-        priority: {
-          type: Array,
-          value: function () {
-            return [{
-                name: 'Early Delivery (EDD)',
-                symbol: 'EDD',
-                number: 1
-              },
-              {
-                name: 'Shortest Duration First (SPT)',
-                symbol: 'SPT',
-                number: 2
-              }
-            ]
-          }
-        },
-
   
-        today: {
-          type: Object,
-          value: function () {  
-          let today = new Date();
-          today = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-          return today;
-         }
-        },
-        todayDate: {
-          type: Object,     
-          value: function () {
-          let date = new Date();
-          let dd = date.getDate();
-          let mm = date.getMonth() + 1; //January is 0!
-          let yyyy = date.getFullYear();
-          if (dd < 10) {
-            dd = '0' + dd
-          }
-          if (mm < 10) {
-            mm = '0' + mm
-         }
-          date = yyyy + '-' + mm  + '-' + dd;
-          return date;
-          }
-        },
-      }
     });
   </script>
 </dom-module>

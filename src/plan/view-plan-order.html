@@ -83,7 +83,7 @@
     </style>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderQuery}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" orderByChild="install" data="{{machineItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
@@ -209,15 +209,7 @@
          // this.async('getOrderNumber', 3000);
       },
       getOrderNumber :function() {
-        let orderNoInput = document.getElementById('orderNumber');
-        if(this.orderQuery != null) {   
-          if (this.orderQuery.length == 0) {
-            orderNoInput.value = 1;
-          }
-          else {
-             orderNoInput.value = this.orderQuery.length;
-           }
-        }
+         
       },
       ready: function() {
 

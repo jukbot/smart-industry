@@ -133,7 +133,7 @@
         Polymer.AppLocalizeBehavior
       ],
       attached: function() {
-         this.loadResources(this.resolveUrl('../data/locales.json'));
+         this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
       _applyFilter: function(filterValue, employees) {
         this.$.grid.items = employees.filter(function(item) {

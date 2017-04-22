@@ -49,12 +49,11 @@
      }
      
     </style>
-    <firebase-query app-name="smart-mes" id="stationQuery" path="/station" orderByChild="install" data="{{stationItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name"  data="{{stationItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
-    <app-indexeddb-mirror key="stationDataCache" data="{{stationItems}}" persisted-data="{{persistedStationData}}" session="[[user.uid]]">
-</app-indexeddb-mirror>
-
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-indexeddb-mirror key="stationDataCache" data="{{stationItems}}" persisted-data="{{persistedStationData}}" session="[[user.uid]]"></app-indexeddb-mirror>
     <ul class="app-grid">
       <li>
         <div class="stitched">
