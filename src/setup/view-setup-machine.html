@@ -140,6 +140,12 @@
           }
         }
       },
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+      attached: function() {
+         this.loadResources(this.resolveUrl('../data/locales.json'));
+      },
       toggleDialog() {
         this.$.createMachineDialog.open();
       },

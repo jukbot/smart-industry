@@ -44,6 +44,8 @@
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -121,6 +123,20 @@
     Polymer({
       is: 'view-setup-factory',
       properties: {
+        language: {
+          type: Object,
+          value: function () {
+            if(localStorage.getItem("lang") != null) {
+              return localStorage.getItem("lang");
+            } 
+            else if(localStorage.getItem("lang") == null) {
+              return "en";
+            } 
+            else {
+              return this.language;
+            }
+          }
+        },
         factoryStandard: {
           type: Object
         },
@@ -151,6 +167,12 @@
             ]
           }
         }
+      },
+      behaviors: [
+        Polymer.AppLocalizeBehavior
+      ],
+      attached: function() {
+         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
       saveValue: function () {
         let fc = this.$.factoryName.value;

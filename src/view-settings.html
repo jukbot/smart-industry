@@ -112,10 +112,6 @@
 
         if(selectedLang === "en" || selectedLang === "th" || selectedLang === "jp" || selectedLang === "ch" || selectedLang === "rs") {
          this.language = selectedLang;
-
-        if(typeof(Storage) !== "undefined" && localStorage.getItem("language") != null || localStorage.getItem("language") == null) {
-            localStorage.setItem("language", selectedLang);
-        } else {} 
         }
       },
 

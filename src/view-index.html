@@ -156,8 +156,7 @@
       }
     </style>
     <platinum-sw-register auto-register skip-waiting clients-claim reload-on-install href="../sw-import.js">
-    <platinum-sw-cache default-cache-strategy="networkFirst"></platinum-sw-cache>
-    </platinum-sw-register>
+    <platinum-sw-cache default-cache-strategy="networkFirst"></platinum-sw-cache></platinum-sw-register>
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
@@ -165,6 +164,7 @@
     <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]" on-error="handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout fullbleed>
        <app-drawer id="drawer" slot="drawer" swipe-open>
         <img class="logo" src="../images/logo/industrial.svg" alt="Application Logo">
@@ -255,10 +255,10 @@
         language: {
           type: Object,
           value: function () {
-            if(localStorage.getItem("language") != null) {
-              return localStorage.getItem("language");
+            if(localStorage.getItem("lang") != null) {
+              return localStorage.getItem("lang");
             } 
-            else if(localStorage.getItem("language") == null) {
+            else if(localStorage.getItem("lang") == null) {
               return "en";
             } 
             else {
@@ -328,10 +328,6 @@
 
       // On create load localization language data
       attached() {
-        // set default language if not defined
-        if(this.language === "undefined") {
-           localStorage.setItem("language", "en");
-        }
          // load localization data
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
