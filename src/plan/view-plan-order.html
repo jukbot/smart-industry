@@ -325,11 +325,7 @@
       },
       uploadFile: function() {
         // upload order file to order schedule table or waiting table
-         var upload = this.$.uploadOrder;
-         upload.addEventListener('upload-request', e => {
-            e.preventDefault();
-            e.detail.xhr.send(e.detail.file);
-         });
+         alert("Invalid file format");
       },
 
     calSetupTime: function(setup) {
@@ -377,7 +373,7 @@
               for (let g in order) {
               let arr = Object.values(order[g].order_quantity);
             };
-            console.log(arr);
+           
               this.calLeadTime(cycle,setup,amount);
               let deliveryDate = "";
               //console.log(JSON.stringify(order));
@@ -411,12 +407,12 @@
         return optime;
      },
 
-     calWorkLoad: function (accept_waste, cycle, setup, amount, g) {
+     calWorkLoad: function (accept_waste, cycle, setup, amount, machine) {
         if(!accept_waste || !cycle || !setup || !amount) return '';
         let actualQuantity = this.calActualQuantity(accept_waste,amount); 
         let cycleTime = this.calCycleTime(cycle, amount);
         let setupTime = this.calSetupTime(setup);
-        let workload = Math.ceil(amount*(cycleTime+setupTime));
+        let workload = Math.ceil((amount*cycleTime)+setupTime);
         // workload/no of machine
         return workload/(1-actualQuantity);
      },

@@ -167,12 +167,7 @@
                 </template>
                 <template>[[getDeliveryDate(item.order_delivery)]]</template>
               </vaadin-grid-column>
-               <vaadin-grid-column>
-               <template class="header">
-                  Workload
-                </template>
-                <template>[[getOrderWorkload()]]</template>
-              </vaadin-grid-column>
+  
                   </vaadin-grid>
 
 </div> 
@@ -390,16 +385,6 @@
          let deliveryDate = dd + '/' + mm + '/' + yyyy;
          return deliveryDate;
     },
-
-   getOrderWorkLoad: function (accept_waste, cycle, setup, amount, g) {
-        if(!accept_waste || !cycle || !setup || !amount) return '';
-        let actualQuantity = this.calActualQuantity(accept_waste,amount); 
-        let cycleTime = this.calCycleTime(cycle, amount);
-        let setupTime = this.calSetupTime(setup);
-        let workload = Math.ceil(amount*(cycleTime+setupTime));
-        // workload/no of machine
-        return workload/(1-actualQuantity);
-     },
 
     deleteOrder: function (e) {
        this.$.orderQuery.ref.child(e.target.id).remove();

@@ -58,7 +58,9 @@
               <paper-input label="Acceptable Waste (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]"
                 type="number" min="0" max="1" step="0.01"  required always-float-label auto-validate></paper-input>
               <paper-input label="Working Utilization (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
-                type="number" min="0" max="100" step="5"  required always-float-label auto-validate></paper-input>
+                type="number" min="0" max="100" step="1"  required always-float-label auto-validate></paper-input>
+              <paper-input label="Standard Machine Efficiency (0-100%)" name="machineStandardEfficiency" id="machineStandardEffi" value="[[factoryStandard.machine]]"
+                type="number" min="0" max="100" step="1"  required always-float-label auto-validate></paper-input>
               <paper-input label="Operation start (xx:xx)" name="opstart" id="opStart" value="[[factoryOperation.op_start]]"
                required always-float-label auto-validate></paper-input>
               <paper-input label="Operation end (xx:xx)" name="opend" id="opEnd" value="[[factoryOperation.op_end]]"
@@ -69,14 +71,14 @@
                 required always-float-label auto-validate></paper-input>
               <paper-input label="Reschedule Interval (days)" name="rescheduleInterval" id="scheduleInterval" value="[[factoryStandard.interval]]"
                 type="number" min="1" max="30" step="1"  required always-float-label auto-validate></paper-input>
-              <div id="operationDay">
-                <paper-checkbox id="sunday" checked="[[operationDay(0)]]" on-change="operationDayChange" value="sun">Sun</paper-checkbox>
-                <paper-checkbox id="monday" checked="[[operationDay(1)]]" on-change="operationDayChange" value="mon">Mon</paper-checkbox>
-                <paper-checkbox id="tuesday" checked="[[operationDay(2)]]" on-change="operationDayChange" value="tue">Tue</paper-checkbox>
-                <paper-checkbox id="wednesday" checked="[[operationDay(3)]]" on-change="operationDayChange" value="wed">Wed</paper-checkbox>
-                <paper-checkbox id="thursday" checked="[[operationDay(4)]]" on-change="operationDayChange" value="thu">Thu</paper-checkbox>
-                <paper-checkbox id="friday" checked="[[operationDay(5)]]" on-change="operationDayChange" value="fri">Fri</paper-checkbox>
-                <paper-checkbox id="saturday" checked="[[operationDay(6)]]" on-change="operationDayChange" value="sat">Sat</paper-checkbox>
+              <div id="operationDaySelector">
+                <paper-checkbox id="sunday"  on-change="operationDayChanged" value="sun">Sun</paper-checkbox>
+                <paper-checkbox id="monday"  on-change="operationDayChanged" value="mon">Mon</paper-checkbox>
+                <paper-checkbox id="tuesday"  on-change="operationDayChanged" value="tue">Tue</paper-checkbox>
+                <paper-checkbox id="wednesday"  on-change="operationDayChanged" value="wed">Wed</paper-checkbox>
+                <paper-checkbox id="thursday"  on-change="operationDayChanged" value="thu">Thu</paper-checkbox>
+                <paper-checkbox id="friday"  on-change="operationDayChanged" value="fri">Fri</paper-checkbox>
+                <paper-checkbox id="saturday"  on-change="operationDayChanged" value="sat">Sat</paper-checkbox>
               </div><br>
               <!-- <paper-time-input label="Operation Start" name="opstart" id="opStart" value="{{opStart}}" required always-float-label auto-validate></paper-time-input> --> 
               <div class="button-group">
@@ -95,7 +97,8 @@
           <p>Operation End: <span>[[factoryOperation.op_end]]</span></p>
           <p>Overtime Start: <span>[[factoryOperation.ot_start]]</span></p>
           <p>Overtime End: <span>[[factoryOperation.ot_end]]</span></p>
-          <p>Operation Days: <span id="opWeek">[[factoryOperation.weekly]]</span></p>
+          <p>Operation Days: <span>[[factoryOperation.weekly]]</span></p>
+          <p>Current Operation Days: <span>[[currentOperationDay]]</span></p>
           </div>
           <div class="card factory-rule">
           <h1>Factory Global Standard</h1>
@@ -107,17 +110,18 @@
     </ul>
   <div class="card">
      <h1>Add Worker</h1>
-
 <paper-input label="First name" always-float-label></paper-input>
 <paper-input label="Last name" always-float-label></paper-input>
 <paper-input label="E-mail" type="email" always-float-label></paper-input>
 <paper-input label="Mobile" always-float-label></paper-input>
 <paper-input label="Position" always-float-label></paper-input>
 <div class="button-group">
-<paper-button raised class="fancy" onclick="addWorker" alt="add_worker" title="Add Worker">Add</paper-button>
-<paper-button raised class="smart" onclick="clear" alt="clear_add_worker" title="Clear field">Clear</paper-button>
+<paper-button raised class="fancy" on-tap="addWorker" alt="add_worker" title="Add Worker">Add</paper-button>
+<paper-button raised class="smart" on-tap="clear" alt="clear_add_worker" title="Clear field">Clear</paper-button>
 </div>
 </div>
+<paper-toast id="toastErrorIncompleteInput" always-on-top horizontal-align="right" text="{{localize('notification-error-incomplete-input')}}"></paper-toast>
+<paper-toast id="toastSaveFactoryInfoSuccess" always-on-top horizontal-align="right" text="{{localize('notification-save-factory-information-successful')}}"></paper-toast>
   </template>
   <script>
     Polymer({
@@ -141,14 +145,20 @@
           type: Object
         },
         factoryOperation: {
-          type: Object
+          type: Object,
+          observer : 'factoryOperationLoaded'
         },
         factoryPerformance: {
           type: Object
         },
         operationDay: {
-          type: Array
+          type: Array,
+          notify: true,
+          value: function () {
+            return []
+          }
         },
+        currentOperationDay: String,
         factoryType: {
           type: Array,
           value: function () {
@@ -164,7 +174,7 @@
                 name: 'Hybrid (Job + Flow)',
                 value: 'HB'
               }
-            ]
+            ];
           }
         }
       },
@@ -179,26 +189,28 @@
         let ft = this.$.factoryType.value;
         let aw = this.$.acceptWaste.value;
         let wu = this.$.workerUtilize.value;
+        let meffi = this.$.machineStandardEffi.value;
         let inte = this.$.scheduleInterval.value;
         let op_start = this.$.opStart.value;
         let op_end = this.$.opEnd.value;
         let ot_start = this.$.otStart.value;
         let ot_end = this.$.otEnd.value;
-      if(fc != "" && ft != "" && aw != "" && wu != "" && inte != "" && op_start != "" && op_end != "") {
+        let op_day = this.currentOperationDay;
+      if(fc != "" && ft != "" && aw != "" && wu != "" && inte != "" && op_start != "" && op_end != "" && op_day != "") {
         this.set('factoryOperation.name', fc);
         this.set('factoryOperation.type', ft);
         this.set('factoryPerformance.aw', aw);
         this.set('factoryPerformance.wu', wu);
+        this.set('factoryStandard.machine', meffi);
         this.set('factoryStandard.interval', inte);
         this.set('factoryOperation.op_start', op_start);
         this.set('factoryOperation.op_end', op_end);
         this.set('factoryOperation.ot_start', op_start);
         this.set('factoryOperation.ot_end', op_end);
-        //this.$.factoryStandrad.save('/factory/standard');
-        console.log(this.$.sunday.checked);
-        console.log("Weekly: " + this.$.opWeek.innerText);
+        this.set('factoryOperation.weekly', op_day);
+        this.$.toastSaveFactoryInfoSuccess.open();
       } else {
-          alert("Input field cannot be blank, please fill in completely.");
+        this.$.toastErrorIncompleteInput.open();
       }
       },
       resetValue: function () {
@@ -206,13 +218,48 @@
         this.$.factoryType.value = "Flow Shop";
         this.$.acceptWaste.value = "0.02";
         this.$.workerUtilize.value = 85;
+        this.$.machineStandardEffi.value = 75;
         this.$.scheduleInterval.value = 7;
+        this.$.sunday.checked = false;
+        this.$.monday.checked = true;
+        this.$.tuesday.checked = true;
+        this.$.wednesday.checked = true;
+        this.$.thursday.checked = true;
+        this.$.friday.checked = true;
+        this.$.saturday.checked = false;
       },
-      operationDayChange: function (number) {
-        
-         return true;
+      operationDayChanged: function (e) {
+         console.log(e.target.id + " | " + e.target.checked + " |" + e.target.value);
+         if(e.target.checked) {
+               this.push('operationDay', e.target.value);
+               //this.splice('operationDay', 2, 0, e.target.value);
+         } else {
+             let index = this.operationDay.indexOf(e.target.value);
+             if (index > -1) {
+               this.splice('operationDay', index, 1);
+             } 
+         } 
+         console.log(this.operationDay);
+         this.currentOperationDay = this.operationDay.toString();
       },
-
+      factoryOperationLoaded: function () {
+        let cnt = 0;
+           if(this.get('factoryOperation.weekly') !== undefined && cnt === 0) {
+            let opDayArr = this.get('factoryOperation.weekly').split(",");
+            cnt = 1;
+            this.push('operationDay', opDayArr);
+            for (let i in opDayArr) {
+              if(opDayArr[i] == 'mon') this.$.monday.checked = true;
+              else if(opDayArr[i] == 'tue') this.$.tuesday.checked = true;
+              else if(opDayArr[i] == 'wed') this.$.wednesday.checked = true;
+              else if(opDayArr[i] == 'thu') this.$.thursday.checked = true;
+              else if(opDayArr[i] == 'fri') this.$.friday.checked = true;
+              else if(opDayArr[i] == 'sat') this.$.saturnday.checked = true;
+              else if(opDayArr[i] == 'sun') this.$.sunday.checked = true;
+              }
+              this.currentOperationDay = this.operationDay.toString();
+            }  
+      },
     });
   </script>
 </dom-module>

@@ -50,6 +50,7 @@
      
     </style>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="install" data="{{machineItems}}"></firebase-query>
+    <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="machineDataCache" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
@@ -61,7 +62,8 @@
             no-cancel-on-outside-click>
             <h1>{{localize('add-machine')}}</h1>
             <paper-input name="machine-name" id="machineName" label="Machine Name" required always-float-label></paper-input>
-            <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number"  min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>&#37;</div></paper-input>
+            <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number" min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>&#37;</div></paper-input>
+            <paper-input name="machine-capacity" id="machineCapacity" label="Max Capacity" type="number" min="1" max="24" value="8" step="1" allowed-pattern="[0-9]" required always-float-label><div suffix>Hrs.</div></paper-input>
             <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" name="machineType" item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box>
               <div class="buttons">
                 <paper-button on-tap="dismissAddMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
@@ -76,10 +78,11 @@
             <div class="machine-info-group">
             <h1 class="card-title">[[machineItem.name]]</h1>
             <p>{{localize('machine-number')}}: [[machineItem.number]]</p>
-            <p>{{localize('machine-type')}}: [[machineItem.type]]</p>
-            <p>{{localize('machine-standard-effi')}}: [[machineItem.effi]] &#37;</p>
+            <p>{{localize('machine-type')}}: [[machineItem.code]]</p>
+            <p>{{localize('machine-standard-effi')}}: [[factoryStandard.machine]] &#37;</p>
             <p>{{localize('machine-current-effi')}}: [[machineItem.effi]] &#37;</p>
-            <p>{{localize('machine-status')}}: <span class="machine-status">[[machineItem.status]]</span></p>
+            <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] Hrs. per day</p>
+            <p>{{localize('machine-status')}}: <span class="machine-status">{{localize(machineItem.status)}}</span></p>
             <p>{{localize('machine-install-date')}}: [[machineItem.install]]</p>
             </div>
             <div class="button-group">
@@ -121,6 +124,9 @@
               return this.language;
             }
           }
+        },
+        factoryStandard: {
+          type: Object
         },
         machineItems: {
           type: Object      
@@ -176,6 +182,7 @@
         this.$.machineQuery.ref.push({
           number: mno,
           effi: this.$.machineEffi.value,
+          capacity: this.$.machineCapacity.value,
           install: Math.round(new Date().getTime()/1000.0),
           name: this.$.machineName.value,
           queue: 0,
@@ -189,6 +196,7 @@
         this.$$('#edit_'+e.target.id).open();  
       },
       removeMachine(e) {
+       
         this.$.machineQuery.ref.child(e.target.id).remove();
       },
       saveEditMachine(e) {

@@ -64,6 +64,7 @@
 <link rel="import" href="view-404.html">
 <link rel="import" href="view-settings.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="app-language.html">
 <dom-module id="view-index">
   <template>
     <style include="shared-styles">  
@@ -251,21 +252,6 @@
     Polymer({
       is: 'view-index',
       properties: {
-        language: {
-          type: Object,
-          notify: true,
-          value: function () {
-            if(localStorage.getItem("lang") != null) {
-              return localStorage.getItem("lang");
-            } 
-            else if(localStorage.getItem("lang") == null) {
-              return "en";
-            } 
-            else {
-              return this.language;
-            }
-          }
-        },
         page: {
           type: String,
           reflectToAttribute: true,
@@ -300,10 +286,11 @@
       },
 
       behaviors: [
-        Polymer.AppLocalizeBehavior,
         Polymer.FirebaseDatabaseBehavior,
         Polymer.FirebaseCommonBehavior,
-        Polymer.AppNetworkStatusBehavior
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppNetworkStatusBehavior,
+        Polymer.AppGlobalLanguageBehavior
       ],
 
       created() {
@@ -340,6 +327,7 @@
       },
 
       _routePageChanged(page) {
+          this.async(function() {
         if (page === undefined) {
           return 'dashboard';
         }    
@@ -348,6 +336,7 @@
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
+          });
       },
 
       _pageChanged(page){

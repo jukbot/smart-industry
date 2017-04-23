@@ -1,12 +1,13 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
-<link rel="import" href="setup/view-setup-customer.html">
+<link rel="import" href="app-language.html">
 <link rel="import" href="setup/view-setup-factory.html">
-<link rel="import" href="setup/view-setup-inventory.html">
+<link rel="import" href="setup/view-setup-station.html">
 <link rel="import" href="setup/view-setup-machine.html">
 <link rel="import" href="setup/view-setup-product.html">
-
+<link rel="import" href="setup/view-setup-customer.html">
+<link rel="import" href="setup/view-setup-inventory.html">
 <dom-module id="view-setup">
   <template>
     <style include="shared-styles">
@@ -48,23 +49,8 @@
     Polymer({
       is: 'view-setup',
       properties: {
-        language: {
-          type: Object,
-          value: function () {
-            if(localStorage.getItem("lang") != null) {
-              return localStorage.getItem("lang");
-            } 
-            else if(localStorage.getItem("lang") == null) {
-              return "en";
-            } 
-            else {
-              return this.language;
-            }
-          }
-        },
         tabs: {
           type: String,
-          reflectToAttribute: true,
           observer: '_tabsChanged',
           value: 'factory'
         },
@@ -112,7 +98,8 @@
         }
       },
       behaviors: [
-        Polymer.AppLocalizeBehavior
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppGlobalLanguageBehavior
       ],
       attached: function() {
          this.loadResources(this.resolveUrl('../data/locales.json'));
@@ -125,7 +112,7 @@
         var pages = this.$.setupTabs;
         pages.selectPrevious();
       },
-       _tabsChanged: function (tabs) { 
+      _tabsChanged: function (tabs) { 
        let resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
        this.importHref(resolvedTabsUrl, null, null, true);
       }, 
