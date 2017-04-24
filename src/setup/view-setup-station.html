@@ -77,8 +77,8 @@
             <p>{{localize('station-name')}}: [[stationItem.name]]</p>
             </div>
             <div class="button-group">
-            <paper-button raised class="fancy" id="[[stationItem.$key]]" on-tap="editStation">{{localize('edit')}}</paper-button>
-            <paper-button raised class="chilli" id="[[stationItem.$key]]" station="[[stationItem]]" on-tap="removeStation">{{localize('remove')}}</paper-button>
+            <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation">{{localize('edit')}}</paper-button>
+            <paper-button raised class="chilli" station="[[stationItem]]" on-tap="removeStation">{{localize('remove')}}</paper-button>
             </div>
             <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click>
             <h2>{{localize('edit-station')}}</h2>
@@ -92,7 +92,7 @@
       </template>
     </ul>
   <paper-toast id="toastAddStation" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
-  <paper-toast id="toastSaveStation" always-on-top horizontal-align="right" text="{{localize('notification-save-station')}"></paper-toast>
+  <paper-toast id="toastSaveStation" always-on-top horizontal-align="right" text="{{localize('notification-save-station')}}"></paper-toast>
   <paper-toast id="toastDeleteStation" always-on-top horizontal-align="right" text="{{localize('notification-delete-station')}}"></paper-toast>
   </template>
   <script>
@@ -100,7 +100,18 @@
       is: 'view-setup-station',
       properties: {
         language: {
-          type: Object
+          type: Object,
+          value: function () {
+            if(localStorage.getItem("lang") != null) {
+              return localStorage.getItem("lang");
+            } 
+            else if(localStorage.getItem("lang") == null) {
+              return "en";
+            } 
+            else {
+              return this.language;
+            }
+          }
         },
         stationItems: {
           type: Object
@@ -133,7 +144,7 @@
         }
       },
       editStation(e) {
-        this.$$('#edit_'+e.target.id).open();  
+        this.$$('#edit_'+ e.currentTarget.station.$key).open();  
       },
       removeStation(e) {
         let key = e.currentTarget.station.$key;

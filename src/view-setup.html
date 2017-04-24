@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
-<link rel="import" href="app-language.html">
+<link rel="import" href="shared-styles.html">
 <link rel="import" href="setup/view-setup-factory.html">
 <link rel="import" href="setup/view-setup-station.html">
 <link rel="import" href="setup/view-setup-machine.html">
@@ -49,6 +49,21 @@
     Polymer({
       is: 'view-setup',
       properties: {
+        language: {
+          type: Object,
+          notify: true,
+          value: function () {
+            if(localStorage.getItem("lang") != null) {
+              return localStorage.getItem("lang");
+            } 
+            else if(localStorage.getItem("lang") == null) {
+              return "en";
+            } 
+            else {
+              return this.language;
+            }
+          }
+        },
         tabs: {
           type: String,
           observer: '_tabsChanged',
@@ -98,8 +113,7 @@
         }
       },
       behaviors: [
-        Polymer.AppLocalizeBehavior,
-        Polymer.AppGlobalLanguageBehavior
+        Polymer.AppLocalizeBehavior
       ],
       attached: function() {
          this.loadResources(this.resolveUrl('../data/locales.json'));

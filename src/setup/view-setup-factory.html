@@ -31,7 +31,6 @@
           --app-grid-columns: 2;
         }
       }
-
       .factory-rule p {
         margin: 12px 0;
       }
@@ -39,7 +38,6 @@
       .button-group paper-button {
        width: 49%;
      }
-
     </style>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
@@ -49,62 +47,64 @@
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1>Factory Initialize</h1>
+          <h1>{{localize('factory-initialize')}}</h1>
           <form is="iron-form" id="create-order-form" method="post">
             <div class="form-wrapper">
-              <paper-input label="Factory Name" name="factory-name" id="factoryName" value="[[factoryOperation.name]]"
+              <paper-input label="{{localize('factory-name')}}" name="factory-name" id="factoryName" value="[[factoryOperation.name]]"
                 type="text" required always-float-label auto-validate></paper-input>
-              <vaadin-combo-box label="Factory Type" name="factory-type" id="factoryType" value="[[factoryOperation.type]]" items="[[factoryType]]" item-label-path="name" item-value-path="name" required always-float-label></vaadin-combo-box>
-              <paper-input label="Acceptable Waste (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]"
+              <vaadin-combo-box label="{{localize('factory-type')}}" name="factory-type" id="factoryType" value="[[factoryOperation.type]]" items="[[factoryType]]" item-label-path="name" item-value-path="name" required always-float-label></vaadin-combo-box>
+              <paper-input label="{{localize('acceptable-waste')}} (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]"
                 type="number" min="0" max="1" step="0.01"  required always-float-label auto-validate></paper-input>
-              <paper-input label="Working Utilization (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
+              <paper-input label="{{localize('working-utilization')}} (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
                 type="number" min="0" max="100" step="1"  required always-float-label auto-validate></paper-input>
-              <paper-input label="Standard Machine Efficiency (0-100%)" name="machineStandardEfficiency" id="machineStandardEffi" value="[[factoryStandard.machine]]"
+              <paper-input label="{{localize('standard-machine-efficiency')}} (0-100%)" name="machineStandardEfficiency" id="machineStandardEffi" value="[[factoryStandard.machine]]"
                 type="number" min="0" max="100" step="1"  required always-float-label auto-validate></paper-input>
-              <paper-input label="Operation start (xx:xx)" name="opstart" id="opStart" value="[[factoryOperation.op_start]]"
+              <paper-input label="{{localize('operation-start')}} (xx:xx)" name="opstart" id="opStart" value="[[factoryOperation.op_start]]"
                required always-float-label auto-validate></paper-input>
-              <paper-input label="Operation end (xx:xx)" name="opend" id="opEnd" value="[[factoryOperation.op_end]]"
+              <paper-input label="{{localize('operation-end')}} (xx:xx)" name="opend" id="opEnd" value="[[factoryOperation.op_end]]"
                 required always-float-label auto-validate></paper-input>
-              <paper-input label="Over Time start (xx:xx)" name="otstart" id="otStart" value="[[factoryOperation.ot_start]]"
+              <paper-input label="{{localize('over-time-start')}} (xx:xx)" name="otstart" id="otStart" value="[[factoryOperation.ot_start]]"
                 required always-float-label auto-validate></paper-input>
-              <paper-input label="Over Time end (xx:xx)" name="otend" id="otEnd" value="[[factoryOperation.ot_end]]"
+              <paper-input label="{{localize('over-time-end')}} (xx:xx)" name="otend" id="otEnd" value="[[factoryOperation.ot_end]]"
                 required always-float-label auto-validate></paper-input>
-              <paper-input label="Reschedule Interval (days)" name="rescheduleInterval" id="scheduleInterval" value="[[factoryStandard.interval]]"
-                type="number" min="1" max="30" step="1"  required always-float-label auto-validate></paper-input>
+              <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" name="rescheduleInterval" id="scheduleInterval" value="[[factoryStandard.interval]]"
+                type="number" min="1" max="30" step="1" required always-float-label auto-validate></paper-input>
               <div id="operationDaySelector">
-                <paper-checkbox id="sunday"  on-change="operationDayChanged" value="sun">Sun</paper-checkbox>
-                <paper-checkbox id="monday"  on-change="operationDayChanged" value="mon">Mon</paper-checkbox>
-                <paper-checkbox id="tuesday"  on-change="operationDayChanged" value="tue">Tue</paper-checkbox>
-                <paper-checkbox id="wednesday"  on-change="operationDayChanged" value="wed">Wed</paper-checkbox>
-                <paper-checkbox id="thursday"  on-change="operationDayChanged" value="thu">Thu</paper-checkbox>
-                <paper-checkbox id="friday"  on-change="operationDayChanged" value="fri">Fri</paper-checkbox>
-                <paper-checkbox id="saturday"  on-change="operationDayChanged" value="sat">Sat</paper-checkbox>
+                <p>{{localize('operation-day')}}</p>
+                <paper-checkbox id="sunday" value="sun">Sun</paper-checkbox>
+                <paper-checkbox id="monday" value="mon">Mon</paper-checkbox>
+                <paper-checkbox id="tuesday" value="tue">Tue</paper-checkbox>
+                <paper-checkbox id="wednesday" value="wed">Wed</paper-checkbox>
+                <paper-checkbox id="thursday" value="thu">Thu</paper-checkbox>
+                <paper-checkbox id="friday" value="fri">Fri</paper-checkbox>
+                <paper-checkbox id="saturday" value="sat">Sat</paper-checkbox>
               </div><br>
-              <!-- <paper-time-input label="Operation Start" name="opstart" id="opStart" value="{{opStart}}" required always-float-label auto-validate></paper-time-input> --> 
+              [[opStart2]]
+              <paper-time-input label="{{localize('operation-start')}}" name="opstart" id="opStart" value="{{opStart2}}" required always-float-label auto-validate></paper-time-input> 
               <div class="button-group">
-                <paper-button raised class="fancy" on-tap="saveValue">Save</paper-button>
-                <paper-button raised class="burn" on-tap="resetValue">Restore</paper-button>
+                <paper-button raised class="fancy" on-tap="saveValue">{{localize('save-settings')}}</paper-button>
+                <paper-button raised class="burn" on-tap="resetValue">{{localize('restore')}}</paper-button>
               </div>
             </div>
           </form>
       </li>
       <li>
         <div class="card factory-rule">
-          <h1>Factory Information</h1>
-          <p>Factory Name: <span>[[factoryOperation.name]]</span></p>
-          <p>Factory Type: <span>[[factoryOperation.type]]</span></p>
-          <p>Operation Start: <span>[[factoryOperation.op_start]] </span></p>
-          <p>Operation End: <span>[[factoryOperation.op_end]]</span></p>
-          <p>Overtime Start: <span>[[factoryOperation.ot_start]]</span></p>
-          <p>Overtime End: <span>[[factoryOperation.ot_end]]</span></p>
-          <p>Operation Days: <span>[[factoryOperation.weekly]]</span></p>
-          <p>Current Operation Days: <span>[[currentOperationDay]]</span></p>
+          <h1>{{localize('factory-information')}}</h1>
+          <p>{{localize('factory-name')}}: <span>[[factoryOperation.name]]</span></p>
+          <p>{{localize('factory-type')}}: <span>[[factoryOperation.type]]</span></p>
+          <p>{{localize('operation-start')}}: <span>[[factoryOperation.op_start]] </span></p>
+          <p>{{localize('operation-end')}}: <span>[[factoryOperation.op_end]]</span></p>
+          <p>{{localize('over-time-start')}}: <span>[[factoryOperation.ot_start]]</span></p>
+          <p>{{localize('over-time-end')}}: <span>[[factoryOperation.ot_end]]</span></p>
+          <p>{{localize('operation-day')}}: <span>[[factoryOperation.weekly]]</span></p>
           </div>
           <div class="card factory-rule">
-          <h1>Factory Global Standard</h1>
-          <p>Working Utilization: <span>[[factoryPerformance.wu]] %</span></p>
-          <p>Acceptable Waste: <span>[[factoryPerformance.aw]]</span></p>
-          <p>Reschedule Interval: <span>[[factoryStandard.interval]]</span></p>
+          <h1>{{localize('factory-global-standard')}}</h1>
+          <p>{{localize('working-utilization')}}: <span>[[factoryPerformance.wu]] &#37;</span></p>
+          <p>{{localize('standard-machine-efficiency')}}: <span>[[factoryStandard.machine]] &#37;</span></p>
+          <p>{{localize('acceptable-waste')}}: <span>[[factoryPerformance.aw]]</span></p>
+          <p>{{localize('reschedule-interval')}}: <span>[[factoryStandard.interval]] {{localize('day')}}</span></p>
         </div>
       </li>
     </ul>
@@ -116,13 +116,13 @@
 <paper-input label="Mobile" always-float-label></paper-input>
 <paper-input label="Position" always-float-label></paper-input>
 <div class="button-group">
-<paper-button raised class="fancy" on-tap="addWorker" alt="add_worker" title="Add Worker">Add</paper-button>
-<paper-button raised class="smart" on-tap="clear" alt="clear_add_worker" title="Clear field">Clear</paper-button>
+<paper-button raised class="fancy" on-tap="addWorker" alt="add_worker" title="Add Worker">({{localize('add')}})</paper-button>
+<paper-button raised class="smart" on-tap="clear" alt="clear_add_worker" title="Clear field">({{localize('clear')}})</paper-button>
 </div>
 </div>
 <paper-toast id="toastErrorIncompleteInput" always-on-top horizontal-align="right" text="{{localize('notification-error-incomplete-input')}}"></paper-toast>
 <paper-toast id="toastSaveFactoryInfoSuccess" always-on-top horizontal-align="right" text="{{localize('notification-save-factory-information-successful')}}"></paper-toast>
-  </template>
+</template>
   <script>
     Polymer({
       is: 'view-setup-factory',
@@ -158,7 +158,6 @@
             return []
           }
         },
-        currentOperationDay: String,
         factoryType: {
           type: Array,
           value: function () {
@@ -195,7 +194,17 @@
         let op_end = this.$.opEnd.value;
         let ot_start = this.$.otStart.value;
         let ot_end = this.$.otEnd.value;
-        let op_day = this.currentOperationDay;
+        let op_day = "";
+        this.operationDay = [];
+        if(this.$.monday.checked) this.push('operationDay', 'mon');
+        if(this.$.tuesday.checked) this.push('operationDay', 'tue');
+        if(this.$.wednesday.checked) this.push('operationDay', 'wed');
+        if(this.$.thursday.checked) this.push('operationDay', 'thu');
+        if(this.$.friday.checked) this.push('operationDay', 'fri');
+        if(this.$.saturday.checked) this.push('operationDay', 'sat');
+        if(this.$.sunday.checked) this.push('operationDay', 'sun');
+         op_day = this.operationDay.toString();
+        
       if(fc != "" && ft != "" && aw != "" && wu != "" && inte != "" && op_start != "" && op_end != "" && op_day != "") {
         this.set('factoryOperation.name', fc);
         this.set('factoryOperation.type', ft);
@@ -205,8 +214,8 @@
         this.set('factoryStandard.interval', inte);
         this.set('factoryOperation.op_start', op_start);
         this.set('factoryOperation.op_end', op_end);
-        this.set('factoryOperation.ot_start', op_start);
-        this.set('factoryOperation.ot_end', op_end);
+        this.set('factoryOperation.ot_start', ot_start);
+        this.set('factoryOperation.ot_end', ot_end);
         this.set('factoryOperation.weekly', op_day);
         this.$.toastSaveFactoryInfoSuccess.open();
       } else {
@@ -228,37 +237,21 @@
         this.$.friday.checked = true;
         this.$.saturday.checked = false;
       },
-      operationDayChanged: function (e) {
-         console.log(e.target.id + " | " + e.target.checked + " |" + e.target.value);
-         if(e.target.checked) {
-               this.push('operationDay', e.target.value);
-               //this.splice('operationDay', 2, 0, e.target.value);
-         } else {
-             let index = this.operationDay.indexOf(e.target.value);
-             if (index > -1) {
-               this.splice('operationDay', index, 1);
-             } 
-         } 
-         console.log(this.operationDay);
-         this.currentOperationDay = this.operationDay.toString();
-      },
+   
       factoryOperationLoaded: function () {
         let cnt = 0;
-           if(this.get('factoryOperation.weekly') !== undefined && cnt === 0) {
+           if(this.get('factoryOperation.weekly') !== undefined) {
             let opDayArr = this.get('factoryOperation.weekly').split(",");
-            cnt = 1;
-            this.push('operationDay', opDayArr);
             for (let i in opDayArr) {
               if(opDayArr[i] == 'mon') this.$.monday.checked = true;
               else if(opDayArr[i] == 'tue') this.$.tuesday.checked = true;
               else if(opDayArr[i] == 'wed') this.$.wednesday.checked = true;
               else if(opDayArr[i] == 'thu') this.$.thursday.checked = true;
               else if(opDayArr[i] == 'fri') this.$.friday.checked = true;
-              else if(opDayArr[i] == 'sat') this.$.saturnday.checked = true;
+              else if(opDayArr[i] == 'sat') this.$.saturday.checked = true;
               else if(opDayArr[i] == 'sun') this.$.sunday.checked = true;
               }
-              this.currentOperationDay = this.operationDay.toString();
-            }  
+          }  
       },
     });
   </script>
