@@ -159,7 +159,7 @@
         },
         orderQuery: {
           type: Object,
-          reflectToAttribute: true,
+          notify: true,
           observer : 'setOrderNumber'
         },
         orderDelivery: {
@@ -206,7 +206,10 @@
         },
       },
       setOrderNumber : function () {
-         // this.async('getOrderNumber', 3000);
+       let orderCount;
+        if (typeof Object.keys(this.orderQuery) !== 'undefined' || Object.keys(this.orderQuery).length > 0) {
+           orderCount = this.orderQuery.length;
+        }
       },
       getOrderNumber :function() {
          

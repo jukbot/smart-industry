@@ -164,6 +164,7 @@
     <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]" on-error="handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout fullbleed>
        <app-drawer id="drawer" slot="drawer" swipe-open>
@@ -265,6 +266,9 @@
               return this.language;
             }
           }
+        },
+        notification: {
+          type: Boolean
         },
         page: {
           type: String,
@@ -463,3 +467,4 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
   </script>
   <script src="../bower_components/sugar/dist/sugar.min.js"></script>
 </dom-module>
+
