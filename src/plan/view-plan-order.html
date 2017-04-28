@@ -91,7 +91,7 @@
       <li>
         <div class="card">
           <h1>Create Order</h1>
-              <paper-input label="Order Number" name="order-no" id="orderNumber" type="number" min="0" step="1" allowed-pattern="[0-9]"  required always-float-label auto-validate></paper-input>
+              <paper-input label="Order Number" name="order-no" id="orderNumber" type="number" min="0" step="1" required always-float-label auto-validate></paper-input>
               <paper-input label="Customer Name" name="order-name" type="text" id="customerName" required always-float-label auto-validate></paper-input>
               <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
               <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="name" selected-item='{{product}}' required always-float-label ></vaadin-combo-box>
@@ -206,14 +206,14 @@
         },
       },
       setOrderNumber : function () {
-       let orderCount;
-        if (typeof Object.keys(this.orderQuery) !== 'undefined' || Object.keys(this.orderQuery).length > 0) {
-           orderCount = this.orderQuery.length;
+        let orderCount = this.orderQuery.length;
+        if (typeof Object.keys(this.orderQuery) !== 'undefined' && Object.keys(this.orderQuery).length > 0) {
+          this.$.orderNumber.value = orderCount;
+        } else {
+          this.$.orderNumber.value = 1;
         }
       },
-      getOrderNumber :function() {
-         
-      },
+  
       ready: function() {
 
          this.$.machineSelector.ignoreSelect = true;

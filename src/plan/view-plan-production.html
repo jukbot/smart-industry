@@ -270,6 +270,7 @@
         <paper-button raised class="magic" on-tap="_savePlan">Save</paper-button>
       </div>
       <vaadin-context-menu selector=".block">
+        <!-- ADD NEW STATIONS -->
         <template>
           <paper-menu>    
             <paper-item on-tap="_addStation">Add new station</paper-item>
@@ -288,6 +289,7 @@
             </template>
 
             <div>
+             <!-- ADD MACHINE TO THIS STATION -->
             <paper-menu-button>
             <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
             <paper-menu class="add-machine-menu dropdown-content">
@@ -296,10 +298,11 @@
                 </template>
             </paper-menu>
             </paper-menu-button>
+            <!-- RENAME STATION -->
              <paper-icon-button icon="create" on-tap="_renameStation"></paper-icon-button>
+             <!-- DELETE STATION -->
              <paper-icon-button icon="delete" on-tap="_removeStation"></paper-icon-button>
             </div>
-
             </div>
             </li>
           </template>
@@ -429,8 +432,8 @@
           console.log(e.model.machineItem.name);
           let mname = e.model.machineItem.name;
           //var machines = new Array()    
-          //this.push('machines_s1', {name: mname, station: 1});
-          this.push('stations', {name: sname});
+          this.push('machines_s1', {name: mname, station: 1});
+          //this.push('stations', {name: mname});
       },
       _renameStation(e) {
         console.log('You pressed button ' + e.model.station.name);
