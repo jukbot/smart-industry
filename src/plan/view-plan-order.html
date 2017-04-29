@@ -285,7 +285,7 @@
         let orderDuration = this.$.estimateDuration.innerHTML;
         let orderDelivery = (new Date(this.$.deliverySelector.value).getTime()/1000);
        
-        if(orderNo != "" && customerName != "" && orderProduct != "" && orderSize != "" && orderQuantity != "" && orderDelivery != "") {
+        if(orderNo !== "" && customerName !== "" && orderProduct !== "" && orderSize !== "" && orderQuantity !== "" && orderDelivery !== "") {
             let today = new Date();
             let dd = today.getDate();
             let mm = today.getMonth() + 1; //January is 0!

@@ -17,24 +17,35 @@
 
       @media (min-width: 769px) and (max-width: 1024px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 1;
         }
       }
 
       @media (min-width: 1025px) and (max-width: 1200px) {
          :host {
-          --app-grid-columns: 3;
+          --app-grid-columns: 1;
         }
       }
        @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
-          --app-grid-columns: 3;
+          --app-grid-columns: 1;
         }
       }
+      .icon {
+        width: 60px;
+        height: 60px;
+      }
+      .port-status {
+        text-align: center;
+        font-size: 3rem;
+      }
     </style>
- <div class="card">
-No Information sensor.
-    </div>
+  <div class="card">
+      <div class="port-status">
+      <iron-icon class="icon" icon="vaadin:warning"></iron-icon>
+      <p>No WebUSB device found.</p> 
+      </div>
+  </div>
   </template>
   <script>
     Polymer({
