@@ -66,9 +66,10 @@
             <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number" min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>&#37;</div></paper-input>
             <paper-input name="machine-capacity" id="machineCapacity" label="Max Capacity" type="number" min="1" max="24" value="8" step="1" allowed-pattern="[0-9]" required always-float-label><div suffix>Hrs.</div></paper-input>
             <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" name="machineType" item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box>
+            <vaadin-combo-box label="Type" id="stationName" items="[[stationItems]]" name="stationName" item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box> 
               <div class="buttons">
                 <paper-button on-tap="dismissAddMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
-                <paper-button on-tap="addMachine" dialog-confirm autofocus>{{localize('create')}}</paper-button>
+                <paper-button on-tap="addMachine" dialog-confirm autofocus>{{localize('add')}}</paper-button>
               </div>
               </paper-dialog>
         </div>

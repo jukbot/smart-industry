@@ -31,12 +31,14 @@
           --app-grid-columns: 4;
         }
       }
-
+      .stitched {
+        min-height: 250px;
+      }
       .station-dialog {
         width: 35%;
         padding: 10px;
       }
-     .station { min-height: 350px; height: auto; }
+     .station { min-height: 250px; height: auto; }
      .station p {
         margin: 12px 0;
       }
@@ -46,6 +48,7 @@
      }
      .button-group paper-button {
        width: 49%;
+       padding: 10px;
      }
      
     </style>
@@ -64,7 +67,7 @@
             <paper-input type="text" id="stationName" name="station-name"  label="Station Name" required always-float-label></paper-input>
             <paper-input type="number" id="stationNumber" name="station-number" class="editstationNumber" value="{{stationItem.number}}" label="Station Number" min="1" max="99" step="1" required always-float-label></paper-input>
             <div class="buttons">
-                <paper-button on-tap="dismissAddMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+                <paper-button on-tap="dismissAddStation" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('create')}}</paper-button>
               </div>
             </paper-dialog>
@@ -73,7 +76,7 @@
       <template is="dom-repeat" items="{{persistedStationData}}" as="stationItem">
         <li>  
             <div class="card station">
-            <div class="machine-info-group">
+            <div class="station-info-group">
             <h1 class="card-title">[[stationItem.name]]</h1>
             <p>{{localize('station-name')}}: [[stationItem.name]]</p>
             <p>{{localize('station-number')}}: [[stationItem.number]]</p>
@@ -87,7 +90,7 @@
             <paper-input type="text" id="name_[[stationItem.$key]]" name="station-name" class="editstationName" value="{{stationItem.name}}" label="Station Name" required always-float-label></paper-input>
             <paper-input type="number" id="number_[[stationItem.$key]]" name="station-number" class="editstationNumber" value="{{stationItem.number}}" label="Station Number" min="1" max="99" step="1" required always-float-label></paper-input>
             <div class="buttons">
-                <paper-button id="[[stationItem.$key]]" on-tap="saveEditStation" dialog-confirm autofocus>{{localize('close')}}</paper-button>
+                <paper-button station="[[stationItem]]" on-tap="saveEditStation" dialog-confirm autofocus>{{localize('close')}}</paper-button>
             </div>
             </paper-dialog>
           </div>
@@ -97,6 +100,7 @@
   <paper-toast id="toastAddStation" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
   <paper-toast id="toastSaveStation" always-on-top horizontal-align="right" text="{{localize('notification-save-station')}}"></paper-toast>
   <paper-toast id="toastDeleteStation" always-on-top horizontal-align="right" text="{{localize('notification-delete-station')}}"></paper-toast>
+  <paper-toast id="toastEmptyAddStation" always-on-top horizontal-align="right" text="{{localize('notification-empty-add-station')}}"></paper-toast>
   </template>
   <script>
     Polymer({
@@ -143,10 +147,11 @@
         this.clearField();
           if(this.notification) {
            this.$.toastAddStation.open(); 
-         }
+          }
         } else {
-          console.log(sname !== "");
-           alert("Station name field cannot be empty.")
+           if(this.notification) {
+            this.$.toastEmptyAddStation.open();
+          }
         }
       },
       editStation(e) {
@@ -155,11 +160,15 @@
       removeStation(e) {
         let key = e.currentTarget.station.$key;
         this.$.stationQuery.ref.child(key).remove();
+        if(this.notification) {
         this.$.toastDeleteStation.open(); 
+         }
       },
       saveEditStation(e) {
        // console.log(this.$.stationQuery.ref.child(e.target.id).value);
-        console.log(e.model.stationItem.name);
+      // console.log(e.model.stationItem.name);
+      // this.$.station.ref('users/' + userId)
+       console.log(e.currentTarget.station.$key);
        // this.$.stationQuery.ref.child(e.target.id+"/name").value = e.model.stationItem.name;
         this.$.toastSaveStation.open(); 
       },
@@ -171,7 +180,8 @@
         this.$.createStationDialog.cancel();
       },
       clearField() {
-        this.$.stationName.value = null;
+        this.$.stationName.value = "";
+        this.$.stationNumber.value = 1;
       },
     });
   </script>

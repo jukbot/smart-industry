@@ -13,12 +13,10 @@
     </style>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
-          <!-- Sub nav -->
-          <app-toolbar sticky class="tabs-bar">
-            <!-- Nav on desktop: tabs -->
+          <app-toolbar role="toolbar" sticky class="tabs-bar">
             <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
               <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
+                <paper-tab role="tab" id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" title="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
               </template>
             </paper-tabs>
           </app-toolbar>
