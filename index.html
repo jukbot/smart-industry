@@ -68,7 +68,7 @@
             height: 0;
             width: 0;
             box-sizing: border-box;
-            border: 0 solid #333333;
+            border: 0 solid #F44336;
             border-radius: 50%;
             -webkit-animation: loader-figure 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
             -moz-animation: loader-figure 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
@@ -83,36 +83,36 @@
             -ms-transform: translateX(-50%);
             -o-transform: translateX(-50%);
             transform: translateX(-50%);
-            margin: 0.5em 0 0 50%;
-            font-size: 1.2em;
+            margin: 0.7em 0 0 50%;
+            font-size: 1.5em;
             font-weight: 300;
             line-height: 1.5;
             color: #333333;
             white-space: nowrap;
-            -webkit-animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-            -moz-animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-            animation: loader-label 1s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+            -webkit-animation: loader-label 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+            -moz-animation: loader-label 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+            animation: loader-label 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
         }
 
         @-webkit-keyframes loader-figure {
             0% {
                 height: 0;
                 width: 0;
-                background-color: #333333;
+                background-color: #FF5252;
             }
             29% {
-                background-color: #333333;
+                background-color: #FF5252;
             }
             30% {
-                height: 2em;
-                width: 2em;
+                height: 3em;
+                width: 3em;
                 background-color: transparent;
                 border-width: 1em;
                 opacity: 1;
             }
             100% {
-                height: 2em;
-                width: 2em;
+                height: 3em;
+                width: 3em;
                 border-width: 0;
                 opacity: 0;
                 background-color: transparent;
@@ -123,21 +123,21 @@
             0% {
                 height: 0;
                 width: 0;
-                background-color: #333333;
+                background-color: #FF5252;
             }
             29% {
-                background-color: #333333;
+                background-color: #FF5252;
             }
             30% {
-                height: 2em;
-                width: 2em;
+                height: 3em;
+                width: 3em;
                 background-color: transparent;
                 border-width: 1em;
                 opacity: 1;
             }
             100% {
-                height: 2em;
-                width: 2em;
+                height: 3em;
+                width: 3em;
                 border-width: 0;
                 opacity: 0;
                 background-color: transparent;
@@ -148,21 +148,21 @@
             0% {
                 height: 0;
                 width: 0;
-                background-color: #333333;
+                background-color: #FF5252;
             }
             29% {
-                background-color: #333333;
+                background-color: #FF5252;
             }
             30% {
-                height: 2em;
-                width: 2em;
+                height: 3em;
+                width: 3em;
                 background-color: transparent;
                 border-width: 1em;
                 opacity: 1;
             }
             100% {
-                height: 2em;
-                width: 2em;
+                height: 3em;
+                width: 3em;
                 border-width: 0;
                 opacity: 0;
                 background-color: transparent;
@@ -236,7 +236,7 @@
         })();
     </script>
     <view-index unresolved>
-       <div class="loader"><div class="loader__figure"></div><p aria-label="Loading your application" class="loader__label">Loading your application</p></div>
+       <div class="loader"><div class="loader__figure"></div><p aria-label="Loading your application" class="loader__label">Loading</p></div>
     </view-index>
     <!-- <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

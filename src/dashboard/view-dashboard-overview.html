@@ -36,13 +36,13 @@
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1>In-Production</h1>
+          <h1>Order In Production</h1>
           N/A
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>Order in queue</h1>
+          <h1>Order In queue</h1>
           <h1 id="orderCnt"></h1>
         </div>
       </li>
@@ -67,7 +67,7 @@
        }
       },
       setOrderCount : function () {
-         let orderCount = document.getElementById('orderCnt');
+        this.$.orderCnt.innerHTML = 3;
         if(this.orderQuery != null) {   
           if (this.orderQuery.length == 0) {
             //orderCount.innerHTML = 1;

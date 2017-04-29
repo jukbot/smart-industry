@@ -73,7 +73,7 @@
       padding-right: 24px;
     }
 
-    vaadin-grid#customerTable .cell.numeric {
+    vaadin-grid#customerTable .cell.right {
       text-align: right;
     }
 
@@ -95,7 +95,7 @@
       <vaadin-grid id="customerTable" aria-label="Customer Table" items="[[customerData]]">
 
            <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
-            <template role="rowheader" class="header">
+            <template class="header">
             <paper-checkbox role="checkbox" checked="{{selectAll}}"></paper-checkbox>
             </template>
             <template>
@@ -103,34 +103,34 @@
              </template>
              </vaadin-grid-selection-column>
 
-              <vaadin-grid-column width="7em" flex="0">
-                <template role="rowheader" class="header"><div class="cell">Index</div></template>
+              <vaadin-grid-column width="2em" flex="0">
+                <template class="header"><div class="cell">#</div></template>
                 <template><div class="cell">[[index]]</div></template>
-
               </vaadin-grid-column>
+
                <vaadin-grid-column flex="0">
-                <template role="rowheader" class="header"><div class="cell">{{localize('first-name')}}</div></template>
+                <template class="header"><div>First name</div></template>
                 <template><div class="cell">[[item.fname]]</div></template>
-
               </vaadin-grid-column>
+
               <vaadin-grid-column flex="2">
-                <template role="rowheader" class="header"><div class="cell">{{localize('last-name')}}</div></template>
+                <template class="header"><div class="cell">Last name</div></template>
                 <template><div class="cell">[[item.lname]]</div></template>
               </vaadin-grid-column>
 
-              <vaadin-grid-column>
-                <template role="rowheader" class="header"><div class="cell">{{localize('e-mail')}}</div></template>
+              <vaadin-grid-column flex="2">
+                <template class="header"><div class="cell">E-mail</div></template>
                 <template><div class="cell">[[item.email]]</div></template>
               </vaadin-grid-column>
 
-              <vaadin-grid-column>
-                <template role="rowheader" class="header"><div class="cell numeric last">{{localize('phone-number')}}</div></template>
-                <template><div class="cell numeric last">[[item.mobile]]</div></template>
+              <vaadin-grid-column flex="1">
+                <template class="header"><div class="cell right last">Mobile</div></template>
+                <template><div class="cell numeric right last">[[item.mobile]]</div></template>
               </vaadin-grid-column>
 
-              <vaadin-grid-column width="7em" flex="0">
-                <template role="rowheader" class="header"><div class="cell">{{localize('delete')}}</div></template>
-                <template><paper-icon-button on-tap="deleteCustomer" customer="[[item]]" icon="clear" title="Delete"></paper-icon-button></template>
+              <vaadin-grid-column width="3em" flex="0">
+                <template class="header"><div class="cell right last">Delete</div></template>
+                <template><div class="cell right last"><paper-icon-button on-tap="deleteCustomer" customer="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button></div></template>
               </vaadin-grid-column>
    </vaadin-grid>
 </div>
