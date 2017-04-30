@@ -178,7 +178,7 @@
                   <div class="frame flex-item">
                     <h2>Product Part [[part.name]]</h2>
                     <p>Part SKU: [[part.sku]]</p>
-                    <p>Part Process Sequence: [[productProcess(part.process)]]</p>
+                    <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
                     <h2>Cycle Time</h2>
                     <template is="dom-repeat" items="{{part.cycle}}" as="cycle">
                       <p>Process [[index]] : [[cycle]] minutes</p>
@@ -388,7 +388,7 @@
         this.$.productRaw.value = null;
         this.$.productProcess.value = null;
       },
-      productProcess: function (process) {
+      getProductProcess: function (process) {
         return process.split(',').join(' → ');
       },
       materialProduct: function (material) {
