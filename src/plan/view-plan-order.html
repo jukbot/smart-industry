@@ -99,7 +99,7 @@
           <p>Estimate Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p>
           <p>Delivery Date: [[delivery]]</p>
           <p>Raw Material Used: </p>
-          <p>Operation hours: [[getOpTime(this.factoryOperation.op_end,this.factoryOperation.op_start)]]</p>
+          <p>Operation hours: [[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]] Hrs.</p>
             <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
               <div class="frame flex-item">
                 <h2>Product Part [[part.name]]</h2>
@@ -296,7 +296,7 @@
         let orderProductName = this.$.productSelector.value;
         let orderProductPart = this.orderProductPart;
         let orderProductSKU = this.productSKU;
-        let orderQuantity = this.$.orderQuantity.value;
+        let orderQuantity = this.actualQuantity;
         let orderDuration = this.orderDuration;
         let orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
 

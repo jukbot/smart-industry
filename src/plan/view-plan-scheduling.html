@@ -142,6 +142,7 @@
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" order-by-value="true" data="{{orderData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" data="{{stationData}}"></firebase-query>
 
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
@@ -276,51 +277,58 @@
 <li>
 <div class="card">
 <h1>Daily Jobs Production Scheduling of [[today]]</h1>
-<h1>Operation hours: [[getOpTime(this.factoryOperation.op_end,this.factoryOperation.op_start)]]</h1>
-<div class="frame">
-<h2>Average Completion Time: [[getOpTime(this.factoryOperation.op_end,this.factoryOperation.op_start)]]</h2>
-<h2>% Utilization:</h2>
-<h2>Average No. Jobs in system:</h2>
-<h2>Average Tardiness</h2>
-</div>
-<h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
+
+<h1>Operation hours: [[getOpTime(factoryOperation.op_end,factoryOperation.op_start)]]</h1>
 
 <vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderData]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
 <vaadin-date-picker style="width: 300px;" name="workdate"  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector" always-float-label></vaadin-date-picker>
 <h1>Selected order: [[o.order_no]]</h1>
-<h1>Current total workload:</h1>
-<h1>Overtime order !!:</h1>
-<vaadin-bar-chart id="stacked-bar">
-    <chart-title>Stacked bar chart</chart-title>
+
+<vaadin-columnrange-chart id="column-range-resource-usage">
+    <chart inverted="true"></chart>
+    <chart-title>Resource usage</chart-title>
     <x-axis>
-        <categories>Apples, Oranges, Pears, Grapes, Bananas</categories>
+        <categories><template is="dom-repeat" items="{{stationData}}" as="stationItem">[[stationItem.name]],</template></categories>
     </x-axis>
-    <y-axis min="0">
-        <chart-title>Total fruit consumption</chart-title>
-    </y-axis>
-    <legend reversed="true"></legend>
-    <tooltip point-format="{series.name}: {point.y}. Total: {point.stackTotal}"></tooltip>
+    <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
+    <tooltip
+            formatter="function () {return this.series.name +': '+ Highcharts.dateFormat('%H:%M', this.point.low) + ' - ' + Highcharts.dateFormat('%H:%M', this.point.high)}"></tooltip>
     <plot-options>
-        <series stacking="normal">
-        </series>
+        <columnrange grouping="false">
+            <data-labels enabled="true" inside="true" color="white"
+                         formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
+        </columnrange>
     </plot-options>
-    <data-series name="John">
-        <data>5, 3, 4, 7, 2</data>
+    <data-series name="Team Alpha"> <!-- ORDER -->
+        <color>rgba(255, 60, 125, 1.0)</color>
+        <data><!-- STATION -->
+            [Date.UTC(2013,05,07,12,00,00),Date.UTC(2013,05,07,15,00,00)],
+            [Date.UTC(2013,05,07,13,00,00),Date.UTC(2013,05,07,17,00,00)]
+        </data>
     </data-series>
-    <data-series name="Jane">
-        <data>2, 2, 3, 2, 1</data>
+    <data-series name="Team Beta">
+        <color>rgba(60, 125, 255, 1.0)</color>
+        <data>
+            [Date.UTC(2013,05,07,16,00,00),Date.UTC(2013,05,07,17,00,00)],
+            [Date.UTC(2013,05,07,12,00,00),Date.UTC(2013,05,07,14,00,00)]
+        </data>
     </data-series>
-    <data-series name="Joe">
-        <data>3, 4, 4, 2, 5</data>
-    </data-series>
-</vaadin-bar-chart>
+
+</vaadin-columnrange-chart>
+<div class="frame">
+<h2>Average Completion Time: [[getOpTime(this.factoryOperation.op_end,this.factoryOperation.op_start)]]</h2>
+<h2>% Utilization:</h2>
+<h2>Average No. Jobs in system:</h2>
+<h2>Average Tardiness: </h2>
+</div>
  </div>
  </li>
  
-<li>
-  <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box>
-</li>
+<!-- <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3> -->
+
+<!-- <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box> -->
 </ul>
+
  <paper-dialog class="priority-dialog" id="changePriorityDialog">
   <h3 class="priority-dialog-title"><iron-icon icon="vaadin:warning"></iron-icon> Warning: Schedule change<h3>
   <p class="priority-dialog-text">Changing priority will affect other orders scheduling. This cannot change the jobs scheduling that are currently running.</p>
@@ -345,6 +353,9 @@
           type: Object
         },
         orderData: {
+          type: Object
+        },
+        stationData: {
           type: Object
         },
         machineData: {
