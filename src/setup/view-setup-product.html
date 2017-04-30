@@ -75,6 +75,10 @@
         font-size: 2rem;
       }
 
+      .product-content {
+        margin: 10px;
+      }
+
       .frame {
         border: solid 1px #757575;
         border-radius: 2px;
@@ -189,10 +193,12 @@
             <div class="product-info-group">
               <h1 class="product-title">[[productItem.name]]</h1>
               <iron-image style="width:100%; background-color: lightgray;" sizing="cover" alt="[[productItem.name]]" preload fade src$="http://lorempixel.com/600/400"></iron-image>
+              <div class="product-content">
               <p>Product Name: [[productItem.name]]</p>
               <p>SKU Number: [[productItem.sku]]</p>
               <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
               <p>Total Duration: [[getSumProductTime(productItem.part)]] minutes</p>
+              </div>
               <div class="part-group">
                 <template is="dom-repeat" items="{{productItem.part}}" as="part">
                   <div class="frame flex-item">

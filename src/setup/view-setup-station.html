@@ -81,8 +81,8 @@
             <p>{{localize('station-machine')}}: [[stationItem.machine]]</p>
             </div>
             <div class="button-group">
-            <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation"><iron-icon icon="vaadin:pencil"></iron-icon></paper-button>
-            <paper-button raised class="chilli" station="[[stationItem]]" on-tap="removeStation"><iron-icon icon="vaadin:trash"></iron-icon></paper-button>
+            <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation">{{localize('edit')}}</paper-button>
+            <paper-button raised class="chilli" station="[[stationItem]]" on-tap="removeStation">{{localize('remove')}}</paper-button>
             </div>
             <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click>
             <h2>{{localize('edit-station')}}</h2>
