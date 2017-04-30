@@ -116,6 +116,8 @@
           <p>{{localize('standard-machine-efficiency')}}: <span>[[factoryStandard.machine]] &#37;</span></p>
           <p>{{localize('acceptable-waste')}}: <span>[[factoryPerformance.aw]]</span></p>
           <p>{{localize('reschedule-interval')}}: <span>[[factoryStandard.interval]] {{localize('day')}}</span></p>
+          <p>{{localize('last-reschedule')}}: <span>[[getLastInterval(factoryStandard.start_interval)]]</span></p>
+          <p>{{localize('next-reschedule')}}: <span>[[getNextInterval(factoryStandard.start_interval, factoryStandard.interval)]]</span></p>
         </div>
       </li>
     </ul>
@@ -251,6 +253,45 @@
           }
         }
       },
+
+      getNextInterval(last_timestamp, interval) {
+         if(!last_timestamp || !interval) return 0;
+         let current = Math.floor(Date.now() / 1000);
+         let diff = current - last_timestamp;
+         let range = interval * 24 * 60 * 60;
+         if(diff <= range) {
+         let nextIntervalStamp = (last_timestamp*1000) + (interval * 24 * 60 * 60 * 1000);
+         let nextIntervalDate = new Date(nextIntervalStamp);
+          let dd = nextIntervalDate.getDate();
+          let mm = nextIntervalDate.getMonth() + 1; //January is 0!
+          let yyyy = nextIntervalDate.getFullYear();
+          if (dd < 10) {
+           dd = '0' + dd
+          }
+          if (mm < 10) {
+           mm = '0' + mm
+         }
+          let nextInterval = dd + '/' + mm + '/' + yyyy;
+          return nextInterval;
+         } else {
+           this.set('factoryStandard.start_interval', current);
+         }
+      },
+
+      getLastInterval(last_timestamp) {
+          let lastIntervalDate = new Date(last_timestamp*1000);
+          let dd = lastIntervalDate.getDate();
+          let mm = lastIntervalDate.getMonth() + 1; //January is 0!
+          let yyyy = lastIntervalDate.getFullYear();
+          if (dd < 10) {
+           dd = '0' + dd
+          }
+          if (mm < 10) {
+           mm = '0' + mm
+         }
+          let lastInterval = dd + '/' + mm + '/' + yyyy;
+          return lastInterval;
+      }
     });
   </script>
 </dom-module>
