@@ -44,6 +44,23 @@
         }
         ;
       }
+      vaadin-grid#customerTable .cell {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-right: 56px;
+      }
+
+      vaadin-grid#customerTable .cell.last {
+        padding-right: 24px;
+      }
+
+      vaadin-grid#customerTable .cell.right {
+        text-align: right;
+      }
+
+      vaadin-grid#customerTable paper-checkbox {
+        margin: 0 24px;
+      }
 
       @media (min-width: 360px) and (max-width: 768px) {
          :host {
@@ -67,24 +84,6 @@
          :host {
           --app-grid-columns: 1;
         }
-      }
-
-      vaadin-grid#customerTable .cell {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding-right: 56px;
-      }
-
-      vaadin-grid#customerTable .cell.last {
-        padding-right: 24px;
-      }
-
-      vaadin-grid#customerTable .cell.right {
-        text-align: right;
-      }
-
-      vaadin-grid#customerTable paper-checkbox {
-        margin: 0 24px;
       }
 
       .customer-dialog {
@@ -234,21 +233,18 @@
             mobile: mobile
           });
           this.clearField();
-          if (this.notification) {
             this.$.toastAddCustomer.open();
-          }
         } else {
-          if (this.notification) {
             this.$.toastEmptyInput.open();
-          }
+          
         }
       },
       deleteCustomer(e) {
         let key = e.currentTarget.customer.$key;
         this.$.customerQuery.ref.child(key).remove();
-        if (this.notification) {
+
           this.$.toastDeleteCustomer.open();
-        }
+        
       },
       toggleDialog() {
         this.$.createCustomerDialog.open();

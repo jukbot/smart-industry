@@ -12,6 +12,59 @@
         }
       }
       
+       vaadin-grid#orderTable {
+        --vaadin-grid-cell: {
+          padding: 0;
+        }
+        ;
+
+        --vaadin-grid-header-cell: {
+          height: 64px;
+          color: #333333;
+        }
+        ;
+
+        --vaadin-grid-body-cell: {
+          height: 48px;
+          color: #333333;
+          font-size: 1rem;
+        }
+        ;
+
+        --vaadin-grid-body-row-hover-cell: {
+          background-color: #eeeeee;
+        }
+        ;
+
+        --vaadin-grid-body-row-selected-cell: {
+          background-color: #eeeeee;
+        }
+        ;
+
+        --vaadin-grid-focused-cell: {
+          box-shadow: none;
+          font-weight: bold;
+        }
+        ;
+      }
+      vaadin-grid#orderTable .cell {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding-right: 56px;
+      }
+
+      vaadin-grid#orderTable .cell.last {
+        padding-right: 24px;
+      }
+
+      vaadin-grid#orderTable .cell.right {
+        text-align: right;
+      }
+
+      vaadin-grid#orderTable paper-checkbox {
+        margin: 0 24px;
+      }
+
        @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
@@ -171,66 +224,122 @@
     <h1>Waiting Orders Table</h1>     
     <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
     <paper-button raised class="chilli priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Change</paper-button>
-    <paper-button raised class="chilli priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Reschedule</paper-button>
-    <paper-button raised class="chilli priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Clear </paper-button>
-            <vaadin-grid aria-label="Waiting Orders Table" items="[[orderItems]]">
-              <vaadin-grid-column width="3em" flex-grow="0">
-                <template class="header">Index</template>
-                <template>[[index]]</template>
-              </vaadin-grid-column>
-               <vaadin-grid-column>
-                <template class="header">Order No</template>
-                <template>[[item.order_no]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">
-                  Product
-                </template>
-                <template>[[item.order_product]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">
-                  Size
-                </template>
-                <template>[[item.order_size]]</template>
-              </vaadin-grid-column>
-               <vaadin-grid-column>
-                <template class="header">
-                  SKU
-                </template>
-                <template>[[item.order_color]]</template>
-              </vaadin-grid-column>
-               <vaadin-grid-column>
-                <template class="header">
-                  Quantity
-                </template>
-                <template>[[item.order_quantity]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">
-                  Customer
-                </template>
-                <template>[[item.order_customer]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-                <template class="header">
-                  Duration
-                </template>
-                <template>[[item.order_duration]] Hrs.</template>
-              </vaadin-grid-column>
-               <vaadin-grid-column>
-               <template class="header">
-                  Delivery
-                </template>
-                <template>[[getDeliveryDate(item.order_delivery)]]</template>
-              </vaadin-grid-column>
-              <vaadin-grid-column>
-               <template class="header">
-                  Status
-                </template>
-                <template>[[item.order_status]]</template>
-              </vaadin-grid-column>
-                  </vaadin-grid>
+    <paper-button raised class="magic priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Reschedule</paper-button>
+    <paper-button raised class="dark priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Clear </paper-button>
+
+      <vaadin-grid id="orderTable" aria-label="Orders Table" items="[[orderItems]]">
+
+        <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
+          <template class="header">
+            <paper-checkbox role="checkbox" checked="{{selectAll}}"></paper-checkbox>
+          </template>
+          <template>
+            <paper-checkbox role="checkbox" checked="{{selected}}"></paper-checkbox>
+          </template>
+        </vaadin-grid-selection-column>
+
+        <vaadin-grid-column width="2em" flex="0">
+          <template class="header">
+            <div class="cell">#</div>
+          </template>
+          <template>
+            <div class="cell">[[index]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="0">
+          <template class="header">
+            <div>Order no.</div>
+          </template>
+          <template>
+            <div class="cell">[[item.order_no]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">Product</div>
+          </template>
+          <template>
+            <div class="cell">[[item.order_product]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">Part</div>
+          </template>
+          <template>
+            <div class="cell">[[item.order_size]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">SKU</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_sku]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Quantity</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_quantity]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Duration (WL)r</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_duration]] Hrs.</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Customer</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_customer]]</div>
+          </template>
+        </vaadin-grid-column>
+
+         <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Delivery</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Status</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_status]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column width="3em" flex="0">
+          <template class="header">
+            <div class="cell right last">Delete</div>
+          </template>
+          <template>
+            <div class="cell right last">
+              <paper-icon-button on-tap="deleteOrder" order="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+            </div>
+          </template>
+        </vaadin-grid-column>
+
+      </vaadin-grid>
 
 </div> 
 </li>
@@ -402,8 +511,9 @@
     },
 
     deleteOrder: function (e) {
-       this.$.orderQuery.ref.child(e.target.id).remove();
-       alert("Delete order successfully");
+        let key = e.currentTarget.order.$key;
+        this.$.orderQuery.ref.child(key).remove();
+        alert("Delete order successfully");
     },
     
     togglePriority: function () {
