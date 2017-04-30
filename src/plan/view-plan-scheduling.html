@@ -97,7 +97,7 @@
       border-bottom: 1px solid #eeeeee;
       }
 
-       #job-scheduling-table .index {
+      #job-scheduling-table .index {
        color: red;
        margin-left: 10px;
        }
@@ -109,21 +109,13 @@
      .priority-dialog {
        width: 30%;
      }
-
-     .item {
-       margin:0;
-       width: 50%;
-       height: 50%;
-     }
-
-      .details {
+      .frame {
+        border: solid 1px #757575;
+        border-radius: 2px;
+        margin: 10px 0;
+        min-height: 50px;
+        overflow: hidden;
         padding: 10px;
-        margin: 10px;
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14);
-        font-size: 20px;
       }
      
      .priority-dialog-title {
@@ -137,7 +129,6 @@
      .priorityType {
         color: orangered;      
       }
-
       #priorityTypeSelector {
         margin-top: 20px;
       }
@@ -145,11 +136,6 @@
       input[readonly] {
         border: 2px solid transparent;
       }
-
-      input {
-        font: inherit;
-      }
-
   
     </style>
 
@@ -212,7 +198,9 @@
             <div class="cell">Part</div>
           </template>
           <template>
-            <div class="cell">[[item.order_product_part]]</div>
+            <div class="cell"><template is="dom-repeat" items="[[item.order_product_part]]" as="part">
+                [[part.name]]
+              </template></div>
           </template>
         </vaadin-grid-column>
 
@@ -289,11 +277,14 @@
 <div class="card">
 <h1>Daily Jobs Production Scheduling of [[today]]</h1>
 <h1>Operation hours: [[getOpTime(this.factoryOperation.op_end,this.factoryOperation.op_start)]]</h1>
+<div class="frame">
 <h2>Average Completion Time: [[getOpTime(this.factoryOperation.op_end,this.factoryOperation.op_start)]]</h2>
 <h2>% Utilization:</h2>
 <h2>Average No. Jobs in system:</h2>
 <h2>Average Tardiness</h2>
+</div>
 <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
+
 <vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderData]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
 <vaadin-date-picker style="width: 300px;" name="workdate"  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector" always-float-label></vaadin-date-picker>
 <h1>Selected order: [[o.order_no]]</h1>

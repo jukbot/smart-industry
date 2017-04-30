@@ -59,9 +59,11 @@
      }
     </style>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" order-by-value="true" data="{{stationItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="station" data="{{machineItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-indexeddb-mirror key="machineDataCache" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
     <app-indexeddb-mirror key="stationDataCache" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
     <div class="stitched">
           <paper-button raised on-tap="toggleDialog" class="big-btn fancy"><iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-station')}}</paper-button>
@@ -84,7 +86,7 @@
             <h1 class="station-title">[[stationItem.name]]</h1>
             <p>{{localize('station-number')}}: [[stationItem.number]]</p>
             <p>{{localize('station-name')}}: [[stationItem.name]]</p>
-            <p>{{localize('station-machine')}}: [[stationItem.machine]]</p>
+            <p>{{localize('station-machine')}}: [[machineinstation(machineItem.station,stationItem.number]]</p>
             </div>
             <div class="button-group">
             <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation">{{localize('edit')}}</paper-button>
@@ -127,6 +129,9 @@
           }
         },
         stationItems: {
+          type: Object
+        },
+        machineItems: {
           type: Object
         },
         notification: {
@@ -188,6 +193,16 @@
          } else {
             this.$.toastEmptyAddStation.open();
         }
+      },
+      // check machine station equal to station number then return machine name
+      machineinstation: function (machine,station) {
+        let stamachine = [];
+        for (let key in machine) {
+          if(machine.station == station.number){
+             stamachine[key] = machine[key].name;
+          }
+        }
+          return stamachine;
       },
       dismissEditStation(e) {
         let key = e.currentTarget.station.$key;
