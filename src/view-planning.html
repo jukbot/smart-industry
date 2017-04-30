@@ -12,6 +12,7 @@
       }
     </style>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
       <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
         <app-header fixed shadow>
           <app-toolbar role="toolbar" sticky class="tabs-bar">
@@ -33,8 +34,20 @@
     Polymer({
       is: 'view-planning',
       properties: {
-        language: {
-          type: Object
+         language: {
+          type: Object,
+          notify: true,
+          value: function () {
+            if(localStorage.getItem("lang") != null) {
+              return localStorage.getItem("lang");
+            } 
+            else if(localStorage.getItem("lang") == null) {
+              return "en";
+            } 
+            else {
+              return this.language;
+            }
+          }
         },
         tabs: {
           type: String,

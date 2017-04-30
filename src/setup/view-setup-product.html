@@ -79,6 +79,10 @@
         margin: 10px;
       }
 
+      .product-image {
+        text-align: center;
+      }
+
       .frame {
         border: solid 1px #757575;
         border-radius: 2px;
@@ -166,7 +170,9 @@
           <div class="card product">
             <div class="product-info-group">
               <h1 class="product-title">[[productItem.name]]</h1>
-              <img src="gs://smart-mes.appspot.com/product/1200.jpg" alt="[[productItem.name]]">
+              <div class="product-image">
+              <img src="http://www.manager.co.th/asp-bin/Image.aspx?ID=3167785" alt="[[productItem.name]]">
+              </div>
               <div class="product-content">
               <p>Product Name: [[productItem.name]]</p>
               <p>SKU Number: [[productItem.sku]]</p>
@@ -178,7 +184,7 @@
                   <div class="frame flex-item">
                     <h2>Product Part [[part.name]]</h2>
                     <p>Part SKU: [[part.sku]]</p>
-                    <p>Part Process Sequence: [[productProcess(part.process)]]</p>
+                    <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
                     <h2>Cycle Time</h2>
                     <template is="dom-repeat" items="{{part.cycle}}" as="cycle">
                       <p>Process [[index]] : [[cycle]] minutes</p>
@@ -230,7 +236,7 @@
 
                     <data-series name="Browser share">
                       <data>
-                        ["Firefox", 45.0], ["IE", 26.8], ["Chrome", 12.8], ["Safari", 8.5], ["Opera", 6.2], ["Others", 0.7]
+                        ["A", 45.0], ["B", 26.8], ["C", 12.8], ["D", 8.5], ["E", 6.2], ["F", 0.7]
                       </data>
                     </data-series>
                   </vaadin-pie-chart>
@@ -360,12 +366,15 @@
       addSizeToArray: function () {
         console.log(this.sizeArray);
       },
+
       deleteSize: function (e) {
         this.splice('sizeArray', e.model.index, 1);
       },
+
       editProduct: function (e) {
         this.$$('#edit_' + e.target.id).open();
       },
+
       removeProduct: function (e) {
         this.$.productQuery.ref.child(e.target.id).remove();
       },
@@ -378,19 +387,23 @@
           alert("Save product settings successful");
         });
       },
+
       dismissEditProduct: function (e) {
         this.clearField();
         this.$$('#edit_' + e.target.id).close();
       },
+
       clearField: function () {
-        this.$.productName.value = null;
-        this.$.productSku.value = null;
-        this.$.productRaw.value = null;
-        this.$.productProcess.value = null;
+        this.$.productName.value = "";
+        this.$.productSku.value = "";
+        this.$.productRaw.value = "";
+        this.$.productProcess.value = "";
       },
-      productProcess: function (process) {
+
+      getProductProcess: function (process) {
         return process.split(',').join(' → ');
       },
+
       materialProduct: function (material) {
         let praw = [];
         for (let key in material) {
@@ -398,6 +411,7 @@
         }
         return praw;
       },
+
       sizeProduct: function (size) {
         let psize = [];
         let cycle_size = [];
@@ -436,24 +450,6 @@
             }
         };
         return sum.toFixed(1); //productTime.toFixed(1)
-      },
-
-       arraySum(arr) {
-            let sum = 0;   
-
-            while(arr.length != 0)
-            {
-               var value = arr.pop();
-               if(value instanceof Array)
-               {
-                 for (i= 0; i< value.length; ++i) 
-                   arr.push(value[i]);
-               }
-               else if(typeof value === "number")
-                sum += value;
-             }
-
-             return sum;
       },
 
       storageError: function (e) {

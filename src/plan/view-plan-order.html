@@ -2,14 +2,14 @@
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="view-plan-order">
- <template>
+  <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
         --app-grid-item-height: 50%;
       }
-      
-       @media (min-width: 360px) and (max-width: 768px) {
+
+      @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
         }
@@ -26,66 +26,43 @@
           --app-grid-columns: 2;
         }
       }
-       @media (min-width: 1201px) and (max-width: 2560px) {
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
           --app-grid-columns: 2;
         }
       }
 
-      #job-scheduling-table data-table-row {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      opacity: 1;
-      cursor: pointer;
-      border-bottom: 1px solid #e3e3e3;
+      #uploadOrder {
+        margin-top: 20px;
       }
 
-       #job-scheduling-table .index {
-       color: red;
-       margin-left: 10px;
-       }
-       
-       paper-dropdown-menu {
-         width: 100%;
-       }
-
-     .button-group {
-       margin-top: 16px;
-     }
-
-     .button-group paper-button {
-       display: inline-flex;
-       width: 49.5%;
-       align-items: center; 
-       justify-content: center; 
-     }
+      .button-group paper-button {
+        margin-top: 16px;
+        display: inline-flex;
+        width: 49.5%;
+        align-items: center;
+        justify-content: center;
+      }
 
       .order-info p {
         margin: 10px 0;
       }
 
-     .item-box {
-      height: 10em;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center
-     }
-
-     .item {
-       margin:0;
-       width: 50%;
-       height: 50%;
-     }
-      #priorityType {
-        color: deeppink;      
+       .frame {
+        border: solid 1px #757575;
+        border-radius: 2px;
+        margin: 10px 0;
+        min-height: 50px;
+        overflow: hidden;
+        padding: 10px;
       }
+
     </style>
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderData}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productData}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="name" data="{{machineData}}"></firebase-query>
+
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
@@ -93,47 +70,45 @@
       <li>
         <div class="card">
           <h1>Create Order</h1>
-              <paper-input label="Order Number" name="order-no" id="orderNumber" value="[[getOrderNumber(orderData.length)]]" type="number" min="0" step="1" required always-float-label auto-validate></paper-input>
-              <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerData]]" item-label-path="fname" item-value-path="fname" selected-item='{{selectCustomer}}' required always-float-label ></vaadin-combo-box>
-              <vaadin-combo-box label="Product" name="product" items="[[productData]]" id="productSelector" item-label-path="name" item-value-path="name" selected-item='{{product}}' required always-float-label ></vaadin-combo-box>
-              
-              <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
-              <vaadin-combo-box label="Product" name="product" items="[[productData]]" id="productSelector" item-label-path="name" item-value-path="name" selected-item='{{product}}' required always-float-label ></vaadin-combo-box>
-              <vaadin-combo-box label="Size" name="size" items="[[product.size]]" id="sizeSelector" disabled="true" item-label-path="name" item-value-path="name" selected-item='{{size}}' required always-float-label></vaadin-combo-box>
-              <vaadin-combo-box label="Color" name="color" items="[[product.color]]" id="colorSelector" disabled="true" item-label-path="name" item-value-path="name" selected-item='{{color}}' required always-float-label></vaadin-combo-box>              
-              <paper-dropdown-menu label="Machine" name="machine" id="machineSelector" disabled="true" required always-float-label>
-              <paper-menu id="machineSelectorMenu" class="dropdown-content" multi selected-items="{{machine}}">
-                <template is="dom-repeat" items="[[machineData]]" as="machineItem">
-                      <paper-item><paper-checkbox value="[[machineItem.code]]">[[machineItem.name]]</paper-checkbox></paper-item>
-                 </template>
-              </paper-menu>
-            </paper-dropdown-menu>
-              <vaadin-date-picker label="Delivery Date" name="delivery" required always-float-label autoValidate
-              class="date-selector" id="deliverySelector"></vaadin-date-picker>
-              <br>
-              <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
-               <div class="button-group">
-                <paper-button raised class="smart" on-tap="createOrder">Add to schedule</paper-button>
-                <paper-button raised class="fancy" on-tap="saveOrder">Save to waiting</paper-button>
-               </div>
+           <!--  <paper-input label="Order Number" name="order-no" id="orderNumber" value="[[getOrderNumber(orderData.length)]]" type="number" min="0" step="1" required always-float-label></paper-input> -->
+           <!-- <vaadin-combo-box label="Size" name="size" items="[[product.size]]" id="sizeSelector" disabled="true" item-label-path="name"
+            item-value-path="name" selected-item='{{size}}' required prevent-invalid-input always-float-label auto-validate></vaadin-combo-box> -->
+          <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerData]]" item-label-path="fname"
+            item-value-path="fname" selected-item='{{selectCustomer}}' required allow-custom-value prevent-invalid-input
+            always-float-label auto-validate></vaadin-combo-box>
+          <vaadin-combo-box label="Product" name="product" items="[[productData]]" id="productSelector" item-label-path="name" item-value-path="name"
+            selected-item='{{selectProduct}}' required prevent-invalid-input always-float-label auto-validate></vaadin-combo-box>
+          <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
+            step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
+          <vaadin-date-picker label="Delivery Date" name="delivery" id="deliverySelector" value="{{delivery}}" error-message="Invalid input" required always-float-label ></vaadin-date-picker>
+          <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
+          <div class="button-group">
+            <paper-button raised class="smart" on-tap="createOrder">Add to schedule</paper-button>
+            <paper-button raised class="fancy" on-tap="saveOrder">Save to waiting</paper-button>
+          </div>
         </div>
       </li>
       <li>
         <div class="card order-info">
-                <h1>Order Information</h1>
-                <p>Order No: [[getOrderNumber(orderData.length)]]</p>
-                <p>Customer Name: <span id="customer">[[selectCustomer.fname]] [[selectCustomer.lname]]</span></p>
-                <p>Product Name: <span id="product">[[product.name]] [[size.name]] [[color.name]]</span></p>
-                <p>SKU Number: <span id="sku">[[product.sku]]</span></p>
-                <p>Actual Quantity: <span id="actualQuantity">[[calActualQuantity(factoryPerformance.aw, amount)]]</span></p>
-                <p>Processes Used: <span id="usedProcess">[[product.process]]</span></p>
-                <p>Machine Used: <span id="usedMachine">[[calUsedMachine(machine)]]</span></p>
-                <p>Delivery Date: <span id="estimateDelivery">[[calEstDelivery(factoryOperation.op_end, factoryOperation.op_start, size.cycle, size.setup, amount, orderData)]]</span></p>
-                <p>Estimate Duration (Hrs): <span id="estimateDuration">[[calLeadTime(size.cycle, size.setup, amount)]]</span></p>
-                <p>Total Setup Duration (Hrs): <span id="setupDuration">[[calSetupTime(size.setup)]]</span></p>
-                <p>Order Workload: <span id="orderWorkload">[[calWorkLoad(factoryPerformance.aw, size.cycle, size.setup, amount, machine)]]</span></p>
-                <p>Raw Material Use: <span id="rawMaterial"></span></p>
-                <p>Operation hours: <span id="operationHours">[[calOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</span></p>
+          <h1>Order Information</h1>
+          <p>Order Number: [[getOrderNumber(orderData.length)]]</p>
+          <p>Customer Name: [[selectCustomer.fname]] [[selectCustomer.lname]]</p>
+          <p>Product Name: [[setOrderProduct(selectProduct)]]</p>
+          <p>SKU Number: [[setProductSKU(selectProduct.sku)]]</p>
+          <p>Actual Quantity: [[getActualQuantity(amount)]]</p>
+          <p>Estimate Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p>
+          <p>Delivery Date: [[delivery]]</p>
+          <p>Raw Material Used: </p>
+          <p>Operation hours: [[getOpTime(this.factoryOperation.op_end,this.factoryOperation.op_start)]]</p>
+            <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
+              <div class="frame flex-item">
+                <h2>Product Part [[part.name]]</h2>
+                <p>Part SKU: [[part.sku]]</p>
+                <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
+                <p>Total Process Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+              </div>
+           </template>
+          <!-- <p>Delivery Date: [[calEstDelivery(factoryOperation.op_end, factoryOperation.op_start, size.cycle, size.setup, amount, orderData)]]</p> -->
         </div>
       </li>
     </ul>
@@ -145,12 +120,13 @@
         customerData: {
           type: Object
         },
-        machineData: {
-          type: Object
-        },
         productData: {
           type: Object
         },
+        orderData: {
+          type: Object
+        },
+
         factoryPerformance: {
           type: Object
         },
@@ -160,278 +136,263 @@
         factoryOperation: {
           type: Object
         },
-        orderData: {
-          type: Object
-        },
-        orderCount: {
+
+        orderNumber: {
           type: Number
         },
         orderDelivery: {
-          type: Object
+          type: Number
         },
-        amount: {
-          type: Object,
+        orderDuration: {
+          type: Number
         },
-        maxOrderNo: {
+        quantity: {
           type: Number,
         },
-        priority: {
-          type: Array,
-          value: function () {
-            return [{
-                name: 'Early Delivery (EDD)',
-                symbol: 'EDD',
-                number: 1
-              },
-              {
-                name: 'Shortest Duration First (SPT)',
-                symbol: 'SPT',
-                number: 2
-              }
-            ]
-          }
+        actualQuantity: {
+          type: Number
         },
+        operationTime: {
+          type: Number
+        },
+        productSKU: {
+          type: Number
+        },
+        orderProductPart: {
+          type: Object
+        },
+
         todayDate: {
-          type: Object,     
+          type: Object,
           value: function () {
-          let date = new Date();
-          let dd = date.getDate();
-          let mm = date.getMonth() + 1; //January is 0!
-          let yyyy = date.getFullYear();
-          if (dd < 10) {
-            dd = '0' + dd
-          }
-          if (mm < 10) {
-            mm = '0' + mm
-         }
-          date = yyyy + '-' + mm  + '-' + dd;
-          return date;
+            let date = new Date();
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1; //January is 0!
+            let yyyy = date.getFullYear();
+            if (dd < 10) {
+              dd = '0' + dd
+            }
+            if (mm < 10) {
+              mm = '0' + mm
+            }
+            date = yyyy + '-' + mm + '-' + dd;
+            return date;
           }
         },
       },
+
       getOrderNumber(length) {
-        if(length == 0 || length == null) {
+        if (length == 0 || length == null) {
+          this.orderNumber = 1;
           return 1;
         } else {
-          return length+1;
+          this.orderNumber = length + 1;
+          return length + 1;
         }
       },
-  
-      ready: function() {
 
-         this.$.machineSelector.ignoreSelect = true;
-         Sugar.Date.setLocale('en-GB');
-        
-         let estdelivery = this.$.estimateDelivery;
-         let deliverypicker = this.$.deliverySelector;
-         let actualquantity = this.$.actualQuantity;
-         let orderQuantity = this.$.orderQuantity; 
-         let productPicker = this.$.productSelector;
-         let sizePicker = this.$.sizeSelector;
-         let colorPicker = this.$.colorSelector;
-         let machinePicker = this.$.machineSelector;
-         // querySelector ==> this.shadowRoot.querySelector('')
-        deliverypicker.addEventListener('value-changed', function() {
-            if(deliverypicker.value != null) {
-                 let deliveryTimeStamp = (new Date(deliverypicker.value).getTime()/1000);
-                 console.log(deliveryTimeStamp);
-                 this.orderDelivery = deliveryTimeStamp;
-                  estdelivery.innerHTML = deliveryTimeStamp;
-                 console.log("fuck " + this.orderDelivery);
+      getSumCycleTime(cycle) {
+        if (!cycle) return 0;
+        let processTime = 0;
+        for (let i in cycle) {
+          processTime += cycle[i];
+        };
+        return processTime.toFixed(1);
+      },
+
+      getProductProcess(process) {
+        return process.split(',').join(' → ');
+      },
+
+      getSumProductTime(part,amount) {
+        if (!part || !amount) return 0;
+        let sum = 0;
+        let partTime = 0;
+        for (let i in part) {
+           for(let j in part[i].cycle) {
+              sum += part[i].cycle[j]; 
             }
-           });
+        };
+        let sumDuration = (sum*amount).toFixed(1);
+        this.orderDuration = sumDuration;
+        return sumDuration; //productTime.toFixed(1)
+      },
 
-        productPicker.addEventListener('value-changed', function() {
-          let product_list = productPicker.value;    
-          if(product_list != null && sizePicker.items != null) {
-                 sizePicker.disabled = false;
-                 colorPicker.disabled = false;
-                 machinePicker.disabled = false;
-              }
-          });
+      getActualQuantity(amount) {
+        if (!amount) return 0;
+        let accept_waste = this.factoryPerformance.aw;
+        let actual_quantity = Math.ceil((amount / (1 - accept_waste)));
+        this.actualQuantity = actual_quantity; // set to global variable
+        return actual_quantity;
+      },
 
-         deliverypicker.i18n = {
+      getOpTime(end, start) {
+        if(!end || !start) return 0;
+        let endtime = end.replace(/\:/g, '.')
+        let starttime = start.replace(/\:/g, '.')
+        let optime = endtime - starttime;
+        this.operationTime = optime; // set to global variable
+        return optime;   
+      },
+
+      setProductSKU(sku) {
+         if(!sku) return 0;
+         this.productSKU = sku;
+         return sku;
+      },
+
+      setOrderProduct(product) {
+        if(!product) return 0;
+         this.orderProductPart = product.part;
+         return product.name;
+      },
+
+      ready() {
+        Sugar.Date.setLocale('en-GB');
+        let deliverypicker = this.$.deliverySelector;
+        console.log(deliverypicker.value);
+        deliverypicker.addEventListener('value-changed', function () {
+            let deliveryTimeStamp = (new Date(deliverypicker.value).getTime() / 1000);
+            this.orderDelivery = deliveryTimeStamp;   
+        });
+
+        deliverypicker.i18n = {
           week: 'Week',
           calendar: 'Calendar',
           clear: 'Clear',
           today: 'Today',
           cancel: 'Cancel',
           firstDayOfWeek: 1,
-          monthNames:
-          'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
+          monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'.split(
+            '_'),
           weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
           weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
-          formatDate: function(date) {
+          formatDate: function (date) {
             return Sugar.Date.format(date, '{short}');
           },
-          formatTitle: function(monthName, fullYear) {
+          formatTitle: function (monthName, fullYear) {
             return monthName + ' ' + fullYear;
           },
-          parseDate: function(dateString) {
-            let matches = deliverypicker.i18n.monthNames.filter(function(monthName) {
+          parseDate: function (dateString) {
+            let matches = deliverypicker.i18n.monthNames.filter(function (monthName) {
               return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
             });
             dateString = matches.length === 1 ? matches[0] : dateString;
             return Sugar.Date.create(dateString);
           }
         };
-    },
-
-      createOrder: function () {
-        let orderNo = this.$.orderNumber.value;
-        let customerName = this.$.customerName.value;
-        let orderDateSTP = Math.round(new Date().getTime()/1000.0);
-        let orderProduct = this.$.productSelector.value;
-        let orderSKU = this.$.sku.innerHTML;
-        let orderSize = this.$.sizeSelector.value;
-        let orderQuantity = this.$.orderQuantity.value;
-        let orderDuration = this.$.estimateDuration.innerHTML;
-        let orderDelivery = (new Date(this.$.deliverySelector.value).getTime()/1000);
-       
-        if(orderNo !== "" && customerName !== "" && orderProduct !== "" && orderSize !== "" && orderQuantity !== "" && orderDelivery !== "") {
-            let today = new Date();
-            let dd = today.getDate();
-            let mm = today.getMonth() + 1; //January is 0!
-            let yyyy = today.getFullYear();
-             if (dd < 10) {
-             dd = '0' + dd
-             }
-          if (mm < 10) {
-            mm = '0' + mm
+       /* productPicker.addEventListener('value-changed', function () {
+          let product_list = productPicker.value;
+          if (product_list != null && sizePicker.items != null) {
+             sizePicker.disabled = false;
           }
-          this.$.orderQuery.ref.push({
-          order_date: orderDateSTP,
-          order_no: orderNo,
-          order_customer: customerName,
-          order_product: orderProduct,
-          order_sku: orderSKU,
-          order_size: orderSize,
-          order_quantity: orderQuantity,
-          order_duration: orderDuration,
-          order_delivery: orderDelivery
-        }).key;
-           alert("Added to production schedule successfully");
-      } else {
-           alert("Input field cannot be blank, please fill in completely.");
-      }
+        }); */
       },
-      saveOrder: function() {
-        let orderNo = this.$.orderNumber.value;
-        let customerName = this.$.customerName.value;
-        let orderProduct = this.$.productSelector.value;
-        let orderSize = this.$.sizeSelector.value;
+
+      createOrder() {
+        let orderNo = this.orderNumber;
+        let customerName = this.$.customerSelector.value;
+        let orderDate = Math.round(new Date().getTime() / 1000.0);
+        let orderProductName = this.$.productSelector.value;
+        let orderProductPart = this.orderProductPart;
+        let orderProductSKU = this.productSKU;
         let orderQuantity = this.$.orderQuantity.value;
-        let orderDelivery = (new Date(this.$.deliverySelector.value).getTime()/1000);
-       
-      if(orderNo != "" && customerName != "" && orderProduct != "" && orderSize != "" && orderQuantity != "" && orderDelivery != "") {
-          alert("Order has been saved to archive order.");
-      } else {
+        let orderDuration = this.orderDuration;
+        let orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
+
+        if (orderNo !== "" && customerName !== "" && orderProductName !== ""  && orderProductPart !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery))) {
+
+         this.$.orderQuery.ref.push({
+            order_date: orderDate,
+            order_no: orderNo,
+            order_customer: customerName,
+            order_product_name: orderProductName,
+            order_product_part : orderProductPart,
+            order_product_sku: orderProductSKU,
+            order_quantity: orderQuantity,
+            order_duration: orderDuration,
+            order_delivery: orderDelivery,
+            order_status: "waiting",
+          });
+          alert("Added to production schedule successfully");
+          this.clearField();
+        } else {
           alert("Input field cannot be blank, please fill in completely.");
-      }
+        }
       },
-      uploadFile: function() {
+
+      clearField() {
+          this.$.customerSelector.value = "";
+          this.$.productSelector.value = "";
+          this.$.orderQuantity.value = 1;
+          this.$.deliverySelector.value = "";
+      },
+
+      saveOrder: function () {
+       
+      },
+
+      uploadFile: function () {
         // upload order file to order schedule table or waiting table
-         alert("Invalid file format");
+        alert("Invalid file format");
       },
 
-    calSetupTime: function(setup) {
-          if(!setup) return 0;
-          let setupTime = 0;
-          for (let i in setup) {
-             setupTime += setup[i];
-          };
-          return setupTime;
-     },
 
-    calCycleTime: function(cycle, amount) {
-          if(!cycle || !amount) return 0;
-          let processTime = 0;
-          for (let i in cycle) {
-              processTime += cycle[i];
-          };
-          processTime = processTime*amount;
-          return processTime;
-    },
+/*
+      calSetupTime: function (setup) {
+        if (!setup) return 0;
+        let setupTime = 0;
+        for (let i in setup) {
+          setupTime += setup[i];
+        };
+        return setupTime;
+      },
 
-    calLeadTime: function (cycle,setup, amount) {
-            if (!cycle || !amount) return '';
-            let leadTime = 0;
-            leadTime = this.calCycleTime(cycle,amount) + this.calSetupTime(setup); // second to hours
-            console.log(leadTime);
-            leadTime = Math.round(leadTime,2);
-            return leadTime; 
-     },
+      calCycleTime: function (cycle, amount) {
+        if (!cycle || !amount) return 0;
+        let processTime = 0;
+        for (let i in cycle) {
+          processTime += cycle[i];
+        };
+        processTime = processTime * amount;
+        return processTime;
+      },
 
-     calEstDelivery: function (end, start, cycle, setup ,amount,order) {
-          if (!cycle || !amount || !setup) return '';  
-          let ophours = this.calOpTime(end,start);
-          let orderSize = Object.keys(order).length;
-          let setuptime = 0; // total initial time each process of the product 
-          let cycletime = 0; // total working time each process of the product
-          let leadtime  = 0; // total setup + working duration each process of the product
-          let timestamp = 0; // time stamp of estimate delivery date
-          let arr = [];
-          if(orderSize === 0) {
-             timestamp = (Math.round(new Date().getTime()/1000.0)); // if order list is empty set time stamp to now
-          }
-          else {
-              console.log(order);
-              for (let g in order) {
-              let arr = Object.values(order[g].order_quantity);
-            };
-           
-              this.calLeadTime(cycle,setup,amount);
-              let deliveryDate = "";
-              //console.log(JSON.stringify(order));
-              //console.log(Object.getOwnPropertyNames(order).length == 0);
-          //    let t = new Date(estdelivery_stp);
-          //    let dd = t.getDate();
-         //     let mm = t.getMonth() + 1; //January is 0!
-         //     let yyyy = t.getFullYear();
-         //     if (dd < 10) {
-          //    dd = '0' + dd
-         //     }
-         //     if (mm < 10) {
-         //     mm = '0' + mm
-       //     }
-       //     let deliveryDate = dd + '/' + mm + '/' + yyyy;
-            return deliveryDate;
-          }
-     },
+      calLeadTime: function (cycle, setup, amount) {
+        if (!cycle || !amount) return '';
+        let leadTime = 0;
+        leadTime = this.calCycleTime(cycle, amount) + this.calSetupTime(setup); // second to hours
+        console.log(leadTime);
+        leadTime = Math.round(leadTime, 2);
+        return leadTime;
+      },
 
-     calActualQuantity: function (accept_waste,amount) {
-        if(!amount || !accept_waste) return '';
-        let actual_quantity = Math.ceil((amount/(1-accept_waste)));
-        return actual_quantity;
-     },
+      calEstDelivery: function (cycle, setup, amount, order) {
+        if (!cycle || !amount || !setup) return '';
+        let ophours = this.getOpTime(this.factoryOperation.op_end,this.factoryOperation.op_start);
+        let orderSize = Object.keys(order).length;
+        let setuptime = 0; // total initial time each process of the product 
+        let cycletime = 0; // total working time each process of the product
+        let leadtime = 0; // total setup + working duration each process of the product
+        let timestamp = 0; // time stamp of estimate delivery date
+        let arr = [];
 
-     calOpTime: function (end, start) {
-        if(!end || !start) return '';
-        let endtime =  end.replace(/\:/g,'.')
-        let starttime = start.replace(/\:/g,'.')
-        let optime = endtime - starttime;
-        return optime;
-     },
+          this.calLeadTime(cycle, setup, amount);
+          let deliveryDate = "";
+          return deliveryDate;
+        
+      },
 
-     calWorkLoad: function (accept_waste, cycle, setup, amount, machine) {
-        if(!accept_waste || !cycle || !setup || !amount) return '';
-        let actualQuantity = this.calActualQuantity(accept_waste,amount); 
-        let cycleTime = this.calCycleTime(cycle, amount);
-        let setupTime = this.calSetupTime(setup);
-        let workload = Math.ceil((amount*cycleTime)+setupTime);
-        // workload/no of machine
-        return workload/(1-actualQuantity);
-     },
-
-     calUsedMachine: function (g) {
-        let selectedMachine = []; 
+      calUsedMachine: function (g) {
+        let selectedMachine = [];
         for (let key in g) {
-           selectedMachine[key] = g[key].value;
+          selectedMachine[key] = g[key].value;
         }
         let machine_no = selectedMachine.length;
         console.log("Machine no: " + machine_no);
         return selectedMachine;
-     },
+      },
+*/
 
     });
   </script>
