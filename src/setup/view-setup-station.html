@@ -86,7 +86,7 @@
             <h1 class="station-title">[[stationItem.name]]</h1>
             <p>{{localize('station-number')}}: [[stationItem.number]]</p>
             <p>{{localize('station-name')}}: [[stationItem.name]]</p>
-            <p>{{localize('station-machine')}}: [[machineinstation(machineItem.station,stationItem.number]]</p>
+            <p>{{localize('station-machine')}}: [[stationItem.machine]]</p>  <!-- [[machineinstation(machineItem.station,stationItem.number]] -->
             </div>
             <div class="button-group">
             <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation">{{localize('edit')}}</paper-button>
