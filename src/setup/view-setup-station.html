@@ -56,7 +56,7 @@
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
-    <app-indexeddb-mirror key="stationDataCache" data="{{stationItems}}" persisted-data="{{persistedStationData}}" session="[[user.uid]]"></app-indexeddb-mirror>
+    <app-indexeddb-mirror key="stationDataCache" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
     <div class="stitched">
           <paper-button raised on-tap="toggleDialog" class="big-btn fancy"><iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-station')}}</paper-button>
           <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top

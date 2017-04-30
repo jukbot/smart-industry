@@ -137,9 +137,8 @@
       }
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="productPartQuery" path="/product/{{product.$key}}/part" order-by-child="sku" data="{{productParts}}"></firebase-query>
-    <firebase-storage app-name="smart-mes" id="productImage" path="/product" files="[[files]]" uploaded-files="{{uploadedFiles}}"
-      on-error="storageError"></firebase-storage>
+    <firebase-storage-script app-name="smart-mes" id="productImage" path="/product" files="[[files]]" uploaded-files="{{uploadedFiles}}"
+      on-error="storageError"></firebase-storage-script>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
@@ -305,9 +304,6 @@
           }
         },
         productItems: {
-          type: Object
-        },
-        productParts: {
           type: Object
         },
         productSizes: {

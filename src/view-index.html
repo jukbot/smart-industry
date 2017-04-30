@@ -1,17 +1,14 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <!-- app modules - used for core functions -->
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-component-page/iron-component-page.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
@@ -49,7 +46,6 @@
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
 <link rel="import" href="../bower_components/platinum-sw/platinum-sw-elements.html">
-<link rel="import" href="../bower_components/polymer-dragula/polymer-dragula.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/material-progress/material-progress.html">
@@ -58,7 +54,7 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
-<!-- shared style -->
+<!-- import shared style -->
 <link rel="import" href="view-dashboard.html">
 <link rel="import" href="view-setup.html">
 <link rel="import" href="view-planning.html">
@@ -134,7 +130,7 @@
         font-size: 1rem;
       }
       
-      .center-box {
+      .center {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -174,8 +170,6 @@
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
         <div title="Pronto" class="main-title">Pronto</div>
         <div title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</div>
-        <!-- sidebar hightlighter -->
-        <nav>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
         <a name="dashboard" role="link" href="/dashboard" title="Dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
         <a name="setup" role="link" href="/setup" title="Setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
@@ -183,9 +177,8 @@
         <!-- <a name="controlling" role="link" href="/controlling" title="Control"><paper-icon-button icon="vaadin:sliders"></paper-icon-button> {{localize('view-index-menu-control')}}</a> -->
         <a name="tracking" role="link "href="/tracking" title="Track"><paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
         </iron-selector>
-        </nav>
         <div class="sidebar-menu-line" role="separator"></div>
-        <div class="center-box">
+        <div class="center">
           <paper-button raised class="chilli authen-btn" on-tap="_login" role="button" hidden$="[[user]]">{{localize('login-button')}}</paper-button>
           <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button>
         </div>
@@ -195,15 +188,12 @@
           <p>[[user.displayName]]</p>
           <p>E-mail: [[user.email]]</p>
           <p>Verify: [[user.emailVerified]]</p>
-          </div>
-         <div class="profile">
           <p>[[metadata.appName]]</p>
           <p>{{localize('version')}} [[metadata.appVersion]]</p>
           <p>{{localize('developed-by')}} [[metadata.appDeveloper]]</p>
           </div>
         </template>
       </app-drawer>
-
       <app-header-layout fullbleed has-scrolling-region>
         <app-header slot="header" role="rowheader" condenses fixed>
           <app-toolbar role="toolbar">
@@ -244,8 +234,7 @@
           <view-tracking name="tracking" route="{{subroute}}"></view-tracking>
           <view-controlling name="controlling" route="{{subroute}}"></view-controlling>
           <view-settings name="settings" route="{{subroute}}"></view-settings>
-          <view-404 name="404" route="{{subroute}}"></view-404> 
-          <view-test name="test" route="{{subroute}}"></view-test>          
+          <view-404 name="404" route="{{subroute}}"></view-404>         
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout> 
@@ -440,8 +429,7 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
       _notifyNetworkStatus() {
         var oldOffline = this.offline;
         this.offline =  !navigator.onLine;
-        // Show the snackbar if the user is offline when starting a new session
-        // or if the network status changed.
+        // Show the snackbar if the user is offline when starting a new session or if the network status changed.
         if (this.offline || (!this.offline && oldOffline === true)) {
           if (!this._networkSnackbar) {
             this._networkSnackbar = document.createElement('network-snackbar');

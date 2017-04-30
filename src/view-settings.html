@@ -42,7 +42,7 @@
 <li>
     <div class="card">
       <h1>{{localize('general-settings')}}</h1>
-      <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector" item-label-path="name" item-value-path="value" value="[[language]]" selected-item="{{k}}" on-change="_changeLanguage" error-message="Invalid input" required auto-validate
+      <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector" item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input" required auto-validate
  always-float-label></vaadin-combo-box>
     <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="switch" noink> {{localize('notification')}}</paper-toggle-button>
 </div>

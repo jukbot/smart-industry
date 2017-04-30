@@ -201,7 +201,7 @@
             <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
             <paper-menu class="add-machine-menu dropdown-content">
                 <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
-                    <paper-item on-tap="_addMachineToStation" value="[[machineItem.name]]">[[machineItem.name]]</paper-item>
+                    <paper-item role="button" title="add machine to station" on-tap="_addMachineToStation">[[machineItem.name]]</paper-item>
                 </template>
             </paper-menu>
             </paper-menu-button>
