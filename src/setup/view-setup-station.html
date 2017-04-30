@@ -46,13 +46,15 @@
      .station-info-group {
        margin-bottom: auto;
      }
+     .station-title {
+       font-size: 2rem;
+     }
      .button-group paper-button {
        width: 49%;
        padding: 10px;
      }
-     
     </style>
-    <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name"  data="{{stationItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" order-by-value="true" data="{{stationItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
@@ -64,8 +66,8 @@
           <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
             no-cancel-on-outside-click>
             <h1>{{localize('add-station')}}</h1>
-            <paper-input type="text" id="stationName" name="station-name"  label="Station Name" required always-float-label></paper-input>
-            <paper-input type="number" id="stationNumber" name="station-number" class="editstationNumber" value="{{stationItem.number}}" label="Station Number" min="1" max="99" step="1" required always-float-label></paper-input>
+            <paper-input type="text" id="stationName" name="station-name"  label="{{localize('station-name')}}" required always-float-label></paper-input>
+            <paper-input type="number" id="stationNumber" name="station-number" label="{{localize('station-number')}}" value="[[getStationNumber(stationItems.length)]]" min="1" max="99" step="1" required always-float-label></paper-input>
             <div class="buttons">
                 <paper-button on-tap="dismissAddStation" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('create')}}</paper-button>
@@ -77,9 +79,10 @@
         <li>  
             <div class="card station">
             <div class="station-info-group">
-            <h1 class="card-title">[[stationItem.name]]</h1>
+            <h1 class="station-title">[[stationItem.name]]</h1>
             <p>{{localize('station-name')}}: [[stationItem.name]]</p>
             <p>{{localize('station-number')}}: [[stationItem.number]]</p>
+            <p>{{localize('station-machine')}}: [[stationItem.machine]]</p>
             </div>
             <div class="button-group">
             <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation">{{localize('edit')}}</paper-button>
@@ -87,20 +90,21 @@
             </div>
             <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click>
             <h2>{{localize('edit-station')}}</h2>
-            <paper-input type="text" id="name_[[stationItem.$key]]" name="station-name" class="editstationName" value="{{stationItem.name}}" label="Station Name" required always-float-label></paper-input>
-            <paper-input type="number" id="number_[[stationItem.$key]]" name="station-number" class="editstationNumber" value="{{stationItem.number}}" label="Station Number" min="1" max="99" step="1" required always-float-label></paper-input>
+            <paper-input type="text" id="name_[[stationItem.$key]]" name="station-name" class="editstationName" value="[[stationItem.name]]" label="{{localize('station-name')}}" required always-float-label></paper-input>
+            <paper-input type="number" id="number_[[stationItem.$key]]" name="station-number" class="editstationNumber" value="[[stationItem.number]]" label="{{localize('station-number')}}" min="1" max="99" step="1" required always-float-label></paper-input>
             <div class="buttons">
-                <paper-button station="[[stationItem]]" on-tap="saveEditStation" dialog-confirm autofocus>{{localize('close')}}</paper-button>
+                <paper-button station="[[stationItem]]" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+                <paper-button station="[[stationItem]]" on-tap="saveEditStation" dialog-confirm autofocus>{{localize('save')}}</paper-button>
             </div>
             </paper-dialog>
           </div>
         </li>
       </template>
     </ul>
-  <paper-toast id="toastAddStation" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
-  <paper-toast id="toastSaveStation" always-on-top horizontal-align="right" text="{{localize('notification-save-station')}}"></paper-toast>
-  <paper-toast id="toastDeleteStation" always-on-top horizontal-align="right" text="{{localize('notification-delete-station')}}"></paper-toast>
-  <paper-toast id="toastEmptyAddStation" always-on-top horizontal-align="right" text="{{localize('notification-empty-add-station')}}"></paper-toast>
+  <paper-toast id="toastAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
+  <paper-toast id="toastSaveStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-save-station')}}"></paper-toast>
+  <paper-toast id="toastDeleteStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-delete-station')}}"></paper-toast>
+  <paper-toast id="toastEmptyAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-empty-add-station')}}"></paper-toast>
   </template>
   <script>
     Polymer({
@@ -136,6 +140,13 @@
       toggleDialog() {
         this.$.createStationDialog.open();
       },
+      getStationNumber(length) {
+        if(length == 0) {
+          return 1;
+        } else {
+          return length+1;
+        }
+      },
       addStation() {
         let sname = this.$.stationName.value;
         let snumber = this.$.stationNumber.value;
@@ -145,17 +156,14 @@
           number : snumber
         });
         this.clearField();
-          if(this.notification) {
            this.$.toastAddStation.open(); 
-          }
         } else {
-           if(this.notification) {
-            this.$.toastEmptyAddStation.open();
-          }
+          this.$.toastEmptyAddStation.open();
         }
       },
       editStation(e) {
-        this.$$('#edit_'+ e.currentTarget.station.$key).open();  
+        let key = e.currentTarget.station.$key;
+        this.$$('#edit_'+ key).open();  
       },
       removeStation(e) {
         let key = e.currentTarget.station.$key;
@@ -165,15 +173,22 @@
          }
       },
       saveEditStation(e) {
-       // console.log(this.$.stationQuery.ref.child(e.target.id).value);
-      // console.log(e.model.stationItem.name);
-      // this.$.station.ref('users/' + userId)
-       console.log(e.currentTarget.station.$key);
-       // this.$.stationQuery.ref.child(e.target.id+"/name").value = e.model.stationItem.name;
-        this.$.toastSaveStation.open(); 
+        let key = e.currentTarget.station.$key;
+        let sname = this.$$('#name_' + key).value;
+        let snumber = this.$$('#number_' + key).value;
+        if(sname !== "" && snumber !== "") {
+         this.$.stationQuery.ref.child(key).set({
+            name: sname,
+            number: snumber
+        });
+           this.$$('.station-dialog').close();
+           this.$.toastSaveStation.open();
+         } else {
+            this.$.toastEmptyAddStation.open();
+        }
       },
       dismissEditStation(e) {
-        this.$.createStationDialog.cancel();
+        let key = e.currentTarget.station.$key;
       },
       dismissAddStation() {
         this.clearField();
@@ -181,7 +196,7 @@
       },
       clearField() {
         this.$.stationName.value = "";
-        this.$.stationNumber.value = 1;
+        this.$.stationNumber.value = this.stationItems.length + 1;
       },
     });
   </script>

@@ -45,9 +45,16 @@
         border: solid 1px #757575;
         border-radius: 2px; 
         margin:10px 0; 
-        height: auto; 
+        min-height: 350px; 
         overflow:hidden;
-        margin: 10px;
+        padding: 10px;
+     }
+      .output-frame {
+        border: solid 1px #757575;
+        border-radius: 2px; 
+        margin:10px 0; 
+        min-height: 100px; 
+        overflow:hidden;
         padding: 10px;
      }
      .production-block {
@@ -121,119 +128,19 @@
        overflow: auto;
        max-height: 300px;
      }
-
-      .vertical-section-container {
-        max-width: 600px;
-      }
-
-      .row {
-        border: 1px dotted #999999;
-        margin: 15px;
-        width: 100%;
-        padding: 15px;
-      }
-
-      .column {
-        border: 1px dotted #0d47a1;
-        margin: 5px;
-        display: block;
-        padding: 15px;
-        background-color: #ffcc80;
-      }
-
-      .red {
-        background-color: red;
-      }
-
-      .green {
-        background-color: green;
-      }
-
-      .blue {
-        background-color: blue;
-      }
-
-      .gu-mirror {
-        position: fixed !important;
-        margin: 0 !important;
-        z-index: 9999 !important;
-        opacity: 0.8 !important;
-        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-        filter: alpha(opacity=80);
-      }
-
-      .gu-hide {
-        display: none !important;
-      }
-
-      .gu-unselectable {
-        -webkit-user-select: none !important;
-        -moz-user-select: none !important;
-        -ms-user-select: none !important;
-        user-select: none !important;
-      }
-
-      .gu-transit {
-        opacity: 0.2;
-        -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
-        filter: alpha(opacity=20);
-      }
-
-      .red {
-        background-color: red;
-      }
-
-      .green {
-        background-color: green;
-      }
-
-      .blue {
-        background-color: blue;
-      }
-
-      .handle-inner,
-      .handle {
-        border: 3px solid;
-        border-radius: 15px;
-        padding: 5px;
-        cursor: move;
-        cursor: grab;
-        cursor: -moz-grab;
-        cursor: -webkit-grab;
-        margin-bottom: 5px;
-        display: inline-block;
+     .control-btn {
+       margin: 20px 0;
+     }
+     .frame p {
+        margin: 12px 0;
       }
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>
-      <div class="card">
-      <h1>Simulation Machine</h1>
-      <div class="frame">
-       
-        <polymer-dragula>
-        <div class="row-holder">
-         <ul class="app-grid">
-        <template is="dom-repeat" items="[[machineItems]]" as="machineItem"> 
-          <li><div class="machineBox">
-            <h1 class="card-title">[[machineItem.name]]</h1>
-            <p>Machine Number: [[machineItem.number]]</p>
-            <p>Machine Type: [[machineItem.type]]</p>
-            <p>Standard Efficiency: [[machineItem.effi]] &#37;</p>
-            <paper-button raised class="magic" id="[[machineItem.$key]]" on-tap="editMachine">EDIT</paper-button>
-            <paper-button raised class="chilli" id="[[machineItem.$key]]" on-tap="removeMachine">REMOVE</paper-button>
-          </div></li>
-      </template>
-       </ul>
-       </div>
-     </polymer-dragula>
-     
-      </div>
-    </div>
-    
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>  
     <div class="card">
       <h1>Production Simulation</h1>
-        <ul class="app-grid">
-          <li>
+       <ul class="app-grid control-bar">
+      <li>
       <div class="frame">
       <h2>Station</h2>
       <paper-input label="Station Name" name="stationname" id="stationName" type="text" required always-float-label auto-validate></paper-input>
@@ -265,7 +172,7 @@
       </div>
       </li>
       </ul>
-      <div class="button-group">
+      <div class="button-group control-btn">
         <paper-button raised class="burn" on-tap="_simulatePlan">Simulate</paper-button>
         <paper-button raised class="magic" on-tap="_savePlan">Save</paper-button>
       </div>
@@ -314,14 +221,15 @@
         </div>
 
       </vaadin-context-menu>
-
-       <div class="frame">
-       <h2>Station A Output</h2>
-    <p>Total duration:</p>
-    <p>Total Workload:</p>
-    </div>
-       <div class="frame">
-       <h2>Output result</h2>
+<template is="dom-repeat" items="[[stations]]" as="station">
+       <div class="output-frame">
+       <h2>Station [[station.name]] Output</h2>
+        <p>Total duration:</p>
+        <p>Total Workload:</p>
+       </div>
+</template>
+       <div class="output-frame">
+       <h2>Production Output</h2>
     <p>Total duration:</p>
     <p>Total Workload:</p>
     <p>Somethings: </p>

@@ -31,53 +31,96 @@
           --app-grid-columns: 3;
         }
       }
+      .number {
+        font-size: 7rem;
+        text-align: center;
+         margin-top: 20px;
+      }
+      .head {
+        font-size: 1.6rem;
+        text-align: center;
+      }
+      .status {
+        font-size: 4rem;
+        text-align: center;
+      }
+      .emotion {
+        width: 10%;
+      }
+      .emotion-block {
+        text-align: center;
+      }
     </style>
-<firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderQuery}}"></firebase-query>
+<firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderData}}"></firebase-query>
+<firebase-query app-name="smart-mes" id="waitQuery" path="/wait" data="{{waitData}}"></firebase-query>
+<firebase-query app-name="smart-mes" id="machineQuery" path="/machine" data="{{machineData}}"></firebase-query>
+<firebase-query app-name="smart-mes" id="stationQuery" path="/station" data="{{stationData}}"></firebase-query>
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1>Order In Production</h1>
-          N/A
+          <h1 class="head">Waiting Order</h1>
+          <h1 class="number">[[waitData.length]]</h1>
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>Order In queue</h1>
-          <h1 id="orderCnt"></h1>
+          <h1 class="head">Order In queue</h1>
+          <h1 class="number">[[orderData.length]]</h1>
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>Stock Available</h1>
+          <h1 class="head">Order Completed</h1>
+           <h1 class="number">[[orderData.length]]</h1>
+        </div>
+      </li>
+    </ul>
+     <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1 class="head">Inventory</h1>
+          <h1 class="number">0</h1>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="head">Running Machines</h1>
+          <h1 class="number">[[machineData.length]]</h1>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="head">Working Stations</h1>
+          <h1 class="number">[[stationData.length]]</h1>
           </div>
       </li>
     </ul>
+      <div class="card">
+        <h1 class="head">Overall Production Health</h1>
+        <div class="emotion-block">
+        <img class="emotion" alt="soil_status" src="../../images/status/normal.svg">
+        </div>
+        <h1 class="status">Normal</h1>
+        </div>
+    
   </template>
 
   <script>
     Polymer({
       is: 'view-dashboard-overview',
       properties: {
-        orderQuery: {
-          type: Object,
-          observer: 'setOrderCount'
-        },
-         count: {
-         type: Number,
-       }
+       waitData: {
+         type: Object
+       },
+       orderData: {
+          type: Object
       },
-      setOrderCount : function () {
-        this.$.orderCnt.innerHTML = 3;
-        if(this.orderQuery != null) {   
-          if (this.orderQuery.length == 0) {
-            //orderCount.innerHTML = 1;
-           // console.log(1);
-          }
-          else {
-             //orderCount.innerHTML = this.orderQuery.length;
-           //  console.log("order count " + this.orderQuery.length)
-           }
-        }
+       machineData: {
+         type: Object
+      },
+      stationData: {
+        type: Object
+      }
       },
     });
   </script>

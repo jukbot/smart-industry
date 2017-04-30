@@ -81,9 +81,10 @@
         color: deeppink;      
       }
     </style>
-    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderQuery}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="name" data="{{machineData}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
@@ -91,15 +92,17 @@
       <li>
         <div class="card">
           <h1>Create Order</h1>
-              <paper-input label="Order Number" name="order-no" id="orderNumber" type="number" min="0" step="1" required always-float-label auto-validate></paper-input>
-              <paper-input label="Customer Name" name="order-name" type="text" id="customerName" required always-float-label auto-validate></paper-input>
+              <paper-input label="Order Number" name="order-no" id="orderNumber" value="[[getOrderNumber(orderData.length)]]" type="number" min="0" step="1" required always-float-label auto-validate></paper-input>
+              <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerData]]" item-label-path="fname" item-value-path="fname" selected-item='{{selectCustomer}}' required always-float-label ></vaadin-combo-box>
+              <vaadin-combo-box label="Product" name="product" items="[[productData]]" id="productSelector" item-label-path="name" item-value-path="name" selected-item='{{product}}' required always-float-label ></vaadin-combo-box>
+              
               <paper-input label="Amount" name="order-quantity" value='{{amount}}' type="number" min="10" max="1000" step="1" allowed-pattern="[0-9]"  id="orderQuantity" required always-float-label auto-validate></paper-input>
-              <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="name" selected-item='{{product}}' required always-float-label ></vaadin-combo-box>
+              <vaadin-combo-box label="Product" name="product" items="[[productData]]" id="productSelector" item-label-path="name" item-value-path="name" selected-item='{{product}}' required always-float-label ></vaadin-combo-box>
               <vaadin-combo-box label="Size" name="size" items="[[product.size]]" id="sizeSelector" disabled="true" item-label-path="name" item-value-path="name" selected-item='{{size}}' required always-float-label></vaadin-combo-box>
               <vaadin-combo-box label="Color" name="color" items="[[product.color]]" id="colorSelector" disabled="true" item-label-path="name" item-value-path="name" selected-item='{{color}}' required always-float-label></vaadin-combo-box>              
               <paper-dropdown-menu label="Machine" name="machine" id="machineSelector" disabled="true" required always-float-label>
               <paper-menu id="machineSelectorMenu" class="dropdown-content" multi selected-items="{{machine}}">
-                <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
+                <template is="dom-repeat" items="[[machineData]]" as="machineItem">
                       <paper-item><paper-checkbox value="[[machineItem.code]]">[[machineItem.name]]</paper-checkbox></paper-item>
                  </template>
               </paper-menu>
@@ -122,7 +125,7 @@
                 <p>Actual Quantity: <span id="actualQuantity">[[calActualQuantity(factoryPerformance.aw, amount)]]</span></p>
                 <p>Processes Used: <span id="usedProcess">[[product.process]]</span></p>
                 <p>Machine Used: <span id="usedMachine">[[calUsedMachine(machine)]]</span></p>
-                <p>Delivery Date: <span id="estimateDelivery">[[calEstDelivery(factoryOperation.op_end, factoryOperation.op_start, size.cycle, size.setup, amount, orderQuery)]]</span></p>
+                <p>Delivery Date: <span id="estimateDelivery">[[calEstDelivery(factoryOperation.op_end, factoryOperation.op_start, size.cycle, size.setup, amount, orderData)]]</span></p>
                 <p>Estimate Duration (Hrs): <span id="estimateDuration">[[calLeadTime(size.cycle, size.setup, amount)]]</span></p>
                 <p>Total Setup Duration (Hrs): <span id="setupDuration">[[calSetupTime(size.setup)]]</span></p>
                 <p>Order Workload: <span id="orderWorkload">[[calWorkLoad(factoryPerformance.aw, size.cycle, size.setup, amount, machine)]]</span></p>
@@ -136,16 +139,13 @@
     Polymer({
       is: 'view-plan-order',
       properties: {
-        productSize: {
+        customerData: {
           type: Object
         },
-        machineItems: {
+        machineData: {
           type: Object
         },
-        productItems: {
-          type: Object
-        },
-        productQuery: {
+        productData: {
           type: Object
         },
         factoryPerformance: {
@@ -157,10 +157,11 @@
         factoryOperation: {
           type: Object
         },
-        orderQuery: {
-          type: Object,
-          notify: true,
-          observer : 'setOrderNumber'
+        orderData: {
+          type: Object
+        },
+        orderCount: {
+          type: Number
         },
         orderDelivery: {
           type: Object
@@ -205,12 +206,11 @@
           }
         },
       },
-      setOrderNumber : function () {
-        let orderCount = this.orderQuery.length;
-        if (typeof Object.keys(this.orderQuery) !== 'undefined' && Object.keys(this.orderQuery).length > 0) {
-          this.$.orderNumber.value = orderCount;
+      getOrderNumber(length) {
+        if(length == 0 || length == null) {
+          return 1;
         } else {
-          this.$.orderNumber.value = 1;
+          return length+1;
         }
       },
   

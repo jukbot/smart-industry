@@ -8,8 +8,8 @@
         display: block;
         --app-grid-item-height: 50%;
       }
-      
-       @media (min-width: 360px) and (max-width: 768px) {
+
+      @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
         }
@@ -17,50 +17,91 @@
 
       @media (min-width: 769px) and (max-width: 1024px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 1;
         }
       }
 
       @media (min-width: 1025px) and (max-width: 1200px) {
          :host {
-          --app-grid-columns: 3;
+          --app-grid-columns: 1;
         }
       }
-       @media (min-width: 1201px) and (max-width: 2560px) {
-         :host {
-          --app-grid-columns: 4;
-        }
-      }
-       .flex-horizontal {
-        @apply(--layout-horizontal);
-       }
 
-       .flexchild {
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      .flex-horizontal {
+        @apply(--layout-horizontal);
+      }
+
+      .flexchild {
         @apply(--layout-flex);
-       }
+      }
 
       .product-dialog {
         width: 35%;
         padding: 10px;
-        
       }
-     .product{ min-height: 350px; height: auto; }
-     .product p {
+
+      .product {
+        min-height: 350px;
+        height: auto;
+      }
+
+      .product p {
         margin: 12px 0;
       }
-     .product h1 { text-align: center; }
-     .product-info-group {
-       margin-bottom: auto;
-     }
-     .product-size {
-       margin-right: 10px;
-     }
-     .button-group paper-button {
-       width: 49%;
-     }
+
+      .product h1 {
+        text-align: center;
+      }
+
+      .product-info-group {
+        margin-bottom: auto;
+      }
+
+      .product-size {
+        margin-right: 10px;
+      }
+
+      .button-group paper-button {
+        width: 49%;
+      }
+
+      .product-title {
+        font-size: 2rem;
+      }
+
+      .frame {
+        border: solid 1px #757575;
+        border-radius: 2px;
+        margin: 10px;
+        min-height: 100px;
+        overflow: hidden;
+        padding: 10px;
+      }
+
+      .flex-item {
+        flex-grow: 1;
+        -webkit-flex-wrap: wrap;
+      }
+
+      .part-group {
+        display: -webkit-flex;
+        display: flex;
+        flex-wrap: wrap;
+        -webkit-flex-flow: wrap;
+        -webkit-justify-content: center;
+        justify-content: center;
+      }
     </style>
-    <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
-    <firebase-storage app-name="smart-mes" id="productImage" path="/product" files="[[files]]" uploaded-files="{{uploadedFiles}}" on-error="storageError"></firebase-storage>
+    <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="productPartQuery" path="/product/{{product.$key}}/part" order-by-child="sku" data="{{productParts}}"></firebase-query>
+    <firebase-storage app-name="smart-mes" id="productImage" path="/product" files="[[files]]" uploaded-files="{{uploadedFiles}}"
+      on-error="storageError"></firebase-storage>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
@@ -68,71 +109,110 @@
       <li>
         <div class="stitched">
           <paper-button raised on-tap="toggleDialog" class="big-btn water">{{localize('add-product')}}</paper-button>
-          <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
-            no-cancel-on-outside-click auto-fit-on-attach>
+          <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
+            always-on-top no-cancel-on-outside-click auto-fit-on-attach>
             <h1>{{localize('add-product')}}</h1>
             <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
             <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
-            <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required always-float-label></paper-input>
+            <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required
+              always-float-label></paper-input>
             <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
-            <vaadin-upload name="product-image" id="uploadImageFile" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg" max-file-size="2000000">
-            <div class="drop-label">
-             <iron-icon icon="cloud-upload"></iron-icon>
-             Up to 1&nbsp;JPG&nbsp;files, 2&nbsp;MB&nbsp;each
-             </div>
+            <vaadin-upload name="product-image" id="uploadImageFile" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
+              max-file-size="2000000">
+              <div class="drop-label">
+                <iron-icon icon="cloud-upload"></iron-icon>
+                Up to 1&nbsp;JPG&nbsp;files, 2&nbsp;MB&nbsp;each
+              </div>
               <div class="file-list">
-            <h4>Files</h4>
-           <ul>
-            <template is="dom-repeat" items="{{files}}" as="file">
-              <li>
-            <strong>[[file.name]]</strong>
-                  [[file.status]]
-             </li>
-             </template>
-           </ul>
-          </div>
+                <h4>Files</h4>
+                <ul>
+                  <template is="dom-repeat" items="{{files}}" as="file">
+                    <li>
+                      <strong>[[file.name]]</strong> [[file.status]]
+                    </li>
+                  </template>
+                </ul>
+              </div>
             </vaadin-upload>
             <template is="dom-repeat" items="{{sizeArray}}" as="size">
-                <div class="container flex-horizontal">
-								<paper-input class="product-size flex-child" label="Size name" value="{{size.name}}" required always-float-label></paper-input>
-								<paper-input class="product-size" label="Cycle time" value="{{size.cycle}}" required always-float-label></paper-input>
-                <paper-input class="product-size" label="Cost" value="{{size.cost}}" required always-float-label></paper-input>	
-								<iron-icon on-click="deleteSize" icon="vaadin:close"></iron-icon>	
-                </div>
-			    	</template>
-					<paper-button on-tap="addSize">Add Size</paper-button>
-          	<paper-button on-tap="addSizeToArray">(temp)</paper-button>
-           
-              <div class="buttons">
-                <paper-button dialog-dismiss>{{localize('dismiss')}}</paper-button>
-                <paper-button on-tap="testUpload" dialog-confirm autofocus>{{localize('add')}}</paper-button>
+              <div class="container flex-horizontal">
+                <paper-input class="product-size flex-child" label="Size name" value="{{size.name}}" required always-float-label></paper-input>
+                <paper-input class="product-size" label="Cycle time" value="{{size.cycle}}" required always-float-label></paper-input>
+                <paper-input class="product-size" label="Cost" value="{{size.cost}}" required always-float-label></paper-input>
+                <iron-icon on-click="deleteSize" icon="vaadin:close"></iron-icon>
               </div>
+            </template>
+            <paper-button on-tap="addSize">Add Size</paper-button>
+            <paper-button on-tap="addSizeToArray">(temp)</paper-button>
+            <div class="buttons">
+              <paper-button dialog-dismiss>{{localize('dismiss')}}</paper-button>
+              <paper-button on-tap="testUpload" dialog-confirm autofocus>{{localize('add')}}</paper-button>
+            </div>
           </paper-dialog>
         </div>
       </li>
       <template is="dom-repeat" items="{{persistedProductData}}" as="productItem">
-        <li>  
+        <li>
           <div class="card product">
             <div class="product-info-group">
-            <h1 class="card-title">[[productItem.name]]</h1>
-            <iron-image style="width:100%; background-color: lightgray;"
-               sizing="cover" alt="[[productItem.name]]" preload fade src$="http://lorempixel.com/600/400"></iron-image>
-            <p>Product Process: [[productProcess(productItem.process)]]</p>
-            <p>SKU Number: [[productItem.sku]]</p>
-            <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
-            <p>Product Size: [[sizeProduct(productItem.size)]]</p>
+              <h1 class="product-title">[[productItem.name]]</h1>
+              <iron-image style="width:100%; background-color: lightgray;" sizing="cover" alt="[[productItem.name]]" preload fade src$="http://lorempixel.com/600/400"></iron-image>
+              <p>Product Name: [[productItem.name]]</p>
+              <p>SKU Number: [[productItem.sku]]</p>
+              <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
+              <p>Product Size: [[sizeProduct(productItem.size)]]</p>
+              <h2>Product Part</h2>
+              <div class="part-group">
+                <template is="dom-repeat" items="{{productItem.part}}" as="part">
+                  <div class="frame flex-item">
+                    <p>Part Name: [[part.name]]</p>
+                    <p>Part SKU: [[part.sku]]</p>
+                    <p>Part Process Sequence: [[part.process]]</p>
+                    <h2>Cycle Time</h2>
+                    <template is="dom-repeat" items="{{part.cycle}}" as="cycle">
+                      <p>Process [[index]] : [[cycle]] minutes</p>
+                    </template>
+                    <div class="container">
+                     <vaadin-bar-chart id="stacked-bar" style="width: 25%; height: 200px; float: left;">
+                      <chart-title>Process Time Chart</chart-title>
+                      <x-axis>
+                        <categories>A</categories>
+                      </x-axis>
+                      <y-axis min="0">
+                         <chart-style width="200px" top="18px" color="black"></chart-style>
+                        <chart-title>Process Time (minutes)</chart-title>
+                      </y-axis>
+                      <legend reversed="true"></legend>
+                      <tooltip point-format="{series.name}: {point.y}. Total: {point.stackTotal}"></tooltip>
+                      <plot-options>
+                        <series stacking="normal">
+                        </series>
+                      </plot-options>
+                      <template is="dom-repeat" items="{{part.cycle}}" as="cycle">
+                        <data-series name="[[index]]">
+                          <data>[[cycle]]</data>
+                        </data-series>
+                      </template>
+                    </vaadin-bar-chart>
+                    </div>
+                   </div>
+                </template>
+              </div>
             </div>
-             <div class="button-group">
-            <paper-button raised class="water" id="[[productItem.$key]]" on-tap="editProduct">{{localize('edit')}}</paper-button>
-            <paper-button raised class="chilli" id="[[productItem.$key]]" on-tap="removeProduct">{{localize('remove')}}</paper-button>
+            <div class="button-group">
+              <paper-button raised class="water" id="[[productItem.$key]]" on-tap="editProduct">{{localize('edit')}}</paper-button>
+              <paper-button raised class="chilli" id="[[productItem.$key]]" on-tap="removeProduct">{{localize('remove')}}</paper-button>
             </div>
-            <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click auto-fit-on-attach>
-            <h2>{{localize('edit-product')}}</h2>
-            <paper-input name="product-name" class="editproductName" value="{{productItem.name}}" label="Product Name" always-float-label></paper-input>
-            <paper-input name="sku-number" class="editproductSku" value="{{productItem.sku}}" label="SKU Number" always-float-label></paper-input>
-            <paper-input name="product-process" class="editproductProcess" value="{{productItem.process}}" label="Process (use comma to separate)" always-float-label></paper-input>
-            <paper-input name="raw-material" class="editproductRaw" value="{{productItem.raw}}" label="Raw Material (use comma to separate)" always-float-label></paper-input>
-             <div class="buttons">
+            <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
+              always-on-top no-cancel-on-outside-click auto-fit-on-attach>
+              <h2>{{localize('edit-product')}}</h2>
+              <paper-input name="product-name" class="editproductName" value="{{productItem.name}}" label="Product Name" always-float-label></paper-input>
+              <paper-input name="sku-number" class="editproductSku" value="{{productItem.sku}}" label="SKU Number" always-float-label></paper-input>
+              <paper-input name="product-process" class="editproductProcess" value="{{productItem.process}}" label="Process (use comma to separate)"
+                always-float-label></paper-input>
+              <paper-input name="raw-material" class="editproductRaw" value="{{productItem.raw}}" label="Raw Material (use comma to separate)"
+                always-float-label></paper-input>
+              <div class="buttons">
                 <paper-button on-tap="dismissEditProduct" id="[[productItem.$key]]" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button on-tap="saveProduct" id="[[productItem.$key]]" dialog-confirm autofocus>{{localize('save')}}</paper-button>
               </div>
@@ -149,18 +229,19 @@
         language: {
           type: Object,
           value: function () {
-            if(localStorage.getItem("lang") != null) {
+            if (localStorage.getItem("lang") != null) {
               return localStorage.getItem("lang");
-            } 
-            else if(localStorage.getItem("lang") == null) {
+            } else if (localStorage.getItem("lang") == null) {
               return "en";
-            } 
-            else {
+            } else {
               return this.language;
             }
           }
         },
         productItems: {
+          type: Object
+        },
+        productParts: {
           type: Object
         },
         productSizes: {
@@ -181,18 +262,18 @@
       behaviors: [
         Polymer.AppLocalizeBehavior
       ],
-      attached: function() {
-         this.loadResources(this.resolveUrl('../../data/locales.json'));
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
       toggleDialog: function () {
         this.$.createProductDialog.open();
       },
 
       addProduct: function () {
-          let today = new Date();
-          let dd = today.getDate();
-          let mm = today.getMonth() + 1; //January is 0!
-          let yyyy = today.getFullYear();
+        let today = new Date();
+        let dd = today.getDate();
+        let mm = today.getMonth() + 1; //January is 0!
+        let yyyy = today.getFullYear();
         if (dd < 10) {
           dd = '0' + dd
         }
@@ -200,60 +281,66 @@
           mm = '0' + mm
         }
         today = dd + '/' + mm + '/' + yyyy;
-       // upload file
-       //var file = a.target.files[0];
-       //var task = firebase.storage().ref('images/' + file.name).put(file);
+        // upload file
+        //var file = a.target.files[0];
+        //var task = firebase.storage().ref('images/' + file.name).put(file);
 
         this.$.productQuery.ref.push({
-          add: Math.round(new Date().getTime()/1000.0),
+          add: Math.round(new Date().getTime() / 1000.0),
           name: this.$.productName.value,
           sku: this.$.productSku.value,
           raw: this.$.productRaw.value,
           process: this.$.productProcess.value,
           size: this.sizeArray
         }).key;
-        let metadata = { contentType: 'image/jpeg' };
+        let metadata = {
+          contentType: 'image/jpeg'
+        };
         let file = this.$.uploadImageFile.value;
-        this.$.productImage.storageRef.child('images/'+ this.$.productSku.value).put(file,metadata);
+        this.$.productImage.storageRef.child('images/' + this.$.productSku.value).put(file, metadata);
         this.$.productName.value = null;
         this.$.productSku.value = null;
         this.$.productRaw.value = null;
         this.$.productProcess.value = null;
       },
 
-      testUpload: function() {
+      testUpload: function () {
         let file = this.$.uploadImageFile.files;
-        this.$.productImage.storageRef.child('images/'+this.$.productSku.value).put(file);
+        this.$.productImage.storageRef.child('images/' + this.$.productSku.value).put(file);
       },
- 
-  addSize:function(){
-     this.push('sizeArray',{name:"",cycle:"",cost:""});
- },
 
- addSizeToArray: function() {
-     console.log(this.sizeArray);
- },
-    deleteSize:function(e){
-     this.splice('sizeArray',e.model.index,1);
-    },
-      editProduct: function(e) {
-        this.$$('#edit_'+e.target.id).open();
+      addSize: function () {
+        this.push('sizeArray', {
+          name: "",
+          cycle: "",
+          cost: ""
+        });
       },
-      removeProduct: function(e) {
+
+      addSizeToArray: function () {
+        console.log(this.sizeArray);
+      },
+      deleteSize: function (e) {
+        this.splice('sizeArray', e.model.index, 1);
+      },
+      editProduct: function (e) {
+        this.$$('#edit_' + e.target.id).open();
+      },
+      removeProduct: function (e) {
         this.$.productQuery.ref.child(e.target.id).remove();
       },
-      saveProduct: function(e) {
-         this.$.document.save("/product/"+e.target.id).then(function () {
-        // after document saved, path will be changed to the new ref
-        // any change of data will sent back up and stored
-            // Save food from array with index: e.model.index
-        // Data is accessible via this.sizeArray[index], or just the current row: e.model.food.*
-        alert("Save product settings successful");
-      });
+      saveProduct: function (e) {
+        this.$.document.save("/product/" + e.target.id).then(function () {
+          // after document saved, path will be changed to the new ref
+          // any change of data will sent back up and stored
+          // Save food from array with index: e.model.index
+          // Data is accessible via this.sizeArray[index], or just the current row: e.model.food.*
+          alert("Save product settings successful");
+        });
       },
-      dismissEditProduct: function(e) {
+      dismissEditProduct: function (e) {
         this.clearField();
-        this.$$('#edit_'+e.target.id).close();
+        this.$$('#edit_' + e.target.id).close();
       },
       clearField: function () {
         this.$.productName.value = null;
@@ -261,27 +348,27 @@
         this.$.productRaw.value = null;
         this.$.productProcess.value = null;
       },
-      productProcess: function(process) {
+      productProcess: function (process) {
         //return process.split(',').join(' → ');
       },
-      materialProduct: function(material) {
-          let praw = [];
-          for (let key in material) {
-              praw[key] = material[key].type;
-          }
-          return praw;
+      materialProduct: function (material) {
+        let praw = [];
+        for (let key in material) {
+          praw[key] = material[key].type;
+        }
+        return praw;
       },
-      sizeProduct: function(size) {
-          let psize = [];
-          let cycle_size = [];
-          for (let key in size) {
-              psize[key] = size[key].name;
-              cycle_size[key] = size[key].cycle; 
-          };
-          return psize;
+      sizeProduct: function (size) {
+        let psize = [];
+        let cycle_size = [];
+        for (let key in size) {
+          psize[key] = size[key].name;
+          cycle_size[key] = size[key].cycle;
+        };
+        return psize;
       },
 
-      storageError: function(e) {
+      storageError: function (e) {
         console.info("Storage error:" + e.message);
       }
 
