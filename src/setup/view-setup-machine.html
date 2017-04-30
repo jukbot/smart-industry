@@ -64,7 +64,7 @@
             <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number" min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>&#37;</div></paper-input>
             <paper-input name="machine-capacity" id="machineCapacity" label="Max Capacity per day" type="number" min="1" max="24" value="8" step="1" allowed-pattern="[0-9]" required always-float-label><div suffix>Hrs.</div></paper-input>
             <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" name="machineType" item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box>
-            <vaadin-combo-box label="Station" id="stationName" items="[[stationItems]]" name="stationName" item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box> 
+            <vaadin-combo-box label="Station" id="stationNumber" items="[[stationItems]]" name="stationName" item-label-path="name" item-value-path="number" required always-float-label></vaadin-combo-box> 
               <div class="buttons">
                 <paper-button on-tap="dismissAddMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button on-tap="addMachine" dialog-confirm autofocus>{{localize('add')}}</paper-button>
@@ -79,6 +79,7 @@
             <h1 class="card-title">[[machineItem.name]]</h1>
             <p>{{localize('machine-number')}}: [[machineItem.number]]</p>
             <p>{{localize('machine-type')}}: [[machineItem.code]]</p>
+            <p>{{localize('machine-station')}}: [[machineItem.station]]</p>
             <p>{{localize('machine-standard-effi')}}: [[factoryStandard.machine]] &#37;</p>
             <p>{{localize('machine-current-effi')}}: [[machineItem.effi]] &#37;</p>
             <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] Hrs. per day</p>
@@ -189,6 +190,7 @@
           install: Math.round(new Date().getTime()/1000.0),
           name: this.$.machineName.value,
           queue: 0,
+          station: this.$.stationNumber.value,
           status: 'Stopped',
           code: mtype[0],
           type: mtype[1]
