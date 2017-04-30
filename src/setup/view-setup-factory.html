@@ -38,6 +38,17 @@
       .button-group paper-button {
        width: 49%;
      }
+      
+      .operation-day-selector {
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #757575;
+        border-radius: 2px;
+      }
+
+      .checkbox {
+        padding: 0 5px;
+      }
     </style>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
@@ -52,12 +63,6 @@
               <paper-input label="{{localize('factory-name')}}" name="factory-name" id="factoryName" value="[[factoryOperation.name]]"
                 type="text" required always-float-label auto-validate></paper-input>
               <vaadin-combo-box label="{{localize('factory-type')}}" name="factory-type" id="factoryType" value="[[factoryOperation.type]]" items="[[factoryType]]" item-label-path="name" item-value-path="name" required always-float-label></vaadin-combo-box>
-              <paper-input label="{{localize('acceptable-waste')}} (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]"
-                type="number" min="0" max="1" step="0.01"  required always-float-label auto-validate></paper-input>
-              <paper-input label="{{localize('working-utilization')}} (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
-                type="number" min="0" max="100" step="1"  required always-float-label auto-validate></paper-input>
-              <paper-input label="{{localize('standard-machine-efficiency')}} (0-100%)" name="machineStandardEfficiency" id="machineStandardEffi" value="[[factoryStandard.machine]]"
-                type="number" min="0" max="100" step="1"  required always-float-label auto-validate></paper-input>
               <paper-input label="{{localize('operation-start')}} (xx:xx)" name="opstart" id="opStart" value="[[factoryOperation.op_start]]"
                required always-float-label auto-validate></paper-input>
               <paper-input label="{{localize('operation-end')}} (xx:xx)" name="opend" id="opEnd" value="[[factoryOperation.op_end]]"
@@ -66,18 +71,24 @@
                 required always-float-label auto-validate></paper-input>
               <paper-input label="{{localize('over-time-end')}} (xx:xx)" name="otend" id="otEnd" value="[[factoryOperation.ot_end]]"
                 required always-float-label auto-validate></paper-input>
+              <div class="operation-day-selector">
+                <p>{{localize('operation-day')}}</p>
+                <paper-checkbox class="checkbox" id="sunday" value="sun">Sun</paper-checkbox>
+                <paper-checkbox class="checkbox" id="monday" value="mon">Mon</paper-checkbox>
+                <paper-checkbox class="checkbox" id="tuesday" value="tue">Tue</paper-checkbox>
+                <paper-checkbox class="checkbox" id="wednesday" value="wed">Wed</paper-checkbox>
+                <paper-checkbox class="checkbox" id="thursday" value="thu">Thu</paper-checkbox>
+                <paper-checkbox class="checkbox" id="friday" value="fri">Fri</paper-checkbox>
+                <paper-checkbox class="checkbox" id="saturday" value="sat">Sat</paper-checkbox>
+              </div>
+              <paper-input label="{{localize('working-utilization')}} (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
+                type="number" min="0" max="100" step="1"  required always-float-label auto-validate></paper-input>
+              <paper-input label="{{localize('standard-machine-efficiency')}} (0-100%)" name="machineStandardEfficiency" id="machineStandardEffi" value="[[factoryStandard.machine]]"
+                type="number" min="0" max="100" step="1"  required always-float-label auto-validate></paper-input>
+              <paper-input label="{{localize('acceptable-waste')}} (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]"
+                type="number" min="0" max="1" step="0.01"  required always-float-label auto-validate></paper-input>
               <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" name="rescheduleInterval" id="scheduleInterval" value="[[factoryStandard.interval]]"
                 type="number" min="1" max="30" step="1" required always-float-label auto-validate></paper-input>
-              <div id="operationDaySelector">
-                <p>{{localize('operation-day')}}</p>
-                <paper-checkbox id="sunday" value="sun">Sun</paper-checkbox>
-                <paper-checkbox id="monday" value="mon">Mon</paper-checkbox>
-                <paper-checkbox id="tuesday" value="tue">Tue</paper-checkbox>
-                <paper-checkbox id="wednesday" value="wed">Wed</paper-checkbox>
-                <paper-checkbox id="thursday" value="thu">Thu</paper-checkbox>
-                <paper-checkbox id="friday" value="fri">Fri</paper-checkbox>
-                <paper-checkbox id="saturday" value="sat">Sat</paper-checkbox>
-              </div><br>
               <div class="button-group">
                 <paper-button role="button" raised class="magic" on-tap="saveValue">{{localize('save-settings')}}</paper-button>
                 <paper-button role="button" raised class="dark" on-tap="resetValue">{{localize('restore')}}</paper-button>

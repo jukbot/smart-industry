@@ -86,17 +86,45 @@
 
       .flex-item {
         flex-grow: 1;
-        -webkit-flex-wrap: wrap;
       }
 
       .part-group {
         display: -webkit-flex;
         display: flex;
-        flex-wrap: wrap;
-        -webkit-flex-flow: wrap;
+        flex-wrap: nowrap;
+        -webkit-flex-wrap: nowrap;
         -webkit-justify-content: center;
         justify-content: center;
       }
+
+      .highcharts-container .vaadin-chart {
+        height: 200px;
+      }
+
+        #flex-column {
+            height: 100%;
+            display: -ms-flexbox; /* IE */
+            -ms-flex-direction: column;
+            display: -webkit-flex; /* Safari */
+            -webkit-flex-direction: column;
+            display: flex;
+            flex-direction: column;
+        }
+        #flex-row {
+            display: -ms-flexbox; /* IE */
+            -ms-flex: 1;
+            display: -webkit-flex; /* Safari */
+            -webkit-flex: 1;
+            display: flex;
+            flex: 1;
+            -webkit-justify-content: center;
+            justify-content: center;
+        }
+        .box {
+            -ms-flex: 1;
+            -webkit-flex: 1;
+            flex: 1;
+        }
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="productPartQuery" path="/product/{{product.$key}}/part" order-by-child="sku" data="{{productParts}}"></firebase-query>
@@ -160,45 +188,71 @@
               <p>Product Name: [[productItem.name]]</p>
               <p>SKU Number: [[productItem.sku]]</p>
               <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
-              <p>Product Size: [[sizeProduct(productItem.size)]]</p>
-              <h2>Product Part</h2>
               <div class="part-group">
                 <template is="dom-repeat" items="{{productItem.part}}" as="part">
                   <div class="frame flex-item">
-                    <p>Part Name: [[part.name]]</p>
+                    <h2>Product Part [[part.name]]</h2>
                     <p>Part SKU: [[part.sku]]</p>
-                    <p>Part Process Sequence: [[part.process]]</p>
+                    <p>Part Process Sequence: [[productProcess(part.process)]]</p>
                     <h2>Cycle Time</h2>
                     <template is="dom-repeat" items="{{part.cycle}}" as="cycle">
                       <p>Process [[index]] : [[cycle]] minutes</p>
                     </template>
-                    <div class="container">
-                     <vaadin-bar-chart id="stacked-bar" style="width: 25%; height: 200px; float: left;">
-                      <chart-title>Process Time Chart</chart-title>
-                      <x-axis>
-                        <categories>A</categories>
-                      </x-axis>
-                      <y-axis min="0">
-                         <chart-style width="200px" top="18px" color="black"></chart-style>
-                        <chart-title>Process Time (minutes)</chart-title>
-                      </y-axis>
-                      <legend reversed="true"></legend>
-                      <tooltip point-format="{series.name}: {point.y}. Total: {point.stackTotal}"></tooltip>
-                      <plot-options>
-                        <series stacking="normal">
-                        </series>
-                      </plot-options>
-                      <template is="dom-repeat" items="{{part.cycle}}" as="cycle">
-                        <data-series name="[[index]]">
-                          <data>[[cycle]]</data>
-                        </data-series>
-                      </template>
-                    </vaadin-bar-chart>
-                    </div>
+                    <p>Total Process Time : [[getSumCycleTime(part.cycle)]] minutes</p>
                    </div>
                 </template>
               </div>
             </div>
+
+
+            <div id="flex-column">
+    <div id="flex-row">
+        <div class="box"
+             style="background-color:#d1e87b; display: -ms-flexbox; display: -webkit-flex; display:flex; -ms-flex: 1; -webkit-flex: 1;  flex:1; ">
+            <vaadin-bar-chart id="stacked-bar" class="box" style="-ms-flex: 1;  -webkit-flex: 1; flex:1; ">
+                <chart-title>Product Process Duration</chart-title>  
+                        <data-series name="Process duration">
+                          <data><template is="dom-repeat" items="{{productItem.part}}" as="part">[[getCycleTime(part.cycle)]]</template></data>
+                        </data-series> 
+                <x-axis>
+                    <categories><template is="dom-repeat" items="{{productItem.part}}" as="part">
+                       Part [[part.name]]</template></categories>
+                </x-axis>
+                 <y-axis min="0">
+                     <chart-title>Duration (minutes)</chart-title>
+                  </y-axis>
+                     
+                      <tooltip point-format="{series.name}: {point.y} minutes Total: {point.stackTotal}"></tooltip>
+                      <plot-options>
+                        <series stacking="normal">
+                        </series>
+                      </plot-options>
+            </vaadin-bar-chart>
+        </div>
+        <div class="box"
+             style="background-color:#f59694;display: -ms-flexbox; display: -webkit-flex; display:flex; -ms-flex: 1; -webkit-flex: 1;  flex:1;">
+            <vaadin-pie-chart id="pie" class="box">
+                <chart-title>Invetory Chart</chart-title>
+                <tooltip point-format="{series.name}: <b>{point.percentage:.1f}%</b>">
+                </tooltip>
+                <plot-options>
+                    <pie allow-point-select="true" cursor="pointer">
+                        <data-labels enabled="true" format="<b>{point.name}</b>:    {point.percentage:.1f} %">
+                        </data-labels>
+                    </pie>
+                </plot-options>
+
+                <data-series name="Browser share">
+                    <data>
+                        ["Firefox", 45.0], ["IE", 26.8], ["Chrome", 12.8], ["Safari", 8.5], ["Opera", 6.2], ["Others",
+                        0.7]
+                    </data>
+                </data-series>
+            </vaadin-pie-chart>
+        </div>
+    </div>
+</div>
+
             <div class="button-group">
               <paper-button raised class="water" id="[[productItem.$key]]" on-tap="editProduct">{{localize('edit')}}</paper-button>
               <paper-button raised class="chilli" id="[[productItem.$key]]" on-tap="removeProduct">{{localize('remove')}}</paper-button>
@@ -349,7 +403,7 @@
         this.$.productProcess.value = null;
       },
       productProcess: function (process) {
-        //return process.split(',').join(' → ');
+        return process.split(',').join(' → ');
       },
       materialProduct: function (material) {
         let praw = [];
@@ -368,6 +422,23 @@
         return psize;
       },
 
+      getCycleTime(cycle) {
+        if(!cycle) return 0;
+        let processTime = 0;
+        for (let i in cycle) {
+           processTime += cycle[i];
+        };
+          return processTime.toFixed(1) + ",";
+      },
+
+      getSumCycleTime(cycle) {
+        if(!cycle) return 0;
+        let processTime = 0;
+        for (let i in cycle) {
+           processTime += cycle[i];
+        };
+          return processTime.toFixed(1);
+      },
       storageError: function (e) {
         console.info("Storage error:" + e.message);
       }
