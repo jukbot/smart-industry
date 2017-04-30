@@ -250,7 +250,6 @@
       ready() {
         Sugar.Date.setLocale('en-GB');
         let deliverypicker = this.$.deliverySelector;
-        console.log(deliverypicker.value);
         deliverypicker.addEventListener('value-changed', function () {
             let deliveryTimeStamp = (new Date(deliverypicker.value).getTime() / 1000);
             this.orderDelivery = deliveryTimeStamp;   

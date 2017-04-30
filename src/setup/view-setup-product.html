@@ -185,11 +185,17 @@
                     <h2>Product Part [[part.name]]</h2>
                     <p>Part SKU: [[part.sku]]</p>
                     <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
+                    <h2>Setup Time</h2>
+                    <template is="dom-repeat" items="{{part.setup}}" as="setup">
+                      <p>Process [[index]] : [[setup]] minutes</p>
+                    </template>
+                    <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
                     <h2>Cycle Time</h2>
                     <template is="dom-repeat" items="{{part.cycle}}" as="cycle">
                       <p>Process [[index]] : [[cycle]] minutes</p>
                     </template>
-                    <p>Total Process Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+                    <p>Total Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+                    <h2>Total Process Time : [[getSumProcessTime(part.setup, part.cycle)]] minutes</h2>
                   </div>
                 </template>
               </div>
@@ -436,19 +442,42 @@
         for (let i in cycle) {
           processTime += cycle[i];
         };
-        return processTime.toFixed(1);
+        return processTime;
+      },
+
+      getSumSetupTime(setup) {
+        if(!setup) return 0;
+        let setupTime = 0;
+        for (let i in setup) {
+          setupTime += setup[i];
+        };
+        return setupTime;
+      },
+
+      getSumProcessTime(setup,cycle) {
+        if(!setup || !cycle) return 0;
+        let sum_cycle = this.getSumCycleTime(cycle);
+        let sum_setup = this.getSumSetupTime(setup);
+        let sum_process = sum_cycle + sum_setup;
+         return sum_process;
       },
 
       getSumProductTime(part) {
         if (!part) return 0;
         let sum = 0;
+        let setup = 0;
         let partTime = 0;
         for (let i in part) {
            for(let j in part[i].cycle) {
               sum += part[i].cycle[j]; 
             }
         };
-        return sum.toFixed(1); //productTime.toFixed(1)
+        for (let i in part) {
+           for(let j in part[i].setup) {
+              setup += part[i].setup[j]; 
+            }
+        };
+        return (sum + setup).toFixed(1); //productTime.toFixed(1)
       },
 
       storageError: function (e) {
