@@ -42,7 +42,7 @@
       }
 
       .product-dialog {
-        width: 35%;
+        width: 50%;
         padding: 10px;
       }
 
@@ -88,52 +88,27 @@
         padding: 10px;
       }
 
-      .flex-item {
-        flex-grow: 1;
-      }
-
-      .part-group {
-        display: -webkit-flex;
+      .flex-group {
+        width: 100%;
         display: flex;
         flex-wrap: nowrap;
-        -webkit-flex-wrap: nowrap;
-        -webkit-justify-content: center;
-        justify-content: center;
-      }
-
-      .highcharts-container .vaadin-chart {
-        height: 200px;
+        justify-content: center;  
       }
 
       #flex-column {
         height: 100%;
-        display: -ms-flexbox;
-        /* IE */
-        -ms-flex-direction: column;
-        display: -webkit-flex;
-        /* Safari */
-        -webkit-flex-direction: column;
         display: flex;
         flex-direction: column;
       }
 
       #flex-row {
-        display: -ms-flexbox;
-        /* IE */
-        -ms-flex: 1;
-        display: -webkit-flex;
-        /* Safari */
-        -webkit-flex: 1;
         display: flex;
         flex: 1;
+        justify-content:center; 
       }
 
-      .box {
-        -ms-flex: 1;
-        -webkit-flex: 1;
+      .flex-item {
         flex: 1;
-         -webkit-justify-content: center;
-        justify-content: center;
       }
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
@@ -144,8 +119,8 @@
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
     <div class="stitched">
       <paper-button raised on-tap="toggleDialog" class="big-btn water">{{localize('add-product')}}</paper-button>
-      <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
-        always-on-top no-cancel-on-outside-click auto-fit-on-attach>
+      <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+        always-on-top no-cancel-on-outside-click>
         <h1>{{localize('add-product')}}</h1>
         <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
         <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
@@ -191,14 +166,14 @@
           <div class="card product">
             <div class="product-info-group">
               <h1 class="product-title">[[productItem.name]]</h1>
-              <iron-image style="width:100%; background-color: lightgray;" sizing="cover" alt="[[productItem.name]]" preload fade src$="http://lorempixel.com/600/400"></iron-image>
+              <img src="gs://smart-mes.appspot.com/product/1200.jpg" alt="[[productItem.name]]">
               <div class="product-content">
               <p>Product Name: [[productItem.name]]</p>
               <p>SKU Number: [[productItem.sku]]</p>
               <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
               <p>Total Duration: [[getSumProductTime(productItem.part)]] minutes</p>
               </div>
-              <div class="part-group">
+              <div class="flex-group">
                 <template is="dom-repeat" items="{{productItem.part}}" as="part">
                   <div class="frame flex-item">
                     <h2>Product Part [[part.name]]</h2>
@@ -217,8 +192,8 @@
 
             <div id="flex-column">
               <div id="flex-row">
-                <div class="box" style="display: -ms-flexbox; display: -webkit-flex; display:flex; -ms-flex: 1; -webkit-flex: 1;  flex:1; ">
-                  <vaadin-bar-chart id="stacked-bar" class="box" style="-ms-flex: 1;  -webkit-flex: 1; flex:1; ">
+                <div class="flex-item">
+                  <vaadin-bar-chart id="stacked-bar" class="flex-item">
                     <chart-title>Product Process Duration</chart-title>
                     <data-series name="Process duration">
                       <data>
@@ -227,8 +202,7 @@
                     </data-series>
                     <x-axis>
                       <categories>
-                        <template is="dom-repeat" items="{{productItem.part}}" as="part">
-                          Part [[part.name]]</template>
+                        <template is="dom-repeat" items="{{productItem.part}}" as="part">Part [[part.name]]</template>
                       </categories>
                     </x-axis>
                     <y-axis min="0">
@@ -242,8 +216,8 @@
                     </plot-options>
                   </vaadin-bar-chart>
                 </div>
-                <div class="box" style="display: -ms-flexbox; display: -webkit-flex; display:flex; -ms-flex: 1; -webkit-flex: 1;  flex:1;">
-                  <vaadin-pie-chart id="pie" class="box">
+                <div class="flex-item">
+                  <vaadin-pie-chart id="pie" class="flex-item">
                     <chart-title>Invetory Chart</chart-title>
                     <tooltip point-format="{series.name}: <b>{point.percentage:.1f}%</b>">
                     </tooltip>
@@ -368,7 +342,11 @@
 
       testUpload: function () {
         let file = this.$.uploadImageFile.files;
-        this.$.productImage.storageRef.child('images/' + this.$.productSku.value).put(file);
+        let imageRef = firebase.storage().ref().child(this.$.productSku.value+'.jpg');
+        imageRef.put(file);
+        this.$.productImage.storageRef.child(this.$.productSku.value+'.jpg').put(file).then(function(snapshot) {
+            console.log('Uploaded a blob or file!');
+        });
       },
 
       addSize: function () {

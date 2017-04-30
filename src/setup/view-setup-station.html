@@ -36,7 +36,13 @@
         width: 35%;
         padding: 10px;
       }
-     .station { min-height: 250px; height: auto; }
+      .station-dialog {
+        padding-top: 40px;
+      }
+     .station { 
+      min-height: 250px;
+      height: auto; 
+      }
      .station p {
         margin: 12px 0;
       }
@@ -62,11 +68,11 @@
           <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
             no-cancel-on-outside-click>
             <h1>{{localize('add-station')}}</h1>
+            <paper-input type="number" id="stationNumber" name="station-number" label="{{localize('station-number')}}" value="[[getStationNumber(stationItems.length)]]" min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
             <paper-input type="text" id="stationName" name="station-name"  label="{{localize('station-name')}}" required always-float-label></paper-input>
-            <paper-input type="number" id="stationNumber" name="station-number" label="{{localize('station-number')}}" value="[[getStationNumber(stationItems.length)]]" min="1" max="99" step="1" required always-float-label></paper-input>
-            <div class="buttons">
+           <div class="buttons">
                 <paper-button on-tap="dismissAddStation" dialog-dismiss>{{localize('dismiss')}}</paper-button>
-                <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('create')}}</paper-button>
+                <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('add')}}</paper-button>
               </div>
             </paper-dialog>
     </div>
@@ -76,8 +82,8 @@
             <div class="card station">
             <div class="station-info-group">
             <h1 class="station-title">[[stationItem.name]]</h1>
-            <p>{{localize('station-name')}}: [[stationItem.name]]</p>
             <p>{{localize('station-number')}}: [[stationItem.number]]</p>
+            <p>{{localize('station-name')}}: [[stationItem.name]]</p>
             <p>{{localize('station-machine')}}: [[stationItem.machine]]</p>
             </div>
             <div class="button-group">
@@ -86,9 +92,9 @@
             </div>
             <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click>
             <h2>{{localize('edit-station')}}</h2>
+            <paper-input type="number" id="number_[[stationItem.$key]]" name="station-number" class="editstationNumber" value="[[stationItem.number]]" label="{{localize('station-number')}}" min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
             <paper-input type="text" id="name_[[stationItem.$key]]" name="station-name" class="editstationName" value="[[stationItem.name]]" label="{{localize('station-name')}}" required always-float-label></paper-input>
-            <paper-input type="number" id="number_[[stationItem.$key]]" name="station-number" class="editstationNumber" value="[[stationItem.number]]" label="{{localize('station-number')}}" min="1" max="99" step="1" required always-float-label></paper-input>
-            <div class="buttons">
+             <div class="buttons">
                 <paper-button station="[[stationItem]]" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button station="[[stationItem]]" on-tap="saveEditStation" dialog-confirm autofocus>{{localize('save')}}</paper-button>
             </div>
