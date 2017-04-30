@@ -55,9 +55,7 @@
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="machineDataCache" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
-    <ul class="app-grid">
-      <li>
-        <div class="stitched">
+      <div class="stitched">
           <paper-button raised on-tap="toggleDialog" class="big-btn magic">{{localize('add-machine')}}</paper-button>
           <paper-dialog id="createMachineDialog" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
             no-cancel-on-outside-click>
@@ -73,7 +71,7 @@
               </div>
               </paper-dialog>
         </div>
-      </li>
+    <ul class="app-grid">
       <template is="dom-repeat" items="{{machineItems}}" as="machineItem">
         <li>  
           <div class="card machine">

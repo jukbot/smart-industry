@@ -101,30 +101,36 @@
         height: 200px;
       }
 
-        #flex-column {
-            height: 100%;
-            display: -ms-flexbox; /* IE */
-            -ms-flex-direction: column;
-            display: -webkit-flex; /* Safari */
-            -webkit-flex-direction: column;
-            display: flex;
-            flex-direction: column;
-        }
-        #flex-row {
-            display: -ms-flexbox; /* IE */
-            -ms-flex: 1;
-            display: -webkit-flex; /* Safari */
-            -webkit-flex: 1;
-            display: flex;
-            flex: 1;
-            -webkit-justify-content: center;
-            justify-content: center;
-        }
-        .box {
-            -ms-flex: 1;
-            -webkit-flex: 1;
-            flex: 1;
-        }
+      #flex-column {
+        height: 100%;
+        display: -ms-flexbox;
+        /* IE */
+        -ms-flex-direction: column;
+        display: -webkit-flex;
+        /* Safari */
+        -webkit-flex-direction: column;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #flex-row {
+        display: -ms-flexbox;
+        /* IE */
+        -ms-flex: 1;
+        display: -webkit-flex;
+        /* Safari */
+        -webkit-flex: 1;
+        display: flex;
+        flex: 1;
+      }
+
+      .box {
+        -ms-flex: 1;
+        -webkit-flex: 1;
+        flex: 1;
+         -webkit-justify-content: center;
+        justify-content: center;
+      }
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="productPartQuery" path="/product/{{product.$key}}/part" order-by-child="sku" data="{{productParts}}"></firebase-query>
@@ -133,52 +139,50 @@
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
-    <ul class="app-grid">
-      <li>
-        <div class="stitched">
-          <paper-button raised on-tap="toggleDialog" class="big-btn water">{{localize('add-product')}}</paper-button>
-          <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
-            always-on-top no-cancel-on-outside-click auto-fit-on-attach>
-            <h1>{{localize('add-product')}}</h1>
-            <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
-            <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
-            <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required
-              always-float-label></paper-input>
-            <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
-            <vaadin-upload name="product-image" id="uploadImageFile" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
-              max-file-size="2000000">
-              <div class="drop-label">
-                <iron-icon icon="cloud-upload"></iron-icon>
-                Up to 1&nbsp;JPG&nbsp;files, 2&nbsp;MB&nbsp;each
-              </div>
-              <div class="file-list">
-                <h4>Files</h4>
-                <ul>
-                  <template is="dom-repeat" items="{{files}}" as="file">
-                    <li>
-                      <strong>[[file.name]]</strong> [[file.status]]
-                    </li>
-                  </template>
-                </ul>
-              </div>
-            </vaadin-upload>
-            <template is="dom-repeat" items="{{sizeArray}}" as="size">
-              <div class="container flex-horizontal">
-                <paper-input class="product-size flex-child" label="Size name" value="{{size.name}}" required always-float-label></paper-input>
-                <paper-input class="product-size" label="Cycle time" value="{{size.cycle}}" required always-float-label></paper-input>
-                <paper-input class="product-size" label="Cost" value="{{size.cost}}" required always-float-label></paper-input>
-                <iron-icon on-click="deleteSize" icon="vaadin:close"></iron-icon>
-              </div>
-            </template>
-            <paper-button on-tap="addSize">Add Size</paper-button>
-            <paper-button on-tap="addSizeToArray">(temp)</paper-button>
-            <div class="buttons">
-              <paper-button dialog-dismiss>{{localize('dismiss')}}</paper-button>
-              <paper-button on-tap="testUpload" dialog-confirm autofocus>{{localize('add')}}</paper-button>
-            </div>
-          </paper-dialog>
+    <div class="stitched">
+      <paper-button raised on-tap="toggleDialog" class="big-btn water">{{localize('add-product')}}</paper-button>
+      <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
+        always-on-top no-cancel-on-outside-click auto-fit-on-attach>
+        <h1>{{localize('add-product')}}</h1>
+        <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
+        <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
+        <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required
+          always-float-label></paper-input>
+        <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
+        <vaadin-upload name="product-image" id="uploadImageFile" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
+          max-file-size="2000000">
+          <div class="drop-label">
+            <iron-icon icon="cloud-upload"></iron-icon>
+            Up to 1&nbsp;JPG&nbsp;files, 2&nbsp;MB&nbsp;each
+          </div>
+          <div class="file-list">
+            <h4>Files</h4>
+            <ul>
+              <template is="dom-repeat" items="{{files}}" as="file">
+                <li>
+                  <strong>[[file.name]]</strong> [[file.status]]
+                </li>
+              </template>
+            </ul>
+          </div>
+        </vaadin-upload>
+        <template is="dom-repeat" items="{{sizeArray}}" as="size">
+          <div class="container flex-horizontal">
+            <paper-input class="product-size flex-child" label="Size name" value="{{size.name}}" required always-float-label></paper-input>
+            <paper-input class="product-size" label="Cycle time" value="{{size.cycle}}" required always-float-label></paper-input>
+            <paper-input class="product-size" label="Cost" value="{{size.cost}}" required always-float-label></paper-input>
+            <iron-icon on-click="deleteSize" icon="vaadin:close"></iron-icon>
+          </div>
+        </template>
+        <paper-button on-tap="addSize">Add Size</paper-button>
+        <paper-button on-tap="addSizeToArray">(temp)</paper-button>
+        <div class="buttons">
+          <paper-button dialog-dismiss>{{localize('dismiss')}}</paper-button>
+          <paper-button on-tap="testUpload" dialog-confirm autofocus>{{localize('add')}}</paper-button>
         </div>
-      </li>
+      </paper-dialog>
+    </div>
+    <ul class="app-grid">
       <template is="dom-repeat" items="{{persistedProductData}}" as="productItem">
         <li>
           <div class="card product">
@@ -188,6 +192,7 @@
               <p>Product Name: [[productItem.name]]</p>
               <p>SKU Number: [[productItem.sku]]</p>
               <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
+              <p>Total Duration: [[getSumProductTime(productItem.part)]] minutes</p>
               <div class="part-group">
                 <template is="dom-repeat" items="{{productItem.part}}" as="part">
                   <div class="frame flex-item">
@@ -199,59 +204,60 @@
                       <p>Process [[index]] : [[cycle]] minutes</p>
                     </template>
                     <p>Total Process Time : [[getSumCycleTime(part.cycle)]] minutes</p>
-                   </div>
+                  </div>
                 </template>
               </div>
             </div>
 
 
             <div id="flex-column">
-    <div id="flex-row">
-        <div class="box"
-             style="background-color:#d1e87b; display: -ms-flexbox; display: -webkit-flex; display:flex; -ms-flex: 1; -webkit-flex: 1;  flex:1; ">
-            <vaadin-bar-chart id="stacked-bar" class="box" style="-ms-flex: 1;  -webkit-flex: 1; flex:1; ">
-                <chart-title>Product Process Duration</chart-title>  
-                        <data-series name="Process duration">
-                          <data><template is="dom-repeat" items="{{productItem.part}}" as="part">[[getCycleTime(part.cycle)]]</template></data>
-                        </data-series> 
-                <x-axis>
-                    <categories><template is="dom-repeat" items="{{productItem.part}}" as="part">
-                       Part [[part.name]]</template></categories>
-                </x-axis>
-                 <y-axis min="0">
-                     <chart-title>Duration (minutes)</chart-title>
-                  </y-axis>
-                     
-                      <tooltip point-format="{series.name}: {point.y} minutes Total: {point.stackTotal}"></tooltip>
-                      <plot-options>
-                        <series stacking="normal">
-                        </series>
-                      </plot-options>
-            </vaadin-bar-chart>
-        </div>
-        <div class="box"
-             style="background-color:#f59694;display: -ms-flexbox; display: -webkit-flex; display:flex; -ms-flex: 1; -webkit-flex: 1;  flex:1;">
-            <vaadin-pie-chart id="pie" class="box">
-                <chart-title>Invetory Chart</chart-title>
-                <tooltip point-format="{series.name}: <b>{point.percentage:.1f}%</b>">
-                </tooltip>
-                <plot-options>
-                    <pie allow-point-select="true" cursor="pointer">
+              <div id="flex-row">
+                <div class="box" style="display: -ms-flexbox; display: -webkit-flex; display:flex; -ms-flex: 1; -webkit-flex: 1;  flex:1; ">
+                  <vaadin-bar-chart id="stacked-bar" class="box" style="-ms-flex: 1;  -webkit-flex: 1; flex:1; ">
+                    <chart-title>Product Process Duration</chart-title>
+                    <data-series name="Process duration">
+                      <data>
+                        <template is="dom-repeat" items="{{productItem.part}}" as="part">[[getCycleTime(part.cycle)]]</template>
+                      </data>
+                    </data-series>
+                    <x-axis>
+                      <categories>
+                        <template is="dom-repeat" items="{{productItem.part}}" as="part">
+                          Part [[part.name]]</template>
+                      </categories>
+                    </x-axis>
+                    <y-axis min="0">
+                      <chart-title>Duration (minutes)</chart-title>
+                    </y-axis>
+
+                    <tooltip point-format="{series.name}: {point.y} minutes Total: {point.stackTotal}"></tooltip>
+                    <plot-options>
+                      <series stacking="normal">
+                      </series>
+                    </plot-options>
+                  </vaadin-bar-chart>
+                </div>
+                <div class="box" style="display: -ms-flexbox; display: -webkit-flex; display:flex; -ms-flex: 1; -webkit-flex: 1;  flex:1;">
+                  <vaadin-pie-chart id="pie" class="box">
+                    <chart-title>Invetory Chart</chart-title>
+                    <tooltip point-format="{series.name}: <b>{point.percentage:.1f}%</b>">
+                    </tooltip>
+                    <plot-options>
+                      <pie allow-point-select="true" cursor="pointer">
                         <data-labels enabled="true" format="<b>{point.name}</b>:    {point.percentage:.1f} %">
                         </data-labels>
-                    </pie>
-                </plot-options>
+                      </pie>
+                    </plot-options>
 
-                <data-series name="Browser share">
-                    <data>
-                        ["Firefox", 45.0], ["IE", 26.8], ["Chrome", 12.8], ["Safari", 8.5], ["Opera", 6.2], ["Others",
-                        0.7]
-                    </data>
-                </data-series>
-            </vaadin-pie-chart>
-        </div>
-    </div>
-</div>
+                    <data-series name="Browser share">
+                      <data>
+                        ["Firefox", 45.0], ["IE", 26.8], ["Chrome", 12.8], ["Safari", 8.5], ["Opera", 6.2], ["Others", 0.7]
+                      </data>
+                    </data-series>
+                  </vaadin-pie-chart>
+                </div>
+              </div>
+            </div>
 
             <div class="button-group">
               <paper-button raised class="water" id="[[productItem.$key]]" on-tap="editProduct">{{localize('edit')}}</paper-button>
@@ -423,22 +429,53 @@
       },
 
       getCycleTime(cycle) {
-        if(!cycle) return 0;
+        if (!cycle) return 0;
         let processTime = 0;
         for (let i in cycle) {
-           processTime += cycle[i];
+          processTime += cycle[i];
         };
-          return processTime.toFixed(1) + ",";
+        return processTime.toFixed(1) + ",";
       },
 
       getSumCycleTime(cycle) {
-        if(!cycle) return 0;
+        if (!cycle) return 0;
         let processTime = 0;
         for (let i in cycle) {
-           processTime += cycle[i];
+          processTime += cycle[i];
         };
-          return processTime.toFixed(1);
+        return processTime.toFixed(1);
       },
+
+      getSumProductTime(part) {
+        if (!part) return 0;
+        let sum = 0;
+        let partTime = 0;
+        for (let i in part) {
+           for(let j in part[i].cycle) {
+              sum += part[i].cycle[j]; 
+            }
+        };
+        return sum.toFixed(1); //productTime.toFixed(1)
+      },
+
+       arraySum(arr) {
+            let sum = 0;   
+
+            while(arr.length != 0)
+            {
+               var value = arr.pop();
+               if(value instanceof Array)
+               {
+                 for (i= 0; i< value.length; ++i) 
+                   arr.push(value[i]);
+               }
+               else if(typeof value === "number")
+                sum += value;
+             }
+
+             return sum;
+      },
+
       storageError: function (e) {
         console.info("Storage error:" + e.message);
       }

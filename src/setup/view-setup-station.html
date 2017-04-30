@@ -31,9 +31,7 @@
           --app-grid-columns: 4;
         }
       }
-      .stitched {
-        min-height: 250px;
-      }
+
       .station-dialog {
         width: 35%;
         padding: 10px;
@@ -59,10 +57,8 @@
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="stationDataCache" data="{{stationItems}}" persisted-data="{{persistedStationData}}" session="[[user.uid]]"></app-indexeddb-mirror>
-    <ul class="app-grid">
-      <li>
-        <div class="stitched">
-          <paper-button raised on-tap="toggleDialog" class="big-btn fancy">{{localize('add-station')}}</paper-button>
+    <div class="stitched">
+          <paper-button raised on-tap="toggleDialog" class="big-btn fancy"><iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-station')}}</paper-button>
           <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
             no-cancel-on-outside-click>
             <h1>{{localize('add-station')}}</h1>
@@ -73,8 +69,8 @@
                 <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('create')}}</paper-button>
               </div>
             </paper-dialog>
-        </div>
-      </li>
+    </div>
+    <ul class="app-grid">
       <template is="dom-repeat" items="{{persistedStationData}}" as="stationItem">
         <li>  
             <div class="card station">
@@ -85,8 +81,8 @@
             <p>{{localize('station-machine')}}: [[stationItem.machine]]</p>
             </div>
             <div class="button-group">
-            <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation">{{localize('edit')}}</paper-button>
-            <paper-button raised class="chilli" station="[[stationItem]]" on-tap="removeStation">{{localize('remove')}}</paper-button>
+            <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation"><iron-icon icon="vaadin:pencil"></iron-icon></paper-button>
+            <paper-button raised class="chilli" station="[[stationItem]]" on-tap="removeStation"><iron-icon icon="vaadin:trash"></iron-icon></paper-button>
             </div>
             <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click>
             <h2>{{localize('edit-station')}}</h2>
