@@ -131,33 +131,25 @@
         <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required
           always-float-label></paper-input>
         <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
-        <vaadin-upload name="product-image" id="uploadImageFile" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
+        <template is="dom-repeat" items="{{sizeArray}}" as="size">
+          <div class="container flex-horizontal">
+            <paper-input class="product-size flex-child" label="Part name" value="{{size.name}}" required always-float-label></paper-input>
+            <paper-input class="product-size" label="Setup time" value="{{size.setup}}" required always-float-label></paper-input>
+            <paper-input class="product-size" label="Cycle time" value="{{size.cycle}}" required always-float-label></paper-input>
+            <paper-input class="product-size" label="Cost" value="{{size.cost}}" required always-float-label></paper-input>
+            <iron-icon on-click="deleteSize" icon="vaadin:trash"></iron-icon>
+          </div>
+        </template>
+          <paper-button on-tap="addSize">+ Add Part</paper-button>
+          <vaadin-upload name="product-image" id="uploadImageFile" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
           max-file-size="2000000">
           <div class="drop-label">
             <iron-icon icon="cloud-upload"></iron-icon>
             Up to 1&nbsp;JPG&nbsp;files, 2&nbsp;MB&nbsp;each
           </div>
-          <div class="file-list">
-            <h4>Files</h4>
-            <ul>
-              <template is="dom-repeat" items="{{files}}" as="file">
-                <li>
-                  <strong>[[file.name]]</strong> [[file.status]]
-                </li>
-              </template>
-            </ul>
-          </div>
         </vaadin-upload>
-        <template is="dom-repeat" items="{{sizeArray}}" as="size">
-          <div class="container flex-horizontal">
-            <paper-input class="product-size flex-child" label="Size name" value="{{size.name}}" required always-float-label></paper-input>
-            <paper-input class="product-size" label="Cycle time" value="{{size.cycle}}" required always-float-label></paper-input>
-            <paper-input class="product-size" label="Cost" value="{{size.cost}}" required always-float-label></paper-input>
-            <iron-icon on-click="deleteSize" icon="vaadin:close"></iron-icon>
-          </div>
-        </template>
-        <paper-button on-tap="addSize">Add Size</paper-button>
-        <paper-button on-tap="addSizeToArray">(temp)</paper-button>
+      
+        <paper-button on-tap="addSizeToArray">add size to array</paper-button>
         <div class="buttons">
           <paper-button dialog-dismiss>{{localize('dismiss')}}</paper-button>
           <paper-button on-tap="testUpload" dialog-confirm autofocus>{{localize('add')}}</paper-button>
@@ -171,13 +163,13 @@
             <div class="product-info-group">
               <h1 class="product-title">[[productItem.name]]</h1>
               <div class="product-image">
-              <img src="http://www.manager.co.th/asp-bin/Image.aspx?ID=3167785" alt="[[productItem.name]]">
+              <img src="../../images/product/test.png" alt="[[productItem.name]]">
               </div>
               <div class="product-content">
               <p>Product Name: [[productItem.name]]</p>
               <p>SKU Number: [[productItem.sku]]</p>
               <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
-              <p>Total Duration: [[getSumProductTime(productItem.part)]] minutes</p>
+              <p>Total Duration: [[getSumProductTime(productItem.part)]] minutes/item</p>
               </div>
               <div class="flex-group">
                 <template is="dom-repeat" items="{{productItem.part}}" as="part">
@@ -455,7 +447,7 @@
       },
 
       getSumProcessTime(setup,cycle) {
-        if(!setup || !cycle) return 0;
+        if(!cycle) return 0;
         let sum_cycle = this.getSumCycleTime(cycle);
         let sum_setup = this.getSumSetupTime(setup);
         let sum_process = sum_cycle + sum_setup;
@@ -472,12 +464,7 @@
               sum += part[i].cycle[j]; 
             }
         };
-        for (let i in part) {
-           for(let j in part[i].setup) {
-              setup += part[i].setup[j]; 
-            }
-        };
-        return (sum + setup).toFixed(1); //productTime.toFixed(1)
+        return sum.toFixed(1); //productTime.toFixed(1)
       },
 
       storageError: function (e) {

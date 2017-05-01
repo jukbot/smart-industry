@@ -140,9 +140,10 @@
     </style>
 
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" order-by-value="true" data="{{orderData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_delivery" order-by-value="true" db="{{test}}" data="{{orderData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" data="{{stationData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="number" data="{{machineData}}"></firebase-query>
 
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
@@ -152,10 +153,12 @@
 <li>
  <div class="card">
     <h1>Orders Table</h1>     
-    <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3>
+  <!-- <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3> -->
+  <h2>Next Reschedule Date: [[getNextInterval(factoryStandard.start_interval, factoryStandard.interval)]]</h2>
+    <div>
     <paper-button raised class="magic priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Reschedule</paper-button>
-    <paper-button raised class="dark priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Clear </paper-button>
-
+    <paper-button raised class="dark priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Clear Order</paper-button>
+    </div>
       <vaadin-grid id="orderTable" aria-label="Orders Table" items="[[orderData]]">
 
         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
@@ -178,7 +181,7 @@
 
         <vaadin-grid-column flex="0">
           <template class="header">
-            <div>Order no.</div>
+            <div class="cell">Order no.</div>
           </template>
           <template>
             <div class="cell">[[item.order_no]]</div>
@@ -269,21 +272,381 @@
             </div>
           </template>
         </vaadin-grid-column>
-
       </vaadin-grid>
-
 </div> 
 </li>
+
+<li>
+   <div class="card">
+     <h1>STATION 1 SCHEDULE</h1>
+       <vaadin-grid id="orderTable" aria-label="Station Table" items="[[orderData]]">
+        <vaadin-grid-column width="3em" flex="0">
+          <template class="header">
+            <div class="cell">Order no.</div>
+          </template>
+          <template>
+            <div class="cell">[[item.order_no]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">Part</div>
+          </template>
+          <template>
+            <div class="cell"><template is="dom-repeat" items="[[item.order_product_part]]" as="part">
+                [[part.name]]
+              </template></div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Quantity</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_quantity]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Duration</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_duration]] Mins.</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Workload</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[getWorkLoad(item.order_product_part, item.order_quantity)]] Mins.</div>
+          </template>
+        </vaadin-grid-column>
+  
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Machines Used</div>
+          </template>
+          <template>
+            <div class="cell right last">[[getMachineUsed(1,item.order_product_part)]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">Start</div>
+          </template>
+          <template>
+            <div class="cell">[[getStartTime]]</div>
+          </template>
+        </vaadin-grid-column>
+
+      <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">End</div>
+          </template>
+          <template>
+            <div class="cell">[[getEndTime]]</div>
+          </template>
+        </vaadin-grid-column>
+
+         <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Delivery</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
+          </template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+   </div>
+ </li>
+
+<li>
+   <div class="card">
+     <h1>STATION 2 SCHEDULE</h1>
+       <vaadin-grid id="orderTable" aria-label="Station Table" items="[[orderData]]">
+        <vaadin-grid-column width="3em" flex="0">
+          <template class="header">
+            <div class="cell">Order no.</div>
+          </template>
+          <template>
+            <div class="cell">[[item.order_no]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">Part</div>
+          </template>
+          <template>
+            <div class="cell"><template is="dom-repeat" items="[[item.order_product_part]]" as="part">
+                [[part.name]]
+              </template></div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Quantity</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_quantity]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Duration</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_duration]] Mins.</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Workload</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[getWorkLoad(item.order_product_part, item.order_quantity)]] Mins.</div>
+          </template>
+        </vaadin-grid-column>
+  
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Machines Used</div>
+          </template>
+          <template>
+            <div class="cell right last">[[getMachineUsed(1,item.order_product_part)]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">Start</div>
+          </template>
+          <template>
+            <div class="cell">[[getStartTime]]</div>
+          </template>
+        </vaadin-grid-column>
+
+      <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">End</div>
+          </template>
+          <template>
+            <div class="cell">[[getEndTime]]</div>
+          </template>
+        </vaadin-grid-column>
+
+         <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Delivery</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
+          </template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+   </div>
+ </li>
+
+
+<li>
+   <div class="card">
+     <h1>STATION 3 SCHEDULE</h1>
+       <vaadin-grid id="orderTable" aria-label="Station Table" items="[[orderData]]">
+        <vaadin-grid-column width="3em" flex="0">
+          <template class="header">
+            <div class="cell">Order no.</div>
+          </template>
+          <template>
+            <div class="cell">[[item.order_no]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">Part</div>
+          </template>
+          <template>
+            <div class="cell"><template is="dom-repeat" items="[[item.order_product_part]]" as="part">
+                [[part.name]]
+              </template></div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Quantity</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_quantity]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Duration</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_duration]] Mins.</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Workload</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[getWorkLoad(item.order_product_part, item.order_quantity)]] Mins.</div>
+          </template>
+        </vaadin-grid-column>
+  
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Machines Used</div>
+          </template>
+          <template>
+            <div class="cell right last">[[getMachineUsed(1,item.order_product_part)]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">Start</div>
+          </template>
+          <template>
+            <div class="cell">[[getStartTime]]</div>
+          </template>
+        </vaadin-grid-column>
+
+      <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">End</div>
+          </template>
+          <template>
+            <div class="cell">[[getEndTime]]</div>
+          </template>
+        </vaadin-grid-column>
+
+         <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Delivery</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
+          </template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+   </div>
+ </li>
+
+
+<li>
+   <div class="card">
+     <h1>STATION 4 SCHEDULE</h1>
+       <vaadin-grid id="orderTable" aria-label="Station Table" items="[[orderData]]">
+        <vaadin-grid-column width="3em" flex="0">
+          <template class="header">
+            <div class="cell">Order no.</div>
+          </template>
+          <template>
+            <div class="cell">[[item.order_no]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">Part</div>
+          </template>
+          <template>
+            <div class="cell"><template is="dom-repeat" items="[[item.order_product_part]]" as="part">
+                [[part.name]]
+              </template></div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Quantity</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_quantity]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Duration</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[item.order_duration]] Mins.</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Workload</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[getWorkLoad(item.order_product_part, item.order_quantity)]] Mins.</div>
+          </template>
+        </vaadin-grid-column>
+  
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Machines Used</div>
+          </template>
+          <template>
+            <div class="cell right last">[[getMachineUsed(1,item.order_product_part)]]</div>
+          </template>
+        </vaadin-grid-column>
+
+        <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">Start</div>
+          </template>
+          <template>
+            <div class="cell">[[getStartTime]]</div>
+          </template>
+        </vaadin-grid-column>
+
+      <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell">End</div>
+          </template>
+          <template>
+            <div class="cell">[[getEndTime]]</div>
+          </template>
+        </vaadin-grid-column>
+
+         <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Delivery</div>
+          </template>
+          <template>
+            <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
+          </template>
+        </vaadin-grid-column>
+      </vaadin-grid>
+   </div>
+ </li>
+
 <li>
 <div class="card">
 <h1>Daily Jobs Production Scheduling of [[today]]</h1>
-
-<h1>Operation hours: [[getOpTime(factoryOperation.op_end,factoryOperation.op_start)]]</h1>
+<h2>Operation hours: [[getOpTime(factoryOperation.op_end,factoryOperation.op_start)]]</h2>
 
 <vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderData]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
 <vaadin-date-picker style="width: 300px;" name="workdate"  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector" always-float-label></vaadin-date-picker>
-<h1>Selected order: [[o.order_no]]</h1>
 
+<h1>STATION 1 TIMELINE</h1>
 <vaadin-columnrange-chart id="column-range-resource-usage">
     <chart inverted="true"></chart>
     <chart-title>Resource usage</chart-title>
@@ -299,21 +662,25 @@
                          formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
         </columnrange>
     </plot-options>
-    <data-series name="Team Alpha"> <!-- ORDER -->
-        <color>rgba(255, 60, 125, 1.0)</color>
+   
+    <data-series name="กA"> <!-- ORDER -->
+        <color>#E91E63</color>
         <data><!-- STATION -->
-            [Date.UTC(2013,05,07,12,00,00),Date.UTC(2013,05,07,15,00,00)],
-            [Date.UTC(2013,05,07,13,00,00),Date.UTC(2013,05,07,17,00,00)]
+            [Date.UTC(2017,05,01,08,00,00),Date.UTC(2017,05,01,10,06,00)],
+            [Date.UTC(2017,05,01,08,00,00),Date.UTC(2017,05,01,10,30,00)],
+            [Date.UTC(2017,05,01,10,00,00),Date.UTC(2017,05,01,10,30,00)],
+            [Date.UTC(2017,05,01,10,00,00),Date.UTC(2017,05,01,11,30,00)],
         </data>
     </data-series>
-    <data-series name="Team Beta">
-        <color>rgba(60, 125, 255, 1.0)</color>
-        <data>
-            [Date.UTC(2013,05,07,16,00,00),Date.UTC(2013,05,07,17,00,00)],
-            [Date.UTC(2013,05,07,12,00,00),Date.UTC(2013,05,07,14,00,00)]
+   <data-series name="กC"> <!-- ORDER -->
+        <color>#3F51B5</color>
+        <data><!-- STATION -->
+            [Date.UTC(2017,05,01,10,06,00),Date.UTC(2017,05,01,11,00,00)],
+            [Date.UTC(2017,05,01,10,30,00),Date.UTC(2017,05,01,10,45,00)],
+            [Date.UTC(2017,05,01,10,30,00),Date.UTC(2017,05,01,10,40,00)],
+            [Date.UTC(2017,05,01,11,30,00),Date.UTC(2017,05,01,12,30,00)],
         </data>
     </data-series>
-
 </vaadin-columnrange-chart>
 <div class="frame">
 <h2>Average Completion Time: [[getOpTime(this.factoryOperation.op_end,this.factoryOperation.op_start)]]</h2>
@@ -323,9 +690,7 @@
 </div>
  </div>
  </li>
- 
 <!-- <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3> -->
-
 <!-- <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box> -->
 </ul>
 
@@ -412,6 +777,30 @@
         },
       },
 
+      getNextInterval(last_timestamp, interval) {
+         if(!last_timestamp || !interval) return 0;
+         let current = Math.floor(Date.now() / 1000);
+         let diff = current - last_timestamp;
+         let range = interval * 24 * 60 * 60;
+         if(diff <= range) {
+         let nextIntervalStamp = (last_timestamp*1000) + (interval * 24 * 60 * 60 * 1000);
+         let nextIntervalDate = new Date(nextIntervalStamp);
+          let dd = nextIntervalDate.getDate();
+          let mm = nextIntervalDate.getMonth() + 1; //January is 0!
+          let yyyy = nextIntervalDate.getFullYear();
+          if (dd < 10) {
+           dd = '0' + dd
+          }
+          if (mm < 10) {
+           mm = '0' + mm
+         }
+          let nextInterval = dd + '/' + mm + '/' + yyyy;
+          return nextInterval;
+         } else {
+           this.set('factoryStandard.start_interval', current);
+         }
+      },
+
     getOpTime(end, start) {
         if(!end || !start) return 0;
         let endtime = end.replace(/\:/g, '.')
@@ -437,6 +826,7 @@
     },
 
       ready: function() {
+
          Sugar.Date.setLocale('en-GB');
          let workdatepicker = this.$$('#workdateSelector');
 
@@ -473,6 +863,16 @@
         alert("Delete order successfully");
     },
 
+    scheduleOrder: function(part, station) {
+      let processPart = [];
+      let firstProcess = [];
+        for(let i in part) {
+          processPart[i] = part[i].process.split(',');
+          firstProcess[i] = processPart[i].shift();
+        }
+      
+    },
+
     getOpTime: function (end, start) {
         if (!end || !start) return '';
         let endtime = end.replace(/\:/g, '.')
@@ -482,14 +882,42 @@
         return optime;
       },
 
-    getWorkLoad: function (cycle, setup, amount, machine) {
-        if (!cycle || !setup || !amount) return '';
-        let actualQuantity = this.calActualQuantity(amount);
-        let cycleTime = this.calCycleTime(cycle, amount);
-        let setupTime = this.calSetupTime(setup);
-        let workload = Math.ceil((amount * cycleTime) + setupTime);
+    getWorkLoad(part, amount) {
+        if (!part || !amount) return '';
+          let cycleTime;
+          let setupTime;
+        //  for(let i in part) {
+        //      cycleTime += this.getSumCycleTime(part[i].cycle, amount);
+        //      setupTime += this.getSumSetupTime(part[i].setup);
+       //   }
+        //  console.log("Cycle " +cycleTime);
+        //  console.log("Setup " + setupTime);
+        let workload = Math.ceil((cycleTime) + setupTime);
+         //console.log("WL " + workload);
         // workload/no of machine
-        return workload / (1 - actualQuantity);
+        return workload / (1 - amount);
+      },
+
+      getMachineUsed(station, part) {
+          return 3;
+      },
+    
+     getSumCycleTime(cycle,amount) {
+        if (!cycle) return 0;
+        let processTime = 0;
+        for (let i in cycle) {
+          processTime += cycle[i];
+        };
+        return processTime*amount;
+      },
+
+      getSumSetupTime(setup) {
+        if(!setup) return 0;
+        let setupTime = 0;
+        for (let i in setup) {
+          setupTime += setup[i];
+        };
+        return setupTime;
       },
     
     togglePriority: function () {
