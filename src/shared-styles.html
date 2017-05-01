@@ -5,183 +5,544 @@
        :host {
         display: block;
         padding: 10px;
---default-primary-color: #333333; 
---dark-primary-color: #333333; 
---light-primary-color: #c5cae9; 
---text-primary-color: #ffffff; 
---accent-color: #ff4081; 
---primary-background-color: #ffffff; 
---primary-text-color: #333333; 
---secondary-text-color: #333333; 
---disabled-text-color: #313238; 
---divider-color: #e0e0e0; 
---paper-checkbox-checked-color: #333333; 
---paper-checkbox-checked-ink-color: #333333; 
---paper-checkbox-unchecked-color: #333333; 
---paper-checkbox-unchecked-ink-color: #333333; 
---paper-checkbox-label-color: #333333; 
---paper-fab-background: #333333; 
---paper-fab-disabled-background: #afb1b9; 
---paper-fab-disabled-text: #313238; 
---paper-icon-button-disabled-text: #afb1b9; 
---paper-input-container-color: #919191; 
---paper-input-container-focus-color: #333333; 
---paper-input-container-invalid-color: #ff6e40; 
---paper-input-container-input-color: #919191; 
---paper-menu-background-color: #ffffff;
---paper-menu-color: #333333; 
---paper-menu-disabled-color: #afb1b9; 
---paper-progress-active-color: #333333; 
---paper-progress-secondary-color: #dce775;
---paper-radio-button-checked-color: #333333; 
---paper-radio-button-checked-ink-color: #d6d8e3; 
---paper-radio-button-unchecked-color: #333333; 
---paper-radio-button-unchecked-ink-color: #333333; 
---paper-radio-button-label-color: #333333; 
---paper-slider-container-color: #333333; 
---paper-slider-knob-color: #333333; 
---paper-slider-active-color: #ff4081; 
---paper-slider-pin-color: #ff4081; 
---paper-spinner-layer-1-color: #333333; 
---paper-spinner-layer-2-color: #333333; 
---paper-spinner-layer-3-color: #333333; 
---paper-spinner-layer-4-color: #333333; 
---paper-tabs-selection-bar-color: #dce775; 
---paper-tab-ink: #dce775; 
---paper-toggle-button-checked-bar-color: #333333; 
---paper-toggle-button-checked-button-color: #333333; 
---paper-toggle-button-checked-ink-color: #333333; 
---paper-toggle-button-unchecked-bar-color: #333333; 
---paper-toggle-button-unchecked-button-color: #ffffff; 
---paper-toggle-button-unchecked-ink-color: #ffffff; 
---paper-toolbar-background: #333333; 
---paper-toolbar-color: #ffffff; 
---paper-tooltip-background: #323232;
---paper-tooltip-opacity: 1.0;
---paper-toast-background-color: #323232;
---paper-toast-color: #ffffff;
+        --default-primary-color: #333333;
+        --dark-primary-color: #333333;
+        --light-primary-color: #c5cae9;
+        --text-primary-color: #ffffff;
+        --accent-color: #ff4081;
+        --primary-background-color: #ffffff;
+        --primary-text-color: #333333;
+        --secondary-text-color: #333333;
+        --disabled-text-color: #313238;
+        --divider-color: #e0e0e0;
+        --paper-checkbox-checked-color: #333333;
+        --paper-checkbox-checked-ink-color: #333333;
+        --paper-checkbox-unchecked-color: #333333;
+        --paper-checkbox-unchecked-ink-color: #333333;
+        --paper-checkbox-label-color: #333333;
+        --paper-fab-background: #333333;
+        --paper-fab-disabled-background: #afb1b9;
+        --paper-fab-disabled-text: #313238;
+        --paper-icon-button-disabled-text: #afb1b9;
+        --paper-input-container-color: #919191;
+        --paper-input-container-focus-color: #333333;
+        --paper-input-container-invalid-color: #ff6e40;
+        --paper-input-container-input-color: #919191;
+        --paper-menu-background-color: #ffffff;
+        --paper-menu-color: #333333;
+        --paper-menu-disabled-color: #afb1b9;
+        --paper-progress-active-color: #333333;
+        --paper-progress-secondary-color: #dce775;
+        --paper-radio-button-checked-color: #333333;
+        --paper-radio-button-checked-ink-color: #d6d8e3;
+        --paper-radio-button-unchecked-color: #333333;
+        --paper-radio-button-unchecked-ink-color: #333333;
+        --paper-radio-button-label-color: #333333;
+        --paper-slider-container-color: #333333;
+        --paper-slider-knob-color: #333333;
+        --paper-slider-active-color: #ff4081;
+        --paper-slider-pin-color: #ff4081;
+        --paper-spinner-layer-1-color: #333333;
+        --paper-spinner-layer-2-color: #333333;
+        --paper-spinner-layer-3-color: #333333;
+        --paper-spinner-layer-4-color: #333333;
+        --paper-tabs-selection-bar-color: #dce775;
+        --paper-tab-ink: #dce775;
+        --paper-toggle-button-checked-bar-color: #333333;
+        --paper-toggle-button-checked-button-color: #333333;
+        --paper-toggle-button-checked-ink-color: #333333;
+        --paper-toggle-button-unchecked-bar-color: #333333;
+        --paper-toggle-button-unchecked-button-color: #ffffff;
+        --paper-toggle-button-unchecked-ink-color: #ffffff;
+        --paper-toolbar-background: #333333;
+        --paper-toolbar-color: #ffffff;
+        --paper-tooltip-background: #323232;
+        --paper-tooltip-opacity: 1.0;
+        --paper-toast-background-color: #323232;
+        --paper-toast-color: #ffffff;
 
---app-grid-expandible-item: {
+        --app-grid-expandible-item: {
           -webkit-flex-basis: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
           flex-basis: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
           max-width: calc((100% - 0.1px) / var(--app-grid-columns, 1) * var(--app-grid-expandible-item-columns, 1) - var(--app-grid-gutter, 0px)) !important;
         }
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6 {
+        font-weight: 500;
+        margin: 0px;
+        padding: 0px;
+        line-height: 1em;
+      }
+
+      h1 {
+        font-size: 22px;
+        margin: 10px 0px;
+        color: #212121;
+      }
+
+      h2 {
+        font-size: 18px;
+        margin: 10px 0px;
+        color: #333333;
+      }
+
+      h3 {
+        font-size: 16px;
+        margin: 10px 0px;
+        color: #333333;
+      }
+
+      h4 {
         
-}
+        font-size: 14px;
+        margin: 10px 0px;
+        color: #333333;
+      }
 
-h1, h2, h3, h4, h5, h6 { font-weight: 500; margin: 0px; padding: 0px; line-height: 1em; }
+      a,
+      a:active,
+      a:visited,
+      a:focus {
+        color: #333333;
+        text-decoration: none;
+      }
 
-h1 { font-size: 22px; margin: 10px 0px; color: #212121;  }
-h2 { font-size: 18px; margin: 10px 0px; color: #333333;  }
-h3 { font-size: 16px; margin: 10px 0px; color: #333333; }
-h4 { font-size: 14px; margin: 10px 0px; color: #333333; }
+      p {
+        margin: 0;
+      }
 
-a, a:active, a:visited, a:focus { color: #333333; text-decoration: none; }
+      ul {
+        padding: 0;
+        list-style: none;
+      }
 
-p { margin: 0; }
+      section {
+        padding: 40px 0px;
+      }
 
-ul { padding: 0; list-style: none; }
+      section.hero paper-menu,
+      section[hero] paper-menu {
+        --paper-menu-background-color: #ffffff;
+      }
 
-section { padding: 40px 0px; }
-section.hero paper-menu, section[hero] paper-menu { --paper-menu-background-color: #ffffff; }
+      paper-button {
+        display: inline-block;
+        margin: 0;
+        text-align: center;
+      }
 
-paper-button { display: inline-block; margin: 0; text-align: center; }  
-paper-button.dark { background-color: #333333; color: #ffffff; }
-paper-button.dark:hover { background-color: #666666; } 
-paper-button.smart { background-color: seagreen; color: #ffffff; }    
-paper-button.smart:hover { background: lightseagreen; } 
-paper-button.fancy { background: indigo; color: #ffffff; }  
-paper-button.fancy:hover { background-color: purple; }
-paper-button.magic { background-color: green; color: #ffffff; }
-paper-button.magic:hover { background-color: yellowgreen; }    
-paper-button.candy { background-color: hotpink; color: #ffffff; }   
-paper-button.candy:hover { background-color: deeppink; }  
-paper-button.chilli { background-color: firebrick; color: #ffffff;}  
-paper-button.chilli:hover { background-color: red; } 
-paper-button.water { background-color: dodgerblue; color: #ffffff; }  
-paper-button.water:hover { background-color: deepskyblue; }
-paper-button.burn { background-color: goldenrod; color: #ffffff; }
-paper-button.burn:hover { background-color: gold;  }
-paper-button.primary, paper-button.btn-primary, paper-button[primary] { color: #333333; }
-paper-button.primary[raised], paper-button.btn-primary[raised], paper-button[primary][raised] { background-color: #333333; color: #ffffff; }
-paper-button.secondary, paper-button.btn-secondary, paper-button[secondary] { color: #dce775; }
-paper-button.secondary[raised], paper-button.btn-secondary[raised], paper-button[secondary][raised] { background-color: #dce775; color: #424523; }
-paper-button.success, paper-button.btn-success, paper-button[success] { color: #9dc56e; }
-paper-button.success[raised], paper-button.btn-success[raised], paper-button[success][raised] { background-color: #9dc56e; color: #2f3b21; }
-paper-button.info, paper-button.btn-info, paper-button[info] { color: #ffb74d; }
-paper-button.info[raised], paper-button.btn-info[raised], paper-button[info][raised] { background-color: #ffb74d; color: #4d3717; }
-paper-button.warning, paper-button.btn-warning, paper-button[warning] { color: #fadd60; }
-paper-button.warning[raised], paper-button.btn-warning[raised], paper-button[warning][raised] { background-color: #fadd60; color: #4b421d; }
-paper-button.error, paper-button.btn-error, paper-button[error] { color: #ff6e40; }
-paper-button.error[raised], paper-button.btn-error[raised], paper-button[error][raised] { background-color: #ff6e40; color: #4d2113; }
-paper-button.link, paper-button.btn-link, paper-button[link] { text-decoration: underline; }
-paper-button[raised] { color: #ffffff; }
-paper-button[disabled] { color: #313238 !important; background: #afb1b9 !important; }
+      paper-button.dark {
+        background-color: #333333;
+        color: #ffffff;
+      }
 
-paper-icon-button+[main-title] { margin: 32px; }
-paper-icon-button.primary, paper-icon-button.btn-primary, paper-icon-button[primary] { color: #333333; }
-paper-icon-button.primary:hover, paper-icon-button.btn-primary:hover, paper-icon-button[primary]:hover { background-color: #ebebee; background-color: rgba(55, 59, 80, 0.2); border-radius: 50%; }
-paper-icon-button.secondary, paper-icon-button.btn-secondary, paper-icon-button[secondary] { color: #dce775; }
-paper-icon-button.secondary:hover, paper-icon-button.btn-secondary:hover, paper-icon-button[secondary]:hover { background-color: #fcfdf1; background-color: rgba(220, 231, 117, 0.2); border-radius: 50%; }
-paper-icon-button.success, paper-icon-button.btn-success, paper-icon-button[success] { color: #9dc56e; }
-paper-icon-button.success:hover, paper-icon-button.btn-success:hover, paper-icon-button[success]:hover { background-color: #f5f9f1; background-color: rgba(157, 197, 110, 0.2); border-radius: 50%; }
-paper-icon-button.info, paper-icon-button.btn-info, paper-icon-button[info] { color: #ffb74d; }
-paper-icon-button.info:hover, paper-icon-button.btn-info:hover, paper-icon-button[info]:hover { background-color: #ffffff8ed; background-color: rgba(255, 183, 77, 0.2); border-radius: 50%; }
-paper-icon-button.warning, paper-icon-button.btn-warning, paper-icon-button[warning] { color: #fadd60; }
-paper-icon-button.warning:hover, paper-icon-button.btn-warning:hover, paper-icon-button[warning]:hover { background-color: #ffffffcef; background-color: rgba(250, 221, 96, 0.2); border-radius: 50%; }
-paper-icon-button.error, paper-icon-button.btn-error, paper-icon-button[error] { color: #ff6e40; }
-paper-icon-button.error:hover, paper-icon-button.btn-error:hover, paper-icon-button[error]:hover { background-color: #ffffff1ec; background-color: rgba(255, 110, 64, 0.2); border-radius: 50%; }
+      paper-button.dark:hover {
+        background-color: #666666;
+      }
 
-paper-checkbox #checkmark.paper-checkbox, paper-checkbox /deep/, paper-checkbox::shadow #checkmark.paper-checkbox { border-color: #ffffff !important; }
+      paper-button.smart {
+        background-color: seagreen;
+        color: #ffffff;
+      }
 
-paper-dialog { color: #333333; background-color: #ffffff; }
-paper-dialog h1, paper-dialog h2, paper-dialog h3, paper-dialog h4, paper-dialog h5, paper-dialog h6 { overflow: visible; padding: 0 1em; text-align: center; }
+      paper-button.smart:hover {
+        background: lightseagreen;
+      }
 
-paper-fab { --text-primary-color: #ffffff; }
-paper-fab { background-color: #333333; color: #ffffff; --paper-fab-keyboard-focus-background: #6c749a; }
-paper-fab.primary, paper-fab.btn-primary, paper-fab[primary] { background-color: #333333; color: #ffffff; --paper-fab-keyboard-focus-background: #6c749a; }
-paper-fab.secondary, paper-fab.btn-secondary, paper-fab[secondary] { background-color: #dce775; color: #424523; --paper-fab-keyboard-focus-background: #adbc21; }
-paper-fab.success, paper-fab.btn-success, paper-fab[success] { background-color: #9dc56e; color: #2f3b21; --paper-fab-keyboard-focus-background: #5d8033; }
-paper-fab.info, paper-fab.btn-info, paper-fab[info] { background-color: #ffb74d; color: #4d3717; --paper-fab-keyboard-focus-background: #cd7a00; }
-paper-fab.warning, paper-fab.btn-warning, paper-fab[warning] { background-color: #fadd60; color: #4b421d; --paper-fab-keyboard-focus-background: #d4ad07; }
-paper-fab.error, paper-fab.btn-error, paper-fab[error] { background-color: #ff6e40; color: #4d2113; --paper-fab-keyboard-focus-background: #c02e00; }
-paper-fab[disabled] { color: #313238 !important; background: #afb1b9 !important; }
+      paper-button.fancy {
+        background: indigo;
+        color: #ffffff;
+      }
 
-paper-toolbar a, paper-toolbar a:hover, paper-toolbar a:active, paper-toolbar a:visited, paper-toolbar a:focus { color: #ffffff; }
-paper-tabs { background-color: #333333; color: #ffffff; height: 100%; text-transform: uppercase; font-weight: 500; }
-paper-menu { display: inline-block; background-color: #ffffff; }
-paper-menu-button { margin: auto; }
-paper-dropdown-menu { width: 200px; margin-right: 20px; }
+      paper-button.fancy:hover {
+        background-color: purple;
+      }
 
-app-toolbar { background-color: #333333; color: #ffffff; --app-toolbar-font-size: 24px; }
-app-header { background-color: #333333; color: #ffffff;  }
-app-drawer { --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
-            --app-drawer-content-container: { box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);  }
-}
+      paper-button.magic {
+        background-color: green;
+        color: #ffffff;
+      }
 
-paper-icon-button+[main-title] {
+      paper-button.magic:hover {
+        background-color: yellowgreen;
+      }
+
+      paper-button.candy {
+        background-color: hotpink;
+        color: #ffffff;
+      }
+
+      paper-button.candy:hover {
+        background-color: deeppink;
+      }
+
+      paper-button.chilli {
+        background-color: firebrick;
+        color: #ffffff;
+      }
+
+      paper-button.chilli:hover {
+        background-color: red;
+      }
+
+      paper-button.water {
+        background-color: dodgerblue;
+        color: #ffffff;
+      }
+
+      paper-button.water:hover {
+        background-color: deepskyblue;
+      }
+
+      paper-button.burn {
+        background-color: goldenrod;
+        color: #ffffff;
+      }
+
+      paper-button.burn:hover {
+        background-color: gold;
+      }
+
+      paper-button.primary,
+      paper-button.btn-primary,
+      paper-button[primary] {
+        color: #333333;
+      }
+
+      paper-button.primary[raised],
+      paper-button.btn-primary[raised],
+      paper-button[primary][raised] {
+        background-color: #333333;
+        color: #ffffff;
+      }
+
+      paper-button.secondary,
+      paper-button.btn-secondary,
+      paper-button[secondary] {
+        color: #dce775;
+      }
+
+      paper-button.secondary[raised],
+      paper-button.btn-secondary[raised],
+      paper-button[secondary][raised] {
+        background-color: #dce775;
+        color: #424523;
+      }
+
+      paper-button.success,
+      paper-button.btn-success,
+      paper-button[success] {
+        color: #9dc56e;
+      }
+
+      paper-button.success[raised],
+      paper-button.btn-success[raised],
+      paper-button[success][raised] {
+        background-color: #9dc56e;
+        color: #2f3b21;
+      }
+
+      paper-button.info,
+      paper-button.btn-info,
+      paper-button[info] {
+        color: #ffb74d;
+      }
+
+      paper-button.info[raised],
+      paper-button.btn-info[raised],
+      paper-button[info][raised] {
+        background-color: #ffb74d;
+        color: #4d3717;
+      }
+
+      paper-button.warning,
+      paper-button.btn-warning,
+      paper-button[warning] {
+        color: #fadd60;
+      }
+
+      paper-button.warning[raised],
+      paper-button.btn-warning[raised],
+      paper-button[warning][raised] {
+        background-color: #fadd60;
+        color: #4b421d;
+      }
+
+      paper-button.error,
+      paper-button.btn-error,
+      paper-button[error] {
+        color: #ff6e40;
+      }
+
+      paper-button.error[raised],
+      paper-button.btn-error[raised],
+      paper-button[error][raised] {
+        background-color: #ff6e40;
+        color: #4d2113;
+      }
+
+      paper-button.link,
+      paper-button.btn-link,
+      paper-button[link] {
+        text-decoration: underline;
+      }
+
+      paper-button[raised] {
+        color: #ffffff;
+      }
+
+      paper-button[disabled] {
+        color: #313238 !important;
+        background: #afb1b9 !important;
+      }
+
+      paper-icon-button+[main-title] {
+        margin: 32px;
+      }
+
+      paper-icon-button.primary,
+      paper-icon-button.btn-primary,
+      paper-icon-button[primary] {
+        color: #333333;
+      }
+
+      paper-icon-button.primary:hover,
+      paper-icon-button.btn-primary:hover,
+      paper-icon-button[primary]:hover {
+        background-color: #ebebee;
+        background-color: rgba(55, 59, 80, 0.2);
+        border-radius: 50%;
+      }
+
+      paper-icon-button.secondary,
+      paper-icon-button.btn-secondary,
+      paper-icon-button[secondary] {
+        color: #dce775;
+      }
+
+      paper-icon-button.secondary:hover,
+      paper-icon-button.btn-secondary:hover,
+      paper-icon-button[secondary]:hover {
+        background-color: #fcfdf1;
+        background-color: rgba(220, 231, 117, 0.2);
+        border-radius: 50%;
+      }
+
+      paper-icon-button.success,
+      paper-icon-button.btn-success,
+      paper-icon-button[success] {
+        color: #9dc56e;
+      }
+
+      paper-icon-button.success:hover,
+      paper-icon-button.btn-success:hover,
+      paper-icon-button[success]:hover {
+        background-color: #f5f9f1;
+        background-color: rgba(157, 197, 110, 0.2);
+        border-radius: 50%;
+      }
+
+      paper-icon-button.info,
+      paper-icon-button.btn-info,
+      paper-icon-button[info] {
+        color: #ffb74d;
+      }
+
+      paper-icon-button.info:hover,
+      paper-icon-button.btn-info:hover,
+      paper-icon-button[info]:hover {
+        background-color: #ffffff8ed;
+        background-color: rgba(255, 183, 77, 0.2);
+        border-radius: 50%;
+      }
+
+      paper-icon-button.warning,
+      paper-icon-button.btn-warning,
+      paper-icon-button[warning] {
+        color: #fadd60;
+      }
+
+      paper-icon-button.warning:hover,
+      paper-icon-button.btn-warning:hover,
+      paper-icon-button[warning]:hover {
+        background-color: #ffffffcef;
+        background-color: rgba(250, 221, 96, 0.2);
+        border-radius: 50%;
+      }
+
+      paper-icon-button.error,
+      paper-icon-button.btn-error,
+      paper-icon-button[error] {
+        color: #ff6e40;
+      }
+
+      paper-icon-button.error:hover,
+      paper-icon-button.btn-error:hover,
+      paper-icon-button[error]:hover {
+        background-color: #ffffff1ec;
+        background-color: rgba(255, 110, 64, 0.2);
+        border-radius: 50%;
+      }
+
+      paper-checkbox #checkmark.paper-checkbox,
+      paper-checkbox /deep/,
+      paper-checkbox::shadow #checkmark.paper-checkbox {
+        border-color: #ffffff !important;
+      }
+
+      paper-dialog {
+        color: #333333;
+        background-color: #ffffff;
+      }
+
+      paper-dialog h1,
+      paper-dialog h2,
+      paper-dialog h3,
+      paper-dialog h4,
+      paper-dialog h5,
+      paper-dialog h6 {
+        overflow: visible;
+        padding: 0 1em;
+        text-align: center;
+      }
+
+      paper-fab {
+        --text-primary-color: #ffffff;
+      }
+
+      paper-fab {
+        background-color: #333333;
+        color: #ffffff;
+        --paper-fab-keyboard-focus-background: #6c749a;
+      }
+
+      paper-fab.primary,
+      paper-fab.btn-primary,
+      paper-fab[primary] {
+        background-color: #333333;
+        color: #ffffff;
+        --paper-fab-keyboard-focus-background: #6c749a;
+      }
+
+      paper-fab.secondary,
+      paper-fab.btn-secondary,
+      paper-fab[secondary] {
+        background-color: #dce775;
+        color: #424523;
+        --paper-fab-keyboard-focus-background: #adbc21;
+      }
+
+      paper-fab.success,
+      paper-fab.btn-success,
+      paper-fab[success] {
+        background-color: #9dc56e;
+        color: #2f3b21;
+        --paper-fab-keyboard-focus-background: #5d8033;
+      }
+
+      paper-fab.info,
+      paper-fab.btn-info,
+      paper-fab[info] {
+        background-color: #ffb74d;
+        color: #4d3717;
+        --paper-fab-keyboard-focus-background: #cd7a00;
+      }
+
+      paper-fab.warning,
+      paper-fab.btn-warning,
+      paper-fab[warning] {
+        background-color: #fadd60;
+        color: #4b421d;
+        --paper-fab-keyboard-focus-background: #d4ad07;
+      }
+
+      paper-fab.error,
+      paper-fab.btn-error,
+      paper-fab[error] {
+        background-color: #ff6e40;
+        color: #4d2113;
+        --paper-fab-keyboard-focus-background: #c02e00;
+      }
+
+      paper-fab[disabled] {
+        color: #313238 !important;
+        background: #afb1b9 !important;
+      }
+
+      paper-toolbar a,
+      paper-toolbar a:hover,
+      paper-toolbar a:active,
+      paper-toolbar a:visited,
+      paper-toolbar a:focus {
+        color: #ffffff;
+      }
+
+      paper-tabs {
+        background-color: #333333;
+        color: #ffffff;
+        height: 100%;
+        text-transform: uppercase;
+        font-weight: 500;
+      }
+
+      paper-menu {
+        display: inline-block;
+        background-color: #ffffff;
+      }
+
+      paper-menu-button {
+        margin: auto;
+      }
+
+      paper-dropdown-menu {
+        width: 200px;
+        margin-right: 20px;
+      }
+
+      app-toolbar {
+        background-color: #333333;
+        color: #ffffff;
+        --app-toolbar-font-size: 24px;
+      }
+
+      app-header {
+        background-color: #333333;
+        color: #ffffff;
+      }
+
+      app-drawer {
+        --app-drawer-scrim-background: rgba(0, 0, 0, 0.4);
+        --app-drawer-content-container: {
+          box-shadow: 1px 0 2px 1px rgba(0, 0, 0, 0.18);
+        }
+      }
+
+      paper-icon-button+[main-title] {
         margin: 25px;
       }
 
-     @media (min-width: 360px) and (max-width: 768px) {
-         .tab-title, .display-name {
-           display: none;
-         }
-         .page-title {
-           font-size: 1rem;
-         }
+      @media (min-width: 360px) and (max-width: 768px) {
+        .tab-title,
+        .display-name {
+          display: none;
+        }
+        .page-title {
+          font-size: 1rem;
+        }
       }
 
-      @media (min-width: 769px) and (max-width: 1024px) {
-     
-      }
+      @media (min-width: 769px) and (max-width: 1024px) {}
 
-      @media (min-width: 1025px) and (max-width: 1200px) {
-  
-      }
-       @media (min-width: 1201px) and (max-width: 2560px) {
-        
-      }
+      @media (min-width: 1025px) and (max-width: 1200px) {}
+
+      @media (min-width: 1201px) and (max-width: 2560px) {}
+
       .stitched {
         height: auto;
         min-height: 200px;
@@ -198,27 +559,29 @@ paper-icon-button+[main-title] {
         text-decoration: none;
         position: relative;
         box-sizing: border-box;
-     }
-     .button-group {
-       text-align: center;
-     }
+      }
 
-     .button-group paper-button {
-       width: 49.5%;
-       display: inline-flex;
-       align-items: center; 
-       justify-content: center; 
-     }
-     .big-btn { 
-       margin: 0; 
-       padding: 20px 40px; 
-       font-size: 1.5rem; 
-     }
+      .button-group {
+        text-align: center;
+      }
+
+      .button-group paper-button {
+        width: 49.5%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .big-btn {
+        margin: 0;
+        padding: 20px 40px;
+        font-size: 1.5rem;
+      }
 
       .flex {
         @apply(--layout-horizontal);
       }
-      
+
       .app-grid {
         display: -ms-flexbox;
         display: -webkit-flex;
@@ -234,7 +597,7 @@ paper-icon-button+[main-title] {
         padding-left: var(--app-grid-gutter, 0px);
         box-sizing: border-box;
       }
-      
+
       .app-grid>* {
         /* Required for IE 10 */
         -ms-flex: 1 1 100%;
@@ -249,17 +612,17 @@ paper-icon-button+[main-title] {
         height: var(--app-grid-item-height);
         box-sizing: border-box;
       }
-      
+
       .app-grid[has-aspect-ratio]>* {
         position: relative;
       }
-      
+
       .app-grid[has-aspect-ratio]>*::before {
         display: block;
         content: "";
         padding-top: var(--app-grid-item-height, 100%);
       }
-      
+
       .app-grid[has-aspect-ratio]>*>* {
         position: absolute;
         top: 0;
@@ -267,7 +630,7 @@ paper-icon-button+[main-title] {
         bottom: 0;
         left: 0;
       }
-      
+
       .wrap-card {
         display: -webkit-flex;
         display: flex;
@@ -279,7 +642,7 @@ paper-icon-button+[main-title] {
         -moz-box-sizing: border-box;
         box-sizing: border-box;
       }
-      
+
       .card {
         height: auto;
         min-height: 100%;
@@ -296,7 +659,7 @@ paper-icon-button+[main-title] {
         box-sizing: border-box;
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
       }
-      
+
       .circle {
         display: inline-block;
         width: 64px;

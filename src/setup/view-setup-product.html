@@ -182,11 +182,13 @@
                       <p>Process [[index]] : [[setup]] minutes</p>
                     </template>
                     <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
+
                     <h2>Cycle Time</h2>
                     <template is="dom-repeat" items="{{part.cycle}}" as="cycle">
                       <p>Process [[index]] : [[cycle]] minutes</p>
                     </template>
                     <p>Total Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+
                     <h2>Total Process Time : [[getSumProcessTime(part.setup, part.cycle)]] minutes</h2>
                   </div>
                 </template>
@@ -198,7 +200,7 @@
               <div id="flex-row">
                 <div class="flex-item">
                   <vaadin-bar-chart id="stacked-bar" class="flex-item">
-                    <chart-title>Product Process Duration</chart-title>
+                    <chart-title text="Product Process Duration"></chart-title>
                     <data-series name="Process duration">
                       <data>
                         <template is="dom-repeat" items="{{productItem.part}}" as="part">[[getCycleTime(part.cycle)]]</template>
@@ -213,7 +215,7 @@
                       <chart-title>Duration (minutes)</chart-title>
                     </y-axis>
 
-                    <tooltip point-format="{series.name}: {point.y} minutes Total: {point.stackTotal}"></tooltip>
+                    <tooltip point-format="{series.name}: {point.y} minutes"></tooltip>
                     <plot-options>
                       <series stacking="normal">
                       </series>
@@ -221,23 +223,28 @@
                   </vaadin-bar-chart>
                 </div>
                 <div class="flex-item">
-                  <vaadin-pie-chart id="pie" class="flex-item">
-                    <chart-title>Invetory Chart</chart-title>
-                    <tooltip point-format="{series.name}: <b>{point.percentage:.1f}%</b>">
-                    </tooltip>
-                    <plot-options>
-                      <pie allow-point-select="true" cursor="pointer">
-                        <data-labels enabled="true" format="<b>{point.name}</b>:    {point.percentage:.1f} %">
-                        </data-labels>
-                      </pie>
-                    </plot-options>
-
-                    <data-series name="Browser share">
+                   <vaadin-bar-chart id="stacked-bar" class="flex-item">
+                    <chart-title text="Product Setup Duration" chart-style="{color:#eeeeee}"></chart-title>
+                    <data-series name="Setup duration">
                       <data>
-                        ["A", 45.0], ["B", 26.8], ["C", 12.8], ["D", 8.5], ["E", 6.2], ["F", 0.7]
+                        <template is="dom-repeat" items="{{productItem.part}}" as="part">[[getSetupTime(part.setup)]]</template>
                       </data>
                     </data-series>
-                  </vaadin-pie-chart>
+                    <x-axis>
+                      <categories>
+                        <template is="dom-repeat" items="{{productItem.part}}" as="part">Part [[part.name]]</template>
+                      </categories>
+                    </x-axis>
+                    <y-axis min="0">
+                      <chart-title>Duration (minutes)</chart-title>
+                    </y-axis>
+
+                    <tooltip point-format="{series.name}: {point.y} minutes Total: {point.stackTotal}"></tooltip>
+                    <plot-options>
+                      <bar color="#D32F2F"></bar>
+                      <series stacking="normal"> </series>
+                    </plot-options>
+                  </vaadin-bar-chart>
                 </div>
               </div>
             </div>
@@ -426,6 +433,15 @@
           processTime += cycle[i];
         };
         return processTime.toFixed(1) + ",";
+      },
+
+      getSetupTime(setup) {
+        if (!setup) return 0;
+        let setupTime = 0;
+        for (let i in setup) {
+          setupTime += setup[i];
+        };
+        return setupTime.toFixed(1) + ",";
       },
 
       getSumCycleTime(cycle) {

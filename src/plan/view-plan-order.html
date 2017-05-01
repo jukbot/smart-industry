@@ -106,9 +106,9 @@
                 <p>Part SKU: [[part.sku]]</p>
                 <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
                 <p>Total Process Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+                <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
               </div>
            </template>
-          <!-- <p>Delivery Date: [[calEstDelivery(factoryOperation.op_end, factoryOperation.op_start, size.cycle, size.setup, amount, orderData)]]</p> -->
         </div>
       </li>
     </ul>
@@ -200,6 +200,15 @@
         return processTime.toFixed(1);
       },
 
+      getSumSetupTime(setup) {
+        if(!setup) return 0;
+        let setupTime = 0;
+        for (let i in setup) {
+          setupTime += setup[i];
+        };
+        return setupTime.toFixed(1);
+      },
+
       getProductProcess(process) {
         return process.split(',').join(' → ');
       },
@@ -209,6 +218,9 @@
         let sum = 0;
         let partTime = 0;
         for (let i in part) {
+           for(let j in part[i].cycle) {
+              sum += part[i].cycle[j]; 
+            }
            for(let j in part[i].cycle) {
               sum += part[i].cycle[j]; 
             }

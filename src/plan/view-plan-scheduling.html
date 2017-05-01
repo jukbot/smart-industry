@@ -156,7 +156,7 @@
   <!-- <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3> -->
   <h2>Next Reschedule Date: [[getNextInterval(factoryStandard.start_interval, factoryStandard.interval)]]</h2>
     <div>
-    <paper-button raised class="magic priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Reschedule</paper-button>
+    <paper-button raised class="chilli priority-btn" on-tap="reschedule" style="margin-bottom: 10px;">Reschedule</paper-button>
     <paper-button raised class="dark priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Clear Order</paper-button>
     </div>
       <vaadin-grid id="orderTable" aria-label="Orders Table" items="[[orderData]]">
