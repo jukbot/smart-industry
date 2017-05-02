@@ -200,7 +200,9 @@
               <div id="flex-row">
                 <div class="flex-item">
                   <vaadin-bar-chart id="stacked-bar" class="flex-item">
-                    <chart-title text="Product Process Duration"></chart-title>
+                    <chart-title text='Product Process Duration' chart-style='{ "color": "#00BFA5" }'></chart-title>
+                     <exporting enabled="false"></exporting>
+                     <legend enabled="false"></legend>
                     <data-series name="Process duration">
                       <data>
                         <template is="dom-repeat" items="{{productItem.part}}" as="part">[[getCycleTime(part.cycle)]]</template>
@@ -217,14 +219,16 @@
 
                     <tooltip point-format="{series.name}: {point.y} minutes"></tooltip>
                     <plot-options>
-                      <series stacking="normal">
-                      </series>
+                      <bar color="#00BFA5"></bar>
+                      <series stacking="normal"></series>
                     </plot-options>
                   </vaadin-bar-chart>
                 </div>
                 <div class="flex-item">
                    <vaadin-bar-chart id="stacked-bar" class="flex-item">
-                    <chart-title text="Product Setup Duration" chart-style="{color:#eeeeee}"></chart-title>
+                    <chart-title text='Product Setup Duration' chart-style='{ "color": "#D50000" }'></chart-title>
+                     <exporting enabled="false"></exporting>
+                     <legend enabled="false"></legend>
                     <data-series name="Setup duration">
                       <data>
                         <template is="dom-repeat" items="{{productItem.part}}" as="part">[[getSetupTime(part.setup)]]</template>
@@ -241,8 +245,8 @@
 
                     <tooltip point-format="{series.name}: {point.y} minutes Total: {point.stackTotal}"></tooltip>
                     <plot-options>
-                      <bar color="#D32F2F"></bar>
-                      <series stacking="normal"> </series>
+                      <bar color="#D50000"></bar>
+                      <series stacking="normal"></series>
                     </plot-options>
                   </vaadin-bar-chart>
                 </div>

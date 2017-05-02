@@ -431,6 +431,7 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
         this.offline =  !navigator.onLine;
         // Show the snackbar if the user is offline when starting a new session or if the network status changed.
         if (this.offline || (!this.offline && oldOffline === true)) {
+          alert("No internet connection");
           if (!this._networkSnackbar) {
             this._networkSnackbar = document.createElement('network-snackbar');
             Polymer.dom(this.root).appendChild(this._networkSnackbar);
