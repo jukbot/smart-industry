@@ -179,7 +179,7 @@
                     <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
                     <h2>Setup Time</h2>
                     <template is="dom-repeat" items="{{part.setup}}" as="setup">
-                      <p>Process [[index]] : [[setup]] minutes</p>
+                      <p>Process [[process(index)]] : [[setup]] minutes</p>
                     </template>
                     <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
 
@@ -319,7 +319,9 @@
       toggleDialog: function () {
         this.$.createProductDialog.open();
       },
-
+      process: function(e) {
+        return e+1;
+      },
       addProduct: function () {
         let today = new Date();
         let dd = today.getDate();
