@@ -54,6 +54,7 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="app-language.html">
 <!-- import shared style -->
 <link rel="import" href="view-dashboard.html">
 <link rel="import" href="view-setup.html">
@@ -182,7 +183,7 @@
           <paper-button raised class="chilli authen-btn" on-tap="_login" role="button" hidden$="[[user]]">{{localize('login-button')}}</paper-button>
           <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button>
         </div>
-        <template is="dom-if" if="[[user]]">
+        <dom-if if="[[user]]">
           <div class="profile" role="group">
           <img style="width: 150px;" src="[[user.photoURL]]" alt="user photo">
           <p>[[user.displayName]]</p>
@@ -192,7 +193,7 @@
           <p>{{localize('version')}} [[metadata.appVersion]]</p>
           <p>{{localize('developed-by')}} [[metadata.appDeveloper]]</p>
           </div>
-        </template>
+        </dom-if>
       </app-drawer>
       <app-header-layout fullbleed has-scrolling-region>
         <app-header slot="header" role="rowheader" condenses fixed>
@@ -222,9 +223,9 @@
                   </paper-icon-item>
               </paper-menu>
             </paper-menu-button>
-            <template is="dom-if" if="[[user]]" hidden$="[[!user]]">
+            <dom-if if="[[user]]" hidden$="[[!user]]">
               <p class="display-name" hidden$="{{!wideLayout}}">[[user.displayName]]</p>
-            </template>
+            </dom-if>
           </app-toolbar>
         </app-header>
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
@@ -237,8 +238,7 @@
           <view-404 name="404" route="{{subroute}}"></view-404>         
         </iron-pages>
       </app-header-layout>
-          <paper-toast id="noInternetConnection" always-on-top horizontal-align="right" text="{{localize('notification-save-factory-information-successful')}}"></paper-toast>
-    </app-drawer-layout> 
+     </app-drawer-layout> 
     <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
@@ -302,7 +302,8 @@
         Polymer.FirebaseDatabaseBehavior,
         Polymer.FirebaseCommonBehavior,
         Polymer.AppLocalizeBehavior,
-        Polymer.AppNetworkStatusBehavior
+        Polymer.AppNetworkStatusBehavior,
+        Polymer.AppLanguageBehavior
       ],
 
       created() {
@@ -341,14 +342,12 @@
       },
 
       _pageChanged(page){
-      if (page != null) { 
        let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
        this.importHref(
        resolvedPageUrl, 
        null, 
        this._showPage404.bind(this), 
        true);
-         }
       },
 
       _showPage404() {

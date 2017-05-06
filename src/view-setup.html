@@ -1,7 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
-<link rel="import" href="shared-styles.html">
 <link rel="import" href="setup/view-setup-factory.html">
 <link rel="import" href="setup/view-setup-station.html">
 <link rel="import" href="setup/view-setup-machine.html">
@@ -39,6 +38,7 @@
           <view-setup-customer name="customer"></view-setup-customer>
           <view-setup-inventory name="inventory"></view-setup-inventory>
          </iron-pages>
+          <paper-toast id="testT" always-on-top horizontal-align="right" text="{{localize('notification-save-factory-information-successful')}}"></paper-toast>
          <div class="button-group">
           <paper-button raised class="chilli" on-tap="selectPrevTab">{{localize('previous-button')}}</paper-button>
           <paper-button raised class="water" on-tap="selectNextTab">{{localize('next-button')}}</paper-button>
@@ -48,6 +48,9 @@
   <script>
     Polymer({
       is: 'view-setup',
+      listeners: {
+          'toast': '_fuckToast'
+      },
       properties: {
         language: {
           type: Object,
@@ -130,6 +133,12 @@
        let resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
        this.importHref(resolvedTabsUrl, null, null, true);
       }, 
+      _fuckToast(e) {
+        
+        this.$.testT.text = e.detail;
+        this.$.testT.open();
+        console.log("TEST TRIGGER");
+      }
     });
   </script>
 </dom-module>
