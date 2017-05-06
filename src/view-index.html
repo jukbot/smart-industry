@@ -237,6 +237,7 @@
           <view-404 name="404" route="{{subroute}}"></view-404>         
         </iron-pages>
       </app-header-layout>
+          <paper-toast id="noInternetConnection" always-on-top horizontal-align="right" text="{{localize('notification-save-factory-information-successful')}}"></paper-toast>
     </app-drawer-layout> 
     <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
@@ -312,18 +313,14 @@
 
       ready() {
         this.async(() => {
-          if (!this.route.path) {
-            this.set('routeData.page', 'dashboard');
-          }
+          if (!this.route.path) this.set('routeData.page', 'dashboard');
         });
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, function() {
           this.listen(window, 'online', '_notifyNetworkStatus');
           this.listen(window, 'offline', '_notifyNetworkStatus');
         });
- 
       },
-
       // On create load localization language data
       attached() {
          // load localization data
@@ -332,21 +329,14 @@
 
       _onLayoutChange: function(wide) {
         var drawer = this.$.drawer;
-        if (wide && drawer.opened) {
-          drawer.opened = false;
-        }
+        if (wide && drawer.opened) drawer.opened = false;
       },
 
       _routePageChanged(page) {
           this.async(function() {
-        if (page === undefined) {
-          return 'dashboard';
-        }    
+        if (page === undefined) return 'dashboard';
+        if (!this.$.drawer.persistent)  this.$.drawer.close();
         this.page = page || 'dashboard';
-
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
           });
       },
 
@@ -431,14 +421,15 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
         this.offline =  !navigator.onLine;
         // Show the snackbar if the user is offline when starting a new session or if the network status changed.
         if (this.offline || (!this.offline && oldOffline === true)) {
-          alert("No internet connection");
+     
           if (!this._networkSnackbar) {
             this._networkSnackbar = document.createElement('network-snackbar');
             Polymer.dom(this.root).appendChild(this._networkSnackbar);
           }
-          Polymer.dom(this._networkSnackbar).innerHTML = this.offline ?
-              'You are offline' : 'You are online';
-          this._networkSnackbar.open();
+      //    Polymer.dom(this.noInternetConnection).innerHTML = this.offline ?
+       //       'You are offline' : 'You are online';
+          this.noInternetConnection.open();
+         // alert("No internet connection");
         }
       }, 
 
