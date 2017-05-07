@@ -24,5 +24,11 @@
   ],
   "lint": {
     "rules": ["polymer-2-hybrid"]
-  }
+  },
+  "builds": [{
+    "js": {"minify": true},
+    "css": {"minify": true},
+    "html": {"minify": true},
+    "addServiceWorker" : true
+  }]
 }

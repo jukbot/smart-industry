@@ -242,8 +242,6 @@
     <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
-   // performance logging
-    window.performance && performance.mark && performance.mark('view-index - before register');
     Polymer({
       is: 'view-index',
       properties: {
@@ -333,11 +331,11 @@
         if (wide && drawer.opened) drawer.opened = false;
       },
 
-      _routePageChanged(page) {
+      _routePageChanged(page = 'dashboard') {
           this.async(function() {
         if (page === undefined) return 'dashboard';
         if (!this.$.drawer.persistent)  this.$.drawer.close();
-        this.page = page || 'dashboard';
+          this.page = page || 'dashboard';
           });
       },
 
@@ -448,6 +446,9 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
         console.info("Authenticate Error:" + e.message);
       },
      });
+    // performance logging
+    window.performance && performance.mark && performance.mark('view-index - before register');
+  //  window.customerElements.define(ViewIndex.is, ViewIndex);
   </script>
   <script src="../bower_components/sugar/dist/sugar.min.js"></script>
 </dom-module>

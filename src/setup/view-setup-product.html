@@ -369,11 +369,14 @@
       },
 
       addSize: function () {
-        this.push('sizeArray', {
-          name: "",
-          cycle: "",
-          cost: ""
-        });
+        this.set('sizeArray', [
+          ...this.sizeArray, 
+          {
+            name: "",
+            cycle: "",
+            cost: ""
+          }
+        ]);
       },
 
       addSizeToArray: function () {
@@ -498,7 +501,7 @@
       testTrigger(e) {
         let data = e.target.getAttribute('data');  
         this.fire('toast', data);
-        console.log(data);
+       // this.dispatchEvent(new CustomEvent('toast', {detail: {data: true}}));
       }
 
     });
