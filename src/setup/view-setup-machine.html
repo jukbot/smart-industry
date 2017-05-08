@@ -56,7 +56,7 @@
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="machineDataCache" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
       <div class="stitched">
-          <paper-button raised on-tap="toggleDialog" class="big-btn magic">{{localize('add-machine')}}</paper-button>
+          <paper-button raised on-tap="toggleDialog" class="big-btn magic"><iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-machine')}}</paper-button>
           <paper-dialog id="createMachineDialog" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
             no-cancel-on-outside-click>
             <h1>{{localize('add-machine')}}</h1>
@@ -98,6 +98,8 @@
             </paper-input>
             <vaadin-combo-box id="type_[[machineItem.$key]]" label="Machine Type" class="editmachineType" value="[[machineItem.code]]_[[machineItem.type]]"
             items="[[machineType]]" name="machineType" item-label-path="name" item-value-path="value" always-float-label></vaadin-combo-box>
+             <vaadin-combo-box label="Station" id="stationNumber_[[machineItem.$key]]" items="[[stationItems]]" name="stationName" value="[[machineItem.station]]" item-label-path="name" item-value-path="number" required always-float-label></vaadin-combo-box> 
+            
               <div class="buttons">
                 <paper-button id="[[machineItem.$key]]" on-tap="dismissEditMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button id="[[machineItem.$key]]" on-tap="saveEditMachine" dialog-confirm autofocus>{{localize('save')}}</paper-button>

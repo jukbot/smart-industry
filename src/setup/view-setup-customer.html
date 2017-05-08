@@ -99,7 +99,7 @@
     <ul class="app-grid">
       <li>
         <div class="card">
-          <paper-button raised on-tap="toggleDialog" class="big-btn magic">{{localize('add-customer')}}</paper-button>
+          <paper-button raised on-tap="toggleDialog" class="big-btn magic"><iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-customer')}}</paper-button>
           <paper-dialog id="createCustomerDialog" class="customer-dialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation"
             always-on-top no-cancel-on-outside-click>
             <h1>{{localize('add-customer')}}</h1>

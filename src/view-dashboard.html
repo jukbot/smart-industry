@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="view-index.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="app-language-behavior.html">
 <link rel="import" href="dashboard/view-dashboard-overview.html">
 <link rel="import" href="dashboard/view-dashboard-notification.html">
 <link rel="import" href="dashboard/view-dashboard-statistic.html">
@@ -36,20 +37,6 @@
     Polymer({
       is: 'view-dashboard',
       properties: {
-        language: {
-          type: Object,
-          value: function () {
-            if(localStorage.getItem("lang") != null) {
-              return localStorage.getItem("lang");
-            } 
-            else if(localStorage.getItem("lang") == null) {
-              return "en";
-            } 
-            else {
-              return this.language;
-            }
-          }
-        },
         tabs: {
           type: String,
           reflectToAttribute: true,
@@ -79,7 +66,8 @@
         }
       },
       behaviors: [
-        Polymer.AppLocalizeBehavior
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
       ],
       attached: function() {
          this.loadResources(this.resolveUrl('../data/locales.json'));

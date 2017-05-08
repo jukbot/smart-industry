@@ -42,6 +42,7 @@
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <!-- neon modules - used for animation -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
@@ -54,7 +55,6 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
-<link rel="import" href="app-language-behavior.html">
 <!-- import shared style -->
 <link rel="import" href="view-dashboard.html">
 <link rel="import" href="view-setup.html">
@@ -64,6 +64,7 @@
 <link rel="import" href="view-404.html">
 <link rel="import" href="view-settings.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="app-language-behavior.html">
 <dom-module id="view-index">
   <template>
     <style include="shared-styles">  
@@ -245,21 +246,6 @@
     Polymer({
       is: 'view-index',
       properties: {
-         language: {
-          type: Object,
-          notify: true,
-          value: function () {
-            if(localStorage.getItem("lang") != null) {
-              return localStorage.getItem("lang");
-            } 
-            else if(localStorage.getItem("lang") == null) {
-              return "en";
-            } 
-            else {
-              return this.language;
-            }
-          }
-        },
         notification: {
           type: Boolean
         },
@@ -326,13 +312,13 @@
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
 
-      _onLayoutChange: function(wide) {
-        var drawer = this.$.drawer;
+      _onLayoutChange(wide) {
+        const drawer = this.$.drawer;
         if (wide && drawer.opened) drawer.opened = false;
       },
 
-      _routePageChanged(page = 'dashboard') {
-          this.async(function() {
+      _routePageChanged(page) {
+          this.async(()=> {
         if (page === undefined) return 'dashboard';
         if (!this.$.drawer.persistent)  this.$.drawer.close();
           this.page = page || 'dashboard';
@@ -419,14 +405,14 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
         // Show the snackbar if the user is offline when starting a new session or if the network status changed.
         if (this.offline || (!this.offline && oldOffline === true)) {
      
-          if (!this._networkSnackbar) {
-            this._networkSnackbar = document.createElement('network-snackbar');
-            Polymer.dom(this.root).appendChild(this._networkSnackbar);
-          }
+      //    if (!this._networkSnackbar) {
+       //     this._networkSnackbar = document.createElement('network-snackbar');
+       //     Polymer.dom(this.root).appendChild(this._networkSnackbar);
+       //   }
       //    Polymer.dom(this.noInternetConnection).innerHTML = this.offline ?
        //       'You are offline' : 'You are online';
-          this.noInternetConnection.open();
-         // alert("No internet connection");
+         
+          alert("No internet connection");
         }
       }, 
 

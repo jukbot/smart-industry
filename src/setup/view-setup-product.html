@@ -93,11 +93,28 @@
         padding: 10px;
       }
 
+      .part-frame {
+        border: solid 1px #757575;
+        border-radius: 2px;
+        margin: 10px 0;
+        min-height: 100px;
+        overflow: hidden;
+        padding: 10px;
+      }
+
       .flex-group {
         width: 100%;
         display: flex;
         flex-wrap: nowrap;
         justify-content: center;  
+      }
+
+      .flex-item {
+        flex: 1;
+      }
+
+      .upload-frame {
+        margin: 0 20px;
       }
 
       #flex-column {
@@ -111,10 +128,6 @@
         flex: 1;
         justify-content:center; 
       }
-
-      .flex-item {
-        flex: 1;
-      }
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
     <firebase-storage-script app-name="smart-mes" id="productImage" path="/product" files="[[files]]" uploaded-files="{{uploadedFiles}}"
@@ -124,26 +137,36 @@
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
     <paper-button raised class="dark" on-tap="testTrigger" data="cat">TEST</paper-button>
     <div class="stitched">
-      <paper-button raised on-tap="toggleDialog" class="big-btn water">{{localize('add-product')}}</paper-button>
+      <paper-button raised on-tap="toggleDialog" class="big-btn water"><iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-product')}}</paper-button>
       <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation"
-        always-on-top no-cancel-on-outside-click>
+        always-on-top auto-fit-on-attach no-cancel-on-outside-click>
         <h1>{{localize('add-product')}}</h1>
         <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
         <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
-        <paper-input name="product-process" id="productProcess" label="Product Process (use comma to separate the process)" required
-          always-float-label></paper-input>
         <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
-        <template is="dom-repeat" items="{{sizeArray}}" as="size">
-          <div class="container flex-horizontal">
-            <paper-input class="product-size flex-child" label="Part name" value="{{size.name}}" required always-float-label></paper-input>
-            <paper-input class="product-size" label="Setup time" value="{{size.setup}}" required always-float-label></paper-input>
-            <paper-input class="product-size" label="Cycle time" value="{{size.cycle}}" required always-float-label></paper-input>
-            <paper-input class="product-size" label="Cost" value="{{size.cost}}" required always-float-label></paper-input>
+         <paper-button raised class="dark" on-tap="addPart">+ Add Part</paper-button>
+        <paper-dialog-scrollable>
+        <template is="dom-repeat" items="{{partArray}}" as="part">
+          <div class="part-frame">
+          <div class="flex-horizontal">
+            <paper-input class="product-size flex-child" label="Part name" value="{{part.name}}" required always-float-label></paper-input>
+            <paper-input class="product-size" label="Cost" value="{{part.cost}}" required always-float-label></paper-input>
+            <paper-input name="product-process" id="productProcess" label="Part Process (use comma to separate the process)" required
+          always-float-label></paper-input><br>
+           <div class="flex-horizontal"> 
+          <template is="dom-repeat" items="{{part.process}}" as="process">         
+          <paper-input class="product-size" label="Process name" value="{{process.name}}" required always-float-label></paper-input>
+          <paper-input class="product-size" label="Setup time" value="{{process.setup}}" required always-float-label></paper-input>
+          <paper-input class="product-size" label="Cycle time" value="{{process.cycle}}" required always-float-label></paper-input>
+           </template>
+                </div>
+           <paper-button on-tap="addProcess">+ Add Process</paper-button>
             <iron-icon on-click="deleteSize" icon="vaadin:trash"></iron-icon>
           </div>
+          </div>
         </template>
-          <paper-button on-tap="addSize">+ Add Part</paper-button>
-          <vaadin-upload name="product-image" id="uploadImageFile" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
+      </paper-dialog-scrollable>
+          <vaadin-upload class="upload-frame" name="product-image" id="uploadImageFile" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
           max-file-size="2000000">
           <div class="drop-label">
             <iron-icon icon="cloud-upload"></iron-icon>
@@ -151,7 +174,7 @@
           </div>
         </vaadin-upload>
       
-        <paper-button on-tap="addSizeToArray">add size to array</paper-button>
+        <paper-button on-tap="addPartToArray">add size to array</paper-button>
         <div class="buttons">
           <paper-button dialog-dismiss>{{localize('dismiss')}}</paper-button>
           <paper-button on-tap="testUpload" dialog-confirm autofocus>{{localize('add')}}</paper-button>
@@ -181,13 +204,13 @@
                     <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
                     <h2>Setup Time</h2>
                     <template is="dom-repeat" items="{{part.setup}}" as="setup">
-                      <p>Process [[process(index)]] : [[setup]] minutes</p>
+                      <p>Process [[indexNum(index)]] : [[setup]] minutes</p>
                     </template>
                     <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
 
                     <h2>Cycle Time</h2>
                     <template is="dom-repeat" items="{{part.cycle}}" as="cycle">
-                      <p>Process [[index]] : [[cycle]] minutes</p>
+                      <p>Process [[indexNum(index)]] : [[cycle]] minutes</p>
                     </template>
                     <p>Total Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
 
@@ -300,17 +323,25 @@
         productSizes: {
           type: Object
         },
-        sizeArray: {
+        partArray: {
           type: Array,
           value: function () {
             return [{
               name: '',
-              cycle: '',
-              cost: ''
+              cost: '',
+              sku: '',
+              sequence: '',
+              process: [{ cycle: '', setup: '', name: '1' },{ cycle: '', setup: '', name: '2' },{ cycle: '', setup: '', name: '3' }]
             }]
           },
           notify: true
         },
+        processArray: {
+           type: Array,
+            value: function () { 
+            return [{ cycle: '', setup: '', name: '' }]
+          }
+        }
       },
       behaviors: [
         Polymer.AppLocalizeBehavior
@@ -321,8 +352,8 @@
       toggleDialog: function () {
         this.$.createProductDialog.open();
       },
-      process: function(e) {
-        return e+1;
+      indexNum(i) {
+        return i+1;
       },
       addProduct: function () {
         let today = new Date();
@@ -345,8 +376,7 @@
           name: this.$.productName.value,
           sku: this.$.productSku.value,
           raw: this.$.productRaw.value,
-          process: this.$.productProcess.value,
-          size: this.sizeArray
+          part: this.partArray
         }).key;
         let metadata = {
           contentType: 'image/jpeg'
@@ -356,7 +386,6 @@
         this.$.productName.value = null;
         this.$.productSku.value = null;
         this.$.productRaw.value = null;
-        this.$.productProcess.value = null;
       },
 
       testUpload: function () {
@@ -368,23 +397,34 @@
         });
       },
 
-      addSize: function () {
-        this.set('sizeArray', [
-          ...this.sizeArray, 
-          {
-            name: "",
-            cycle: "",
-            cost: ""
-          }
+      addPart: function () {
+        if(this.partArray.length < 3) {
+        this.set('partArray', [
+          ...this.partArray, 
+         {
+              name: '',
+              cost: '',
+              sku: '',
+              sequence: '',
+              process: [{ cycle: '0', setup: '0', name: '0' }]
+        }
         ]);
+        } else {
+          alert("Product can't add more than 3 parts");
+        }
       },
 
-      addSizeToArray: function () {
-        console.log(this.sizeArray);
+      addProcess: function () {
+        this.processArray.push({ cycle: 'n/a', setup: 'n/a', name: 'n/a' });
+        //this.processArray.length = 0;
+      },
+
+      addPartToArray: function () {
+        console.log(this.partArray);
       },
 
       deleteSize: function (e) {
-        this.splice('sizeArray', e.model.index, 1);
+        this.splice('partArray', e.model.index, 1);
       },
 
       editProduct: function (e) {
@@ -399,7 +439,7 @@
           // after document saved, path will be changed to the new ref
           // any change of data will sent back up and stored
           // Save food from array with index: e.model.index
-          // Data is accessible via this.sizeArray[index], or just the current row: e.model.food.*
+          // Data is accessible via this.partArray[index], or just the current row: e.model.food.*
           alert("Save product settings successful");
         });
       },
