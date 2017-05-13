@@ -24,6 +24,7 @@
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
@@ -33,6 +34,7 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/paper-slider/paper-slider.html">
@@ -42,7 +44,6 @@
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
-<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <!-- neon modules - used for animation -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
@@ -55,7 +56,7 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
-<!-- import shared style -->
+<!-- import shared style and page router -->
 <link rel="import" href="view-dashboard.html">
 <link rel="import" href="view-setup.html">
 <link rel="import" href="view-planning.html">
@@ -156,7 +157,14 @@
         border-bottom: 1px solid #d6d6d6;
       }
     </style>
-    <platinum-sw-register auto-register skip-waiting clients-claim reload-on-install href="../sw-import.js">
+    <platinum-sw-register 
+                      auto-register 
+                      skip-waiting 
+                      clients-claim 
+                      reload-on-install 
+                      on-service-worker-error="handleSWError"
+                      on-service-worker-installed="handleSWInstalled"
+                      href="../sw-import.js">
     <platinum-sw-cache default-cache-strategy="networkFirst"></platinum-sw-cache></platinum-sw-register>
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
@@ -306,9 +314,9 @@
           this.listen(window, 'offline', '_notifyNetworkStatus');
         });
       },
+
       // On create load localization language data
       attached() {
-         // load localization data
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
 
@@ -348,8 +356,8 @@
            console.log(response);          
         })
         .catch((error) => {
-          console.log("Authenticate Failed: " + error.code);
-          alert("Authenticate Failed: " + error.message);
+          console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
+          alert("Authenticate Failed: " + error.message + " Please try again.");
         });
       },
 
@@ -362,8 +370,8 @@
           console.info("Logout successful");
         })
         .catch((error) => {
-          console.log("Authenticate Failed: " + error.code);
-          alert("Authenticate Failed: " + error.message);
+          console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
+          alert("Authenticate Failed: " + error.message + " Please try again.");
         });
       },
 
@@ -427,10 +435,21 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
         }
       },
 
-      // Handle Error
+      // Handle Authen Error
       handleError(e) {
-        console.info("Authenticate Error:" + e.message);
+        console.info("%cAuthenticate Error: " + e.message, "color: crimson;");
       },
+
+      // Handle SW Error
+      handleSWError(e) {
+        console.info("%cService Worker Error", "color: crimson;");
+      },
+      
+      // Handle SW Installed
+      handleSWInstalled(e) {
+        console.info("%cService Worker Installed", "color: green;");
+      },
+      
      });
     // performance logging
     window.performance && performance.mark && performance.mark('view-index - before register');
@@ -440,6 +459,8 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
   <script src="../bower_components/turbojs/turbo.js"></script>
   <!-- Library for working with native objects. -->
   <script src="../bower_components/sugar/dist/sugar.min.js"></script>
+  <!-- Web animation pollyfill -->
+  <script src="../bower_components/web-animations-js/web-animations.min.js"></script>
   <!-- Pollyfills for localize -->
   <script src="../bower_components/intl/dist/Intl.js"></script>
   <script src="../bower_components/intl/locale-data/jsonp/en.js"></script>

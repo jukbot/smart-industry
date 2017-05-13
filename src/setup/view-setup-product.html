@@ -169,7 +169,7 @@
           </div>
         </template>
       </paper-dialog-scrollable>
-      <progress value="0" max="100" id="uploadProgress">0%</progress>
+      <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
       <input type="file" id="uploadImageFile">
       <paper-button raised class="dark" on-tap="uploadImage">Upload</paper-button>
 
@@ -410,21 +410,27 @@
         this.$.productRaw.value = null;
       },
 
-
       uploadImage() {
         let file = this.$.uploadImageFile.files[0];
-        console.log(file.name);
-        let uid = this.user.uid;
-        let storageRef = firebase.storage().ref("product/"+uid+"/"+file.name);
-        let task = storageRef.put(file);
-        task.on('state_changed', function progress(snapshot) {
-          let percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
-          this.$.uploadProgress.value = 50;
-        }, function error(err) {
-          console.log(err.message);
-        }, function complete() {
-          alert('Upload completed');
-        });
+        if(this.$.uploadImageFile.files.length == 0) {
+          alert("File cannot be empty");
+        }
+        else {
+          console.log(file.name);
+          let uid = this.user.uid;
+          let storageRef = firebase.storage().ref("product/"+uid+"/"+file.name);
+          let task = storageRef.put(file);
+          let percent = 0;
+          let unsubscribe = task.on('state_changed', 
+            function progress(snapshot) {
+            percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+            document.getElementById('uploadProgress').value = percent;
+          }, function error(err) {
+            console.log(err.message);
+          }, function complete() {
+            console.log("Upload complete");
+          });
+        }
       },
 
       testUpload: function () {
@@ -473,6 +479,7 @@
       removeProduct: function (e) {
         this.$.productQuery.ref.child(e.target.id).remove();
       },
+
       saveProduct: function (e) {
         this.$.document.save("/product/" + e.target.id).then(function () {
           // after document saved, path will be changed to the new ref

@@ -227,10 +227,6 @@
 <view-index unresolved>
 <div class="loader"><div class="loader__figure"></div><p aria-label="Loading your application" class="loader__label">Loading</p></div>
 </view-index>
-  <!-- Old browser pollyfill -->
-  <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-  <!-- Web animation pollyfill -->
-  <script src="/bower_components/web-animations-js/web-animations.min.js"></script>
   <!-- Service web workers --> 
   <script>
     // Load pre-caching Service Worker
@@ -238,11 +234,11 @@
         window.addEventListener('load', function() {
             navigator.serviceWorker
             .register('/service-worker.js')
-            .then(() => { console.info("%cService Worker Registered.", "color: green;"); })
+            .then(() => { console.info("%cService Worker Registered", "color: green;"); })
             .catch(e => { console.err("%cService Worker Error." + e.message, "color: red;")} );
         });
     } else {
-        console.info("%cBrowser is not support Service Worker !!", "color: red;"); 
+        console.info("%cBrowser is not support Service Worker !!", "color: crimson;"); 
     }
   </script>
     <!-- <script>
