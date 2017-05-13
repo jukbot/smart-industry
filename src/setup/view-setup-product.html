@@ -2,6 +2,7 @@
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-storage-script.html">
 <dom-module id="view-setup-product">
   <template>
     <style include="shared-styles">
@@ -130,9 +131,11 @@
       }
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
-    <firebase-storage-script app-name="smart-mes" id="productImage" path="/product" files="[[files]]" uploaded-files="{{uploadedFiles}}"
-      on-error="storageError"></firebase-storage-script>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <firebase-storage-script app-name="smart-mes" id="productImage" path="/product/[[user.uid]]/" files="[[files]]" uploaded-files="{{uploadedFiles}}"
+      on-error="storageError"></firebase-storage-script>
+  
+    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]" on-error="handleError"></firebase-auth>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
     <paper-button raised class="dark" on-tap="testTrigger" data="cat">TEST</paper-button>
@@ -144,7 +147,7 @@
         <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
         <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
         <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
-         <paper-button raised class="dark" on-tap="addPart">+ Add Part</paper-button>
+        <paper-button on-tap="addPart">+ Add Part</paper-button>
         <paper-dialog-scrollable>
         <template is="dom-repeat" items="{{partArray}}" as="part">
           <div class="part-frame">
@@ -166,7 +169,11 @@
           </div>
         </template>
       </paper-dialog-scrollable>
-          <vaadin-upload class="upload-frame" name="product-image" id="uploadImageFile" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
+      <progress value="0" max="100" id="uploadProgress">0%</progress>
+      <input type="file" id="uploadImageFile">
+      <paper-button raised class="dark" on-tap="uploadImage">Upload</paper-button>
+
+          <vaadin-upload class="upload-frame" name="product-image" id="uploadImageFile2" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
           max-file-size="2000000">
           <div class="drop-label">
             <iron-icon icon="cloud-upload"></iron-icon>
@@ -301,7 +308,19 @@
       </template>
     </ul>
   </template>
+  <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
   <script>
+  // Initialize Firebase
+  // TODO: Replace with your project's customized code snippet
+  var config = {
+    apiKey: "AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0",
+    authDomain: "smart-mes.firebaseapp.com",
+    databaseURL: "https://smart-mes.firebaseio.com",
+    storageBucket: "smart-mes.appspot.com",
+    messagingSenderId: "253401775445",
+  };
+  firebase.initializeApp(config);
+
     Polymer({
       is: 'view-setup-product',
       properties: {
@@ -321,6 +340,9 @@
           type: Object
         },
         productSizes: {
+          type: Object
+        },
+        user: {
           type: Object
         },
         partArray: {
@@ -388,9 +410,26 @@
         this.$.productRaw.value = null;
       },
 
+
+      uploadImage() {
+        let file = this.$.uploadImageFile.files[0];
+        console.log(file.name);
+        let uid = this.user.uid;
+        let storageRef = firebase.storage().ref("product/"+uid+"/"+file.name);
+        let task = storageRef.put(file);
+        task.on('state_changed', function progress(snapshot) {
+          let percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+          this.$.uploadProgress.value = 50;
+        }, function error(err) {
+          console.log(err.message);
+        }, function complete() {
+          alert('Upload completed');
+        });
+      },
+
       testUpload: function () {
-        let file = this.$.uploadImageFile.files;
-        let imageRef = firebase.storage().ref().child(this.$.productSku.value+'.jpg');
+        let file = this.$.uploadImageFile.files[0];
+        let imageRef = firebase.storage().ref.child(this.$.productSku.value+'.jpg');
         imageRef.put(file);
         this.$.productImage.storageRef.child(this.$.productSku.value+'.jpg').put(file).then(function(snapshot) {
             console.log('Uploaded a blob or file!');
@@ -455,6 +494,7 @@
         this.$.productRaw.value = "";
         this.$.productProcess.value = "";
       },
+
       getProductProcess: function (process) {
         return process.split(',').join(' → ');
       },
@@ -542,7 +582,7 @@
         let data = e.target.getAttribute('data');  
         this.fire('toast', data);
        // this.dispatchEvent(new CustomEvent('toast', {detail: {data: true}}));
-      }
+      },
 
     });
   </script>
