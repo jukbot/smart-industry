@@ -49,7 +49,7 @@
         margin: 10px 0;
       }
 
-       .frame {
+      .frame {
         border: solid 1px #757575;
         border-radius: 2px;
         margin: 10px 0;
@@ -58,7 +58,12 @@
         padding: 10px;
       }
 
-      
+      .no-product-title {
+        font-size: 2rem;
+        font-weight: 400;
+        text-align: center;
+        padding: 30px 0;
+      }
 
     </style>
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
@@ -102,6 +107,15 @@
           <p>Delivery Date: [[delivery]]</p>
           <p>Raw Material Used: </p>
           <p>Operation hours: [[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]] Hrs.</p>
+        </div>
+      </li>
+    </ul>
+      <div class="card">
+            <h1>Product Information</h1>
+            <div class="frame" hidden$="[[selectProduct.part]]">
+            <h1 class="no-product-title">No Product Selected</h1>
+            </div>
+
             <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
               <div class="frame">
                 <h2>Product Part [[part.name]]</h2>
@@ -111,9 +125,7 @@
                 <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
               </div>
            </template>
-        </div>
-      </li>
-    </ul>
+           </div>
   </template>
   <script>
     Polymer({

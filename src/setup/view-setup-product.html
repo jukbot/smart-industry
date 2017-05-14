@@ -132,8 +132,8 @@
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
-    <firebase-storage-script app-name="smart-mes" id="productImage" path="/product/[[user.uid]]/" files="[[files]]" uploaded-files="{{uploadedFiles}}"
-      on-error="storageError"></firebase-storage-script>
+    <!-- <firebase-storage-script app-name="smart-mes" id="productImage" path="/product/[[user.uid]]/" files="[[files]]" uploaded-files="{{uploadedFiles}}"
+      on-error="storageError"></firebase-storage-script> -->
   
     <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]" on-error="handleError"></firebase-auth>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
@@ -172,7 +172,8 @@
       <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
       <input type="file" id="uploadImageFile">
       <paper-button raised class="dark" on-tap="uploadImage">Upload</paper-button>
-
+      <paper-button raised class="chili" on-tap="deleteImage">Remove Image</paper-button>
+      
           <vaadin-upload class="upload-frame" name="product-image" id="uploadImageFile2" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
           max-file-size="2000000">
           <div class="drop-label">
@@ -428,9 +429,22 @@
           }, function error(err) {
             console.log(err.message);
           }, function complete() {
-            console.log("Upload complete");
+            console.info("%cUpload completed", "color: green;");
           });
         }
+      },
+
+      deleteImage(e) {
+          let filename = "filename";
+          let desertRef = storageRef.child('images/desert.jpg');
+          // Delete the file
+          desertRef.delete().then(function() {
+          // File deleted successfully
+          alert("Delete file succesfully");
+        }).catch(function(error) {
+          // Uh-oh, an error occurred!
+          alert("Error deleting file: " +  error);
+        });
       },
 
       testUpload: function () {
