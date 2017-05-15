@@ -17,21 +17,21 @@
 
       @media (min-width: 769px) and (max-width: 1024px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 3;
         }
       }
 
       @media (min-width: 1025px) and (max-width: 1200px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 3;
         }
       }
        @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
-          --app-grid-columns: 2;
+          --app-grid-columns: 3;
         }
       }
-      .save-btn {
+      .btn {
         margin-top: 10px;
       }
     </style>
@@ -53,8 +53,17 @@
       <paper-input label="{{localize('email')}}" type="text"></paper-input>
       <paper-input label="{{localize('current-password')}}" type="password"></paper-input>
       <paper-input label="{{localize('confirm-password')}}" type="password"></paper-input>
-      <paper-button class="magic save-btn" on-tap="_saveSettings" raised>{{localize('save-settings')}}</paper-button> 
+      <paper-button class="magic btn" on-tap="_saveSettings" title="Save settings" raised>{{localize('save-settings')}}</paper-button> 
     </div>
+</li>
+<li>
+  <div class="card">
+    <h1>Backup Settings</h1>
+    <p>Export or Import factory data to backup as a file.</p>
+    <paper-button class="carrot btn" title="Export backup" raised>Export Data</paper-button>
+    <paper-button class="magic btn" title="Import backup" raised>Import Data</paper-button>
+    
+  </div>
 </li>
 </ul>
   <paper-tooltip for="switch" animation-delay="1000" offset="0" position="bottom">Notification is feature that notify you when the system has events.</paper-tooltip>
