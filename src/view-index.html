@@ -60,7 +60,6 @@
 <link rel="import" href="view-dashboard.html">
 <link rel="import" href="view-setup.html">
 <link rel="import" href="view-planning.html">
-<link rel="import" href="view-controlling.html">
 <link rel="import" href="view-tracking.html">
 <link rel="import" href="view-404.html">
 <link rel="import" href="view-settings.html">
@@ -184,7 +183,6 @@
         <a name="dashboard" role="link" href="/dashboard" title="Dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
         <a name="setup" role="link" href="/setup" title="Setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
         <a name="planning" role="link" href="/planning" title="Plan"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-        <!-- <a name="controlling" role="link" href="/controlling" title="Control"><paper-icon-button icon="vaadin:sliders"></paper-icon-button> {{localize('view-index-menu-control')}}</a> -->
         <a name="tracking" role="link "href="/tracking" title="Track"><paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
         </iron-selector>
         <div class="sidebar-menu-line" role="separator"></div>
@@ -413,14 +411,13 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
         // Show the snackbar if the user is offline when starting a new session or if the network status changed.
         if (this.offline || (!this.offline && oldOffline === true)) {
      
-      //    if (!this._networkSnackbar) {
-       //     this._networkSnackbar = document.createElement('network-snackbar');
-       //     Polymer.dom(this.root).appendChild(this._networkSnackbar);
-       //   }
-      //    Polymer.dom(this.noInternetConnection).innerHTML = this.offline ?
-       //       'You are offline' : 'You are online';
-         
-          alert("No internet connection");
+          if (!this._networkSnackbar) {
+            this._networkSnackbar = document.createElement('network-snackbar');
+            Polymer.dom(this.root).appendChild(this._networkSnackbar);
+          }
+          Polymer.dom(this.noInternetConnection).innerHTML = this.offline ?
+              'You are offline' : 'You are online';      
+          //alert("No internet connection");
         }
       }, 
 

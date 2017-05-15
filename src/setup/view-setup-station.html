@@ -57,6 +57,12 @@
        width: 49%;
        padding: 10px;
      }
+    .no-machine-title {
+        font-size: 2rem;
+        font-weight: 400;
+        text-align: center;
+        padding: 30px 0;
+      }
     </style>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" order-by-value="true" data="{{stationItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="station" data="{{machineItems}}"></firebase-query>
@@ -66,19 +72,27 @@
     <app-indexeddb-mirror key="machineDataCache" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
     <app-indexeddb-mirror key="stationDataCache" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
     <div class="stitched">
-          <paper-button raised on-tap="toggleDialog" class="big-btn fancy"><iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-station')}}</paper-button>
+          <h1 class="no-machine-title" hidden$="[[machineItems]]">Please add machine before adding station.</h1>
+          <paper-button raised on-tap="toggleDialog" class="big-btn fancy" hidden$="[[!machineItems]]"><iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-station')}}</paper-button>
           <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
             no-cancel-on-outside-click>
             <h1>{{localize('add-station')}}</h1>
             <paper-input type="number" id="stationNumber" name="station-number" label="{{localize('station-number')}}" value="[[getStationNumber(stationItems.length)]]" min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
             <paper-input type="text" id="stationName" name="station-name"  label="{{localize('station-name')}}" required always-float-label></paper-input>
+            <vaadin-combo-box label="Machine" id="machineNumber" items="[[persistedMachineData]]" name="stationName" item-label-path="name" selected-item="{{mdata}}" required always-float-label></vaadin-combo-box>        
+            <paper-button on-tap="addMachineToStation">Add Machine</paper-button>
+            <div role="listbox">
+            <template is="dom-repeat" items="{{stationMachine}}" as="stationMachine">
+               <paper-item>[[stationMachine.name]]</paper-item>
+            </template>
+            </div>
            <div class="buttons">
                 <paper-button on-tap="dismissAddStation" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('add')}}</paper-button>
               </div>
-            </paper-dialog>
+        </paper-dialog>
     </div>
-    <ul class="app-grid">
+    <ul class="app-grid" hidden$="[[!machineItems]]">
       <template is="dom-repeat" items="{{persistedStationData}}" as="stationItem">
         <li>  
             <div class="card station">
@@ -86,7 +100,7 @@
             <h1 class="station-title">[[stationItem.name]]</h1>
             <p>{{localize('station-number')}}: [[stationItem.number]]</p>
             <p>{{localize('station-name')}}: [[stationItem.name]]</p>
-            <p>{{localize('station-machine')}}: [[stationItem.machine]]</p>  <!-- [[machineinstation(machineItem.station,stationItem.number]] -->
+            <p>{{localize('station-machine')}}: [[stationItem.machine]]</p> 
             </div>
             <div class="button-group">
             <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation">{{localize('edit')}}</paper-button>
@@ -136,6 +150,10 @@
         },
         notification: {
           type: Object
+        },
+        stationMachine: {
+          type: Array,
+          value: []
         }
       },
       behaviors: [
@@ -157,10 +175,12 @@
       addStation() {
         let sname = this.$.stationName.value;
         let snumber = this.$.stationNumber.value;
+        let smachine = this.stationMachine;
         if(sname !== "" && snumber !== "") {
         this.$.stationQuery.ref.push({
           name : sname,
-          number : snumber
+          number : snumber,
+          machine : smachine
         });
         this.clearField();
            this.$.toastAddStation.open(); 
@@ -195,26 +215,30 @@
         }
       },
       // check machine station equal to station number then return machine name
-      machineinstation: function (machine,station) {
-        let stamachine = [];
-        for (let key in machine) {
-          if(machine.station == station.number){
-             stamachine[key] = machine[key].name;
-          }
+      addMachineToStation() {
+        if(this.stationMachine.length > 10) {
+          alert("Can't add more than 10 machines to station");
+        } else {
+         
+          this.stationMachine.push(this.$.machineNumber.value);
+          console.log(this.stationMachine);
         }
-          return stamachine;
       },
+
       dismissEditStation(e) {
         let key = e.currentTarget.station.$key;
       },
+
       dismissAddStation() {
         this.clearField();
         this.$.createStationDialog.cancel();
       },
+
       clearField() {
         this.$.stationName.value = "";
         this.$.stationNumber.value = this.stationItems.length + 1;
       },
+
     });
   </script>
 </dom-module>

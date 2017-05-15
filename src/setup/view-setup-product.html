@@ -134,11 +134,10 @@
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <!-- <firebase-storage-script app-name="smart-mes" id="productImage" path="/product/[[user.uid]]/" files="[[files]]" uploaded-files="{{uploadedFiles}}"
       on-error="storageError"></firebase-storage-script> -->
-  
     <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]" on-error="handleError"></firebase-auth>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
-    <paper-button raised class="dark" on-tap="testTrigger" data="cat">TEST</paper-button>
+  <!--  <paper-button raised class="dark" on-tap="testTrigger" data="cat">TEST</paper-button> -->
     <div class="stitched">
       <paper-button raised on-tap="toggleDialog" class="big-btn water"><iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-product')}}</paper-button>
       <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation"
@@ -172,7 +171,7 @@
       <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
       <input type="file" id="uploadImageFile">
       <paper-button raised class="dark" on-tap="uploadImage">Upload</paper-button>
-      <paper-button raised class="chili" on-tap="deleteImage">Remove Image</paper-button>
+      <paper-button raised class="chilli" on-tap="deleteImage">Remove Image</paper-button>
       
           <vaadin-upload class="upload-frame" name="product-image" id="uploadImageFile2" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
           max-file-size="2000000">
@@ -227,7 +226,6 @@
                 </template>
               </div>
             </div>
-
 
             <div id="flex-column">
               <div id="flex-row">
@@ -390,9 +388,6 @@
           mm = '0' + mm
         }
         today = dd + '/' + mm + '/' + yyyy;
-        // upload file
-        //var file = a.target.files[0];
-        //var task = firebase.storage().ref('images/' + file.name).put(file);
 
         this.$.productQuery.ref.push({
           add: Math.round(new Date().getTime() / 1000.0),
@@ -419,7 +414,7 @@
         else {
           console.log(file.name);
           let uid = this.user.uid;
-          let storageRef = firebase.storage().ref("product/"+uid+"/"+file.name);
+          let storageRef = firebase.storage().ref("product/"+file.name);
           let task = storageRef.put(file);
           let percent = 0;
           let unsubscribe = task.on('state_changed', 
@@ -429,6 +424,7 @@
           }, function error(err) {
             console.log(err.message);
           }, function complete() {
+            let imgURL = task.snapshot.downloadURL;
             console.info("%cUpload completed", "color: green;");
           });
         }
@@ -447,18 +443,11 @@
         });
       },
 
-      testUpload: function () {
-        let file = this.$.uploadImageFile.files[0];
-        let imageRef = firebase.storage().ref.child(this.$.productSku.value+'.jpg');
-        imageRef.put(file);
-        this.$.productImage.storageRef.child(this.$.productSku.value+'.jpg').put(file).then(function(snapshot) {
-            console.log('Uploaded a blob or file!');
-        });
-      },
-
-      addPart: function () {
-        if(this.partArray.length < 3) {
-        this.set('partArray', [
+      addPart() {
+        if(this.partArray.length > 3) {
+          alert("Product can't add more than 3 parts");
+        } else {
+                this.set('partArray', [
           ...this.partArray, 
          {
               name: '',
@@ -468,8 +457,6 @@
               process: [{ cycle: '0', setup: '0', name: '0' }]
         }
         ]);
-        } else {
-          alert("Product can't add more than 3 parts");
         }
       },
 

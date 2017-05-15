@@ -166,7 +166,7 @@
               }
             ]
           }
-        }
+        },
       },
       behaviors: [
         Polymer.AppLocalizeBehavior
@@ -193,7 +193,7 @@
           name: this.$.machineName.value,
           queue: 0,
           station: this.$.stationNumber.value,
-          status: 'Stopped',
+          status: 'stopped',
           code: mtype[0],
           type: mtype[1]
         });
@@ -240,7 +240,7 @@
         this.$.machineName.value = null;
         this.$.machineEffi.value = 100;
         this.$.machineType.value = null;
-      },
+      }
     });
   </script>
 </dom-module>

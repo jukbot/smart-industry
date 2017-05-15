@@ -31,10 +31,13 @@
           --app-grid-columns: 3;
         }
       }
+      .card {
+        min-height: 300px;
+      }
       .number {
         font-size: 7rem;
         text-align: center;
-         margin-top: 20px;
+        margin-top: 20px;
       }
       .head {
         font-size: 1.6rem;
@@ -55,6 +58,9 @@
 <firebase-query app-name="smart-mes" id="waitQuery" path="/wait" data="{{waitData}}"></firebase-query>
 <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" data="{{machineData}}"></firebase-query>
 <firebase-query app-name="smart-mes" id="stationQuery" path="/station" data="{{stationData}}"></firebase-query>
+<firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+<firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
+<firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -95,6 +101,26 @@
           </div>
       </li>
     </ul>
+      <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1 class="head">Next Reschedule</h1>
+          <h1 class="number" style="font-size: 2.75rem;">[[getNextInterval(factoryStandard.start_interval, factoryStandard.interval)]]</h1>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="head">Reschedule Interval</h1>
+          <h1 class="number">[[factoryStandard.interval]]</h1>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="head">Operation Time</h1>
+          <h1 class="number" style="font-size: 2.75rem;">[[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</h1>
+          </div>
+      </li>
+    </ul>
       <!--<div class="card">
         <h1 class="head">Overall Production Health</h1>
         <div class="emotion-block">
@@ -124,8 +150,57 @@
       normal: {
         type: String,
         value: "1"
-      }
       },
+        factoryStandard: {
+          type: Object
+        },
+        factoryOperation: {
+          type: Object
+        },
+        factoryPerformance: {
+          type: Object
+        },
+    },
+       getNextInterval(last_timestamp, interval) {
+         if(!last_timestamp || !interval) return 0;
+         let current = Math.floor(Date.now() / 1000);
+         let diff = current - last_timestamp;
+         let range = interval * 24 * 60 * 60;
+         if(diff <= range) {
+         let nextIntervalStamp = (last_timestamp*1000) + (interval * 24 * 60 * 60 * 1000);
+         let nextIntervalDate = new Date(nextIntervalStamp);
+          let dd = nextIntervalDate.getDate();
+          let mm = nextIntervalDate.getMonth() + 1; //January is 0!
+          let yyyy = nextIntervalDate.getFullYear();
+          if (dd < 10) {
+           dd = '0' + dd
+          }
+          if (mm < 10) {
+           mm = '0' + mm
+         }
+          let nextInterval = dd + '/' + mm + '/' + yyyy;
+          return nextInterval;
+         } else {
+           this.set('factoryStandard.start_interval', current);
+         }
+      },
+      
+      getOpTime(end, start) {
+        if(!end || !start) return 0
+        let date = new Date()
+        let current_hour = date.getHours()
+        let current_minute = date.getMinutes()
+        let endtime = end.replace(/\:/g, '.')
+        let starttime = start.replace(/\:/g, '.')
+        let current = current_hour + "." + current_minute;
+        let timeleft = endtime - parseFloat(current)
+        if(parseFloat(current) < starttime || parseFloat(current) > endtime) {
+            return "STOPPED"
+        } else {
+            return timeleft + " Hrs."
+        } 
+      },
+
     });
   </script>
 </dom-module>

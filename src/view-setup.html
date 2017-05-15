@@ -32,8 +32,8 @@
         </app-header>
           <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
           <view-setup-factory name="factory"></view-setup-factory>
-          <view-setup-station name="station"></view-setup-station>
           <view-setup-machine name="machine"></view-setup-machine>
+          <view-setup-station name="station"></view-setup-station>
           <view-setup-product name="product"></view-setup-product>
           <view-setup-customer name="customer"></view-setup-customer>
           <view-setup-inventory name="inventory"></view-setup-inventory>
@@ -82,15 +82,15 @@
                 'disable': false
               },
               {
-                'title': 'station',
-                'view': 'station',
-                'icon': 'vaadin:viewport',
-                'disable': false
-              },
-              {
                 'title': 'machine',
                 'view': 'machine',
                 'icon': 'vaadin:automation',
+                'disable': false
+              },
+              {
+                'title': 'station',
+                'view': 'station',
+                'icon': 'vaadin:viewport',
                 'disable': false
               },
               {

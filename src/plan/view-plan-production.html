@@ -52,7 +52,7 @@
       .output-frame {
         border: solid 1px #757575;
         border-radius: 2px; 
-        margin:10px 0; 
+        margin: 10px; 
         min-height: 100px; 
         overflow:hidden;
         padding: 10px;
@@ -105,7 +105,8 @@
 
        .machine {
         height: auto;
-        min-height: 50px;
+        min-height: 150px;
+        min-width: 150px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -124,15 +125,34 @@
         cursor: -webkit-grab;
      }
 
+      .flex-group {
+        width: 100%;
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: center; 
+        flex-direction: row; 
+      }
+
+      .flex-item {
+        flex: 1;
+      }
+
      .add-machine-menu {
        overflow: auto;
        max-height: 300px;
      }
+
      .control-btn {
-       margin: 20px 0;
+       margin: 10px 0;
+       width: 49%;
      }
-     .frame p {
-        margin: 12px 0;
+     
+      .frame p {
+        margin: 10px 0;
+      }
+      
+      .slider {
+        width: 100%;
       }
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
@@ -142,52 +162,43 @@
        <ul class="app-grid control-bar">
       <li>
       <div class="frame">
-      <h2>Station</h2>
-      <paper-input label="Station Name" name="stationname" id="stationName" type="text" required always-float-label auto-validate></paper-input>
-       <div class="button-group" style="height: auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        margin: 10px;
-        padding: 10px;
-        flex-direction: column;
-        text-decoration: none;
-        position: relative;
-        box-sizing: border-box;">
-      <paper-button raised class="big-btn magic" on-tap="_addStation">Add station</paper-button>
-       </div>
+      <h2>Load Simulator Plan</h2>
+      <vaadin-combo-box label="Load Plan" name="plan" items="" id="planSelector" on-tap="selectPlan" item-label-path="name"
+        item-value-path="name" required always-float-label></vaadin-combo-box>
+      <paper-button class="control-btn dark" raised on-tap="_simulatePlan">Load</paper-button>
+      <paper-button class="control-btn chilli" raised on-tap="_simulatePlan">Delete</paper-button>
       </div>
       </li>
       <li>
       <div class="frame">
-      <h2>Product</h2>
+      <h2>Add Station</h2>
+      <paper-input label="Station Name" name="stationname" id="stationName" type="text" required always-float-label auto-validate></paper-input>
+      <br>
+      <h2>Add Product</h2>
       <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" on-tap="selectProduct" item-label-path="name"
         item-value-path="name" selected-item='{{x}}' required always-float-label></vaadin-combo-box>
-      <vaadin-combo-box label="Size" name="size" items="[[x.size]]" id="sizeSelector" on-tap="selectSize" disabled="true" item-label-path="name"
-        item-value-path="length" required always-float-label></vaadin-combo-box>
-      <vaadin-combo-box label="Load Plan" name="plan" items="" id="planSelector" on-tap="selectPlan" disabled="true" item-label-path="name"
-        item-value-path="name" required always-float-label></vaadin-combo-box>
-      <vaadin-combo-box label="Target station" name="station" items="[[stations]]" id="stationSelector" on-tap="selectStation" item-label-path="name"
-        item-value-path="name" required always-float-label></vaadin-combo-box>
+      <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
+            step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
+      <paper-button raised class="control-btn magic" on-tap="_addStation">Add Station</paper-button>  
+      <paper-button raised class="control-btn carrot" on-tap="_addStation">Add Product</paper-button>  
       </div>
       </li>
       <li>
       <div class="frame">
-      <h2>Control</h2>
-      <div>Duration (Hours)
-      <paper-slider min="0" step="1" max="72" max-markers="72" value="0" on-change="_changeDuration" id="duration" editable active pin noink snaps></paper-slider>
+      <h2>Simulator Control</h2>
+      <div><p>Duration (Hours)</p>
+      <paper-slider class="slider" min="0" step="1" max="72" max-markers="72" value="0" on-change="_changeDuration" id="duration" editable active pin noink snaps></paper-slider>
       </div>
-      <div>Speed (x1.00)
-      <paper-slider min="1.00" step="0.50" max="4.00" max-markers="4.00" value="0" editable active pin noink snaps></paper-slider>
+      <div><p>Speed (x1.00)</p>
+      <paper-slider class="slider" min="1.00" step="0.50" max="4.00" max-markers="4.00" value="0" editable active pin noink snaps></paper-slider>
       </div>
+      <vaadin-combo-box label="Target station" name="station" items="[[stations]]" id="stationSelector" on-tap="selectStation" item-label-path="name"
+        item-value-path="name" required always-float-label></vaadin-combo-box>
+        <paper-button class="control-btn burn" raised on-tap="_simulatePlan">Simulate</paper-button>
+        <paper-button class="control-btn dark" raised on-tap="_savePlan">Save Plan</paper-button>
       </div>
       </li>
       </ul>
-      <div class="button-group control-btn">
-        <paper-button raised class="burn" on-tap="_simulatePlan">Simulate</paper-button>
-        <paper-button raised class="magic" on-tap="_savePlan">Save</paper-button>
-      </div>
       <vaadin-context-menu selector=".block">
         <!-- ADD NEW STATIONS -->
         <template>
@@ -201,12 +212,13 @@
         <div class="block production-block">
           <template is="dom-repeat" items="[[stations]]" as="station">
             <li>
-            <div class="block stationBox" index="[[index]]"><h2>[[station.name]]</h2>
-            <p>Station [[index]]</p>
-             <template is="dom-repeat" items="[[machines_s1]]" as="machineInStation">
-                    <div class="machine" value="[[machineInStation.name]]">[[machineInStation.name]]</div>
+            <div class="block stationBox" index="[[index]]"><h2>Station [[station.name]]</h2>
+            <p>Station ID [[index]]</p>
+             <div class="flex-group">
+             <template is="dom-repeat" items="[[machines_s1]]" as="machineInStation">           
+                  <div class="machine flex-item" value="[[machineInStation.name]]">[[machineInStation.name]]</div>  
             </template>
-
+            </div>
             <div>
              <!-- ADD MACHINE TO THIS STATION -->
             <paper-menu-button>
@@ -225,11 +237,11 @@
             </div>
             </li>
           </template>
-          <template is="dom-if" if="[[!stations]]">
-            <div class="block stationBox" style="min-height: 500px;"><h2>No station in production block.</h2>
+          <dom-if if="[[!stations]]">
+            <div class="block stationBox" style="min-height: 500px;"><h1>No station in production block.</h1>
             <p>Please add your first station to the block.</p>
             </div>   
-         </template>
+         </dom-if>
         </div>
 
       </vaadin-context-menu>
@@ -325,20 +337,6 @@
           }
         },
       },
-      ready() {
-          let productPicker = this.$.productSelector;
-          let sizePicker = this.$.sizeSelector;
-          //let colorPicker = this.$.colorSelector;
-          let machinePicker = this.$.machineSelector;
-          productPicker.addEventListener('value-changed', function() {
-          let product_list = productPicker.value;    
-          if(product_list != null && sizePicker.items != null) {
-                 sizePicker.disabled = false;
-                 //colorPicker.disabled = false;
-                 machinePicker.disabled = false;
-              }
-          });
-      },
       _addStation() {
         let sname = this.$.stationName.value;
         if(sname === "") {
@@ -349,7 +347,6 @@
         } 
       },
       _addMachineToStation(e) {
-          console.log(e.model.machineItem.name);
           let mname = e.model.machineItem.name;
           //var machines = new Array()    
           this.push('machines_s1', {name: mname, station: 1});
