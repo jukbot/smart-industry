@@ -235,7 +235,7 @@
             navigator.serviceWorker
             .register('/service-worker.js')
             .then(() => { console.info("%cService Worker Registered", "color: green;"); })
-            .catch(e => { console.err("%cService Worker Error." + e.message, "color: red;")} );
+            .catch(() => { console.err("%cService Worker Register Failed", "color: red;")} );
         });
     } else {
         console.info("%cBrowser is not support Service Worker !!", "color: crimson;"); 
