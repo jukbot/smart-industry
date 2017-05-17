@@ -43,6 +43,7 @@
             });
         }
     </script>
+    <!-- <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script> -->
     <link rel="import" href="src/view-index.html">
     <!--[if lt IE 9]>
     	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -227,7 +228,7 @@
 <body>
     <script>
         window.performance && performance.mark && performance.mark('index.html');
-        (function () {
+       (function () {
             'use strict';
             if ('registerElement' in document &&
                 'import' in document.createElement('link') &&
@@ -239,7 +240,7 @@
                 document.body.appendChild(e);
                 console.info("%cBrowser is using polyfill the platform.", "color: crimson;");
             }
-        })();
+        })(); 
     </script>
 <view-index unresolved>
 <div class="loader"><div class="loader__figure"></div><p aria-label="Loading your application" class="loader__label">Loading</p></div>

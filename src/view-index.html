@@ -322,11 +322,9 @@
       },
 
       _routePageChanged(page) {
-          this.async(()=> {
-        if (page === undefined) return 'dashboard';
+        if (page === undefined) return;
         if (!this.$.drawer.persistent)  this.$.drawer.close();
-          this.page = page || 'dashboard';
-          });
+        this.page = page || 'dashboard';
       },
 
       _pageChanged(page){
