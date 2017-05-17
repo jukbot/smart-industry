@@ -285,8 +285,8 @@
             </div>
 
             <div class="button-group">
-              <paper-button raised class="water" id="[[productItem.$key]]" on-tap="editProduct">{{localize('edit')}}</paper-button>
-              <paper-button raised class="chilli" id="[[productItem.$key]]" on-tap="removeProduct">{{localize('remove')}}</paper-button>
+              <paper-button raised class="water" product="[[productItem]]" on-tap="editProduct">{{localize('edit')}}</paper-button>
+              <paper-button raised class="chilli" product="[[productItem]]" on-tap="removeProduct">{{localize('remove')}}</paper-button>
             </div>
             <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
               always-on-top no-cancel-on-outside-click auto-fit-on-attach>
@@ -298,8 +298,8 @@
               <paper-input name="raw-material" class="editproductRaw" value="{{productItem.raw}}" label="Raw Material (use comma to separate)"
                 always-float-label></paper-input>
               <div class="buttons">
-                <paper-button on-tap="dismissEditProduct" id="[[productItem.$key]]" dialog-dismiss>{{localize('dismiss')}}</paper-button>
-                <paper-button on-tap="saveProduct" id="[[productItem.$key]]" dialog-confirm autofocus>{{localize('save')}}</paper-button>
+                <paper-button on-tap="dismissEditProduct" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+                <paper-button on-tap="saveProduct" product="[[productItem]]"  dialog-confirm autofocus>{{localize('save')}}</paper-button>
               </div>
             </paper-dialog>
           </div>
@@ -474,11 +474,15 @@
       },
 
       editProduct: function (e) {
-        this.$$('#edit_' + e.target.id).open();
+        let key = e.currentTarget.product.$key;
+        this.$$('#edit_' + key).open();
       },
 
       removeProduct: function (e) {
-        this.$.productQuery.ref.child(e.target.id).remove();
+         if (confirm("Delete tihs product ?") == true) { 
+           let key = e.currentTarget.product.$key;
+           this.$.productQuery.ref.child(key).remove(); 
+        } else {} 
       },
 
       saveProduct: function (e) {

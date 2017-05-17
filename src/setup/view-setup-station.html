@@ -193,11 +193,14 @@
         this.$$('#edit_'+ key).open();  
       },
       removeStation(e) {
-        let key = e.currentTarget.station.$key;
-        this.$.stationQuery.ref.child(key).remove();
+         if (confirm("Delete tihs station ?") == true) { 
+           let key = e.currentTarget.station.$key;
+           this.$.stationQuery.ref.child(key).remove();
         if(this.notification) {
         this.$.toastDeleteStation.open(); 
          }
+        } else {} 
+        
       },
       saveEditStation(e) {
         let key = e.currentTarget.station.$key;

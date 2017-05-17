@@ -87,8 +87,8 @@
             <p>{{localize('machine-install-date')}}: [[machineItem.install]]</p>
             </div>
             <div class="button-group">
-            <paper-button raised class="magic" id="[[machineItem.$key]]" on-tap="editMachine">{{localize('edit')}}</paper-button>
-            <paper-button raised class="chilli" id="[[machineItem.$key]]" on-tap="removeMachine">{{localize('remove')}}</paper-button>
+            <paper-button raised class="magic" machine="[[machineItem]]" on-tap="editMachine">{{localize('edit')}}</paper-button>
+            <paper-button raised class="chilli" machine="[[machineItem]]" on-tap="removeMachine">{{localize('remove')}}</paper-button>
             </div>
             <paper-dialog id="edit_[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click>
             <h2>{{localize('edit-machine')}}</h2>
@@ -101,8 +101,8 @@
              <vaadin-combo-box label="Station" id="stationNumber_[[machineItem.$key]]" items="[[stationItems]]" name="stationName" value="[[machineItem.station]]" item-label-path="name" item-value-path="number" required always-float-label></vaadin-combo-box> 
             
               <div class="buttons">
-                <paper-button id="[[machineItem.$key]]" on-tap="dismissEditMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
-                <paper-button id="[[machineItem.$key]]" on-tap="saveEditMachine" dialog-confirm autofocus>{{localize('save')}}</paper-button>
+                <paper-button on-tap="dismissEditMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+                <paper-button on-tap="saveEditMachine" machine="[[machineItem]]" dialog-confirm autofocus>{{localize('save')}}</paper-button>
               </div>
               </paper-dialog>
           </div>
@@ -200,10 +200,17 @@
         this.clearField();
       },
       editMachine(e) {
-        this.$$('#edit_'+e.target.id).open();  
+        let key = e.currentTarget.machine.$key;
+        this.$$('#edit_'+key).open();  
       },
       removeMachine(e) {
-        this.$.machineQuery.ref.child(e.target.id).remove();
+          if (confirm("Delete tihs machine ?") == true) { 
+           let key = e.currentTarget.machine.$key;
+           this.$.machineQuery.ref.child(key).remove();
+        if(this.notification) {
+        this.$.toastDeleteStation.open(); 
+         }
+        } else {}
       },
       saveEditMachine(e) {
         this.$.machineQuery.refreshNetworkStatus();
