@@ -1,0 +1,144 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="view-index.html">
+<link rel="import" href="app-language-behavior.html">
+<link rel="import" href="shared-styles.html">
+<dom-module id="view-login">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        padding: 0px;
+        margin: 0px;
+      }
+
+      div {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      section {
+        height: 100vh;
+      }
+      
+      .logo {
+        margin: 0 auto;
+        padding: 10px 0;
+        width: 25%;
+        height: auto;
+        text-align: center;
+        display: block;
+      }
+
+      .main-title {
+        font-size: 2.75rem;
+        font-weight: 400;
+        line-height: normal;
+        text-align: center;
+        color: #FFFFFF;
+      }
+
+      .main-describe {
+        font-size: 1.25rem;
+        text-align: center;
+        color: #eeeeee;
+        margin-bottom: 20px;
+        font-weight: 300;
+      }
+      /* Pattern styles */
+
+      .container {
+        display: flex;
+      }
+
+      .left-half {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+       url("../images/cover/welcome.jpg");
+        background-repeat: no-repeat;
+        background-position: center top;
+        background-size: cover;
+        
+        background-color: #333333;
+        flex: 1;
+        padding: 1rem;
+      }
+
+      .right-half {
+        background-color: #FFFFFF;
+        flex: 1;
+        padding: 1rem;
+      }
+    </style>
+    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]"
+      on-error="handleError"></firebase-auth>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <section class="container">
+      <div class="left-half">
+        <article>
+         <!-- <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">-->
+          <h1 title="Pronto" class="main-title">Pronto</h1>
+          <div title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</div>
+        </article>
+      </div>
+      <div class="right-half">
+        <article>
+          <h1>Welcome Back</h1>
+          <paper-input label="E-mail" name="e-mail" id="email" type="text" maxlength="50" auto-complete="email" autofocus auto-validate></paper-input>
+          <paper-input label="Password" name="password" id="passwd" type="password" maxlength="50" auto-complete="current-password"
+            auto-validate></paper-input>
+          <paper-button raised class="carrot authen-btn" on-tap="_login" role="button" hidden$="[[user]]">{{localize('login-button')}}</paper-button>
+          <paper-button raised class="carrot authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button>
+        </article>
+      </div>
+    </section>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-login',
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
+      ],
+
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
+      },
+      _login() {
+        if (this.$.email !== "" || this.$.passwd !== "") {
+          let email = this.$.email.value;
+          let passwd = this.$.passwd.value;
+
+          this.$.auth.signInWithEmailAndPassword(email, passwd)
+            .then((response) => {
+              //redirect to dashboard page
+              this.set('route.path', 'dashboard');
+              console.info("Login successful");
+              console.log(response);
+            })
+            .catch((error) => {
+              console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
+              alert("Authenticate Failed: " + error.message + " Please try again.");
+            });
+        } else {
+          alert("Email or Password cannot leave blank");
+        }
+      },
+
+      // Signout Action
+      _logout() {
+        this.$.auth.signOut()
+          .then(() => {
+            //redirect to login page
+            this.set('route.path', 'login');
+            console.info("Logout successful");
+          })
+          .catch((error) => {
+            console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
+            alert("Authenticate Failed: " + error.message + " Please try again.");
+          });
+      },
+
+
+    });
+  </script>
+</dom-module>

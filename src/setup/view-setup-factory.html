@@ -1,5 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../view-index.html">
+<link rel="import" href="../app-language-behavior.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="view-setup-factory">
   <template>
@@ -52,6 +53,7 @@
         padding: 0 5px;
       }
     </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
@@ -62,17 +64,17 @@
         <div class="card">
           <h1>{{localize('factory-initialize')}}</h1>
           <div class="form-wrapper">
-            <paper-input label="{{localize('factory-name')}}" name="factory-name" id="factoryName" value="[[factoryOperation.name]]"
-              type="text" required always-float-label auto-validate></paper-input>
-            <vaadin-combo-box label="{{localize('factory-type')}}" name="factory-type" id="factoryType" value="[[factoryOperation.type]]"
+            <paper-input label="{{localize('factory-name')}}" name="factory-name" id="factoryName" value="[[factoryOperation.name]]" type="text" 
+            required always-float-label auto-validate></paper-input>
+            <vaadin-combo-box label="{{localize('factory-type')}}" name="factory-type" id="factoryType" value="[[factoryOperation.type]]" 
               items="[[factoryType]]" item-label-path="name" item-value-path="name" required always-float-label></vaadin-combo-box>
-            <paper-input label="{{localize('operation-start')}} (xx:xx)" name="opstart" id="opStart" value="[[factoryOperation.op_start]]"
+            <paper-input label="{{localize('operation-start')}} (xx:xx)" name="opstart" id="opStart" value="[[factoryOperation.op_start]]" type="text" 
               required always-float-label auto-validate></paper-input>
-            <paper-input label="{{localize('operation-end')}} (xx:xx)" name="opend" id="opEnd" value="[[factoryOperation.op_end]]" required
+            <paper-input label="{{localize('operation-end')}} (xx:xx)" name="opend" id="opEnd" value="[[factoryOperation.op_end]]" type="text"  required
               always-float-label auto-validate></paper-input>
-            <paper-input label="{{localize('over-time-start')}} (xx:xx)" name="otstart" id="otStart" value="[[factoryOperation.ot_start]]"
+            <paper-input label="{{localize('over-time-start')}} (xx:xx)" name="otstart" id="otStart" value="[[factoryOperation.ot_start]]" type="text" 
               required always-float-label auto-validate></paper-input>
-            <paper-input label="{{localize('over-time-end')}} (xx:xx)" name="otend" id="otEnd" value="[[factoryOperation.ot_end]]" required
+            <paper-input label="{{localize('over-time-end')}} (xx:xx)" name="otend" id="otEnd" value="[[factoryOperation.ot_end]]" type="text" required
               always-float-label auto-validate></paper-input>
             <paper-input label="{{localize('working-utilization')}} (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
               type="number" min="0" max="100" step="1" required always-float-label auto-validate></paper-input>
@@ -128,18 +130,6 @@
     Polymer({
       is: 'view-setup-factory',
       properties: {
-        language: {
-          type: Object,
-          value: function () {
-            if (localStorage.getItem("lang") != null) {
-              return localStorage.getItem("lang");
-            } else if (localStorage.getItem("lang") == null) {
-              return "en";
-            } else {
-              return this.language;
-            }
-          }
-        },
         factoryStandard: {
           type: Object
         },
@@ -177,8 +167,10 @@
         }
       },
       behaviors: [
-        Polymer.AppLocalizeBehavior
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
       ],
+      
       attached: function () {
         this.loadResources(this.resolveUrl('../../data/locales.json'));
       },

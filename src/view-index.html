@@ -58,12 +58,13 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
 <!-- import shared style and page router -->
 <link rel="import" href="app-language-behavior.html">
+<link rel="import" href="view-login.html">
+<link rel="import" href="view-settings.html">
+<link rel="import" href="view-404.html">
 <link rel="import" href="view-dashboard.html">
 <link rel="import" href="view-setup.html">
 <link rel="import" href="view-planning.html">
 <link rel="import" href="view-tracking.html">
-<link rel="import" href="view-404.html">
-<link rel="import" href="view-settings.html">
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-index">
   <template>
@@ -169,15 +170,15 @@
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]" on-error="handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]" on-error="handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout fullbleed>
-       <app-drawer id="drawer" role="menu" slot="drawer" swipe-open>
+       <app-drawer hidden$="[[!signedIn]]" id="drawer" role="menu" slot="drawer" swipe-open>
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
-        <div title="Pronto" class="main-title">Pronto</div>
+        <h1 title="Pronto" class="main-title">Pronto</h1>
         <div title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</div>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
         <a name="dashboard" role="link" href="/dashboard" title="Dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
@@ -201,9 +202,9 @@
           <p>{{localize('developed-by')}} [[metadata.appDeveloper]]</p>
           </div>
         </dom-if>
-      </app-drawer>
+      </app-drawer>    
       <app-header-layout fullbleed has-scrolling-region>
-        <app-header slot="header" role="rowheader" condenses fixed>
+        <app-header hidden$="[[!signedIn]]" slot="header" role="rowheader" condenses fixed hidden$="[[!signedIn]]">
           <app-toolbar role="toolbar">
             <paper-icon-button icon="vaadin:menu" alt="menu" aria-label="sidebar menu" drawer-toggle></paper-icon-button>
             <span class="title" main-title>{{localize(page)}}</span>
@@ -230,19 +231,19 @@
                   </paper-icon-item>
               </paper-menu>
             </paper-menu-button>
-            <dom-if if="[[user]]" hidden$="[[!user]]">
+            <div hidden$="[[!user]]">
               <p class="display-name" hidden$="{{!wideLayout}}">[[user.displayName]]</p>
-            </dom-if>
+            </div>
           </app-toolbar>
         </app-header>
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
-          <view-dashboard name="dashboard" route="{{subroute}}"></view-dashboard>
-          <view-setup name="setup" route="{{subroute}}"></view-setup>
-          <view-planning name="planning" route="{{subroute}}"></view-planning>
-          <view-tracking name="tracking" route="{{subroute}}"></view-tracking>
-          <view-controlling name="controlling" route="{{subroute}}"></view-controlling>
-          <view-settings name="settings" route="{{subroute}}"></view-settings>
-          <view-404 name="404" route="{{subroute}}"></view-404>         
+          <view-dashboard name="dashboard" route="{{subroute}}" hidden$="[[!signedIn]]"></view-dashboard>
+          <view-setup name="setup" route="{{subroute}}" hidden$="[[!signedIn]]"></view-setup>
+          <view-planning name="planning" route="{{subroute}}" hidden$="[[!signedIn]]"></view-planning>
+          <view-tracking name="tracking" route="{{subroute}}" hidden$="[[!signedIn]]"></view-tracking>
+          <view-settings name="settings" route="{{subroute}}" hidden$="[[!signedIn]]"></view-settings>
+          <view-404 name="404" route="{{subroute}}"></view-404>   
+          <view-login name="login" route="{{subroute}}"></view-login>              
         </iron-pages>
       </app-header-layout>
      </app-drawer-layout> 
@@ -270,7 +271,8 @@
           type: Object
         },
         signedIn: {
-          type: Boolean
+          type: Boolean,
+          observer: '_onAuthenChange'
         },
         wideLayout: {
           type: Boolean,
@@ -300,20 +302,18 @@
         this.removeAttribute('unresolved');
       },
 
+      // On create load localization language data
+      attached() {
+        this.loadResources(this.resolveUrl('../data/locales.json'));
+        console.log(this.$.auth.signedIn);
+      },
+
       ready() {
-        this.async(() => {
-          if (!this.route.path) this.set('routeData.page', 'dashboard');
-        });
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, function() {
           this.listen(window, 'online', '_notifyNetworkStatus');
           this.listen(window, 'offline', '_notifyNetworkStatus');
         });
-      },
-
-      // On create load localization language data
-      attached() {
-        this.loadResources(this.resolveUrl('../data/locales.json'));
       },
 
       _onLayoutChange(wide) {
@@ -324,7 +324,11 @@
       _routePageChanged(page) {
         if (page === undefined) return;
         if (!this.$.drawer.persistent)  this.$.drawer.close();
-        this.page = page || 'dashboard';
+        if (this.$.auth.signedIn) {
+          this.page = page || 'dashboard';
+        } else {
+          this.page = 'login';
+        }
       },
 
       _pageChanged(page){
@@ -334,6 +338,14 @@
        null, 
        this._showPage404.bind(this), 
        true);
+      },
+
+      _onAuthenChange(authen) {
+        if(authen === false) {
+          this.set('route.path', 'login');
+        } else {  
+          this.set('route.path', 'dashboard');
+        }
       },
 
       _showPage404() {
@@ -360,7 +372,7 @@
         this.$.auth.signOut()
         .then(() => {
           //redirect to login page
-          //this.set('route.path', 'login');
+          this.set('route.path', 'login');
           console.info("Logout successful");
         })
         .catch((error) => {
