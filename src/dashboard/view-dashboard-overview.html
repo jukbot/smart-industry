@@ -116,7 +116,7 @@
       </li>
       <li>
         <div class="card">
-          <h1 class="head">Operation Time</h1>
+          <h1 class="head">Operation Time Left</h1>
           <h1 class="number" style="font-size: 2.75rem;">[[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</h1>
           </div>
       </li>
@@ -197,7 +197,7 @@
         if(parseFloat(current) < starttime || parseFloat(current) > endtime) {
             return "STOPPED"
         } else {
-            return timeleft + " Hrs."
+            return timeleft.toFixed(2) + " Hrs."
         } 
       },
 

@@ -1,7 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <!-- app modules - used for core functions -->
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
@@ -47,7 +46,6 @@
 <!-- neon modules - used for animation -->
 <link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
-<link rel="import" href="../bower_components/platinum-sw/platinum-sw-elements.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/material-progress/material-progress.html">
@@ -68,18 +66,18 @@
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-index">
   <template>
-    <style include="shared-styles">  
-      :host {
+    <style include="shared-styles">
+       :host {
         display: block;
         --paper-menu-button-dropdown: {
           margin-top: 50px;
-        } 
+        }
       }
 
       .menu-item {
         min-width: 120px;
       }
-            
+
       .main-title {
         font-size: 2.75rem;
         font-weight: 400;
@@ -101,7 +99,7 @@
       }
 
       .drawer-list a:hover {
-         background-color: #eeeeee;
+        background-color: #eeeeee;
       }
 
       .drawer-list a.iron-selected {
@@ -109,11 +107,11 @@
         font-weight: 400;
         background-color: #333333;
       }
-      
+
       .main-header {
         box-shadow: 0px 5px 6px -3px rgba(0, 0, 0, 0.4);
       }
-      
+
       .logo {
         margin: 0 auto;
         padding: 15px 0;
@@ -122,24 +120,24 @@
         text-align: center;
         display: block;
       }
-      
+
       .account-btn {
         margin: 0;
         padding: 4px;
       }
-      
+
       .display-name {
         margin: 0;
         font-size: 1rem;
       }
-      
+
       .center {
         display: flex;
         align-items: center;
         justify-content: center;
         height: 5em;
       }
-      
+
       .authen-btn {
         text-align: center;
         width: 60%;
@@ -151,84 +149,82 @@
 
       .dropdown-content {
         min-width: 200px;
-      }  
+      }
 
       .sidebar-menu-line {
         border-bottom: 1px solid #d6d6d6;
       }
     </style>
-    <platinum-sw-register 
-                      auto-register 
-                      skip-waiting 
-                      clients-claim 
-                      reload-on-install 
-                      on-service-worker-error="handleSWError"
-                      on-service-worker-installed="handleSWInstalled"
-                      href="../sw-import.js">
-    <platinum-sw-cache default-cache-strategy="networkFirst"></platinum-sw-cache></platinum-sw-register>
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]" on-error="handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="[[online]]" on-error="handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
     <app-drawer-layout fullbleed>
-       <app-drawer hidden$="[[!signedIn]]" id="drawer" role="menu" slot="drawer" swipe-open>
+      <app-drawer hidden$="[[!authen]]" id="drawer" role="menu" slot="drawer" swipe-open>
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
         <h1 title="Pronto" class="main-title">Pronto</h1>
         <div title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</div>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
-        <a name="dashboard" role="link" href="/dashboard" title="Dashboard"><paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
-        <a name="setup" role="link" href="/setup" title="Setup"><paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-        <a name="planning" role="link" href="/planning" title="Plan"><paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-        <a name="tracking" role="link "href="/tracking" title="Track"><paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
+          <a name="dashboard" role="link" href="/dashboard" title="Dashboard">
+            <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
+          <a name="setup" role="link" href="/setup" title="Setup">
+            <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
+          <a name="planning" role="link" href="/planning" title="Plan">
+            <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
+          <a name="tracking" role="link " href="/tracking" title="Track">
+            <paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
         </iron-selector>
         <div class="sidebar-menu-line" role="separator"></div>
         <div class="center">
-          <paper-button raised class="chilli authen-btn" on-tap="_login" role="button" hidden$="[[user]]">{{localize('login-button')}}</paper-button>
           <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button>
         </div>
-        <dom-if if="[[user]]">
+        <dom-if if="[[authen]]">
           <div class="profile" role="group">
-          <img style="width: 150px;" src="[[user.photoURL]]" alt="user photo">
-          <p>[[user.displayName]]</p>
-          <p>E-mail: [[user.email]]</p>
-          <p>Verify: [[user.emailVerified]]</p>
-          <p>[[metadata.appName]]</p>
-          <p>{{localize('version')}} [[metadata.appVersion]]</p>
-          <p>{{localize('developed-by')}} [[metadata.appDeveloper]]</p>
+            <img style="width: 150px;" src="[[user.photoURL]]" alt="user photo">
+            <p>[[user.displayName]]</p>
+            <p>E-mail: [[user.email]]</p>
+            <p>Verify: [[user.emailVerified]]</p>
+            <p>[[metadata.appName]]</p>
+            <p>{{localize('version')}} [[metadata.appVersion]]</p>
+            <p>{{localize('developed-by')}} [[metadata.appDeveloper]]</p>
+          
+            [[route.path]]
           </div>
         </dom-if>
-      </app-drawer>    
+      </app-drawer>
       <app-header-layout fullbleed has-scrolling-region>
-        <app-header hidden$="[[!signedIn]]" slot="header" role="rowheader" condenses fixed hidden$="[[!signedIn]]">
+       <div hidden$="[[!loader]]" class="loader"><div class="loader__figure"></div><p aria-label="Loading your application" class="loader__label">Loading</p></div>
+        <app-header hidden$="[[!authen]]" slot="header" role="rowheader" condenses fixed>
           <app-toolbar role="toolbar">
             <paper-icon-button icon="vaadin:menu" alt="menu" aria-label="sidebar menu" drawer-toggle></paper-icon-button>
             <span class="title" main-title>{{localize(page)}}</span>
             <paper-menu-button dynamic-align>
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-menu class="dropdown-content">
-                  <a href="https://github.com/jukbot/smart-industry" target="_blank">
+                <a href="https://github.com/jukbot/smart-industry" target="_blank">
                   <paper-icon-item class="menu-item" name="help">
                     <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
                     {{localize('help')}}
                   </paper-icon-item>
+                </a>
+                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="settings" role="navigation">
+                  <a name="settings" role="link" href="/settings">
+                    <paper-icon-item class="menu-item" name="settings">
+                      <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
+                      {{localize('menu-settings')}}
+                    </paper-icon-item>
                   </a>
-                   <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="settings" role="navigation">
-                   <a name="settings" role="link" href="/settings">
-                  <paper-icon-item class="menu-item" name="settings">
-                    <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
-                    {{localize('menu-settings')}}
-                  </paper-icon-item>
-                      </a>
-                  </iron-selector>
-                  <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
-                    <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
-                    {{localize('logout')}}
-                  </paper-icon-item>
+                </iron-selector>
+                <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
+                  <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
+                  {{localize('logout')}}
+                </paper-icon-item>
               </paper-menu>
             </paper-menu-button>
             <div hidden$="[[!user]]">
@@ -236,17 +232,17 @@
             </div>
           </app-toolbar>
         </app-header>
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
-          <view-dashboard name="dashboard" route="{{subroute}}" hidden$="[[!signedIn]]"></view-dashboard>
-          <view-setup name="setup" route="{{subroute}}" hidden$="[[!signedIn]]"></view-setup>
-          <view-planning name="planning" route="{{subroute}}" hidden$="[[!signedIn]]"></view-planning>
-          <view-tracking name="tracking" route="{{subroute}}" hidden$="[[!signedIn]]"></view-tracking>
-          <view-settings name="settings" route="{{subroute}}" hidden$="[[!signedIn]]"></view-settings>
-          <view-404 name="404" route="{{subroute}}"></view-404>   
-          <view-login name="login" route="{{subroute}}"></view-login>              
+       <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+          <view-dashboard name="dashboard" route="{{subroute}}" hidden$="[[!authen]]"></view-dashboard>
+          <view-setup name="setup" route="{{subroute}}" hidden$="[[!authen]]"></view-setup>
+          <view-planning name="planning" route="{{subroute}}" hidden$="[[!authen]]"></view-planning>
+          <view-tracking name="tracking" route="{{subroute}}" hidden$="[[!authen]]"></view-tracking>
+          <view-settings name="settings" route="{{subroute}}" hidden$="[[!authen]]"></view-settings>
+          <view-404 name="404" route="{{subroute}}"></view-404>
+          <view-login name="login" route="{{subroute}}" hidden$="[[authen]]"></view-login>
         </iron-pages>
       </app-header-layout>
-     </app-drawer-layout> 
+    </app-drawer-layout>
     <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
@@ -255,6 +251,10 @@
       properties: {
         notification: {
           type: Boolean
+        },
+        loader: {
+          type: Boolean,
+          value: false
         },
         page: {
           type: String,
@@ -270,10 +270,6 @@
         metadata: {
           type: Object
         },
-        signedIn: {
-          type: Boolean,
-          observer: '_onAuthenChange'
-        },
         wideLayout: {
           type: Boolean,
           value: false,
@@ -282,11 +278,10 @@
       },
 
       observers: [
-        '_routePageChanged(routeData.page)',
+        '_routePageChanged(routeData.page)'
       ],
 
       listeners: {
-        'dom-change': '_domChange',
         'show-invalid-url-warning': '_showPage404'
       },
 
@@ -297,20 +292,27 @@
       ],
 
       created() {
-        window.performance && performance.mark && performance.mark('view-index.created');
         // Custom elements polyfill safe way to indicate an element has been upgraded.
         this.removeAttribute('unresolved');
       },
 
       // On create load localization language data
       attached() {
+        if(!this.authen) {
+          this.set('route.path', 'login');
+        }
         this.loadResources(this.resolveUrl('../data/locales.json'));
-        console.log(this.$.auth.signedIn);
       },
 
       ready() {
+        this.async(function () {
+          // If the path is blank, redirect to /
+          if (!this.route.path) {
+            this.set('route.path', '/');
+          }
+        });
         // listen for online/offline
-        Polymer.RenderStatus.afterNextRender(this, function() {
+        Polymer.RenderStatus.afterNextRender(this, function () {
           this.listen(window, 'online', '_notifyNetworkStatus');
           this.listen(window, 'offline', '_notifyNetworkStatus');
         });
@@ -323,62 +325,41 @@
 
       _routePageChanged(page) {
         if (page === undefined) return;
-        if (!this.$.drawer.persistent)  this.$.drawer.close();
-        if (this.$.auth.signedIn) {
-          this.page = page || 'dashboard';
-        } else {
+        if (!this.$.drawer.persistent) this.$.drawer.close();
+        if (!this.authen) {
           this.page = 'login';
-        }
+         }
+         this.page = page || 'dashboard';
       },
 
-      _pageChanged(page){
-       let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
-       this.importHref(
-       resolvedPageUrl, 
-       null, 
-       this._showPage404.bind(this), 
-       true);
-      },
-
-      _onAuthenChange(authen) {
-        if(authen === false) {
-          this.set('route.path', 'login');
-        } else {  
-          this.set('route.path', 'dashboard');
-        }
+      _pageChanged(page) {
+        let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+        this.importHref(
+          resolvedPageUrl,
+          null,
+          this._showPage404.bind(this),
+          true);
       },
 
       _showPage404() {
         this.page = '404';
       },
 
-      // Signin Action
-      _login() {
-        this.$.auth.signInWithPopup()
-        .then((response) => {
-          //redirect to dashboard page
-           this.set('route.path', 'dashboard');
-           console.info("Login successful");
-           console.log(response);          
-        })
-        .catch((error) => {
-          console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
-          alert("Authenticate Failed: " + error.message + " Please try again.");
-        });
-      },
-
       // Signout Action
       _logout() {
         this.$.auth.signOut()
-        .then(() => {
-          //redirect to login page
-          this.set('route.path', 'login');
-          console.info("Logout successful");
-        })
-        .catch((error) => {
-          console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
-          alert("Authenticate Failed: " + error.message + " Please try again.");
-        });
+          .then(() => {
+            this.authen = false;
+            //redirect to login page    
+            this.async(function() {   
+                this.set('route.path', 'login');
+            }, 1000);
+            console.info("Logout successful");
+          })
+          .catch((error) => {
+            console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
+            alert("Authenticate Failed: " + error.message + " Please try again.");
+          });
       },
 
       // Redirect to Register page
@@ -386,79 +367,25 @@
         this.page = 'register';
         this.set('route.path', 'register');
       },
-/*
-THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
+      /*
+      THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
 
-       _signInWithEmailAndPassword(e) {
-          if (e) { e.preventDefault(); }
-          this.error = null;
-          this.$.auth.signInWithEmailAndPassword(this.email, this.password);
-          this.email = null;
-          this.password = null;
-        },
+              _createUserWithEmailAndPassword() {
+                this.error = null;
+                this.$.auth.createUserWithEmailAndPassword(this.email, this.password);
+                this.email = null;
+                this.password = null;
+              },
 
-        _createUserWithEmailAndPassword() {
-          this.error = null;
-          this.$.auth.createUserWithEmailAndPassword(this.email, this.password);
-          this.email = null;
-          this.password = null;
-        },
+               <form on-submit="signInWithEmailAndPassword">
+                <input value="{{email::input}}" type="email" placeholder="Email">
+                <input value="{{password::input}}" type="password" placeholder="Password">
+                <button type="button" on-tap="createUserWithEmailAndPassword">Sign Up</button>
+              </form>
+      */
 
-         <form on-submit="signInWithEmailAndPassword">
-          <input value="{{email::input}}" type="email" placeholder="Email">
-          <input value="{{password::input}}" type="password" placeholder="Password">
-          <button type="submit" on-tap="signInWithEmailAndPassword">Sign In</button>
-          <button type="button" on-tap="createUserWithEmailAndPassword">Sign Up</button>
-        </form>
-
-*/
-      // Offline notification
-      _notifyNetworkStatus() {
-        var oldOffline = this.offline;
-        this.offline =  !navigator.onLine;
-        // Show the snackbar if the user is offline when starting a new session or if the network status changed.
-        if (this.offline || (!this.offline && oldOffline === true)) {
-     
-          if (!this._networkSnackbar) {
-            this._networkSnackbar = document.createElement('network-snackbar');
-            Polymer.dom(this.root).appendChild(this._networkSnackbar);
-          }
-          Polymer.dom(this.noInternetConnection).innerHTML = this.offline ?
-              'You are offline' : 'You are online';      
-          //alert("No internet connection");
-        }
-      }, 
-
-      // This is for performance logging only.
-      _domChange(e) {
-        if (window.performance && performance.mark && !this.__loggedDomChange) {
-          var target = Polymer.dom(e).rootTarget;
-          if (target.domHost.is.match(this.page)) {
-            this.__loggedDomChange = true;
-            performance.mark(target.domHost.is + '.domChange');
-          }
-        }
-      },
-
-      // Handle Authen Error
-      handleError(e) {
-        console.info("%cAuthenticate Error: " + e.message, "color: crimson;");
-      },
-
-      // Handle SW Error
-      handleSWError(e) {
-        console.info("%cService Worker Error", "color: crimson;");
-      },
-      
-      // Handle SW Installed
-      handleSWInstalled(e) {
-        console.info("%cService Worker Installed", "color: green;");
-      },
-      
-     });
-    // performance logging
-    window.performance && performance.mark && performance.mark('view-index - before register');
-  //  window.customerElements.define(ViewIndex.is, ViewIndex);
+    });
+    //  window.customerElements.define(ViewIndex.is, ViewIndex);
   </script>
   <!-- Library for parallel computations with GPGPU -->
   <script src="../bower_components/turbojs/turbo.js"></script>
@@ -473,4 +400,3 @@ THIS CODE IS FOR REGISTER USING EMAIL AND PASSWORD
   <script src="../bower_components/intl/locale-data/jsonp/ja.js"></script>
   <script src="../bower_components/intl/locale-data/jsonp/ru.js"></script>
 </dom-module>
-

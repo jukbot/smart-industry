@@ -1,6 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="view-index.html">
-<link rel="import" href="app-language-behavior.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-login">
   <template>
@@ -11,27 +16,38 @@
         margin: 0px;
       }
 
-      div {
+      section {
+        height: 100vh;
+      }
+
+      .flex-layout {
         display: flex;
         flex-direction: column;
         justify-content: center;
       }
 
-      section {
-        height: 100vh;
-      }
-      
+
       .logo {
         margin: 0 auto;
         padding: 10px 0;
         width: 25%;
         height: auto;
-        text-align: center;
         display: block;
       }
 
+      .login-header {
+        text-align: center;
+      }
+
+      .authen-btn {
+        width: 100%;
+        margin: 0.5rem 0 1rem 0;
+        padding: 1rem 0;
+        font-size: 1.25rem;
+      }
+
       .main-title {
-        font-size: 2.75rem;
+        font-size: 3.5rem;
         font-weight: 400;
         line-height: normal;
         text-align: center;
@@ -39,55 +55,100 @@
       }
 
       .main-describe {
-        font-size: 1.25rem;
+        font-size: 1.5rem;
         text-align: center;
         color: #eeeeee;
-        margin-bottom: 20px;
         font-weight: 300;
       }
       /* Pattern styles */
 
       .container {
         display: flex;
+        justify-content: center;
+        align-content: center;
+      }
+
+      .login-forget:focus,
+      .login-forget:hover {
+        color: red;
+        text-decoration: underline;
+      }
+
+      .login-form,
+      .reset-form {
+        width: 90%;
+        margin: 0 auto;
+        max-width: 30rem;
+      }
+
+      .login-input {
+        --paper-input-container-input: {
+          font-size: 1.25rem;
+          color: #333333;
+        }
+        ;
+      }
+
+      .login-remember {
+        margin: 1rem 0;
       }
 
       .left-half {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-       url("../images/cover/welcome.jpg");
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../images/cover/welcome.jpg");
         background-repeat: no-repeat;
         background-position: center top;
         background-size: cover;
-        
         background-color: #333333;
         flex: 1;
         padding: 1rem;
       }
 
       .right-half {
-        background-color: #FFFFFF;
+        background-color: #ffffff;
         flex: 1;
         padding: 1rem;
       }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+        .left-half {
+          display: none;
+        }
+      }
     </style>
-    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]"
-      on-error="handleError"></firebase-auth>
-    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" on-error="handleError"></firebase-auth>
+    <app-localstorage-document key="session" data="{{remember}}"></app-localstorage-document>
+    <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
     <section class="container">
-      <div class="left-half">
+      <div class="flex-layout left-half">
         <article>
-         <!-- <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">-->
-          <h1 title="Pronto" class="main-title">Pronto</h1>
-          <div title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</div>
+          <h1 title="Pronto" class="main-title">Project Pronto</h1>
+          <div title="Smart Industry Helper" class="main-describe">Your Smart Industry Helper</div>
         </article>
       </div>
-      <div class="right-half">
+      <div class="flex-layout right-half">
         <article>
-          <h1>Welcome Back</h1>
-          <paper-input label="E-mail" name="e-mail" id="email" type="text" maxlength="50" auto-complete="email" autofocus auto-validate></paper-input>
-          <paper-input label="Password" name="password" id="passwd" type="password" maxlength="50" auto-complete="current-password"
-            auto-validate></paper-input>
-          <paper-button raised class="carrot authen-btn" on-tap="_login" role="button" hidden$="[[user]]">{{localize('login-button')}}</paper-button>
-          <paper-button raised class="carrot authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button>
+          <form hidden$="[[!reset]]" class="login-form" on-submit="_login">
+            <div class="login-header">
+              <h1>User Login</h1>
+            </div>
+            <paper-input class="login-input" name="e-mail" id="email" type="email" maxlength="50" auto-complete="email" placeholder="E-mail"
+              autofocus auto-validate></paper-input>
+            <paper-input class="login-input" name="password" id="passwd" type="password" maxlength="50" auto-complete="current-password"
+              placeholder="Password" auto-validate></paper-input>
+            <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
+            <paper-checkbox class="login-remember" tabindex="0" name="remember" checked="{{remember}}" noink>Keep me signed in</paper-checkbox>
+            <paper-button raised class="chilli authen-btn" on-tap="_login" role="button" hidden$="[[user]]">Log in</paper-button>
+            <a href="javascript:void(0);" on-tap="_showReset" class="login-forget">Can’t access your account?</a>
+          </form>
+          <form hidden$="[[reset]]" class="reset-form" on-submit="_resetPassword">
+            <div class="login-header">
+              <h1>Reset Your Password</h1>
+            </div>
+            <paper-input class="login-input" name="e-mail" id="resetEmail" type="email" maxlength="50" auto-complete="email" placeholder="E-mail"
+              auto-validate></paper-input>
+            <paper-button raised class="fancy authen-btn" on-tap="_resetPassword" role="button">Reset Password</paper-button>
+            <a href="javascript:void(0);" on-tap="_hideReset" class="login-forget">Already have account? Go to login</a>
+          </form>
         </article>
       </div>
     </section>
@@ -95,14 +156,25 @@
   <script>
     Polymer({
       is: 'view-login',
-      behaviors: [
-        Polymer.AppLocalizeBehavior,
-        Polymer.AppLanguageBehavior
-      ],
-
-      attached: function () {
-        this.loadResources(this.resolveUrl('../../data/locales.json'));
+      properties: {
+        reset: {
+          type: Boolean,
+          value: true,
+          notify: true
+        },
+        authen: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        target: {
+          type: Object,
+          value: function () {
+            return this.$.passwd;
+          }
+        },
       },
+
       _login() {
         if (this.$.email !== "" || this.$.passwd !== "") {
           let email = this.$.email.value;
@@ -110,35 +182,46 @@
 
           this.$.auth.signInWithEmailAndPassword(email, passwd)
             .then((response) => {
-              //redirect to dashboard page
-              this.set('route.path', 'dashboard');
-              console.info("Login successful");
-              console.log(response);
+              this.authen = true;
+              this.async(function() {   
+                this.set('route.path', '../dashboard');
+               }, 3000);
             })
             .catch((error) => {
-              console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
-              alert("Authenticate Failed: " + error.message + " Please try again.");
+              alert("Authenticate Failed: " + error.message);
             });
         } else {
           alert("Email or Password cannot leave blank");
         }
       },
 
-      // Signout Action
-      _logout() {
-        this.$.auth.signOut()
-          .then(() => {
-            //redirect to login page
-            this.set('route.path', 'login');
-            console.info("Logout successful");
-          })
-          .catch((error) => {
-            console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
-            alert("Authenticate Failed: " + error.message + " Please try again.");
-          });
+      _showReset() {
+        this.reset = false;
       },
 
+      _hideReset() {
+        this.reset = true;
+      },
 
+      _resetPassword() {
+        if (this.$.resetEmail !== "") {
+          let resetEmail = this.$.resetEmail.value;
+          this.$.auth.sendPasswordResetEmail(resetEmail)
+            .then((response) => {
+              alert("Reset password has been send to your email.")
+            })
+            .catch((error) => {
+              console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
+              alert(error.message);
+            });
+        } else {
+          alert("Email cannot leave blank");
+        }
+      },
+
+      handleError(e) {
+        console.info("%cAuthenticate Error: " + e.message, "color: crimson;");
+      },
     });
   </script>
 </dom-module>
