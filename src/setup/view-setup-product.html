@@ -130,11 +130,9 @@
         justify-content:center; 
       }
     </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
-    <!-- <firebase-storage-script app-name="smart-mes" id="productImage" path="/product/[[user.uid]]/" files="[[files]]" uploaded-files="{{uploadedFiles}}"
-      on-error="storageError"></firebase-storage-script> -->
-    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" signed-in="{{signedIn}}" online="[[online]]" on-error="handleError"></firebase-auth>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
   <!--  <paper-button raised class="dark" on-tap="testTrigger" data="cat">TEST</paper-button> -->
@@ -173,7 +171,7 @@
       <paper-button raised class="dark" on-tap="uploadImage">Upload</paper-button>
       <paper-button raised class="chilli" on-tap="deleteImage">Remove Image</paper-button>
       
-          <vaadin-upload class="upload-frame" name="product-image" id="uploadImageFile2" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
+          <vaadin-upload class="upload-frame" name="product-image" id="uploadImageFile2" timeout="300000" files="{{files}}" max-files="1" accept="image/x-png,image/jpeg"
           max-file-size="2000000">
           <div class="drop-label">
             <iron-icon icon="cloud-upload"></iron-icon>
@@ -307,7 +305,6 @@
       </template>
     </ul>
   </template>
-  <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
   <script>
   // Initialize Firebase
   // TODO: Replace with your project's customized code snippet
@@ -323,18 +320,6 @@
     Polymer({
       is: 'view-setup-product',
       properties: {
-        language: {
-          type: Object,
-          value: function () {
-            if (localStorage.getItem("lang") != null) {
-              return localStorage.getItem("lang");
-            } else if (localStorage.getItem("lang") == null) {
-              return "en";
-            } else {
-              return this.language;
-            }
-          }
-        },
         productItems: {
           type: Object
         },
@@ -365,7 +350,8 @@
         }
       },
       behaviors: [
-        Polymer.AppLocalizeBehavior
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
       ],
       attached: function () {
         this.loadResources(this.resolveUrl('../../data/locales.json'));

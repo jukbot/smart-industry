@@ -115,7 +115,7 @@
         }
       }
     </style>
-    <firebase-auth app-name="smart-mes" id="auth" provider="google" user="{{user}}" on-error="handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" on-error="handleError"></firebase-auth>
     <app-localstorage-document key="session" data="{{remember}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
     <section class="container">
@@ -174,7 +174,6 @@
           }
         },
       },
-
       _login() {
         if (this.$.email !== "" || this.$.passwd !== "") {
           let email = this.$.email.value;
@@ -185,7 +184,7 @@
               this.authen = true;
               this.async(function() {   
                 this.set('route.path', '../dashboard');
-               }, 3000);
+               }, 500);
             })
             .catch((error) => {
               alert("Authenticate Failed: " + error.message);

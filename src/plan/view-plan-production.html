@@ -158,7 +158,7 @@
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>  
     <div class="card">
-      <h1>Production Simulation</h1>
+      <h1>Production Simulator</h1>
        <ul class="app-grid control-bar">
       <li>
       <div class="frame">
@@ -216,18 +216,18 @@
             <p>Station ID [[index]]</p>
              <div class="flex-group">
              <template is="dom-repeat" items="[[machines_s1]]" as="machineInStation">           
-                  <div class="machine flex-item" value="[[machineInStation.name]]">[[machineInStation.name]]</div>  
+                 <div class="machine flex-item" value="[[machineInStation.name]]">[[machineInStation.name]]</div>  
             </template>
             </div>
             <div>
              <!-- ADD MACHINE TO THIS STATION -->
             <paper-menu-button>
             <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
-            <paper-menu class="add-machine-menu dropdown-content">
+            <paper-listbox slot="dropdown-content" role="listbox" class="add-machine-menu dropdown-content">
                 <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
                     <paper-item role="button" title="add machine to station" on-tap="_addMachineToStation">[[machineItem.name]]</paper-item>
                 </template>
-            </paper-menu>
+            </paper-listbox slot="dropdown-content">
             </paper-menu-button>
             <!-- RENAME STATION -->
              <paper-icon-button icon="create" on-tap="_renameStation"></paper-icon-button>
@@ -268,22 +268,6 @@
     Polymer({
       is: 'view-plan-production',
       properties: {
-        fnMoves: {
-          type: Function,
-          value: function () {
-            return function (el, container, handle) {
-              return handle.classList.contains('handle');
-            }
-          }
-        },
-        fnMovesInner: {
-          type: Function,
-          value: function () {
-            return function (el, container, handle) {
-              return handle.classList.contains('handle-inner');
-            }
-          }
-        },
         machineItems: {
           type: Object,
         },
@@ -339,6 +323,14 @@
             };
           }
         },
+      },
+     behaviors: [
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
+      ],
+
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
       _addStation() {
         let sname = this.$.stationName.value;

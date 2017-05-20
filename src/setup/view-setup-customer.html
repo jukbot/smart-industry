@@ -91,6 +91,7 @@
         padding: 10px;
       }
     </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
@@ -195,18 +196,6 @@
     Polymer({
       is: 'view-setup-customer',
       properties: {
-        language: {
-          type: Object,
-          value: function () {
-            if (localStorage.getItem("lang") != null) {
-              return localStorage.getItem("lang");
-            } else if (localStorage.getItem("lang") == null) {
-              return "en";
-            } else {
-              return this.language;
-            }
-          }
-        },
         notification: {
           type: Object
         },
@@ -219,7 +208,8 @@
       },
 
       behaviors: [
-        Polymer.AppLocalizeBehavior
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
       ],
 
       attached() {
@@ -247,11 +237,11 @@
       },
     
       deleteCustomer(e) {
-        let key = e.currentTarget.customer.$key;
-        this.$.customerQuery.ref.child(key).remove();
-
-          this.$.toastDeleteCustomer.open();
-        
+        if (confirm("Delete tihs station ?") == true) { 
+         let key = e.currentTarget.customer.$key;
+         this.$.customerQuery.ref.child(key).remove();
+         this.$.toastDeleteCustomer.open(); 
+        }
       },
       toggleDialog() {
         this.$.createCustomerDialog.open();

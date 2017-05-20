@@ -47,8 +47,8 @@
      .button-group paper-button {
        width: 49%;
      }
-     
     </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name"  data="{{stationItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="install" data="{{machineItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
@@ -114,20 +114,6 @@
     Polymer({
       is: 'view-setup-machine',
       properties: {
-        language: {
-          type: Object,
-          value: function () {
-            if(localStorage.getItem("lang") != null) {
-              return localStorage.getItem("lang");
-            } 
-            else if(localStorage.getItem("lang") == null) {
-              return "en";
-            } 
-            else {
-              return this.language;
-            }
-          }
-        },
         factoryStandard: {
           type: Object
         },
@@ -169,7 +155,8 @@
         },
       },
       behaviors: [
-        Polymer.AppLocalizeBehavior
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
       ],
       attached: function() {
          this.loadResources(this.resolveUrl('../../data/locales.json'));

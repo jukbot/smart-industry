@@ -69,10 +69,10 @@
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productData}}"></firebase-query>
-
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -81,7 +81,7 @@
            <!-- <vaadin-combo-box label="Size" name="size" items="[[product.size]]" id="sizeSelector" disabled="true" item-label-path="name"
             item-value-path="name" selected-item='{{size}}' required prevent-invalid-input always-float-label auto-validate></vaadin-combo-box> -->
           <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerData]]" item-label-path="fname"
-            item-value-path="fname" selected-item='{{selectCustomer}}' required allow-custom-value prevent-invalid-input
+            item-value-path="fname" selected-item='{{selectCustomer}}' loading="[[!customerData]]" required allow-custom-value prevent-invalid-input
             always-float-label auto-validate></vaadin-combo-box>
           <vaadin-combo-box label="Product" name="product" items="[[productData]]" id="productSelector" item-label-path="name" item-value-path="name"
             selected-item='{{selectProduct}}' required prevent-invalid-input always-float-label auto-validate></vaadin-combo-box>
@@ -193,6 +193,14 @@
             return date;
           }
         },
+      },
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
+      ],
+
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
 
       getOrderNumber(length) {
@@ -358,55 +366,11 @@
       },
 
       uploadFile: function () {
-        // upload order file to order schedule table or waiting table
         alert("Invalid file format");
       },
 
 
 /*
-      calSetupTime: function (setup) {
-        if (!setup) return 0;
-        let setupTime = 0;
-        for (let i in setup) {
-          setupTime += setup[i];
-        };
-        return setupTime;
-      },
-
-      calCycleTime: function (cycle, amount) {
-        if (!cycle || !amount) return 0;
-        let processTime = 0;
-        for (let i in cycle) {
-          processTime += cycle[i];
-        };
-        processTime = processTime * amount;
-        return processTime;
-      },
-
-      calLeadTime: function (cycle, setup, amount) {
-        if (!cycle || !amount) return '';
-        let leadTime = 0;
-        leadTime = this.calCycleTime(cycle, amount) + this.calSetupTime(setup); // second to hours
-        console.log(leadTime);
-        leadTime = Math.round(leadTime, 2);
-        return leadTime;
-      },
-
-      calEstDelivery: function (cycle, setup, amount, order) {
-        if (!cycle || !amount || !setup) return '';
-        let ophours = this.getOpTime(this.factoryOperation.op_end,this.factoryOperation.op_start);
-        let orderSize = Object.keys(order).length;
-        let setuptime = 0; // total initial time each process of the product 
-        let cycletime = 0; // total working time each process of the product
-        let leadtime = 0; // total setup + working duration each process of the product
-        let timestamp = 0; // time stamp of estimate delivery date
-        let arr = [];
-
-          this.calLeadTime(cycle, setup, amount);
-          let deliveryDate = "";
-          return deliveryDate;
-        
-      },
 
       calUsedMachine: function (g) {
         let selectedMachine = [];

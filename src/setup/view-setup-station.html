@@ -64,6 +64,7 @@
         padding: 30px 0;
       }
     </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" order-by-value="true" data="{{stationItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="station" data="{{machineItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
@@ -128,20 +129,6 @@
     Polymer({
       is: 'view-setup-station',
       properties: {
-        language: {
-          type: Object,
-          value: function () {
-            if(localStorage.getItem("lang") != null) {
-              return localStorage.getItem("lang");
-            } 
-            else if(localStorage.getItem("lang") == null) {
-              return "en";
-            } 
-            else {
-              return this.language;
-            }
-          }
-        },
         stationItems: {
           type: Object
         },
@@ -157,7 +144,8 @@
         }
       },
       behaviors: [
-        Polymer.AppLocalizeBehavior
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
       ],
       attached: function() {
          this.loadResources(this.resolveUrl('../../data/locales.json'));
