@@ -287,7 +287,6 @@
 
       behaviors: [
         Polymer.AppLocalizeBehavior,
-        Polymer.AppNetworkStatusBehavior,
         Polymer.AppLanguageBehavior
       ],
 
@@ -310,11 +309,6 @@
           if (!this.route.path) {
             this.set('route.path', '/');
           }
-        });
-        // listen for online/offline
-        Polymer.RenderStatus.afterNextRender(this, function () {
-          this.listen(window, 'online', '_notifyNetworkStatus');
-          this.listen(window, 'offline', '_notifyNetworkStatus');
         });
       },
 
