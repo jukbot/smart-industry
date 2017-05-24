@@ -186,7 +186,7 @@
         </div>
         <dom-if if="[[authen]]">
           <div class="profile" role="group">
-            <img style="width: 150px;" src="[[user.photoURL]]" alt="user photo">
+            <!-- <img style="width: 150px;" src="[[user.photoURL]]" alt="user photo"> -->
             <p>[[user.displayName]]</p>
             <p>E-mail: [[user.email]]</p>
             <p>Verify: [[user.emailVerified]]</p>
@@ -380,6 +380,7 @@
     });
     //  window.customerElements.define(ViewIndex.is, ViewIndex);
   </script>
+
   <!-- Library for parallel computations with GPGPU -->
   <script defer src="../bower_components/turbojs/turbo.js"></script>
   <!-- Library for working with native objects. -->

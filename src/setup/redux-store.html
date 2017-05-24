@@ -1,0 +1,19 @@
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<script>
+    const initialState = {
+        machines: []
+    };
+
+    const reducer = (state, action) => {
+        if(!state) return initialState;
+        switch(action.type) {
+            case 'ADD_MACHINE':
+            const machines = state.machines.slice(0);
+            machines.push(action.machines);
+            return Object.assign({},state, {machines:machines});
+        }
+    };
+
+    const store = Redux.createStore(reducer);
+    const ReduxBehavior = PolymerRedux(store);
+    </script>

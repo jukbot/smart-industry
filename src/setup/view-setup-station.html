@@ -1,5 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../view-index.html">
+<script src="../../node_modules/redux/dist/redux.js"></script>
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="redux-store.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="view-setup-station">
   <template>
@@ -57,12 +60,20 @@
        width: 49%;
        padding: 10px;
      }
-    .no-machine-title {
+     .no-machine-title {
         font-size: 2rem;
         font-weight: 400;
         text-align: center;
         padding: 30px 0;
       }
+     .frame {
+        border: solid 1px #757575;
+        border-radius: 2px; 
+        margin: 10px; 
+        min-height: 350px; 
+        overflow:hidden;
+        padding: 10px;
+     }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" order-by-value="true" data="{{stationItems}}"></firebase-query>
@@ -80,13 +91,14 @@
             <h1>{{localize('add-station')}}</h1>
             <paper-input type="number" id="stationNumber" name="station-number" label="{{localize('station-number')}}" value="[[getStationNumber(stationItems.length)]]" min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
             <paper-input type="text" id="stationName" name="station-name"  label="{{localize('station-name')}}" required always-float-label></paper-input>
-            <vaadin-combo-box label="Machine" id="machineNumber" items="[[persistedMachineData]]" name="stationName" item-label-path="name" selected-item="{{mdata}}" required always-float-label></vaadin-combo-box>        
-            <paper-button on-tap="addMachineToStation">Add Machine</paper-button>
+            <vaadin-combo-box label="Machine" id="machineSeletor" items="[[persistedMachineData]]" name="stationName" item-label-path="name" item-value-path="name" required always-float-label></vaadin-combo-box>        
+            <p>You add [[stationMachineCount]] machines</p>
             <div role="listbox">
-            <template is="dom-repeat" items="{{stationMachine}}" as="stationMachine">
-               <paper-item>[[stationMachine.name]]</paper-item>
+            <template is="dom-repeat" items="{{machines}}" as="machineItem">
+               <paper-item>[[machineItem.name]]</paper-item>
             </template>
             </div>
+            <paper-button on-tap="addMachine">Add Machine</paper-button>
            <div class="buttons">
                 <paper-button on-tap="dismissAddStation" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('add')}}</paper-button>
@@ -141,14 +153,40 @@
         stationMachine: {
           type: Array,
           value: []
+        },
+        machines: {
+          type: Array,
+          statePath: 'machines',
+        },
+        stationMachineCount: {
+          type: Number,
+          computed: 'computeMachineCount(machines)'
         }
       },
+
       behaviors: [
         Polymer.AppLocalizeBehavior,
-        Polymer.AppLanguageBehavior
+        Polymer.AppLanguageBehavior,
+        ReduxBehavior 
       ],
       attached: function() {
          this.loadResources(this.resolveUrl('../../data/locales.json'));
+      },
+      computeMachineCount(machines) {
+        return machines.length;
+      },
+      add(data) {
+        return {
+        type: 'ADD_MACHINE',
+        machines: data
+        }
+      },
+      addMachine() {
+        let selector = this.$.machineSeletor;
+        if(selector.value) {
+          this.dispatch('add', selector.selectedItem);
+          selector.value = null;
+        }
       },
       toggleDialog() {
         this.$.createStationDialog.open();
@@ -193,10 +231,12 @@
         let key = e.currentTarget.station.$key;
         let sname = this.$$('#name_' + key).value;
         let snumber = this.$$('#number_' + key).value;
+        let smachine = this.stationMachine;
         if(sname !== "" && snumber !== "") {
          this.$.stationQuery.ref.child(key).set({
             name: sname,
-            number: snumber
+            number: snumber,
+            machine: smachine
         });
            this.$$('.station-dialog').close();
            this.$.toastSaveStation.open();
@@ -206,12 +246,16 @@
       },
       // check machine station equal to station number then return machine name
       addMachineToStation() {
+        if(this.$.machineSeletor.value !== "") {
+          console.log(this.$.machineSeletor.value)
         if(this.stationMachine.length > 10) {
           alert("Can't add more than 10 machines to station");
         } else {
-         
-          this.stationMachine.push(this.$.machineNumber.value);
+          this.stationMachine.push(this.$.machineSeletor.selectedItem);
           console.log(this.stationMachine);
+        }
+        } else {
+          alert("Please select a machine");
         }
       },
 

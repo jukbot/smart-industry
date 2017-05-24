@@ -4,12 +4,12 @@
 <dom-module id="view-settings">
   <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
         --app-grid-item-height: 50%;
       }
-      
-       @media (min-width: 360px) and (max-width: 768px) {
+
+      @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
         }
@@ -26,62 +26,73 @@
           --app-grid-columns: 3;
         }
       }
-       @media (min-width: 1201px) and (max-width: 2560px) {
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
           --app-grid-columns: 3;
         }
       }
+
       .btn {
         margin-top: 10px;
       }
+
       .card {
-        min-height: 400px;
+        min-height: 350px;
       }
     </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appBackup" path="/metadata/appBackup" data="{{autobackup}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
-<ul class="app-grid">
-<li>
-    <div class="card">
-      <h1>{{localize('general-settings')}}</h1>
-      <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector" item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input" required auto-validate
- always-float-label></vaadin-combo-box>
-    <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="switch" noink> {{localize('notification')}}</paper-toggle-button>
-</div>
-</li>
-<li>
-    <div class="card">
-      <h1>{{localize('account-settings')}}</h1>
-      <paper-input label="{{localize('email')}}" type="text"></paper-input>
-      <paper-input label="{{localize('current-password')}}" type="password"></paper-input>
-      <paper-input label="{{localize('confirm-password')}}" type="password"></paper-input>
-      <paper-button class="magic btn" on-tap="_saveSettings" title="Save settings" raised>{{localize('save-settings')}}</paper-button> 
-    </div>
-</li>
-<li>
-  <div class="card">
-    <h1>Backup Settings</h1>
-    <p>Export or Import factory data to backup as a file.</p>
-    <paper-button class="carrot btn" title="Export backup" raised>Export Data</paper-button>
-    <paper-button class="magic btn" title="Import backup" raised>Import Data</paper-button>
-    
-  </div>
-</li>
-<li>
-  <div class="card">
-    <h1>Organization Settings</h1>
-    <paper-button raised class="burn btn">Add User</paper-button>
-    Role: Administrator, Users
-    Delete
-    Edit  
-  </div>
-  </li>
-</ul>
-  <paper-tooltip for="switch" animation-delay="1000" offset="0" position="bottom">Notification is feature that notify you when the system has events.</paper-tooltip>
-  <paper-toast id="toastSaveSettings" always-on-top horizontal-align="right" text="{{localize('notification-save-settings')}}"></paper-toast>
-  <paper-toast id="toastAlertOn" always-on-top horizontal-align="right" text="{{localize('notification-alert-on')}}"></paper-toast>
-  <paper-toast id="toastAlertOff" always-on-top horizontal-align="right" text="{{localize('notification-alert-off')}}"></paper-toast>
+    <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1>{{localize('general-settings')}}</h1>
+          <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector"
+            item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
+            required auto-validate always-float-label></vaadin-combo-box>
+          <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="notificationSwitch" noink> {{localize('notification')}}</paper-toggle-button>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>{{localize('account-settings')}}</h1>
+          <paper-input label="Display Name" id="displayName" type="text"></paper-input>
+          <p>Verify status: [[verifyStatus(user.emailVerified)]]</p>
+          <paper-button disabled="[[user.emailVerified]]"class="water btn" on-tap="_verifyAccount" title="Verify account" raised>Verify Account</paper-button>
+          <paper-button class="magic btn" on-tap="_saveSettings" title="Save settings" raised>{{localize('save-settings')}}</paper-button>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>Authentication Settings</h1>
+          <paper-input label="{{localize('email')}}" id="userEmail" type="text"></paper-input>
+          <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password"></paper-input>
+          <paper-input label="Your new password" id="newPassword" type="password"></paper-input>
+          <paper-button class="magic btn" on-tap="_changeAuthen" title="Change password" raised>Change Password</paper-button>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>Backup Settings</h1>
+          <p>Export or Import factory data to backup as a file.</p>
+          <paper-button class="carrot btn" title="Export backup" raised>Export Data</paper-button>
+          <paper-button class="magic btn" title="Import backup" raised>Import Data</paper-button>
+          <paper-toggle-button value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink> Automatic Backup</paper-toggle-button>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>Organization Settings</h1>
+          <paper-button raised class="burn btn">Add User</paper-button>
+          Role: Administrator, Users Delete Edit
+        </div>
+      </li>
+    </ul>
+    <paper-tooltip for="switch" animation-delay="1000" offset="0" position="bottom">Notification is feature that notify you when the system has events.</paper-tooltip>
+    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
   </template>
   <script>
     Polymer({
@@ -89,10 +100,17 @@
       properties: {
         language: {
           type: Object,
-          observer: '_changeLanguage'
+          observer: '_changeLanguage',
+          notify: true
         },
         notification: {
           type: Object
+        },
+        autobackup: {
+          type: Object
+        },
+        alertText: {
+          type: String
         },
         languageList: {
           type: Array,
@@ -124,30 +142,117 @@
       behaviors: [
         Polymer.AppLocalizeBehavior
       ],
-      attached: function() {
-         this.loadResources(this.resolveUrl('../data/locales.json'));
+      attached() {
+        this.loadResources(this.resolveUrl('../data/locales.json'));
       },
 
-      _changeLanguage: function() {
+      verifyStatus(status) {
+        if(status) {
+          return 'verified'
+        } else {
+          return 'not-verify'
+        }
+      },
+
+      _changeLanguage() {
         let selectedLang = this.$.languageSelector.value;
-
-        if(selectedLang === "en" || selectedLang === "th" || selectedLang === "jp" || selectedLang === "ch" || selectedLang === "rs") {
-         this.language = selectedLang;
+        if (selectedLang === "en" || selectedLang === "th" || selectedLang === "jp" || selectedLang === "ch" ||
+          selectedLang === "rs") {
+          this.language = selectedLang;
         }
       },
 
-      _changeNotification: function() {
-        this.notification = this.$.switch.checked ? 'true' : 'false';
-        if(this.$.switch.checked) { 
-          this.$.toastAlertOn.open(); 
-          }
-        else { 
-          this.$.toastAlertOff.open(); 
+      _changeAutoBackup() {
+        this.autobackup = this.$.autobackupSwitch.checked ? 'true' : 'false';
+        if (this.$.autobackupSwitch.checked) {
+          this.alertText = 'notification-alert-on';
+          this.$.toastAlert.open();
+        } else {
+          this.alertText = 'notification-alert-off';
+          this.$.toastAlert.open();
         }
       },
 
-      _saveSettings: function() {
-        this.$.toastSaveSettings.open();
+      _changeNotification() {
+        this.notification = this.$.notificationSwitch.checked ? 'true' : 'false';
+        if (this.$.notificationSwitch.checked) {
+          this.alertText = 'notification-alert-on';
+          this.$.toastAlert.open();
+        } else {
+          this.alertText = 'notification-alert-off';
+          this.$.toastAlert.open();
+        }
+      },
+
+      _verifyAccount() {
+        this.user.sendEmailVerification()
+        .then(()=> {
+            alert('Verification is send to your email');
+        })
+        .catch(error => {
+            alert("Error: " + error.message);
+         });
+      },
+
+      _saveSettings() {
+        let displayname = this.$.displayName.value;
+        if(displayname !== "") {
+        user.updateProfile({
+          displayName: displayname,
+          photoURL: "https://example.com/jane-q-user/profile.jpg"
+        })
+        .then(()=> {
+          this.alertText = 'notification-save-settings';
+          this.$.toastAlert.open();
+         })
+        .catch(error => {
+          alert("Error: " + error.message);
+          });
+        } else {
+          alert("Display name cannot leave blank");
+        }
+    },
+    
+
+     _changeAuthen() {
+      let currentpassword = this.$.currentPassword.value;
+      let newPassword = this.$.newPassword.value;
+      let newemail = this.$.userEmail.value;
+      if(newPassword !== "" && currentpassword !=="") {
+        if(this._reauthenAccount(currentpassword)) {
+         this.user.updatePassword(newPassword)
+         .then(()=> {
+          alert('Update your password successful, you will need to relogin');
+         })
+         .catch(error => {
+          alert("Error: " + error.message);
+         });
+        } else {
+          alert("Wrong password");
+        } 
+       }
+    
+      if(newemail !=="") {
+           this.user.updateEmail(newemail)
+          .then(()=> {
+           alert('Update your email successful, you will need to relogin');
+          })
+          .catch(error => {
+           alert("Error: " + error.message);
+          });
+      }
+      },
+
+      _reauthenAccount(currentpassword) {
+        let credential = firebase.auth.EmailAuthProvider.credential(this.user.email, currentpassword);
+        this.user.reauthenticateWithCredential(credential)
+        .then(function() {
+          return true;
+        })
+       .catch(error => {
+          console.log("Error: " + error.message);
+          return false; 
+        });
       }
 
     });
