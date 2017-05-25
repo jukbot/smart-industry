@@ -11,8 +11,8 @@
         display: block;
         --app-grid-item-height: 50%;
       }
-      
-       @media (min-width: 360px) and (max-width: 768px) {
+
+      @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
         }
@@ -29,52 +29,82 @@
           --app-grid-columns: 3;
         }
       }
-       @media (min-width: 1201px) and (max-width: 2560px) {
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
           --app-grid-columns: 4;
         }
       }
 
       .station-dialog {
-        width: 35%;
+        width: 45%;
         padding: 10px;
       }
-      .station-dialog {
-        padding-top: 40px;
+
+      .station {
+        min-height: 250px;
+        height: auto;
       }
-     .station { 
-      min-height: 250px;
-      height: auto; 
-      }
-     .station p {
+
+      .station p {
         margin: 12px 0;
       }
-     .station h1 { text-align: center; }
-     .station-info-group {
-       margin-bottom: auto;
-     }
-     .station-title {
-       font-size: 2rem;
-     }
-     .button-group paper-button {
-       width: 49%;
-       padding: 10px;
-     }
-     .no-machine-title {
+
+      .station h1 {
+        text-align: center;
+      }
+
+      .station-info-group {
+        margin-bottom: auto;
+      }
+
+      .station-title {
+        font-size: 2rem;
+      }
+
+      .button-group paper-button {
+        width: 49%;
+        padding: 10px;
+      }
+
+      .no-machine-title {
         font-size: 2rem;
         font-weight: 400;
         text-align: center;
         padding: 30px 0;
       }
-     .frame {
+
+      .frame {
         border: solid 1px #757575;
-        border-radius: 2px; 
-        margin: 10px; 
-        min-height: 350px; 
-        overflow:hidden;
+        border-radius: 2px;
+        margin: 10px;
+        min-height: 350px;
+        overflow: hidden;
         padding: 10px;
-     }
+      }
     </style>
+    <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
+        always-on-top no-cancel-on-outside-click>
+        <h1>{{localize('add-station')}}</h1>
+        <paper-input type="number" id="stationNumber" name="station-number" label="{{localize('station-number')}}" value="[[getStationNumber(stationItems.length)]]"
+          min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
+        <paper-input type="text" id="stationName" name="station-name" label="{{localize('station-name')}}" required always-float-label></paper-input>
+        <vaadin-combo-box label="Machine" id="machineSeletor" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
+          item-value-path="name" required always-float-label></vaadin-combo-box>
+        <paper-dialog-scrollable>
+        <p>You add [[stationMachineCount]]/10 machines</p>
+        <paper-button raised class="smart" on-tap="addMachine">Add Machine</paper-button>
+        <div role="listbox">
+          <template is="dom-repeat" items="{{machines}}" as="machineItem">
+            <paper-item>[[machineItem.name]] [[machineItem.number]] [[machineItem.code]]<iron-icon on-click="removeMachine" icon="vaadin:trash"></iron-icon></paper-item> 
+          </template>
+        </div>
+        </paper-dialog-scrollable>
+        <div class="buttons">
+          <paper-button on-tap="dismissAddStation" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+          <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('add')}}</paper-button>
+        </div>
+      </paper-dialog>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" order-by-value="true" data="{{stationItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="station" data="{{machineItems}}"></firebase-query>
@@ -84,58 +114,44 @@
     <app-indexeddb-mirror key="machineDataCache" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
     <app-indexeddb-mirror key="stationDataCache" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
     <div class="stitched">
-          <h1 class="no-machine-title" hidden$="[[machineItems]]">Please add machine before adding station.</h1>
-          <paper-button raised on-tap="toggleDialog" class="big-btn fancy" hidden$="[[!machineItems]]"><iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-station')}}</paper-button>
-          <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
-            no-cancel-on-outside-click>
-            <h1>{{localize('add-station')}}</h1>
-            <paper-input type="number" id="stationNumber" name="station-number" label="{{localize('station-number')}}" value="[[getStationNumber(stationItems.length)]]" min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
-            <paper-input type="text" id="stationName" name="station-name"  label="{{localize('station-name')}}" required always-float-label></paper-input>
-            <vaadin-combo-box label="Machine" id="machineSeletor" items="[[persistedMachineData]]" name="stationName" item-label-path="name" item-value-path="name" required always-float-label></vaadin-combo-box>        
-            <p>You add [[stationMachineCount]] machines</p>
-            <div role="listbox">
-            <template is="dom-repeat" items="{{machines}}" as="machineItem">
-               <paper-item>[[machineItem.name]]</paper-item>
-            </template>
-            </div>
-            <paper-button on-tap="addMachine">Add Machine</paper-button>
-           <div class="buttons">
-                <paper-button on-tap="dismissAddStation" dialog-dismiss>{{localize('dismiss')}}</paper-button>
-                <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('add')}}</paper-button>
-              </div>
-        </paper-dialog>
+      <h1 class="no-machine-title" hidden$="[[machineItems]]">Please add machine before adding station.</h1>
+      <paper-button raised on-tap="toggleDialog" class="big-btn fancy" hidden$="[[!machineItems]]">
+        <iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-station')}}</paper-button>
     </div>
     <ul class="app-grid" hidden$="[[!machineItems]]">
       <template is="dom-repeat" items="{{persistedStationData}}" as="stationItem">
-        <li>  
-            <div class="card station">
+        <li>
+          <div class="card station">
             <div class="station-info-group">
-            <h1 class="station-title">[[stationItem.name]]</h1>
-            <p>{{localize('station-number')}}: [[stationItem.number]]</p>
-            <p>{{localize('station-name')}}: [[stationItem.name]]</p>
-            <p>{{localize('station-machine')}}: [[stationItem.machine]]</p> 
+              <h1 class="station-title">[[stationItem.name]]</h1>
+              <p>{{localize('station-number')}}: [[stationItem.number]]</p>
+              <p>{{localize('station-name')}}: [[stationItem.name]]</p>
+              <p>{{localize('station-machine')}}: [[stationItem.machine]]</p>
             </div>
             <div class="button-group">
-            <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation">{{localize('edit')}}</paper-button>
-            <paper-button raised class="chilli" station="[[stationItem]]" on-tap="removeStation">{{localize('remove')}}</paper-button>
+              <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation">{{localize('edit')}}</paper-button>
+              <paper-button raised class="chilli" station="[[stationItem]]" on-tap="removeStation">{{localize('remove')}}</paper-button>
             </div>
-            <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click>
-            <h2>{{localize('edit-station')}}</h2>
-            <paper-input type="number" id="number_[[stationItem.$key]]" name="station-number" class="editstationNumber" value="[[stationItem.number]]" label="{{localize('station-number')}}" min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
-            <paper-input type="text" id="name_[[stationItem.$key]]" name="station-name" class="editstationName" value="[[stationItem.name]]" label="{{localize('station-name')}}" required always-float-label></paper-input>
-             <div class="buttons">
+            <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
+              always-on-top no-cancel-on-outside-click>
+              <h2>{{localize('edit-station')}}</h2>
+              <paper-input type="number" id="number_[[stationItem.$key]]" name="station-number" class="editstationNumber" value="[[stationItem.number]]"
+                label="{{localize('station-number')}}" min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
+              <paper-input type="text" id="name_[[stationItem.$key]]" name="station-name" class="editstationName" value="[[stationItem.name]]"
+                label="{{localize('station-name')}}" required always-float-label></paper-input>
+              <div class="buttons">
                 <paper-button station="[[stationItem]]" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button station="[[stationItem]]" on-tap="saveEditStation" dialog-confirm autofocus>{{localize('save')}}</paper-button>
-            </div>
+              </div>
             </paper-dialog>
           </div>
         </li>
       </template>
     </ul>
-  <paper-toast id="toastAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
-  <paper-toast id="toastSaveStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-save-station')}}"></paper-toast>
-  <paper-toast id="toastDeleteStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-delete-station')}}"></paper-toast>
-  <paper-toast id="toastEmptyAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-empty-add-station')}}"></paper-toast>
+    <paper-toast id="toastAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
+    <paper-toast id="toastSaveStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-save-station')}}"></paper-toast>
+    <paper-toast id="toastDeleteStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-delete-station')}}"></paper-toast>
+    <paper-toast id="toastEmptyAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-empty-add-station')}}"></paper-toast>
   </template>
   <script>
     Polymer({
@@ -167,95 +183,102 @@
       behaviors: [
         Polymer.AppLocalizeBehavior,
         Polymer.AppLanguageBehavior,
-        ReduxBehavior 
+        ReduxBehavior
       ],
-      attached: function() {
-         this.loadResources(this.resolveUrl('../../data/locales.json'));
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
       computeMachineCount(machines) {
         return machines.length;
       },
-      add(data) {
-        return {
-        type: 'ADD_MACHINE',
-        machines: data
+      actions: {
+        add(data) {
+          return {
+            type: 'ADD_MACHINE',
+            machines: data
+          }
+        },
+        remove(data) {
+          return {
+            type: 'REMOVE_MACHINE',
+            index: data
+          }
         }
       },
       addMachine() {
         let selector = this.$.machineSeletor;
-        if(selector.value) {
+        if (selector.value) {
+          if(this.machines.length < 10) {
           this.dispatch('add', selector.selectedItem);
           selector.value = null;
+          } else {
+            alert("Can't add more than 10 machines to station");
+          }
+        } else {
+          alert('Select a machine to add')
         }
       },
+      removeMachine(e) {
+        if(this.machines.length > 0) {
+          this.dispatch('remove', e.model.index);
+        }
+      },
+      
       toggleDialog() {
         this.$.createStationDialog.open();
       },
+
       getStationNumber(length) {
-        if(length == 0) {
+        if (length == 0) {
           return 1;
         } else {
-          return length+1;
+          return length + 1;
         }
       },
       addStation() {
         let sname = this.$.stationName.value;
         let snumber = this.$.stationNumber.value;
         let smachine = this.stationMachine;
-        if(sname !== "" && snumber !== "") {
-        this.$.stationQuery.ref.push({
-          name : sname,
-          number : snumber,
-          machine : smachine
-        });
-        this.clearField();
-           this.$.toastAddStation.open(); 
+        if (sname !== "" && snumber !== "") {
+          this.$.stationQuery.ref.push({
+            name: sname,
+            number: snumber,
+            machine: smachine
+          });
+          this.clearField();
+          this.$.toastAddStation.open();
         } else {
           this.$.toastEmptyAddStation.open();
         }
       },
       editStation(e) {
         let key = e.currentTarget.station.$key;
-        this.$$('#edit_'+ key).open();  
+        this.$$('#edit_' + key).open();
       },
       removeStation(e) {
-         if (confirm("Delete tihs station ?") == true) { 
-           let key = e.currentTarget.station.$key;
-           this.$.stationQuery.ref.child(key).remove();
-        if(this.notification) {
-        this.$.toastDeleteStation.open(); 
-         }
-        } else {}  
+        if (confirm("Delete tihs station ?") == true) {
+          let key = e.currentTarget.station.$key;
+          this.$.stationQuery.ref.child(key).remove();
+          if (this.notification) {
+            this.$.toastDeleteStation.open();
+          }
+        } else {}
       },
       saveEditStation(e) {
         let key = e.currentTarget.station.$key;
         let sname = this.$$('#name_' + key).value;
         let snumber = this.$$('#number_' + key).value;
         let smachine = this.stationMachine;
-        if(sname !== "" && snumber !== "") {
-         this.$.stationQuery.ref.child(key).set({
+        if (sname !== "" && snumber !== "") {
+          this.$.stationQuery.ref.child(key).set({
             name: sname,
             number: snumber,
             machine: smachine
-        });
-           this.$$('.station-dialog').close();
-           this.$.toastSaveStation.open();
-         } else {
-            this.$.toastEmptyAddStation.open();
-        }
-      },
-      // check machine station equal to station number then return machine name
-      addMachineToStation() {
-        if(this.$.machineSeletor.value !== "") {
-          console.log(this.$.machineSeletor.value)
-        if(this.stationMachine.length > 10) {
-          alert("Can't add more than 10 machines to station");
+          });
+          this.$$('.station-dialog').close();
+          this.$.toastSaveStation.open();
         } else {
-          this.stationMachine.push(this.$.machineSeletor.selectedItem);
-          console.log(this.stationMachine);
-        }
-        } else {
-          alert("Please select a machine");
+          this.$.toastEmptyAddStation.open();
         }
       },
 
@@ -271,6 +294,7 @@
       clearField() {
         this.$.stationName.value = "";
         this.$.stationNumber.value = this.stationItems.length + 1;
+        this.$.machineSeletor.value = "";
       },
 
     });
