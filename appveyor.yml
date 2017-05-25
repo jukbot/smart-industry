@@ -9,16 +9,18 @@ install:
   # Get npm 3
   - npm install -g npm
   - npm install -g bower
-  # install modules. Use --force to workaround permissions issues on Windows
+  - npm install -g polymer-cli 
+ # install modules. Use --force to workaround permissions issues on Windows
   - npm install --force
+  - bower install
 
 # Post-install test scripts.
 test_script:
   # Output useful info for debugging.
   - node --version
   - npm --version
-  # run tests
-  - npm test
+  - polymer --version
+  - polymer lint
 
 # Don't actually build.
 build: off
