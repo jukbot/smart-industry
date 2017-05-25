@@ -186,15 +186,17 @@
       <li>
       <div class="frame">
       <h2>Load Simulator Plan</h2>
-      You selected: [[fuck.name]]
       <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" on-change="selectPlan" item-label-path="name"
-        item-value-path="$key" selected-item="{{fuck}}" required always-float-label></vaadin-combo-box>
+        item-value-path="$key" selected-item="{{plan}}" required always-float-label></vaadin-combo-box>
       <paper-input label="Plan Name" name="planname" id="stationName" type="text" always-float-label auto-validate></paper-input>
       <div class="load-btn-group">
       <paper-button class="load-btn dark" raised on-tap="_loadPlan">Load</paper-button>
       <paper-button class="load-btn magic" raised on-tap="_savePlan">Save</paper-button>
       <paper-button class="load-btn chilli" raised on-tap="_deletePlan">Delete</paper-button>
       </div>
+      <p>Selected Plan: [[plan.name]]</p>
+      <p>Product: [[product.name]] </p>
+      <p>Quantity: [[amount]]</p>
       </div>
       </li>
       <li>
@@ -203,13 +205,12 @@
       Current station: [[stations.length]]
       <paper-input label="Station Name" name="stationname" id="stationName" type="text" always-float-label auto-validate></paper-input>
       <h2>Add Product</h2>
-      You selected: [[x.name]]
       <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name"
-        item-value-path="$key" selected-item='{{x}}' on-change="selectProduct" required always-float-label></vaadin-combo-box>
+        item-value-path="$key" selected-item='{{product}}' on-change="selectProduct" required always-float-label></vaadin-combo-box>
       <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
             step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
       <paper-button raised class="control-btn magic" on-tap="_addStation">Add Station</paper-button>  
-      <paper-button raised class="control-btn carrot" on-tap="_addProduct">Add Product</paper-button>  
+      <paper-button raised class="control-btn carrot" on-tap="_addProduct">Select Product</paper-button>  
       </div>
       </li>
       <li>

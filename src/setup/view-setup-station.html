@@ -84,27 +84,29 @@
       }
     </style>
     <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
-        always-on-top no-cancel-on-outside-click>
-        <h1>{{localize('add-station')}}</h1>
-        <paper-input type="number" id="stationNumber" name="station-number" label="{{localize('station-number')}}" value="[[getStationNumber(stationItems.length)]]"
-          min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
-        <paper-input type="text" id="stationName" name="station-name" label="{{localize('station-name')}}" required always-float-label></paper-input>
-        <vaadin-combo-box label="Machine" id="machineSeletor" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
-          item-value-path="name" required always-float-label></vaadin-combo-box>
-        <paper-dialog-scrollable>
-        <p>You add [[stationMachineCount]]/10 machines</p>
+      always-on-top no-cancel-on-outside-click>
+      <h1>{{localize('add-station')}}</h1>
+      <paper-input type="number" id="stationNumber" name="station-number" label="{{localize('station-number')}}" value="[[getStationNumber(stationItems.length)]]"
+        min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
+      <paper-input type="text" id="stationName" name="station-name" label="{{localize('station-name')}}" required always-float-label></paper-input>
+      <vaadin-combo-box label="Machine" id="machineSeletor" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
+        item-value-path="name" required always-float-label></vaadin-combo-box>
+      <paper-dialog-scrollable>
+        <p>You added [[stationMachineCount]]/10 machines</p>
         <paper-button raised class="smart" on-tap="addMachine">Add Machine</paper-button>
         <div role="listbox">
           <template is="dom-repeat" items="{{machines}}" as="machineItem">
-            <paper-item>[[machineItem.name]] [[machineItem.number]] [[machineItem.code]]<iron-icon on-click="removeMachine" icon="vaadin:trash"></iron-icon></paper-item> 
+            <paper-item>[[machineItem.name]] [[machineItem.number]] [[machineItem.code]]
+              <iron-icon on-click="removeMachine" icon="vaadin:trash"></iron-icon>
+            </paper-item>
           </template>
         </div>
-        </paper-dialog-scrollable>
-        <div class="buttons">
-          <paper-button on-tap="dismissAddStation" dialog-dismiss>{{localize('dismiss')}}</paper-button>
-          <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('add')}}</paper-button>
-        </div>
-      </paper-dialog>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button on-tap="dismissAddStation" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+        <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('add')}}</paper-button>
+      </div>
+    </paper-dialog>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" order-by-value="true" data="{{stationItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="station" data="{{machineItems}}"></firebase-query>
@@ -185,12 +187,7 @@
         Polymer.AppLanguageBehavior,
         ReduxBehavior
       ],
-      attached: function () {
-        this.loadResources(this.resolveUrl('../../data/locales.json'));
-      },
-      computeMachineCount(machines) {
-        return machines.length;
-      },
+
       actions: {
         add(data) {
           return {
@@ -205,12 +202,21 @@
           }
         }
       },
+
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
+      },
+
+      computeMachineCount(machines) {
+        return machines.length;
+      },
+
       addMachine() {
         let selector = this.$.machineSeletor;
         if (selector.value) {
-          if(this.machines.length < 10) {
-          this.dispatch('add', selector.selectedItem);
-          selector.value = null;
+          if (this.machines.length < 10) {
+            this.dispatch('add', selector.selectedItem);
+            selector.value = null;
           } else {
             alert("Can't add more than 10 machines to station");
           }
@@ -218,12 +224,13 @@
           alert('Select a machine to add')
         }
       },
+
       removeMachine(e) {
-        if(this.machines.length > 0) {
+        if (this.machines.length > 0) {
           this.dispatch('remove', e.model.index);
         }
       },
-      
+
       toggleDialog() {
         this.$.createStationDialog.open();
       },
