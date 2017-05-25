@@ -1,6 +1,7 @@
 # Polymer App Starter Kit
 
-[![Build Status](https://travis-ci.org/PolymerElements/polymer-starter-kit.svg?branch=master)](https://travis-ci.org/PolymerElements/polymer-starter-kit)
+[![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
+
 
 This template is a starting point for building apps using a drawer-based
 layout. The layout is provided by `app-layout` elements.
@@ -22,7 +23,7 @@ The PRPL pattern, in a nutshell:
 
 [Check out our blog post that covers what's changed in PSK2 and how to migrate!](https://www.polymer-project.org/1.0/blog/2016-08-18-polymer-starter-kit-or-polymer-cli.html)
 
-### Setup
+### Setup Project
 
 ##### Prerequisites
 
@@ -52,26 +53,23 @@ routing for the app:
 This command performs HTML, CSS, and JS minification on the application
 dependencies, and generates a service-worker.js file with code to pre-cache the
 dependencies based on the entrypoint and fragments specified in `polymer.json`.
-The minified files are output to the `build/unbundled` folder, and are suitable
-for serving from a HTTP/2+Push compatible server.
+The output files are in `build/default` which suitable for serving from a HTTP/2+Push compatible server.
 
-In addition the command also creates a fallback `build/bundled` folder,
-generated using fragment bundling, suitable for serving from non
-H2/push-compatible servers or to clients that do not support H2/Push.
+Build the project: 
 
     polymer build
 
 ### Preview the build
 
-This command serves the minified version of the app at `http://localhost:8080`
+This command serves the minified version of the app at `http://127.0.0.1:8081`
 in an unbundled state, as it would be served by a push-compatible server:
 
-    polymer serve build/unbundled
+    polymer serve --open
 
-This command serves the minified version of the app at `http://localhost:8080`
+This command serves the production version of the app at `http://localhost:8080`
 generated using fragment bundling:
 
-    polymer serve build/bundled
+    polymer serve build/defaukt
 
 ### Run tests
 
