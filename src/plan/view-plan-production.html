@@ -182,12 +182,7 @@
         flex-wrap: wrap;
       }
 
-      .wrap li {
-        background: gold;
-      }
-
       .flex-item {
-        background: tomato;
         padding: 5px;
         width: 100px;
         height: 100px;
@@ -197,6 +192,25 @@
         font-weight: bold;
         font-size: 2em;
         text-align: center;
+      }
+
+      .flex-item-station {
+        width: 33.3333%;
+        height: auto;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 10px;
+        padding: 10px;
+        color: #757575;
+        border: 4px dashed #757575;
+        border-radius: 2px;
+        flex-direction: column;
+        text-decoration: none;
+        position: relative;
+        box-sizing: border-box;
       }
 
       .grabbable {
@@ -265,9 +279,9 @@
         border-bottom: 0.66667rem solid transparent;
       }
 
-      .progress-arrow--animated .progress-arrow__arrow .animated {
-        -webkit-animation: pulse 0s infinite ease;
-        animation: pulse 0s infinite ease;
+      .progress-arrow--animated .progress-arrow__arrow {
+        -webkit-animation: pulse 2s infinite ease;
+        animation: pulse 2s infinite ease;
       }
 
       .progress-arrow--animated .arrow-1 {
@@ -392,9 +406,9 @@
         </template>
 
         <div class="production-block">
+          <ul class="flex-container wrap">  
           <template is="dom-repeat" items="[[stations]]" as="station">
-            <li>
-              <div class="station-block" index="[[index]]">
+            <li class="flex-item-station" index="[[index]]">
                 <h2>Station [[station.name]]</h2>
                 <p>Station ID [[index]]</p>
                 <ul class="flex-container wrap">
@@ -416,10 +430,9 @@
                   <paper-swatch-picker on-color-changed="colorChange"></paper-swatch-picker>
                   <paper-icon-button icon="delete" on-tap="_removeStation"></paper-icon-button>
                 </div>
-              </div>
             </li>
 
-<div class="progress-arrow progress-arrow--animated animated">
+<div class="progress-arrow progress-arrow--animated">
   <div class="progress-arrow__arrow arrow-1"></div>
   <div class="progress-arrow__arrow arrow-2"></div>
   <div class="progress-arrow__arrow arrow-3"></div>
@@ -428,7 +441,7 @@
   <div class="progress-arrow__arrow arrow-6"></div>
   </div>
           </template>
-
+          </ul>
           <div class="block station-block empty-station-block" hidden$="[[emptyStation(stations.length)]]">
             <h1>No station in production block.</h1>
             <p>Please add your first station to the block.</p>
@@ -440,18 +453,18 @@
       <template is="dom-repeat" items="[[stations]]" as="station">
         <div class="output-frame">
           <h2>Station [[station.name]] Output</h2>
-          <p>Duration: 11mins</p>
-          <p>Workload: 114mins</p>
-          <p>Used Machine: 4/5</p>
-          <p>Actual quantity: 22</p>
+          <p>Current quantity: 98 items</p>
+          <p>Workload: 112 mins</p>
+          <p>Used Machine: 10/10</p>
+          <p>Actual quantity: 200</p>
         </div>
       </template>
       <div class="output-frame">
         <h2>Production Output</h2>
-        <p>Productivity Rate: 9 items/hr.</p>
+        <p>Productivity Rate: 133 items/hr.</p>
         <p>Total Lead Time: 3hrs.</p>
         <p>Total Workload: 3hrs.</p>
-        <p>Total Actual quantity: 22</p>
+        <p>Total Actual quantity: 200</p>
       </div>
     </div>
 
@@ -632,12 +645,12 @@
         } else {       
           if (play.active) {
             play.innerText = 'Pause';
-            this.$$('.animated').style.animation = 'pulse 0s infinite ease';
+            this.$$('.progress-arrow--animated').style.animation = 'pulse 0s infinite ease';
             this.$$('.status').style.color = 'red';
             console.log("Pause");
           } else {
             play.innerText = 'Play';
-            this.$$('.animated').style.animation = 'pulse 2s infinite ease';
+            this.$$('.progress-arrow--animated').style.animation = 'pulse 2s infinite ease';
             this.$$('.status').style.color = 'green';
             console.log("Play");
           }
