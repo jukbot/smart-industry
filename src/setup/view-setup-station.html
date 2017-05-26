@@ -96,12 +96,12 @@
         display: -webkit-flex;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
       }
 
       .wrap {
-        -webkit-flex-wrap: wrap;
-        flex-wrap: wrap;
+        -webkit-flex-flow: row wrap;
+        flex-flow: row wrap;
       }
 
       .flex-item {
@@ -212,7 +212,7 @@
         },
         machines: {
           type: Array,
-          statePath: 'machines',
+          statePath: ['machines','index'],
         },
         stationMachineCount: {
           type: Number,
