@@ -115,14 +115,20 @@
             <div class="frame" hidden$="[[selectProduct.part]]">
             <h1 class="no-product-title">No Product Selected</h1>
             </div>
-
+            <div class="frame" hidden$="[[!selectProduct.part]]">
+                <h2>Product Name [[setOrderProduct(selectProduct)]]</h2>
+                <p>Product SKU: [[selectProduct.sku]]</p>
+                <p>Product Fragment: [[selectProduct.part.length]] part</p>
+                <p>Total Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p>
+             </div>
             <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
               <div class="frame">
                 <h2>Product Part [[part.name]]</h2>
                 <p>Part SKU: [[part.sku]]</p>
                 <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
-                <p>Total Process Time : [[getSumCycleTime(part.cycle)]] minutes</p>
                 <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
+                <p>Total Process Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+
               </div>
            </template>
            </div>

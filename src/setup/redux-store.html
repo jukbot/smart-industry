@@ -9,7 +9,7 @@
         switch (action.type) {
             case 'ADD_MACHINE':
                 const machines = state.machines.slice(0);
-                //machines.push(action.machines);
+                delete action.machines["$key"];
                 return Object.assign({}, state, {
                     machines: [...state.machines, action.machines]
                 });

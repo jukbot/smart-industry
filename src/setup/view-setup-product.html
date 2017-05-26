@@ -85,19 +85,10 @@
         text-align: center;
       }
 
-      .frame {
+      .frame, .part-frame {
         border: solid 1px #757575;
         border-radius: 2px;
         margin: 10px;
-        min-height: 100px;
-        overflow: hidden;
-        padding: 10px;
-      }
-
-      .part-frame {
-        border: solid 1px #757575;
-        border-radius: 2px;
-        margin: 10px 0;
         min-height: 100px;
         overflow: hidden;
         padding: 10px;
@@ -193,7 +184,7 @@
             <div class="product-info-group">
               <h1 class="product-title">[[productItem.name]]</h1>
               <div class="product-image">
-              <img src="../../images/product/test.png" alt="[[productItem.name]]">
+              <img src="[[productItem.image]]" alt="[[productItem.name]]">
               </div>
               <div class="product-content">
               <p>Product Name: [[productItem.name]]</p>
@@ -398,7 +389,6 @@
           alert("File cannot be empty");
         }
         else {
-          console.log(file.name);
           let uid = this.user.uid;
           let storageRef = firebase.storage().ref("product/"+file.name);
           let task = storageRef.put(file);
@@ -411,6 +401,7 @@
             console.log(err.message);
           }, function complete() {
             let imgURL = task.snapshot.downloadURL;
+            console.log(imgURL);
             console.info("%cUpload completed", "color: green;");
           });
         }
