@@ -94,6 +94,11 @@
         flex-grow: 1;
       }
 
+      .add-btn {
+        margin: 10px 0;
+        width: 100%;
+      }
+
       .frame p {
         margin: 10px 0;
       }
@@ -232,10 +237,10 @@
       .progress-arrow__arrow {
         width: 0.75rem;
         position: relative;
-        border-left: 1.5rem solid white;
+        border-left: 1rem solid white;
         border-right: 0;
-        border-top: 1.5rem solid transparent;
-        border-bottom: 1.5rem solid transparent;
+        border-top: 1rem solid transparent;
+        border-bottom: 1rem solid transparent;
         background: transparent;
         -webkit-filter: drop-shadow(0.375rem 0 0 rgba(204, 204, 204, 0.4));
         filter: drop-shadow(0.375rem 0 0 rgba(204, 204, 204, 0.4));
@@ -260,9 +265,9 @@
         border-bottom: 0.66667rem solid transparent;
       }
 
-      .progress-arrow--animated .progress-arrow__arrow {
-        -webkit-animation: pulse 2s infinite ease;
-        animation: pulse 2s infinite ease;
+      .progress-arrow--animated .progress-arrow__arrow .animated {
+        -webkit-animation: pulse 0s infinite ease;
+        animation: pulse 0s infinite ease;
       }
 
       .progress-arrow--animated .arrow-1 {
@@ -347,10 +352,9 @@
             <h2>Select Product</h2>
             <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="$key"
               selected-item='{{product}}' on-change="selectProduct" required always-float-label></vaadin-combo-box>
-            <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
+            <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="productQuantity" type="number" min="1" max="1000"
               step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
-            <paper-button raised class="control-btn magic" on-tap="_addStation">Add Station</paper-button>
-            <paper-button raised class="control-btn carrot" on-tap="_addProduct">Select Product</paper-button>
+            <paper-button raised class="add-btn carrot" on-tap="_addStation">Add Station</paper-button>
           </div>
         </li>
         <li>
@@ -365,10 +369,9 @@
               <p>Speed (x1.00)</p>
               <paper-slider class="slider" min="1.00" step="0.50" max="4.00" max-markers="4.00" value="0" editable active pin noink snaps></paper-slider>
             </div>
-            <vaadin-combo-box label="Target station" name="station" items="[[stations]]" id="stationSelector" 
-              item-label-path="name" item-value-path="name" required always-float-label></vaadin-combo-box>
+            <p class="status">Status: Stopped</p>
             <paper-button id="playBTN" class="control-btn play-btn" toggles raised on-tap="_simulatePlan">Play</paper-button>
-            <paper-button id="stop-btn" class="control-btn chilli" raised on-tap="_stopPlan">Stop</paper-button>
+            <paper-button id="stopBTN" class="control-btn chilli" raised on-tap="_stopPlan">Stop</paper-button>
           </div>
         </li>
       </ul>
@@ -410,11 +413,20 @@
                     </paper-listbox slot="dropdown-content">
                   </paper-menu-button>
                   <paper-icon-button icon="create" on-tap="_renameStation"></paper-icon-button>
+                  <paper-swatch-picker on-color-changed="colorChange"></paper-swatch-picker>
                   <paper-icon-button icon="delete" on-tap="_removeStation"></paper-icon-button>
-                  <paper-swatch-picker id="colorPicker"></paper-swatch-picker>
                 </div>
               </div>
             </li>
+
+<div class="progress-arrow progress-arrow--animated animated">
+  <div class="progress-arrow__arrow arrow-1"></div>
+  <div class="progress-arrow__arrow arrow-2"></div>
+  <div class="progress-arrow__arrow arrow-3"></div>
+  <div class="progress-arrow__arrow arrow-4"></div>
+  <div class="progress-arrow__arrow arrow-5"></div>
+  <div class="progress-arrow__arrow arrow-6"></div>
+  </div>
           </template>
 
           <div class="block station-block empty-station-block" hidden$="[[emptyStation(stations.length)]]">
@@ -458,12 +470,15 @@
           type: Object,
           value: () => [{
             name: 'A',
+            number: 1,
             color: 'rgb(56,125,213)'
           }, {
             name: 'B',
+            number: 2,
             color: 'rgb(99,171,165)'
           }, {
             name: 'C',
+            number: 3,
             color: 'rgb(108,136,186)'
           }]
         },
@@ -524,10 +539,6 @@
         Polymer.AppLanguageBehavior
       ],
 
-      listeners: {
-        'color-picker-selected' : 'colorChange'
-      },
-
       attached: function () {
         this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
@@ -537,10 +548,13 @@
         return stations.length;
       },
 
-      colorChange() {
-        let hex = this.$.colorPicker.color;
-        let rgb = hexToRgb(hex);
-
+      colorChange(e) {
+        let hex = e.currentTarget.color;
+        let rgb = this.hexToRGB(hex);
+        let index = e.model.index
+        this.stations[1].color = rgb;
+        let foundIndex = stations.findIndex(x => x.id == item.number);
+        stations[foundIndex] = item;
       },
 
        hexToRGB(hex){
@@ -568,15 +582,6 @@
         console.log(this.$.productSelector.selectedItem);
       },
 
-      _addProduct() {
-        let product = this.$.productSelector;
-        if (product.value === "") {
-          alert("Please select product input");
-        } else {
-          console.log(product.selectedItem);
-        }
-      },
-
       _addStation() {
         let sname = this.$.stationName.value;
         let rgb = [];
@@ -598,7 +603,9 @@
       },
 
       _removeStation(e) {
-        this.splice('stations', e.model.index, 1);
+          if (confirm("Delete tihs station ?") == true) { 
+            this.splice('stations', e.model.index, 1);
+        } else {} 
       },
 
       _addMachineToStation(e) {
@@ -617,11 +624,24 @@
       },
 
       _simulatePlan() {
+        let product = this.$.productSelector;
+        let quantity = this.$.productQuantity;
         let play = this.$.playBTN;
-        if (play.active) {
-          play.innerText = 'Pause';
-        } else {
-          play.innerText = 'Play';
+        if (product.value === "" || quantity.value <= 0) {
+          alert("Please select product and input quantity more than 0");
+        } else {       
+          if (play.active) {
+            play.innerText = 'Pause';
+            this.$$('.animated').style.animation = 'pulse 0s infinite ease';
+            this.$$('.status').style.color = 'red';
+            console.log("Pause");
+          } else {
+            play.innerText = 'Play';
+            this.$$('.animated').style.animation = 'pulse 2s infinite ease';
+            this.$$('.status').style.color = 'green';
+            console.log("Play");
+          }
+           console.log(product.selectedItem);
         }
       },
       _changeDuration() {
