@@ -1,248 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Pronto</title>
-    <meta name="generator" content="Polymer 1.0">
+    <title>SMES</title>
+    <meta name="generator" content="Polymer 2.0">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=1">
     <meta name="description" content="Smart Manufacturing Execution Systems for Small-Midsize industry">
     <meta name="author" content="KMUTT">
     <meta name="robots" content="index, nofollow">
-    <meta name="theme-color" content="#333333">
+    <meta name="theme-color" content="#FFFFFF">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Pronto">
+    <meta name="application-name" content="SMES">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Pronto">
+    <meta name="apple-mobile-web-app-title" content="SMES">
     <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
-    <meta name="msapplication-TileColor" content="#333333">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta name="msapplication-tap-highlight" content="no">
     <base href="/">
+    <link rel="manifest" href="/manifest.json">
     <link rel="canonical" href="https://www.mergano.com/industry">
     <link rel="shortcut icon" href="/images/favicon.png">
-    <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
     <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
     <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
     <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
-    <script async="" src="https://www.google-analytics.com/analytics.js"></script>
-    <script>
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r;
-            i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date();
-            a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0];
-            a.async = 1;
-            a.src = g;
-            m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
-        ga('create', 'UA-51514677-9', 'auto');
-        ga('send', 'pageview');
-    </script>
     <script>
         // Register the base URL
         const baseUrl = document.querySelector('base').href;
-        // Load and register pre-caching Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register(baseUrl + 'service-worker.js')
-                    .then(() => {
-                        console.info("%cService Worker Registered", "color: green;");
-                    })
-                    .catch(() => {
-                        console.err("%cService Worker Register Failed", "color: red;")
-                    });
-            });
-        }
+      // Load and register pre-caching Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register(baseUrl + 'service-worker.js');
+        });
+      }
     </script>
     <!-- <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script> -->
+    <script src="./node_modules/redux/dist/redux.js"></script>
     <link rel="import" href="src/view-index.html">
     <style>
-        html {
-            -ms-text-size-adjust: 100%;
-            -webkit-text-size-adjust: 100%;
-        }
-
         body {
             margin: 0px;
             padding: 0px;
             font-family: 'Roboto', 'Noto Sans', 'Noto Sans Thai', 'Noto Sans CJK JP', sans-serif;
             color: #333333;
-            background-color: #f1f1f1;
+            background-color: #eeeeee;
             line-height: 1.5;
             min-height: 100vh;
         }
 
-        .loader,
-        .loader__figure {
+        .showbox {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            -webkit-transform: translate(-50%, -50%);
-            -moz-transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%);
-            -o-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 5%;
+            display: flex;
+            align-items: center;
+            justify-content: center
         }
 
         .loader {
-            overflow: visible;
-            padding-top: 2em;
-            height: 0;
-            width: 2em;
+            position: relative;
+            margin: 0 auto;
+            width: 100px;
         }
 
-        .loader__figure {
-            height: 0;
-            width: 0;
-            box-sizing: border-box;
-            border: 0 solid #F44336;
-            border-radius: 50%;
-            -webkit-animation: loader-figure 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-            -moz-animation: loader-figure 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-            animation: loader-figure 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+        .loader:before {
+            content: '';
+            display: block;
+            padding-top: 100%;
         }
 
-        .loader__label {
-            float: left;
-            margin-left: 50%;
-            -webkit-transform: translateX(-50%);
-            -moz-transform: translateX(-50%);
-            -ms-transform: translateX(-50%);
-            -o-transform: translateX(-50%);
-            transform: translateX(-50%);
-            margin: 0.7em 0 0 50%;
-            font-size: 1.5em;
-            font-weight: 300;
-            line-height: 1.5;
-            color: #333333;
-            white-space: nowrap;
-            -webkit-animation: loader-label 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-            -moz-animation: loader-label 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
-            animation: loader-label 0.75s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+        .circular {
+            -webkit-animation: rotate 2s linear infinite;
+            animation: rotate 2s linear infinite;
+            height: 100%;
+            -webkit-transform-origin: center center;
+            transform-origin: center center;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
         }
 
-        @-webkit-keyframes loader-figure {
+        .path {
+            stroke-dasharray: 1, 200;
+            stroke-dashoffset: 0;
+            -webkit-animation: dash 1s ease-in-out infinite, color 6s ease-in-out infinite;
+            animation: dash 1s ease-in-out infinite, color 6s ease-in-out infinite;
+            stroke-linecap: round;
+        }
+
+        @-webkit-keyframes rotate {
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes rotate {
+            100% {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+        @-webkit-keyframes dash {
             0% {
-                height: 0;
-                width: 0;
-                background-color: #FF5252;
+                stroke-dasharray: 1, 200;
+                stroke-dashoffset: 0;
             }
-            29% {
-                background-color: #FF5252;
-            }
-            30% {
-                height: 3em;
-                width: 3em;
-                background-color: transparent;
-                border-width: 1em;
-                opacity: 1;
+            50% {
+                stroke-dasharray: 89, 200;
+                stroke-dashoffset: -35px;
             }
             100% {
-                height: 3em;
-                width: 3em;
-                border-width: 0;
-                opacity: 0;
-                background-color: transparent;
+                stroke-dasharray: 89, 200;
+                stroke-dashoffset: -124px;
             }
         }
 
-        @-moz-keyframes loader-figure {
+        @keyframes dash {
             0% {
-                height: 0;
-                width: 0;
-                background-color: #FF5252;
+                stroke-dasharray: 1, 200;
+                stroke-dashoffset: 0;
             }
-            29% {
-                background-color: #FF5252;
-            }
-            30% {
-                height: 3em;
-                width: 3em;
-                background-color: transparent;
-                border-width: 1em;
-                opacity: 1;
+            50% {
+                stroke-dasharray: 89, 200;
+                stroke-dashoffset: -35px;
             }
             100% {
-                height: 3em;
-                width: 3em;
-                border-width: 0;
-                opacity: 0;
-                background-color: transparent;
+                stroke-dasharray: 89, 200;
+                stroke-dashoffset: -124px;
             }
         }
 
-        @keyframes loader-figure {
+        @-webkit-keyframes color {
+            100%,
             0% {
-                height: 0;
-                width: 0;
-                background-color: #FF5252;
+                stroke: #d62d20;
             }
-            29% {
-                background-color: #FF5252;
+            40% {
+                stroke: #0057e7;
             }
-            30% {
-                height: 3em;
-                width: 3em;
-                background-color: transparent;
-                border-width: 1em;
-                opacity: 1;
+            66% {
+                stroke: #008744;
             }
-            100% {
-                height: 3em;
-                width: 3em;
-                border-width: 0;
-                opacity: 0;
-                background-color: transparent;
+            80%,
+            90% {
+                stroke: #ffa700;
             }
         }
 
-        @-webkit-keyframes loader-label {
+        @keyframes color {
+            100%,
             0% {
-                opacity: 0.25;
+                stroke: #d62d20;
             }
-            30% {
-                opacity: 1;
+            40% {
+                stroke: #0057e7;
             }
-            100% {
-                opacity: 0.25;
+            66% {
+                stroke: #008744;
             }
-        }
-
-        @-moz-keyframes loader-label {
-            0% {
-                opacity: 0.25;
-            }
-            30% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0.25;
-            }
-        }
-
-        @keyframes loader-label {
-            0% {
-                opacity: 0.25;
-            }
-            30% {
-                opacity: 1;
-            }
-            100% {
-                opacity: 0.25;
+            80%,
+            90% {
+                stroke: #ffa700;
             }
         }
     </style>
 </head>
+
 <body>
     <view-index unresolved>
-        <div class="loader">
-            <div class="loader__figure"></div>
-            <p aria-label="Loading your application" class="loader__label">Loading</p>
+        <div class="showbox">
+            <div class="loader">
+                <svg class="circular" viewBox="25 25 50 50">
+                    <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10" />
+                </svg>
+            </div>
         </div>
     </view-index>
     <script>
@@ -260,9 +204,28 @@
             }
         })();
     </script>
-    <noscript>Please enable JavaScript to view this website.</noscript>
+    <noscript>
+        Please enable JavaScript to view this website.
+    </noscript>
     <vaadin-license-box style="outline: none; z-index: 112; box-sizing: border-box; max-height: 1320px; max-width: 265.844px;">
         <div id="licenseBoxContent" class="unlicensed style-scope vaadin-license-box">Trial Version</div>
     </vaadin-license-box>
+    <script async="" src="https://www.google-analytics.com/analytics.js"></script>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-51514677-9', 'auto');
+        ga('send', 'pageview');
+    </script>
 </body>
+
 </html>

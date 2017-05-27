@@ -59,23 +59,22 @@
       <li>
         <div class="card">
           <h1>{{localize('account-settings')}}</h1>
-          <paper-input label="Display Name" id="displayName" type="text"></paper-input>
-          <img style="width: 150px;" src="[[user.photoURL]]" alt="user photo">
+          <paper-input label="Display Name" id="displayName" value="[[user.displayName]]" type="text"></paper-input>
+          <img style="width: 150px;" src="[[user.photoURL]]]" alt="user photo">
           <p>Display name: [[user.displayName]]</p>
           <p>E-mail: [[user.email]]</p>
           <p>Verify status: [[verifyStatus(user.emailVerified)]]</p>
           <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
           <input type="file" id="uploadImageFile">
-          <paper-button raised class="dark" on-tap="uploadImage">Upload</paper-button>
           <paper-button class="chilli btn" on-tap="_deleteProfileImage" title="Delete Profile Image" raised>Delete Profile Image</paper-button>
-          <paper-button disabled="[[user.emailVerified]]" class="water btn" on-tap="_verifyAccount" title="Verify account" raised>Verify Account</paper-button>
+          <paper-button disabled="[[user.emailVerified]]" class="dark btn" on-tap="_verifyAccount" title="Verify account" raised>Verify Account</paper-button>
           <paper-button class="magic btn" on-tap="_saveSettings" title="Save settings" raised>{{localize('save-settings')}}</paper-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1>Authentication Settings</h1>
-          <paper-input label="{{localize('email')}}" id="userEmail" type="text"></paper-input>
+          <paper-input label="{{localize('email')}}" id="userEmail" type="text" value="[[user.email]]"></paper-input>
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password"></paper-input>
           <paper-input label="Your new password" id="newPassword" type="password"></paper-input>
           <paper-button class="magic btn" on-tap="_changeAuthen" title="Change password" raised>Change Password</paper-button>
@@ -205,7 +204,7 @@
         let displayname = this.$.displayName.value;
         if (displayname !== "") {
           this.user.updateProfile({
-              displayName: displayname,
+              displayName: displayname
             })
             .then(() => {
               this.alertText = 'notification-save-settings';
@@ -214,48 +213,63 @@
             .catch(error => {
               alert("Error: " + error.message);
             });
-        } else {
-          alert("Display name cannot leave blank");
         }
 
         if (this.$.uploadImageFile.files.length > 0) {
-          let imgURL = this.uploadProfileImage();
-          if (imgURL) {
-            this.user.updateProfile({
-                photoURL: imgURL
-              })
-              .then(() => {
-                this.alertText = 'notification-save-settings';
-                this.$.toastAlert.open();
-              })
-              .catch(error => {
-                alert("Error: " + error.message);
-              });
-          } else {
-            alert("Upload Failed");
-          }
+          this.uploadProfileImage();
         }
       },
 
       uploadProfileImage() {
         let file = this.$.uploadImageFile.files[0];
         let uid = this.user.uid;
-        let storageRef = firebase.storage().ref("user/" + uid + "/profile/" + this.user.uid);
-        let task = storageRef.put(file);
-        let percent = 0;
-        let unsubscribe = task.on('state_changed',
-          function progress(snapshot) {
-            percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
-            this.$$('#uploadProgress').value = percent;
+        let storageRef = firebase.storage().ref();
+        let imagesRef = storageRef.child("user/" + uid + "/profile/" + this.user.uid);
+        let uploadTask = imagesRef.put(file);;
+        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+          function (snapshot) {
+            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + progress + '% done');
+            document.getElementById('uploadProgress').value = progress;
+            switch (snapshot.state) {
+              case firebase.storage.TaskState.PAUSED: // or 'paused'
+                console.log('Upload is paused');
+                break;
+              case firebase.storage.TaskState.RUNNING: // or 'running'
+                console.log('Upload is running');
+                break;
+            }
           },
-          function error(err) {
-            console.log(err.message);
-            return;
+          function (error) {
+            switch (error.code) {
+              case 'storage/unauthorized':
+                // User doesn't have permission to access the object
+                break;
+
+              case 'storage/canceled':
+                // User canceled the upload
+                break;
+
+              case 'storage/unknown':
+                // Unknown error occurred, inspect error.serverResponse
+                break;
+            }
           },
-          function complete() {
-            let imgURL = task.snapshot.downloadURL;
+          function () {
+            // Upload completed successfully, now we can get the download URL
             console.info("%cUpload completed", "color: green;");
-            return imgURL;
+            let downloadURL = uploadTask.snapshot.downloadURL;
+            firebase.database().ref().child('/user/' + this.user.uid).set({
+              photoURL: downloadURL
+            }).then(function () {
+              this.$.uploadImageFile.files[0] = null;
+              this.alertText = 'notification-save-settings';
+              this.$.toastAlert.open();
+            }, function (error) {
+              // An error happened.
+              console.log(error);
+            });
           });
       },
 
@@ -283,6 +297,22 @@
         this.$.auth.createUserWithEmailAndPassword(this.email, this.password);
         this.email = null;
         this.password = null;
+       firebase.database().ref().child('/user/' + user.uid).set({
+              name: user.displayName,
+              email: user.email,
+              photoURL: downloadURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
+              description: "No description for this user",
+              facebook: "",
+              twitter: "",
+
+            }).then(function () {
+              this.$.uploadImageFile.files[0] = null;
+              this.alertText = 'notification-save-settings';
+              this.$.toastAlert.open();
+            }, function (error) {
+              // An error happened.
+              console.log(error);
+            });
       },
 
       _changeAuthen() {

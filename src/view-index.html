@@ -169,7 +169,7 @@
     <app-drawer-layout fullbleed>
       <app-drawer hidden$="[[!authen]]" id="drawer" role="menu" slot="drawer" swipe-open>
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
-        <h1 title="Pronto" class="main-title">Pronto</h1>
+        <h1 title="SMES" class="main-title">SMES</h1>
         <div title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</div>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
           <a name="dashboard" role="link" href="/dashboard" title="Dashboard">
@@ -366,6 +366,14 @@
 
     });
     //  window.customerElements.define(ViewIndex.is, ViewIndex);
+    const config = {
+      apiKey: "AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0",
+      authDomain: "smart-mes.firebaseapp.com",
+      databaseURL: "https://smart-mes.firebaseio.com",
+      storageBucket: "smart-mes.appspot.com",
+      messagingSenderId: "253401775445",
+    };
+    firebase.initializeApp(config);
   </script>
   <!-- Librart for coundown in simulator -->
   <script src="../bower_components/countdownjs/countdown.min.js"></script>
