@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Pronto</title>
@@ -27,6 +27,22 @@
     <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
     <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+    <script async="" src="https://www.google-analytics.com/analytics.js"></script>
+    <script>
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r;
+            i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date();
+            a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+            a.async = 1;
+            a.src = g;
+            m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+        ga('create', 'UA-51514677-9', 'auto');
+        ga('send', 'pageview');
+    </script>
     <script>
         // Register the base URL
         const baseUrl = document.querySelector('base').href;
@@ -45,8 +61,7 @@
     </script>
     <!-- <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script> -->
     <link rel="import" href="src/view-index.html">
-    <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script><![endif]-->
-   <style>
+    <style>
         html {
             -ms-text-size-adjust: 100%;
             -webkit-text-size-adjust: 100%;
@@ -55,7 +70,7 @@
         body {
             margin: 0px;
             padding: 0px;
-            font-family: 'Roboto', 'Noto Sans', 'Noto Sans Thai', 'Noto Sans CJK JP',  sans-serif;
+            font-family: 'Roboto', 'Noto Sans', 'Noto Sans Thai', 'Noto Sans CJK JP', sans-serif;
             color: #333333;
             background-color: #f1f1f1;
             line-height: 1.5;
@@ -224,33 +239,30 @@
     </style>
 </head>
 <body>
+    <view-index unresolved>
+        <div class="loader">
+            <div class="loader__figure"></div>
+            <p aria-label="Loading your application" class="loader__label">Loading</p>
+        </div>
+    </view-index>
     <script>
         window.performance && performance.mark && performance.mark('index.html');
-       (function () {
+        (function () {
             'use strict';
             if ('registerElement' in document &&
                 'import' in document.createElement('link') &&
-                'content' in document.createElement('template')) {
-            } else {
+                'content' in document.createElement('template')) {} else {
                 // polyfill the platform!
                 var e = document.createElement('script');
                 e.src = 'bower_components/webcomponentsjs/webcomponents-lite.min.js';
                 document.body.appendChild(e);
                 console.info("%cBrowser is using polyfill the platform.", "color: crimson;");
             }
-        })(); 
+        })();
     </script>
-<view-index unresolved>
-<div class="loader"><div class="loader__figure"></div><p aria-label="Loading your application" class="loader__label">Loading</p></div>
-</view-index>
- <!-- <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-  ga('create', 'UA-51514677-9', 'auto');
-  ga('send', 'pageview');
-</script>  -->
-<noscript>Please enable JavaScript to view this website.</noscript> 
+    <noscript>Please enable JavaScript to view this website.</noscript>
+    <vaadin-license-box style="outline: none; z-index: 112; box-sizing: border-box; max-height: 1320px; max-width: 265.844px;">
+        <div id="licenseBoxContent" class="unlicensed style-scope vaadin-license-box">Trial Version</div>
+    </vaadin-license-box>
 </body>
 </html>

@@ -32,9 +32,12 @@
         }
       }
 
-      .machine-dialog {
+     .machine-dialog {
         width: 35%;
         padding: 10px;
+      }
+      .machine-title {
+        font-size: 2rem;
       }
      .machine { min-height: 350px; height: auto; }
      .machine p {
@@ -60,30 +63,31 @@
           <paper-dialog id="createMachineDialog" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top
             no-cancel-on-outside-click>
             <h1>{{localize('add-machine')}}</h1>
+            <paper-input name="machine-number"  id="machineNumber" label="Machine Number" type="number" value="[[getMachineNumber(machineItems.length)]]"
+        min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
             <paper-input name="machine-name" id="machineName" label="Machine Name" required always-float-label></paper-input>
             <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number" min="0" max="100" value="100" step="5" allowed-pattern="[0-9]" required always-float-label><div suffix>&#37;</div></paper-input>
             <paper-input name="machine-capacity" id="machineCapacity" label="Max Capacity per day" type="number" min="1" max="24" value="8" step="1" allowed-pattern="[0-9]" required always-float-label><div suffix>Hrs.</div></paper-input>
             <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" name="machineType" item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box>
-            <vaadin-combo-box label="Station" id="stationNumber" items="[[stationItems]]" name="stationName" item-label-path="name" item-value-path="number" required always-float-label></vaadin-combo-box> 
-              <div class="buttons">
+            <div class="buttons">
                 <paper-button on-tap="dismissAddMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button on-tap="addMachine" dialog-confirm autofocus>{{localize('add')}}</paper-button>
-              </div>
-              </paper-dialog>
+            </div>
+           </paper-dialog>
         </div>
     <ul class="app-grid">
       <template is="dom-repeat" items="{{persistedMachineData}}" as="machineItem">
         <li>  
           <div class="card machine">
             <div class="machine-info-group">
-            <h1 class="card-title">[[machineItem.name]]</h1>
+            <h1 class="machine-title">[[machineItem.name]]</h1>
             <p>{{localize('machine-number')}}: [[machineItem.number]]</p>
             <p>{{localize('machine-type')}}: [[machineItem.code]]</p>
             <p>{{localize('machine-station')}}: [[machineItem.station]]</p>
             <p>{{localize('machine-standard-effi')}}: [[factoryStandard.machine]] &#37;</p>
             <p>{{localize('machine-current-effi')}}: [[machineItem.effi]] &#37;</p>
             <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] Hrs. per day</p>
-            <p>{{localize('machine-install-date')}}: [[machineItem.install]]</p>
+            <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
             </div>
             <div class="button-group">
             <paper-button raised class="magic" machine="[[machineItem]]" on-tap="editMachine">{{localize('edit')}}</paper-button>
@@ -91,14 +95,15 @@
             </div>
             <paper-dialog id="edit_[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation" always-on-top no-cancel-on-outside-click>
             <h2>{{localize('edit-machine')}}</h2>
+            <paper-input name="machine-number"  id="machineNumber" label="Machine Number" type="number" value="[[machineItem.number]]"
+        min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
             <paper-input id="name_[[machineItem.$key]]" name="machine-name" class="editmachineName" value="[[machineItem.name]]" label="Machine Name" always-float-label></paper-input>
             <paper-input id="effi_[[machineItem.$key]]" name="machine-effi" class="editmachineEffi" value="[[machineItem.effi]]" label="Efficiency" type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
             <div suffix>%</div> 
             </paper-input>
             <vaadin-combo-box id="type_[[machineItem.$key]]" label="Machine Type" class="editmachineType" value="[[machineItem.code]]_[[machineItem.type]]"
             items="[[machineType]]" name="machineType" item-label-path="name" item-value-path="value" always-float-label></vaadin-combo-box>
-             <vaadin-combo-box label="Station" id="stationNumber_[[machineItem.$key]]" items="[[stationItems]]" name="stationName" value="[[machineItem.station]]" item-label-path="name" item-value-path="number" required always-float-label></vaadin-combo-box> 
-            
+      
               <div class="buttons">
                 <paper-button on-tap="dismissEditMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button on-tap="saveEditMachine" machine="[[machineItem]]" dialog-confirm autofocus>{{localize('save')}}</paper-button>
@@ -163,6 +168,13 @@
       toggleDialog() {
         this.$.createMachineDialog.open();
       },
+      getMachineNumber(length) {
+        if (length == 0) {
+          return 1;
+        } else {
+          return length + 1;
+        }
+      },
       addMachine() {
         let mtype = this.$.machineType.value.split("_");
         let mno;
@@ -178,7 +190,7 @@
           install: Math.round(new Date().getTime()/1000.0),
           name: this.$.machineName.value,
           queue: 0,
-          station: this.$.stationNumber.value,
+          station: 0,
           status: 'stopped',
           code: mtype[0],
           type: mtype[1]
@@ -190,7 +202,7 @@
         this.$$('#edit_'+key).open();  
       },
       removeMachine(e) {
-          if (confirm("Delete tihs machine ?") == true) { 
+          if (confirm("Delete this machine ?") == true) { 
            let key = e.currentTarget.machine.$key;
            this.$.machineQuery.ref.child(key).remove();
         if(this.notification) {
@@ -233,6 +245,20 @@
         this.$.machineName.value = null;
         this.$.machineEffi.value = 100;
         this.$.machineType.value = null;
+      },
+      getInstallDate(timestamp) {
+          let today = new Date(timestamp*1000);
+          let dd = today.getDate();
+          let mm = today.getMonth() + 1; //January is 0!
+          let yyyy = today.getFullYear();
+          if (dd < 10) {
+           dd = '0' + dd
+          }
+          if (mm < 10) {
+           mm = '0' + mm
+         }
+         let deliveryDate = dd + '/' + mm + '/' + yyyy;
+         return deliveryDate;
       }
     });
   </script>

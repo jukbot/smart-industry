@@ -42,7 +42,7 @@
         display: inline-flex;
         width: 49.5%;
         align-items: center;
-        justify-content: center;
+        justify-content: space-around;
       }
 
       .order-info p {
@@ -63,6 +63,10 @@
         font-weight: 400;
         text-align: center;
         padding: 30px 0;
+      }
+
+      .product-image {
+        max-width: 400px
       }
 
     </style>
@@ -116,7 +120,8 @@
             <h1 class="no-product-title">No Product Selected</h1>
             </div>
             <div class="frame" hidden$="[[!selectProduct.part]]">
-                <h2>Product Name [[setOrderProduct(selectProduct)]]</h2>
+                <img class="product-image" src="[[selectProduct.image]]" alt="[[selectProduct.name]]">
+                <h2>Product Name [[selectProduct.name]]</h2>
                 <p>Product SKU: [[selectProduct.sku]]</p>
                 <p>Product Fragment: [[selectProduct.part.length]] part</p>
                 <p>Total Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p>
@@ -128,7 +133,6 @@
                 <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
                 <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
                 <p>Total Process Time : [[getSumCycleTime(part.cycle)]] minutes</p>
-
               </div>
            </template>
            </div>
@@ -371,13 +375,16 @@
        
       },
 
+      getProductProcess: function (process) {
+        return process.split(',').join(' → ');
+      },
+
       uploadFile: function () {
         alert("Invalid file format");
       },
 
 
 /*
-
       calUsedMachine: function (g) {
         let selectedMachine = [];
         for (let key in g) {

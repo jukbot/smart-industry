@@ -39,7 +39,7 @@
       .station-dialog {
         width: 45%;
         padding: 10px;
-        top: 0;
+        top: 200px;
       }
 
       .station {
@@ -96,7 +96,7 @@
         display: -webkit-flex;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
       }
 
       .wrap {
@@ -105,18 +105,24 @@
       }
 
       .flex-item {
-        background: tomato;
+        background: indigo;
         padding: 5px;
         width: 100px;
         height: 100px;
         margin: 5px;
         line-height: 100px;
         color: white;
-        font-weight: bold;
         font-size: 2em;
         text-align: center;
       }
 
+      .machine-counter {
+        margin-bottom: 10px;
+      }
+
+      .add-machine-btn {
+        margin-bottom: 10px;
+      }
     </style>
     <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
       always-on-top no-cancel-on-outside-click>
@@ -126,15 +132,15 @@
       <paper-input type="text" id="stationName" name="station-name" label="{{localize('station-name')}}" required always-float-label></paper-input>
       <vaadin-combo-box label="Machine" id="machineSeletor" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
         item-value-path="name" required always-float-label></vaadin-combo-box>
+      <p class="machine-counter">You added [[stationMachineCount]]/20 machines</p>
       <paper-dialog-scrollable>
-        <p>You added [[stationMachineCount]]/10 machines</p>
-        <paper-button raised class="smart" on-tap="addMachine">Add Machine</paper-button>
-        <div role="listbox">
-          <template is="dom-repeat" items="{{machines}}" as="machineItem">
-            <paper-item>[[machineItem.name]]
-              <iron-icon on-click="removeMachine" number="[[index]]" icon="vaadin:trash"></iron-icon>
-            </paper-item>
-          </template>
+        <paper-button raised class="smart add-machine-btn" on-tap="addMachine">Add Machine</paper-button>
+        <div class="frame">
+          <ul class="flex-container wrap">
+            <template is="dom-repeat" items="{{machines}}" as="machineItem">
+              <li class="flex-item">[[machineItem.name]] <iron-icon on-click="removeMachine" number="[[index]]" icon="vaadin:trash"></iron-icon></li>
+            </template>
+          </ul>
         </div>
       </paper-dialog-scrollable>
       <div class="buttons">
@@ -164,13 +170,13 @@
               <p>{{localize('station-number')}}: [[stationItem.number]]</p>
               <p>{{localize('station-name')}}: [[stationItem.name]]</p>
               <p>{{localize('station-machine')}}: [[stationItem.machine.length]]</p>
-              <div class="frame">     
+              <div class="frame">
                 <ul class="flex-container wrap">
-                  <template is="dom-repeat" items="{{stationItem.machine}}" as="machineItem">   
+                  <template is="dom-repeat" items="{{stationItem.machine}}" as="machineItem">
                     <li class="flex-item">[[machineItem.name]]</li>
                   </template>
                 </ul>
-                </div>        
+              </div>
             </div>
             <div class="button-group">
               <paper-button raised class="fancy" station="[[stationItem]]" on-tap="editStation">{{localize('edit')}}</paper-button>
@@ -238,6 +244,11 @@
             type: 'REMOVE_MACHINE',
             index: data
           }
+        },
+        clear() {
+          return {
+            type: 'CLEAR_MACHINE'
+          }
         }
       },
 
@@ -252,11 +263,11 @@
       addMachine() {
         let selector = this.$.machineSeletor;
         if (selector.value) {
-          if (this.machines.length < 10) {
+          if (this.machines.length < 20) {
             this.dispatch('add', selector.selectedItem);
             selector.value = null;
           } else {
-            alert("Can't add more than 10 machines to station");
+            alert("Can't add more than 20 machines per station");
           }
         } else {
           alert('Select a machine to add')
@@ -285,14 +296,14 @@
         let snumber = this.$.stationNumber.value;
         let smachine = this.machines;
         console.log(smachine);
-        if (sname !== "" && snumber !== "") {
+        if (sname !== "" && snumber !== "" && smachine.length > 0) {
           this.$.stationQuery.ref.push({
             name: sname,
             number: snumber,
-            machine: smachine 
+            machine: smachine
           });
           this.clearField();
-          this.machines.length =0;
+          this.dispatch('clear');
           this.$.toastAddStation.open();
         } else {
           this.$.toastEmptyAddStation.open();
@@ -303,7 +314,7 @@
         this.$$('#edit_' + key).open();
       },
       removeStation(e) {
-        if (confirm("Delete tihs station ?") == true) {
+        if (confirm("Delete this station ?") == true) {
           let key = e.currentTarget.station.$key;
           this.$.stationQuery.ref.child(key).remove();
           if (this.notification) {
@@ -335,6 +346,9 @@
 
       dismissAddStation() {
         this.clearField();
+        if (this.machines.length > 0) {
+          this.dispatch('clear');
+        }
         this.$.createStationDialog.cancel();
       },
 

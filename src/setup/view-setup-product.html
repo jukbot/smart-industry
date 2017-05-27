@@ -122,8 +122,8 @@
 
       .flex-item {
         padding: 10px;
-        width: 30%;
         margin: 10px;
+        flex: 1;
       }
 
       .flex-item-chart {
@@ -152,12 +152,11 @@
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
     <!--  <paper-button raised class="dark" on-tap="testTrigger" data="cat">TEST</paper-button> -->
-    <div class="stitched">
-      <paper-button raised on-tap="toggleDialog" class="big-btn water">
-        <iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-product')}}</paper-button>
-      <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+    <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation"
         always-on-top auto-fit-on-attach no-cancel-on-outside-click>
         <h1>{{localize('add-product')}}</h1>
+        <paper-input name="product-id" id="productID" label="Product ID" type="number" value="[[getProductID(productItems.length)]]"
+        min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
         <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
         <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
         <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
@@ -202,10 +201,12 @@
           <paper-button on-tap="testUpload" dialog-confirm autofocus>{{localize('add')}}</paper-button>
         </div>
       </paper-dialog>
+
+
+    <div class="stitched">
+      <paper-button raised on-tap="toggleDialog" class="big-btn water">
+        <iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-product')}}</paper-button>
     </div>
-
-
-
 
     <ul class="app-grid">
       <template is="dom-repeat" items="{{persistedProductData}}" as="productItem">
@@ -218,6 +219,7 @@
               </div>
               <div class="part-frame">
                 <div class="product-content">
+                  <p>Product ID: [[productItem.id]]</p>
                   <p>Product Name: [[productItem.name]]</p>
                   <p>SKU Number: [[productItem.sku]]</p>
                   <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
@@ -241,7 +243,6 @@
                       <p>Process [[indexNum(index)]] : [[cycle]] minutes</p>
                     </template>
                     <p>Total Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
-
                     <h2>Total Process Time : [[getSumProcessTime(part.setup, part.cycle)]] minutes</h2>
                   </div>
                 </template>
@@ -309,12 +310,15 @@
               <paper-button raised class="water" product="[[productItem]]" on-tap="editProduct">{{localize('edit')}}</paper-button>
               <paper-button raised class="chilli" product="[[productItem]]" on-tap="removeProduct">{{localize('remove')}}</paper-button>
             </div>
+
             <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
               always-on-top no-cancel-on-outside-click auto-fit-on-attach>
               <h2>{{localize('edit-product')}}</h2>
-              <paper-input name="product-name" class="editproductName" value="{{productItem.name}}" label="Product Name" always-float-label></paper-input>
-              <paper-input name="sku-number" class="editproductSku" value="{{productItem.sku}}" label="SKU Number" always-float-label></paper-input>
-              <paper-input name="product-process" class="editproductProcess" value="{{productItem.process}}" label="Process (use comma to separate)"
+              <paper-input name="product-id" id="productID" label="Product ID" type="number" value="[[productItem.number]]"
+        min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
+              <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
+              <paper-input name="sku-number" class="editproductSku" value="[[productItem.sku]]" label="SKU Number" always-float-label></paper-input>
+              <paper-input name="product-process" class="editproductProcess" value="[[productItem.process]]" label="Process (use comma to separate)"
                 always-float-label></paper-input>
               <paper-input name="raw-material" class="editproductRaw" value="{{productItem.raw}}" label="Raw Material (use comma to separate)"
                 always-float-label></paper-input>
@@ -401,6 +405,13 @@
       indexNum(i) {
         return i + 1;
       },
+      getProductID(length) {
+        if (length == 0) {
+          return 1;
+        } else {
+          return length + 1;
+        }
+      },
       addProduct: function () {
         let today = new Date();
         let dd = today.getDate();
@@ -415,6 +426,7 @@
         today = dd + '/' + mm + '/' + yyyy;
 
         this.$.productQuery.ref.push({
+          id: this.$.productID.value,
           add: Math.round(new Date().getTime() / 1000.0),
           name: this.$.productName.value,
           sku: this.$.productSku.value,
@@ -424,8 +436,8 @@
         let metadata = {
           contentType: 'image/jpeg'
         };
-        let file = this.$.uploadImageFile.value;
-        this.$.productImage.storageRef.child('images/' + this.$.productSku.value).put(file, metadata);
+
+       // this.$.productImage.storageRef.child('images/' + this.$.productSku.value).put(file, metadata);
         this.$.productName.value = null;
         this.$.productSku.value = null;
         this.$.productRaw.value = null;
@@ -437,7 +449,7 @@
           alert("File cannot be empty");
         } else {
           let uid = this.user.uid;
-          let storageRef = firebase.storage().ref("product/" + file.name);
+          let storageRef = firebase.storage().ref("product/" + this.$.productID.value);
           let task = storageRef.put(file);
           let percent = 0;
           let unsubscribe = task.on('state_changed',
@@ -457,8 +469,8 @@
       },
 
       deleteImage(e) {
-        let filename = "filename";
-        let desertRef = storageRef.child('images/desert.jpg');
+        let storageRef = firebase.storage().ref('product/');
+        let desertRef = storageRef.child(this.$.productID.value);
         // Delete the file
         desertRef.delete().then(function () {
           // File deleted successfully

@@ -137,6 +137,13 @@
         border: 2px solid transparent;
       }
   
+      .running-blink {
+       animation: blinker 1s linear infinite;
+      }
+
+      @keyframes blinker {  
+       50% { opacity: 0; }
+      }
     </style>
 
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
@@ -258,7 +265,7 @@
             <div class="cell right last">Status</div>
           </template>
           <template>
-            <div class="cell numeric right last">[[item.order_status]]</div>
+            <div class="cell numeric right last">[[getOrderStatus(item.order_delivery)]]</div>
           </template>
         </vaadin-grid-column>
 
@@ -365,7 +372,6 @@
       </vaadin-grid>
    </div>
  </li>
-
 
 <li>
 <div class="card">
@@ -503,6 +509,18 @@
         },
       },
 
+      reschedule() {
+            if (confirm("Warning: Are you sure do you want to force reschedule ?") == true) { }
+      },
+      getOrderStatus(order_delivery) {
+          //TEMP MUST CHANGE THIS
+          let current_timestamp = Math.floor(Date.now() / 1000);
+          if(order_delivery - current_timestamp < 0) {
+            return "late";
+          } else {
+            return "waiting";
+          }
+      },
       getNextInterval(last_timestamp, interval) {
          if(!last_timestamp || !interval) return 0;
          let current = Math.floor(Date.now() / 1000);
@@ -536,7 +554,7 @@
         return optime;   
       },
 
-    getDeliveryDate: function (timestamp) {
+    getDeliveryDate(timestamp) {
           let today = new Date(timestamp*1000);
           let dd = today.getDate();
           let mm = today.getMonth() + 1; //January is 0!
@@ -551,7 +569,7 @@
          return deliveryDate;
     },
 
-      ready: function() {
+      ready() {
 
          Sugar.Date.setLocale('en-GB');
          let workdatepicker = this.$$('#workdateSelector');
@@ -584,9 +602,11 @@
     },
   
     deleteOrder: function (e) {
+        if (confirm("Delete this order ?") == true) {
         let key = e.currentTarget.order.$key;
         this.$.orderQuery.ref.child(key).remove();
         alert("Delete order successfully");
+        } else {}
     },
 
     scheduleOrder: function(part, station) {

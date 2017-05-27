@@ -314,6 +314,17 @@
         animation-delay: 1.25s;
       }
 
+      .running {
+       animation: blinker 1s linear infinite;
+      }
+
+      .status {
+        color: red;
+      }
+      @keyframes blinker {  
+       50% { opacity: 0; }
+      }
+
       @-webkit-keyframes pulse {
         25% {
           -webkit-filter: drop-shadow(0.375rem 0 0 #F44336);
@@ -337,7 +348,7 @@
       }
     </style>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="number" data="{{machineItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/plan" order-by-child="name" data="{{planItems}}"></firebase-query>
     <div class="card">
       <h1>Production Simulator</h1>
@@ -383,7 +394,7 @@
               <p>Speed (x1.00)</p>
               <paper-slider class="slider" min="1.00" step="0.50" max="4.00" max-markers="4.00" value="0" editable active pin noink snaps></paper-slider>
             </div>
-            <h2 class="status">Status: Stopped | Remaining: 3:43:02</h2>
+            <h2 class="status">Status: [[simulatorStatus]] | Remaining: 3:43:02</h2>
             <paper-button id="playBTN" class="control-btn play-btn" toggles raised on-tap="_simulatePlan">Play</paper-button>
             <paper-button id="stopBTN" class="control-btn chilli" raised on-tap="_stopPlan">Stop</paper-button>
           </div>
@@ -411,6 +422,7 @@
             <li class="flex-item-station" index="[[index]]">
                 <h2>Station [[station.name]]</h2>
                 <p>Station ID [[index]]</p>
+                <p class="running">[[station.status]]</p>
                 <ul class="flex-container wrap">
                   <template is="dom-repeat" items="[[machines_s1]]" as="machineInStation">
                     <li class="flex-item grabbable" style="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
@@ -442,7 +454,7 @@
   </div>
           </template>
           </ul>
-          <div class="block station-block empty-station-block" hidden$="[[emptyStation(stations.length)]]">
+          <div class="station-block empty-station-block" hidden$="[[emptyStation(stations.length)]]">
             <h1>No station in production block.</h1>
             <p>Please add your first station to the block.</p>
           </div>
@@ -484,14 +496,17 @@
           value: () => [{
             name: 'A',
             number: 1,
+            status: 'Running',
             color: 'rgb(56,125,213)'
           }, {
             name: 'B',
             number: 2,
+            status: 'Running',
             color: 'rgb(99,171,165)'
           }, {
             name: 'C',
             number: 3,
+            status: 'Running',
             color: 'rgb(108,136,186)'
           }]
         },
@@ -505,47 +520,13 @@
           type: Object,
           value: () => []
         },
-        data: {
-          type: Object,
-          value: function () {
-            return {
-              rows: [{
-                  className: 'red',
-                  columns: [{
-                      body: "item-1"
-                    },
-                    {
-                      body: "item-2"
-                    }
-                  ]
-                },
-                {
-                  className: 'green',
-                  columns: [{
-                      body: "item-3"
-                    },
-                    {
-                      body: "item-4"
-                    }
-                  ]
-                },
-                {
-                  className: 'blue',
-                  columns: [{
-                      body: "item-5"
-                    },
-                    {
-                      body: "item-6"
-                    },
-                    {
-                      body: "item-7"
-                    }
-                  ]
-                }
-              ]
-            };
-          }
-        },
+
+        simulatorStatus: {
+          type: String,
+          notify: true,
+          value: "Stopped"
+        }
+
       },
       behaviors: [
         Polymer.AppLocalizeBehavior,
@@ -563,9 +544,10 @@
 
       colorChange(e) {
         let hex = e.currentTarget.color;
+        console.log(e.model.color);
         let rgb = this.hexToRGB(hex);
-        let index = e.model.index
-        this.stations[1].color = rgb;
+        let index = e.model.index;
+        this.set('stations.' + index + '.color', rgb);
         let foundIndex = stations.findIndex(x => x.id == item.number);
         stations[foundIndex] = item;
       },
@@ -591,7 +573,7 @@
         }
       },
 
-      selectProduct: function () {
+      selectProduct() {
         console.log(this.$.productSelector.selectedItem);
       },
 
@@ -628,9 +610,7 @@
           name: mname,
           station: 1
         });
-        //this.push('stations', {name: mname});
       },
-
 
       _savePlan() {
         console.log("Saved plan successful");
@@ -644,33 +624,40 @@
           alert("Please select product and input quantity more than 0");
         } else {       
           if (play.active) {
-            play.innerText = 'Pause';
-            this.$$('.progress-arrow--animated').style.animation = 'pulse 0s infinite ease';
-            this.$$('.status').style.color = 'red';
+            play.innerText = 'Pause'; 
+            this.$$('.progress-arrow__arrow').style.animationPlayState = 'paused';
+            this.$$('.status').style.color = 'green';
+            this.simulatorStatus = "Playing";
             console.log("Pause");
           } else {
             play.innerText = 'Play';
-            this.$$('.progress-arrow--animated').style.animation = 'pulse 2s infinite ease';
-            this.$$('.status').style.color = 'green';
+            this.$$('.progress-arrow__arrow').style.animationPlayState = 'running';
+            this.$$('.status').style.color = 'gold';
+            this.simulatorStatus = "Paused";
             console.log("Play");
           }
            console.log(product.selectedItem);
         }
       },
-      _changeDuration() {
-        console.log("Current duration: " + this.$.duration.value);
+
+      _stopPlan() {
+        this.simulatorStatus = "Stopped";
+        this.$$('.progress-arrow__arrow').style.animation = 'pulse 0s infinite ease';
+        this.$$('.running').style.animationPlayState = 'paused';
+        this.$$('.status').style.color = 'red';
       },
 
-      listeners: {
-        'dragula-drag': 'handleEvent',
-        'dragula-dragend': 'handleEvent',
-        'dragula-drop': 'handleEvent',
-        'dragula-cancel': 'handleEvent',
-        'dragula-remove': 'handleEvent',
-        'dragula-shadow': 'handleEvent',
-        'dragula-over': 'handleEvent',
-        'dragula-out': 'handleEvent',
-        'dragula-cloned': 'handleEvent'
+      _deletePlan() {
+         let selectedPlan = this.$.planSelector.value;
+         if(selectedPlan !== "") {
+            if (confirm("Delete this plan ?") == true) { }
+
+         } else {
+           alert("No select plan to delete");
+         }
+      },
+      _changeDuration() {
+        console.log("Current duration: " + this.$.duration.value);
       },
 
       handleEvent: function (e) {

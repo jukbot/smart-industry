@@ -60,8 +60,15 @@
         <div class="card">
           <h1>{{localize('account-settings')}}</h1>
           <paper-input label="Display Name" id="displayName" type="text"></paper-input>
+          <img style="width: 150px;" src="[[user.photoURL]]" alt="user photo">
+          <p>Display name: [[user.displayName]]</p>
+          <p>E-mail: [[user.email]]</p>
           <p>Verify status: [[verifyStatus(user.emailVerified)]]</p>
-          <paper-button disabled="[[user.emailVerified]]"class="water btn" on-tap="_verifyAccount" title="Verify account" raised>Verify Account</paper-button>
+          <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
+          <input type="file" id="uploadImageFile">
+          <paper-button raised class="dark" on-tap="uploadImage">Upload</paper-button>
+          <paper-button class="chilli btn" on-tap="_deleteProfileImage" title="Delete Profile Image" raised>Delete Profile Image</paper-button>
+          <paper-button disabled="[[user.emailVerified]]" class="water btn" on-tap="_verifyAccount" title="Verify account" raised>Verify Account</paper-button>
           <paper-button class="magic btn" on-tap="_saveSettings" title="Save settings" raised>{{localize('save-settings')}}</paper-button>
         </div>
       </li>
@@ -147,7 +154,7 @@
       },
 
       verifyStatus(status) {
-        if(status) {
+        if (status) {
           return 'verified'
         } else {
           return 'not-verify'
@@ -186,73 +193,137 @@
 
       _verifyAccount() {
         this.user.sendEmailVerification()
-        .then(()=> {
+          .then(() => {
             alert('Verification is send to your email');
-        })
-        .catch(error => {
+          })
+          .catch(error => {
             alert("Error: " + error.message);
-         });
+          });
       },
 
       _saveSettings() {
         let displayname = this.$.displayName.value;
-        if(displayname !== "") {
-        user.updateProfile({
-          displayName: displayname,
-          photoURL: "https://example.com/jane-q-user/profile.jpg"
-        })
-        .then(()=> {
-          this.alertText = 'notification-save-settings';
-          this.$.toastAlert.open();
-         })
-        .catch(error => {
-          alert("Error: " + error.message);
-          });
+        if (displayname !== "") {
+          this.user.updateProfile({
+              displayName: displayname,
+            })
+            .then(() => {
+              this.alertText = 'notification-save-settings';
+              this.$.toastAlert.open();
+            })
+            .catch(error => {
+              alert("Error: " + error.message);
+            });
         } else {
           alert("Display name cannot leave blank");
         }
-    },
-    
 
-     _changeAuthen() {
-      let currentpassword = this.$.currentPassword.value;
-      let newPassword = this.$.newPassword.value;
-      let newemail = this.$.userEmail.value;
-      if(newPassword !== "" && currentpassword !=="") {
-        if(this._reauthenAccount(currentpassword)) {
-         this.user.updatePassword(newPassword)
-         .then(()=> {
-          alert('Update your password successful, you will need to relogin');
-         })
-         .catch(error => {
-          alert("Error: " + error.message);
-         });
-        } else {
-          alert("Wrong password");
-        } 
-       }
-    
-      if(newemail !=="") {
-           this.user.updateEmail(newemail)
-          .then(()=> {
-           alert('Update your email successful, you will need to relogin');
-          })
-          .catch(error => {
-           alert("Error: " + error.message);
+        if (this.$.uploadImageFile.files.length > 0) {
+          let imgURL = this.uploadProfileImage();
+          if (imgURL) {
+            this.user.updateProfile({
+                photoURL: imgURL
+              })
+              .then(() => {
+                this.alertText = 'notification-save-settings';
+                this.$.toastAlert.open();
+              })
+              .catch(error => {
+                alert("Error: " + error.message);
+              });
+          } else {
+            alert("Upload Failed");
+          }
+        }
+      },
+
+      uploadProfileImage() {
+        let file = this.$.uploadImageFile.files[0];
+        let uid = this.user.uid;
+        let storageRef = firebase.storage().ref("user/" + uid + "/profile/" + this.user.uid);
+        let task = storageRef.put(file);
+        let percent = 0;
+        let unsubscribe = task.on('state_changed',
+          function progress(snapshot) {
+            percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+            this.$$('#uploadProgress').value = percent;
+          },
+          function error(err) {
+            console.log(err.message);
+            return;
+          },
+          function complete() {
+            let imgURL = task.snapshot.downloadURL;
+            console.info("%cUpload completed", "color: green;");
+            return imgURL;
           });
-      }
+      },
+
+      _deleteProfileImage() {
+        if (this.user.photoURL !== "") {
+          if (confirm("Delete profile image ?") == true) {
+            let storageRef = firebase.storage().ref("user/" + uid + "/profile/");
+            let desertRef = storageRef.child(this.user.uid);
+            // Delete the file
+            desertRef.delete().then(function () {
+              // File deleted successfully
+              alert("Delete file succesfully");
+            }).catch(function (error) {
+              // Uh-oh, an error occurred!
+              alert("Error deleting file: " + error);
+            });
+          } else {}
+        } else {
+          alert("No image profile to delete");
+        }
+      },
+
+      _createUserWithEmailAndPassword() {
+        this.error = null;
+        this.$.auth.createUserWithEmailAndPassword(this.email, this.password);
+        this.email = null;
+        this.password = null;
+      },
+
+      _changeAuthen() {
+        let currentpassword = this.$.currentPassword.value;
+        let newPassword = this.$.newPassword.value;
+        let newemail = this.$.userEmail.value;
+        if (newPassword !== "" && currentpassword !== "") {
+          if (this._reauthenAccount(currentpassword)) {
+            this.user.updatePassword(newPassword)
+              .then(() => {
+                alert('Update your password successful, you will need to relogin');
+              })
+              .catch(error => {
+                alert("Error: " + error.message);
+              });
+          } else {
+            alert("Wrong password");
+          }
+        }
+
+        if (newemail !== "") {
+          this.user.updateEmail(newemail)
+            .then(() => {
+              alert('Update your email successful, you will need to relogin');
+            })
+            .catch(error => {
+              alert("Error: " + error.message);
+            });
+        }
       },
 
       _reauthenAccount(currentpassword) {
         let credential = firebase.auth.EmailAuthProvider.credential(this.user.email, currentpassword);
         this.user.reauthenticateWithCredential(credential)
-        .then(function() {
-          return true;
-        })
-       .catch(error => {
-          console.log("Error: " + error.message);
-          return false; 
-        });
+          .then(function () {
+            return true;
+          })
+          .catch(error => {
+            console.log("Error: " + error.message);
+            return false;
+          });
       }
 
     });
