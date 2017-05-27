@@ -6,28 +6,28 @@ threadsafe: yes
 
 handlers:
 - url: /bower_components
-  static_dir: build/bundled/bower_components
+  static_dir: build/default/bower_components
   secure: always
 
 - url: /images
-  static_dir: build/bundled/images
+  static_dir: build/default/images
   secure: always
 
 - url: /src
-  static_dir: build/bundled/src
+  static_dir: build/default/src
   secure: always
 
 - url: /service-worker.js
-  static_files: build/bundled/service-worker.js
-  upload: build/bundled/service-worker.js
+  static_files: build/default/service-worker.js
+  upload: build/default/service-worker.js
   secure: always
 
 - url: /manifest.json
-  static_files: build/bundled/manifest.json
-  upload: build/bundled/manifest.json
+  static_files: build/default/manifest.json
+  upload: build/default/manifest.json
   secure: always
 
 - url: /.*
-  static_files: build/bundled/index.html
-  upload: build/bundled/index.html
+  static_files: build/default/index.html
+  upload: build/default/index.html
   secure: always    
