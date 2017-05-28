@@ -35,6 +35,9 @@
         width: 35%;
         padding: 10px;
       }
+      .machine-title {
+        font-size: 2rem;
+      }
      .machine { min-height: 330px; height: auto; }
      .machine h1 { text-align: center; }
      .new-machine { margin: 0; padding: 20px 40px; font-size: 1.25rem; }
@@ -55,11 +58,12 @@
         <li>  
           <div class="card machine">
             <div class="machine-info-group">
-            <h1 class="name">[[machineItem.name]]</h1>
+            <h1 class="machine-title">[[machineItem.name]]</h1>
+            <p>Machine Number: [[machineItem.number]]</p>
             <p>Machine Type: [[machineItem.code]]</p>
             <p>Current Efficiency: [[machineItem.effi]] &#37;</p>
             <p>Installed date: [[machineItem.install]]</p>
-            <p>Machine Status: <span class="machine-status">[[machineItem.status]]</span></p>
+            <p>Machine Status: [[machineItem.status]]</p>
             </div>
              <div class="button-group">
             <paper-button raised class="candy" on-tap="reportMachine" style="margin-bottom: 10px;">REPORT</paper-button>
@@ -73,10 +77,10 @@
 <script>
     Polymer({
       is: 'view-track-machine',
-      ready: function () {
+      ready() {
      
       },
-      viewMachineJob: function () {
+      viewMachineJob() {
          alert("No machine jobs information");
       },
       properties: {
@@ -84,6 +88,7 @@
           type: Object
         },
       }
+      
     });
   </script>
 </dom-module>

@@ -44,8 +44,10 @@
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appEmailNotification" path="/metadata/appEmailNotification" data="{{emailnotification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appBackup" path="/metadata/appBackup" data="{{autobackup}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -53,44 +55,49 @@
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
             required auto-validate always-float-label></vaadin-combo-box>
-          <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="notificationSwitch" noink> {{localize('notification')}}</paper-toggle-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1>{{localize('account-settings')}}</h1>
           <paper-input label="Display Name" id="displayName" value="[[user.displayName]]" type="text"></paper-input>
-          <p>Display name: [[user.displayName]]</p>
-          <p>E-mail: [[user.email]]</p>
-          <p>Verify status: [[verifyStatus(user.emailVerified)]]</p>
+          <p>{{localize('email')}}: [[user.email]]</p>
+          <p>{{localize('verify-status')}}: [[verifyStatus(user.emailVerified)]]</p>
           <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
           <input type="file" accept="image/*" id="uploadImageFile">
-          <paper-button class="chilli btn" on-tap="_deleteProfileImage" title="Delete Profile Image" raised>Delete Profile Image</paper-button>
-          <paper-button disabled="[[user.emailVerified]]" class="dark btn" on-tap="_verifyAccount" title="Verify account" raised>Verify Account</paper-button>
+          <paper-button class="chilli btn" on-tap="_deleteProfileImage" title="Delete Profile Image" raised>{{localize('remove-profile-image')}}</paper-button>
+          <paper-button disabled="[[user.emailVerified]]" class="dark btn" on-tap="_verifyAccount" title="Verify account" raised>{{localize('verify-account')}}</paper-button>
           <paper-button class="magic btn" on-tap="_saveSettings" title="Save settings" raised>{{localize('save-settings')}}</paper-button>
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>Authentication Settings</h1>
-          <paper-input label="{{localize('email')}}" id="userEmail" type="text" value="[[user.email]]"></paper-input>
+          <h1>{{localize('authentication-settings')}}</h1>
+          <paper-input label="{{localize('email')}}" id="userEmail" type="text" disabled="true" value="[[user.email]]"></paper-input>
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password"></paper-input>
           <paper-input label="Your new password" id="newPassword" type="password"></paper-input>
-          <paper-button class="magic btn" on-tap="_changeAuthen" title="Change password" raised>Change Password</paper-button>
+          <paper-button class="magic btn" on-tap="_changeAuthen" title="Change password" raised>{{localize('change-password')}}</paper-button>
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>Backup Settings</h1>
+          <h1>{{localize('backup-settings')}}</h1>
           <p>Export or Import factory data to backup as a file.</p>
-          <paper-button class="carrot btn" title="Export backup" raised>Export Data</paper-button>
-          <paper-button class="magic btn" title="Import backup" raised>Import Data</paper-button>
-          <paper-toggle-button value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink> Automatic Backup</paper-toggle-button>
+          <paper-button class="carrot btn" title="Export backup" on-tap="_export-data" raised>{{localize('export-data')}}</paper-button>
+          <paper-button class="magic btn" title="Import backup" on-tap="_import-data"  raised>{{localize('import-data')}}</paper-button>
+          <paper-toggle-button value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>Organization Settings</h1>
+          <h1>{{localize('notification-settings')}}</h1>
+          <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" noink> {{localize('notification')}}</paper-toggle-button>
+          <paper-toggle-button value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch" noink> {{localize('email-notification')}}</paper-toggle-button>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>{{localize('organization-settings')}}</h1>
           <paper-button raised class="burn btn">Add User</paper-button>
           Role: Administrator, Users Delete Edit
         </div>
@@ -108,18 +115,10 @@
           observer: '_changeLanguage',
           notify: true
         },
-        notification: {
-          type: Object
-        },
-        autobackup: {
-          type: Object
-        },
-        alertText: {
-          type: String
-        },
         languageList: {
           type: Array,
-          value: function () {
+          notify: true,
+          value() {
             return [{
                 name: 'English',
                 value: 'en'
@@ -143,10 +142,15 @@
             ]
           }
         },
+        notification: Object,
+        emailnotification: Object,
+        autobackup: Object,
+        alertText: String,
       },
       behaviors: [
         Polymer.AppLocalizeBehavior
       ],
+
       attached() {
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
@@ -179,8 +183,19 @@
       },
 
       _changeNotification() {
-        this.notification = this.$.notificationSwitch.checked ? 'true' : 'false';
-        if (this.$.notificationSwitch.checked) {
+        this.notification = this.$.webNotificationSwitch.checked ? 'true' : 'false';
+        if (this.$.webNotificationSwitch.checked) {
+          this.alertText = 'notification-alert-on';
+          this.$.toastAlert.open();
+        } else {
+          this.alertText = 'notification-alert-off';
+          this.$.toastAlert.open();
+        }
+      },
+
+      _changeEmailNotification() {
+        this.emailnotification = this.$.emailNotificationSwitch.checked ? 'true' : 'false';
+        if (this.$.emailNotificationSwitch.checked) {
           this.alertText = 'notification-alert-on';
           this.$.toastAlert.open();
         } else {
@@ -249,7 +264,7 @@
       _deleteProfileImage() {
         if (this.user.photoURL !== "") {
           if (confirm("Delete profile image ?") == true) {
-            let storageRef = firebase.storage().ref("user/" + uid + "/profile/");
+            let storageRef = firebase.storage().ref("user/" + this.user.uid + "/profile/");
             let desertRef = storageRef.child("profile");
             // Delete the file
             desertRef.delete().then(function () {
@@ -293,7 +308,7 @@
         let newPassword = this.$.newPassword.value;
         let newemail = this.$.userEmail.value;
         if (newPassword !== "" && currentpassword !== "") {
-          if (this._reauthenAccount(currentpassword)) {
+          if (this.reauthenAccount(currentpassword)) {
             this.user.updatePassword(newPassword)
               .then(() => {
                 alert('Update your password successful, you will need to relogin');
@@ -317,7 +332,7 @@
         }
       },
 
-      _reauthenAccount(currentpassword) {
+      reauthenAccount(currentpassword) {
         let credential = firebase.auth.EmailAuthProvider.credential(this.user.email, currentpassword);
         this.user.reauthenticateWithCredential(credential)
           .then(function () {

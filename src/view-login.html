@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../bower_components/login-fire/login-fire.html">
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-login">
   <template>
@@ -150,13 +151,11 @@
       properties: {
         reset: {
           type: Boolean,
-          value: true,
-          notify: true
+          value: true
         },
         authen: {
           type: Boolean,
-          value: false,
-          notify: true
+          value: false
         },
         target: {
           type: Object,

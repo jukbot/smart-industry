@@ -61,7 +61,7 @@
         border: solid 1px #757575;
         border-radius: 2px;
         margin: 10px;
-        min-height: 350px;
+        min-height: 400px;
         overflow: hidden;
         padding: 10px;
       }
@@ -70,7 +70,7 @@
         border: solid 1px #757575;
         border-radius: 2px;
         margin: 10px;
-        min-height: 200px;
+        min-height: 130px;
         overflow: hidden;
       }
 
@@ -170,6 +170,7 @@
         display: -moz-flex;
         display: -webkit-flex;
         display: flex;
+        align-items: center;
       }
 
       .nowrap {
@@ -178,8 +179,8 @@
       }
 
       .wrap {
-        -webkit-flex-wrap: wrap;
-        flex-wrap: wrap;
+        -webkit-flex-wrap: row wrap;
+        flex-wrap: row wrap;
       }
 
       .flex-item {
@@ -192,6 +193,23 @@
         font-weight: bold;
         font-size: 2em;
         text-align: center;
+      }
+
+      .plan-item {
+        padding: 5px;
+        width: 200px;
+        height: 100px;
+        margin: 10px;
+        line-height: 100px;
+        color: white;
+        background-color: deeppink;
+        font-weight: bold;
+        font-size: 2em;
+        text-align: center;
+      }
+
+      .plan-item:hover {
+        background-color: pink;
       }
 
       .flex-item-station {
@@ -315,14 +333,17 @@
       }
 
       .running {
-       animation: blinker 1s linear infinite;
+        animation: blinker 1s linear infinite;
       }
 
       .status {
         color: red;
       }
-      @keyframes blinker {  
-       50% { opacity: 0; }
+
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
       }
 
       @-webkit-keyframes pulse {
@@ -355,7 +376,8 @@
       <ul class="app-grid control-bar">
         <li>
           <div class="frame">
-            <h2>Load Simulator Plan</h2>
+            <h2>1. Load Simulator Plan</h2>
+            <p>Selected Plan: [[plan.name]]</p>
             <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" on-change="selectPlan" item-label-path="name"
               item-value-path="$key" selected-item="{{plan}}" required always-float-label></vaadin-combo-box>
             <paper-input label="Plan Name" name="planname" id="stationName" type="text" always-float-label auto-validate></paper-input>
@@ -364,44 +386,51 @@
               <paper-button class="load-btn magic" raised on-tap="_savePlan">Save</paper-button>
               <paper-button class="load-btn chilli" raised on-tap="_deletePlan">Delete</paper-button>
             </div>
-            <p>Selected Plan: [[plan.name]]</p>
-            <p>Product: [[product.name]] </p>
-            <p>Quantity: [[amount]]</p>
-          </div>
-        </li>
-        <li>
-          <div class="frame">
-            <h2>Add Station</h2>
-            Current station: [[stations.length]]/12
-            <paper-input label="Station Name" name="stationname" id="stationName" type="text" always-float-label auto-validate></paper-input>
-            <h2>Select Product</h2>
-            <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="$key"
-              selected-item='{{product}}' on-change="selectProduct" required always-float-label></vaadin-combo-box>
-            <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="productQuantity" type="number" min="1" max="1000"
-              step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
+            <h2>2. Add Station</h2>
+            <p>Current station: [[stations.length]]/12</p>
+            <paper-input label="Station Name" name="stationname" id="stationName" type="text" always-float-label auto-validate></paper-input>     
             <paper-button raised class="add-btn carrot" on-tap="_addStation">Add Station</paper-button>
           </div>
         </li>
         <li>
           <div class="frame">
-            <h2>Simulator Control</h2>
+            <h2>3. Select Product</h2>
+            <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="$key"
+              selected-item='{{product}}' on-change="selectProduct" required always-float-label></vaadin-combo-box>
+            <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="productQuantity" type="number" min="1" max="1000"
+              step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
+            <p>Product: [[product.name]] </p>
+            <p>Quantity: [[amount]]</p>
+            <p>Est. Duration: [[getEstDuration(product,amount)]] Hrs.</p>
+          </div>
+        </li>
+        <li>
+          <div class="frame">
+            <h2>4. Simulator Control</h2>[[remaining]]
             <div>
-              <p>Operation Duration (Hours)</p>
-              <paper-slider class="slider" min="0" step="1" max="72" max-markers="72" value="0" on-change="_changeDuration" id="duration"
-                editable active pin noink snaps></paper-slider>
+              <p>Operation Duration: [[duration]] Hours</p>
+              <paper-slider class="slider" min="0" step="1" max="72" max-markers="72" value="{{duration}}" on-change="_changeDuration"
+                id="duration" editable active pin noink snaps></paper-slider>
             </div>
             <div>
-              <p>Speed (x1.00)</p>
-              <paper-slider class="slider" min="1.00" step="0.50" max="4.00" max-markers="4.00" value="0" editable active pin noink snaps></paper-slider>
+              <p>Speed: x[[speed]]</p>
+              <paper-slider class="slider" min="1.00" step="0.50" max="4.00" max-markers="4.00" value="{{speed}}" editable active pin noink
+                snaps></paper-slider>
             </div>
-            <h2 class="status">Status: [[simulatorStatus]] | Remaining: 3:43:02</h2>
-            <paper-button id="playBTN" class="control-btn play-btn" toggles raised on-tap="_simulatePlan">Play</paper-button>
+            <p class="status">Status: [[simulatorStatus]]</p>[[state]]
+            <p>Remaining: <span id="countdown"></span>[[countdownClock(duration,speed,state)]]</p>
+            <paper-button id="playBTN" class="control-btn play-btn" toggles raised active="{{state}}" on-tap="_simulatePlan">Play</paper-button>
             <paper-button id="stopBTN" class="control-btn chilli" raised on-tap="_stopPlan">Stop</paper-button>
           </div>
         </li>
       </ul>
       <div class="template-frame">
-        <div class="station-block empty-template-block" hidden$="false">
+        <ul class="flex-container wrap">
+           <template is="dom-repeat" items="[[planItems]]" as="planItem">
+               <li class="plan-item" index="[[index]]">[[planItem.name]]</li>
+            </template>
+         </ul>
+        <div class="station-block empty-template-block" hidden$="[[planItems]]">
           <h1>No template found</h1>
           <p>Please create a new plan to build your first model.</p>
         </div>
@@ -417,9 +446,9 @@
         </template>
 
         <div class="production-block">
-          <ul class="flex-container wrap">  
-          <template is="dom-repeat" items="[[stations]]" as="station">
-            <li class="flex-item-station" index="[[index]]">
+          <ul class="flex-container wrap">
+            <template is="dom-repeat" items="[[stations]]" as="station">
+              <li class="flex-item-station" index="[[index]]">
                 <h2>Station [[station.name]]</h2>
                 <p>Station ID [[index]]</p>
                 <p class="running">[[station.status]]</p>
@@ -442,17 +471,17 @@
                   <paper-swatch-picker on-color-changed="colorChange"></paper-swatch-picker>
                   <paper-icon-button icon="delete" on-tap="_removeStation"></paper-icon-button>
                 </div>
-            </li>
+              </li>
 
-<div class="progress-arrow progress-arrow--animated">
-  <div class="progress-arrow__arrow arrow-1"></div>
-  <div class="progress-arrow__arrow arrow-2"></div>
-  <div class="progress-arrow__arrow arrow-3"></div>
-  <div class="progress-arrow__arrow arrow-4"></div>
-  <div class="progress-arrow__arrow arrow-5"></div>
-  <div class="progress-arrow__arrow arrow-6"></div>
-  </div>
-          </template>
+              <div class="progress-arrow progress-arrow--animated">
+                <div class="progress-arrow__arrow arrow-1"></div>
+                <div class="progress-arrow__arrow arrow-2"></div>
+                <div class="progress-arrow__arrow arrow-3"></div>
+                <div class="progress-arrow__arrow arrow-4"></div>
+                <div class="progress-arrow__arrow arrow-5"></div>
+                <div class="progress-arrow__arrow arrow-6"></div>
+              </div>
+            </template>
           </ul>
           <div class="station-block empty-station-block" hidden$="[[emptyStation(stations.length)]]">
             <h1>No station in production block.</h1>
@@ -511,9 +540,16 @@
           }]
         },
 
-        stationCount: {
+        duration: {
           type: Number,
-          computed: 'computeStationCount(stations)'
+        },
+
+        speed: {
+          type: Number,
+        },
+
+        remaining: {
+          type: Number
         },
 
         machines_s1: {
@@ -523,7 +559,6 @@
 
         simulatorStatus: {
           type: String,
-          notify: true,
           value: "Stopped"
         }
 
@@ -537,9 +572,45 @@
         this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
 
+      countdownClock(duration, speed, state) {
 
-      computeStationCount(stations) {
-        return stations.length;
+        if (duration == 0) {
+          return 0 + "d " + 0 + "h " + 0 + "m " + 0 + "s ";
+        } else {
+          let x;
+          if (state) {
+            x = setInterval(
+        function() {
+        let d = new Date();
+        // Get todays date and time
+        let now = new Date().getTime();
+        //let now = current.setTime(Date.now());
+        //d.setDate(d.getDate());
+        d.setHours(d.getHours() + duration);
+        // Set the date we're counting down to
+        let countDownDate = d.getTime();
+        // Update the count down every 1 second
+        // Find the distance between now an the count down date
+        let distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if (distance >= 0) {
+          let timeleft = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
+          document.getElementById('countdown').innerText = timeleft;
+        } else if (distance < 0) {
+          clearInterval(x);
+          this.$.countdown.innerText = "Finished";
+        }
+        }, 1000);
+    } else if (!state) {
+            clearInterval(x);
+          }
+        }
       },
 
       colorChange(e) {
@@ -547,23 +618,23 @@
         console.log(e.model.color);
         let rgb = this.hexToRGB(hex);
         let index = e.model.index;
-        this.set('stations.' + index + '.color', rgb);
+        this.stations[index].color = rgb;
         let foundIndex = stations.findIndex(x => x.id == item.number);
         stations[foundIndex] = item;
       },
 
-       hexToRGB(hex){
-       let c;
-        if(/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)){
-           c= hex.substring(1).split('');
-           if(c.length== 3){
-             c= [c[0], c[0], c[1], c[1], c[2], c[2]];
+      hexToRGB(hex) {
+        let c;
+        if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+          c = hex.substring(1).split('');
+          if (c.length == 3) {
+            c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+          }
+          c = '0x' + c.join('');
+          return 'rgb(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ')';
         }
-        c= '0x'+c.join('');
-        return 'rgb('+[(c>>16)&255, (c>>8)&255, c&255].join(',')+')';
-        }
-          throw new Error('Bad Hex');
-        },
+        throw new Error('Bad Hex');
+      },
 
       emptyStation(station) {
         if (station <= 0) {
@@ -580,17 +651,21 @@
       _addStation() {
         let sname = this.$.stationName.value;
         let rgb = [];
-        for(let i = 0; i < 3; i++) {
-           rgb.push(Math.floor(Math.random() * 235));
+        for (let i = 0; i < 3; i++) {
+          rgb.push(Math.floor(Math.random() * 235));
         }
-        if (sname === "") {
-          alert("Station name cannot leave empty");
+        if (this.stations.length <= 12) {
+          if (sname === "") {
+            alert("Station name cannot leave empty");
+          } else if (sname != "") {
+            this.push('stations', {
+              name: sname,
+              color: 'rgb(' + rgb.join(',') + ')'
+            });
+            this.$.stationName.value = "";
+          }
         } else {
-          this.push('stations', {
-            name: sname,
-            color: 'rgb('+ rgb.join(',') + ')'
-          });
-          this.$.stationName.value = "";
+          alert("Can't add station more than 12 stations");
         }
       },
       _renameStation(e) {
@@ -598,9 +673,9 @@
       },
 
       _removeStation(e) {
-          if (confirm("Delete tihs station ?") == true) { 
-            this.splice('stations', e.model.index, 1);
-        } else {} 
+        if (confirm("Delete tihs station ?") == true) {
+          this.splice('stations', e.model.index, 1);
+        } else {}
       },
 
       _addMachineToStation(e) {
@@ -622,9 +697,9 @@
         let play = this.$.playBTN;
         if (product.value === "" || quantity.value <= 0) {
           alert("Please select product and input quantity more than 0");
-        } else {       
+        } else {
           if (play.active) {
-            play.innerText = 'Pause'; 
+            play.innerText = 'Pause';
             this.$$('.progress-arrow__arrow').style.animationPlayState = 'paused';
             this.$$('.status').style.color = 'green';
             this.simulatorStatus = "Playing";
@@ -636,7 +711,7 @@
             this.simulatorStatus = "Paused";
             console.log("Play");
           }
-           console.log(product.selectedItem);
+          console.log(product.selectedItem);
         }
       },
 
@@ -648,13 +723,13 @@
       },
 
       _deletePlan() {
-         let selectedPlan = this.$.planSelector.value;
-         if(selectedPlan !== "") {
-            if (confirm("Delete this plan ?") == true) { }
+        let selectedPlan = this.$.planSelector.value;
+        if (selectedPlan !== "") {
+          if (confirm("Delete this plan ?") == true) {}
 
-         } else {
-           alert("No select plan to delete");
-         }
+        } else {
+          alert("No select plan to delete");
+        }
       },
       _changeDuration() {
         console.log("Current duration: " + this.$.duration.value);

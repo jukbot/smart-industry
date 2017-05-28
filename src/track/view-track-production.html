@@ -51,6 +51,7 @@
       }
       .btn {
         width: 120px;
+        margin: 10px 0;
       }
       .order-header {
         margin-top: 0;
@@ -66,29 +67,33 @@
        align-items: center; 
        justify-content: center; 
      }
-      material-progress-bars {
-        width: 100%;
-      }
-      material-progress-bars > .bar > span {
-        text-align: end;
-        font-size: 0.9em;
-        @apply(--layout-flex);
-      }
-      .bar {
-        background-color: var(--paper-deep-orange-500);
-      }
-      .bar.a {
-        background-color: var(--paper-purple-500);
-      }
-      .bar.b {
-        background-color: var(--paper-cyan-500);
-      }
-      .bar.c {
-        background-color: var(--paper-orange-500);
-      }
-      .bar.d {
-        background-color: var(--paper-pink-500);
-      }
+     paper-progress {
+       width: 100%;
+     }
+    paper-progress.deep-orange {
+      --paper-progress-active-color: var(--paper-deep-orange-500);
+      --paper-progress-secondary-color: var(--paper-deep-orange-500);
+    }
+
+    paper-progress.purple {
+      --paper-progress-active-color: var(--paper-deep-purple-500);
+      --paper-progress-secondary-color: var(--paper-deep-purple-500);
+    }
+
+    paper-progress.cyan {
+      --paper-progress-active-color: var(--paper-light-cyan-500);
+      --paper-progress-secondary-color: var(--paper-light-cyan-500);
+    }
+    
+    paper-progress.orange {
+      --paper-progress-active-color: var(--paper-light-orange-500);
+      --paper-progress-secondary-color: var(--paper-light-orange-500);
+    }
+
+    paper-progress.pink {
+      --paper-progress-active-color: var(--paper-deep-pink-500);
+      --paper-progress-secondary-color: var(--paper-deep-pink-500);
+    }
     </style>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderQuery}}" order-by-value="true"></firebase-query>
     <ul class="app-grid">
@@ -122,59 +127,25 @@
     <div class="button-group"><paper-button raised class="fancy" on-tap="calOEE">Calculate</paper-button></div>
    </div>
  <div class="card">
-   <h2 class="order-header">Order 001 (Status: Completed)</h2>
-  <material-progress-bars max="100" bar-height="22" animated="true" legend-label="Process used">
-  <div class="bar" data-value="10" data-legend="Milling">
-    <span>Mill</span>
-  </div>
-  <div class="bar a" data-value="15" data-legend="Trimming">
-    <span>Trim</span>
-  </div>
-  <div class="bar b" data-value="50" data-legend="Polishing">
-    <span>Polish</span>
-  </div>
-    <div class="bar c" data-value="10" data-legend="Drilling">
-    <span>Drill</span>
-  </div>
-  <div class="bar d" data-value="15" data-legend="Packing">
-    <span>Pack</span>
-  </div>
-</material-progress-bars>
-   <paper-button raised class="smart btn" on-tap="view-oee">View Detail</paper-button>
+   <h2 class="order-header">Order 1 (Status: Completed)</h2>
+   <paper-progress value="80" min="0" max="100" class="pink"></paper-progress>
+   <paper-button raised class="dark btn" on-tap="view-oee">View Detail</paper-button>
    </div>
     <div class="card">
-   <h2 class="order-header">Order 002 (Status: In-progress)</h2>
-  <material-progress-bars max="100" bar-height="22" animated="true" legend-label="Process used">
-  <div class="bar" data-value="10" data-legend="Milling">
-    <span>Mill</span>
-  </div>
-  <div class="bar a" data-value="15" data-legend="Trimming">
-    <span>Trim</span>
-  </div>
-  <div class="bar b" data-value="50" data-legend="Polishing">
-    <span>Polish</span>
-  </div>
-    <div class="bar c" data-value="8" data-legend="Drilling">
-    <span>Drill</span>
-  </div>
-</material-progress-bars>
-   <paper-button raised class="smart btn" on-tap="view-oee">View Detail</paper-button>
-</div>
- <div class="card">
-  <h2 class="order-header">Order 003 (Status: In-progress)</h2>
-  <material-progress-bars max="100" bar-height="22" animated="true" sum="200" legend-label="Process used">
-  <div class="bar" data-value="10" data-legend="Milling">
-    <span>Mill</span>
-  </div>
-  <div class="bar a" data-value="15" data-legend="Trimming">
-    <span>Trim</span>
-  </div>
-  <div class="bar b" data-value="36" data-legend="Polishing">
-    <span>Polish</span>
-  </div>
-</material-progress-bars>
-   <paper-button raised class="smart btn" on-tap="view-oee">View Detail</paper-button>
- </div>
+   <h2 class="order-header">Order 2 (Status: In-progress)</h2>
+   <paper-progress value="67" min="0" max="100" class="purple"></paper-progress>
+   <paper-button raised class="dark btn" on-tap="view-oee">View Detail</paper-button>
+   </div>
+    <div class="card">
+   <h2 class="order-header">Order 3 (Status: In-progress)</h2>
+   <paper-progress value="30" min="0" max="100" class="cyan"></paper-progress>
+   <paper-button raised class="dark btn" on-tap="view-oee">View Detail</paper-button>
+   </div>
+       <div class="card">
+   <h2 class="order-header">Order 4 (Status: Waiting)</h2>
+   <paper-progress value="0" min="0" max="100" class="orange"></paper-progress>
+   <paper-button raised class="dark btn" on-tap="view-oee">View Detail</paper-button>
+   </div>
   <div class="card">
       <div class="port-status">
       <iron-icon class="icon" icon="vaadin:warning"></iron-icon>

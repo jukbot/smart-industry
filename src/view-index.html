@@ -62,6 +62,12 @@
 <link rel="import" href="view-planning.html">
 <link rel="import" href="view-tracking.html">
 <link rel="import" href="shared-styles.html">
+<!-- import 3rd party libraries -->
+<link rel="import" href="../lib/sugar.html">
+<link rel="import" href="../lib/turbo.html">
+<link rel="import" href="../lib/countdown.html">
+<link rel="import" href="../lib/intl.html">
+<link rel="import" href="../lib/webanimation.html">
 <dom-module id="view-index">
   <template>
     <style include="shared-styles">
@@ -129,6 +135,11 @@
         font-size: 1rem;
       }
 
+      .profile-image {
+        width: 150px;
+        border: 1px solid #eeeeee;
+      }
+
       .center {
         display: flex;
         align-items: center;
@@ -150,17 +161,18 @@
       }
 
       .sidebar-menu-line {
-        border-bottom: 1px solid #d6d6d6;
+        border-bottom: 1px solid #eeeeee;
       }
     </style>
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="[[online]]" on-error="handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" on-error="handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
+    <app-indexeddb-mirror key="profile" data="{{user}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
+    <app-indexeddb-mirror key="metadata" data="{{metadata}}" persisted-data="{{persistedMetaData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
     <app-drawer-layout fullbleed>
@@ -168,28 +180,31 @@
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
         <h1 title="SMES" class="main-title">SMES</h1>
         <div title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</div>
-        <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
-          <a name="dashboard" role="link" href="/dashboard" title="Dashboard">
-            <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
-          <a name="setup" role="link" href="/setup" title="Setup">
-            <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-          <a name="planning" role="link" href="/planning" title="Plan">
-            <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-          <a name="tracking" role="link " href="/tracking" title="Track">
-            <paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
-        </iron-selector>
+        <nav>
+          <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
+            <a name="dashboard" role="link" href="/dashboard" title="Dashboard">
+              <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
+            <a name="setup" role="link" href="/setup" title="Setup">
+              <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
+            <a name="planning" role="link" href="/planning" title="Plan">
+              <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
+            <a name="tracking" role="link " href="/tracking" title="Track">
+              <paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
+          </iron-selector>
+        </nav>
         <div class="sidebar-menu-line" role="separator"></div>
         <div class="center">
           <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button>
         </div>
         <dom-if if="[[authen]]">
           <div class="profile" role="group">
-            <img style="width: 150px;" src="[[getUserImage(user.photoURL)]]" alt="user photo"> 
-            <p>Welcome "[[user.displayName]]" !!</p>
-            <p>E-mail: [[user.email]]</p>
-            <p>[[metadata.appName]]</p>
-            <p>{{localize('version')}} [[metadata.appVersion]]</p>
-            <p>{{localize('developed-by')}} [[metadata.appDeveloper]]</p>
+            <img class="profile-image" src="[[getUserImage(user.photoURL)]]" alt="user photo">
+            <p>[[persistedUserData.displayName]]</p>
+            <p>{{localize('email')}} : [[persistedUserData.email]]</p>
+            <p>{{localize('internet-status')}} : <span class="online">[[getOnlineStatus(online)]]</span></p>
+            <p>[[persistedMetaData.appName]]</p>
+            <p>{{localize('version')}} [[persistedMetaData.appVersion]]</p>
+            <p>{{localize('developed-by')}} [[persistedMetaData.appDeveloper]]</p>
             <!-- [[route.path]] -->
           </div>
         </dom-if>
@@ -202,20 +217,26 @@
             <paper-menu-button dynamic-align>
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-listbox class="dropdown-content">
-                <a href="https://github.com/jukbot/smart-industry" target="_blank">
+                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="navigation">
+                  <a name="about" role="link" href="/about">
+                    <paper-icon-item class="menu-item" name="about">
+                      <iron-icon icon="vaadin:info-circle" alt="about" item-icon></iron-icon>
+                      {{localize('about-smes')}}
+                    </paper-icon-item>
+                  </a>
+                  <a name="settings" role="link" href="/settings">
+                    <paper-icon-item class="menu-item" name="settings">
+                      <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
+                      {{localize('settings')}}
+                    </paper-icon-item>
+                  </a>
+                </iron-selector>
+                <a name="help" role="link" href="https://github.com/jukbot/smart-industry" target="_blank">
                   <paper-icon-item class="menu-item" name="help">
                     <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
                     {{localize('help')}}
                   </paper-icon-item>
                 </a>
-                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="settings" role="navigation">
-                  <a name="settings" role="link" href="/settings">
-                    <paper-icon-item class="menu-item" name="settings">
-                      <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
-                      {{localize('menu-settings')}}
-                    </paper-icon-item>
-                  </a>
-                </iron-selector>
                 <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
                   <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
                   {{localize('logout')}}
@@ -227,7 +248,7 @@
             </div>
           </app-toolbar>
         </app-header>
-       <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
           <view-dashboard name="dashboard" route="{{subroute}}" hidden$="[[!authen]]"></view-dashboard>
           <view-setup name="setup" route="{{subroute}}" hidden$="[[!authen]]"></view-setup>
           <view-planning name="planning" route="{{subroute}}" hidden$="[[!authen]]"></view-planning>
@@ -247,34 +268,28 @@
         notification: {
           type: Boolean
         },
+        online: {
+          type: Boolean,
+          observer: '_onInternetChanged'
+        },
         page: {
           type: String,
           reflectToAttribute: true,
           observer: '_pageChanged'
         },
-        user: {
-          type: Object
-        },
-        statusKnown: {
-          type: Object
-        },
-        metadata: {
-          type: Object
-        },
         wideLayout: {
           type: Boolean,
           value: false,
-          observer: '_onLayoutChange',
+          observer: '_onLayoutChanged',
         },
+        user: Object,
+        statusKnown: Object,
+        metadata: Object,
       },
 
       observers: [
         '_routePageChanged(routeData.page)'
       ],
-
-      listeners: {
-        'show-invalid-url-warning': '_showPage404'
-      },
 
       behaviors: [
         Polymer.AppLocalizeBehavior,
@@ -287,20 +302,30 @@
       },
 
       attached() {
-        if(!this.authen) {
+        if (!this.authen) {
           this.set('route.path', 'login');
         }
-        if(this.authen && this.route.path === '/login') {
+        if (this.authen && this.route.path === '/login') {
           this.set('route.path', '/');
         }
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
 
       ready() {
-          // If the path is blank, redirect to /
-          if (this.route.path === undefined) {
-            this.set('route.path', '/');
-          }
+        // If the path is blank, redirect to /
+        if (this.route.path === undefined) {
+          this.set('route.path', '/');
+        }
+      },
+
+      getOnlineStatus(status) {
+        if (status) {
+          this.$$('.online').style.color = 'green';
+          return "Online";
+        } else {
+          this.$$('.online').style.color = 'red';
+          return "Offline";
+        }
       },
 
       getUserImage(url) {
@@ -311,7 +336,16 @@
         }
       },
 
-      _onLayoutChange(wide) {
+      _onInternetChanged(online) {
+        if(online) {
+          console.log("You're online");
+        } 
+        else {
+          console.log("You're offline");
+        }
+      },
+
+      _onLayoutChanged(wide) {
         const drawer = this.$.drawer;
         if (wide && drawer.opened) drawer.opened = false;
       },
@@ -319,7 +353,7 @@
       _routePageChanged(page) {
         if (page === undefined) return;
         if (!this.$.drawer.persistent) this.$.drawer.close();
-         this.page = page || 'dashboard';
+        this.page = page || 'dashboard';
       },
 
       _pageChanged(page) {
@@ -341,8 +375,8 @@
           .then(() => {
             this.authen = false;
             //redirect to login page    
-            this.async(function() {   
-                this.set('route.path', 'login');
+            this.async(function () {
+              this.set('route.path', 'login');
             }, 500);
             console.info("Logout successful");
           })
@@ -353,22 +387,22 @@
       },
 
       // Redirect to Register page
-      _register() {
-        this.page = 'register';
-        this.set('route.path', 'register');
-      },
-      /*
-               <form on-submit="signInWithEmailAndPassword">
-                <input value="{{email::input}}" type="email" placeholder="Email">
-                <input value="{{password::input}}" type="password" placeholder="Password">
-                <button type="button" on-tap="createUserWithEmailAndPassword">Sign Up</button>
-              </form>
-      */
+      // _register() {
+      //   this.page = 'register';
+      //   this.set('route.path', 'register');
+      // },
+
+      //          <form on-submit="signInWithEmailAndPassword">
+      //           <input value="{{email::input}}" type="email" placeholder="Email">
+      //           <input value="{{password::input}}" type="password" placeholder="Password">
+      //           <button type="button" on-tap="createUserWithEmailAndPassword">Sign Up</button>
+      //         </form>
+
 
     });
     //  window.customerElements.define(ViewIndex.is, ViewIndex);
-    </script>
-    <script>
+  </script>
+  <script>
     const config = {
       apiKey: "AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0",
       authDomain: "smart-mes.firebaseapp.com",
@@ -378,18 +412,4 @@
     };
     firebase.initializeApp(config);
   </script>
-  <!-- Librart for coundown in simulator -->
-  <script src="../bower_components/countdownjs/countdown.min.js"></script>
-  <!-- Library for parallel computations with GPGPU -->
-  <script src="../bower_components/turbojs/turbo.js"></script>
-  <!-- Library for working with native objects. -->
-  <script src="../bower_components/sugar/dist/sugar.min.js"></script>
-  <!-- Web animation pollyfill -->
-  <script src="../bower_components/web-animations-js/web-animations.min.js"></script>
-  <!-- Pollyfills for localize -->
-  <script src="../bower_components/intl/dist/Intl.js"></script>
-  <script src="../bower_components/intl/locale-data/jsonp/en.js"></script>
-  <script src="../bower_components/intl/locale-data/jsonp/th.js"></script>
-  <script src="../bower_components/intl/locale-data/jsonp/ja.js"></script>
-  <script src="../bower_components/intl/locale-data/jsonp/ru.js"></script>
 </dom-module>
