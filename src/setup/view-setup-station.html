@@ -137,7 +137,9 @@
         <div class="frame">
           <ul class="flex-container wrap">
             <template is="dom-repeat" items="{{machines}}" as="machineItem">
-              <li class="flex-item">[[machineItem.name]] <iron-icon on-click="removeMachine" number="[[index]]" icon="vaadin:trash"></iron-icon></li>
+              <li class="flex-item">[[machineItem.name]]
+                <iron-icon on-tap="removeMachine" number="[[index]]" icon="vaadin:trash"></iron-icon>
+              </li>
             </template>
           </ul>
         </div>
@@ -171,7 +173,7 @@
               <p>{{localize('station-machine')}}: [[stationItem.machine.length]]</p>
               <div class="frame">
                 <ul class="flex-container wrap">
-                  <template is="dom-repeat" items="{{stationItem.machine}}" as="machineItem">
+                  <template is="dom-repeat" items="[[stationItem.machine]]" as="machineItem">
                     <li class="flex-item">[[machineItem.name]]</li>
                   </template>
                 </ul>
@@ -188,6 +190,21 @@
                 label="{{localize('station-number')}}" min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
               <paper-input type="text" id="name_[[stationItem.$key]]" name="station-name" class="editstationName" value="[[stationItem.name]]"
                 label="{{localize('station-name')}}" required always-float-label></paper-input>
+              <vaadin-combo-box label="Machine" id="machineSeletor" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
+                item-value-path="name" required always-float-label></vaadin-combo-box>
+              <p class="machine-counter">You added [[stationMachineCount]]/20 machines</p>
+              <paper-dialog-scrollable>
+                <paper-button raised class="smart add-machine-btn" on-tap="addMachine">Add Machine</paper-button>
+                <div class="frame">
+                  <ul class="flex-container wrap">
+                    <template is="dom-repeat" items="[[stationItem.machine]]" as="machineItem">
+                      <li class="flex-item">[[machineItem.name]]
+                        <iron-icon on-tap="removeMachine" number="[[index]]" icon="vaadin:trash"></iron-icon>
+                      </li>
+                    </template>
+                  </ul>
+                </div>
+              </paper-dialog-scrollable>
               <div class="buttons">
                 <paper-button station="[[stationItem]]" dialog-dismiss>{{localize('dismiss')}}</paper-button>
                 <paper-button station="[[stationItem]]" on-tap="saveEditStation" dialog-confirm autofocus>{{localize('save')}}</paper-button>

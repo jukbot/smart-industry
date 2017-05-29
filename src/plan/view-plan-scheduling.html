@@ -177,7 +177,7 @@
           </template>
         </vaadin-grid-selection-column>
 
-        <vaadin-grid-column width="2em" flex="0">
+        <vaadin-grid-column width="2rem" flex="0">
           <template class="header">
             <div class="cell">#</div>
           </template>
@@ -186,7 +186,7 @@
           </template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column flex="0">
+        <vaadin-grid-column flex="1">
           <template class="header">
             <div class="cell">Order no.</div>
           </template>
@@ -260,16 +260,25 @@
           </template>
         </vaadin-grid-column>
 
+         <vaadin-grid-column flex="1">
+          <template class="header">
+            <div class="cell right last">Priority</div>
+          </template>
+          <template>
+            <div class="cell right last">EDD</div>
+          </template>
+        </vaadin-grid-column>
+
         <vaadin-grid-column flex="1">
           <template class="header">
             <div class="cell right last">Status</div>
           </template>
           <template>
-            <div class="cell numeric right last">[[getOrderStatus(item.order_delivery)]]</div>
+            <div class="cell right last">[[getOrderStatus(item.order_delivery)]]</div>
           </template>
         </vaadin-grid-column>
 
-        <vaadin-grid-column width="3em" flex="0">
+        <vaadin-grid-column width="2rem" flex="1">
           <template class="header">
             <div class="cell right last">Delete</div>
           </template>
@@ -285,11 +294,11 @@
 
 <li>
    <div class="card">
-     <h1>STATION 1 SCHEDULE</h1>
+     <h1>Order 1 Schedule</h1>
        <vaadin-grid id="orderTable" aria-label="Station Table" items="[[orderData]]">
-        <vaadin-grid-column width="3em" flex="0">
+        <vaadin-grid-column width="4em" flex="0">
           <template class="header">
-            <div class="cell">Order no.</div>
+            <div class="cell">Order</div>
           </template>
           <template>
             <div class="cell">[[item.order_no]]</div>
@@ -381,12 +390,11 @@
 <vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderData]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
 <vaadin-date-picker style="width: 300px;" name="workdate"  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector" always-float-label></vaadin-date-picker>
 
-<h1>STATION 1 TIMELINE</h1>
 <vaadin-columnrange-chart id="column-range-resource-usage">
     <chart inverted="true"></chart>
-    <chart-title>Resource usage</chart-title>
+    <chart-title>Job Scheduling</chart-title>
     <x-axis>
-        <categories><template is="dom-repeat" items="{{stationData}}" as="stationItem">[[stationItem.name]],</template></categories>
+        <categories><template is="dom-repeat" items="{{stationData}}" as="station">[[station.name]],</template></categories>
     </x-axis>
     <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
     <tooltip
@@ -397,22 +405,7 @@
                          formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
         </columnrange>
     </plot-options>
-    <data-series name="ก"> <!-- ORDER -->
-        <color>#E91E63</color>
-        <data><!-- STATION -->
-            [Date.UTC(2017,05,01,08,00,00),Date.UTC(2017,05,01,10,06,00)],
-            [Date.UTC(2017,05,01,08,00,00),Date.UTC(2017,05,01,10,30,00)],
-            [Date.UTC(2017,05,01,10,00,00),Date.UTC(2017,05,01,10,30,00)],
-            [Date.UTC(2017,05,01,10,00,00),Date.UTC(2017,05,01,11,30,00)],
-            [Date.UTC(2017,05,02,10,00,00),Date.UTC(2017,05,02,11,30,00)],
-        </data>
-    </data-series>
-   <data-series name="ก"> <!-- ORDER -->
-        <color>#3F51B5</color>
-        <data><!-- STATION -->
-             [[test]] 
-        </data>
-    </data-series>
+    <data-series name="Order 1" color="#E91E63" data="[[scheduleData]]"></data-series>
 </vaadin-columnrange-chart>
 <div class="frame">
 <h2>Average Completion Time: [[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</h2>
@@ -463,6 +456,15 @@
         },
         selectAll: {
           type: Object
+        },
+        scheduleData: {
+          type: Array,
+          value: [    
+            [Date.UTC(2017,05,01,08,00,00),Date.UTC(2017,05,01,10,06,00)],
+            [Date.UTC(2017,05,01,08,00,00),Date.UTC(2017,05,01,10,30,00)],
+            [Date.UTC(2017,05,01,10,00,00),Date.UTC(2017,05,01,10,30,00)],
+            [Date.UTC(2017,05,01,10,00,00),Date.UTC(2017,05,01,11,30,00)]
+            ]
         },
         priority: {
           type: Array,

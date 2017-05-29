@@ -381,7 +381,7 @@
         <li>
           <div class="frame">
             <h2>1. Load Simulator Plan</h2>
-            <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" item-label-path="name" item-value-path="$key"
+            <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" item-label-path="name" item-value-path="name"
               selected-item="{{plan}}" required always-float-label></vaadin-combo-box>
             <paper-input label="Plan Name" name="planname" id="stationName" type="text" always-float-label auto-validate></paper-input>
             <div class="load-btn-group">
@@ -389,7 +389,7 @@
               <paper-button class="load-btn magic" raised on-tap="_savePlan">Save</paper-button>
               <paper-button class="load-btn chilli" raised on-tap="_deletePlan">Delete</paper-button>
             </div>
-            <h2>2. Add Station [[stations.length]]/12</h2>
+            <h2>2. Add Station [[plan.stations.length]]/12</h2>
             <paper-input label="Station Name" name="stationname" id="stationName" type="text" always-float-label auto-validate></paper-input>
             <paper-button raised class="add-btn carrot" on-tap="_addStation">Add Station</paper-button>
           </div>
@@ -402,7 +402,11 @@
             <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="productQuantity" type="number" min="1" max="1000"
               step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
             <p>Product: [[product.name]]</p>
-            <p>Product: [[product.part]]</p>
+            <p>Required Station: [[product.part]]</p>
+               <template is="dom-repeat" items="{{selectProduct.part}}" as="part">          
+                <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
+              </div>
+           </template>
             <p>Quantity: [[amount]]</p>
             <p>Est. Duration: [[getEstDuration(product.part,amount)]]</p>
           </div>
@@ -449,7 +453,7 @@
 
         <div class="production-block">
           <ul class="flex-container wrap">
-            <template is="dom-repeat" items="[[stations]]" as="station">
+            <template is="dom-repeat" items="{{plan.stations}}" as="station">
               <li class="flex-item-station" index="[[index]]">
                 <h2>Station [[station.name]]</h2>
                 <p>Station ID [[index]]</p>
