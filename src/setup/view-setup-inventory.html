@@ -31,10 +31,18 @@
           --app-grid-columns: 4;
         }
       }
+      .status {
+        text-align: center;
+        font-size: 2rem;
+      }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <div class="card">
+      <div class="status">
+      <p>Please upgrade to PRO package to enable inventory storage.</p> 
+      </div>
+   </div>
   </template>
   <script>
     Polymer({

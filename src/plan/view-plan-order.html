@@ -68,7 +68,6 @@
       .product-image {
         max-width: 400px
       }
-
     </style>
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderData}}"></firebase-query>
@@ -107,7 +106,7 @@
           <p>Product Name: [[setOrderProduct(selectProduct)]]</p>
           <p>SKU Number: [[setProductSKU(selectProduct.sku)]]</p>
           <p>Actual Quantity: [[getActualQuantity(amount)]]</p>
-          <p>Estimate Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p>
+          <p>Estimate Duration: [[getSumProductTime(selectProduct.part,amount)]]</p>
           <p>Delivery Date: [[delivery]]</p>
           <p>Raw Material Used: </p>
           <p>Operation hours: [[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]] Hrs.</p>
@@ -246,20 +245,34 @@
       },
 
       getSumProductTime(part,amount) {
-        if (!part || !amount) return 0;
+        if (!part) return 0;
         let sum = 0;
         let partTime = 0;
         for (let i in part) {
            for(let j in part[i].cycle) {
               sum += part[i].cycle[j]; 
             }
-           for(let j in part[i].cycle) {
-              sum += part[i].cycle[j]; 
-            }
         };
-        let sumDuration = (sum*amount).toFixed(2);
+        let sumDuration = (sum*this.getActualQuantity(amount));
         this.orderDuration = sumDuration;
-        return sumDuration; //productTime.toFixed(1)
+        return this.minutesToStr(sumDuration); 
+      },
+
+      minutesToStr(minute) {
+        let sign = '';
+        if (minute < 0) {
+          sign = '0';
+        }
+        let hours = this.leftPad(Math.floor(Math.abs(minute) / 60));
+        let minutes = this.leftPad(Math.round(Math.abs(minute) % 60));
+        return sign + hours + 'hrs ' + minutes + 'min';
+      },
+
+      leftPad(number) {
+        /* 
+         * add zero to numbers less than 10,Eg: 2 -> 02 
+         */
+        return ((number < 10 && number >= 0) ? '0' : '') + number;
       },
 
       getActualQuantity(amount) {

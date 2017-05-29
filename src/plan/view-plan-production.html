@@ -179,8 +179,8 @@
       }
 
       .wrap {
-        -webkit-flex-wrap: row wrap;
-        flex-wrap: row wrap;
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
       }
 
       .flex-item {
@@ -202,20 +202,25 @@
         margin: 10px;
         line-height: 100px;
         color: white;
-        background-color: deeppink;
+        background-color: slategrey;
         font-weight: bold;
         font-size: 2em;
         text-align: center;
       }
 
-      .plan-item:hover {
-        background-color: pink;
+      .plan-item:hover,
+      .plan-item:focus {
+        background-color: darkslategrey;
+      }
+
+      .iron-selected {
+        background-color: darkslategrey;
       }
 
       .flex-item-station {
         width: 33.3333%;
         height: auto;
-        min-height: 250px;
+        min-height: 300px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -255,7 +260,6 @@
         margin: 10px 0;
         width: 49%;
       }
-
 
       .progress-arrow {
         display: -webkit-inline-box;
@@ -377,18 +381,16 @@
         <li>
           <div class="frame">
             <h2>1. Load Simulator Plan</h2>
-            <p>Selected Plan: [[plan.name]]</p>
-            <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" on-change="selectPlan" item-label-path="name"
-              item-value-path="$key" selected-item="{{plan}}" required always-float-label></vaadin-combo-box>
+            <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" item-label-path="name" item-value-path="$key"
+              selected-item="{{plan}}" required always-float-label></vaadin-combo-box>
             <paper-input label="Plan Name" name="planname" id="stationName" type="text" always-float-label auto-validate></paper-input>
             <div class="load-btn-group">
               <paper-button class="load-btn dark" raised on-tap="_loadPlan">Load</paper-button>
               <paper-button class="load-btn magic" raised on-tap="_savePlan">Save</paper-button>
               <paper-button class="load-btn chilli" raised on-tap="_deletePlan">Delete</paper-button>
             </div>
-            <h2>2. Add Station</h2>
-            <p>Current station: [[stations.length]]/12</p>
-            <paper-input label="Station Name" name="stationname" id="stationName" type="text" always-float-label auto-validate></paper-input>     
+            <h2>2. Add Station [[stations.length]]/12</h2>
+            <paper-input label="Station Name" name="stationname" id="stationName" type="text" always-float-label auto-validate></paper-input>
             <paper-button raised class="add-btn carrot" on-tap="_addStation">Add Station</paper-button>
           </div>
         </li>
@@ -399,9 +401,10 @@
               selected-item='{{product}}' on-change="selectProduct" required always-float-label></vaadin-combo-box>
             <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="productQuantity" type="number" min="1" max="1000"
               step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
-            <p>Product: [[product.name]] </p>
+            <p>Product: [[product.name]]</p>
+            <p>Product: [[product.part]]</p>
             <p>Quantity: [[amount]]</p>
-            <p>Est. Duration: [[getEstDuration(product,amount)]] Hrs.</p>
+            <p>Est. Duration: [[getEstDuration(product.part,amount)]]</p>
           </div>
         </li>
         <li>
@@ -410,14 +413,13 @@
             <div>
               <p>Operation Duration: [[duration]] Hours</p>
               <paper-slider class="slider" min="0" step="1" max="72" max-markers="72" value="{{duration}}" on-change="_changeDuration"
-                id="duration" editable active pin noink snaps></paper-slider>
+                id="duration" pin noink snaps></paper-slider>
             </div>
             <div>
               <p>Speed: x[[speed]]</p>
-              <paper-slider class="slider" min="1.00" step="0.50" max="4.00" max-markers="4.00" value="{{speed}}" editable active pin noink
-                snaps></paper-slider>
+              <paper-slider class="slider" min="1.00" step="0.50" max="4.00" max-markers="4.00" value="{{speed}}" pin noink snaps></paper-slider>
             </div>
-            <p class="status">Status: [[simulatorStatus]]</p>[[state]]
+            <p class="status">Status: [[simulatorStatus]]</p>
             <p>Remaining: <span id="countdown"></span>[[countdownClock(duration,speed,state)]]</p>
             <paper-button id="playBTN" class="control-btn play-btn" toggles raised active="{{state}}" on-tap="_simulatePlan">Play</paper-button>
             <paper-button id="stopBTN" class="control-btn chilli" raised on-tap="_stopPlan">Stop</paper-button>
@@ -425,11 +427,11 @@
         </li>
       </ul>
       <div class="template-frame">
-        <ul class="flex-container wrap">
-           <template is="dom-repeat" items="[[planItems]]" as="planItem">
-               <li class="plan-item" index="[[index]]">[[planItem.name]]</li>
-            </template>
-         </ul>
+        <iron-selector class="flex-container wrap" selected="{{plan}}" attr-for-selected="name">
+          <template is="dom-repeat" items="[[planItems]]" as="planItem">
+            <div class="plan-item" name="[[planItem.name]]" index="[[index]]">[[planItem.name]]</div>
+          </template>
+        </iron-selector>
         <div class="station-block empty-template-block" hidden$="[[planItems]]">
           <h1>No template found</h1>
           <p>Please create a new plan to build your first model.</p>
@@ -453,7 +455,10 @@
                 <p>Station ID [[index]]</p>
                 <p class="running">[[station.status]]</p>
                 <ul class="flex-container wrap">
-                  <template is="dom-repeat" items="[[machines_s1]]" as="machineInStation">
+                  <!--<template is="dom-repeat" items="[[machines_s1]]" as="machineInStation">
+                    <li class="flex-item grabbable" style="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
+                  </template>-->
+                  <template is="dom-repeat" items="[[station.machine]]" as="machineInStation">
                     <li class="flex-item grabbable" style="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
                   </template>
                 </ul>
@@ -463,7 +468,7 @@
                     <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
                     <paper-listbox slot="dropdown-content" role="listbox" class="add-machine-menu dropdown-content">
                       <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
-                        <paper-item role="button" title="add machine to station" on-tap="_addMachineToStation">[[machineItem.name]]</paper-item>
+                        <paper-item role="button" title="add machine to station" station=[[station]] on-tap="_addMachineToStation">[[machineItem.name]]</paper-item>
                       </template>
                     </paper-listbox slot="dropdown-content">
                   </paper-menu-button>
@@ -522,19 +527,47 @@
         },
         stations: {
           type: Object,
+          reflectToAttribute: true,
           value: () => [{
             name: 'A',
             number: 1,
+            machine: [{
+              name: 'A1'
+            }, {
+              name: 'A2'
+            }, {
+              name: 'A3'
+            }, {
+              name: 'A4'
+            }],
             status: 'Running',
             color: 'rgb(56,125,213)'
           }, {
             name: 'B',
             number: 2,
+            machine: [{
+              name: 'B1'
+            }, {
+              name: 'B2'
+            }, {
+              name: 'B3'
+            }, {
+              name: 'B4'
+            }],
             status: 'Running',
             color: 'rgb(99,171,165)'
           }, {
             name: 'C',
             number: 3,
+            machine: [{
+              name: 'C1'
+            }, {
+              name: 'C2'
+            }, {
+              name: 'C3'
+            }, {
+              name: 'C4'
+            }],
             status: 'Running',
             color: 'rgb(108,136,186)'
           }]
@@ -550,6 +583,10 @@
 
         remaining: {
           type: Number
+        },
+
+        state: {
+          type: Boolean
         },
 
         machines_s1: {
@@ -572,44 +609,77 @@
         this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
 
+      getEstDuration(part, amount) {
+        if (!part || !amount) return 0;
+        let sum = 0;
+        let partTime = 0;
+        for (let i in part) {
+          for (let j in part[i].cycle) {
+            sum += part[i].cycle[j];
+          }
+        };
+        let sumDuration = (sum * amount);
+        this.orderDuration = sumDuration;
+        return this.minutesToStr(sumDuration); //productTime.toFixed(1)
+
+      },
+
+      minutesToStr(minute) {
+        let sign = '';
+        if (minute < 0) {
+          sign = '0';
+        }
+        let hours = this.leftPad(Math.floor(Math.abs(minute) / 60));
+        let minutes = this.leftPad(Math.round(Math.abs(minute) % 60));
+        return sign + hours + 'hrs ' + minutes + 'min';
+      },
+
+      leftPad(number) {
+        /* 
+         * add zero to numbers less than 10,Eg: 2 -> 02 
+         */
+        return ((number < 10 && number >= 0) ? '0' : '') + number;
+      },
+
+
       countdownClock(duration, speed, state) {
 
-        if (duration == 0) {
+        if (duration === 0 || state === false) {
           return 0 + "d " + 0 + "h " + 0 + "m " + 0 + "s ";
         } else {
           let x;
-          if (state) {
-            x = setInterval(
-        function() {
-        let d = new Date();
-        // Get todays date and time
-        let now = new Date().getTime();
-        //let now = current.setTime(Date.now());
-        //d.setDate(d.getDate());
-        d.setHours(d.getHours() + duration);
-        // Set the date we're counting down to
-        let countDownDate = d.getTime();
-        // Update the count down every 1 second
-        // Find the distance between now an the count down date
-        let distance = countDownDate - now;
+          let d = new Date();
+          // Get todays date and time
+          let now = new Date();
+          d.setHours(d.getHours() + duration);
 
-        // Time calculations for days, hours, minutes and seconds
-        let days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          // Update the count down every 1 second
+          x = setInterval(function () {
 
-        if (distance >= 0) {
-          let timeleft = days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-          document.getElementById('countdown').innerText = timeleft;
-        } else if (distance < 0) {
-          clearInterval(x);
-          this.$.countdown.innerText = "Finished";
-        }
-        }, 1000);
-    } else if (!state) {
-            clearInterval(x);
-          }
+            // Get todays date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now an the count down date
+            var distance = d - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Output the result in an element with id="demo"
+            document.getElementById("countdown").innerHTML = days + "d " + hours + "h " +
+              minutes + "m " + seconds + "s ";
+
+            // If the count down is over, write some text 
+            if (distance < 0) {
+              clearInterval(x);
+              document.getElementById("countdown").innerHTML = "Finished";
+            }
+          }, 1000);
+
+
         }
       },
 
@@ -619,8 +689,8 @@
         let rgb = this.hexToRGB(hex);
         let index = e.model.index;
         this.stations[index].color = rgb;
-        let foundIndex = stations.findIndex(x => x.id == item.number);
-        stations[foundIndex] = item;
+        //let foundIndex = stations.findIndex(x => x.id == item.number);
+        //stations[foundIndex] = item;
       },
 
       hexToRGB(hex) {
@@ -658,8 +728,16 @@
           if (sname === "") {
             alert("Station name cannot leave empty");
           } else if (sname != "") {
+            let sno;
+            if (this.stations.length === 0) {
+              sno = 1;
+            } else {
+              sno = this.stations.lengt;
+            }
             this.push('stations', {
+              number: sno,
               name: sname,
+              machine: [],
               color: 'rgb(' + rgb.join(',') + ')'
             });
             this.$.stationName.value = "";
@@ -679,12 +757,17 @@
       },
 
       _addMachineToStation(e) {
-        let mname = e.model.machineItem.name;
-        //var machines = new Array()    
-        this.push('machines_s1', {
-          name: mname,
-          station: 1
+        let mname = e.model.machineItem;
+        let sno = e.currentTarget.station.number - 1;
+        this.stations[sno].machine.push({
+          name: mname.name
         });
+        console.log(JSON.stringify(this.stations));
+        // this.push('machines_s1', {
+        //   name: mname.name,
+        //   data: mname,
+        //   station: 1
+        // });
       },
 
       _savePlan() {

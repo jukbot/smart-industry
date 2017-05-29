@@ -66,19 +66,26 @@
         text-decoration: underline;
       }
 
+      .login-register:focus,
+      .login-register:hover {
+        color: red;
+        text-decoration: underline;
+      }
+
+
       .login-form,
-      .reset-form {
+      .reset-form,
+      .register-form {
         width: 90%;
         margin: 0 auto;
         max-width: 30rem;
       }
 
-      .login-input {
+      .login-input, .register-input {
         --paper-input-container-input: {
           font-size: 1.25rem;
           color: #333333;
-        }
-        ;
+        };
       }
 
       .login-remember {
@@ -119,7 +126,7 @@
       </div>
       <div class="flex-layout right-half">
         <article>
-          <form hidden$="[[!reset]]" class="login-form" on-submit="_login">
+          <form hidden$="[[!login]]" class="login-form" on-submit="_login">
             <div class="login-header">
               <h1>User Login</h1>
             </div>
@@ -131,8 +138,24 @@
             <paper-checkbox class="login-remember" tabindex="0" name="remember" checked="{{remember}}" noink>Keep me signed in</paper-checkbox>
             <paper-button raised class="chilli authen-btn" on-tap="_login" role="button" hidden$="[[user]]">Log in</paper-button>
             <a href="javascript:void(0);" on-tap="_showReset" class="login-forget">Can’t access your account?</a>
+            <a href="javascript:void(0);" on-tap="_showRegister" class="login-register">New user?</a>
           </form>
-          <form hidden$="[[reset]]" class="reset-form" on-submit="_resetPassword">
+          <form hidden$="[[!register]]" class="register-form" on-submit="_register">
+            <div class="login-header">
+              <h1>User Register</h1>
+            </div>
+            <paper-input class="register-input" name="e-mail" id="register_email" type="email" maxlength="50" placeholder="E-mail"
+              autofocus auto-validate></paper-input>
+            <paper-input class="register-input" name="display-name" id="register_name" type="text" maxlength="50" placeholder="Display Name"
+              autofocus auto-validate></paper-input>
+            <paper-input class="register-input" name="new-password" id="new_passwd" type="password" maxlength="50" 
+              placeholder="New Password" auto-validate></paper-input>
+            <paper-input class="register-input" name="confirm-password" id="confirm_passwd" type="password" maxlength="50" 
+              placeholder="Confirm Password" auto-validate></paper-input>
+            <paper-button raised class="smart authen-btn" on-tap="_register" role="button">Register</paper-button>
+            <a href="javascript:void(0);" on-tap="_hideRegister" class="login-register">Already have account? Go to login</a>
+          </form>
+          <form hidden$="[[!reset]]" class="reset-form" on-submit="_resetPassword">
             <div class="login-header">
               <h1>Reset Your Password</h1>
             </div>
@@ -149,9 +172,17 @@
     Polymer({
       is: 'view-login',
       properties: {
-        reset: {
+        login: {
           type: Boolean,
           value: true
+        },
+        reset: {
+          type: Boolean,
+          value: false
+        },
+        register: {
+          type: Boolean,
+          value: false
         },
         authen: {
           type: Boolean,
@@ -184,14 +215,61 @@
         }
       },
 
+       _register() {
+         let email = this.$.register_email.value;
+         let name = this.$.register_name.value;
+         let pass = this.$.new_passwd.value;
+         let confirm_pass = this.$.confirm_passwd.value;
+         if(email !== "" && name !== "" && pass !== "" && confirm_pass !=="") {
+            if(pass === confirm_pass) {
+                this.$.auth.createUserWithEmailAndPassword(email, pass)
+                  .then((response) => {
+                       this.$.auth.signInWithEmailAndPassword(email, pass)
+                          .then((response) => {
+                            this.user.updateProfile({
+                                displayName: name
+                            });
+                            this.user.sendEmailVerification();
+                            alert("Register successful. We've sent verification code to your email");
+                                  // Signout Action
+                           this.$.auth.signOut();
+                           this.register = false;
+                           this.login = true;
+                          }).catch((error) => {
+                          alert("Authenticate Failed: " + error.message);
+                         });
+                   })
+                  .catch((error) => {
+                      alert("Register Failed: " + error.message);
+                    });
+            } else {
+              alert("Confirm password not match");
+            }
+         } else {
+           alert("Please fill in the form completely.");
+         } 
+      },
+
       _showReset() {
-        this.reset = false;
+        this.reset = true;
+        this.login = false;
       },
 
       _hideReset() {
-        this.reset = true;
+        this.reset = false;
+        this.login = true;
       },
 
+      _showRegister() {
+        this.register = true;
+        this.login = false;
+      },
+
+       _hideRegister() {
+        this.register = false;
+        this.login = true;
+      },
+      
       _resetPassword() {
         if (this.$.resetEmail !== "") {
           let resetEmail = this.$.resetEmail.value;

@@ -147,7 +147,7 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
-    <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="id" data="{{productItems}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
@@ -223,7 +223,7 @@
                   <p>Product Name: [[productItem.name]]</p>
                   <p>SKU Number: [[productItem.sku]]</p>
                   <p>Raw material: [[productItem.raw]] </p>[[materialProduct(productItem.raw_material)]]
-                  <p>Total Duration: [[getSumProductTime(productItem.part)]] minutes/item</p>
+                  <p>Total Cycle Time: [[getSumProductTime(productItem.part)]] minutes/item</p>
                 </div>
               </div>
               <div class="flex-container wrap">
@@ -318,8 +318,6 @@
         min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
               <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
               <paper-input name="sku-number" class="editproductSku" value="[[productItem.sku]]" label="SKU Number" always-float-label></paper-input>
-              <paper-input name="product-process" class="editproductProcess" value="[[productItem.process]]" label="Process (use comma to separate)"
-                always-float-label></paper-input>
               <paper-input name="raw-material" class="editproductRaw" value="{{productItem.raw}}" label="Raw Material (use comma to separate)"
                 always-float-label></paper-input>
               <div class="buttons">
@@ -389,7 +387,7 @@
         this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
       toggleDialog: function () {
-        this.$.createProductDialog.open();
+        //this.$.createProductDialog.open();
       },
       indexNum(i) {
         return i + 1;
@@ -406,6 +404,7 @@
         let dd = today.getDate();
         let mm = today.getMonth() + 1; //January is 0!
         let yyyy = today.getFullYear();
+        let pid = this.productItems.length;
         if (dd < 10) {
           dd = '0' + dd
         }
@@ -413,9 +412,11 @@
           mm = '0' + mm
         }
         today = dd + '/' + mm + '/' + yyyy;
-
+        if(pid <= 0) {
+          pid = 1;
+        } 
         this.$.productQuery.ref.push({
-          id: this.$.productID.value,
+          id: pid,
           add: Math.round(new Date().getTime() / 1000.0),
           name: this.$.productName.value,
           sku: this.$.productSku.value,
@@ -539,7 +540,6 @@
         this.$.productName.value = "";
         this.$.productSku.value = "";
         this.$.productRaw.value = "";
-        this.$.productProcess.value = "";
       },
 
       getProductProcess: function (process) {
@@ -588,7 +588,7 @@
         for (let i in cycle) {
           processTime += cycle[i];
         };
-        return processTime;
+        return processTime.toFixed(2);
       },
 
       getSumSetupTime(setup) {
@@ -601,7 +601,7 @@
       },
 
       getSumProcessTime(setup, cycle) {
-        if (!cycle) return 0;
+        if (!cycle || !setup) return 0;
         let sum_cycle = this.getSumCycleTime(cycle);
         let sum_setup = this.getSumSetupTime(setup);
         let sum_process = sum_cycle + sum_setup;
@@ -618,7 +618,7 @@
             sum += part[i].cycle[j];
           }
         };
-        return sum.toFixed(1); //productTime.toFixed(1)
+        return sum.toFixed(2); //productTime.toFixed(1)
       },
 
       storageError: function (e) {
