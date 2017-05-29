@@ -14,16 +14,29 @@
     "src/**/*",
     "images/**/*",
     "data/**/*",
-    "bower.json"
+    "lib/*",
+    "bower.json",
+    "package.json",
+    "index.html",
+    "src/view-index.html",
+    "src/view-dashboard.html",
+    "src/view-setup.html",
+    "src/view-planning.html",
+    "src/view-tracking.html",
+    "src/view-404.html",
+    "src/view-settings.html",
+    "src/view-login.html"
   ],
   "extraDependencies": [
     "manifest.json",
+    "lib/*.js",
+    "node_modules/redux/dist/*.js",
     "bower_components/webcomponentsjs/*.js",
     "bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js",
     "bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js"
   ],
   "lint": {
-    "rules": ["polymer-2"]
+    "rules": ["polymer-2-hybrid"]
   },
   "builds": [{
   "preset": "es6-unbundled",

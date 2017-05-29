@@ -11,10 +11,9 @@
 <dom-module id="view-login">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
         padding: 0px;
-        margin: 0px;
       }
 
       section {
@@ -27,8 +26,12 @@
         justify-content: center;
       }
 
-      .login-header {
+      .form-title {
         text-align: center;
+      }
+
+      .form-title> h2 {
+        font-size: 1.5rem;
       }
 
       .authen-btn {
@@ -127,8 +130,8 @@
       <div class="flex-layout right-half">
         <article>
           <form hidden$="[[!login]]" class="login-form" on-submit="_login">
-            <div class="login-header">
-              <h1>User Login</h1>
+            <div class="form-title">
+              <h2>User Login</h2>
             </div>
             <paper-input class="login-input" name="e-mail" id="email" type="email" maxlength="50" auto-complete="email" placeholder="E-mail"
               autofocus auto-validate></paper-input>
@@ -141,8 +144,8 @@
             <a href="javascript:void(0);" on-tap="_showRegister" class="login-register">New user?</a>
           </form>
           <form hidden$="[[!register]]" class="register-form" on-submit="_register">
-            <div class="login-header">
-              <h1>User Register</h1>
+            <div class="form-title">
+              <h2>User Register</h2>
             </div>
             <paper-input class="register-input" name="e-mail" id="register_email" type="email" maxlength="50" placeholder="E-mail"
               autofocus auto-validate></paper-input>
@@ -156,8 +159,8 @@
             <a href="javascript:void(0);" on-tap="_hideRegister" class="login-register">Already have account? Go to login</a>
           </form>
           <form hidden$="[[!reset]]" class="reset-form" on-submit="_resetPassword">
-            <div class="login-header">
-              <h1>Reset Your Password</h1>
+            <div class="form-title">
+              <h2>Reset Your Password</h2>
             </div>
             <paper-input class="login-input" name="e-mail" id="resetEmail" type="email" maxlength="50" auto-complete="email" placeholder="E-mail"
               auto-validate></paper-input>

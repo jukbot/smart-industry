@@ -447,7 +447,7 @@
           <paper-listbox role="listbox">
             <paper-item on-tap="_addStation">Add new station</paper-item>
             <paper-item disabled="[[!stations]]" on-tap="_renameStation">Rename station [[target.index]]</paper-item>
-            <paper-item disabled="[[!stations]]" list-item="[[target]]" on-tap="_removeStation">Delete station</paper-item>
+            <paper-item disabled="[[!stations]]" on-tap="_removeStation">Delete station</paper-item>
           </paper-listbox>
         </template>
 
@@ -463,7 +463,7 @@
                     <li class="flex-item grabbable" style="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
                   </template>-->
                   <template is="dom-repeat" items="[[station.machine]]" as="machineInStation">
-                    <li class="flex-item grabbable" style="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
+                    <li class="flex-item grabbable" style$="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
                   </template>
                 </ul>
                 <div>
@@ -492,7 +492,7 @@
               </div>
             </template>
           </ul>
-          <div class="station-block empty-station-block" hidden$="[[emptyStation(stations.length)]]">
+          <div class="station-block empty-station-block" hidden$="[[emptyStation(plan)]]">
             <h1>No station in production block.</h1>
             <p>Please add your first station to the block.</p>
           </div>
@@ -710,11 +710,11 @@
         throw new Error('Bad Hex');
       },
 
-      emptyStation(station) {
-        if (station <= 0) {
-          return false;
-        } else {
+      emptyStation(plan) {
+        if (plan) {
           return true;
+        } else {
+          return false;
         }
       },
 

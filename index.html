@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>SMES</title>
@@ -20,7 +19,7 @@
     <meta name="msapplication-tap-highlight" content="no">
     <base href="/">
     <link rel="manifest" href="/manifest.json">
-    <link rel="canonical" href="https://www.mergano.com/industry">
+    <link rel="canonical" href="https://smes.ga">
     <link rel="shortcut icon" href="/images/favicon.png">
     <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
@@ -38,9 +37,11 @@
         });
       }
     </script>
-    <script src="./node_modules/redux/dist/redux.js"></script>
     <link rel="import" href="src/view-index.html">
     <style>
+         vaadin-license-box {
+        display: none !important;
+        }
         body {
             margin: 0px;
             padding: 0px;
@@ -179,7 +180,7 @@
 </head>
 
 <body>
-    <view-index unresolved>
+    <view-index>
         <div class="showbox">
             <div class="loader">
                 <svg class="circular" viewBox="25 25 50 50">

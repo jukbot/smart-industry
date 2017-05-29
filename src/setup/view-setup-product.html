@@ -35,14 +35,6 @@
         }
       }
 
-      .flex-horizontal {
-        @apply(--layout-horizontal);
-      }
-
-      .flexchild {
-        @apply(--layout-flex);
-      }
-
       .product-dialog {
         width: 50%;
         padding: 10px;
@@ -215,7 +207,7 @@
             <div class="product-info-group">
               <h1 class="product-title">[[productItem.name]]</h1>
               <div class="product-image-block">
-                <img class="product-image" src="[[productItem.image]]" alt="[[productItem.name]]">
+                <img class="product-image" src$="[[productItem.image]]" alt="[[productItem.name]]">
               </div>
               <div class="part-frame">
                 <div class="product-content">

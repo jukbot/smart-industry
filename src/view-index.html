@@ -43,15 +43,22 @@
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
 <!-- neon modules - used for animation -->
-<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="lazy-import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
-<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
 <link rel="import" href="../bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
+<!-- import 3rd party libraries -->
+<link rel="import" href="../lib/redux.html">
+<link rel="import" href="../lib/sugar.html">
+<link rel="import" href="../lib/turbo.html">
+<link rel="import" href="../lib/countdown.html">
+<link rel="import" href="../lib/intl.html">
+<link rel="import" href="../lib/webanimation.html">
 <!-- import shared style and page router -->
 <link rel="import" href="app-language-behavior.html">
 <link rel="import" href="view-login.html">
@@ -62,13 +69,6 @@
 <link rel="import" href="view-planning.html">
 <link rel="import" href="view-tracking.html">
 <link rel="import" href="shared-styles.html">
-<!-- import 3rd party libraries -->
-<link rel="import" href="../lib/sugar.html">
-<link rel="import" href="../lib/turbo.html">
-<link rel="import" href="../lib/countdown.html">
-<link rel="import" href="../lib/intl.html">
-<link rel="import" href="../lib/webanimation.html">
-<link rel="import" href="../lib/redux.html">
 <dom-module id="view-index">
   <template>
     <style include="shared-styles">
@@ -79,13 +79,16 @@
         }
       }
 
+      [hidden] {
+        display: none !important;
+      }
+
       .menu-item {
         min-width: 120px;
       }
 
       .main-title {
         font-size: 2.75rem;
-        font-weight: 400;
         line-height: normal;
         text-align: center;
       }
@@ -98,18 +101,17 @@
         font-weight: 300;
       }
 
-      .drawer-list a {
+      .drawer-list>a {
         display: block;
         padding: 10px 30px;
       }
 
-      .drawer-list a:hover {
+      .drawer-list>a:hover {
         background-color: #eeeeee;
       }
 
-      .drawer-list a.iron-selected {
+      .drawer-list>a.iron-selected {
         color: #ffffff;
-        font-weight: 400;
         background-color: #333333;
       }
 
@@ -126,14 +128,16 @@
         display: block;
       }
 
+      .display-name, .page-title  {
+        color: #FFFFFF;
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 300;
+      }
+
       .account-btn {
         margin: 0;
         padding: 4px;
-      }
-
-      .display-name {
-        margin: 0;
-        font-size: 1rem;
       }
 
       .profile-image {
@@ -169,20 +173,21 @@
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" on-error="handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-indexeddb-mirror key="profile" data="{{user}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-indexeddb-mirror key="metadata" data="{{metadata}}" persisted-data="{{persistedMetaData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
-    <app-drawer-layout fullbleed>
-      <app-drawer hidden$="[[!authen]]" id="drawer" role="menu" slot="drawer" swipe-open>
+    <app-drawer-layout id="layout" fullbleed>
+      <app-drawer hidden id="drawer" role="menu" slot="drawer" swipe-open>
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
         <h1 title="SMES" class="main-title">SMES</h1>
-        <div title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</div>
+        <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
         <nav>
-          <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="dashboard" role="navigation">
+          <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" on-iron-activate="_drawerSelected"
+            role="navigation">
             <a name="dashboard" role="link" href="/dashboard" title="Dashboard">
               <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
             <a name="setup" role="link" href="/setup" title="Setup">
@@ -197,28 +202,36 @@
         <div class="center">
           <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button>
         </div>
-        <dom-if if="[[authen]]">
+        <dom-if if="{{signedIn}}">
           <div class="profile" role="group">
-            <img class="profile-image" src="[[getUserImage(user.photoURL)]]" alt="user photo">
+            <img class="profile-image" src$="[[getUserImage(user.photoURL)]]" alt="user photo">
             <p>[[persistedUserData.displayName]]</p>
             <p>{{localize('email')}} : [[persistedUserData.email]]</p>
             <p>{{localize('internet-status')}} : <span class="online">[[getOnlineStatus(online)]]</span></p>
             <p>[[persistedMetaData.appName]]</p>
             <p>{{localize('version')}} [[persistedMetaData.appVersion]]</p>
             <p>{{localize('developed-by')}} [[persistedMetaData.appDeveloper]]</p>
-            <!-- [[route.path]] -->
           </div>
         </dom-if>
       </app-drawer>
       <app-header-layout fullbleed has-scrolling-region>
-        <app-header hidden$="[[!authen]]" slot="header" role="rowheader" condenses fixed>
+        <app-header hidden id="header" slot="header" role="rowheader" condenses fixed>
           <app-toolbar role="toolbar">
             <paper-icon-button icon="vaadin:menu" alt="menu" aria-label="sidebar menu" drawer-toggle></paper-icon-button>
-            <span class="title" main-title>{{localize(page)}}</span>
+            <h2 class="page-title" main-title>{{localize(page)}}</h2>
+            <div hidden$="[[!user]]">
+              <h2 class="display-name" hidden$="{{!wideLayout}}">[[user.displayName]]</h2>
+            </div>
             <paper-menu-button dynamic-align>
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-listbox class="dropdown-content">
-                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="navigation">
+                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible">
+                  <a name="help" role="link" href="https://github.com/jukbot/smart-industry" target="_blank">
+                    <paper-icon-item class="menu-item" name="help">
+                      <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
+                      {{localize('help')}}
+                    </paper-icon-item>
+                  </a>
                   <a name="about" role="link" href="/about">
                     <paper-icon-item class="menu-item" name="about">
                       <iron-icon icon="vaadin:info-circle" alt="about" item-icon></iron-icon>
@@ -231,48 +244,35 @@
                       {{localize('settings')}}
                     </paper-icon-item>
                   </a>
+                  <a name="login" role="link" href="/login">
+                    <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
+                      <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
+                      {{localize('logout')}}
+                    </paper-icon-item>
+                  </a>
                 </iron-selector>
-                <a name="help" role="link" href="https://github.com/jukbot/smart-industry" target="_blank">
-                  <paper-icon-item class="menu-item" name="help">
-                    <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
-                    {{localize('help')}}
-                  </paper-icon-item>
-                </a>
-                <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
-                  <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
-                  {{localize('logout')}}
-                </paper-icon-item>
               </paper-listbox>
             </paper-menu-button>
-            <div hidden$="[[!user]]">
-              <p class="display-name" hidden$="{{!wideLayout}}">[[user.displayName]]</p>
-            </div>
           </app-toolbar>
         </app-header>
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
-          <view-dashboard name="dashboard" route="{{subroute}}" hidden$="[[!authen]]"></view-dashboard>
-          <view-setup name="setup" route="{{subroute}}" hidden$="[[!authen]]"></view-setup>
-          <view-planning name="planning" route="{{subroute}}" hidden$="[[!authen]]"></view-planning>
-          <view-tracking name="tracking" route="{{subroute}}" hidden$="[[!authen]]"></view-tracking>
-          <view-settings name="settings" route="{{subroute}}" hidden$="[[!authen]]"></view-settings>
+          <view-dashboard name="dashboard" route="{{subroute}}" hidden$="[[!signedIn]]"></view-dashboard>
+          <view-setup name="setup" route="{{subroute}}" hidden$="[[!signedIn]]"></view-setup>
+          <view-planning name="planning" route="{{subroute}}" hidden$="[[!signedIn]]"></view-planning>
+          <view-tracking name="tracking" route="{{subroute}}" hidden$="[[!signedIn]]"></view-tracking>
+          <view-settings name="settings" route="{{subroute}}" hidden$="[[!signedIn]]"></view-settings>
           <view-404 name="404" route="{{subroute}}"></view-404>
-          <view-login name="login" route="{{subroute}}" hidden$="[[authen]]"></view-login>
+          <view-login name="login" route="{{subroute}}" hidden$="[[signedIn]]"></view-login>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
+    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
     <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
   </template>
   <script>
     Polymer({
       is: 'view-index',
       properties: {
-        notification: {
-          type: Boolean
-        },
-        online: {
-          type: Boolean,
-          observer: '_onInternetChanged'
-        },
         page: {
           type: String,
           reflectToAttribute: true,
@@ -283,9 +283,23 @@
           value: false,
           observer: '_onLayoutChanged',
         },
+        online: {
+          type: Boolean,
+          observer: '_onInternetChanged'
+        },
+        signedIn: {
+          type: Boolean,
+          value: false,
+          observer: '_signedInChanged'
+        },
+        route: Object,
+        subroute: Object,
+        routeData: Object,
         user: Object,
         statusKnown: Object,
         metadata: Object,
+        notification: Boolean,
+        authen: Boolean
       },
 
       observers: [
@@ -297,12 +311,12 @@
         Polymer.AppLanguageBehavior
       ],
 
-      created() {
-        // Custom elements polyfill safe way to indicate an element has been upgraded.
-        this.removeAttribute('unresolved');
-      },
-
       attached() {
+        this.async(function () {
+          if (!this.route.path) {
+            this.set('route.path', '/');
+          }
+        });
         if (!this.authen) {
           this.set('route.path', 'login');
         }
@@ -317,6 +331,12 @@
         if (this.route.path === undefined) {
           this.set('route.path', '/');
         }
+      },
+
+      _signedInChanged(signedIn) {
+        this.$.drawer.hidden = !signedIn;
+        this.$.header.hidden = !signedIn;
+        this.$.layout.resetLayout();
       },
 
       getOnlineStatus(status) {
@@ -338,22 +358,24 @@
       },
 
       _onInternetChanged(online) {
-        if(online) {
-          console.log("You're online");
-        } 
-        else {
-          console.log("You're offline");
+        if (!online) {
+          this.alertText = 'notification-offline';
+          this.$.toastAlert.open();
         }
       },
 
       _onLayoutChanged(wide) {
         const drawer = this.$.drawer;
         if (wide && drawer.opened) drawer.opened = false;
+        this.$.layout.resetLayout();
+      },
+
+      _drawerSelected: function () {
+        if (!this.$.drawer.persistent) this.$.drawer.close();
       },
 
       _routePageChanged(page) {
         if (page === undefined) return;
-        if (!this.$.drawer.persistent) this.$.drawer.close();
         this.page = page || 'dashboard';
       },
 
