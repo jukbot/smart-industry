@@ -128,7 +128,8 @@
         display: block;
       }
 
-      .display-name, .page-title  {
+      .display-name,
+      .page-title {
         color: #FFFFFF;
         margin: 0;
         font-size: 1.5rem;
@@ -181,7 +182,7 @@
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed>
-      <app-drawer hidden id="drawer" role="menu" slot="drawer" swipe-open>
+      <app-drawer hidden$="[[authen]]" id="drawer" role="menu" slot="drawer" swipe-open>
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
         <h1 title="IMES" class="main-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -215,7 +216,7 @@
         </dom-if>
       </app-drawer>
       <app-header-layout fullbleed has-scrolling-region>
-        <app-header hidden id="header" slot="header" role="rowheader" condenses fixed>
+        <app-header hidden$="[[authen]]" id="header" slot="header" role="rowheader" condenses fixed>
           <app-toolbar role="toolbar">
             <paper-icon-button icon="vaadin:menu" alt="menu" aria-label="sidebar menu" drawer-toggle></paper-icon-button>
             <h2 class="page-title" main-title>{{localize(page)}}</h2>
@@ -235,7 +236,7 @@
                   <a name="about" role="link" rel="about" href="/about">
                     <paper-icon-item class="menu-item" name="about">
                       <iron-icon icon="vaadin:info-circle" alt="about" item-icon></iron-icon>
-                      {{localize('about-IMES')}}
+                      {{localize('about-software')}}
                     </paper-icon-item>
                   </a>
                   <a name="settings" role="link" rel="settings" href="/settings">
@@ -287,6 +288,10 @@
           type: Boolean,
           observer: '_onInternetChanged'
         },
+        authen: {
+          type: Boolean,
+          oberserver: '_authenChanged'
+        },
         signedIn: {
           type: Boolean,
           value: false,
@@ -300,7 +305,6 @@
         statusKnown: Object,
         metadata: Object,
         notification: Boolean,
-        authen: Boolean
       },
 
       observers: [
@@ -314,15 +318,15 @@
 
       attached() {
         this.async(function () {
-        if (!this.route.path) {
-            this.set('route.path', '/');
+          if (!this.route.path) {
+            this.set('route.path', '/dashboard');
           }
         });
-        if (!this.signedIn) {
-          this.set('route.path', 'login');
-        }
-        if (this.signedIn && this.route.path === '/login') {
-          this.set('route.path', '/');
+        // if (!this.authen) {
+        //   this.set('route.path', 'login');
+        // }
+        if (this.authen && this.route.path === '/login') {
+          this.set('route.path', '/dashboard');
         }
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
@@ -332,6 +336,12 @@
         if (this.route.path === undefined) {
           this.set('route.path', '/');
         }
+      },
+
+      _authenChanged(authen) {
+        if(!authen) {
+          this.signOut();
+        } 
       },
 
       _signedInChanged(signedIn) {
@@ -371,7 +381,7 @@
         this.$.layout.resetLayout();
       },
 
-      _drawerSelected: function () {
+      _drawerSelected() {
         if (!this.$.drawer.persistent) this.$.drawer.close();
       },
 

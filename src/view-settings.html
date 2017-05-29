@@ -46,6 +46,7 @@
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appEmailNotification" path="/metadata/appEmailNotification" data="{{emailnotification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appBackup" path="/metadata/appBackup" data="{{autobackup}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
     <ul class="app-grid">
@@ -63,11 +64,13 @@
           <paper-input label="Display Name" id="displayName" value="[[user.displayName]]" type="text"></paper-input>
           <p>{{localize('email')}}: [[user.email]]</p>
           <p>{{localize('verify-status')}}: [[verifyStatus(user.emailVerified)]]</p>
+          [[userData.description]]
+            [[user.uid]]
           <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
           <input type="file" accept="image/*" id="uploadImageFile">
-          <paper-button class="chilli btn" on-tap="_deleteProfileImage" title="Delete Profile Image" raised>{{localize('remove-profile-image')}}</paper-button>
-          <paper-button disabled="[[user.emailVerified]]" class="dark btn" on-tap="_verifyAccount" title="Verify account" raised>{{localize('verify-account')}}</paper-button>
-          <paper-button class="magic btn" on-tap="_saveSettings" title="Save settings" raised>{{localize('save-settings')}}</paper-button>
+          <paper-button class="chilli btn" on-tap="_deleteProfileImage" title="{{localize('remove-profile-image')}}" raised>{{localize('remove-profile-image')}}</paper-button>
+          <paper-button disabled="[[user.emailVerified]]" class="dark btn" on-tap="_verifyAccount" title="{{localize('verify-account')}}" raised>{{localize('verify-account')}}</paper-button>
+          <paper-button class="magic btn" on-tap="_saveSettings" title="{{localize('save-settings')}}" raised>{{localize('save-settings')}}</paper-button>
         </div>
       </li>
       <li>
@@ -75,8 +78,9 @@
           <h1>{{localize('authentication-settings')}}</h1>
           <paper-input label="{{localize('email')}}" id="userEmail" type="text" disabled="true" value="[[user.email]]"></paper-input>
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password"></paper-input>
-          <paper-input label="Your new password" id="newPassword" type="password"></paper-input>
-          <paper-button class="magic btn" on-tap="_changeAuthen" title="Change password" raised>{{localize('change-password')}}</paper-button>
+          <paper-input label="{{localize('new-password')}}" id="newPassword" type="password"></paper-input>
+          <paper-button class="magic btn" on-tap="_changeAuthen" title="{{localize('change-password')}}" raised>{{localize('change-password')}}</paper-button>
+          <paper-button class="chilli btn" on-tap="_deleteAcount" title="{{localize('delete-account')}}" raised>{{localize('delete-account')}}</paper-button>
         </div>
       </li>
       <li>
@@ -84,7 +88,7 @@
           <h1>{{localize('backup-settings')}}</h1>
           <p>Export or Import factory data to backup as a file.</p>
           <paper-button class="carrot btn" title="Export backup" on-tap="_export-data" raised>{{localize('export-data')}}</paper-button>
-          <paper-button class="magic btn" title="Import backup" on-tap="_import-data"  raised>{{localize('import-data')}}</paper-button>
+          <paper-button class="magic btn" title="Import backup" on-tap="_import-data" raised>{{localize('import-data')}}</paper-button>
           <paper-toggle-button value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
         </div>
       </li>
@@ -92,7 +96,8 @@
         <div class="card">
           <h1>{{localize('notification-settings')}}</h1>
           <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" noink> {{localize('notification')}}</paper-toggle-button>
-          <paper-toggle-button value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch" noink> {{localize('email-notification')}}</paper-toggle-button>
+          <paper-toggle-button value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch" noink>
+          {{localize('email-notification')}}</paper-toggle-button>
         </div>
       </li>
       <li>
@@ -142,10 +147,12 @@
             ]
           }
         },
+        user: Object,
+        userData: Object,
         notification: Object,
         emailnotification: Object,
         autobackup: Object,
-        alertText: String,
+        alertText: String
       },
       behaviors: [
         Polymer.AppLocalizeBehavior
@@ -161,6 +168,13 @@
         } else {
           return 'not-verify'
         }
+      },
+
+      ready() {
+         this.$.uploadImageFile.addEventListener("click", e => {
+              e.preventDefault();
+              e.stopPropagation();
+          });
       },
 
       _changeLanguage() {
@@ -218,7 +232,16 @@
         let displayname = this.$.displayName.value;
         if (displayname !== "") {
           this.user.updateProfile({
-              displayName: displayname
+            displayName: displayname
+          });
+          this.$.user.ref.set({
+            displayname: this.user.displayName,
+            email: this.user.email,
+            photoURL: this.user.photoURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
+            phone: "0",
+            description: "No description for this user",
+            facebook: "",
+            twitter: ""
             })
             .then(() => {
               this.alertText = 'notification-save-settings';
@@ -238,27 +261,28 @@
         let file = this.$.uploadImageFile.files[0];
         let uid = this.user.uid;
         let storageRef = firebase.storage().ref();
-        let metadata = { 'contentType': file.type };
+        let metadata = {
+          'contentType': file.type
+        };
         let imagesRef = storageRef.child("user/" + uid + "/profile");
-        let uploadTask = imagesRef.put(file,metadata)
-        .then(snapshot => {
+        let uploadTask = imagesRef.put(file, metadata)
+          .then(snapshot => {
             let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
-             this.$.uploadProgress.value = progress;
-             let url = snapshot.metadata.downloadURLs[0];
-             console.log(url);
+            this.$.uploadProgress.value = progress;
+            let url = snapshot.metadata.downloadURLs[0];
+            console.log(url);
             this.user.updateProfile({
-                photoURL: url
-             }).then(function() {
-              location.reload(); 
+              photoURL: url
+            }).then(function () {
+              location.reload();
               this.$.uploadImageFile.files[0].value = null;
               this.alertText = 'notification-save-settings';
               this.$.toastAlert.open();
-           }).catch(function(error) {
-           alert("Update image failed");
-           console.error('Upload failed:', error);
-        });
-     });
+            }).catch(function (error) {
+              alert("Update image failed");
+              console.error('Upload failed:', error);
+            });
+          });
       },
 
       _deleteProfileImage() {
@@ -285,22 +309,22 @@
         this.$.auth.createUserWithEmailAndPassword(this.email, this.password);
         this.email = null;
         this.password = null;
-       firebase.database().ref().child('/user/' + user.uid).set({
-              name: user.displayName,
-              email: user.email,
-              photoURL: downloadURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
-              description: "No description for this user",
-              facebook: "",
-              twitter: "",
+        this.$.user.ref().set({
+          name: user.displayName,
+          email: user.email,
+          photoURL: downloadURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
+          description: "No description for this user",
+          facebook: "",
+          twitter: "",
 
-            }).then(function () {
-              this.$.uploadImageFile.files[0] = null;
-              this.alertText = 'notification-save-settings';
-              this.$.toastAlert.open();
-            }, function (error) {
-              // An error happened.
-              console.log(error);
-            });
+        }).then(function () {
+          this.$.uploadImageFile.files[0] = null;
+          this.alertText = 'notification-save-settings';
+          this.$.toastAlert.open();
+        }, function (error) {
+          // An error happened.
+          console.log(error);
+        });
       },
 
       _changeAuthen() {

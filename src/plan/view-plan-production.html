@@ -380,8 +380,8 @@
       <ul class="app-grid control-bar">
         <li>
           <div class="frame">
-            <h2>1. Load Simulator Plan</h2>
-            <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" item-label-path="name" item-value-path="name"
+            <h2>1. Load Simulator Plan</h2> 
+            <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" value="[[selectPlan]]" item-label-path="name" item-value-path="name"
               selected-item="{{plan}}" required always-float-label></vaadin-combo-box>
             <paper-input label="Plan Name" name="planname" id="stationName" type="text" always-float-label auto-validate></paper-input>
             <div class="load-btn-group">
@@ -403,7 +403,6 @@
               step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
             <p>Product: [[product.name]]</p>
             <p>Required Station: [[product.part]]</p>
-           </template>
             <p>Quantity: [[amount]]</p>
             <p>Est. Duration: [[getEstDuration(product.part,amount)]]</p>
           </div>
@@ -428,7 +427,7 @@
         </li>
       </ul>
       <div class="template-frame">
-        <iron-selector class="flex-container wrap" selected="{{plan}}" attr-for-selected="name">
+        <iron-selector class="flex-container wrap" selected="{{selectPlan}}" attr-for-selected="name">
           <template is="dom-repeat" items="[[planItems]]" as="planItem">
             <div class="plan-item" name="[[planItem.name]]" index="[[index]]">[[planItem.name]]</div>
           </template>
@@ -456,9 +455,41 @@
                 <p>Station ID [[index]]</p>
                 <p class="running">[[station.status]]</p>
                 <ul class="flex-container wrap">
-                  <!--<template is="dom-repeat" items="[[machines_s1]]" as="machineInStation">
-                    <li class="flex-item grabbable" style="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
-                  </template>-->
+                  <template is="dom-repeat" items="[[station.machine]]" as="machineInStation">
+                    <li class="flex-item grabbable" style$="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
+                  </template>
+                </ul>
+                <div>
+                  <!-- ADD MACHINE TO THIS STATION -->
+                  <paper-menu-button>
+                    <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
+                    <paper-listbox slot="dropdown-content" role="listbox" class="add-machine-menu dropdown-content">
+                      <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
+                        <paper-item role="button" title="add machine to station" station=[[station]] on-tap="_addMachineToStation">[[machineItem.name]]</paper-item>
+                      </template>
+                    </paper-listbox slot="dropdown-content">
+                  </paper-menu-button>
+                  <paper-icon-button icon="create" on-tap="_renameStation"></paper-icon-button>
+                  <paper-swatch-picker on-color-changed="colorChange"></paper-swatch-picker>
+                  <paper-icon-button icon="delete" on-tap="_removeStation"></paper-icon-button>
+                </div>
+              </li>
+
+              <div class="progress-arrow progress-arrow--animated">
+                <div class="progress-arrow__arrow arrow-1"></div>
+                <div class="progress-arrow__arrow arrow-2"></div>
+                <div class="progress-arrow__arrow arrow-3"></div>
+                <div class="progress-arrow__arrow arrow-4"></div>
+                <div class="progress-arrow__arrow arrow-5"></div>
+                <div class="progress-arrow__arrow arrow-6"></div>
+              </div>
+            </template>
+            <template is="dom-repeat" items="{{stations}}" as="station">
+              <li class="flex-item-station" index="[[index]]">
+                <h2>Station [[station.name]]</h2>
+                <p>Station ID [[index]]</p>
+                <p class="running">[[station.status]]</p>
+                <ul class="flex-container wrap">
                   <template is="dom-repeat" items="[[station.machine]]" as="machineInStation">
                     <li class="flex-item grabbable" style$="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
                   </template>
@@ -489,9 +520,13 @@
               </div>
             </template>
           </ul>
-          <div class="station-block empty-station-block" hidden$="[[emptyStation(plan)]]">
+          <div class="station-block empty-station-block" hidden$="[[emptyStation(plan.stations.length, stations.length)]]">
             <h1>No station in production block.</h1>
             <p>Please add your first station to the block.</p>
+          </div>
+          <div class="station-block empty-station-block" hidden$="[[emptyPlan(plan, stations.length)]]">
+            <h1>No plan in template.</h1>
+            <p>Please create your first plan.</p>
           </div>
         </div>
 
@@ -520,81 +555,65 @@
     Polymer({
       is: 'view-plan-production',
       properties: {
-        machineItems: {
-          type: Object,
-        },
-        productItems: {
-          type: Object,
-        },
+        // stations: {
+        //   type: Object,
+        //   reflectToAttribute: true,
+        //   value: () => [{
+        //     name: 'A',
+        //     number: 1,
+        //     machine: [{
+        //       name: 'A1'
+        //     }, {
+        //       name: 'A2'
+        //     }, {
+        //       name: 'A3'
+        //     }, {
+        //       name: 'A4'
+        //     }],
+        //     status: 'Running',
+        //     color: 'rgb(56,125,213)'
+        //   }, {
+        //     name: 'B',
+        //     number: 2,
+        //     machine: [{
+        //       name: 'B1'
+        //     }, {
+        //       name: 'B2'
+        //     }, {
+        //       name: 'B3'
+        //     }, {
+        //       name: 'B4'
+        //     }],
+        //     status: 'Running',
+        //     color: 'rgb(99,171,165)'
+        //   }, {
+        //     name: 'C',
+        //     number: 3,
+        //     machine: [{
+        //       name: 'C1'
+        //     }, {
+        //       name: 'C2'
+        //     }, {
+        //       name: 'C3'
+        //     }, {
+        //       name: 'C4'
+        //     }],
+        //     status: 'Running',
+        //     color: 'rgb(108,136,186)'
+        //   }]
+        // },
+
+        machineItems: Object,
+        productItems: Object,
+        duration: Number,
+        speed: Number,
+        remaining: Number,
+        state: Boolean,
+        plan: Object,
         stations: {
-          type: Object,
-          reflectToAttribute: true,
-          value: () => [{
-            name: 'A',
-            number: 1,
-            machine: [{
-              name: 'A1'
-            }, {
-              name: 'A2'
-            }, {
-              name: 'A3'
-            }, {
-              name: 'A4'
-            }],
-            status: 'Running',
-            color: 'rgb(56,125,213)'
-          }, {
-            name: 'B',
-            number: 2,
-            machine: [{
-              name: 'B1'
-            }, {
-              name: 'B2'
-            }, {
-              name: 'B3'
-            }, {
-              name: 'B4'
-            }],
-            status: 'Running',
-            color: 'rgb(99,171,165)'
-          }, {
-            name: 'C',
-            number: 3,
-            machine: [{
-              name: 'C1'
-            }, {
-              name: 'C2'
-            }, {
-              name: 'C3'
-            }, {
-              name: 'C4'
-            }],
-            status: 'Running',
-            color: 'rgb(108,136,186)'
-          }]
+          type: Array,
+          value: []
         },
-
-        duration: {
-          type: Number,
-        },
-
-        speed: {
-          type: Number,
-        },
-
-        remaining: {
-          type: Number
-        },
-
-        state: {
-          type: Boolean
-        },
-
-        machines_s1: {
-          type: Object,
-          value: () => []
-        },
-
         simulatorStatus: {
           type: String,
           value: "Stopped"
@@ -611,7 +630,9 @@
       },
 
       getEstDuration(part, amount) {
-        if (!part || !amount) return 0;
+        if (typeof part === "undefined" || typeof amount === "underfined") {
+          return 0;
+        }
         let sum = 0;
         let partTime = 0;
         for (let i in part) {
@@ -644,7 +665,6 @@
 
 
       countdownClock(duration, speed, state) {
-
         if (duration === 0 || state === false) {
           return 0 + "d " + 0 + "h " + 0 + "m " + 0 + "s ";
         } else {
@@ -707,11 +727,25 @@
         throw new Error('Bad Hex');
       },
 
-      emptyStation(plan) {
-        if (plan) {
+      emptyStation(plan_station, temp_station) {
+        if (typeof plan_station === "undefined") {
+          return true;
+        }
+        if (plan_station > 0 || temp_station > 0) {
           return true;
         } else {
           return false;
+        }
+      },
+
+      emptyPlan(plan, temp_station) {
+        if (typeof plan === "undefined") {
+           return false;
+        }
+        if (plan || temp_station > 0) {
+            return true;
+        } else {
+            return false;
         }
       },
 
