@@ -43,7 +43,7 @@
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
 <!-- neon modules - used for animation -->
-<link rel="lazy-import" href="../bower_components/neon-animation/neon-animation.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <!-- 3rd party modules -->
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
@@ -62,7 +62,7 @@
 <!-- import shared style and page router -->
 <link rel="import" href="app-language-behavior.html">
 <link rel="import" href="view-login.html">
-<link rel="import" href="view-settings.html">
+<link rel="lazy-import" href="view-settings.html">
 <link rel="import" href="view-404.html">
 <link rel="import" href="view-dashboard.html">
 <link rel="import" href="view-setup.html">
@@ -183,18 +183,18 @@
     <app-drawer-layout id="layout" fullbleed>
       <app-drawer hidden id="drawer" role="menu" slot="drawer" swipe-open>
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
-        <h1 title="SMES" class="main-title">SMES</h1>
+        <h1 title="IMES" class="main-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
         <nav>
           <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" on-iron-activate="_drawerSelected"
             role="navigation">
-            <a name="dashboard" role="link" href="/dashboard" title="Dashboard">
+            <a name="dashboard" role="link" href="/dashboard" rel="dashboard" title="Dashboard">
               <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
-            <a name="setup" role="link" href="/setup" title="Setup">
+            <a name="setup" role="link" href="/setup" rel="setup" title="Setup">
               <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-            <a name="planning" role="link" href="/planning" title="Plan">
+            <a name="planning" role="link" href="/planning" rel="plan" title="Plan">
               <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-            <a name="tracking" role="link " href="/tracking" title="Track">
+            <a name="tracking" role="link " href="/tracking" rel="track" title="Track">
               <paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
           </iron-selector>
         </nav>
@@ -226,25 +226,25 @@
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-listbox class="dropdown-content">
                 <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible">
-                  <a name="help" role="link" href="https://github.com/jukbot/smart-industry" target="_blank">
+                  <a name="help" role="link" href="https://github.com/jukbot/smart-industry" rel="help" target="_blank">
                     <paper-icon-item class="menu-item" name="help">
                       <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
                       {{localize('help')}}
                     </paper-icon-item>
                   </a>
-                  <a name="about" role="link" href="/about">
+                  <a name="about" role="link" rel="about" href="/about">
                     <paper-icon-item class="menu-item" name="about">
                       <iron-icon icon="vaadin:info-circle" alt="about" item-icon></iron-icon>
-                      {{localize('about-smes')}}
+                      {{localize('about-IMES')}}
                     </paper-icon-item>
                   </a>
-                  <a name="settings" role="link" href="/settings">
+                  <a name="settings" role="link" rel="settings" href="/settings">
                     <paper-icon-item class="menu-item" name="settings">
                       <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
                       {{localize('settings')}}
                     </paper-icon-item>
                   </a>
-                  <a name="login" role="link" href="/login">
+                  <a name="login" role="link" rel="logout" href="/login">
                     <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
                       <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
                       {{localize('logout')}}
@@ -292,6 +292,7 @@
           value: false,
           observer: '_signedInChanged'
         },
+        alertText: String,
         route: Object,
         subroute: Object,
         routeData: Object,
@@ -313,14 +314,14 @@
 
       attached() {
         this.async(function () {
-          if (!this.route.path) {
+        if (!this.route.path) {
             this.set('route.path', '/');
           }
         });
-        if (!this.authen) {
+        if (!this.signedIn) {
           this.set('route.path', 'login');
         }
-        if (this.authen && this.route.path === '/login') {
+        if (this.signedIn && this.route.path === '/login') {
           this.set('route.path', '/');
         }
         this.loadResources(this.resolveUrl('../data/locales.json'));
@@ -400,7 +401,7 @@
             //redirect to login page    
             this.async(function () {
               this.set('route.path', 'login');
-            }, 500);
+            }, 1000);
             console.info("Logout successful");
           })
           .catch((error) => {

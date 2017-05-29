@@ -11,7 +11,7 @@
 <dom-module id="view-login">
   <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
         padding: 0px;
       }
@@ -30,7 +30,7 @@
         text-align: center;
       }
 
-      .form-title> h2 {
+      .form-title>h2 {
         font-size: 1.5rem;
       }
 
@@ -84,11 +84,13 @@
         max-width: 30rem;
       }
 
-      .login-input, .register-input {
+      .login-input,
+      .register-input {
         --paper-input-container-input: {
           font-size: 1.25rem;
           color: #333333;
-        };
+        }
+        ;
       }
 
       .login-remember {
@@ -111,9 +113,16 @@
         padding: 1rem;
       }
 
+      .mobile-title {
+        display: none;
+      }
+
       @media (min-width: 360px) and (max-width: 768px) {
         .left-half {
           display: none;
+        }
+        .mobile-title {
+          display: block
         }
       }
     </style>
@@ -123,12 +132,13 @@
     <section class="container">
       <div class="flex-layout left-half">
         <article>
-          <h1 title="Pronto" class="main-title">Project Pronto</h1>
+          <h1 title="IMES" class="main-title">Project IMES</h1>
           <div title="Smart Industry Helper" class="main-describe">Your Smart Industry Helper</div>
         </article>
       </div>
       <div class="flex-layout right-half">
         <article>
+          <h1 title="IMES" class="main-title mobile-title">Project IMES</h1>
           <form hidden$="[[!login]]" class="login-form" on-submit="_login">
             <div class="form-title">
               <h2>User Login</h2>
@@ -147,14 +157,14 @@
             <div class="form-title">
               <h2>User Register</h2>
             </div>
-            <paper-input class="register-input" name="e-mail" id="register_email" type="email" maxlength="50" placeholder="E-mail"
-              autofocus auto-validate></paper-input>
+            <paper-input class="register-input" name="e-mail" id="register_email" type="email" maxlength="50" placeholder="E-mail" autofocus
+              auto-validate></paper-input>
             <paper-input class="register-input" name="display-name" id="register_name" type="text" maxlength="50" placeholder="Display Name"
               autofocus auto-validate></paper-input>
-            <paper-input class="register-input" name="new-password" id="new_passwd" type="password" maxlength="50" 
-              placeholder="New Password" auto-validate></paper-input>
-            <paper-input class="register-input" name="confirm-password" id="confirm_passwd" type="password" maxlength="50" 
-              placeholder="Confirm Password" auto-validate></paper-input>
+            <paper-input class="register-input" name="new-password" id="new_passwd" type="password" maxlength="50" placeholder="New Password"
+              auto-validate></paper-input>
+            <paper-input class="register-input" name="confirm-password" id="confirm_passwd" type="password" maxlength="50" placeholder="Confirm Password"
+              auto-validate></paper-input>
             <paper-button raised class="smart authen-btn" on-tap="_register" role="button">Register</paper-button>
             <a href="javascript:void(0);" on-tap="_hideRegister" class="login-register">Already have account? Go to login</a>
           </form>
@@ -206,9 +216,9 @@
           this.$.auth.signInWithEmailAndPassword(email, passwd)
             .then((response) => {
               this.authen = true;
-              this.async(function() {   
+              this.async(function () {
                 this.set('route.path', '../dashboard');
-               }, 500);
+              }, 500);
             })
             .catch((error) => {
               alert("Authenticate Failed: " + error.message);
@@ -218,39 +228,39 @@
         }
       },
 
-       _register() {
-         let email = this.$.register_email.value;
-         let name = this.$.register_name.value;
-         let pass = this.$.new_passwd.value;
-         let confirm_pass = this.$.confirm_passwd.value;
-         if(email !== "" && name !== "" && pass !== "" && confirm_pass !=="") {
-            if(pass === confirm_pass) {
-                this.$.auth.createUserWithEmailAndPassword(email, pass)
+      _register() {
+        let email = this.$.register_email.value;
+        let name = this.$.register_name.value;
+        let pass = this.$.new_passwd.value;
+        let confirm_pass = this.$.confirm_passwd.value;
+        if (email !== "" && name !== "" && pass !== "" && confirm_pass !== "") {
+          if (pass === confirm_pass) {
+            this.$.auth.createUserWithEmailAndPassword(email, pass)
+              .then((response) => {
+                this.$.auth.signInWithEmailAndPassword(email, pass)
                   .then((response) => {
-                       this.$.auth.signInWithEmailAndPassword(email, pass)
-                          .then((response) => {
-                            this.user.updateProfile({
-                                displayName: name
-                            });
-                            this.user.sendEmailVerification();
-                            alert("Register successful. We've sent verification code to your email");
-                                  // Signout Action
-                           this.$.auth.signOut();
-                           this.register = false;
-                           this.login = true;
-                          }).catch((error) => {
-                          alert("Authenticate Failed: " + error.message);
-                         });
-                   })
-                  .catch((error) => {
-                      alert("Register Failed: " + error.message);
+                    this.user.updateProfile({
+                      displayName: name
                     });
-            } else {
-              alert("Confirm password not match");
-            }
-         } else {
-           alert("Please fill in the form completely.");
-         } 
+                    this.user.sendEmailVerification();
+                    alert("Register successful. We've sent verification code to your email");
+                    // Signout Action
+                    this.$.auth.signOut();
+                    this.register = false;
+                    this.login = true;
+                  }).catch((error) => {
+                    alert("Authenticate Failed: " + error.message);
+                  });
+              })
+              .catch((error) => {
+                alert("Register Failed: " + error.message);
+              });
+          } else {
+            alert("Confirm password not match");
+          }
+        } else {
+          alert("Please fill in the form completely.");
+        }
       },
 
       _showReset() {
@@ -268,11 +278,11 @@
         this.login = false;
       },
 
-       _hideRegister() {
+      _hideRegister() {
         this.register = false;
         this.login = true;
       },
-      
+
       _resetPassword() {
         if (this.$.resetEmail !== "") {
           let resetEmail = this.$.resetEmail.value;

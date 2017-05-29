@@ -403,9 +403,6 @@
               step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
             <p>Product: [[product.name]]</p>
             <p>Required Station: [[product.part]]</p>
-               <template is="dom-repeat" items="{{selectProduct.part}}" as="part">          
-                <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
-              </div>
            </template>
             <p>Quantity: [[amount]]</p>
             <p>Est. Duration: [[getEstDuration(product.part,amount)]]</p>

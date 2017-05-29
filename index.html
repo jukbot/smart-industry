@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>SMES</title>
+    <title>IMES</title>
     <meta name="generator" content="Polymer 2.0">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=1">
     <meta name="description" content="Smart Manufacturing Execution Systems for Small-Midsize industry">
@@ -10,16 +11,16 @@
     <meta name="robots" content="index, nofollow">
     <meta name="theme-color" content="#FFFFFF">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="SMES">
+    <meta name="application-name" content="IMES">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="SMES">
+    <meta name="apple-mobile-web-app-title" content="IMES">
     <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta name="msapplication-tap-highlight" content="no">
     <base href="/">
     <link rel="manifest" href="/manifest.json">
-    <link rel="canonical" href="https://smes.ga">
+    <link rel="canonical" href="https://IMES.ga">
     <link rel="shortcut icon" href="/images/favicon.png">
     <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
@@ -30,18 +31,19 @@
     <script>
         // Register the base URL
         const baseUrl = document.querySelector('base').href;
-      // Load and register pre-caching Service Worker
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function() {
-          navigator.serviceWorker.register(baseUrl + 'service-worker.js');
-        });
-      }
+        // Load and register pre-caching Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register(baseUrl + 'service-worker.js');
+            });
+        }
     </script>
     <link rel="import" href="src/view-index.html">
     <style>
-         vaadin-license-box {
-        display: none !important;
+        vaadin-license-box {
+            display: none !important;
         }
+
         body {
             margin: 0px;
             padding: 0px;

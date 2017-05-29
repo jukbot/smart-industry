@@ -8,8 +8,6 @@
  * subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
  */
 
-/* eslint-env node */
-
 module.exports = {
   staticFileGlobs: [
     '/index.html',
@@ -17,8 +15,9 @@ module.exports = {
     '/bower_components/webcomponentsjs/*',
     '/images/*',
     '/data/*',
-    '/js/*',
+    '/lib/*',
     '/src/*',
   ],
   navigateFallback: '/index.html',
+  navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/],
 };
