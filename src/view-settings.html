@@ -37,8 +37,13 @@
         margin-top: 10px;
       }
 
-      .card {
-        min-height: 350px;
+      .upload-bar {
+        width: 100%;
+        height: 10px;
+      }
+
+      li .card {
+        height: 400px;
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
@@ -61,15 +66,15 @@
       <li>
         <div class="card">
           <h1>{{localize('account-settings')}}</h1>
-          <paper-input label="Display Name" id="displayName" value="[[user.displayName]]" type="text"></paper-input>
-          <p>{{localize('email')}}: [[user.email]]</p>
-          <p>{{localize('verify-status')}}: [[verifyStatus(user.emailVerified)]]</p>
-          [[userData.description]]
-            [[user.uid]]
-          <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
-          <input type="file" accept="image/*" id="uploadImageFile">
+          <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text"></paper-input>
+          <p>Upload Profile Image</p>
+          <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress>
+          <!--<vaadin-upload id="uploadImageFile" nodrop no-auto max-files="1" accept="image/*"  max-file-size="1000000">
+          </vaadin-upload>-->
+          <input type="file" accept="image/*" id="uploadImageFile"><br>
           <paper-button class="chilli btn" on-tap="_deleteProfileImage" title="{{localize('remove-profile-image')}}" raised>{{localize('remove-profile-image')}}</paper-button>
-          <paper-button disabled="[[user.emailVerified]]" class="dark btn" on-tap="_verifyAccount" title="{{localize('verify-account')}}" raised>{{localize('verify-account')}}</paper-button>
+          <paper-button disabled="[[user.emailVerified]]" class="dark btn" on-tap="_verifyAccount" title="{{localize('verify-account')}}"
+            raised>{{localize('verify-account')}}</paper-button>
           <paper-button class="magic btn" on-tap="_saveSettings" title="{{localize('save-settings')}}" raised>{{localize('save-settings')}}</paper-button>
         </div>
       </li>
@@ -97,13 +102,13 @@
           <h1>{{localize('notification-settings')}}</h1>
           <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" noink> {{localize('notification')}}</paper-toggle-button>
           <paper-toggle-button value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch" noink>
-          {{localize('email-notification')}}</paper-toggle-button>
+            {{localize('email-notification')}}</paper-toggle-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1>{{localize('organization-settings')}}</h1>
-          <paper-button raised class="burn btn">Add User</paper-button>
+          <paper-button raised class="burn btn">{{localize('add-user')}}</paper-button>
           Role: Administrator, Users Delete Edit
         </div>
       </li>
@@ -141,6 +146,26 @@
                 value: 'en'
               },
               {
+                name: 'မြန်မာ',
+                value: 'jp'
+              },
+              {
+                name: 'ລາວ',
+                value: 'jp'
+              },
+              {
+                name: 'ຫວຽດນາມ',
+                value: 'en'
+              },
+              {
+                name: 'Filipino',
+                value: 'en'
+              },
+              {
+                name: 'Español',
+                value: 'en'
+              },
+              {
                 name: 'русский',
                 value: 'rs'
               }
@@ -160,21 +185,6 @@
 
       attached() {
         this.loadResources(this.resolveUrl('../data/locales.json'));
-      },
-
-      verifyStatus(status) {
-        if (status) {
-          return 'verified'
-        } else {
-          return 'not-verify'
-        }
-      },
-
-      ready() {
-         this.$.uploadImageFile.addEventListener("click", e => {
-              e.preventDefault();
-              e.stopPropagation();
-          });
       },
 
       _changeLanguage() {
@@ -235,13 +245,13 @@
             displayName: displayname
           });
           this.$.user.ref.set({
-            displayname: this.user.displayName,
-            email: this.user.email,
-            photoURL: this.user.photoURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
-            phone: "0",
-            description: "No description for this user",
-            facebook: "",
-            twitter: ""
+              displayname: this.user.displayName,
+              email: this.user.email,
+              photoURL: this.user.photoURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
+              phone: "0",
+              description: "No description for this user",
+              facebook: "",
+              twitter: ""
             })
             .then(() => {
               this.alertText = 'notification-save-settings';

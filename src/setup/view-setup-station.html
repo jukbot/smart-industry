@@ -122,6 +122,19 @@
       .add-machine-btn {
         margin-bottom: 10px;
       }
+
+      .machine-list {
+        height: 300px;
+      }
+
+      iron-list {
+        flex: 1 1 auto;
+      }
+
+      .item {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+      }
     </style>
     <paper-dialog id="createStationDialog" class="station-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
       always-on-top no-cancel-on-outside-click>
@@ -146,7 +159,7 @@
       </paper-dialog-scrollable>
       <div class="buttons">
         <paper-button on-tap="dismissAddStation" dialog-dismiss>{{localize('dismiss')}}</paper-button>
-        <paper-button on-tap="addStation" dialog-confirm autofocus>{{localize('add')}}</paper-button>
+        <paper-button on-tap="addStation" dialog-confirm autironofocus>{{localize('add')}}</paper-button>
       </div>
     </paper-dialog>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
@@ -172,11 +185,13 @@
               <p>{{localize('station-name')}}: [[stationItem.name]]</p>
               <p>{{localize('station-machine')}}: [[stationItem.machine.length]]</p>
               <div class="frame">
-                <ul class="flex-container wrap">
-                  <template is="dom-repeat" items="[[stationItem.machine]]" as="machineItem">
-                    <li class="flex-item">[[machineItem.name]]</li>
-                  </template>
-                </ul>
+                <div class="machine-list" id="scrollable" style="overflow:scroll;">
+                  <iron-list items="[[stationItem.machine]]" as="machineItem" scroll-target="scrollable">
+                    <template>
+                      <div tabindex$="[[tabIndex]]" class="item">#[[machineItem.number]] [[machineItem.name]] - Type: [[machineItem.code]]</div>
+                    </template>
+                  </iron-list>
+                </div>
               </div>
             </div>
             <div class="button-group">

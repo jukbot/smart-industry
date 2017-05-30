@@ -182,7 +182,7 @@
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed>
-      <app-drawer hidden$="[[authen]]" id="drawer" role="menu" slot="drawer" swipe-open>
+      <app-drawer hidden$="[[!signedIn]]" id="drawer" role="menu" slot="drawer" swipe-open>
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
         <h1 title="IMES" class="main-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -208,7 +208,8 @@
             <img class="profile-image" src$="[[getUserImage(user.photoURL)]]" alt="user photo">
             <p>[[persistedUserData.displayName]]</p>
             <p>{{localize('email')}} : [[persistedUserData.email]]</p>
-            <p>{{localize('internet-status')}} : <span class="online">[[getOnlineStatus(online)]]</span></p>
+            <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(persistedUserData.emailVerified)]]</span></p>
+            <p>{{localize('internet-status')}}: <span class="online">[[getOnlineStatus(online)]]</span></p>
             <p>[[persistedMetaData.appName]]</p>
             <p>{{localize('version')}} [[persistedMetaData.appVersion]]</p>
             <p>{{localize('developed-by')}} [[persistedMetaData.appDeveloper]]</p>
@@ -216,7 +217,7 @@
         </dom-if>
       </app-drawer>
       <app-header-layout fullbleed has-scrolling-region>
-        <app-header hidden$="[[authen]]" id="header" slot="header" role="rowheader" condenses fixed>
+        <app-header hidden$="[[!signedIn]]" id="header" slot="header" role="rowheader" condenses fixed>
           <app-toolbar role="toolbar">
             <paper-icon-button icon="vaadin:menu" alt="menu" aria-label="sidebar menu" drawer-toggle></paper-icon-button>
             <h2 class="page-title" main-title>{{localize(page)}}</h2>
@@ -227,7 +228,7 @@
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-listbox class="dropdown-content">
                 <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible">
-                  <a name="help" role="link" href="https://github.com/jukbot/smart-industry" rel="help" target="_blank">
+                  <a name="help" role="link" href="https://github.com/jukbot/smart-industry" rel="noopener" target="_blank">
                     <paper-icon-item class="menu-item" name="help">
                       <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
                       {{localize('help')}}
@@ -318,13 +319,10 @@
 
       attached() {
         this.async(function () {
-          if (!this.route.path) {
-            this.set('route.path', '/dashboard');
+        if (!this.route.path) {
+            this.set('route.path', '/');
           }
         });
-        // if (!this.authen) {
-        //   this.set('route.path', 'login');
-        // }
         if (this.authen && this.route.path === '/login') {
           this.set('route.path', '/dashboard');
         }
@@ -339,9 +337,12 @@
       },
 
       _authenChanged(authen) {
-        if(!authen) {
-          this.signOut();
-        } 
+        if (!authen) {
+          // this.$.drawer.hidden = true;
+          // this.$.header.hidden = true;
+          // this.$.layout.resetLayout();
+          this.set('route.path', 'login');
+        }
       },
 
       _signedInChanged(signedIn) {
@@ -353,10 +354,20 @@
       getOnlineStatus(status) {
         if (status) {
           this.$$('.online').style.color = 'green';
-          return "Online";
+          return 'Online';
         } else {
           this.$$('.online').style.color = 'red';
-          return "Offline";
+          return 'Offline';
+        }
+      },
+
+      getVerifyStatus(status) {
+        if (status) {
+          this.$$('.verify').style.color = 'green';
+          return 'Verified'
+        } else {
+          this.$$('.verify').style.color = 'red';
+          return 'Not Verify'
         }
       },
 

@@ -71,8 +71,8 @@
        width: 100%;
      }
     paper-progress.deep-orange {
-      --paper-progress-active-color: var(--paper-deep-orange-500);
-      --paper-progress-secondary-color: var(--paper-deep-orange-500);
+      --paper-progress-active-color: var(--paper-light-orange-500);
+      --paper-progress-secondary-color: var(--paper-light-orange-500);
     }
 
     paper-progress.purple {
@@ -83,16 +83,6 @@
     paper-progress.cyan {
       --paper-progress-active-color: var(--paper-light-cyan-500);
       --paper-progress-secondary-color: var(--paper-light-cyan-500);
-    }
-    
-    paper-progress.orange {
-      --paper-progress-active-color: var(--paper-light-orange-500);
-      --paper-progress-secondary-color: var(--paper-light-orange-500);
-    }
-
-    paper-progress.pink {
-      --paper-progress-active-color: var(--paper-deep-pink-500);
-      --paper-progress-secondary-color: var(--paper-deep-pink-500);
     }
     </style>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderQuery}}" order-by-value="true"></firebase-query>
@@ -128,7 +118,7 @@
    </div>
  <div class="card">
    <h2 class="order-header">Order 1 (Status: Completed)</h2>
-   <paper-progress value="80" min="0" max="100" class="pink"></paper-progress>
+   <paper-progress value="100" min="0" max="100" class="cyan"></paper-progress>
    <paper-button raised class="dark btn" on-tap="view-oee">View Detail</paper-button>
    </div>
     <div class="card">
@@ -138,12 +128,12 @@
    </div>
     <div class="card">
    <h2 class="order-header">Order 3 (Status: In-progress)</h2>
-   <paper-progress value="30" min="0" max="100" class="cyan"></paper-progress>
+   <paper-progress value="30" min="0" max="100" class="purple"></paper-progress>
    <paper-button raised class="dark btn" on-tap="view-oee">View Detail</paper-button>
    </div>
        <div class="card">
-   <h2 class="order-header">Order 4 (Status: Waiting)</h2>
-   <paper-progress value="0" min="0" max="100" class="orange"></paper-progress>
+   <h2 class="order-header">Order 4 (Status: In-progress)</h2>
+   <paper-progress value="0" min="0" max="100" class="purple"></paper-progress>
    <paper-button raised class="dark btn" on-tap="view-oee">View Detail</paper-button>
    </div>
   <div class="card">

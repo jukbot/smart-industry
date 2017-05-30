@@ -2,17 +2,17 @@
 <link rel="import" href="../view-index.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="view-plan-scheduling">
- <template>
+  <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
         --app-grid-item-height: 50%;
-        --vaadin-grid-header-cell: { 
-           background-color: #e3e3e3;
+        --vaadin-grid-header-cell: {
+          background-color: #e3e3e3;
         }
       }
-      
-       vaadin-grid#orderTable {
+
+      vaadin-grid#orderTable {
         --vaadin-grid-cell: {
           padding: 0;
         }
@@ -47,6 +47,7 @@
         }
         ;
       }
+
       vaadin-grid#orderTable .cell {
         overflow: hidden;
         text-overflow: ellipsis;
@@ -65,7 +66,7 @@
         margin: 0 24px;
       }
 
-       @media (min-width: 360px) and (max-width: 768px) {
+      @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
         }
@@ -82,33 +83,35 @@
           --app-grid-columns: 1;
         }
       }
-       @media (min-width: 1201px) and (max-width: 2560px) {
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
-          --app-grid-columns: 1 ;
+          --app-grid-columns: 1;
         }
       }
 
       #job-scheduling-table data-table-row {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      opacity: 1;
-      cursor: pointer;
-      border-bottom: 1px solid #eeeeee;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        opacity: 1;
+        cursor: pointer;
+        border-bottom: 1px solid #eeeeee;
       }
 
       #job-scheduling-table .index {
-       color: red;
-       margin-left: 10px;
-       }
+        color: red;
+        margin-left: 10px;
+      }
 
-     .priority-btn {
-       width: 150px;
-     }
+      .priority-btn {
+        width: 150px;
+      }
 
-     .priority-dialog {
-       width: 30%;
-     }
+      .priority-dialog {
+        width: 30%;
+      }
+
       .frame {
         border: solid 1px #757575;
         border-radius: 2px;
@@ -117,18 +120,21 @@
         overflow: hidden;
         padding: 10px;
       }
-     
-     .priority-dialog-title {
-       font-size: 1.25rem;
-       line-height: 1.5rem;
-       color: red;
-     }
-     .priority-dialog-text {
-       line-height: 1.65rem;
-     }
-     .priorityType {
-        color: orangered;      
+
+      .priority-dialog-title {
+        font-size: 1.25rem;
+        line-height: 1.5rem;
+        color: red;
       }
+
+      .priority-dialog-text {
+        line-height: 1.65rem;
+      }
+
+      .priorityType {
+        color: orangered;
+      }
+
       #priorityTypeSelector {
         margin-top: 20px;
       }
@@ -136,18 +142,21 @@
       input[readonly] {
         border: 2px solid transparent;
       }
-  
+
       .running-blink {
-       animation: blinker 1s linear infinite;
+        animation: blinker 1s linear infinite;
       }
 
-      @keyframes blinker {  
-       50% { opacity: 0; }
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
       }
     </style>
 
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_delivery" order-by-value="true" db="{{test}}" data="{{orderData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_delivery" order-by-value="true"
+      db="{{test}}" data="{{orderData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" data="{{stationData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="number" data="{{machineData}}"></firebase-query>
@@ -156,282 +165,278 @@
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
 
-  <ul class="app-grid">
-<li>
- <div class="card">
-    <h1>Orders Table</h1>     
-  <!-- <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3> -->
-  <h2>Next Reschedule Date: [[getNextInterval(factoryStandard.start_interval, factoryStandard.interval)]]</h2>
-    <div>
-    <paper-button raised class="chilli priority-btn" on-tap="reschedule" style="margin-bottom: 10px;">Reschedule</paper-button>
-    <paper-button raised class="dark priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Clear Order</paper-button>
-    </div>
-      <vaadin-grid id="orderTable" aria-label="Orders Table" items="[[orderData]]">
+    <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1>Orders Table</h1>
+          <!-- <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3> -->
+          <h2>Next Reschedule Date: [[getNextInterval(factoryStandard.start_interval, factoryStandard.interval)]]</h2>
+          <div>
+            <paper-button raised class="chilli priority-btn" on-tap="reschedule" style="margin-bottom: 10px;">Reschedule</paper-button>
+            <paper-button raised class="dark priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Clear Order</paper-button>
+          </div>
+          <vaadin-grid id="orderTable" aria-label="Orders Table" items="[[orderData]]">
 
-        <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
-          <template class="header">
-            <paper-checkbox role="checkbox" checked="{{selectAll}}"></paper-checkbox>
-          </template>
-          <template>
-            <paper-checkbox role="checkbox" checked="{{selected}}"></paper-checkbox>
-          </template>
-        </vaadin-grid-selection-column>
+            <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
+              <template class="header">
+                <paper-checkbox role="checkbox" checked="{{selectAll}}"></paper-checkbox>
+              </template>
+              <template>
+                <paper-checkbox role="checkbox" checked="{{selected}}"></paper-checkbox>
+              </template>
+            </vaadin-grid-selection-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right">Order#</div>
+              </template>
+              <template>
+                <div class="cell numeric right">[[item.order_no]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column width="2rem" flex="0">
-          <template class="header">
-            <div class="cell">#</div>
-          </template>
-          <template>
-            <div class="cell">[[index]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right">Product</div>
+              </template>
+              <template>
+                <div class="cell right">[[item.order_product_name]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell">Order no.</div>
-          </template>
-          <template>
-            <div class="cell">[[item.order_no]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Part</div>
+              </template>
+              <template>
+                <div class="cell right last">
+                  <template is="dom-repeat" items="[[item.order_product_part]]" as="part">
+                    [[part.name]]
+                  </template>
+                </div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell">Product</div>
-          </template>
-          <template>
-            <div class="cell">[[item.order_product_name]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">SKU</div>
+              </template>
+              <template>
+                <div class="cell numeric right last">[[item.order_product_sku]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell">Part</div>
-          </template>
-          <template>
-            <div class="cell"><template is="dom-repeat" items="[[item.order_product_part]]" as="part">
-                [[part.name]]
-              </template></div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Quantity</div>
+              </template>
+              <template>
+                <div class="cell numeric right last">[[item.order_quantity]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">SKU</div>
-          </template>
-          <template>
-            <div class="cell numeric right last">[[item.order_product_sku]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Duration (Hrs.)</div>
+              </template>
+              <template>
+                <div class="cell numeric right last">[[minutesToStr(item.order_duration)]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Quantity</div>
-          </template>
-          <template>
-            <div class="cell numeric right last">[[item.order_quantity]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Customer</div>
+              </template>
+              <template>
+                <div class="cell right last">[[item.order_customer]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Duration(WL)</div>
-          </template>
-          <template>
-            <div class="cell numeric right last">[[item.order_duration]] Mins.</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Delivery</div>
+              </template>
+              <template>
+                <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Customer</div>
-          </template>
-          <template>
-            <div class="cell numeric right last">[[item.order_customer]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Priority</div>
+              </template>
+              <template>
+                <div class="cell right last">EDD</div>
+              </template>
+            </vaadin-grid-column>
 
-         <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Delivery</div>
-          </template>
-          <template>
-            <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Status</div>
+              </template>
+              <template>
+                <div class="cell right last">[[getOrderStatus(item.order_delivery)]]</div>
+              </template>
+            </vaadin-grid-column>
 
-         <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Priority</div>
-          </template>
-          <template>
-            <div class="cell right last">EDD</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Delete</div>
+              </template>
+              <template>
+                <div class="cell right last">
+                  <paper-icon-button on-tap="deleteOrder" order="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                </div>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </div>
+      </li>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Status</div>
-          </template>
-          <template>
-            <div class="cell right last">[[getOrderStatus(item.order_delivery)]]</div>
-          </template>
-        </vaadin-grid-column>
+      <li>
+        <div class="card">
+          <h1>Order 1 Schedule</h1>
+          <vaadin-grid id="orderTable" aria-label="Station Table" items="[[orderData]]">
+            <vaadin-grid-column width="4em" flex="0">
+              <template class="header">
+                <div class="cell right last">Order</div>
+              </template>
+              <template>
+                <div class="cell numeric right last">[[item.order_no]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column width="2rem" flex="1">
-          <template class="header">
-            <div class="cell right last">Delete</div>
-          </template>
-          <template>
-            <div class="cell right last">
-              <paper-icon-button on-tap="deleteOrder" order="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
-            </div>
-          </template>
-        </vaadin-grid-column>
-      </vaadin-grid>
-</div> 
-</li>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Part</div>
+              </template>
+              <template>
+                <div class="cell right last">
+                  <template is="dom-repeat" items="[[item.order_product_part]]" as="part">
+                    [[part.name]]
+                  </template>
+                </div>
+              </template>
+            </vaadin-grid-column>
 
-<li>
-   <div class="card">
-     <h1>Order 1 Schedule</h1>
-       <vaadin-grid id="orderTable" aria-label="Station Table" items="[[orderData]]">
-        <vaadin-grid-column width="4em" flex="0">
-          <template class="header">
-            <div class="cell">Order</div>
-          </template>
-          <template>
-            <div class="cell">[[item.order_no]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Quantity</div>
+              </template>
+              <template>
+                <div class="cell numeric right last">[[item.order_quantity]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell">Part</div>
-          </template>
-          <template>
-            <div class="cell"><template is="dom-repeat" items="[[item.order_product_part]]" as="part">
-                [[part.name]]
-              </template></div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Duration (Hrs.)</div>
+              </template>
+              <template>
+                <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Quantity</div>
-          </template>
-          <template>
-            <div class="cell numeric right last">[[item.order_quantity]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Workload</div>
+              </template>
+              <template>
+                <div class="cell numeric right last">[[getWorkLoad(item.order_product_part, item.order_quantity)]] [[item.order_duration]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Duration</div>
-          </template>
-          <template>
-            <div class="cell numeric right last">[[item.order_duration]] Mins.</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Machines Used</div>
+              </template>
+              <template>
+                <div class="cell right last">[[getMachineUsed(1,item.order_product_part)]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Workload</div>
-          </template>
-          <template>
-            <div class="cell numeric right last">[[getWorkLoad(item.order_product_part, item.order_quantity)]] Mins.</div>
-          </template>
-        </vaadin-grid-column>
-  
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Machines Used</div>
-          </template>
-          <template>
-            <div class="cell right last">[[getMachineUsed(1,item.order_product_part)]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell">Start</div>
+              </template>
+              <template>
+                <div class="cell">[[getStartTime]]</div>
+              </template>
+            </vaadin-grid-column>
 
-        <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell">Start</div>
-          </template>
-          <template>
-            <div class="cell">[[getStartTime]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell">End</div>
+              </template>
+              <template>
+                <div class="cell">[[getEndTime]]</div>
+              </template>
+            </vaadin-grid-column>
 
-      <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell">End</div>
-          </template>
-          <template>
-            <div class="cell">[[getEndTime]]</div>
-          </template>
-        </vaadin-grid-column>
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Delivery</div>
+              </template>
+              <template>
+                <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>Daily Jobs Production Scheduling of [[today]]</h1>
+          <h2>Operation Condition: [[getOpTime(factoryOperation.op_end,factoryOperation.op_start)]] hrs.</h2>
+          <vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderData]]" id="orderSelector" item-label-path="order_no"
+            item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
+          <vaadin-date-picker style="width: 300px;" name="workdate" min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector"
+            always-float-label></vaadin-date-picker>
+          <vaadin-columnrange-chart id="column-range-resource-usage">
+            <chart inverted="true"></chart>
+            <chart-title>Job Scheduling</chart-title>
+            <x-axis>
+              <categories>
+                <template is="dom-repeat" items="{{stationData}}" as="station">[[station.name]],</template>
+              </categories>
+            </x-axis>
+            <y-axis type="datetime">
+              <chart-title>Time</chart-title>
+            </y-axis>
+            <tooltip formatter="function () {return this.series.name +': '+ Highcharts.dateFormat('%H:%M', this.point.low) + ' - ' + Highcharts.dateFormat('%H:%M', this.point.high)}"></tooltip>
+            <plot-options>
+              <columnrange grouping="false">
+                <data-labels enabled="true" inside="true" color="white" formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
+              </columnrange>
+            </plot-options>
+            <data-series name="Order 1" color="#E91E63" data="[[scheduleData]]"></data-series>
+          </vaadin-columnrange-chart>
+          <div class="frame">
+            <h2>Average Completion Time: [[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</h2>
+            <h2>% Utilization:</h2>
+            <h2>Average No. Jobs in system:</h2>
+            <h2>Average Tardiness: </h2>
+          </div>
+        </div>
+      </li>
+    </ul>
 
-         <vaadin-grid-column flex="1">
-          <template class="header">
-            <div class="cell right last">Delivery</div>
-          </template>
-          <template>
-            <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
-          </template>
-        </vaadin-grid-column>
-      </vaadin-grid>
-   </div>
- </li>
-
-<li>
-<div class="card">
-<h1>Daily Jobs Production Scheduling of [[today]]</h1>
-<h2>Operation hours: [[getOpTime(factoryOperation.op_end,factoryOperation.op_start)]]</h2>
-
-<vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderData]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
-<vaadin-date-picker style="width: 300px;" name="workdate"  min="2017-01-01" value="[[todayDate]]" class="date-selector" id="workdateSelector" always-float-label></vaadin-date-picker>
-
-<vaadin-columnrange-chart id="column-range-resource-usage">
-    <chart inverted="true"></chart>
-    <chart-title>Job Scheduling</chart-title>
-    <x-axis>
-        <categories><template is="dom-repeat" items="{{stationData}}" as="station">[[station.name]],</template></categories>
-    </x-axis>
-    <y-axis type="datetime"><chart-title>Time</chart-title></y-axis>
-    <tooltip
-            formatter="function () {return this.series.name +': '+ Highcharts.dateFormat('%H:%M', this.point.low) + ' - ' + Highcharts.dateFormat('%H:%M', this.point.high)}"></tooltip>
-    <plot-options>
-        <columnrange grouping="false">
-            <data-labels enabled="true" inside="true" color="white"
-                         formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
-        </columnrange>
-    </plot-options>
-    <data-series name="Order 1" color="#E91E63" data="[[scheduleData]]"></data-series>
-</vaadin-columnrange-chart>
-<div class="frame">
-<h2>Average Completion Time: [[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</h2>
-<h2>% Utilization:</h2>
-<h2>Average No. Jobs in system:</h2>
-<h2>Average Tardiness: </h2>
-</div>
- </div>
- </li>
-<!-- <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3> -->
-<!-- <vaadin-combo-box style="width: 300px;" label="Priority Type" items="[[priority]]" id="priority-select" name="priority" value="[[factoryStandard.priority]]" item-label-path="name" item-value-path="symbol" always-float-label></vaadin-combo-box> -->
-</ul>
-
- <paper-dialog class="priority-dialog" id="changePriorityDialog">
-  <h3 class="priority-dialog-title"><iron-icon icon="vaadin:warning"></iron-icon> Warning: Schedule change<h3>
-  <p class="priority-dialog-text">Changing priority will affect other orders scheduling. This cannot change the jobs scheduling that are currently running.</p>
-  <paper-radio-group id="priorityTypeSelector" selected="[[factoryStandard.priority]]">
-  <paper-radio-button name="EDD" value="EDD">EDD</paper-radio-button>
-  <paper-radio-button name="SPT" value="SPT">SPT</paper-radio-button>
- </paper-radio-group>
-  <div class="buttons">
-      <paper-button dialog-dismiss>Dismiss</paper-button>
-      <paper-button class="bold" on-tap="savePriority" autofocus dialog-confirm>Change</paper-button>
-  </div>
-</paper-dialog>
-</template>
+    <paper-dialog class="priority-dialog" id="changePriorityDialog">
+      <h3 class="priority-dialog-title">
+        <iron-icon icon="vaadin:warning"></iron-icon> Warning: Schedule change
+        <h3>
+          <p class="priority-dialog-text">Changing priority will affect other orders scheduling. This cannot change the jobs scheduling that are currently
+            running.</p>
+          <paper-radio-group id="priorityTypeSelector" selected="[[factoryStandard.priority]]">
+            <paper-radio-button name="EDD" value="EDD">EDD</paper-radio-button>
+            <paper-radio-button name="SPT" value="SPT">SPT</paper-radio-button>
+          </paper-radio-group>
+          <div class="buttons">
+            <paper-button dialog-dismiss>Dismiss</paper-button>
+            <paper-button class="bold" on-tap="savePriority" autofocus dialog-confirm>Change</paper-button>
+          </div>
+    </paper-dialog>
+  </template>
   <script>
     Polymer({
       is: 'view-plan-scheduling',
@@ -459,12 +464,12 @@
         },
         scheduleData: {
           type: Array,
-          value: [    
-            [Date.UTC(2017,5,1,8,0,0),Date.UTC(2017,5,1,10,6,0)],
-            [Date.UTC(2017,5,1,8,0,0),Date.UTC(2017,5,1,10,30,0)],
-            [Date.UTC(2017,5,1,10,0,0),Date.UTC(2017,5,1,10,30,0)],
-            [Date.UTC(2017,5,1,10,0,0),Date.UTC(2017,5,1,11,30,0)]
-            ]
+          value: [
+            [Date.UTC(2017, 5, 1, 8, 0, 0), Date.UTC(2017, 5, 1, 10, 6, 0)],
+            [Date.UTC(2017, 5, 1, 8, 0, 0), Date.UTC(2017, 5, 1, 10, 30, 0)],
+            [Date.UTC(2017, 5, 1, 10, 0, 0), Date.UTC(2017, 5, 1, 10, 30, 0)],
+            [Date.UTC(2017, 5, 1, 10, 0, 0), Date.UTC(2017, 5, 1, 11, 30, 0)]
+          ]
         },
         priority: {
           type: Array,
@@ -485,142 +490,168 @@
 
         today: {
           type: Object,
-          value: function () {  
-          let today = new Date();
-          today = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
-          return today;
-         }
+          value: function () {
+            let today = new Date();
+            today = today.getDate() + '/' + (today.getMonth() + 1) + '/' + today.getFullYear();
+            return today;
+          }
         },
 
         todayDate: {
-          type: Object,     
+          type: Object,
           value: function () {
-          let date = new Date();
-          let dd = date.getDate();
-          let mm = date.getMonth() + 1; //January is 0!
-          let yyyy = date.getFullYear();
-          if (dd < 10) {
-            dd = '0' + dd
-          }
-          if (mm < 10) {
-            mm = '0' + mm
-         }
-          date = yyyy + '-' + mm  + '-' + dd;
-          return date;
+            let date = new Date();
+            let dd = date.getDate();
+            let mm = date.getMonth() + 1; //January is 0!
+            let yyyy = date.getFullYear();
+            if (dd < 10) {
+              dd = '0' + dd
+            }
+            if (mm < 10) {
+              mm = '0' + mm
+            }
+            date = yyyy + '-' + mm + '-' + dd;
+            return date;
           }
         },
       },
 
       reschedule() {
-            if (confirm("Warning: Are you sure do you want to force reschedule ?") == true) { }
+        if (confirm("!! Are you sure do you want to force reschedule ? !!") == true) {
+          alert('Reschedule Successful');
+          this.rescheduleOrder();
+        }
       },
+
+      setNextInterval() {
+        let current = Math.floor(Date.now() / 1000);
+        let nextInterval = current +  this.factoryStandard.interval;
+        this.set('factoryStandard.start_interval', nextInterval);
+      },
+
       getOrderStatus(order_delivery) {
-          //TEMP MUST CHANGE THIS
-          let current_timestamp = Math.floor(Date.now() / 1000);
-          if(order_delivery - current_timestamp < 0) {
-            return "late";
-          } else {
-            return "waiting";
-          }
+        //TEMP MUST CHANGE THIS
+        let current_timestamp = Math.floor(Date.now() / 1000);
+        if (order_delivery - current_timestamp < 0) {
+          return "late";
+        } else {
+          return "waiting";
+        }
+      },
+      minutesToStr(minute) {
+        let sign = '';
+        if (minute < 0) {
+          sign = '0';
+        }
+        let hours = this.leftPad(Math.floor(Math.abs(minute) / 60));
+        let minutes = this.leftPad(Math.round(Math.abs(minute) % 60));
+        return sign + hours + ':' + minutes;
+      },
+
+      leftPad(number) {
+        /* 
+         * add zero to numbers less than 10,Eg: 2 -> 02 
+         */
+        return ((number < 10 && number >= 0) ? '0' : '') + number;
       },
       getNextInterval(last_timestamp, interval) {
-         if(!last_timestamp || !interval) return 0;
-         let current = Math.floor(Date.now() / 1000);
-         let diff = current - last_timestamp;
-         let range = interval * 24 * 60 * 60;
-         if(diff <= range) {
-         let nextIntervalStamp = (last_timestamp*1000) + (interval * 24 * 60 * 60 * 1000);
-         let nextIntervalDate = new Date(nextIntervalStamp);
+        if (!last_timestamp || !interval) return 0;
+        let current = Math.floor(Date.now() / 1000);
+        let diff = current - last_timestamp;
+        let range = interval * 24 * 60 * 60;
+        if (diff <= range) {
+          let nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 * 1000);
+          let nextIntervalDate = new Date(nextIntervalStamp);
           let dd = nextIntervalDate.getDate();
           let mm = nextIntervalDate.getMonth() + 1; //January is 0!
           let yyyy = nextIntervalDate.getFullYear();
           if (dd < 10) {
-           dd = '0' + dd
+            dd = '0' + dd
           }
           if (mm < 10) {
-           mm = '0' + mm
-         }
+            mm = '0' + mm
+          }
           let nextInterval = dd + '/' + mm + '/' + yyyy;
           return nextInterval;
-         } else {
-           this.set('factoryStandard.start_interval', current);
-         }
+        } else {
+          this.set('factoryStandard.start_interval', current);
+        }
       },
 
-    getOpTime(end, start) {
-        if(!end || !start) return 0;
+      getOpTime(end, start) {
+        if (!end || !start) return 0;
         let endtime = end.replace(/\:/g, '.')
         let starttime = start.replace(/\:/g, '.')
         let optime = endtime - starttime;
         this.operationTime = optime; // set to global variable
-        return optime;   
+        return optime;
       },
 
-    getDeliveryDate(timestamp) {
-          let today = new Date(timestamp*1000);
-          let dd = today.getDate();
-          let mm = today.getMonth() + 1; //January is 0!
-          let yyyy = today.getFullYear();
-          if (dd < 10) {
-           dd = '0' + dd
-          }
-          if (mm < 10) {
-           mm = '0' + mm
-         }
-         let deliveryDate = dd + '/' + mm + '/' + yyyy;
-         return deliveryDate;
-    },
+      getDeliveryDate(timestamp) {
+        let today = new Date(timestamp * 1000);
+        let dd = today.getDate();
+        let mm = today.getMonth() + 1; //January is 0!
+        let yyyy = today.getFullYear();
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        let deliveryDate = dd + '/' + mm + '/' + yyyy;
+        return deliveryDate;
+      },
 
       ready() {
-         Sugar.Date.setLocale('en-GB');
-         let workdatepicker = this.$$('#workdateSelector');
+        Sugar.Date.setLocale('en-GB');
+        let workdatepicker = this.$$('#workdateSelector');
 
-         workdatepicker.i18n = {
+        workdatepicker.i18n = {
           week: 'Week',
           calendar: 'Calendar',
           clear: 'Clear',
           today: 'Today',
           cancel: 'Cancel',
           firstDayOfWeek: 1,
-          monthNames:
-          'January_February_March_April_May_June_July_August_September_October_November_December'.split('_'),
+          monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'.split(
+            '_'),
           weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
           weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
-          formatDate: function(date) {
+          formatDate: function (date) {
             return Sugar.Date.format(date, '{short}');
           },
-          formatTitle: function(monthName, fullYear) {
+          formatTitle: function (monthName, fullYear) {
             return monthName + ' ' + fullYear;
           },
-          parseDate: function(dateString) {
-            let matches = workdatepicker.i18n.monthNames.filter(function(monthName) {
+          parseDate: function (dateString) {
+            let matches = workdatepicker.i18n.monthNames.filter(function (monthName) {
               return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
             });
             dateString = matches.length === 1 ? matches[0] : dateString;
             return Sugar.Date.create(dateString);
           }
         };
-    },
-  
-    deleteOrder: function (e) {
-        if (confirm("Delete this order ?") == true) {
-        let key = e.currentTarget.order.$key;
-        this.$.orderQuery.ref.child(key).remove();
-        alert("Delete order successfully");
-        } else {}
-    },
+      },
 
-    scheduleOrder: function(part, station) {
-      let processPart = [];
-      let firstProcess = [];
-        for(let i in part) {
+      deleteOrder(e) {
+        if (confirm("Delete this order ?") == true) {
+          let key = e.currentTarget.order.$key;
+          this.$.orderQuery.ref.child(key).remove();
+          alert("Delete order successfully");
+        } else {}
+      },
+
+      scheduleOrder(part, station) {
+        let processPart = [];
+        let firstProcess = [];
+        for (let i in part) {
           processPart[i] = part[i].process.split(',');
           firstProcess[i] = processPart[i].shift();
         }
-      
-    },
 
-    getOpTime: function (end, start) {
+      },
+
+      getOpTime(end, start) {
         if (!end || !start) return '';
         let endtime = end.replace(/\:/g, '.')
         let starttime = start.replace(/\:/g, '.')
@@ -629,64 +660,67 @@
         return optime;
       },
 
-    getWorkLoad(part, amount) {
-        if (!part || !amount) return '';
-          let cycleTime;
-          let setupTime;
-        //  for(let i in part) {
-        //      cycleTime += this.getSumCycleTime(part[i].cycle, amount);
-        //      setupTime += this.getSumSetupTime(part[i].setup);
-       //   }
-        //  console.log("Cycle " +cycleTime);
-        //  console.log("Setup " + setupTime);
+      getWorkLoad(part, amount) {
+        if (!part || !amount) return 0;
+        let cycleTime;
+        let setupTime;
+          for(let i in part) {
+              cycleTime += this.getSumCycleTime(part[i].cycle, amount);
+              setupTime += this.getSumSetupTime(part[i].setup);
+           }
+          console.log("Cycle " + cycleTime);
+          console.log("Setup " + setupTime);
         let workload = Math.ceil((cycleTime) + setupTime);
-         //console.log("WL " + workload);
+        //console.log("WL " + workload);
         // workload/no of machine
         return workload / (1 - amount);
       },
 
       getMachineUsed(station, part) {
-          return 3;
+        return 3;
       },
-    
-     getSumCycleTime(cycle,amount) {
+
+      getSumCycleTime(cycle, amount) {
         if (!cycle) return 0;
         let processTime = 0;
         for (let i in cycle) {
           processTime += cycle[i];
         };
-        return processTime*amount;
+        return processTime * amount;
       },
 
       getSumSetupTime(setup) {
-        if(!setup) return 0;
+        if (!setup) return 0;
         let setupTime = 0;
         for (let i in setup) {
           setupTime += setup[i];
         };
         return setupTime;
       },
-    
-    togglePriority: function () {
-        this.$.changePriorityDialog.open();
-    },
 
-    orderType: function (type) {
-        if(type === "SPT") { return "order_duration" }
-        else if(type === "EDD") { return "order_delivery" }
-    },
-    savePriority: function () {
-         let value = this.$.priorityTypeSelector.selected; 
-         this.set('factoryStandard.priority', value);
-    },
-    test: function() {
-      var now = new Date;
-      var utc_timestamp = Date.UTC(now.getUTCFullYear(),now.getUTCMonth(), now.getUTCDate() , 
-      now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
-      console.log(utc_timestamp);
-      return utc_timestamp;
-     
-    }
+      togglePriority: function () {
+        this.$.changePriorityDialog.open();
+      },
+
+      orderType: function (type) {
+        if (type === "SPT") {
+          return "order_duration"
+        } else if (type === "EDD") {
+          return "order_delivery"
+        }
+      },
+      savePriority: function () {
+        let value = this.$.priorityTypeSelector.selected;
+        this.set('factoryStandard.priority', value);
+      },
+      test: function () {
+        var now = new Date;
+        var utc_timestamp = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
+          now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
+        console.log(utc_timestamp);
+        return utc_timestamp;
+
+      }
     });
   </script>
 </dom-module>

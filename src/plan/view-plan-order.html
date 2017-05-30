@@ -80,17 +80,18 @@
       <li>
         <div class="card">
           <h1>Create Order</h1>
-           <!--  <paper-input label="Order Number" name="order-no" id="orderNumber" value="[[getOrderNumber(orderData.length)]]" type="number" min="0" step="1" required always-float-label></paper-input> -->
-           <!-- <vaadin-combo-box label="Size" name="size" items="[[product.size]]" id="sizeSelector" disabled="true" item-label-path="name"
+          <!--  <paper-input label="Order Number" name="order-no" id="orderNumber" value="[[getOrderNumber(orderData.length)]]" type="number" min="0" step="1" required always-float-label></paper-input> -->
+          <!-- <vaadin-combo-box label="Size" name="size" items="[[product.size]]" id="sizeSelector" disabled="true" item-label-path="name"
             item-value-path="name" selected-item='{{size}}' required prevent-invalid-input always-float-label auto-validate></vaadin-combo-box> -->
           <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerData]]" item-label-path="fname"
-            item-value-path="fname" selected-item='{{selectCustomer}}' loading="[[!customerData]]" required allow-custom-value prevent-invalid-input
-            always-float-label auto-validate></vaadin-combo-box>
+            item-value-path="fname" selected-item='{{selectCustomer}}' loading="[[!customerData]]" required allow-custom-value
+            prevent-invalid-input always-float-label auto-validate></vaadin-combo-box>
           <vaadin-combo-box label="Product" name="product" items="[[productData]]" id="productSelector" item-label-path="name" item-value-path="name"
             selected-item='{{selectProduct}}' required prevent-invalid-input always-float-label auto-validate></vaadin-combo-box>
           <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
             step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
-          <vaadin-date-picker label="Delivery Date" name="delivery" id="deliverySelector" value="{{delivery}}" error-message="Invalid input" required always-float-label ></vaadin-date-picker>
+          <vaadin-date-picker label="Delivery Date" name="delivery" id="deliverySelector" value="{{delivery}}" error-message="Invalid input"
+            required always-float-label></vaadin-date-picker>
           <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
           <div class="button-group">
             <paper-button raised class="smart" on-tap="createOrder">Add to schedule</paper-button>
@@ -108,83 +109,52 @@
           <p>Actual Quantity: [[getActualQuantity(amount)]]</p>
           <p>Estimate Duration: [[getSumProductTime(selectProduct.part,amount)]]</p>
           <p>Delivery Date: [[delivery]]</p>
-          <p>Raw Material Used: </p>
+          <p>Raw Material Used: [[selectProduct.raw]]</p>
           <p>Operation hours: [[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]] Hrs.</p>
         </div>
       </li>
     </ul>
-      <div class="card">
-            <h1>Product Information</h1>
-            <div class="frame" hidden$="[[selectProduct.part]]">
-            <h1 class="no-product-title">No Product Selected</h1>
-            </div>
-            <div class="frame" hidden$="[[!selectProduct.part]]">
-                <img class="product-image" src$="[[selectProduct.image]]" alt="[[selectProduct.name]]">
-                <h2>Product Name [[selectProduct.name]]</h2>
-                <p>Product SKU: [[selectProduct.sku]]</p>
-                <p>Product Fragment: [[selectProduct.part.length]] part</p>
-                <p>Total Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p>
-             </div>
-            <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
-              <div class="frame">
-                <h2>Product Part [[part.name]]</h2>
-                <p>Part SKU: [[part.sku]]</p>
-                <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
-                <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
-                <p>Total Process Time : [[getSumCycleTime(part.cycle)]] minutes</p>
-              </div>
-           </template>
-           </div>
+    <div class="card">
+      <h1>Product Information</h1>
+      <div class="frame" hidden$="[[selectProduct.part]]">
+        <h1 class="no-product-title">No Product Selected</h1>
+      </div>
+      <div class="frame" hidden$="[[!selectProduct.part]]">
+        <img class="product-image" src$="[[selectProduct.image]]" alt="[[selectProduct.name]]">
+        <h2>Product Name [[selectProduct.name]]</h2>
+        <p>Product SKU: [[selectProduct.sku]]</p>
+        <p>Product Fragment: [[selectProduct.part.length]] part</p>
+        <p>Total Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p>
+      </div>
+      <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
+        <div class="frame">
+          <h2>Product Part [[part.name]]</h2>
+          <p>Part SKU: [[part.sku]]</p>
+          <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
+          <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
+          <p>Total Process Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+        </div>
+      </template>
+    </div>
   </template>
   <script>
     Polymer({
       is: 'view-plan-order',
       properties: {
-        customerData: {
-          type: Object
-        },
-        productData: {
-          type: Object
-        },
-        orderData: {
-          type: Object
-        },
-
-        factoryPerformance: {
-          type: Object
-        },
-        factoryStandard: {
-          type: Object
-        },
-        factoryOperation: {
-          type: Object
-        },
-
-        orderNumber: {
-          type: Number
-        },
-        orderDelivery: {
-          type: Number
-        },
-        orderDuration: {
-          type: Number
-        },
-        quantity: {
-          type: Number,
-        },
-        actualQuantity: {
-          type: Number
-        },
-        operationTime: {
-          type: Number
-        },
-        productSKU: {
-          type: Number
-        },
-        orderProductPart: {
-          type: Object
-        },
-
+        customerData: Object,
+        productData: Object,
+        orderData: Object,
+        factoryPerformance: Object,
+        factoryStandard: Object,
+        factoryOperation: Object,
+        orderNumber: Number,
+        orderDelivery: Number,
+        orderDuration: Number,
+        quantity: Number,
+        actualQuantity: Number,
+        operationTime: Number,
+        productSKU: Number,
+        orderProductPart: Object,
         todayDate: {
           type: Object,
           value: function () {
@@ -232,7 +202,7 @@
       },
 
       getSumSetupTime(setup) {
-        if(!setup) return 0;
+        if (!setup) return 0;
         let setupTime = 0;
         for (let i in setup) {
           setupTime += setup[i];
@@ -244,18 +214,18 @@
         return process.split(',').join(' → ');
       },
 
-      getSumProductTime(part,amount) {
+      getSumProductTime(part, amount) {
         if (!part) return 0;
         let sum = 0;
         let partTime = 0;
         for (let i in part) {
-           for(let j in part[i].cycle) {
-              sum += part[i].cycle[j]; 
-            }
+          for (let j in part[i].cycle) {
+            sum += part[i].cycle[j];
+          }
         };
-        let sumDuration = (sum*this.getActualQuantity(amount));
+        let sumDuration = (sum * this.getActualQuantity(amount));
         this.orderDuration = sumDuration;
-        return this.minutesToStr(sumDuration); 
+        return this.minutesToStr(sumDuration);
       },
 
       minutesToStr(minute) {
@@ -284,32 +254,32 @@
       },
 
       getOpTime(end, start) {
-        if(!end || !start) return 0;
+        if (!end || !start) return 0;
         let endtime = end.replace(/\:/g, '.')
         let starttime = start.replace(/\:/g, '.')
         let optime = endtime - starttime;
         this.operationTime = optime; // set to global variable
-        return optime;   
+        return optime;
       },
 
       setProductSKU(sku) {
-         if(!sku) return 0;
-         this.productSKU = sku;
-         return sku;
+        if (!sku) return 0;
+        this.productSKU = sku;
+        return sku;
       },
 
       setOrderProduct(product) {
-        if(!product) return 0;
-         this.orderProductPart = product.part;
-         return product.name;
+        if (!product) return 0;
+        this.orderProductPart = product.part;
+        return product.name;
       },
 
       ready() {
         Sugar.Date.setLocale('en-GB');
         let deliverypicker = this.$.deliverySelector;
         deliverypicker.addEventListener('value-changed', function () {
-            let deliveryTimeStamp = (new Date(deliverypicker.value).getTime() / 1000);
-            this.orderDelivery = deliveryTimeStamp;   
+          let deliveryTimeStamp = (new Date(deliverypicker.value).getTime() / 1000);
+          this.orderDelivery = deliveryTimeStamp;
         });
 
         deliverypicker.i18n = {
@@ -337,12 +307,12 @@
             return Sugar.Date.create(dateString);
           }
         };
-       /* productPicker.addEventListener('value-changed', function () {
-          let product_list = productPicker.value;
-          if (product_list != null && sizePicker.items != null) {
-             sizePicker.disabled = false;
-          }
-        }); */
+        /* productPicker.addEventListener('value-changed', function () {
+           let product_list = productPicker.value;
+           if (product_list != null && sizePicker.items != null) {
+              sizePicker.disabled = false;
+           }
+         }); */
       },
 
       createOrder() {
@@ -356,14 +326,15 @@
         let orderDuration = this.orderDuration;
         let orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
 
-        if (orderNo !== "" && customerName !== "" && orderProductName !== ""  && orderProductPart !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery))) {
+        if (orderNo !== "" && customerName !== "" && orderProductName !== "" && orderProductPart !== "" &&
+          orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery))) {
 
-         this.$.orderQuery.ref.push({
+          this.$.orderQuery.ref.push({
             order_date: orderDate,
             order_no: orderNo,
             order_customer: customerName,
             order_product_name: orderProductName,
-            order_product_part : orderProductPart,
+            order_product_part: orderProductPart,
             order_product_sku: orderProductSKU,
             order_quantity: orderQuantity,
             order_duration: orderDuration,
@@ -378,14 +349,14 @@
       },
 
       clearField() {
-          this.$.customerSelector.value = "";
-          this.$.productSelector.value = "";
-          this.$.orderQuantity.value = 1;
-          this.$.deliverySelector.value = "";
+        this.$.customerSelector.value = "";
+        this.$.productSelector.value = "";
+        this.$.orderQuantity.value = 1;
+        this.$.deliverySelector.value = "";
       },
 
       saveOrder: function () {
-       
+
       },
 
       getProductProcess: function (process) {
@@ -397,17 +368,17 @@
       },
 
 
-/*
-      calUsedMachine: function (g) {
-        let selectedMachine = [];
-        for (let key in g) {
-          selectedMachine[key] = g[key].value;
-        }
-        let machine_no = selectedMachine.length;
-        console.log("Machine no: " + machine_no);
-        return selectedMachine;
-      },
-*/
+      /*
+            calUsedMachine: function (g) {
+              let selectedMachine = [];
+              for (let key in g) {
+                selectedMachine[key] = g[key].value;
+              }
+              let machine_no = selectedMachine.length;
+              console.log("Machine no: " + machine_no);
+              return selectedMachine;
+            },
+      */
 
     });
   </script>

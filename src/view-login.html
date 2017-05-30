@@ -46,7 +46,10 @@
         font-weight: 400;
         line-height: normal;
         text-align: center;
-        color: #FFFFFF;
+      }
+
+      .white {
+        color: #ffffff;
       }
 
       .main-describe {
@@ -113,6 +116,15 @@
         padding: 1rem;
       }
 
+      .logo {
+        margin: 0 auto;
+        padding: 10px 0;
+        width: 35%;
+        height: auto;
+        text-align: center;
+        display: none;
+      }
+
       .mobile-title {
         display: none;
       }
@@ -122,7 +134,11 @@
           display: none;
         }
         .mobile-title {
-          display: block
+          display: block;
+          font-size: 2.5rem;
+        }
+        .logo {
+          display: block;
         }
       }
     </style>
@@ -132,12 +148,13 @@
     <section class="container">
       <div class="flex-layout left-half">
         <article>
-          <h1 title="IMES" class="main-title">Project IMES</h1>
-          <div title="Smart Industry Helper" class="main-describe">Your Smart Industry Helper</div>
+          <h1 title="IMES" class="main-title white">Project IMES</h1>
+          <div title="Smart Industry Helper" class="main-describe white">Your Smart Industry Helper</div>
         </article>
       </div>
       <div class="flex-layout right-half">
         <article>
+          <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
           <h1 title="IMES" class="main-title mobile-title">Project IMES</h1>
           <form hidden$="[[!login]]" class="login-form" on-submit="_login">
             <div class="form-title">

@@ -375,14 +375,17 @@
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="number" data="{{machineItems}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/plan" order-by-child="name" data="{{planItems}}"></firebase-query>
+    <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
     <div class="card">
       <h1>Production Simulator</h1>
       <ul class="app-grid control-bar">
         <li>
           <div class="frame">
-            <h2>1. Load Simulator Plan</h2> 
-            <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" value="[[selectPlan]]" item-label-path="name" item-value-path="name"
-              selected-item="{{plan}}" required always-float-label></vaadin-combo-box>
+            <h2>1. Load Simulator Plan</h2>
+            <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" value="[[selectPlan]]" item-label-path="name"
+              item-value-path="name" selected-item="{{plan}}" required always-float-label></vaadin-combo-box>
             <paper-input label="Plan Name" name="planname" id="stationName" type="text" always-float-label auto-validate></paper-input>
             <div class="load-btn-group">
               <paper-button class="load-btn dark" raised on-tap="_loadPlan">Load</paper-button>
@@ -437,13 +440,12 @@
           <p>Please create a new plan to build your first model.</p>
         </div>
       </div>
-      <vaadin-context-menu selector="production-block">
+      <vaadin-context-menu selector=".simulate-machine">
         <!-- ADD NEW STATIONS -->
         <template>
           <paper-listbox role="listbox">
-            <paper-item on-tap="_addStation">Add new station</paper-item>
-            <paper-item disabled="[[!stations]]" on-tap="_renameStation">Rename station [[target.index]]</paper-item>
-            <paper-item disabled="[[!stations]]" on-tap="_removeStation">Delete station</paper-item>
+            <paper-item disabled$="[[!station.machine]]" on-tap="_renameStation">Edit machine [[target.station.name]]</paper-item>
+            <paper-item disabled$="[[!station.machine]]" on-tap="_removeStation">Delete machine</paper-item>
           </paper-listbox>
         </template>
 
@@ -456,7 +458,12 @@
                 <p class="running">[[station.status]]</p>
                 <ul class="flex-container wrap">
                   <template is="dom-repeat" items="[[station.machine]]" as="machineInStation">
-                    <li class="flex-item grabbable" style$="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
+                    <li class="flex-item grabbable simulate-machine" style$="background-color: [[station.color]]" index="[[index]]">
+                      <p>[[machineInStation.name]]</p>
+                      <div>
+                        <paper-icon-button icon="delete" on-tap="_removeMachine"></paper-icon-button>
+                      </div>
+                    </li>
                   </template>
                 </ul>
                 <div>
@@ -491,7 +498,11 @@
                 <p class="running">[[station.status]]</p>
                 <ul class="flex-container wrap">
                   <template is="dom-repeat" items="[[station.machine]]" as="machineInStation">
-                    <li class="flex-item grabbable" style$="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]</li>
+                    <li class="flex-item grabbable" style$="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]
+                      <div>
+                        <paper-icon-button icon="delete" on-tap="_removeMachine"></paper-icon-button>
+                      </div>
+                    </li>
                   </template>
                 </ul>
                 <div>
@@ -529,24 +540,22 @@
             <p>Please create your first plan.</p>
           </div>
         </div>
-
       </vaadin-context-menu>
-
-      <template is="dom-repeat" items="[[stations]]" as="station">
+      <template is="dom-repeat" items="[[plan.stations]]" as="station">
         <div class="output-frame">
           <h2>Station [[station.name]] Output</h2>
-          <p>Current quantity: 98 items</p>
-          <p>Workload: 112 mins</p>
-          <p>Used Machine: 10/10</p>
-          <p>Actual quantity: 200</p>
+          <p>Current quantity:[[amount]]items</p>
+          <p>Workload:[[getEstDuration(product.part,amount)]]</p>
+          <p>Used Machine: 4/4</p>
+          <p>Actual quantity: [[getActualQuantity(amount)]] items</p>
         </div>
       </template>
-      <div class="output-frame">
+      <div hidden$="[[!plan]]" class="output-frame">
         <h2>Production Output</h2>
-        <p>Productivity Rate: 133 items/hr.</p>
-        <p>Total Lead Time: 3hrs.</p>
-        <p>Total Workload: 3hrs.</p>
-        <p>Total Actual quantity: 200</p>
+        <p>Productivity Rate: null items/hr.</p>
+        <p>Total Lead Time: [[getEstDuration(product.part,amount)]]</p>
+        <p>Total Workload: [[getEstDuration(product.part,amount)]]</p>
+        <p>Total Actual quantity: [[getActualQuantity(amount)]] items</p>
       </div>
     </div>
 
@@ -602,7 +611,9 @@
         //     color: 'rgb(108,136,186)'
         //   }]
         // },
-
+        factoryPerformance: Object,
+        factoryStandard: Object,
+        factoryOperation: Object,
         machineItems: Object,
         productItems: Object,
         duration: Number,
@@ -644,6 +655,14 @@
         this.orderDuration = sumDuration;
         return this.minutesToStr(sumDuration); //productTime.toFixed(1)
 
+      },
+
+      getActualQuantity(amount) {
+        if (!amount) return 0;
+        let accept_waste = this.factoryPerformance.aw;
+        let actual_quantity = Math.ceil((amount / (1 - accept_waste)));
+        this.actualQuantity = actual_quantity; // set to global variable
+        return actual_quantity;
       },
 
       minutesToStr(minute) {
@@ -740,12 +759,12 @@
 
       emptyPlan(plan, temp_station) {
         if (typeof plan === "undefined") {
-           return false;
+          return false;
         }
         if (plan || temp_station > 0) {
-            return true;
+          return true;
         } else {
-            return false;
+          return false;
         }
       },
 
