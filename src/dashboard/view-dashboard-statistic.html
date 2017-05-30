@@ -37,7 +37,30 @@
         font-size: 2rem;
       }
     </style>
+    <firebase-query app-name="smart-mes" id="orderHistoryQuery" path="/history/order" data="{{orderHistoryData}}"></firebase-query>
  <div class="card">
+    <div >
+      <vaadin-bar-chart>
+        <chart-title>Product Order Statistics</chart-title>
+          <x-axis type="category"></x-axis>
+          <y-axis>
+            <chart-title>Total product</chart-title>
+          </y-axis>
+            <legend enabled="false"></legend>
+            <data-series>
+              <name>Product</name>
+              <color-by-point>true</color-by-point>
+              <data>
+                <template is="dom-repeat" items="[[orderHistoryData]]">
+                <point>
+                  <name>[[item.order_product_name]]</name>
+                  <y>[[item.order_product_quantity]]</y>
+                </point>
+                </template>
+              </data>
+            </data-series>
+      </vaadin-bar-chart>
+    </div>
       <div class="status">
       <p>Please upgrade to PRO package to enable statistic log.</p> 
       </div>
@@ -47,7 +70,16 @@
   <script>
     Polymer({
       is: 'view-dashboard-statistic',
- 
+      properties: {
+        orderHistoryData: Object,
+        data: {
+          type: Array,
+          value: [{
+             name: 'test',
+             y: 60
+          }]
+        }
+      }
     });
   </script>
 </dom-module>

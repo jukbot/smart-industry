@@ -72,6 +72,7 @@
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="orderHistoryQuery" path="/history/order" data="{{orderHistoryData}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
@@ -94,8 +95,8 @@
             required always-float-label></vaadin-date-picker>
           <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload>
           <div class="button-group">
-            <paper-button raised class="smart" on-tap="createOrder">Add to schedule</paper-button>
-            <paper-button raised class="fancy" on-tap="saveOrder">Save to waiting</paper-button>
+            <paper-button raised class="smart" on-tap="_createOrder">Add to schedule</paper-button>
+            <paper-button raised class="fancy" on-tap="_saveOrder">Save to waiting</paper-button>
           </div>
         </div>
       </li>
@@ -144,6 +145,7 @@
         customerData: Object,
         productData: Object,
         orderData: Object,
+        orderHistoryData: Object,
         factoryPerformance: Object,
         factoryStandard: Object,
         factoryOperation: Object,
@@ -180,6 +182,13 @@
 
       attached: function () {
         this.loadResources(this.resolveUrl('../../data/locales.json'));
+      },
+
+      getName(fname, lname) {
+        if(!fname || !lname) return;
+        if(fname !== "" && lname !== "") {
+         return fname + lname;
+        }
       },
 
       getOrderNumber(length) {
@@ -315,7 +324,7 @@
          }); */
       },
 
-      createOrder() {
+      _createOrder() {
         let orderNo = this.orderNumber;
         let customerName = this.$.customerSelector.value;
         let orderDate = Math.round(new Date().getTime() / 1000.0);
@@ -341,6 +350,14 @@
             order_delivery: orderDelivery,
             order_status: "waiting",
           });
+          this.$.orderHistoryQuery.ref.push({
+            order_date: orderDate,
+            order_no: orderNo,
+            order_customer: customerName,
+            order_product_name: orderProductName,
+            order_quantity: orderQuantity,
+            order_delivery: orderDelivery,
+          });
           alert("Added to production schedule successfully");
           this.clearField();
         } else {
@@ -355,8 +372,9 @@
         this.$.deliverySelector.value = "";
       },
 
-      saveOrder: function () {
-
+      _saveOrder: function () {
+        alert('Saved order to order save list successful');
+        clearField();
       },
 
       getProductProcess: function (process) {

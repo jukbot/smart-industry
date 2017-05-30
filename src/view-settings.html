@@ -17,7 +17,7 @@
 
       @media (min-width: 769px) and (max-width: 1024px) {
          :host {
-          --app-grid-columns: 3;
+          --app-grid-columns: 2;
         }
       }
 
@@ -35,6 +35,7 @@
 
       .btn {
         margin-top: 10px;
+        width: 100%;
       }
 
       .upload-bar {
@@ -47,6 +48,7 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+    <firebase-query app-name="smart-mes" id="appData" path="/product/" data="{{data}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appEmailNotification" path="/metadata/appEmailNotification" data="{{emailnotification}}"></firebase-document>
@@ -92,7 +94,8 @@
         <div class="card">
           <h1>{{localize('backup-settings')}}</h1>
           <p>Export or Import factory data to backup as a file.</p>
-          <paper-button class="carrot btn" title="Export backup" on-tap="_export-data" raised>{{localize('export-data')}}</paper-button>
+          <a class="link" href="data:[[getData(data)]]" download="data.json" rel="noopenner">
+          <paper-button class="carrot btn" title="Export backup" on-tap="_export-data" raised>{{localize('export-data')}}</paper-button></a>
           <paper-button class="magic btn" title="Import backup" on-tap="_import-data" raised>{{localize('import-data')}}</paper-button>
           <paper-toggle-button value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
         </div>
@@ -172,6 +175,7 @@
             ]
           }
         },
+        data: Object,
         user: Object,
         userData: Object,
         notification: Object,
@@ -185,6 +189,10 @@
 
       attached() {
         this.loadResources(this.resolveUrl('../data/locales.json'));
+      },
+
+      getData(data) {
+        return "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
       },
 
       _changeLanguage() {

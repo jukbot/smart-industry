@@ -135,6 +135,9 @@
         color: orangered;
       }
 
+      .late {
+        color: red;
+      }
       #priorityTypeSelector {
         margin-top: 20px;
       }
@@ -155,8 +158,7 @@
     </style>
 
     <firebase-query app-name="smart-mes" id="customerQuery" path="/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
-    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_delivery" order-by-value="true"
-      db="{{test}}" data="{{orderData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_delivery" order-by-value="true" data="{{orderData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" data="{{stationData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="number" data="{{machineData}}"></firebase-query>
@@ -165,17 +167,20 @@
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
 
+    <app-indexeddb-mirror key="orderDataCache" data="{{orderData}}" persisted-data="{{persistedOrderData}}"></app-indexeddb-mirror>
+        
     <ul class="app-grid">
       <li>
         <div class="card">
           <h1>Orders Table</h1>
           <!-- <h3>Current Jobs Priority: <span class="priorityType">[[factoryStandard.priority]]</span></h3> -->
           <h2>Next Reschedule Date: [[getNextInterval(factoryStandard.start_interval, factoryStandard.interval)]]</h2>
+          <h2>Reschedule Interval: [[factoryStandard.interval]] days</h2>
           <div>
             <paper-button raised class="chilli priority-btn" on-tap="reschedule" style="margin-bottom: 10px;">Reschedule</paper-button>
             <paper-button raised class="dark priority-btn" on-tap="togglePriority" style="margin-bottom: 10px;">Clear Order</paper-button>
           </div>
-          <vaadin-grid id="orderTable" aria-label="Orders Table" items="[[orderData]]">
+          <vaadin-grid id="orderTable" aria-label="Orders Table" items="[[persistedOrderData]]">
 
             <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
               <template class="header">
@@ -194,7 +199,7 @@
               </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column flex="1">
+            <vaadin-grid-column flex="2">
               <template class="header">
                 <div class="cell right">Product</div>
               </template>
@@ -266,7 +271,7 @@
                 <div class="cell right last">Priority</div>
               </template>
               <template>
-                <div class="cell right last">EDD</div>
+                <div class="cell right last">[[getOrderPriority(item.order_delivery)]]</div>
               </template>
             </vaadin-grid-column>
 
@@ -275,7 +280,18 @@
                 <div class="cell right last">Status</div>
               </template>
               <template>
-                <div class="cell right last">[[getOrderStatus(item.order_delivery)]]</div>
+                <div class="cell right last status [[getOrderStatus(item.order_delivery)]]">[[getOrderStatus(item.order_delivery)]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column flex="1">
+              <template class="header">
+                <div class="cell right last">Edit</div>
+              </template>
+              <template>
+                <div class="cell right last">
+                  <paper-icon-button on-tap="editOrder" order="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                </div>
               </template>
             </vaadin-grid-column>
 
@@ -292,11 +308,12 @@
           </vaadin-grid>
         </div>
       </li>
-
       <li>
         <div class="card">
-          <h1>Order 1 Schedule</h1>
-          <vaadin-grid id="orderTable" aria-label="Station Table" items="[[orderData]]">
+         <vaadin-combo-box label="Order no." name="order" items="[[orderData]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no"
+                selected-item='{{selectOrder}}' required always-float-label></vaadin-combo-box>
+          <h1>Order [[selectOrder.order_no]] Schedule</h1>
+          <vaadin-grid id="orderTable" aria-label="Station Table" items="[[selectOrder]]">
             <vaadin-grid-column width="4em" flex="0">
               <template class="header">
                 <div class="cell right last">Order</div>
@@ -333,7 +350,7 @@
                 <div class="cell right last">Duration (Hrs.)</div>
               </template>
               <template>
-                <div class="cell numeric right last">[[getDeliveryDate(item.order_delivery)]]</div>
+                <div class="cell numeric right last">[[item.order_duration]]</div>
               </template>
             </vaadin-grid-column>
 
@@ -342,7 +359,7 @@
                 <div class="cell right last">Workload</div>
               </template>
               <template>
-                <div class="cell numeric right last">[[getWorkLoad(item.order_product_part, item.order_quantity)]] [[item.order_duration]]</div>
+                <div class="cell numeric right last">[[item.order_duration]]</div>
               </template>
             </vaadin-grid-column>
 
@@ -351,7 +368,7 @@
                 <div class="cell right last">Machines Used</div>
               </template>
               <template>
-                <div class="cell right last">[[getMachineUsed(1,item.order_product_part)]]</div>
+                <div class="cell right last">4/4</div>
               </template>
             </vaadin-grid-column>
 
@@ -386,7 +403,7 @@
       </li>
       <li>
         <div class="card">
-          <h1>Daily Jobs Production Scheduling of [[today]]</h1>
+          <h1>Daily Jobs Production Scheduling of [[today]]</h1>[[test]]
           <h2>Operation Condition: [[getOpTime(factoryOperation.op_end,factoryOperation.op_start)]] hrs.</h2>
           <vaadin-combo-box style="width: 300px;" label="Select order no" name="order" items="[[orderData]]" id="orderSelector" item-label-path="order_no"
             item-value-path="order_no" selected-item='{{o}}' always-float-label></vaadin-combo-box>
@@ -440,6 +457,7 @@
   <script>
     Polymer({
       is: 'view-plan-scheduling',
+      test: String,
       properties: {
         productData: {
           type: Object
@@ -530,13 +548,34 @@
       },
 
       getOrderStatus(order_delivery) {
-        //TEMP MUST CHANGE THIS
         let current_timestamp = Math.floor(Date.now() / 1000);
         if (order_delivery - current_timestamp < 0) {
           return "late";
         } else {
           return "waiting";
         }
+      },
+
+      getOrderPriority(order_delivery) {
+        let samedate;
+        return "EDD";
+        // for (let i in  orderData) {
+        //     if (Math.abs(order_delivery - this.orderData[i + 1].order_delivery) < 86400) {
+        //       return "SPT";
+        //     } else {
+        //       return "EDD";
+        //     }
+        // }
+      },
+
+      getSameDeliveryDate(order) {
+        let count = 0;
+        for(let i in order) {
+          if(Math.abs(this.orderData[i].order_delivery) - this.orderData[i + 1].order_delivery < 86400) {
+            count++;
+          } else {}
+        }
+        return count;
       },
       minutesToStr(minute) {
         let sign = '';
@@ -668,8 +707,7 @@
               cycleTime += this.getSumCycleTime(part[i].cycle, amount);
               setupTime += this.getSumSetupTime(part[i].setup);
            }
-          console.log("Cycle " + cycleTime);
-          console.log("Setup " + setupTime);
+
         let workload = Math.ceil((cycleTime) + setupTime);
         //console.log("WL " + workload);
         // workload/no of machine
@@ -677,7 +715,7 @@
       },
 
       getMachineUsed(station, part) {
-        return 3;
+        return 4;
       },
 
       getSumCycleTime(cycle, amount) {
@@ -698,28 +736,28 @@
         return setupTime;
       },
 
-      togglePriority: function () {
+      togglePriority() {
         this.$.changePriorityDialog.open();
       },
 
-      orderType: function (type) {
+      orderType(type) {
         if (type === "SPT") {
           return "order_duration"
         } else if (type === "EDD") {
           return "order_delivery"
         }
       },
-      savePriority: function () {
+      savePriority() {
         let value = this.$.priorityTypeSelector.selected;
         this.set('factoryStandard.priority', value);
       },
-      test: function () {
+
+      test() {
         var now = new Date;
         var utc_timestamp = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
           now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
         console.log(utc_timestamp);
         return utc_timestamp;
-
       }
     });
   </script>
