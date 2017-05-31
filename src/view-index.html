@@ -88,7 +88,7 @@
       }
 
       .main-title {
-        font-size: 2.75rem;
+        font-size: 3.50rem;
         line-height: normal;
         text-align: center;
       }
@@ -182,7 +182,7 @@
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed>
-      <app-drawer hidden$="[[!signedIn]]" id="drawer" role="menu" slot="drawer" swipe-open>
+      <app-drawer hidden$="[[!signedIn]]" opened="{{drawerOpened}}" id="drawer" role="menu" slot="drawer" tabindex="0" swipe-open>
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
         <h1 title="IMES" class="main-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -219,7 +219,7 @@
       <app-header-layout fullbleed has-scrolling-region>
         <app-header hidden$="[[!signedIn]]" id="header" slot="header" role="rowheader" condenses fixed>
           <app-toolbar role="toolbar">
-            <paper-icon-button icon="vaadin:menu" alt="menu" aria-label="sidebar menu" drawer-toggle></paper-icon-button>
+            <paper-icon-button icon="vaadin:menu" alt="menu" on-tap="_toggleDrawer" aria-label="sidebar menu" drawer-toggle></paper-icon-button>
             <h2 class="page-title" main-title>{{localize(page)}}</h2>
             <div hidden$="[[!user]]">
               <h2 class="display-name" hidden$="{{!wideLayout}}">[[user.displayName]]</h2>
@@ -227,7 +227,7 @@
             <paper-menu-button dynamic-align>
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-listbox class="dropdown-content">
-                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible">
+                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" on-iron-activate="_drawerSelected">
                   <a name="help" role="link" href="https://github.com/jukbot/smart-industry" rel="noopener" target="_blank">
                     <paper-icon-item class="menu-item" name="help">
                       <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
@@ -306,6 +306,7 @@
         statusKnown: Object,
         metadata: Object,
         notification: Boolean,
+        drawerOpened: Boolean
       },
 
       observers: [
@@ -330,6 +331,8 @@
       },
 
       ready() {
+         // Custom elements polyfill safe way to indicate an element has been upgraded.
+        this.removeAttribute('unresolved');
         // If the path is blank, redirect to /
         if (this.route.path === undefined) {
           this.set('route.path', '/');
@@ -399,6 +402,7 @@
       _routePageChanged(page) {
         if (page === undefined) return;
         this.page = page || 'dashboard';
+        this.drawerOpened = false;
       },
 
       _pageChanged(page) {
@@ -408,6 +412,10 @@
           null,
           this._showPage404.bind(this),
           true);
+      },
+
+      _toggleDrawer() {
+          this.drawerOpened = !this.drawerOpened;
       },
 
       _showPage404() {
