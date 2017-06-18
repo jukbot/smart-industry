@@ -166,9 +166,9 @@
               placeholder="Password" auto-validate></paper-input>
             <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
             <paper-checkbox class="login-remember" tabindex="0" name="remember" checked="{{remember}}" noink>Keep me signed in</paper-checkbox>
-            <paper-button raised class="chilli authen-btn" on-tap="_login" role="button" hidden$="[[user]]">Log in</paper-button>
-            <a href="javascript:void(0);" on-tap="_showReset" class="login-forget">Can’t access your account?</a>
-            <a href="javascript:void(0);" on-tap="_showRegister" class="login-register">New user?</a>
+            <paper-button raised class="chilli authen-btn" on-tap="_login" role="button" hidden$="[[user]]">Sign in</paper-button>
+            <a href="javascript:void(0);" on-tap="_showReset" class="login-forget">Forgot Password?</a>
+            <a href="javascript:void(0);" on-tap="_showRegister" class="login-register">Don’t have an account? Get one here.</a>
           </form>
           <form hidden$="[[!register]]" class="register-form" on-submit="_register">
             <div class="form-title">
@@ -176,20 +176,16 @@
             </div>
             <paper-input class="register-input" name="e-mail" id="register_email" type="email" maxlength="50" placeholder="E-mail" autofocus
               auto-validate></paper-input>
-            <paper-input class="register-input" name="display-name" id="register_name" type="text" maxlength="50" placeholder="Display Name"
+            <paper-input class="register-input" name="new-password" id="register_passwd" type="password" maxlength="30" placeholder="New Password"
+              auto-validate></paper-input>
+            <paper-input class="register-input" name="full-name" id="register_name" type="text" maxlength="50" placeholder="Full Name"
               autofocus auto-validate></paper-input>
-            <paper-input class="register-input" name="first-name" id="register_firstname" type="text" maxlength="30" placeholder="First Name"
-              autofocus auto-validate></paper-input>
-            <paper-input class="register-input" name="last-name" id="register_lastname" type="text" maxlength="30" placeholder="Last Name"
+            <paper-input class="register-input" name="organization" id="register_organization" type="text" maxlength="50" placeholder="Organization"
               autofocus auto-validate></paper-input>
             <paper-input class="register-input" name="phone-number" id="register_phone" type="text" maxlength="15" placeholder="Phone Number"
               autofocus auto-validate></paper-input>
-            <paper-input class="register-input" name="new-password" id="new_passwd" type="password" maxlength="50" placeholder="New Password"
-              auto-validate></paper-input>
-            <paper-input class="register-input" name="confirm-password" id="confirm_passwd" type="password" maxlength="50" placeholder="Confirm Password"
-              auto-validate></paper-input>
-            <paper-button raised class="smart authen-btn" on-tap="_register" role="button">Register</paper-button>
-            <a href="javascript:void(0);" on-tap="_hideRegister" class="login-register">Already have account? Go to login</a>
+            <paper-button raised class="smart authen-btn" on-tap="_register" role="button">Send Confirmation</paper-button>
+            <a href="javascript:void(0);" on-tap="_hideRegister" class="login-register">Already have account? Sign in</a>
           </form>
           <form hidden$="[[!reset]]" class="reset-form" on-submit="_resetPassword">
             <div class="form-title">
@@ -198,7 +194,7 @@
             <paper-input class="login-input" name="e-mail" id="resetEmail" type="email" maxlength="50" auto-complete="email" placeholder="E-mail"
               auto-validate></paper-input>
             <paper-button raised class="fancy authen-btn" on-tap="_resetPassword" role="button">Reset Password</paper-button>
-            <a href="javascript:void(0);" on-tap="_hideReset" class="login-forget">Already have account? Go to login</a>
+            <a href="javascript:void(0);" on-tap="_hideReset" class="login-forget">Have an account? Sing in.</a>
           </form>
         </article>
       </div>
@@ -254,16 +250,18 @@
       _register() {
         let email = this.$.register_email.value;
         let name = this.$.register_name.value;
-        let pass = this.$.new_passwd.value;
-        let confirm_pass = this.$.confirm_passwd.value;
-        if (email !== "" && name !== "" && pass !== "" && confirm_pass !== "") {
-          if (pass === confirm_pass) {
+        let pass = this.$.register_passwd.value;
+        let org = this.$.register_organization.value;
+        let pho = this.$.register_phone.value;
+        if (email !== "" && name !== "" && pass !== "" && org !== "" && pho !== "") {
             this.$.auth.createUserWithEmailAndPassword(email, pass)
               .then((response) => {
                 this.$.auth.signInWithEmailAndPassword(email, pass)
                   .then((response) => {
                     this.user.updateProfile({
-                      displayName: name
+                      displayName: name,
+                      phoneNumber: pho,
+                      organization: org
                     });
                     this.user.sendEmailVerification();
                     alert("Register successful. We've sent verification code to your email");
@@ -278,9 +276,6 @@
               .catch((error) => {
                 alert("Register Failed: " + error.message);
               });
-          } else {
-            alert("Confirm password not match");
-          }
         } else {
           alert("Please fill in the form completely.");
         }
