@@ -117,7 +117,7 @@
       <li>
         <div class="card">
           <h1 class="head">Operation Time Left</h1>
-          <h1 class="number" style="font-size: 2.75rem;">[[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</h1>
+          <h1 class="number" style="font-size: 2.75rem;">[[getRemainOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</h1>
           </div>
       </li>
     </ul>
@@ -185,19 +185,19 @@
          }
       },
       
-      getOpTime(end, start) {
-        if(!end || !start) return 0
-        let date = new Date()
-        let current_hour = date.getHours()
-        let current_minute = date.getMinutes()
-        let endtime = end.replace(/\:/g, '.')
-        let starttime = start.replace(/\:/g, '.')
+      getRemainOpTime(end, start) {
+        if(!end || !start) return 0;
+        let date = new Date();
+        let current_hour = date.getHours();
+        let current_minute = date.getMinutes();
         let current = current_hour + "." + current_minute;
-        let timeleft = endtime - parseFloat(current)
+        let endtime = end.replace(/\:/g, '.');
+        let starttime = start.replace(/\:/g, '.');
+        let timeleft = endtime - parseFloat(current);
         if(parseFloat(current) < starttime || parseFloat(current) > endtime) {
-            return "STOPPED"
+            return "Operation Ended";
         } else {
-            return timeleft.toFixed(2) + " Hrs."
+            return timeleft.toFixed(2) + " Hrs.";
         } 
       },
 

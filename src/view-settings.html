@@ -204,7 +204,7 @@
       },
 
       _changeAutoBackup() {
-        this.autobackup = this.$.autobackupSwitch.checked ? 'true' : 'false';
+        this.autobackup = this.$.autobackupSwitch.checked ? true : false;
         if (this.$.autobackupSwitch.checked) {
           this.alertText = 'notification-alert-on';
           this.$.toastAlert.open();
@@ -215,7 +215,7 @@
       },
 
       _changeNotification() {
-        this.notification = this.$.webNotificationSwitch.checked ? 'true' : 'false';
+        this.notification = this.$.webNotificationSwitch.checked ? true : false;
         if (this.$.webNotificationSwitch.checked) {
           this.alertText = 'notification-alert-on';
           this.$.toastAlert.open();
@@ -226,7 +226,7 @@
       },
 
       _changeEmailNotification() {
-        this.emailnotification = this.$.emailNotificationSwitch.checked ? 'true' : 'false';
+        this.emailnotification = this.$.emailNotificationSwitch.checked ? true : false;
         if (this.$.emailNotificationSwitch.checked) {
           this.alertText = 'notification-alert-on';
           this.$.toastAlert.open();

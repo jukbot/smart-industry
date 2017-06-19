@@ -182,7 +182,7 @@
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed>
-      <app-drawer hidden$="[[!signedIn]]" opened="{{drawerOpened}}" id="drawer" role="menu" slot="drawer" tabindex="0" swipe-open>
+      <app-drawer hidden$="[[!signedIn]]" opened="{{drawerOpened}}" id="drawer" role="menu" slot="drawer" tabindex="0" no-focus-trap="true" swipe-open>
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
         <h1 title="IMES" class="main-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -343,7 +343,7 @@
         if (!authen) {
           // this.$.drawer.hidden = true;
           // this.$.header.hidden = true;
-          // this.$.layout.resetLayout();
+          this.$.layout.resetLayout();
           this.set('route.path', 'login');
         }
       },
@@ -390,8 +390,7 @@
       },
 
       _onLayoutChanged(wide) {
-        const drawer = this.$.drawer;
-        if (wide && drawer.opened) drawer.opened = false;
+        if (wide && this.$.drawer.opened) this.$.drawer.opened = false;
         this.$.layout.resetLayout();
       },
 
@@ -414,7 +413,7 @@
       },
 
       _toggleDrawer() {
-          this.drawerOpened = !this.drawerOpened;
+        this.drawerOpened = !this.drawerOpened;
       },
 
       _showPage404() {
