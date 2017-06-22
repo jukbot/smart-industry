@@ -264,7 +264,7 @@
           <view-tracking name="tracking" route="{{subroute}}" hidden$="[[!signedIn]]"></view-tracking>
           <view-settings name="settings" route="{{subroute}}" hidden$="[[!signedIn]]"></view-settings>
           <view-404 name="404" route="{{subroute}}"></view-404>
-          <view-login name="login" route="{{subroute}}" hidden$="[[signedIn]]"></view-login>
+          <view-login name="login" route="{{subroute}}"></view-login>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -320,31 +320,31 @@
 
       attached() {
         this.async(function () {
-        if (!this.route.path) {
-            this.set('route.path', '/');
+          if (this.authen && this.route.path === '/login') {
+            this.set('route.path', '/dashboard');
           }
         });
-        if (this.authen && this.route.path === '/login') {
-          this.set('route.path', '/dashboard');
-        }
+        
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
 
       ready() {
          // Custom elements polyfill safe way to indicate an element has been upgraded.
         this.removeAttribute('unresolved');
-        // If the path is blank, redirect to /
+        // If the path is blank, redirect to login
         if (this.route.path === undefined) {
           this.set('route.path', '/');
+        }
+        if (!this.authen) {
+          console.log("User not login");
+          this.page = 'login';
         }
       },
 
       _authenChanged(authen) {
         if (!authen) {
-          // this.$.drawer.hidden = true;
-          // this.$.header.hidden = true;
           this.$.layout.resetLayout();
-          this.set('route.path', 'login');
+          this.page = 'login';
         }
       },
 
