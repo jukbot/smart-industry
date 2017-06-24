@@ -203,7 +203,7 @@
         <div class="center">
           <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button>
         </div>
-        <dom-if if="{{signedIn}}">
+        <dom-if if="[[signedIn]]">
           <div class="profile" role="group">
             <img class="profile-image" src$="[[getUserImage(user.photoURL)]]" alt="user photo">
             <p>[[persistedUserData.displayName]]</p>
@@ -264,7 +264,7 @@
           <view-tracking name="tracking" route="{{subroute}}" hidden$="[[!signedIn]]"></view-tracking>
           <view-settings name="settings" route="{{subroute}}" hidden$="[[!signedIn]]"></view-settings>
           <view-404 name="404" route="{{subroute}}"></view-404>
-          <view-login name="login" route="{{subroute}}"></view-login>
+          <view-login name="login" route="{{subroute}}" hidden$="[[signedIn]]"></view-login>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -295,7 +295,6 @@
         },
         signedIn: {
           type: Boolean,
-          value: false,
           observer: '_signedInChanged'
         },
         alertText: String,
@@ -324,7 +323,6 @@
             this.set('route.path', '/dashboard');
           }
         });
-        
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
 
@@ -333,11 +331,8 @@
         this.removeAttribute('unresolved');
         // If the path is blank, redirect to login
         if (this.route.path === undefined) {
-          this.set('route.path', '/');
-        }
-        if (!this.authen) {
-          console.log("User not login");
-          this.page = 'login';
+          this.set('route.path', '/dashboard');
+          this.page = 'dashboard';
         }
       },
 
@@ -351,7 +346,14 @@
       _signedInChanged(signedIn) {
         this.$.drawer.hidden = !signedIn;
         this.$.header.hidden = !signedIn;
-        this.$.layout.resetLayout();
+        console.log(signedIn);
+         if (!signedIn) {
+          this.$.layout.resetLayout();
+          this.page = 'login';
+        } else {
+          this.$.layout.resetLayout();
+          this.page = 'dashboard';
+        }
       },
 
       getOnlineStatus(status) {

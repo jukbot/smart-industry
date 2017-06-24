@@ -534,65 +534,88 @@
         this.$.productRaw.value = "";
       },
 
-      getProductProcess: function (process) {
+      getProductProcess(process) {
+        if(!process) {
+          return 0;
+        }
         return process.split(',').join(' → ');
       },
 
-      materialProduct: function (material) {
+      materialProduct(material) {
+        console.log(!material);
+        if(typeof material === "undefined") {
+          return "No data";
+        }
         let praw = [];
-        for (let key in material) {
-          praw[key] = material[key].type;
+        for (i = material.length; i--;) {
+          praw[i] = material[i].type;  
         }
         return praw;
       },
 
-      sizeProduct: function (size) {
+      sizeProduct(size) {
+        if(typeof size === "undefined") {
+          return 0;
+        }
         let psize = [];
         let cycle_size = [];
-        for (let key in size) {
-          psize[key] = size[key].name;
-          cycle_size[key] = size[key].cycle;
-        };
+        for (i = size.length; i--;) {
+          psize[i] = size[i].name;
+          cycle_size[i] = size[i].cycle;
+        }
         return psize;
       },
 
       getCycleTime(cycle) {
-        if (!cycle) return 0;
+        if(typeof cycle === "undefined") {
+          return 0;
+        }
         let processTime = 0;
-        for (let i in cycle) {
-          processTime += cycle[i];
-        };
+        for (i = cycle.length; i--;) {
+           processTime += cycle[i];
+        }
         return processTime.toFixed(1) + ",";
       },
 
       getSetupTime(setup) {
+        if(typeof setup === "undefined") {
+          return 0;
+        }
         if (!setup) return 0;
         let setupTime = 0;
-        for (let i in setup) {
+         for (i = setup.length; i--;) {
           setupTime += setup[i];
-        };
+        }
         return setupTime.toFixed(1) + ",";
       },
 
       getSumCycleTime(cycle) {
-        if (!cycle) return 0;
+        if(typeof cycle === "undefined") {
+          return 0;
+        }
         let processTime = 0;
-        for (let i in cycle) {
+        for (i = cycle.length; i--;) {
           processTime += cycle[i];
-        };
+        }
         return processTime.toFixed(2);
       },
 
       getSumSetupTime(setup) {
+        if(typeof setup === "undefined") {
+          return 0;
+        }
         if (!setup) return 0;
         let setupTime = 0;
-        for (let i in setup) {
+        for (i = setup.length; i--;) {
           setupTime += setup[i];
-        };
+        }
         return setupTime;
       },
 
       getSumProcessTime(setup, cycle) {
+        if(typeof setup === "undefined" || typeof cycle === "undefined") {
+          return 0;
+        }
         if (!cycle || !setup) return 0;
         let sum_cycle = this.getSumCycleTime(cycle);
         let sum_setup = this.getSumSetupTime(setup);
@@ -601,7 +624,9 @@
       },
 
       getSumProductTime(part) {
-        if (!part) return 0;
+        if(typeof part === "undefined") {
+          return 0;
+        }
         let sum = 0;
         let setup = 0;
         let partTime = 0;
@@ -621,8 +646,7 @@
         let data = e.target.getAttribute('data');
         this.fire('toast', data);
         // this.dispatchEvent(new CustomEvent('toast', {detail: {data: true}}));
-      },
-
+      }
     });
   </script>
 </dom-module>

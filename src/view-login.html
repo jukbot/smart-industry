@@ -174,13 +174,13 @@
             <div class="form-title">
               <h2>User Register</h2>
             </div>
-            <paper-input class="register-input" name="e-mail" id="register_email" type="email" maxlength="50" placeholder="E-mail" autofocus
+            <paper-input class="register-input" name="e-mail" id="register_email" type="email" maxlength="40" placeholder="E-mail" autofocus
               auto-validate></paper-input>
             <paper-input class="register-input" name="new-password" id="register_passwd" type="password" maxlength="30" placeholder="New Password"
-              auto-validate></paper-input>
-            <paper-input class="register-input" name="full-name" id="register_name" type="text" maxlength="50" placeholder="Full Name"
+              auto-auto-validate></paper-input>
+            <paper-input class="register-input" name="full-name" id="register_name" type="text" maxlength="40" placeholder="Full Name"
               autofocus auto-validate></paper-input>
-            <paper-input class="register-input" name="organization" id="register_organization" type="text" maxlength="50" placeholder="Organization"
+            <paper-input class="register-input" name="organization" id="register_organization" type="text" maxlength="40" placeholder="Organization"
               autofocus auto-validate></paper-input>
             <paper-input class="register-input" name="phone-number" id="register_phone" type="text" maxlength="15" placeholder="Phone Number"
               autofocus auto-validate></paper-input>
@@ -191,10 +191,10 @@
             <div class="form-title">
               <h2>Reset Your Password</h2>
             </div>
-            <paper-input class="login-input" name="e-mail" id="resetEmail" type="email" maxlength="50" auto-complete="email" placeholder="E-mail"
-              auto-validate></paper-input>
+            <paper-input class="login-input" name="e-mail" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail"
+              auto-focus auto-validate></paper-input>
             <paper-button raised class="fancy authen-btn" on-tap="_resetPassword" role="button">Reset Password</paper-button>
-            <a href="javascript:void(0);" on-tap="_hideReset" class="login-forget">Have an account? Sing in.</a>
+            <a href="javascript:void(0);" rel="noopenner" on-tap="_hideReset" class="login-forget">Have an account? Sign in.</a>
           </form>
         </article>
       </div>
@@ -243,7 +243,7 @@
               alert("Authenticate Failed: " + error.message);
             });
         } else {
-          alert("Email or Password cannot leave blank");
+            alert("Email or Password cannot leave blank");
         }
       },
 

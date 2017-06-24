@@ -202,11 +202,11 @@
         this.$$('#edit_'+key).open();  
       },
       removeMachine(e) {
-          if (confirm("Delete this machine ?") == true) { 
+        if (confirm("Delete this machine ?") == true) { 
            let key = e.currentTarget.machine.$key;
            this.$.machineQuery.ref.child(key).remove();
         if(this.notification) {
-        this.$.toastDeleteStation.open(); 
+           this.$.toastDeleteStation.open(); 
          }
         } else {}
       },
