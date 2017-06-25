@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
 <head>
     <meta charset="UTF-8">
     <title>IMES</title>
@@ -33,8 +33,21 @@
         // Load and register pre-caching Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
-                navigator.serviceWorker.register(baseUrl + 'service-worker.js');
+                navigator.serviceWorker.register(baseUrl + 'service-worker.js')   
+                .then(() => {
+                    console.info("%cService Worker Registered", "color: green;");
+                }).catch((err) => {
+                    console.info("%cService Worker Register Failed: ", err);
+                });
+                navigator.serviceWorker.ready
+                .then(() => {
+                console.info("%cService Worker Ready", "color: green;");
+                }).catch((err) => {
+                    console.info("%cService Worker Register Failed: ", err);
+                });
             });
+           
+      //  navigator.serviceWorker.register('/sw.js', { scope: '/' })
         }
     </script>
     <link rel="import" href="src/view-index.html">
@@ -205,11 +218,8 @@
             }
         })();
     </script>
-    <noscript>
-        Please enable JavaScript to view this website.
-    </noscript>
-    <script async src="https://www.google-analytics.com/analytics.js"></script>
-    <script>
+    <noscript>Please enable JavaScript to view this website. </noscript>
+    <script async>
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r;
             i[r] = i[r] || function () {
