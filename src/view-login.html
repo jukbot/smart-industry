@@ -281,6 +281,30 @@
         }
       },
 
+//TEMP PASTE 
+      createUserWithEmailAndPassword() {
+        this.error = null;
+        this.$.auth.createUserWithEmailAndPassword(this.email, this.password);
+        this.email = null;
+        this.password = null;
+        this.$.user.ref().set({
+          name: user.displayName,
+          email: user.email,
+          photoURL: downloadURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
+          description: "No description for this user",
+          facebook: "",
+          twitter: "",
+
+        }).then(function () {
+          this.$.uploadImageFile.files[0] = null;
+          this.alertText = 'notification-save-settings';
+          this.$.toastAlert.open();
+        }, function (error) {
+          // An error happened.
+          console.log(error);
+        });
+      },
+
       _showReset() {
         this.reset = true;
         this.login = false;

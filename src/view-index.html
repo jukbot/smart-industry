@@ -62,7 +62,7 @@
 <!-- import shared style and page router -->
 <link rel="import" href="app-language-behavior.html">
 <link rel="import" href="view-login.html">
-<link rel="lazy-import" href="view-settings.html">
+<link rel="import" href="view-settings.html">
 <link rel="lazy-import" href="view-404.html">
 <link rel="lazy-import" href="view-dashboard.html">
 <link rel="lazy-import" href="view-setup.html">
@@ -175,7 +175,6 @@
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
-    <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}" on-message="_fcmMessage" token="{{token}}"></firebase-messaging>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-indexeddb-mirror key="profile" data="{{user}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
@@ -303,7 +302,6 @@
         subroute: Object,
         routeData: Object,
         user: Object,
-        statusKnown: Object,
         metadata: Object,
         notification: Boolean,
         drawerOpened: Boolean,
@@ -328,13 +326,6 @@
       },
 
       ready() {
-        // Requesting notification permission
-        this.$.messaging.requestPermission().then(function() {
-          console.log("Notification permission granted");
-        }, function(err) {
-          console.log("Notification permission denied ", err);
-        });
-        console.log(this.token);
          // Custom elements polyfill safe way to indicate an element has been upgraded.
         this.removeAttribute('unresolved');
         // If the path is blank, redirect to login
@@ -398,7 +389,7 @@
           this.$.toastAlert.open();
         } else {
           this.$.auth.refreshNetworkStatus();
-          this.$.messaging.refreshNetworkStatus();
+         // this.$.messaging.refreshNetworkStatus();
           this.$.appLanguage.refreshNetworkStatus();
           this.$.factoryInformation.refreshNetworkStatus();
         }
@@ -407,10 +398,6 @@
       _layoutChanged(wide) {
         if (wide && this.$.drawer.opened) this.$.drawer.opened = false;
         this.$.layout.resetLayout();
-      },
-
-      _fcmMessage (message) {
-        alert(message);
       },
 
       _drawerSelected() {

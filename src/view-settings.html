@@ -49,6 +49,9 @@
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-query app-name="smart-mes" id="appData" path="/product/" data="{{data}}"></firebase-query>
+    <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
+      on-message="handleMessage" token="{{token}}"></firebase-messaging>
+    <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.id]]/token" data="[[token]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appEmailNotification" path="/metadata/appEmailNotification" data="{{emailnotification}}"></firebase-document>
@@ -74,10 +77,10 @@
           <!--<vaadin-upload id="uploadImageFile" nodrop no-auto max-files="1" accept="image/*"  max-file-size="1000000">
           </vaadin-upload>-->
           <input type="file" accept="image/*" id="uploadImageFile"><br>
-          <paper-button class="chilli btn" on-tap="_deleteProfileImage" title="{{localize('remove-profile-image')}}" raised>{{localize('remove-profile-image')}}</paper-button>
-          <paper-button disabled="[[user.emailVerified]]" class="dark btn" on-tap="_verifyAccount" title="{{localize('verify-account')}}"
+          <paper-button class="chilli btn" on-tap="deleteProfileImage" title="{{localize('remove-profile-image')}}" raised>{{localize('remove-profile-image')}}</paper-button>
+          <paper-button disabled="[[user.emailVerified]]" class="dark btn" on-tap="verifyAccount" title="{{localize('verify-account')}}"
             raised>{{localize('verify-account')}}</paper-button>
-          <paper-button class="magic btn" on-tap="_saveSettings" title="{{localize('save-settings')}}" raised>{{localize('save-settings')}}</paper-button>
+          <paper-button class="magic btn" on-tap="saveSettings" title="{{localize('save-settings')}}" raised>{{localize('save-settings')}}</paper-button>
         </div>
       </li>
       <li>
@@ -95,7 +98,8 @@
           <h1>{{localize('backup-settings')}}</h1>
           <p>Export or Import factory data to backup as a file.</p>
           <a class="link" href="data:[[getData(data)]]" download="data.json" rel="noopenner">
-          <paper-button class="carrot btn" title="Export backup" on-tap="_export-data" raised>{{localize('export-data')}}</paper-button></a>
+            <paper-button class="carrot btn" title="Export backup" on-tap="_export-data" raised>{{localize('export-data')}}</paper-button>
+          </a>
           <paper-button class="magic btn" title="Import backup" on-tap="_import-data" raised>{{localize('import-data')}}</paper-button>
           <paper-toggle-button value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
         </div>
@@ -103,9 +107,10 @@
       <li>
         <div class="card">
           <h1>{{localize('notification-settings')}}</h1>
-          <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" noink> {{localize('notification')}}</paper-toggle-button>
-          <paper-toggle-button value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch" noink>
-            {{localize('email-notification')}}</paper-toggle-button>
+          Token: [[token]]
+          <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" checled="[[token]]"
+            noink> {{localize('notification')}}</paper-toggle-button>
+          <paper-toggle-button value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
         </div>
       </li>
       <li>
@@ -181,6 +186,8 @@
         notification: Object,
         emailnotification: Object,
         autobackup: Object,
+        statusKnown: Object,
+        token: String,
         alertText: String
       },
       behaviors: [
@@ -206,10 +213,10 @@
       _changeAutoBackup() {
         this.autobackup = this.$.autobackupSwitch.checked ? true : false;
         if (this.$.autobackupSwitch.checked) {
-          this.alertText = 'notification-alert-on';
+          this.alertText = 'backup-notification-alert-on';
           this.$.toastAlert.open();
         } else {
-          this.alertText = 'notification-alert-off';
+          this.alertText = 'backup--alert-off';
           this.$.toastAlert.open();
         }
       },
@@ -219,6 +226,13 @@
         if (this.$.webNotificationSwitch.checked) {
           this.alertText = 'notification-alert-on';
           this.$.toastAlert.open();
+          // Requesting notification permission
+          this.$.messaging.requestPermission().then(function () {
+            console.log("Notification permission granted");
+          }, function (err) {
+            console.log("Notification permission denied ", err);
+          });
+          console.log(this.token);
         } else {
           this.alertText = 'notification-alert-off';
           this.$.toastAlert.open();
@@ -228,15 +242,49 @@
       _changeEmailNotification() {
         this.emailnotification = this.$.emailNotificationSwitch.checked ? true : false;
         if (this.$.emailNotificationSwitch.checked) {
-          this.alertText = 'notification-alert-on';
+          this.alertText = 'email-notification-alert-on';
           this.$.toastAlert.open();
         } else {
-          this.alertText = 'notification-alert-off';
+          this.alertText = 'email-notification-alert-off';
           this.$.toastAlert.open();
         }
       },
 
-      _verifyAccount() {
+      _changeAuthen() {
+        let currentpassword = this.$.currentPassword.value;
+        let newPassword = this.$.newPassword.value;
+        let newemail = this.$.userEmail.value;
+        if (newPassword !== "" && currentpassword !== "") {
+          if (this.reauthenAccount(currentpassword)) {
+            this.user.updatePassword(newPassword)
+              .then(() => {
+                alert('Update your password successful, you will need to relogin');
+              })
+              .catch(error => {
+                alert("Error: " + error.message);
+              });
+          } else {
+            alert("Wrong password");
+          }
+        }
+
+        if (newemail !== "") {
+          this.user.updateEmail(newemail)
+            .then(() => {
+              alert('Update your email successful, you will need to relogin');
+            })
+            .catch(error => {
+              alert("Error: " + error.message);
+            });
+        }
+      },
+
+      handleMessage(message) {
+        console.log(message);
+        console.log('message received', arguments);
+      },
+
+      verifyAccount() {
         this.user.sendEmailVerification()
           .then(() => {
             alert('Verification is send to your email');
@@ -246,7 +294,7 @@
           });
       },
 
-      _saveSettings() {
+      saveSettings() {
         let displayname = this.$.displayName.value;
         if (displayname !== "") {
           this.user.updateProfile({
@@ -303,7 +351,7 @@
           });
       },
 
-      _deleteProfileImage() {
+      deleteProfileImage() {
         if (this.user.photoURL !== "") {
           if (confirm("Delete profile image ?") == true) {
             let storageRef = firebase.storage().ref("user/" + this.user.uid + "/profile/");
@@ -319,58 +367,6 @@
           } else {}
         } else {
           alert("No image profile to delete");
-        }
-      },
-
-      _createUserWithEmailAndPassword() {
-        this.error = null;
-        this.$.auth.createUserWithEmailAndPassword(this.email, this.password);
-        this.email = null;
-        this.password = null;
-        this.$.user.ref().set({
-          name: user.displayName,
-          email: user.email,
-          photoURL: downloadURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
-          description: "No description for this user",
-          facebook: "",
-          twitter: "",
-
-        }).then(function () {
-          this.$.uploadImageFile.files[0] = null;
-          this.alertText = 'notification-save-settings';
-          this.$.toastAlert.open();
-        }, function (error) {
-          // An error happened.
-          console.log(error);
-        });
-      },
-
-      _changeAuthen() {
-        let currentpassword = this.$.currentPassword.value;
-        let newPassword = this.$.newPassword.value;
-        let newemail = this.$.userEmail.value;
-        if (newPassword !== "" && currentpassword !== "") {
-          if (this.reauthenAccount(currentpassword)) {
-            this.user.updatePassword(newPassword)
-              .then(() => {
-                alert('Update your password successful, you will need to relogin');
-              })
-              .catch(error => {
-                alert("Error: " + error.message);
-              });
-          } else {
-            alert("Wrong password");
-          }
-        }
-
-        if (newemail !== "") {
-          this.user.updateEmail(newemail)
-            .then(() => {
-              alert('Update your email successful, you will need to relogin');
-            })
-            .catch(error => {
-              alert("Error: " + error.message);
-            });
         }
       },
 
