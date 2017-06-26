@@ -243,7 +243,7 @@
               alert("Authenticate Failed: " + error.message);
             });
         } else {
-            alert("Email or Password cannot leave blank");
+          alert("Email or Password cannot leave blank");
         }
       },
 
@@ -254,34 +254,34 @@
         let org = this.$.register_organization.value;
         let pho = this.$.register_phone.value;
         if (email !== "" && name !== "" && pass !== "" && org !== "" && pho !== "") {
-            this.$.auth.createUserWithEmailAndPassword(email, pass)
-              .then((response) => {
-                this.$.auth.signInWithEmailAndPassword(email, pass)
-                  .then((response) => {
-                    this.user.updateProfile({
-                      displayName: name,
-                      phoneNumber: pho,
-                      organization: org
-                    });
-                    this.user.sendEmailVerification();
-                    alert("Register successful. We've sent verification code to your email");
-                    // Signout Action
-                    this.$.auth.signOut();
-                    this.register = false;
-                    this.login = true;
-                  }).catch((error) => {
-                    alert("Authenticate Failed: " + error.message);
+          this.$.auth.createUserWithEmailAndPassword(email, pass)
+            .then((response) => {
+              this.$.auth.signInWithEmailAndPassword(email, pass)
+                .then((response) => {
+                  this.user.updateProfile({
+                    displayName: name,
+                    phoneNumber: pho,
+                    organization: org
                   });
-              })
-              .catch((error) => {
-                alert("Register Failed: " + error.message);
-              });
+                  this.user.sendEmailVerification();
+                  alert("Register successful. We've sent verification code to your email");
+                  // Signout Action
+                  this.$.auth.signOut();
+                  this.register = false;
+                  this.login = true;
+                }).catch((error) => {
+                  alert("Authenticate Failed: " + error.message);
+                });
+            })
+            .catch((error) => {
+              alert("Register Failed: " + error.message);
+            });
         } else {
           alert("Please fill in the form completely.");
         }
       },
 
-//TEMP PASTE 
+      //TEMP PASTE 
       createUserWithEmailAndPassword() {
         this.error = null;
         this.$.auth.createUserWithEmailAndPassword(this.email, this.password);

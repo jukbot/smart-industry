@@ -182,7 +182,8 @@
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed>
-      <app-drawer hidden$="[[!signedIn]]" opened="{{drawerOpened}}" id="drawer" role="menu" slot="drawer" tabindex="0" no-focus-trap="true" swipe-open>
+      <app-drawer hidden$="[[!signedIn]]" opened="{{drawerOpened}}" id="drawer" role="menu" slot="drawer" tabindex="0" no-focus-trap="true"
+        swipe-open>
         <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
         <h1 title="IMES" class="main-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -227,7 +228,7 @@
             <paper-menu-button dynamic-align>
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-listbox class="dropdown-content">
-                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" on-iron-activate="_drawerSelected">
+                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible">
                   <a name="help" role="link" href="https://github.com/jukbot/smart-industry" rel="noopener" target="_blank">
                     <paper-icon-item class="menu-item" name="help">
                       <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
@@ -326,7 +327,7 @@
       },
 
       ready() {
-         // Custom elements polyfill safe way to indicate an element has been upgraded.
+        // Custom elements polyfill safe way to indicate an element has been upgraded.
         this.removeAttribute('unresolved');
         // If the path is blank, redirect to login
         if (this.route.path === undefined) {
@@ -346,7 +347,7 @@
         this.$.drawer.hidden = !signedIn;
         this.$.header.hidden = !signedIn;
         console.log(signedIn);
-         if (!signedIn) {
+        if (!signedIn) {
           this.$.layout.resetLayout();
           this.page = 'login';
         } else {
@@ -389,7 +390,7 @@
           this.$.toastAlert.open();
         } else {
           this.$.auth.refreshNetworkStatus();
-         // this.$.messaging.refreshNetworkStatus();
+          // this.$.messaging.refreshNetworkStatus();
           this.$.appLanguage.refreshNetworkStatus();
           this.$.factoryInformation.refreshNetworkStatus();
         }
@@ -444,14 +445,14 @@
       },
     });
     //  window.customerElements.define(ViewIndex.is, ViewIndex);
-   /* const config = {
-      apiKey: "AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0",
-      authDomain: "smart-mes.firebaseapp.com",
-      databaseURL: "https://smart-mes.firebaseio.com",
-      storageBucket: "smart-mes.appspot.com",
-      messagingSenderId: "253401775445",
-    };
-    firebase.initializeApp(config);
-    */
+    /* const config = {
+       apiKey: "AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0",
+       authDomain: "smart-mes.firebaseapp.com",
+       databaseURL: "https://smart-mes.firebaseio.com",
+       storageBucket: "smart-mes.appspot.com",
+       messagingSenderId: "253401775445",
+     };
+     firebase.initializeApp(config);
+     */
   </script>
 </dom-module>

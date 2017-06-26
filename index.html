@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-US">
+
 <head>
     <meta charset="UTF-8">
     <title>IMES</title>
@@ -32,24 +33,24 @@
         // Load and register pre-caching Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function () {
-                navigator.serviceWorker.register(baseUrl + 'service-worker.js')   
-                .then(() => {
-                    console.info("%cService Worker Registered", "color: green;");
-                }).catch((err) => {
-                    console.info("%cService Worker Register Failed: ", err);
-                });
+                navigator.serviceWorker.register(baseUrl + 'service-worker.js')
+                    .then(() => {
+                        console.info("%cService Worker Registered", "color: green;");
+                    }).catch((err) => {
+                        console.info("%cService Worker Register Failed: ", err);
+                    });
                 navigator.serviceWorker.ready
-                .then(() => {
-                console.info("%cService Worker Ready", "color: green;");
-                }).catch((err) => {
-                    console.info("%cService Worker Register Failed: ", err);
-                });
+                    .then(() => {
+                        console.info("%cService Worker Ready", "color: green;");
+                    }).catch((err) => {
+                        console.info("%cService Worker Register Failed: ", err);
+                    });
             });
-           
-      //  navigator.serviceWorker.register('/sw.js', { scope: '/' })
+
+            //  navigator.serviceWorker.register('/sw.js', { scope: '/' })
         }
     </script>
-    <link rel="import" href="src/view-index.html">
+    <link rel="import" href="/src/view-index.html">
     <style>
         vaadin-license-box {
             display: none !important;
@@ -189,7 +190,6 @@
                 stroke: #ffa700;
             }
         }
-
     </style>
 </head>
 
@@ -210,7 +210,7 @@
                 'import' in document.createElement('link') &&
                 'content' in document.createElement('template')) {} else {
                 // polyfill the platform!
-                var e = document.createElement('script');
+                const e = document.createElement('script');
                 e.src = 'bower_components/webcomponentsjs/webcomponents-lite.min.js';
                 document.body.appendChild(e);
                 console.info("%cBrowser is using polyfill the platform.", "color: crimson;");
