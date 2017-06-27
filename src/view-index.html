@@ -83,10 +83,6 @@
         display: none !important;
       }
 
-      .menu-item {
-        min-width: 120px;
-      }
-
       .main-title {
         font-size: 3.50rem;
         line-height: normal;
@@ -198,6 +194,12 @@
               <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
             <a name="tracking" role="link " href="/tracking" rel="track" title="Track">
               <paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
+            <a name="help" role="link" href="/help" rel="help" title="Help">
+              <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
+            </a>
+            <a name="settings" role="link" href="/settings" rel="settings" title="Settings">
+              <paper-icon-button icon="vaadin:cog"></paper-icon-button> {{localize('settings')}}
+            </a>
           </iron-selector>
         </nav>
         <div class="sidebar-menu-line" role="separator"></div>
@@ -226,39 +228,6 @@
             <div hidden$="[[!user]]">
               <h2 class="display-name" hidden$="{{!wideLayout}}">[[user.displayName]]</h2>
             </div>
-            <paper-menu-button vertical-align="top" horizontal-align="right" focused="false" ignore-select="true" close-on-activate="true">
-              <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
-              <paper-listbox class="dropdown-content">
-                <nav>
-                  <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404">
-                    <a name="help" role="link" href="https://github.com/jukbot/smart-industry" rel="noopener" target="_blank">
-                      <paper-icon-item class="menu-item" name="help">
-                        <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
-                        {{localize('help')}}
-                      </paper-icon-item>
-                    </a>
-                    <a name="about" role="link" rel="about" href="/about">
-                      <paper-icon-item class="menu-item" name="about">
-                        <iron-icon icon="vaadin:info-circle" alt="about" item-icon></iron-icon>
-                        {{localize('about-software')}}
-                      </paper-icon-item>
-                    </a>
-                    <a name="settings" role="link" rel="settings" href="/settings">
-                      <paper-icon-item class="menu-item" name="settings">
-                        <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
-                        {{localize('settings')}}
-                      </paper-icon-item>
-                    </a>
-                    <a name="login" role="link" rel="logout" href="/login">
-                      <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
-                        <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
-                        {{localize('logout')}}
-                      </paper-icon-item>
-                    </a>
-                  </iron-selector>
-                </nav>
-              </paper-listbox>
-            </paper-menu-button>
           </app-toolbar>
         </app-header>
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
