@@ -236,7 +236,7 @@
             .then((response) => {
               this.authen = true;
               this.async(function () {
-                this.set('route.path', '../dashboard');
+                this.set('route.path', '../');
               }, 500);
             })
             .catch((error) => {

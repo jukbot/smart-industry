@@ -63,11 +63,11 @@
 <link rel="import" href="app-language-behavior.html">
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-settings.html">
-<link rel="lazy-import" href="view-404.html">
-<link rel="lazy-import" href="view-dashboard.html">
-<link rel="lazy-import" href="view-setup.html">
-<link rel="lazy-import" href="view-planning.html">
-<link rel="lazy-import" href="view-tracking.html">
+<link rel="import" href="view-404.html">
+<link rel="import" href="view-dashboard.html">
+<link rel="import" href="view-setup.html">
+<link rel="import" href="view-planning.html">
+<link rel="import" href="view-tracking.html">
 <link rel="import" href="shared-styles.html">
 <dom-module id="view-index">
   <template>
@@ -214,6 +214,7 @@
             <p>[[persistedMetaData.appName]]</p>
             <p>{{localize('version')}} [[persistedMetaData.appVersion]]</p>
             <p>{{localize('developed-by')}} [[persistedMetaData.appDeveloper]]</p>
+            [[route.path]]
           </div>
         </dom-if>
       </app-drawer>
@@ -225,35 +226,37 @@
             <div hidden$="[[!user]]">
               <h2 class="display-name" hidden$="{{!wideLayout}}">[[user.displayName]]</h2>
             </div>
-            <paper-menu-button dynamic-align>
+            <paper-menu-button vertical-align="top" horizontal-align="right" focused="false" ignore-select="true" close-on-activate="true">
               <paper-icon-button icon="vaadin:user" class="account-btn dropdown-trigger" alt="account"></paper-icon-button>
               <paper-listbox class="dropdown-content">
-                <iron-selector selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible">
-                  <a name="help" role="link" href="https://github.com/jukbot/smart-industry" rel="noopener" target="_blank">
-                    <paper-icon-item class="menu-item" name="help">
-                      <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
-                      {{localize('help')}}
-                    </paper-icon-item>
-                  </a>
-                  <a name="about" role="link" rel="about" href="/about">
-                    <paper-icon-item class="menu-item" name="about">
-                      <iron-icon icon="vaadin:info-circle" alt="about" item-icon></iron-icon>
-                      {{localize('about-software')}}
-                    </paper-icon-item>
-                  </a>
-                  <a name="settings" role="link" rel="settings" href="/settings">
-                    <paper-icon-item class="menu-item" name="settings">
-                      <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
-                      {{localize('settings')}}
-                    </paper-icon-item>
-                  </a>
-                  <a name="login" role="link" rel="logout" href="/login">
-                    <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
-                      <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
-                      {{localize('logout')}}
-                    </paper-icon-item>
-                  </a>
-                </iron-selector>
+                <nav>
+                  <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404">
+                    <a name="help" role="link" href="https://github.com/jukbot/smart-industry" rel="noopener" target="_blank">
+                      <paper-icon-item class="menu-item" name="help">
+                        <iron-icon icon="vaadin:question-circle" alt="help" item-icon></iron-icon>
+                        {{localize('help')}}
+                      </paper-icon-item>
+                    </a>
+                    <a name="about" role="link" rel="about" href="/about">
+                      <paper-icon-item class="menu-item" name="about">
+                        <iron-icon icon="vaadin:info-circle" alt="about" item-icon></iron-icon>
+                        {{localize('about-software')}}
+                      </paper-icon-item>
+                    </a>
+                    <a name="settings" role="link" rel="settings" href="/settings">
+                      <paper-icon-item class="menu-item" name="settings">
+                        <iron-icon icon="vaadin:cog" alt="settings" item-icon></iron-icon>
+                        {{localize('settings')}}
+                      </paper-icon-item>
+                    </a>
+                    <a name="login" role="link" rel="logout" href="/login">
+                      <paper-icon-item class="menu-item" name="logout" on-tap="_logout" hidden$="[[!user]]">
+                        <iron-icon icon="vaadin:sign-out" alt="logout" item-icon></iron-icon>
+                        {{localize('logout')}}
+                      </paper-icon-item>
+                    </a>
+                  </iron-selector>
+                </nav>
               </paper-listbox>
             </paper-menu-button>
           </app-toolbar>
@@ -320,7 +323,7 @@
       attached() {
         this.async(function () {
           if (this.authen && this.route.path === '/login') {
-            this.set('route.path', '/dashboard');
+            this.page = 'dashboard';
           }
         });
         this.loadResources(this.resolveUrl('../data/locales.json'));
@@ -331,7 +334,6 @@
         this.removeAttribute('unresolved');
         // If the path is blank, redirect to login
         if (this.route.path === undefined) {
-          this.set('route.path', '/dashboard');
           this.page = 'dashboard';
         }
       },
@@ -339,7 +341,7 @@
       _authenChanged(authen) {
         if (!authen) {
           this.$.layout.resetLayout();
-          this.page = 'login';
+          this.page = 'login;'
         }
       },
 
@@ -377,11 +379,13 @@
       },
 
       getUserImage(url) {
-        if (url) {
-          return url;
-        } else {
-          return "../images/profile/default.svg";
-        }
+        this.async(function () {
+          if (url) {
+            return url;
+          } else {
+            return "../images/profile/default.svg";
+          }
+        });
       },
 
       _internetChanged(online) {
@@ -406,7 +410,6 @@
       },
 
       _routePageChanged(page) {
-        if (page === undefined) return;
         this.page = page || 'dashboard';
       },
 

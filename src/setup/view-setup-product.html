@@ -91,7 +91,7 @@
         overflow: hidden;
       }
 
-      .flex-container  {
+      .flex-container {
         width: 100%;
         padding: 0;
         margin: 0;
@@ -145,54 +145,54 @@
     <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
     <!--  <paper-button raised class="dark" on-tap="testTrigger" data="cat">TEST</paper-button> -->
     <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation"
-        always-on-top auto-fit-on-attach no-cancel-on-outside-click>
-        <h1>{{localize('add-product')}}</h1>
-        <paper-input name="product-id" id="productID" label="Product ID" type="number" value="[[getProductID(productItems.length)]]"
+      always-on-top auto-fit-on-attach no-cancel-on-outside-click>
+      <h1>{{localize('add-product')}}</h1>
+      <paper-input name="product-id" id="productID" label="Product ID" type="number" value="[[getProductID(productItems.length)]]"
         min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
-        <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
-        <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
-        <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
-        <paper-button on-tap="addPart">+ Add Part</paper-button>
-        <paper-dialog-scrollable>
-          <template is="dom-repeat" items="{{partArray}}" as="part">
-            <div class="part-frame">
+      <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
+      <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
+      <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
+      <paper-button on-tap="addPart">+ Add Part</paper-button>
+      <paper-dialog-scrollable>
+        <template is="dom-repeat" items="{{partArray}}" as="part">
+          <div class="part-frame">
+            <div class="flex-horizontal">
+              <paper-input class="product-size flex-child" label="Part name" value="{{part.name}}" required always-float-label></paper-input>
+              <paper-input class="product-size" label="Cost" value="{{part.cost}}" required always-float-label></paper-input>
+              <paper-input name="product-process" id="productProcess" label="Part Process (use comma to separate the process)" required
+                always-float-label></paper-input><br>
               <div class="flex-horizontal">
-                <paper-input class="product-size flex-child" label="Part name" value="{{part.name}}" required always-float-label></paper-input>
-                <paper-input class="product-size" label="Cost" value="{{part.cost}}" required always-float-label></paper-input>
-                <paper-input name="product-process" id="productProcess" label="Part Process (use comma to separate the process)" required
-                  always-float-label></paper-input><br>
-                <div class="flex-horizontal">
-                  <template is="dom-repeat" items="{{part.process}}" as="process">
-                    <paper-input class="product-size" label="Process name" value="{{process.name}}" required always-float-label></paper-input>
-                    <paper-input class="product-size" label="Setup time" value="{{process.setup}}" required always-float-label></paper-input>
-                    <paper-input class="product-size" label="Cycle time" value="{{process.cycle}}" required always-float-label></paper-input>
-                  </template>
-                </div>
-                <paper-button on-tap="addProcess">+ Add Process</paper-button>
-                <iron-icon on-click="deleteSize" icon="vaadin:trash"></iron-icon>
+                <template is="dom-repeat" items="{{part.process}}" as="process">
+                  <paper-input class="product-size" label="Process name" value="{{process.name}}" required always-float-label></paper-input>
+                  <paper-input class="product-size" label="Setup time" value="{{process.setup}}" required always-float-label></paper-input>
+                  <paper-input class="product-size" label="Cycle time" value="{{process.cycle}}" required always-float-label></paper-input>
+                </template>
               </div>
+              <paper-button on-tap="addProcess">+ Add Process</paper-button>
+              <iron-icon on-click="deleteSize" icon="vaadin:trash"></iron-icon>
             </div>
-          </template>
-        </paper-dialog-scrollable>
-        <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
-        <input type="file" accept="image/*" id="uploadImageFile">
-        <paper-button raised class="dark" on-tap="uploadImage">Upload</paper-button>
-        <paper-button raised class="chilli" on-tap="deleteImage">Remove Image</paper-button>
-
-        <vaadin-upload class="upload-frame" name="product-image" id="uploadImageFile2" timeout="300000" files="{{files}}" max-files="1"
-          accept="image/x-png,image/jpeg" max-file-size="2000000">
-          <div class="drop-label">
-            <iron-icon icon="cloud-upload"></iron-icon>
-            Up to 1&nbsp;JPG&nbsp;files, 2&nbsp;MB&nbsp;each
           </div>
-        </vaadin-upload>
+        </template>
+      </paper-dialog-scrollable>
+      <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
+      <input type="file" accept="image/*" id="uploadImageFile">
+      <paper-button raised class="dark" on-tap="uploadImage">Upload</paper-button>
+      <paper-button raised class="chilli" on-tap="deleteImage">Remove Image</paper-button>
 
-        <paper-button on-tap="addPartToArray">add size to array</paper-button>
-        <div class="buttons">
-          <paper-button dialog-dismiss>{{localize('dismiss')}}</paper-button>
-          <paper-button on-tap="testUpload" dialog-confirm autofocus>{{localize('add')}}</paper-button>
+      <vaadin-upload class="upload-frame" name="product-image" id="uploadImageFile2" timeout="300000" files="{{files}}" max-files="1"
+        accept="image/x-png,image/jpeg" max-file-size="2000000">
+        <div class="drop-label">
+          <iron-icon icon="cloud-upload"></iron-icon>
+          Up to 1&nbsp;JPG&nbsp;files, 2&nbsp;MB&nbsp;each
         </div>
-      </paper-dialog>
+      </vaadin-upload>
+
+      <paper-button on-tap="addPartToArray">add size to array</paper-button>
+      <div class="buttons">
+        <paper-button dialog-dismiss>{{localize('dismiss')}}</paper-button>
+        <paper-button on-tap="testUpload" dialog-confirm autofocus>{{localize('add')}}</paper-button>
+      </div>
+    </paper-dialog>
 
 
     <div class="stitched">
@@ -306,8 +306,8 @@
             <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
               always-on-top no-cancel-on-outside-click auto-fit-on-attach>
               <h2>{{localize('edit-product')}}</h2>
-              <paper-input name="product-id" id="productID" label="Product ID" type="number" value="[[productItem.number]]"
-        min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
+              <paper-input name="product-id" id="productID" label="Product ID" type="number" value="[[productItem.number]]" min="1" max="999"
+                step="1" disabled="true" required always-float-label></paper-input>
               <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
               <paper-input name="sku-number" class="editproductSku" value="[[productItem.sku]]" label="SKU Number" always-float-label></paper-input>
               <paper-input name="raw-material" class="editproductRaw" value="{{productItem.raw}}" label="Raw Material (use comma to separate)"
@@ -404,9 +404,9 @@
           mm = '0' + mm
         }
         today = dd + '/' + mm + '/' + yyyy;
-        if(pid <= 0) {
+        if (pid <= 0) {
           pid = 1;
-        } 
+        }
         this.$.productQuery.ref.push({
           id: pid,
           add: Math.round(new Date().getTime() / 1000.0),
@@ -419,7 +419,7 @@
           contentType: 'image/jpeg'
         };
 
-       // this.$.productImage.storageRef.child('images/' + this.$.productSku.value).put(file, metadata);
+        // this.$.productImage.storageRef.child('images/' + this.$.productSku.value).put(file, metadata);
         this.$.productName.value = null;
         this.$.productSku.value = null;
         this.$.productRaw.value = null;
@@ -535,26 +535,25 @@
       },
 
       getProductProcess(process) {
-        if(!process) {
+        if (!process) {
           return 0;
         }
         return process.split(',').join(' → ');
       },
 
       materialProduct(material) {
-        console.log(!material);
-        if(typeof material === "undefined") {
+        if (typeof material === "undefined") {
           return "No data";
         }
         let praw = [];
         for (i = material.length; i--;) {
-          praw[i] = material[i].type;  
+          praw[i] = material[i].type;
         }
         return praw;
       },
 
       sizeProduct(size) {
-        if(typeof size === "undefined") {
+        if (typeof size === "undefined") {
           return 0;
         }
         let psize = [];
@@ -567,30 +566,30 @@
       },
 
       getCycleTime(cycle) {
-        if(typeof cycle === "undefined") {
+        if (typeof cycle === "undefined") {
           return 0;
         }
         let processTime = 0;
         for (i = cycle.length; i--;) {
-           processTime += cycle[i];
+          processTime += cycle[i];
         }
         return processTime.toFixed(1) + ",";
       },
 
       getSetupTime(setup) {
-        if(typeof setup === "undefined") {
+        if (typeof setup === "undefined") {
           return 0;
         }
         if (!setup) return 0;
         let setupTime = 0;
-         for (i = setup.length; i--;) {
+        for (i = setup.length; i--;) {
           setupTime += setup[i];
         }
         return setupTime.toFixed(1) + ",";
       },
 
       getSumCycleTime(cycle) {
-        if(typeof cycle === "undefined") {
+        if (typeof cycle === "undefined") {
           return 0;
         }
         let processTime = 0;
@@ -601,7 +600,7 @@
       },
 
       getSumSetupTime(setup) {
-        if(typeof setup === "undefined") {
+        if (typeof setup === "undefined") {
           return 0;
         }
         if (!setup) return 0;
@@ -613,7 +612,7 @@
       },
 
       getSumProcessTime(setup, cycle) {
-        if(typeof setup === "undefined" || typeof cycle === "undefined") {
+        if (typeof setup === "undefined" || typeof cycle === "undefined") {
           return 0;
         }
         if (!cycle || !setup) return 0;
@@ -624,7 +623,7 @@
       },
 
       getSumProductTime(part) {
-        if(typeof part === "undefined") {
+        if (typeof part === "undefined") {
           return 0;
         }
         let sum = 0;

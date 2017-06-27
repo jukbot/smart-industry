@@ -66,6 +66,7 @@
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
             required auto-validate always-float-label></vaadin-combo-box>
+          User id : [[user.uid]]
         </div>
       </li>
       <li>
@@ -108,7 +109,7 @@
         <div class="card">
           <h1>{{localize('notification-settings')}}</h1>
           Token: [[token]]
-          <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" checled="[[token]]"
+          <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" checked="[[token]]"
             noink> {{localize('notification')}}</paper-toggle-button>
           <paper-toggle-button value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
         </div>
@@ -187,6 +188,8 @@
         emailnotification: Object,
         autobackup: Object,
         statusKnown: Object,
+        active: Object,
+        pushSupported: Object,
         token: String,
         alertText: String
       },
@@ -216,7 +219,7 @@
           this.alertText = 'backup-notification-alert-on';
           this.$.toastAlert.open();
         } else {
-          this.alertText = 'backup--alert-off';
+          this.alertText = 'backup-alert-off';
           this.$.toastAlert.open();
         }
       },
@@ -227,12 +230,14 @@
           this.alertText = 'notification-alert-on';
           this.$.toastAlert.open();
           // Requesting notification permission
-          this.$.messaging.requestPermission().then(function () {
-            console.log("Notification permission granted");
-          }, function (err) {
-            console.log("Notification permission denied ", err);
-          });
-          console.log(this.token);
+          this.$.messaging.requestPermission()
+            .then(() => {
+              console.log("Notification permission granted");
+
+            })
+            .catch(err => {
+              console.log("Notification permission denied ", err);
+            });
         } else {
           this.alertText = 'notification-alert-off';
           this.$.toastAlert.open();
@@ -260,8 +265,8 @@
               .then(() => {
                 alert('Update your password successful, you will need to relogin');
               })
-              .catch(error => {
-                alert("Error: " + error.message);
+              .catch(err => {
+                alert("Error: " + err.message);
               });
           } else {
             alert("Wrong password");
@@ -273,10 +278,35 @@
             .then(() => {
               alert('Update your email successful, you will need to relogin');
             })
-            .catch(error => {
-              alert("Error: " + error.message);
+            .catch(err => {
+              alert("Error: " + err.message);
             });
         }
+      },
+
+      _deleteAcount() {
+        this.$.auth.delete().then(function () {
+          alert("Delete successful, you'll now logout");
+          this.logout();
+        }, function (error) {
+          console.log(error);
+        });
+      },
+
+      logout() {
+        this.$.auth.signOut()
+          .then(() => {
+            this.authen = false;
+            //redirect to login page    
+            this.async(function () {
+              this.set('route.path', 'login');
+            }, 1000);
+            console.info("Logout successful");
+          })
+          .catch((error) => {
+            console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
+            alert("Authenticate Failed: " + error.message + " Please try again.");
+          });
       },
 
       handleMessage(message) {
@@ -289,8 +319,8 @@
           .then(() => {
             alert('Verification is send to your email');
           })
-          .catch(error => {
-            alert("Error: " + error.message);
+          .catch(err => {
+            alert("Error: " + err.message);
           });
       },
 
@@ -313,8 +343,8 @@
               this.alertText = 'notification-save-settings';
               this.$.toastAlert.open();
             })
-            .catch(error => {
-              alert("Error: " + error.message);
+            .catch(err => {
+              alert("Error: " + err.message);
             });
         }
 
@@ -357,13 +387,15 @@
             let storageRef = firebase.storage().ref("user/" + this.user.uid + "/profile/");
             let desertRef = storageRef.child("profile");
             // Delete the file
-            desertRef.delete().then(function () {
-              // File deleted successfully
-              alert("Delete file succesfully");
-            }).catch(function (error) {
-              // Uh-oh, an error occurred!
-              alert("Error deleting file: " + error);
-            });
+            desertRef.delete()
+              .then(() => {
+                // File deleted successfully
+                alert("Delete file succesfully");
+              })
+              .catch(err => {
+                // Uh-oh, an error occurred!
+                alert("Error deleting file: " + err);
+              });
           } else {}
         } else {
           alert("No image profile to delete");
@@ -373,11 +405,11 @@
       reauthenAccount(currentpassword) {
         let credential = firebase.auth.EmailAuthProvider.credential(this.user.email, currentpassword);
         this.user.reauthenticateWithCredential(credential)
-          .then(function () {
+          .then(() => {
             return true;
           })
-          .catch(error => {
-            console.log("Error: " + error.message);
+          .catch(err => {
+            console.log("Error: " + err.message);
             return false;
           });
       }
