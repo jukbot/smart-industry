@@ -46,6 +46,10 @@
       li .card {
         height: 400px;
       }
+
+      .switch {
+        padding: 10px 0;
+      }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-query app-name="smart-mes" id="appData" path="/product/" data="{{data}}"></firebase-query>
@@ -102,16 +106,17 @@
             <paper-button class="carrot btn" title="Export backup" on-tap="_export-data" raised>{{localize('export-data')}}</paper-button>
           </a>
           <paper-button class="magic btn" title="Import backup" on-tap="_import-data" raised>{{localize('import-data')}}</paper-button>
-          <paper-toggle-button value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
+          <paper-toggle-button class="switch" value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1>{{localize('notification-settings')}}</h1>
           Token: [[token]]
-          <paper-toggle-button value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" checked="[[token]]"
+          <paper-toggle-button class="switch" value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" checked="[[token]]"
             noink> {{localize('notification')}}</paper-toggle-button>
-          <paper-toggle-button value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
+          <paper-toggle-button class="switch" value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch"
+            noink>{{localize('email-notification')}}</paper-toggle-button>
         </div>
       </li>
       <li>
