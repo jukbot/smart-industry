@@ -178,8 +178,7 @@
               auto-validate></paper-input>
             <paper-input class="register-input" name="new-password" id="register_passwd" type="password" maxlength="30" placeholder="New Password"
               auto-auto-validate></paper-input>
-            <paper-input class="register-input" name="full-name" id="register_name" type="text" maxlength="40" placeholder="Full Name"
-              autofocus auto-validate></paper-input>
+
             <paper-input class="register-input" name="organization" id="register_organization" type="text" maxlength="40" placeholder="Organization"
               autofocus auto-validate></paper-input>
             <paper-input class="register-input" name="phone-number" id="register_phone" type="text" maxlength="15" placeholder="Phone Number"
@@ -249,17 +248,16 @@
 
       _register() {
         let email = this.$.register_email.value;
-        let name = this.$.register_name.value;
         let pass = this.$.register_passwd.value;
         let org = this.$.register_organization.value;
         let pho = this.$.register_phone.value;
-        if (email !== "" && name !== "" && pass !== "" && org !== "" && pho !== "") {
+        if (email !== "" && pass !== "" && org !== "" && pho !== "") {
           this.$.auth.createUserWithEmailAndPassword(email, pass)
             .then((response) => {
               this.$.auth.signInWithEmailAndPassword(email, pass)
                 .then((response) => {
                   this.user.updateProfile({
-                    displayName: name,
+                    displayName: email,
                     phoneNumber: pho,
                     organization: org
                   });
