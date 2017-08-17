@@ -1,9 +1,9 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="view-index.html">
-<link rel="import" href="plan/view-plan-scheduling.html">
-<link rel="import" href="plan/view-plan-order.html">
-<link rel="import" href="plan/view-plan-production.html">
-<link rel="import" href="shared-styles.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../plan/view-plan-scheduling.html">
+<link rel="import" href="../plan/view-plan-order.html">
+<link rel="import" href="../plan/view-plan-production.html">
+<link rel="import" href="../shared-styles.html">
 <dom-module id="view-planning">
   <template>
     <style include="shared-styles">
@@ -13,38 +13,37 @@
     </style>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
-      <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
-        <app-header fixed shadow>
-          <app-toolbar role="toolbar" sticky class="tabs-bar">
-            <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
-              <template is="dom-repeat" items="{{submenus}}">
-                <paper-tab role="tab" id="{{item.view}}"><paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span></paper-tab>
-              </template>
-            </paper-tabs>
-          </app-toolbar>
-        </app-header>
-          <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
-          <view-plan-scheduling name="scheduling"></view-plan-scheduling>
-          <view-plan-order name="order"></view-plan-order>
-          <view-plan-production name="production"></view-plan-production>
-         </iron-pages> 
-        </app-header-layout>  
+    <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
+      <app-header fixed shadow>
+        <app-toolbar role="toolbar" sticky class="tabs-bar">
+          <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
+            <template is="dom-repeat" items="{{submenus}}">
+              <paper-tab role="tab" id="{{item.view}}">
+                <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span></paper-tab>
+            </template>
+          </paper-tabs>
+        </app-toolbar>
+      </app-header>
+      <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
+        <view-plan-scheduling name="scheduling"></view-plan-scheduling>
+        <view-plan-order name="order"></view-plan-order>
+        <view-plan-production name="production"></view-plan-production>
+      </iron-pages>
+    </app-header-layout>
   </template>
   <script>
     Polymer({
       is: 'view-planning',
       properties: {
-         language: {
+        language: {
           type: Object,
           notify: true,
           value: function () {
-            if(localStorage.getItem("lang") != null) {
+            if (localStorage.getItem("lang") != null) {
               return localStorage.getItem("lang");
-            } 
-            else if(localStorage.getItem("lang") == null) {
+            } else if (localStorage.getItem("lang") == null) {
               return "en";
-            } 
-            else {
+            } else {
               return this.language;
             }
           }
@@ -80,12 +79,12 @@
       behaviors: [
         Polymer.AppLocalizeBehavior
       ],
-      attached: function() {
+      attached: function () {
         this.loadResources(this.resolveUrl('../data/locales.json'));
       },
       _tabsChanged: function (tabs) {
         let resolvedTabsUrl = this.resolveUrl('plan/view-plan-' + tabs + '.html');
-        this.importHref(resolvedTabsUrl, null, null, true); 
+        this.importHref(resolvedTabsUrl, null, null, true);
       }
     });
   </script>

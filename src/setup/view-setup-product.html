@@ -431,7 +431,7 @@
           alert("File cannot be empty");
         } else {
           let uid = this.user.uid;
-          let storageRef = firebase.storage().ref("product/" + this.$.productID.value);
+          let storageRef = firebase.app('smart-mes').storage().ref("product/" + this.$.productID.value);
           let task = storageRef.put(file);
           let percent = 0;
           let unsubscribe = task.on('state_changed',
@@ -451,7 +451,7 @@
       },
 
       deleteImage(e) {
-        let storageRef = firebase.storage().ref('product/');
+        let storageRef = firebase.app('smart-mes').storage().ref('product/');
         let desertRef = storageRef.child(this.$.productID.value);
         // Delete the file
         desertRef.delete().then(function () {

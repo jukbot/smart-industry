@@ -4,12 +4,12 @@
 <dom-module id="view-setup-inventory">
   <template>
     <style include="shared-styles">
-     :host {
+       :host {
         display: block;
         --app-grid-item-height: 50%;
       }
-      
-       @media (min-width: 360px) and (max-width: 768px) {
+
+      @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
         }
@@ -26,11 +26,13 @@
           --app-grid-columns: 3;
         }
       }
-       @media (min-width: 1201px) and (max-width: 2560px) {
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
           --app-grid-columns: 4;
         }
       }
+
       .status {
         text-align: center;
         font-size: 2rem;
@@ -40,9 +42,9 @@
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <div class="card">
       <div class="status">
-      <p>Please upgrade to PRO package to enable inventory storage.</p> 
+        <p>Please upgrade to Enterprise package to enable inventory storage.</p>
       </div>
-   </div>
+    </div>
   </template>
   <script>
     Polymer({
@@ -51,8 +53,8 @@
         Polymer.AppLocalizeBehavior,
         Polymer.AppLanguageBehavior
       ],
-      attached: function() {
-         this.loadResources(this.resolveUrl('../../data/locales.json'));
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
 
     });

@@ -1,6 +1,6 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="view-index.html">
-<link rel="import" href="shared-styles.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
 <dom-module id="view-settings">
   <template>
     <style include="shared-styles">
@@ -70,7 +70,9 @@
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
             required auto-validate always-float-label></vaadin-combo-box>
-          User id : [[user.uid]]
+          <h1>Sensor Devices</h1>
+          <paper-button class="water btn" title="Search sensor" on-tap="_scanDevice" raised>Search Sensor</paper-button>
+          <paper-button class="chilli btn" title="Show sensor" on-tap="_showDevice" raised>Show Sensor</paper-button>
         </div>
       </li>
       <li>
@@ -154,30 +156,6 @@
               {
                 name: '日本語',
                 value: 'jp'
-              },
-              {
-                name: '中国',
-                value: 'en'
-              },
-              {
-                name: 'မြန်မာ',
-                value: 'jp'
-              },
-              {
-                name: 'ລາວ',
-                value: 'jp'
-              },
-              {
-                name: 'ຫວຽດນາມ',
-                value: 'en'
-              },
-              {
-                name: 'Filipino',
-                value: 'en'
-              },
-              {
-                name: 'Español',
-                value: 'en'
               },
               {
                 name: 'русский',
@@ -319,6 +297,42 @@
         console.log('message received', arguments);
       },
 
+      _scanDevice() {
+        if ('usb' in navigator) {
+          let device;
+          device = navigator.usb.requestDevice()
+            .then(device => {
+              console.log(device.productName); // "Arduino Micro"
+              console.log(device.manufacturerName); // "Arduino LLC"
+            })
+            .catch(error => {
+              console.log(error);
+            });
+
+          if (device !== undefined) {
+            // Add |device| to the UI.
+          }
+        } else {
+          alert("Your web browser is not support physical device detection. Please use Google Chrome");
+        }
+      },
+
+      _showDevice() {
+        if ('usb' in navigator) {
+          navigator.usb.getDevices().then(devices => {
+            devices.map(device => {
+              console.log(device.productName); // "Arduino Micro"
+              console.log(device.manufacturerName); // "Arduino LLC"
+              console.log(device.vendorId); //"Vender ID"
+            });
+          }).catch(error => {
+            console.log(error);
+          });
+        } else {
+          alert("Your web browser is not support physical device detection. Please use Google Chrome");
+        }
+      },
+
       verifyAccount() {
         this.user.sendEmailVerification()
           .then(() => {
@@ -330,19 +344,21 @@
       },
 
       saveSettings() {
-        let displayname = this.$.displayName.value;
-        if (displayname !== "") {
+        let displayNameInput = this.$.displayName.value;
+        if (displayNameInput !== "") {
           this.user.updateProfile({
-            displayName: displayname
+            displayName: displayNameInput
           });
+          console.log("Update display name");
+
           this.$.user.ref.set({
               displayname: this.user.displayName,
-              email: this.user.email,
-              photoURL: this.user.photoURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
-              phone: "0",
-              description: "No description for this user",
-              facebook: "",
-              twitter: ""
+              //   email: this.user.email,
+              //   photoURL: this.user.photoURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
+              //   phone: "0",
+              //   description: "No description for this user",
+              //   facebook: "",
+              //   twitter: ""
             })
             .then(() => {
               this.alertText = 'notification-save-settings';
@@ -354,6 +370,7 @@
         }
 
         if (this.$.uploadImageFile.files.length > 0) {
+          console.log("Found image");
           this.uploadProfileImage();
         }
       },
@@ -361,7 +378,7 @@
       uploadProfileImage() {
         let file = this.$.uploadImageFile.files[0];
         let uid = this.user.uid;
-        let storageRef = firebase.storage().ref();
+        let storageRef = firebase.app('smart-mes').storage().ref();
         let metadata = {
           'contentType': file.type
         };
@@ -375,12 +392,12 @@
             this.user.updateProfile({
               photoURL: url
             }).then(function () {
-              location.reload();
-              this.$.uploadImageFile.files[0].value = null;
-              this.alertText = 'notification-save-settings';
-              this.$.toastAlert.open();
+              //location.reload();
+              //this.$.uploadImageFile.files[0].value = null;
+              //this.alertText = 'notification-save-settings';
+              //this.$.toastAlert.open();
+              console.log('Profile image changed');
             }).catch(function (error) {
-              alert("Update image failed");
               console.error('Upload failed:', error);
             });
           });

@@ -1,7 +1,7 @@
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="view-index.html">
-<link rel="import" href="shared-styles.html">
-<link rel="import" href="app-language-behavior.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../app-language-behavior.html">
 <dom-module id="view-404">
     <template>
         <style is="custom-style">
@@ -46,7 +46,6 @@
                 .container {
                     height: 40em;
                 }
-
             }
         </style>
         <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
@@ -55,7 +54,7 @@
                 <h1>{{localize('page-not-found')}}</h1>
                 <p>{{localize('page-does-not-exist')}} </p><br>
                 <a href="/" title="Return to home">{{localize('return-to-home')}}</a>
-                </div>
+            </div>
         </div>
     </template>
     <script>

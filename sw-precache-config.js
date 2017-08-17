@@ -9,7 +9,6 @@
  */
 
 /* eslint-env node */
-
 module.exports = {
   staticFileGlobs: [
     '/index.html',
@@ -18,8 +17,8 @@ module.exports = {
     '/images/*',
     '/data/*',
     '/lib/*',
-    '/src/*',
+    '/src/*'
   ],
   navigateFallback: '/index.html',
-  navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/],
-};
+  navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/]
+}

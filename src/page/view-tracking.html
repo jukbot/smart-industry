@@ -1,0 +1,72 @@
+<!-- In planning -->
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../track/view-track-production.html">
+<link rel="import" href="../track/view-track-machine.html">
+<link rel="import" href="../track/view-track-energy.html">
+<dom-module id="view-tracking">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+      }
+    </style>
+    <app-header-layout fullbleed has-scrolling-region class="subheader-layout">
+      <app-header fixed shadow>
+        <app-toolbar role="toolbar" sticky class="tabs-bar">
+          <paper-tabs selected="{{tabs}}" attr-for-selected="id" sticky bottom-item autoselect role="navigation" noink>
+            <template is="dom-repeat" items="{{submenus}}">
+              <paper-tab role="tab" id="{{item.view}}">
+                <paper-icon-button icon="{{item.icon}}" title="{{item.title}}"></paper-icon-button><span class="tab-title">{{item.title}}</span></paper-tab>
+            </template>
+          </paper-tabs>
+        </app-toolbar>
+      </app-header>
+      <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
+        <view-track-production name="production"></view-track-production>
+        <view-track-machine name="machine"></view-track-machine>
+        <view-track-energy name="energy"></view-track-energy>
+      </iron-pages>
+    </app-header-layout>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-tracking',
+      properties: {
+        tabs: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_tabsChanged',
+          value: 'production'
+        },
+        submenus: {
+          type: Array,
+          value: function () {
+            return [{
+                'title': 'PRODUCTION',
+                'view': 'production',
+                'icon': 'vaadin:progressbar'
+              },
+              {
+                'title': 'MACHINE',
+                'view': 'machine',
+                'icon': 'vaadin:automation'
+              },
+              {
+                'title': 'ENERGY',
+                'view': 'energy',
+                'icon': 'vaadin:bolt'
+              }
+            ];
+          }
+        }
+      },
+
+      _tabsChanged: function (tabs) {
+        let resolvedTabsUrl = this.resolveUrl('track/view-track-' + tabs + '.html');
+        this.importHref(resolvedTabsUrl, null, null, true);
+      }
+    });
+  </script>
+</dom-module>

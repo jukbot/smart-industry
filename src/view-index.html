@@ -171,9 +171,11 @@
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="userInformation" path="/user/[[user.uid]]" data="{{userdata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
-    <app-indexeddb-mirror key="profile" data="{{user}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
+    <app-indexeddb-mirror key="profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
+    <app-indexeddb-mirror key="userdata" data="{{userdata}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-indexeddb-mirror key="metadata" data="{{metadata}}" persisted-data="{{persistedMetaData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
@@ -209,12 +211,12 @@
         <dom-if if="[[signedIn]]">
           <div class="profile" role="group">
             <img class="profile-image" src$="[[getUserImage(user.photoURL)]]" alt="user photo">
-            <p>[[persistedUserData.displayName]]</p>
-            <p>{{localize('email')}} : [[persistedUserData.email]]</p>
-            <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(persistedUserData.emailVerified)]]</span></p>
+            <p>[[persistedProfileData.displayName]]</p>
+            <p>{{localize('email')}} : [[persistedProfileData.email]]</p>
+            <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(persistedProfileData.emailVerified)]]</span></p>
             <p>{{localize('internet-status')}}: <span class="online">[[getOnlineStatus(online)]]</span></p>
-            <p>[[persistedMetaData.appName]]</p>
-            <p>{{localize('version')}} [[persistedMetaData.appVersion]]</p>
+            <p>[[persistedMetaData.appName]] ({{localize('version')}} [[persistedMetaData.appVersion]])</p>
+            <p>Package: [[persistedUserData.package]]</p>
             <p>{{localize('developed-by')}} [[persistedMetaData.appDeveloper]]</p>
             [[route.path]]
           </div>
@@ -226,7 +228,7 @@
             <paper-icon-button icon="vaadin:menu" alt="menu" on-tap="_toggleDrawer" aria-label="sidebar menu" drawer-toggle></paper-icon-button>
             <h2 class="page-title" main-title>{{localize(page)}}</h2>
             <div hidden$="[[!user]]">
-              <h2 class="display-name" hidden$="{{!wideLayout}}">[[user.displayName]]</h2>
+              <h2 class="display-name" hidden$="{{!wideLayout}}">Hi! [[user.displayName]]</h2>
             </div>
           </app-toolbar>
         </app-header>
@@ -317,7 +319,6 @@
       _signedInChanged(signedIn) {
         this.$.drawer.hidden = !signedIn;
         this.$.header.hidden = !signedIn;
-        console.log(signedIn);
         if (!signedIn) {
           this.$.layout.resetLayout();
           this.page = 'login';
@@ -348,13 +349,11 @@
       },
 
       getUserImage(url) {
-        this.async(function () {
-          if (url) {
-            return url;
-          } else {
-            return "../images/profile/default.svg";
-          }
-        });
+        if (url) {
+          return url;
+        } else {
+          return "../images/profile/default.svg";
+        }
       },
 
       _internetChanged(online) {
@@ -383,7 +382,7 @@
       },
 
       _pageChanged(page) {
-        let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+        let resolvedPageUrl = this.resolveUrl('page/view-' + page + '.html');
         this.importHref(
           resolvedPageUrl,
           null,
@@ -416,15 +415,5 @@
           });
       },
     });
-    //  window.customerElements.define(ViewIndex.is, ViewIndex);
-    /* const config = {
-       apiKey: "AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0",
-       authDomain: "smart-mes.firebaseapp.com",
-       databaseURL: "https://smart-mes.firebaseio.com",
-       storageBucket: "smart-mes.appspot.com",
-       messagingSenderId: "253401775445",
-     };
-     firebase.initializeApp(config);
-     */
   </script>
 </dom-module>
