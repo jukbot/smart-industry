@@ -292,11 +292,6 @@
           });
       },
 
-      handleMessage(message) {
-        console.log(message);
-        console.log('message received', arguments);
-      },
-
       _scanDevice() {
         if ('usb' in navigator) {
           let device;
@@ -333,6 +328,11 @@
         }
       },
 
+      handleMessage(message) {
+        console.log(message);
+        console.log('message received', arguments);
+      },
+
       verifyAccount() {
         this.user.sendEmailVerification()
           .then(() => {
@@ -350,15 +350,12 @@
             displayName: displayNameInput
           });
           console.log("Update display name");
-
           this.$.user.ref.set({
               displayname: this.user.displayName,
-              //   email: this.user.email,
-              //   photoURL: this.user.photoURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
-              //   phone: "0",
-              //   description: "No description for this user",
-              //   facebook: "",
-              //   twitter: ""
+              email: this.user.email,
+              photoURL: this.user.photoURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
+              phone: "0",
+              description: "No description for this user"
             })
             .then(() => {
               this.alertText = 'notification-save-settings';
@@ -370,7 +367,6 @@
         }
 
         if (this.$.uploadImageFile.files.length > 0) {
-          console.log("Found image");
           this.uploadProfileImage();
         }
       },
@@ -406,16 +402,13 @@
       deleteProfileImage() {
         if (this.user.photoURL !== "") {
           if (confirm("Delete profile image ?") == true) {
-            let storageRef = firebase.storage().ref("user/" + this.user.uid + "/profile/");
-            let desertRef = storageRef.child("profile");
+            let storageRef = firebase.app('smart-mes').storage().ref("user/" + this.user.uid + "/profile/");
             // Delete the file
-            desertRef.delete()
+            storageRef.delete()
               .then(() => {
-                // File deleted successfully
-                alert("Delete file succesfully");
+                alert("Profile image was deleted");
               })
               .catch(err => {
-                // Uh-oh, an error occurred!
                 alert("Error deleting file: " + err);
               });
           } else {}
