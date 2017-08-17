@@ -119,7 +119,7 @@
         Polymer.AppLocalizeBehavior
       ],
       attached: function () {
-        this.loadResources(this.resolveUrl('../data/locales.json'));
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
       },
       selectNextTab: function () {
         var pages = this.$.setupTabs;
@@ -130,7 +130,7 @@
         pages.selectPrevious();
       },
       _tabsChanged: function (tabs) {
-        let resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
+        let resolvedTabsUrl = this.resolveUrl('../setup/view-setup-' + tabs + '.html');
         this.importHref(resolvedTabsUrl, null, null, true);
       },
       _fuckToast(e) {

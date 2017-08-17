@@ -35,6 +35,8 @@ Install [polymer-cli](https://github.com/Polymer/polymer-cli):
 
     npm install -g polymer-cli
 
+`Note: polymer-cli is not able to install with npm version 5.x.x for now. Please use yarn or npm version 4.x.x to install.`
+
 Install bower:
 
     npm install -g bower
@@ -69,7 +71,7 @@ in an unbundled state, as it would be served by a push-compatible server:
 This command serves the production version of the app at `http://localhost:8080`
 generated using fragment bundling:
 
-    polymer serve build/defaukt
+    polymer serve build/default
 
 ### Run tests
 

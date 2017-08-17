@@ -53,22 +53,25 @@
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
 <!-- import 3rd party libraries -->
+<link rel="import" href="../lib/webgl.html">
 <link rel="import" href="../lib/redux.html">
 <link rel="import" href="../lib/sugar.html">
 <link rel="import" href="../lib/turbo.html">
 <link rel="import" href="../lib/countdown.html">
 <link rel="import" href="../lib/intl.html">
 <link rel="import" href="../lib/webanimation.html">
-<!-- import shared style and page router -->
+<!-- import shared style  -->
 <link rel="import" href="app-language-behavior.html">
-<link rel="import" href="view-login.html">
-<link rel="import" href="view-settings.html">
-<link rel="import" href="view-404.html">
-<link rel="import" href="view-dashboard.html">
-<link rel="import" href="view-setup.html">
-<link rel="import" href="view-planning.html">
-<link rel="import" href="view-tracking.html">
 <link rel="import" href="shared-styles.html">
+<!-- import page router -->
+<link rel="import" href="page/view-login.html">
+<link rel="import" href="page/view-settings.html">
+<link rel="import" href="page/view-404.html">
+<link rel="import" href="page/view-dashboard.html">
+<link rel="import" href="page/view-setup.html">
+<link rel="import" href="page/view-planning.html">
+<link rel="import" href="page/view-tracking.html">
+
 <dom-module id="view-index">
   <template>
     <style include="shared-styles">
@@ -298,6 +301,7 @@
           }
         });
         this.loadResources(this.resolveUrl('../data/locales.json'));
+        alert("GPu acceleration(WebGL) supportted status is " + detectWebGL());
       },
 
       ready() {

@@ -45,7 +45,7 @@
                     .then(() => {
                         console.info(swRegisterd, greenColor)
                     }).catch((err) => {
-                        console.error(swFailed, err);
+                        console.warn(swFailed, err);
                     })
                 navigator.serviceWorker.ready
                     .then(() => {
@@ -54,8 +54,6 @@
                         console.error(swFailed, err);
                     })
             })
-
-            //  navigator.serviceWorker.register('/sw.js', { scope: '/' })
         } else {
             alert("Service Worker is not supportted by your browser. Please upgrade your browser");
         }
