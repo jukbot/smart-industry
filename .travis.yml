@@ -11,10 +11,13 @@ addons:
       - google-chrome-stable
 node_js: stable
 before_script:
-  - npm install -g bower polymer-cli
+  - npm install -g npm@4
+  - npm install -g bower 
+  - npm install -g polymer-cli
   - bower install
 cache: yarn
 script:
+  - polymer build
   - xvfb-run npm test
 notifications:
   email: false

@@ -7,7 +7,7 @@ install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
   # Get npm 3
-  - npm install -g npm
+  - npm install -g npm@4
   - npm install -g bower
   - npm install -g polymer-cli 
  # install modules. Use --force to workaround permissions issues on Windows

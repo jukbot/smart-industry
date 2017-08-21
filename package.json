@@ -6,8 +6,6 @@
     "node": ">=6.0"
   },
   "devDependencies": {
-    "css-slam": "^1.2.1",
-    "del": "^3.0.0",
     "eslint": "^4.4.1",
     "eslint-config-google": "^0.9.1",
     "eslint-config-standard": "^10.2.1",
@@ -16,16 +14,10 @@
     "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
-    "gulp": "^3.9.1",
-    "gulp-html-minifier": "^0.1.8",
-    "gulp-if": "^2.0.2",
-    "gulp-uglify": "^3.0.0",
-    "merge-stream": "^1.0.1",
-    "plylog": "^0.5.0",
     "polymer-build": "^2.0.0"
   },
   "scripts": {
-    "build": "gulp",
+    "build": "polymer build",
     "lint": "npm run lint:javascript",
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "polymer test",
