@@ -5,14 +5,15 @@ cache: bundler
 sudo: required
 dist: trusty
 addons:
-  firefox: latest
   apt:
     sources:
       - google-chrome
     packages:
       - google-chrome-stable
 node_js: stable
-before_script:
+before_install:
+  - npm install -g npm@4
+install:
   - npm install -g yarn
   - npm install -g bower 
   - npm install -g polymer-cli
@@ -21,10 +22,11 @@ before_script:
   - polymer --version
   - npm install
   - bower install
-cache: yarn
-script:
-  - ls
+before_script:
   - mkdir -p build/default
+  - ls
+script:
   - polymer build
+  - polymer test
 notifications:
   email: false
