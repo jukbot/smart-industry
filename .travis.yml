@@ -12,21 +12,22 @@ addons:
       - google-chrome-stable
 node_js: stable
 before_install:
-  - npm install -g npm@4
+  - npm install -g npm@lastest
 install:
   - npm install -g yarn
-  - npm install -g bower 
-  - npm install -g polymer-cli
+  - yarn add global bower 
+  - yarn add global polymer-cli
   - node -v
   - npm -v
+  - bower -v
   - polymer --version
-  - npm install
+  - yarn --version
+  - yarn install
   - bower install
 before_script:
   - mkdir -p build/default
   - ls
 script:
   - polymer build
-  - polymer serve
 notifications:
   email: false

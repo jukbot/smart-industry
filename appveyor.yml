@@ -29,11 +29,11 @@ install:
   # Get the latest stable version of Node.js or io.js
   - ps: Install-Product node $env:nodejs_version
   # Get npm 3
-  - npm install -g npm@4
-  - npm install -g bower
-  - npm install -g polymer-cli 
+  - npm install -g npm@lastest
+  - yarn add global bower
+  - yarn add global polymer-cli 
  # install modules. Use --force to workaround permissions issues on Windows
-  - npm install --force
+  - yarn install
   - bower install
 
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
@@ -45,6 +45,7 @@ test_script:
   - node --version
   - npm --version
   - polymer --version
+  - yarn --version
 
 # Don't actually build.
 build: off
