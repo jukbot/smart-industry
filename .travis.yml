@@ -21,7 +21,7 @@ before_script:
 cache: yarn
 script:
   - ls
-  - mkdir build/default
+  - mkdir -p build/default
   - polymer build
 notifications:
   email: false
