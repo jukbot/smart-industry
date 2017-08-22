@@ -36,9 +36,6 @@ install:
   - npm install --force
   - bower install
 
-# build Configuration, i.e. Debug, Release, etc.
-configuration: Release
-
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: Any CPU
 
@@ -48,6 +45,6 @@ test_script:
   - node --version
   - npm --version
   - polymer --version
-  
+
 # Don't actually build.
 build: off
