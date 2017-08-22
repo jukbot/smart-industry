@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/jukbot/smart-industry.png?label=ready&title=Ready)](https://waffle.io/jukbot/smart-industry?utm_source=badge)
 # Polymer App Starter Kit
 
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
