@@ -17,6 +17,7 @@ before_script:
   - bower install
 cache: yarn
 script:
+  - cd /home/travis/build/jukbot/smart-industry
   - polymer build
   - xvfb-run npm test
 notifications:
