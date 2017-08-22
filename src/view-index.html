@@ -219,9 +219,7 @@
             <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(persistedProfileData.emailVerified)]]</span></p>
             <p>{{localize('internet-status')}}: <span class="online">[[getOnlineStatus(online)]]</span></p>
             <p>[[persistedMetaData.appName]] ({{localize('version')}} [[persistedMetaData.appVersion]])</p>
-            <p>Package: [[persistedUserData.package]]</p>
             <p>{{localize('developed-by')}} [[persistedMetaData.appDeveloper]]</p>
-            [[route.path]]
           </div>
         </dom-if>
       </app-drawer>

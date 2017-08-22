@@ -5,8 +5,8 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../../bower_components/iron-a11y-keys/iron-a11y-keys.html">
-<link rel="import" href="../../bower_components/login-fire/login-fire.html">
 <link rel="import" href="../shared-styles.html">
 <dom-module id="view-login">
   <template>
@@ -143,6 +143,7 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" on-error="handleError"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
     <app-localstorage-document key="session" data="{{remember}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
     <section class="container">
@@ -178,7 +179,6 @@
               auto-validate></paper-input>
             <paper-input class="register-input" name="new-password" id="register_passwd" type="password" maxlength="30" placeholder="New Password"
               auto-auto-validate></paper-input>
-
             <paper-input class="register-input" name="organization" id="register_organization" type="text" maxlength="40" placeholder="Organization"
               autofocus auto-validate></paper-input>
             <paper-input class="register-input" name="phone-number" id="register_phone" type="text" maxlength="15" placeholder="Phone Number"
@@ -225,13 +225,13 @@
             return this.$.passwd;
           }
         },
+        user: Object,
+        userData: Object,
       },
-      _login() {
-        if (this.$.email !== "" || this.$.passwd !== "") {
-          let email = this.$.email.value;
-          let passwd = this.$.passwd.value;
 
-          this.$.auth.signInWithEmailAndPassword(email, passwd)
+      _login() {
+        if (this.$.email.value !== "" || this.$.passwd.value !== "") {
+          this.$.auth.signInWithEmailAndPassword(this.$.email.value, this.$.passwd.value)
             .then((response) => {
               this.authen = true;
               this.async(function () {
@@ -248,25 +248,24 @@
 
       _register() {
         let email = this.$.register_email.value;
-        let pass = this.$.register_passwd.value;
-        let org = this.$.register_organization.value;
-        let pho = this.$.register_phone.value;
-        if (email !== "" && pass !== "" && org !== "" && pho !== "") {
-          this.$.auth.createUserWithEmailAndPassword(email, pass)
+        let organize = this.$.register_organization.value;
+        let phone = this.$.register_phone.value;
+        let username = "New User";
+        if (email !== "" && organize !== "" && phone !== "" && this.$.register_passwd.value !== "") {
+          this.$.auth.createUserWithEmailAndPassword(email, this.$.register_passwd.value)
             .then((response) => {
-              this.$.auth.signInWithEmailAndPassword(email, pass)
+              this.$.auth.signInWithEmailAndPassword(email, this.$.register_passwd.value)
                 .then((response) => {
                   this.user.updateProfile({
-                    displayName: email,
-                    phoneNumber: pho,
-                    organization: org
+                    displayName: username,
                   });
+                  this.addProfileInfo(username, email, organize, phone);
                   this.user.sendEmailVerification();
                   alert("Register successful. We've sent verification code to your email");
                   // Signout Action
                   this.$.auth.signOut();
-                  this.register = false;
-                  this.login = true;
+                  // Switch to login form
+                  this._hideRegister();
                 }).catch((error) => {
                   alert("Authenticate Failed: " + error.message);
                 });
@@ -276,6 +275,36 @@
             });
         } else {
           alert("Please fill in the form completely.");
+        }
+      },
+
+      addProfileInfo(username, email, organize, phone) {
+        this.$.user.ref.set({
+            displayname: username,
+            email: this.user.email,
+            photoURL: null,
+            phone: phone,
+            organization: organize,
+            description: "No description for this user"
+          })
+          .catch(err => {
+            alert("Error: " + err.message);
+          });
+      },
+
+      _resetPassword() {
+        if (this.$.resetEmail !== "") {
+          let resetEmail = this.$.resetEmail.value;
+          this.$.auth.sendPasswordResetEmail(resetEmail)
+            .then((response) => {
+              alert("Reset password has been send to your email.")
+            })
+            .catch((error) => {
+              console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
+              alert(error.message);
+            });
+        } else {
+          alert("Email cannot leave blank");
         }
       },
 
@@ -297,22 +326,6 @@
       _hideRegister() {
         this.register = false;
         this.login = true;
-      },
-
-      _resetPassword() {
-        if (this.$.resetEmail !== "") {
-          let resetEmail = this.$.resetEmail.value;
-          this.$.auth.sendPasswordResetEmail(resetEmail)
-            .then((response) => {
-              alert("Reset password has been send to your email.")
-            })
-            .catch((error) => {
-              console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
-              alert(error.message);
-            });
-        } else {
-          alert("Email cannot leave blank");
-        }
       },
 
       handleError(e) {

@@ -52,15 +52,15 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
-    <firebase-query app-name="smart-mes" id="appData" path="/product/" data="{{data}}"></firebase-query>
     <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
       on-message="handleMessage" token="{{token}}"></firebase-messaging>
+    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.id]]/token" data="[[token]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appEmailNotification" path="/metadata/appEmailNotification" data="{{emailnotification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appBackup" path="/metadata/appBackup" data="{{autobackup}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
+
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
     <ul class="app-grid">
@@ -164,7 +164,6 @@
             ]
           }
         },
-        data: Object,
         user: Object,
         userData: Object,
         notification: Object,
@@ -345,35 +344,27 @@
 
       saveSettings() {
         let displayNameInput = this.$.displayName.value;
-        if (displayNameInput !== "") {
+        if (displayNameInput !== "" && displayNameInput != this.user.displayName) {
           this.user.updateProfile({
             displayName: displayNameInput
           });
-          console.log("Update display name");
-          this.$.user.ref.set({
-              displayname: this.user.displayName,
-              email: this.user.email,
-              photoURL: this.user.photoURL, //add a photoURL attribute and assign it to the URL of the newly uploaded file
-              phone: "0",
-              description: "No description for this user"
-            })
-            .then(() => {
-              this.alertText = 'notification-save-settings';
-              this.$.toastAlert.open();
-            })
-            .catch(err => {
-              alert("Error: " + err.message);
-            });
+          this.updateProfileInfo(this.user.photoURL, displayNameInput);
         }
 
         if (this.$.uploadImageFile.files.length > 0) {
-          this.uploadProfileImage();
+          let result = this.uploadProfileImage();
+          // if (result !== null) {
+          //   this.$.uploadImageFile.files[0].value = null;
+          //   this.alertText = 'notification-save-settings';
+          //   this.$.toastAlert.open();
+          // }
         }
       },
 
       uploadProfileImage() {
         let file = this.$.uploadImageFile.files[0];
         let uid = this.user.uid;
+        let name = this.user.displayName;
         let storageRef = firebase.app('smart-mes').storage().ref();
         let metadata = {
           'contentType': file.type
@@ -384,36 +375,51 @@
             let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             this.$.uploadProgress.value = progress;
             let url = snapshot.metadata.downloadURLs[0];
-            console.log(url);
             this.user.updateProfile({
               photoURL: url
-            }).then(function () {
-              //location.reload();
-              //this.$.uploadImageFile.files[0].value = null;
-              //this.alertText = 'notification-save-settings';
-              //this.$.toastAlert.open();
-              console.log('Profile image changed');
             }).catch(function (error) {
               console.error('Upload failed:', error);
             });
+            if (url) {
+              this.updateProfileInfo(url, name);
+            }
+          });
+      },
+
+      updateProfileInfo(url, name) {
+        this.$.user.ref.update({
+            displayname: name,
+            photoURL: url
+          })
+          .then(() => {
+            this.alertText = 'notification-save-settings';
+            this.$.toastAlert.open();
+          })
+          .catch(err => {
+            alert("Error: " + err.message);
           });
       },
 
       deleteProfileImage() {
-        if (this.user.photoURL !== "") {
+        if (this.user.photoURL) {
           if (confirm("Delete profile image ?") == true) {
-            let storageRef = firebase.app('smart-mes').storage().ref("user/" + this.user.uid + "/profile/" + this.user.photoURL);
+            let storageRef = firebase.app('smart-mes').storage().ref("user/" + this.user.uid + "/profile");
             // Delete the file
             storageRef.delete()
               .then(() => {
-                alert("Profile image was deleted");
+                this.user.updateProfile({
+                  photoURL: null
+                });
+                this.alertText = 'Delete successful';
+                this.$.toastAlert.open();
               })
               .catch(err => {
                 alert("Error deleting file: " + err);
               });
           } else {}
         } else {
-          alert("No image profile to delete");
+          this.alertText = 'No image file to delete';
+          this.$.toastAlert.open();
         }
       },
 
