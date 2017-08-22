@@ -1,4 +1,6 @@
 language: node_js
+node_js: 
+  - "6"
 cache: bundler
 sudo: required
 dist: trusty
@@ -11,12 +13,13 @@ addons:
       - google-chrome-stable
 node_js: stable
 before_script:
-  - npm install -g npm@4
+  - npm install -g yarn
   - npm install -g bower 
   - npm install -g polymer-cli
   - node -v
   - npm -v
   - polymer --version
+  - npm install
   - bower install
 cache: yarn
 script:
