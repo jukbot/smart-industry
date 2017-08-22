@@ -402,7 +402,7 @@
       deleteProfileImage() {
         if (this.user.photoURL !== "") {
           if (confirm("Delete profile image ?") == true) {
-            let storageRef = firebase.app('smart-mes').storage().ref("user/" + this.user.uid + "/profile/");
+            let storageRef = firebase.app('smart-mes').storage().ref("user/" + this.user.uid + "/profile/" + this.user.photoURL);
             // Delete the file
             storageRef.delete()
               .then(() => {

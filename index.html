@@ -2,13 +2,12 @@
 <html lang="en-US">
 
 <head>
+    <base href="/">
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1,user-scalable=yes">
     <title>IMES</title>
-    <meta name="generator" content="Polymer 2.0">
-    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=1">
     <meta name="description" content="Smart Manufacturing Execution Systems for Small-Midsize industry">
     <meta name="author" content="KMUTT">
-    <meta name="robots" content="index, nofollow">
     <meta name="theme-color" content="#FFFFFF">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="application-name" content="IMES">
@@ -18,10 +17,9 @@
     <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta name="msapplication-tap-highlight" content="no">
-    <base href="/">
-    <link rel="manifest" href="/manifest.json">
-    <link rel="canonical" href="https://IMES.ga">
     <link rel="shortcut icon" href="/images/favicon.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="canonical" href="/">
     <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
     <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
     <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
@@ -29,6 +27,31 @@
     <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
     <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" type="text/javascript"></script>
     <![endif]-->
+    <script>
+        window.Polymer = {
+                dom: 'shadow',
+                lazyRegister: !0
+            },
+            function () {
+                'use strict';
+                var a = function () {
+                        window.HTMLImports || document.dispatchEvent(new CustomEvent('WebComponentsReady', {
+                            bubbles: !0
+                        }))
+                    },
+                    b = 'registerElement' in document && 'import' in document.createElement('link') && 'content' in
+                    document.createElement('template');
+                if (!b) {
+                    var c = document.createElement('script');
+                    c.async = !0, c.src = '/bower_components/webcomponentsjs/webcomponents-lite.min.js', c.onload = a,
+                        document.head.appendChild(c)
+                } else a()
+            }(), 'serviceWorker' in navigator && navigator.serviceWorker.getRegistrations().then(function (a) {
+                if (a && 0 < a.length)
+                    for (var b = 0; b < a.length; b++) a[b].unregister()
+            });
+    </script>
+    <script async src="https://www.google-analytics.com/analytics.js"></script>
     <script>
         // Register the base URL
         const baseUrl = document.querySelector('base').href
@@ -203,10 +226,11 @@
             }
         }
     </style>
+    <link rel="prefetch" href="/src/view-index.html">
 </head>
 
 <body>
-    <view-index unresolved>
+    <view-index hash>
         <div class="showbox">
             <div class="loader">
                 <svg class="circular" viewBox="25 25 50 50">
@@ -216,20 +240,6 @@
         </div>
     </view-index>
     <noscript>Please enable JavaScript to view this website. </noscript>
-    <script>
-        (function () {
-            'use strict';
-            if ('registerElement' in document &&
-                'import' in document.createElement('link') &&
-                'content' in document.createElement('template')) {} else {
-                // polyfill the platform!
-                const e = document.createElement('script');
-                e.src = 'bower_components/webcomponentsjs/webcomponents-lite.min.js';
-                document.body.appendChild(e);
-                console.info("%cBrowser is using polyfill the platform.", crimsonColor);
-            }
-        })();
-    </script>
 </body>
 
 </html>

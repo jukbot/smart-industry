@@ -301,7 +301,10 @@
           }
         });
         this.loadResources(this.resolveUrl('../data/locales.json'));
-        alert("GPu acceleration(WebGL) supportted status is " + detectWebGL());
+        const webgl = detectWebGL();
+        if (webgl !== 1) {
+          alert("GPU Acceleration (WebGL) is not supportted or disabled.");
+        }
       },
 
       ready() {
