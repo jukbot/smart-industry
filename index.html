@@ -49,13 +49,11 @@
                     .then(() => {
                         console.info(swRegisterd, greenColor)
                     }).catch((err) => {
-                        console.warn(swFailed, err);
+                        console.warn(swFailed, err)
                     })
                 navigator.serviceWorker.ready
-                    .then(() => {
-                        console.info(swReady, greenColor)
-                    }).catch((err) => {
-                        console.error(swFailed, err);
+                    .catch((err) => {
+                        console.error(swFailed, err)
                     })
             })
         } else {
