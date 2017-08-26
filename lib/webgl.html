@@ -10,7 +10,7 @@
     function detectWebGL() {
         // Check for the WebGL rendering context
         if (!!window.WebGLRenderingContext) {
-            const canvas = document.createElement("canvas"),
+            let canvas = document.createElement("canvas"),
                 names = ["webgl", "experimental-webgl", "moz-webgl", "webkit-3d"],
                 context = false;
 
@@ -30,8 +30,5 @@
 
         // WebGL not supported.
         return -1;
-    }
-    export function detectWebGL() {
-        detectWebGL();
     }
 </script>
