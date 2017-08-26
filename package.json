@@ -12,7 +12,7 @@
     "requirejs": "^2.3.5"
   },
   "devDependencies": {
-    "eslint": "^4.4.1",
+    "eslint": "^4.5.0",
     "eslint-config-google": "^0.9.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-html": "^3.2.0",
@@ -22,17 +22,9 @@
     "eslint-plugin-standard": "^3.0.1"
   },
   "scripts": {
-    "build": "polymer build",
     "lint": "npm run lint:javascript",
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "polymer test",
     "test:integration": "polymer build # test that psk builds without error with the CLI"
-  },
-  "keywords": [
-    "elements",
-    "web",
-    "components",
-    "webcomponents",
-    "web-components"
-  ]
+  }
 }
