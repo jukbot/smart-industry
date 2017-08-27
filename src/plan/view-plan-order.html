@@ -316,12 +316,6 @@
             return Sugar.Date.create(dateString);
           }
         };
-        /* productPicker.addEventListener('value-changed', function () {
-           let product_list = productPicker.value;
-           if (product_list != null && sizePicker.items != null) {
-              sizePicker.disabled = false;
-           }
-         }); */
       },
 
       _createOrder() {
@@ -385,19 +379,48 @@
         alert("Invalid file format");
       },
 
-
-      /*
-            calUsedMachine: function (g) {
-              let selectedMachine = [];
-              for (let key in g) {
-                selectedMachine[key] = g[key].value;
-              }
-              let machine_no = selectedMachine.length;
-              console.log("Machine no: " + machine_no);
-              return selectedMachine;
-            },
-      */
-
     });
+  </script>
+  <script src="../../bower_components/jsLPSolver/src/solver.js"></script>
+  <script>
+    // var solver = require("../../bower_components/jsLPSolver/src/solver"),
+    model = {
+      "optimize": "profit",
+      "opType": "max",
+      "constraints": {
+        "wood": {
+          "max": 300
+        },
+        "labor": {
+          "max": 110
+        },
+        "storage": {
+          "max": 400
+        }
+      },
+      "variables": {
+        "table": {
+          "wood": 30,
+          "labor": 5,
+          "profit": 1200,
+          "table": 1,
+          "storage": 30
+        },
+        "dresser": {
+          "wood": 20,
+          "labor": 10,
+          "profit": 1600,
+          "dresser": 1,
+          "storage": 50
+        }
+      },
+      "ints": {
+        "table": 1,
+        "dresser": 1
+      }
+    }
+
+    console.log(solver.Solve(model));
+    // {feasible: true, result: 1440-0, table: 8, dresser: 3}
   </script>
 </dom-module>

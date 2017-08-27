@@ -1,18 +1,9 @@
 {
-  "extends": ["eslint:recommended", "google"],
-  "env": {
-    "browser": true
-  },
-  "plugins": [
-    "html"
-  ],
-  "rules": {
-    "no-var": 1,
-    "new-cap": ["error", {
-      "capIsNewExceptions": ["Polymer"]
-    }]
-  },
-  "globals": {
-    "Polymer": true
-  }
+    "extends": ["plugin:polymer/polymer-1"],
+    "env": {
+        "browser": true
+    },
+    "plugins": [
+        "polymer"
+    ]
 }

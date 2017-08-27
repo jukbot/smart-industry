@@ -1,8 +1,20 @@
-[![Stories in Ready](https://badge.waffle.io/jukbot/smart-industry.png?label=ready&title=Ready)](https://waffle.io/jukbot/smart-industry?utm_source=badge)
 # Polymer App Starter Kit
+=======
+# About IMES
 
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
+[![GitHub (pre-)release](https://img.shields.io/github/release/jukbot/smart-industry/all.svg)](https://github.com/jukbot/smart-industry/releases/)
+[![Waffle.io](https://img.shields.io/waffle/label/jukbot/smart-industry/in%20progress.svg)](https://waffle.io/jukbot/smart-industry)
+
+### Demo User Login 
+
+[Login here](https://smart-mes.firebaseapp.com/)
+
+| E-mail | Password | 
+|---------|---------------|
+| demo@imes.in.th | demouser |
+
 
 This template is a starting point for building apps using a drawer-based
 layout. The layout is provided by `app-layout` elements.

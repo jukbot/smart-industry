@@ -1,32 +1,65 @@
-<!DOCTYPE html>
-<html lang="en-US">
+<!doctype html>
+<html lang="en">
 
 <head>
     <base href="/">
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, minimum-scale=1,user-scalable=yes">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
     <title>IMES</title>
-    <meta name="description" content="Smart Manufacturing Execution Systems for Small-Midsize industry">
+    <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry">
     <meta name="author" content="KMUTT">
-    <meta name="theme-color" content="#FFFFFF">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="IMES">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="IMES">
-    <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
-    <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta name="msapplication-tap-highlight" content="no">
     <link rel="shortcut icon" href="/images/favicon.png">
     <link rel="manifest" href="/manifest.json">
     <link rel="canonical" href="/">
-    <link rel="apple-touch-icon" href="/images/manifest/icon-48x48.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="/images/manifest/icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="96x96" href="/images/manifest/icon-96x96.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
-    <!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" type="text/javascript"></script>
-    <![endif]-->
+    <meta name="theme-color" content="#FFFFFF">
+    <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="IMES">
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="IMES">
+    <!-- Homescreen icons -->
+    <link rel="apple-touch-icon" href="images/manifest/icon-48x48.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/manifest/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="images/manifest/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png">
+    <!-- Tile icon for Windows 8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-tap-highlight" content="no">
+    <script>
+        // Root path
+        window.Polymer = {
+            rootPath: '/'
+        };
+        // Service worker status
+        const swFailed = "%cService Worker Register Failed: "
+        const swReady = "%cService Worker Ready"
+        const swRegistered = "%cService Worker Registered"
+        const greenColor = "color: green;"
+        const crimsonColor = "color: crimson;"
+        // Load and register pre-caching Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register('service-worker.js', {
+                        scope: Polymer.rootPath,
+                    })
+                    .then(() => {
+                        console.info(swRegisterd, greenColor)
+                    }).catch((err) => {
+                        console.warn(swFailed, err)
+                    })
+                navigator.serviceWorker.ready
+                    .catch((err) => {
+                        console.error(swFailed, err)
+                    })
+            })
+        } else {
+            alert("Service Worker is not supportted by your browser. Please upgrade your browser");
+        }
+    </script>
     <script>
         window.Polymer = {
                 dom: 'shadow',
@@ -51,51 +84,26 @@
                     for (var b = 0; b < a.length; b++) a[b].unregister()
             });
     </script>
-    <script async src="https://www.google-analytics.com/analytics.js"></script>
-    <script>
-        // Register the base URL
-        const baseUrl = document.querySelector('base').href
-        // Service worker status
-        const swFailed = "%cService Worker Register Failed: "
-        const swReady = "%cService Worker Ready"
-        const swRegistered = "%cService Worker Registered"
-        const greenColor = "color: green;"
-        const crimsonColor = "color: crimson;"
-        // Load and register pre-caching Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function () {
-                navigator.serviceWorker.register(baseUrl + 'service-worker.js')
-                    .then(() => {
-                        console.info(swRegisterd, greenColor)
-                    }).catch((err) => {
-                        console.warn(swFailed, err);
-                    })
-                navigator.serviceWorker.ready
-                    .then(() => {
-                        console.info(swReady, greenColor)
-                    }).catch((err) => {
-                        console.error(swFailed, err);
-                    })
-            })
-        } else {
-            alert("Service Worker is not supportted by your browser. Please upgrade your browser");
-        }
-    </script>
+    <!-- Load your application shell -->
     <link rel="import" href="/src/view-index.html">
+
+    <!-- Add any global styles for body, document, etc. -->
     <style>
          :root {
             --main-bg-color: #eeeeee;
+            --main-font-color: #333333;
         }
 
         vaadin-license-box {
             display: none !important;
+            /* REMOVE WHEN USE IN PRODUCTION */
         }
 
         body {
             font-family: -apple-system, system-ui, BlinkMacSystemFont, "Roboto", "Noto", sans-serif;
-            margin: 0 auto;
+            margin: 0;
             padding: 0;
-            color: #333333;
+            color: var(--main-font-color);
             background-color: var(--main-bg-color);
             line-height: 1.5;
             min-height: 100vh;
@@ -226,7 +234,6 @@
             }
         }
     </style>
-    <link rel="prefetch" href="/src/view-index.html">
 </head>
 
 <body>
