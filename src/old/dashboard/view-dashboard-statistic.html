@@ -1,0 +1,141 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+
+<dom-module id="view-dashboard-statistic">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-item-height: 50%;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 4;
+        }
+      }
+
+      .status {
+        text-align: center;
+        font-size: 2rem;
+      }
+
+      .flex-item-chart {
+        flex: 1;
+        width: 100%;
+      }
+
+      #flex-column {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #flex-row {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+      }
+    </style>
+    <firebase-query app-name="smart-mes" id="orderHistoryQuery" path="/history/order" data="{{orderHistoryData}}"></firebase-query>
+    <div class="card">
+
+      <div id="flex-column">
+        <div id="flex-row">
+          <div class="flex-item-chart">
+            <vaadin-column-chart class="flex-item-chart">
+              <title>Product Order Statistic</title>
+              <subtitle>Statistic</subtitle>
+              <x-axis type="category"></x-axis>
+              <y-axis>
+                <title>Total orders</title>
+              </y-axis>
+              <legend enabled="false"></legend>
+              <plot-options>
+                <series>
+                  <data-labels enabled="true" format="{point.y} Orders">
+                  </data-labels>
+                </series>
+              </plot-options>
+              <data-series>
+                <name>Product</name>
+                <color-by-point>true</color-by-point>
+                <data>
+                  <template is="dom-repeat" items="[[orderHistoryData]]">
+                    <point>
+                      <name>[[item.order_product_name]]</name>
+                      <y>[[item.order_quantity]]</y>
+                    </point>
+                  </template>
+                </data>
+              </data-series>
+            </vaadin-column-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="card">
+      <div id="flex-column">
+        <div id="flex-row">
+          <div class="flex-item-chart">
+            <vaadin-column-chart class="flex-item-chart" id="column-with-negative-values">
+              <chart-title>Monthly Order Statistic</chart-title>
+              <subtitle>Show the order statistic</subtitle>
+              <x-axis>
+                <categories>
+                  <template is="dom-repeat" items="[[orderHistoryData]]">
+                    Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+                  </template>
+                </categories>
+              </x-axis>
+              <y-axis>
+                <chart-title>Orders</chart-title>
+              </y-axis>
+              <tooltip point-format="{series.name}: {point.y} Orders"></tooltip>
+              <data-series name="Revenue" data="[[revenueSeries]]"></data-series>
+              <data-series name="Expenses" data="[[expensesSeries]]"></data-series>
+              <data-series name="Net income" data="[[netSeries]]"></data-series>
+            </vaadin-column-chart>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'view-dashboard-statistic',
+      properties: {
+        orderHistoryData: Object,
+        data: {
+          type: Array,
+          value: [{
+            name: 'test',
+            y: 60
+          }]
+        }
+      }
+    });
+  </script>
+</dom-module>

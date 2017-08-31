@@ -1,0 +1,73 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../app-language-behavior.html">
+<dom-module id="view-404">
+    <template>
+        <style include="shared-styles">
+             :host {
+                display: block;
+            }
+
+            * {
+                line-height: 1.5;
+                margin: 0;
+            }
+
+            h1 {
+                color: #333333;
+                font-size: 2.25rem;
+                font-weight: 400;
+                margin: 0;
+            }
+
+            p {
+                font-size: 1rem;
+                line-height: 1.2;
+                padding: 5px;
+            }
+
+            .container {
+                color: #6e6e6e;
+                height: 50em;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex: 1;
+                text-align: center;
+            }
+
+            @media only screen and (max-width: 480px) {
+                body {
+                    margin: 10px auto;
+                }
+                h1 {
+                    font-size: 1.75em;
+                }
+                .container {
+                    height: 40em;
+                }
+            }
+        </style>
+        <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+        <div class="container">
+            <div>
+                <h1>{{localize('page-not-found')}}</h1>
+                <p>{{localize('page-does-not-exist')}} </p>
+                <a href="/" title="Return to home">{{localize('return-to-home')}}</a>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'view-404',
+            behaviors: [
+                Polymer.AppLocalizeBehavior,
+                Polymer.AppLanguageBehavior
+            ],
+            attached: function () {
+                this.loadResources(this.resolveUrl('../../data/locales.json'));
+            },
+        });
+    </script>
+</dom-module>

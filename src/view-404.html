@@ -1,0 +1,55 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="app-language-behavior.html">
+<link rel="import" href="style/flat-button.html">
+
+<dom-module id="view-404">
+  <template>
+    <style include="flat-button">
+       :host {
+        display: block;
+      }
+
+      iron-icon {
+        width: 50px;
+        height: 50px;
+      }
+
+      h1 {
+        margin: 20px 0;
+        font-weight: 300;
+        color: var(--app-font-color);
+      }
+
+      .container {
+        height: 50em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        text-align: center;
+      }
+
+      .icon {
+        fill: var(--app-font-color);
+      }
+    </style>
+    <div class="container">
+      <div>
+        <iron-icon class="icon" icon="vaadin:exclamation-circle"></iron-icon>
+        <h1>Sorry, we couldn't find that page</h1>
+        <flat-button role="button">
+          <a href="/dashboard" title="Back to home">Go to the home page</a>
+        </flat-button>
+      </div>
+    </div>
+  </template>
+  <script>
+    class View404 extends Polymer.Element {
+      static get is() {
+        return 'view-404';
+      }
+    }
+    customElements.define(View404.is, View404);
+  </script>
+</dom-module>

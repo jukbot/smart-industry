@@ -1,0 +1,84 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-track-energy">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-item-height: 50%;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      .icon {
+        width: 60px;
+        height: 60px;
+      }
+
+      .port-status {
+        text-align: center;
+        font-size: 3rem;
+      }
+    </style>
+    <div class="card">
+      <div class="port-status">
+        <iron-icon class="icon" icon="vaadin:warning"></iron-icon>
+        <p>No WebUSB device found.</p>
+        <paper-button class="dark btn" title="Search sensor" on-tap="_scanDevice" raised>Attach Power Sensor</paper-button>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-track-energy',
+      _scanDevice() {
+        if ('usb' in navigator) {
+          let device;
+          device = navigator.usb.requestDevice({
+              filters: [{
+                vendorId: 0x2341
+              }, {
+                vendorId: 0x2a03
+              }]
+            })
+            .then(device => {
+              console.log(device.productName); // "Arduino Micro"
+              console.log(device.manufacturerName); // "Arduino LLC"
+            })
+            .catch(error => {
+              console.log(error);
+            });
+
+          if (device !== undefined) {
+            // Add |device| to the UI.
+          }
+        } else {
+          alert("Your web browser is not support physical device detection. Please use Google Chrome");
+        }
+      }
+    });
+  </script>
+</dom-module>

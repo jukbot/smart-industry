@@ -1,0 +1,182 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-track-production">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-item-height: 50%;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+
+      .percent {
+        font-size: 7rem;
+        text-align: center;
+      }
+
+      .port-status {
+        text-align: center;
+        font-size: 3rem;
+      }
+
+      .head {
+        font-size: 1.6rem;
+        text-align: center;
+      }
+
+      .icon {
+        width: 60px;
+        height: 60px;
+      }
+
+      .btn {
+        width: 120px;
+        margin: 10px 0;
+      }
+
+      .order-header {
+        margin-top: 0;
+      }
+
+      .button-group {
+        text-align: center;
+        margin-bottom: 10px;
+      }
+
+      .button-group paper-button {
+        display: inline-flex;
+        width: 250px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      paper-progress {
+        width: 100%;
+      }
+
+      paper-progress.deep-orange {
+        --paper-progress-active-color: var(--paper-light-orange-500);
+        --paper-progress-secondary-color: var(--paper-light-orange-500);
+      }
+
+      paper-progress.purple {
+        --paper-progress-active-color: var(--paper-deep-purple-500);
+        --paper-progress-secondary-color: var(--paper-deep-purple-500);
+      }
+
+      paper-progress.cyan {
+        --paper-progress-active-color: var(--paper-light-cyan-500);
+        --paper-progress-secondary-color: var(--paper-light-cyan-500);
+      }
+    </style>
+    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" order-by-child="order_no" data="{{orderQuery}}" order-by-value="true"></firebase-query>
+    <firebase-document app-name="smart-mes" id="sensorCount" path="/device/1/count" data="{{count}}"></firebase-document>
+    <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1 class="head">Production Efficiency</h1>
+          <p class="percent">90%</p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="head">Machine Availablity</h1>
+          <p class="percent" id="maOutput">N/A</p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="head">Overall Equipment Effectiveness</h1>
+          <p class="percent" id="oeeOutput">N/A</p>
+        </div>
+      </li>
+    </ul>
+
+    <div class="card">
+      <h1>Manual Overall Equipment Effectiveness Calculation</h1>
+      <vaadin-combo-box label="Order no." name="order" items="[[orderQuery]]" id="orderSelector" item-label-path="order_no" item-value-path="order_no"
+        selected-item='{{o}}' required always-float-label></vaadin-combo-box>
+      <paper-input id="planRuntime" label="Planned Total Runtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]"
+        required always-float-label></paper-input>
+      <paper-input id="downTime" label="Total Downtime (mins)" type="number" min="0" step="1" allowed-pattern="[0-9]" required
+        always-float-label></paper-input>
+      <paper-input id="cycleTime" label="Cycle Time Per unit (seconds)" type="number" min="0" step="1" allowed-pattern="[0-9]"
+        required always-float-label></paper-input>
+      <paper-input id="totalUnit" label="Total Units Produced (items)" value="{{o.order_quantity}}" type="number" min="0" step="1"
+        allowed-pattern="[0-9]" required always-float-label></paper-input>
+      <paper-input id="rejectUnit" label="Reject Units Produced (items)" type="number" min="0" step="1" allowed-pattern="[0-9]"
+        required always-float-label></paper-input>
+      <div class="button-group">
+        <paper-button raised class="fancy" on-tap="calOEE">Calculate</paper-button>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="order-header">Order 1 (Status: Completed)</h2>
+      <p>Complete N/A / 100</p>
+      <vaadin-progress-bar value="0.3"></vaadin-progress-bar>
+      <paper-progress value="100" min="0" max="100" class="cyan"></paper-progress>
+      <paper-button raised class="dark btn" on-tap="view-oee">View Detail</paper-button>
+    </div>
+    <div class="card">
+      <h2 class="order-header">Order 2 (Status: In-progress)</h2>
+      <p>Count [[count]] / 100</p>
+      <paper-progress value="[[count]]" min="0" max="100" class="purple"></paper-progress>
+      <paper-button raised class="dark btn" on-tap="view-oee">View Detail</paper-button>
+    </div>
+    <div class="card">
+      <h2 class="order-header">Order 3 (Status: In-progress)</h2>
+      <p>Complete N/A / 100</p>
+      <paper-progress value="30" min="0" max="100" class="purple"></paper-progress>
+      <paper-button raised class="dark btn" on-tap="view-oee">View Detail</paper-button>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-track-production',
+      calOEE: function () {
+        let plan = this.$.planRuntime.value;
+        let down = this.$.downTime.value;
+        let cycle = this.$.cycleTime.value;
+        let total = this.$.totalUnit.value;
+        let reject = this.$.rejectUnit.value;
+        if (plan !== "" && down !== "" && cycle !== "" && total !== "" && reject !== "") {
+          let availability = (plan - down) / plan;
+          let performance = (cycle * total) / ((plan - down) * 60);
+          let quality = (total - reject) / total;
+          let oee = ((availability * performance * quality) * 100).toFixed(1);
+          this.$.oeeOutput.innerHTML = oee + "%";
+        } else {
+          alert("Input field cannot be blank, please fill in completely.");
+        }
+      },
+      properties: {
+        orderQuery: Object,
+        count: Object
+      }
+    });
+  </script>
+</dom-module>

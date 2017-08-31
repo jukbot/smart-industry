@@ -1,0 +1,479 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!-- app modules - used for core functions -->
+<link async rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+
+<!-- iron modules -used for component functions -->
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<!-- paper modules - used for user interface -->
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<!-- 3rd party modules -->
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
+<!-- import localize behavior  -->
+<link rel="import" href="app-language-behavior.html">
+<!-- import style component -->
+<link rel="import" href="style/flat-button.html">
+<!-- import page router -->
+<link rel="import" href="view-login.html">
+<link rel="import" href="view-dashboard.html">
+
+<dom-module id="view-app">
+  <template>
+    <style include="flat-button">
+       :host {
+        display: block;
+        --app-primary-color: #202020;
+        --app-secondary-color: #FFFFFF;
+        --app-accent-color: #172C50;
+        --app-font-color: #333333;
+        --app-background-color: #eeeeee;
+        --paper-progress-active-color: gold;
+        --paper-progress-container-color: var(--app-primary-color);
+        --paper-progress-height: 2px;
+        --paper-progress-indeterminate-cycle-duration: 3s;
+        color: var(--app-font-color);
+        background-color: var(--app-background-color);
+      }
+
+      app-header {
+        color: var(--app-secondary-color);
+        background-color: var(--app-primary-color);
+        --app-header-shadow: {
+          box-shadow: inset 0px 5px 6px -3px rgba(0, 0, 0, 0.2);
+          height: 10px;
+          bottom: -10px;
+        }
+      }
+
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none;
+      }
+
+      app-header paper-icon-button {
+        color: var(--app-secondary-color);
+        --paper-icon-button-ink-color: var(--app-primary-color);
+      }
+
+      paper-progress {
+        width: 100%;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      .main-title {
+        font-size: 3.3rem;
+        line-height: normal;
+        text-align: center;
+        margin: 0;
+      }
+
+      .main-describe {
+        font-size: 1.2rem;
+        text-align: center;
+        color: #7b7b7b;
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-weight: 300;
+      }
+
+      .drawer-list>a {
+        display: block;
+        padding: 10px 50px;
+        text-decoration: none;
+        color: var(--app-primary-color);
+      }
+
+      .drawer-list>a:hover {
+        background-color: #eeeeee;
+      }
+
+      .drawer-list>a.iron-selected {
+        color: var(--app-secondary-color);
+        background-color: var(--app-primary-color);
+      }
+
+      .logo {
+        margin: 0 auto;
+        padding: 15px 0 0 0;
+        width: 50%;
+        height: auto;
+        text-align: center;
+        display: block;
+      }
+
+      .display-name,
+      .page-title {
+        color: var(--app-secondary-color);
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 300;
+      }
+
+      .profile-image {
+        width: 150px;
+        border: 1px solid #eeeeee;
+        background-size: contain;
+        border-radius: 50%;
+      }
+
+      .flex-center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 5em;
+      }
+
+      .authen-btn {
+        text-align: center;
+        width: 60%;
+      }
+
+      .center {
+        text-align: center;
+      }
+
+      .sidebar-menu-line {
+        border-bottom: 1px solid #eeeeee;
+        text-align: center;
+      }
+
+      #searchBox {
+        width: 100%;
+        float: right;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+        .display-name {
+          display: none;
+        }
+        .page-title {
+          font-size: 1rem;
+        }
+      }
+    </style>
+
+    <!-- ENABLE WHEN DEPLOY PRODUCTION <app-analytics key="UA-51514677-9"></app-analytics> -->
+    <app-location route="{{route}}"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+    <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
+      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="appInformation" path="/metadata" data="{{metadata}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+
+    <app-indexeddb-mirror id="profileIndexdb" key="profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
+    <app-indexeddb-mirror id="metaIndexdb" key="metadata" data="{{metadata}}" persisted-data="{{persistedMetaData}}"></app-indexeddb-mirror>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
+
+    <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
+      <app-drawer id="drawer" slot="drawer" hidden$="[[!signedIn]]" role="menu" swipe-open="[[narrow]]" tabindex="0">
+        <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
+        <h1 title="IMES" class="main-title">IMES</h1>
+        <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
+        <nav>
+          <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
+            <a name="dashboard" role="link" href="/dashboard" rel="dashboard" title="Dashboard" tabindex="-1">
+              <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
+            <a name="setup" role="link" href="/setup" rel="setup" title="Setup" tabindex="-1">
+              <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
+            <a name="planning" role="link" href="/planning" rel="plan" title="Plan" tabindex="-1">
+              <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
+            <a name="tracking" role="link " href="/tracking" rel="track" title="Track" tabindex="-1">
+              <paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
+            <a name="help" role="link" href="/help" rel="help" title="Help" tabindex="-1">
+              <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
+            </a>
+            <a name="settings" role="link" href="/settings" rel="settings" title="Settings" tabindex="-1">
+              <paper-icon-button icon="vaadin:tools"></paper-icon-button> {{localize('settings')}}
+            </a>
+            <a name="login" role="link" href="/login" rel="login" title="Login" tabindex="-1">
+              <paper-icon-button icon="vaadin:sign-in"></paper-icon-button> Login (temp)
+            </a>
+          </iron-selector>
+        </nav>
+        <div class="sidebar-menu-line" role="separator"></div>
+        <div class="flex-center">
+          <flat-button role="button" on-tap="_logout" hidden$="[[!user]]">
+            <a role="link" href="/login" rel="logout" title="Logout">{{localize('logout-button')}}</a>
+          </flat-button>
+          <!-- <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button> -->
+        </div>
+        <dom-if if="[[signedIn]]">
+          <div class="center" role="group">
+            <img class="profile-image" src$="[[getUserImage(user.photoURL)]]" alt="user photo">
+            <p>[[persistedProfileData.displayName]]</p>
+            <p>{{localize('email')}} : [[persistedProfileData.email]]</p>
+            <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(persistedProfileData.emailVerified)]]</span></p>
+            <p>{{localize('internet-status')}}: <span class="online">[[getOnlineStatus(online)]]</span></p>
+            <p>[[persistedMetaData.appName]] ({{localize('version')}} [[persistedMetaData.appVersion]])</p>
+            <p>{{localize('developed-by')}} [[persistedMetaData.appDeveloper]]</p>
+          </div>
+        </dom-if>
+      </app-drawer>
+
+      <!-- Main content -->
+      <app-header-layout fullbleed>
+        <app-header hidden$="[[!signedIn]]" id="header" slot="header" effects="waterfall" reveals snaps condenses>
+          <app-toolbar>
+            <paper-progress id="pageLoader" indeterminate top-item></paper-progress>
+            <paper-icon-button icon="vaadin:menu" role="button" tabindex="0" drawer-toggle></paper-icon-button>
+            <h2 class="page-title" main-title>{{localize(page)}}</h2>
+            <div hidden$="[[!user]]">
+              <h2 class="display-name">
+                [[user.displayName]]</h2>
+            </div>
+            <input id="searchBox" type="search" class="search-box fit" placeholder="Search Polymer Site" aria-labelledby="searchLabel">
+            <paper-icon-button tabindex="-1" aria-label="Search Polymer site" role="button" on-tap="_openSearchBox" icon="vaadin:search"></paper-icon-button>
+          </app-toolbar>
+        </app-header>
+
+        <!-- Main content -->
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+          <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!signedIn]]"></view-dashboard>
+          <view-setup name="setup" route="[[subroute]]" hidden$="[[!signedIn]]"></view-setup>
+          <view-planning name="planning" route="[[subroute]]" hidden$="[[!signedIn]]"></view-planning>
+          <view-tracking name="tracking" route="[[subroute]]" hidden$="[[!signedIn]]"></view-tracking>
+          <view-help name="help" route="[[subroute]]" hidden$="[[!signedIn]]"></view-help>
+          <view-settings name="settings" route="[[subroute]]" hidden$="[[!signedIn]]"></view-settings>
+          <view-404 route="[[subroute]]" name="404"></view-404>
+          <view-offline route="[[subroute]]" name="offline"></view-offline>
+          <view-login name="login" route="[[subroute]]" hidden$="[[!signedIn]]"></view-login>
+        </iron-pages>
+      </app-header-layout>
+    </app-drawer-layout>
+    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
+  </template>
+
+  <script>
+    class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.AppLanguageBehavior],
+      Polymer.Element) {
+      static get is() {
+        return 'view-app';
+      }
+
+      static get properties() {
+        return {
+          page: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_pageChanged',
+          },
+          signedIn: {
+            type: Boolean
+          },
+          user: Object,
+          metadata: Object,
+          alertText: String
+        };
+      }
+
+      static get observers() {
+        return [
+          '_routePageChanged(routeData.page)'
+        ];
+      }
+
+      constructor() {
+        super();
+        console.log('Initializing..' + this.language)
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this.loadResources(this.resolveUrl('../data/locales.json'));
+        Polymer.Async.timeOut.run(() => {
+          if (this.authen && this.route.path === '/login') {
+            this.page = 'dashboard';
+          }
+        }, 1);
+      }
+
+      ready() {
+        super.ready();
+        // Custom elements polyfill safe way to indicate an element has been upgraded.
+        document.body.removeAttribute('unresolved');
+        // listen for custom events
+        this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e));
+        this.addEventListener('signed-in-changed', (e) => this.signedInChanged(e));
+        // listen for online/offline
+        Polymer.RenderStatus.afterNextRender(this, () => {
+          window.addEventListener('online', (e) => this._networkChanged(e));
+          window.addEventListener('offline', (e) => this._networkChanged(e));
+        });
+      }
+
+      _routePageChanged(page) {
+        this.page = page || 'dashboard';
+        // Close a non-persistent drawer when the page & route are changed.
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      }
+
+      _pageChanged(page, oldPage) {
+        if (page != null) {
+          if (page == 'dashboard') {
+            this._pageLoaded(Boolean(oldPage));
+            // other routes are lazy loaded
+          } else {
+            // When a load failed, it triggered a 404 which means we need to
+            // eagerly load the 404 page definition
+            let callback = this._pageLoaded.bind(this, Boolean(oldPage));
+            let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+            Polymer.importHref(
+              resolvedPageUrl,
+              callback,
+              callback,
+              true);
+          }
+        }
+      }
+
+      _pageLoaded(shouldResetLayout) {
+        this._ensureLazyLoaded();
+        if (shouldResetLayout) {
+          // The size of the header depends on the page (e.g. on some pages the tabs
+          // do not appear), so reset the header's layout only when switching pages.
+          Polymer.Async.timeOut.run(() => {
+            this.$.header.resetLayout();
+          }, 1);
+        }
+      }
+
+      _ensureLazyLoaded() {
+        // load lazy resources after render and set `loadComplete` when done.
+        if (!this.loadComplete) {
+          Polymer.RenderStatus.afterNextRender(this, () => {
+            Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
+              this._networkChanged();
+              this.loadComplete = true;
+              this.$.pageLoader.removeAttribute('indeterminate');
+            });
+          });
+        }
+      }
+
+      _signedInChanged() {
+        if (!this.signedIn) {
+          console.log('You are not signin');
+          this.page = 'login';
+          //this.$.drawer.hidden = !signedIn;
+          //this.$.header.hidden = !signedIn;
+          return;
+        }
+      }
+
+      _networkChanged() {
+        let oldOffline = this.offline;
+        this.offline = !navigator.onLine;
+        // Show the snackbar if the user is offline when starting a new session
+        // or if the network status changed.
+        if (this.offline || (!this.offline && oldOffline === true)) {
+          this.alertText = this.offline ? 'notification-offline' : 'notification-online';
+          this.$.toastAlert.open();
+          if (!this.offline && oldOffline === true) {
+            this.$.pageLoader.setAttribute('indeterminate', '');
+            this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(5000), () => {
+              this._refreshNetworkStatus();
+            });
+          }
+        }
+      }
+
+      _refreshNetworkStatus() {
+        this.$.profileIndexdb.refreshNetworkStatus();
+        this.$.metaIndexdb.refreshNetworkStatus();
+        this.$.auth.refreshNetworkStatus();
+        this.$.appLanguage.refreshNetworkStatus();
+        this.$.pageLoader.removeAttribute('indeterminate');
+      }
+
+      _onFallbackSelectionTriggered() {
+        this.page = '404';
+      }
+
+      _logout() {
+        this.offline = !navigator.onLine;
+        if (!this.offline) {
+          this.$.auth.signOut()
+            .then(() => {
+              this.authen = false;
+              // redirect to login page
+              this.page = 'login';
+            })
+            .catch((error) => {
+              console.info('%cAuthenticate Failed: ' + error.code, 'color: crimson;');
+              alert('Authenticate Failed: ' + error.message + ' Please try again.');
+            });
+        } else {
+          this.page = 'offline';
+        }
+      }
+
+      _openSearchBox() {
+        this.$.searchBox.style.display = 'block-inline';
+      }
+
+      getOnlineStatus(status) {
+        if (status) {
+          this.$$('.online').style.color = 'green';
+          return 'online';
+        } else {
+          this.$$('.online').style.color = 'red';
+          return 'offline';
+        }
+      }
+
+      getVerifyStatus(status) {
+        if (status) {
+          this.$$('.verify').style.color = 'green';
+          return 'Verified';
+        } else {
+          this.$$('.verify').style.color = 'red';
+          return 'Not verify';
+        }
+      }
+
+      getUserImage(url) {
+        if (url) {
+          return url;
+        } else {
+          return '../images/profile/default.svg';
+        }
+      }
+    }
+    window.customElements.define(ViewApp.is, ViewApp);
+  </script>
+</dom-module>

@@ -1,0 +1,335 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+
+<link rel="import" href="../../bower_components/polymerfire/firebase-app.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-document.html">
+
+<link rel="import" href="../../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-login">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        padding: 0px;
+      }
+
+      section {
+        height: 100vh;
+        width: 100%;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+      }
+
+      .flex-layout {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .left-half {
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../../images/cover/welcome.jpg");
+        background-repeat: no-repeat;
+        background-position: center top;
+        background-size: cover;
+        background-color: #333333;
+        flex: 1;
+        padding: 1rem;
+        margin: 0;
+      }
+
+      .right-half {
+        background-color: #ffffff;
+        flex: 1;
+        padding: 1rem;
+      }
+
+      .main-title {
+        font-size: 3.5rem;
+        font-weight: 400;
+        text-align: center;
+      }
+
+      .main-describe {
+        font-size: 1.5rem;
+        font-weight: 300;
+        text-align: center;
+      }
+
+      .form-title {
+        text-align: center;
+      }
+
+      .form-title>h2 {
+        font-size: 1.5rem;
+      }
+
+      .authen-btn {
+        width: 100%;
+        margin: 0.5rem 0 1rem 0;
+        padding: 1rem 0;
+        font-size: 1.25rem;
+      }
+
+      .white {
+        color: #ffffff;
+      }
+
+      .login-forget:focus,
+      .login-forget:hover {
+        color: red;
+        text-decoration: underline;
+      }
+
+      .login-register:focus,
+      .login-register:hover {
+        color: red;
+        text-decoration: underline;
+      }
+
+      .login-form,
+      .reset-form,
+      .register-form {
+        width: 90%;
+        margin: 0 auto;
+        max-width: 30rem;
+      }
+
+      .login-input,
+      .register-input {
+        --paper-input-container-input: {
+          font-size: 1.25rem;
+          color: #333333;
+        }
+      }
+
+      .login-remember {
+        margin: 1rem 0;
+      }
+
+      .logo {
+        margin: 0 auto;
+        padding: 10px 0;
+        width: 35%;
+        height: auto;
+        text-align: center;
+        display: none;
+      }
+
+      .mobile-title {
+        display: none;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+        .left-half {
+          display: none;
+        }
+        .mobile-title {
+          display: block;
+          font-size: 2.5rem;
+        }
+        .logo {
+          display: block;
+        }
+      }
+    </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" on-error="handleError"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
+    <app-localstorage-document key="session" data="{{remember}}"></app-localstorage-document>
+    <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
+    <section class="container">
+      <figure class="flex-layout left-half">
+        <article>
+          <h1 title="IMES" class="main-title white">Project IMES</h1>
+          <div title="Smart Industry Helper" class="main-describe white">Your Smart Industry Helper</div>
+        </article>
+      </figure>
+      <div class="flex-layout right-half">
+        <article>
+          <img class="logo" role="img" src="../../images/logo/industrial.svg" title="Logo" alt="application logo">
+          <h1 title="IMES" class="main-title mobile-title">Project IMES</h1>
+          <form hidden$="[[!login]]" class="login-form" on-submit="_login">
+            <div class="form-title">
+              <h2>User Login</h2>
+            </div>
+            <paper-input class="login-input" name="e-mail" id="email" type="email" maxlength="50" auto-complete="email" placeholder="E-mail"
+              autofocus auto-validate></paper-input>
+            <paper-input class="login-input" name="password" id="passwd" type="password" maxlength="50" auto-complete="current-password"
+              placeholder="Password" auto-validate></paper-input>
+            <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
+            <paper-checkbox class="login-remember" tabindex="0" name="remember" checked="{{remember}}" noink>Keep me signed in</paper-checkbox>
+            <paper-button raised class="chilli authen-btn" on-tap="_login" role="button" hidden$="[[user]]">Sign in</paper-button>
+            <a href="javascript:void(0);" on-tap="_showReset" class="login-forget">Forgot Password?</a>
+            <a href="javascript:void(0);" on-tap="_showRegister" class="login-register">Don’t have an account? Get one here.</a>
+          </form>
+          <form hidden$="[[!register]]" class="register-form" on-submit="_register">
+            <div class="form-title">
+              <h2>User Register</h2>
+            </div>
+            <paper-input class="register-input" name="e-mail" id="register_email" type="email" maxlength="40" placeholder="E-mail" autofocus
+              auto-validate></paper-input>
+            <paper-input class="register-input" name="new-password" id="register_passwd" type="password" maxlength="30" placeholder="New Password"
+              auto-auto-validate></paper-input>
+            <paper-input class="register-input" name="organization" id="register_organization" type="text" maxlength="40" placeholder="Organization"
+              autofocus auto-validate></paper-input>
+            <paper-input class="register-input" name="phone-number" id="register_phone" type="text" maxlength="15" placeholder="Phone Number"
+              autofocus auto-validate></paper-input>
+            <paper-button raised class="smart authen-btn" on-tap="_register" role="button">Send Confirmation</paper-button>
+            <a href="javascript:void(0);" on-tap="_hideRegister" class="login-register">Already have account? Sign in</a>
+          </form>
+          <form hidden$="[[!reset]]" class="reset-form" on-submit="_resetPassword">
+            <div class="form-title">
+              <h2>Reset Your Password</h2>
+            </div>
+            <paper-input class="login-input" name="e-mail" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail"
+              auto-focus auto-validate></paper-input>
+            <paper-button raised class="fancy authen-btn" on-tap="_resetPassword" role="button">Reset Password</paper-button>
+            <a href="javascript:void(0);" rel="noopenner" on-tap="_hideReset" class="login-forget">Have an account? Sign in.</a>
+          </form>
+        </article>
+      </div>
+    </section>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-login',
+      properties: {
+        login: {
+          type: Boolean,
+          value: true
+        },
+        reset: {
+          type: Boolean,
+          value: false
+        },
+        register: {
+          type: Boolean,
+          value: false
+        },
+        authen: {
+          type: Boolean,
+          value: false
+        },
+        target: {
+          type: Object,
+          value: function () {
+            return this.$.passwd;
+          }
+        },
+        user: Object,
+        userData: Object,
+      },
+
+      _login() {
+        if (this.$.email.value !== "" || this.$.passwd.value !== "") {
+          this.$.auth.signInWithEmailAndPassword(this.$.email.value, this.$.passwd.value)
+            .then((response) => {
+              this.authen = true;
+              this.async(function () {
+                this.set('route.path', '../');
+              }, 500);
+            })
+            .catch((error) => {
+              alert("Authenticate Failed: " + error.message);
+            });
+        } else {
+          alert("Email or Password cannot leave blank");
+        }
+      },
+
+      _register() {
+        let email = this.$.register_email.value;
+        let organize = this.$.register_organization.value;
+        let phone = this.$.register_phone.value;
+        let username = "New User";
+        if (email !== "" && organize !== "" && phone !== "" && this.$.register_passwd.value !== "") {
+          this.$.auth.createUserWithEmailAndPassword(email, this.$.register_passwd.value)
+            .then((response) => {
+              this.$.auth.signInWithEmailAndPassword(email, this.$.register_passwd.value)
+                .then((response) => {
+                  this.user.updateProfile({
+                    displayName: username,
+                  });
+                  this.addProfileInfo(username, email, organize, phone);
+                  this.user.sendEmailVerification();
+                  alert("Register successful. We've sent verification code to your email");
+                  // Signout Action
+                  this.$.auth.signOut();
+                  // Switch to login form
+                  this._hideRegister();
+                }).catch((error) => {
+                  alert("Authenticate Failed: " + error.message);
+                });
+            })
+            .catch((error) => {
+              alert("Register Failed: " + error.message);
+            });
+        } else {
+          alert("Please fill in the form completely.");
+        }
+      },
+
+      addProfileInfo(username, email, organize, phone) {
+        this.$.user.ref.set({
+            displayname: username,
+            email: this.user.email,
+            photoURL: null,
+            phone: phone,
+            organization: organize,
+            role: "admin",
+            description: "No description for this user"
+          })
+          .catch(error => {
+            alert("Error: " + error.message);
+          });
+      },
+
+      _resetPassword() {
+        if (this.$.resetEmail !== "") {
+          let resetEmail = this.$.resetEmail.value;
+          this.$.auth.sendPasswordResetEmail(resetEmail)
+            .then((response) => {
+              alert("Reset password has been send to your email.")
+            })
+            .catch((error) => {
+              alert(error.message);
+            });
+        } else {
+          alert("Email cannot leave blank");
+        }
+      },
+
+      _showReset() {
+        this.reset = true;
+        this.login = false;
+      },
+
+      _hideReset() {
+        this.reset = false;
+        this.login = true;
+      },
+
+      _showRegister() {
+        this.register = true;
+        this.login = false;
+      },
+
+      _hideRegister() {
+        this.register = false;
+        this.login = true;
+      },
+
+      handleError(e) {
+        console.info("%cAuthenticate Error: " + e.message, "color: crimson;");
+      },
+    });
+  </script>
+</dom-module>

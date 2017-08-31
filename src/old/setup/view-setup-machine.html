@@ -1,0 +1,288 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-setup-machine">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-item-height: 50%;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 4;
+        }
+      }
+
+      .machine-dialog {
+        width: 35%;
+        padding: 10px;
+      }
+
+      .machine-title {
+        font-size: 2rem;
+      }
+
+      .machine {
+        min-height: 350px;
+        height: auto;
+      }
+
+      .machine p {
+        margin: 12px 0;
+      }
+
+      .machine h1 {
+        text-align: center;
+      }
+
+      .machine-info-group {
+        margin-bottom: auto;
+      }
+
+      .button-group paper-button {
+        width: 49%;
+      }
+    </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+    <firebase-query app-name="smart-mes" id="stationQuery" path="/station" order-by-child="name" data="{{stationItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="install" data="{{machineItems}}"></firebase-query>
+    <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-indexeddb-mirror key="machineDataCache" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
+    <div class="stitched">
+      <paper-button raised on-tap="toggleDialog" class="big-btn magic">
+        <iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-machine')}}</paper-button>
+      <paper-dialog id="createMachineDialog" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
+        always-on-top no-cancel-on-outside-click>
+        <h1>{{localize('add-machine')}}</h1>
+        <paper-input name="machine-number" id="machineNumber" label="Machine Number" type="number" value="[[getMachineNumber(machineItems.length)]]"
+          min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
+        <paper-input name="machine-name" id="machineName" label="Machine Name" required always-float-label></paper-input>
+        <paper-input name="machine-effi" id="machineEffi" label="Efficiency" type="number" min="0" max="100" value="100" step="5"
+          allowed-pattern="[0-9]" required always-float-label>
+          <div suffix>&#37;</div>
+        </paper-input>
+        <paper-input name="machine-capacity" id="machineCapacity" label="Max Capacity per day" type="number" min="1" max="24" value="8"
+          step="1" allowed-pattern="[0-9]" required always-float-label>
+          <div suffix>Hrs.</div>
+        </paper-input>
+        <vaadin-combo-box label="Type" id="machineType" items="[[machineType]]" name="machineType" item-label-path="name" item-value-path="value"
+          required always-float-label></vaadin-combo-box>
+        <div class="buttons">
+          <paper-button on-tap="dismissAddMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+          <paper-button on-tap="addMachine" dialog-confirm autofocus>{{localize('add')}}</paper-button>
+        </div>
+      </paper-dialog>
+    </div>
+    <ul class="app-grid">
+      <template is="dom-repeat" items="{{persistedMachineData}}" as="machineItem">
+        <li>
+          <div class="card machine">
+            <div class="machine-info-group">
+              <h1 class="machine-title">[[machineItem.name]]</h1>
+              <p>{{localize('machine-number')}}: [[machineItem.number]]</p>
+              <p>{{localize('machine-type')}}: [[machineItem.code]]</p>
+              <p>{{localize('machine-station')}}: [[machineItem.station]]</p>
+              <p>{{localize('machine-standard-effi')}}: [[factoryStandard.machine]] &#37;</p>
+              <p>{{localize('machine-current-effi')}}: [[machineItem.effi]] &#37;</p>
+              <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] Hrs. per day</p>
+              <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
+            </div>
+            <div class="button-group">
+              <paper-button raised class="magic" machine="[[machineItem]]" on-tap="editMachine">{{localize('edit')}}</paper-button>
+              <paper-button raised class="chilli" machine="[[machineItem]]" on-tap="removeMachine">{{localize('remove')}}</paper-button>
+            </div>
+            <paper-dialog id="edit_[[machineItem.$key]]" class="machine-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
+              always-on-top no-cancel-on-outside-click>
+              <h2>{{localize('edit-machine')}}</h2>
+              <paper-input name="machine-number" id="machineNumber" label="Machine Number" type="number" value="[[machineItem.number]]"
+                min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
+              <paper-input id="name_[[machineItem.$key]]" name="machine-name" class="editmachineName" value="[[machineItem.name]]" label="Machine Name"
+                always-float-label></paper-input>
+              <paper-input id="effi_[[machineItem.$key]]" name="machine-effi" class="editmachineEffi" value="[[machineItem.effi]]" label="Efficiency"
+                type="number" min="0" max="100" step="5" allowed-pattern="[0-9]" always-float-label>
+                <div suffix>%</div>
+              </paper-input>
+              <vaadin-combo-box id="type_[[machineItem.$key]]" label="Machine Type" class="editmachineType" value="[[machineItem.code]]_[[machineItem.type]]"
+                items="[[machineType]]" name="machineType" item-label-path="name" item-value-path="value" always-float-label></vaadin-combo-box>
+
+              <div class="buttons">
+                <paper-button on-tap="dismissEditMachine" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+                <paper-button on-tap="saveEditMachine" machine="[[machineItem]]" dialog-confirm autofocus>{{localize('save')}}</paper-button>
+              </div>
+            </paper-dialog>
+          </div>
+        </li>
+      </template>
+    </ul>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-setup-machine',
+      properties: {
+        factoryStandard: {
+          type: Object
+        },
+        stationItems: {
+          type: Object
+        },
+        machineItems: {
+          type: Object
+        },
+        machineType: {
+          type: Array,
+          value: function () {
+            return [{
+                name: 'Milling',
+                value: 'mill_Milling'
+              },
+              {
+                name: 'Drilling',
+                value: 'drill_Drilling'
+              },
+              {
+                name: 'Trimming',
+                value: 'trim_Trimming'
+              },
+              {
+                name: 'Polishing',
+                value: 'polish_Polishing'
+              },
+              {
+                name: 'Welding',
+                value: 'weld_Welding'
+              },
+              {
+                name: 'Packing',
+                value: 'pack_Packing'
+              }
+            ]
+          }
+        },
+      },
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
+      ],
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
+      },
+      toggleDialog() {
+        this.$.createMachineDialog.open();
+      },
+      getMachineNumber(length) {
+        if (length == 0) {
+          return 1;
+        } else {
+          return length + 1;
+        }
+      },
+      addMachine() {
+        let mtype = this.$.machineType.value.split("_");
+        let mno;
+        if (Object.keys(this.machineItems).length === 0) {
+          mno = 1;
+        } else {
+          mno = Object.keys(this.machineItems).length + 1;
+        }
+        this.$.machineQuery.ref.push({
+          number: mno,
+          effi: this.$.machineEffi.value,
+          capacity: this.$.machineCapacity.value,
+          install: Math.round(new Date().getTime() / 1000.0),
+          name: this.$.machineName.value,
+          queue: 0,
+          station: 'not-defined',
+          status: 'stopped',
+          code: mtype[0],
+          type: mtype[1]
+        });
+        this.clearField();
+      },
+      editMachine(e) {
+        let key = e.currentTarget.machine.$key;
+        this.$$('#edit_' + key).open();
+      },
+      removeMachine(e) {
+        if (confirm("Delete this machine ?") == true) {
+          let key = e.currentTarget.machine.$key;
+          this.$.machineQuery.ref.child(key).remove();
+          if (this.notification) {
+            this.$.toastDeleteStation.open();
+          }
+        } else {}
+      },
+      saveEditMachine(e) {
+        this.$.machineQuery.refreshNetworkStatus();
+        // this.$.machineQuery.ref.child(e.target.id).remove();
+        // let mtype = this.$$('#type_'+e.target.id).value.split("_");
+        // let mno = Object.keys(this.machineItems).length+1;
+        /*    this.$.machineQuery.ref.push({
+              number: mno,
+              effi: this.$$('#effi_'+e.target.id).value,
+              install: Math.round(new Date().getTime()/1000.0),
+              name: this.$$('#name_'+e.target.id).value,
+              queue: 0,
+              status: 'Stopped',
+              type: mtype[1],
+              code: mtype[0]
+            });
+           */
+
+        /* this.$.machineQuery.ref.save("/machine/"+e.target.id).then(function () {
+        // after document saved, path will be changed to the new ref
+        // any change of data will sent back up and stored
+        alert("Save successful");
+          
+      }); */
+      },
+      dismissEditMachine(e) {
+        this.$.createMachineDialog.cancel();
+      },
+      dismissAddMachine() {
+        this.clearField();
+        this.$.createMachineDialog.cancel();
+      },
+      clearField() {
+        this.$.machineName.value = null;
+        this.$.machineEffi.value = 100;
+        this.$.machineType.value = null;
+      },
+      getInstallDate(timestamp) {
+        let today = new Date(timestamp * 1000);
+        let dd = today.getDate();
+        let mm = today.getMonth() + 1; //January is 0!
+        let yyyy = today.getFullYear();
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        let deliveryDate = dd + '/' + mm + '/' + yyyy;
+        return deliveryDate;
+      }
+    });
+  </script>
+</dom-module>

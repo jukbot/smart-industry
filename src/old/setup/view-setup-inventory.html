@@ -1,0 +1,62 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-setup-inventory">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-item-height: 50%;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 4;
+        }
+      }
+
+      .status {
+        text-align: center;
+        font-size: 2rem;
+      }
+    </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <div class="card">
+      <div class="status">
+        <p>Please upgrade to Enterprise package to enable inventory storage.</p>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-setup-inventory',
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
+      ],
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
+      },
+
+    });
+  </script>
+</dom-module>

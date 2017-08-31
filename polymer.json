@@ -1,0 +1,32 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/view-app.html",
+  "fragments": [
+    "src/page/view-dashboard.html",
+    "src/page/view-setup.html",
+    "src/page/view-planning.html",
+    "src/page/view-tracking.html",
+    "src/page/view-404.html",
+    "src/page/view-settings.html",
+    "src/page/view-login.html"
+  ],
+  "sources": [
+    "src/**/*",
+    "images/**/*",
+    "data/*",
+    "lib/*",
+    "bower.json"
+  ],
+  "extraDependencies": [
+    "app.yaml",
+    "manifest.json",
+    "bower_components/webcomponentsjs/*.js"
+  ],
+  "lint": {
+    "rules": ["polymer-2-hybrid"]
+  },
+  "builds": [{
+    "preset": "es6-unbundled",
+    "name": "default"
+  }]
+}

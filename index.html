@@ -1,0 +1,92 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <title>IMES Project</title>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry">
+  <meta name="author" content="KMUTT">
+  <link rel="shortcut icon" href="/images/favicon.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="canonical" href="/">
+  <meta name="theme-color" content="#202020">
+  <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="IMES">
+  <!-- Add to homescreen for Safari on iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="IMES">
+  <!-- Homescreen icons -->
+  <link rel="apple-touch-icon" href="images/manifest/icon-48x48.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="images/manifest/icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="96x96" href="images/manifest/icon-96x96.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png">
+  <!-- Tile icon for Windows 10 (144x144 + tile color) -->
+  <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#202020">
+  <meta name="msapplication-tap-highlight" content="no">
+  <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+  <script async src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <script>
+    window.Polymer = window.Polymer || {
+      dom: 'shadow',
+      lazyRegister: true
+    };
+  </script>
+  <link async rel="import" href="src/style/index-styles.min.html">
+  <link async rel="import" href="src/view-app.html">
+</head>
+
+<body unresolved>
+  <view-app>
+    <div class="container">
+      <h1>Initializing components..</h1>
+    </div>
+  </view-app>
+  <script>
+    // Service worker status
+    const swFailed = "%cService Worker Register Failed: "
+    const swReady = "%cService Worker Ready"
+    const swRegistered = "%cService Worker Registered"
+    const greenColor = "color: green;"
+    const crimsonColor = "color: crimson;"
+    // Load and register pre-caching Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js', {
+            scope: '/',
+          })
+          .then(() => {
+            console.info(swRegisterd, greenColor)
+          }).catch((err) => {
+            console.warn(swFailed, err)
+          })
+        navigator.serviceWorker.ready
+          .catch((err) => {
+            console.error(swFailed, err)
+          })
+      })
+    } else {
+      alert("Service Worker is not supportted by your browser. Please upgrade your browser");
+    }
+  </script>
+  <noscript>
+    Please enable JavaScript to view this website.
+  </noscript>
+</body>
+
+</html>

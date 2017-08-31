@@ -1,0 +1,650 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<link rel="import" href="../../bower_components/polymerfire/firebase-storage-script.html">
+<dom-module id="view-setup-product">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-item-height: 50%;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      .product-dialog {
+        width: 50%;
+        padding: 10px;
+      }
+
+      .product {
+        min-height: 350px;
+        height: auto;
+      }
+
+      .product p {
+        margin: 12px 0;
+      }
+
+      .product h1 {
+        text-align: center;
+      }
+
+      .product-info-group {
+        margin-bottom: auto;
+      }
+
+      .product-size {
+        margin-right: 10px;
+      }
+
+      .button-group paper-button {
+        width: 49%;
+      }
+
+      .product-title {
+        font-size: 2rem;
+      }
+
+      .product-content {
+        margin: 10px;
+      }
+
+      .product-image-block {
+        text-align: center;
+      }
+
+      .product-image {
+        max-width: 500px
+      }
+
+      .frame,
+      .part-frame,
+      .product-frame {
+        border: solid 1px #757575;
+        border-radius: 2px;
+        margin: 10px;
+        min-height: 100px;
+        overflow: hidden;
+      }
+
+      .flex-container {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        -ms-box-orient: horizontal;
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -moz-flex;
+        display: -webkit-flex;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .wrap {
+        -webkit-flex-flow: row wrap;
+        flex-flow: row wrap;
+      }
+
+      .upload-frame {
+        margin: 0 20px;
+      }
+
+      .flex-item {
+        padding: 10px;
+        margin: 10px;
+        flex: 1;
+      }
+
+      .flex-item-chart {
+        flex: 1;
+      }
+
+      #flex-column {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      #flex-row {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+      }
+    </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+    <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="id" data="{{productItems}}"></firebase-query>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-indexeddb-mirror key="productDataCache" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
+    <!--  <paper-button raised class="dark" on-tap="testTrigger" data="cat">TEST</paper-button> -->
+    <paper-dialog id="createProductDialog" class="product-dialog" entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+      always-on-top auto-fit-on-attach no-cancel-on-outside-click>
+      <h1>{{localize('add-product')}}</h1>
+      <paper-input name="product-id" id="productID" label="Product ID" type="number" value="[[getProductID(productItems.length)]]"
+        min="1" max="999" step="1" disabled="true" required always-float-label></paper-input>
+      <paper-input name="product-name" id="productName" label="Product Name" required always-float-label></paper-input>
+      <paper-input name="product-sku" id="productSku" label="SKU Number" allowed-pattern="[0-9]" required always-float-label></paper-input>
+      <paper-input name="product-raw" id="productRaw" label="Raw Material (use comma to separate the process)" required always-float-label></paper-input>
+      <paper-button on-tap="addPart">+ Add Part</paper-button>
+      <paper-dialog-scrollable>
+        <template is="dom-repeat" items="{{partArray}}" as="part">
+          <div class="part-frame">
+            <div class="flex-horizontal">
+              <paper-input class="product-size flex-child" label="Part name" value="{{part.name}}" required always-float-label></paper-input>
+              <paper-input class="product-size" label="Cost" value="{{part.cost}}" required always-float-label></paper-input>
+              <paper-input name="product-process" id="productProcess" label="Part Process (use comma to separate the process)" required
+                always-float-label></paper-input><br>
+              <div class="flex-horizontal">
+                <template is="dom-repeat" items="{{part.process}}" as="process">
+                  <paper-input class="product-size" label="Process name" value="{{process.name}}" required always-float-label></paper-input>
+                  <paper-input class="product-size" label="Setup time" value="{{process.setup}}" required always-float-label></paper-input>
+                  <paper-input class="product-size" label="Cycle time" value="{{process.cycle}}" required always-float-label></paper-input>
+                </template>
+              </div>
+              <paper-button on-tap="addProcess">+ Add Process</paper-button>
+              <iron-icon on-click="deleteSize" icon="vaadin:trash"></iron-icon>
+            </div>
+          </div>
+        </template>
+      </paper-dialog-scrollable>
+      <paper-progress value="0" min="0" max="100" id="uploadProgress"></paper-progress>
+      <input type="file" accept="image/*" id="uploadImageFile">
+      <paper-button raised class="dark" on-tap="uploadImage">Upload</paper-button>
+      <paper-button raised class="chilli" on-tap="deleteImage">Remove Image</paper-button>
+
+      <vaadin-upload class="upload-frame" name="product-image" id="uploadImageFile2" timeout="300000" files="{{files}}" max-files="1"
+        accept="image/x-png,image/jpeg" max-file-size="2000000">
+        <div class="drop-label">
+          <iron-icon icon="cloud-upload"></iron-icon>
+          Up to 1&nbsp;JPG&nbsp;files, 2&nbsp;MB&nbsp;each
+        </div>
+      </vaadin-upload>
+
+      <paper-button on-tap="addPartToArray">add size to array</paper-button>
+      <div class="buttons">
+        <paper-button dialog-dismiss>{{localize('dismiss')}}</paper-button>
+        <paper-button on-tap="testUpload" dialog-confirm autofocus>{{localize('add')}}</paper-button>
+      </div>
+    </paper-dialog>
+
+
+    <div class="stitched">
+      <paper-button raised on-tap="toggleDialog" class="big-btn water">
+        <iron-icon icon="vaadin:plus"></iron-icon> {{localize('add-product')}}</paper-button>
+    </div>
+
+    <ul class="app-grid">
+      <template is="dom-repeat" items="{{persistedProductData}}" as="productItem">
+        <li>
+          <div class="card product">
+            <div class="product-info-group">
+              <h1 class="product-title">[[productItem.name]]</h1>
+              <div class="product-image-block">
+                <img class="product-image" src$="[[productItem.image]]" alt="[[productItem.name]]">
+              </div>
+              <div class="part-frame">
+                <div class="product-content">
+                  <p>Product ID: [[productItem.id]]</p>
+                  <p>Product Name: [[productItem.name]]</p>
+                  <p>SKU Number: [[productItem.sku]]</p>
+                  <p>Raw material: [[materialProduct(productItem.material)]] </p>
+                  <p>Total Cycle Time: [[getSumProductTime(productItem.part)]] minutes/item</p>
+                </div>
+              </div>
+              <div class="flex-container wrap">
+                <template is="dom-repeat" items="{{productItem.part}}" as="part">
+                  <div class="frame flex-item">
+                    <h2>Product Part [[part.name]]</h2>
+                    <p>Part SKU: [[part.sku]]</p>
+                    <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
+                    <h2>Setup Time</h2>
+                    <template is="dom-repeat" items="{{part.setup}}" as="setup">
+                      <p>Process [[indexNum(index)]] : [[setup]] minutes</p>
+                    </template>
+                    <p>Total Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
+
+                    <h2>Cycle Time</h2>
+                    <template is="dom-repeat" items="{{part.cycle}}" as="cycle">
+                      <p>Process [[indexNum(index)]] : [[cycle]] minutes</p>
+                    </template>
+                    <p>Total Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+                    <h2>Total Process Time : [[getSumProcessTime(part.setup, part.cycle)]] minutes</h2>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <div id="flex-column">
+              <div id="flex-row">
+                <div class="flex-item-chart">
+                  <vaadin-bar-chart id="stacked-bar" class="flex-item-chart">
+                    <chart-title text='Product Process Duration' chart-style='{ "color": "#00BFA5" }'></chart-title>
+                    <exporting enabled="false"></exporting>
+                    <legend enabled="false"></legend>
+                    <data-series name="Process duration">
+                      <data>
+                        <template is="dom-repeat" items="{{productItem.part}}" as="part">[[getCycleTime(part.cycle)]]</template>
+                      </data>
+                    </data-series>
+                    <x-axis>
+                      <categories>
+                        <template is="dom-repeat" items="{{productItem.part}}" as="part">Part [[part.name]]</template>
+                      </categories>
+                    </x-axis>
+                    <y-axis min="0">
+                      <chart-title>Duration (minutes)</chart-title>
+                    </y-axis>
+
+                    <tooltip point-format="{series.name}: {point.y} minutes"></tooltip>
+                    <plot-options>
+                      <bar color="#00BFA5"></bar>
+                      <series stacking="normal"></series>
+                    </plot-options>
+                  </vaadin-bar-chart>
+                </div>
+                <div class="flex-item-chart">
+                  <vaadin-bar-chart id="stacked-bar" class="flex-item-chart">
+                    <chart-title text='Product Setup Duration' chart-style='{ "color": "#D50000" }'></chart-title>
+                    <exporting enabled="false"></exporting>
+                    <legend enabled="false"></legend>
+                    <data-series name="Setup duration">
+                      <data>
+                        <template is="dom-repeat" items="{{productItem.part}}" as="part">[[getSetupTime(part.setup)]]</template>
+                      </data>
+                    </data-series>
+                    <x-axis>
+                      <categories>
+                        <template is="dom-repeat" items="{{productItem.part}}" as="part">Part [[part.name]]</template>
+                      </categories>
+                    </x-axis>
+                    <y-axis min="0">
+                      <chart-title>Duration (minutes)</chart-title>
+                    </y-axis>
+
+                    <tooltip point-format="{series.name}: {point.y} minutes Total: {point.stackTotal}"></tooltip>
+                    <plot-options>
+                      <bar color="#D50000"></bar>
+                      <series stacking="normal"></series>
+                    </plot-options>
+                  </vaadin-bar-chart>
+                </div>
+              </div>
+            </div>
+
+            <div class="button-group">
+              <paper-button raised class="water" product="[[productItem]]" on-tap="editProduct">{{localize('edit')}}</paper-button>
+              <paper-button raised class="chilli" product="[[productItem]]" on-tap="removeProduct">{{localize('remove')}}</paper-button>
+            </div>
+
+            <paper-dialog id="edit_[[productItem.$key]]" class="product-dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation"
+              always-on-top no-cancel-on-outside-click auto-fit-on-attach>
+              <h2>{{localize('edit-product')}}</h2>
+              <paper-input name="product-id" id="productID" label="Product ID" type="number" value="[[productItem.number]]" min="1" max="999"
+                step="1" disabled="true" required always-float-label></paper-input>
+              <paper-input name="product-name" class="editproductName" value="[[productItem.name]]" label="Product Name" always-float-label></paper-input>
+              <paper-input name="sku-number" class="editproductSku" value="[[productItem.sku]]" label="SKU Number" always-float-label></paper-input>
+              <paper-input name="raw-material" class="editproductRaw" value="{{productItem.raw}}" label="Raw Material (use comma to separate)"
+                always-float-label></paper-input>
+              <div class="buttons">
+                <paper-button on-tap="dismissEditProduct" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+                <paper-button on-tap="saveProduct" product="[[productItem]]" dialog-confirm autofocus>{{localize('save')}}</paper-button>
+              </div>
+            </paper-dialog>
+          </div>
+        </li>
+      </template>
+    </ul>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-setup-product',
+      properties: {
+        productItems: {
+          type: Object
+        },
+        productSizes: {
+          type: Object
+        },
+        user: {
+          type: Object
+        },
+        partArray: {
+          type: Array,
+          value: function () {
+            return [{
+              name: '',
+              cost: '',
+              sku: '',
+              sequence: '',
+              process: [{
+                cycle: '',
+                setup: '',
+                name: '1'
+              }, {
+                cycle: '',
+                setup: '',
+                name: '2'
+              }, {
+                cycle: '',
+                setup: '',
+                name: '3'
+              }]
+            }]
+          },
+          notify: true
+        },
+        processArray: {
+          type: Array,
+          value: function () {
+            return [{
+              cycle: '',
+              setup: '',
+              name: ''
+            }]
+          }
+        }
+      },
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
+      ],
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
+      },
+      toggleDialog: function () {
+        //this.$.createProductDialog.open();
+      },
+      indexNum(i) {
+        return i + 1;
+      },
+      getProductID(length) {
+        if (length == 0) {
+          return 1;
+        } else {
+          return length + 1;
+        }
+      },
+      addProduct: function () {
+        let today = new Date();
+        let dd = today.getDate();
+        let mm = today.getMonth() + 1; //January is 0!
+        let yyyy = today.getFullYear();
+        let pid = this.productItems.length;
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        today = dd + '/' + mm + '/' + yyyy;
+        if (pid <= 0) {
+          pid = 1;
+        }
+        this.$.productQuery.ref.push({
+          id: pid,
+          add: Math.round(new Date().getTime() / 1000.0),
+          name: this.$.productName.value,
+          sku: this.$.productSku.value,
+          raw: this.$.productRaw.value,
+          part: this.partArray
+        }).key;
+        let metadata = {
+          contentType: 'image/jpeg'
+        };
+
+        // this.$.productImage.storageRef.child('images/' + this.$.productSku.value).put(file, metadata);
+        this.$.productName.value = null;
+        this.$.productSku.value = null;
+        this.$.productRaw.value = null;
+      },
+
+      uploadImage() {
+        let file = this.$.uploadImageFile.files[0];
+        if (this.$.uploadImageFile.files.length == 0) {
+          alert("File cannot be empty");
+        } else {
+          let uid = this.user.uid;
+          let storageRef = firebase.app('smart-mes').storage().ref("product/" + this.$.productID.value);
+          let task = storageRef.put(file);
+          let percent = 0;
+          let unsubscribe = task.on('state_changed',
+            function progress(snapshot) {
+              percent = snapshot.bytesTransferred / snapshot.totalBytes * 100;
+              document.getElementById('uploadProgress').value = percent;
+            },
+            function error(err) {
+              console.log(err.message);
+            },
+            function complete() {
+              let imgURL = task.snapshot.downloadURL;
+              console.log(imgURL);
+              console.info("%cUpload completed", "color: green;");
+            });
+        }
+      },
+
+      deleteImage(e) {
+        let storageRef = firebase.app('smart-mes').storage().ref('product/');
+        let desertRef = storageRef.child(this.$.productID.value);
+        // Delete the file
+        desertRef.delete().then(function () {
+          // File deleted successfully
+          alert("Delete file succesfully");
+        }).catch(function (error) {
+          // Uh-oh, an error occurred!
+          alert("Error deleting file: " + error);
+        });
+      },
+
+      addPart() {
+        if (this.partArray.length > 3) {
+          alert("Product can't add more than 3 parts");
+        } else {
+          this.set('partArray', [
+            ...this.partArray,
+            {
+              name: '',
+              cost: '',
+              sku: '',
+              sequence: '',
+              process: [{
+                cycle: '0',
+                setup: '0',
+                name: '0'
+              }]
+            }
+          ]);
+        }
+      },
+
+      addProcess: function () {
+        this.processArray.push({
+          cycle: 'n/a',
+          setup: 'n/a',
+          name: 'n/a'
+        });
+        //this.processArray.length = 0;
+      },
+
+      addPartToArray: function () {
+        console.log(this.partArray);
+      },
+
+      deleteSize: function (e) {
+        this.splice('partArray', e.model.index, 1);
+      },
+
+      editProduct: function (e) {
+        let key = e.currentTarget.product.$key;
+        this.$$('#edit_' + key).open();
+      },
+
+      removeProduct: function (e) {
+        if (confirm("Delete tihs product ?") == true) {
+          let key = e.currentTarget.product.$key;
+          this.$.productQuery.ref.child(key).remove();
+        } else {}
+      },
+
+      saveProduct: function (e) {
+        this.$.document.save("/product/" + e.target.id).then(function () {
+          // after document saved, path will be changed to the new ref
+          // any change of data will sent back up and stored
+          // Save food from array with index: e.model.index
+          // Data is accessible via this.partArray[index], or just the current row: e.model.food.*
+          alert("Save product settings successful");
+        });
+      },
+
+      dismissEditProduct: function (e) {
+        this.clearField();
+        this.$$('#edit_' + e.target.id).close();
+      },
+
+      clearField: function () {
+        this.$.productName.value = "";
+        this.$.productSku.value = "";
+        this.$.productRaw.value = "";
+      },
+
+      getProductProcess(process) {
+        if (!process) {
+          return 0;
+        }
+        return process.split(',').join(' → ');
+      },
+
+      materialProduct(material) {
+        if (typeof material === "undefined") {
+          return "No data";
+        }
+        let praw = [];
+        for (i = material.length; i--;) {
+          praw[i] = material[i].type;
+        }
+        return praw;
+      },
+
+      sizeProduct(size) {
+        if (typeof size === "undefined") {
+          return 0;
+        }
+        let psize = [];
+        let cycle_size = [];
+        for (i = size.length; i--;) {
+          psize[i] = size[i].name;
+          cycle_size[i] = size[i].cycle;
+        }
+        return psize;
+      },
+
+      getCycleTime(cycle) {
+        if (typeof cycle === "undefined") {
+          return 0;
+        }
+        let processTime = 0;
+        for (i = cycle.length; i--;) {
+          processTime += cycle[i];
+        }
+        return processTime.toFixed(1) + ",";
+      },
+
+      getSetupTime(setup) {
+        if (typeof setup === "undefined") {
+          return 0;
+        }
+        if (!setup) return 0;
+        let setupTime = 0;
+        for (i = setup.length; i--;) {
+          setupTime += setup[i];
+        }
+        return setupTime.toFixed(1) + ",";
+      },
+
+      getSumCycleTime(cycle) {
+        if (typeof cycle === "undefined") {
+          return 0;
+        }
+        let processTime = 0;
+        for (i = cycle.length; i--;) {
+          processTime += cycle[i];
+        }
+        return processTime.toFixed(2);
+      },
+
+      getSumSetupTime(setup) {
+        if (typeof setup === "undefined") {
+          return 0;
+        }
+        if (!setup) return 0;
+        let setupTime = 0;
+        for (i = setup.length; i--;) {
+          setupTime += setup[i];
+        }
+        return setupTime;
+      },
+
+      getSumProcessTime(setup, cycle) {
+        if (typeof setup === "undefined" || typeof cycle === "undefined") {
+          return 0;
+        }
+        if (!cycle || !setup) return 0;
+        let sum_cycle = this.getSumCycleTime(cycle);
+        let sum_setup = this.getSumSetupTime(setup);
+        let sum_process = sum_cycle + sum_setup;
+        return sum_process;
+      },
+
+      getSumProductTime(part) {
+        if (typeof part === "undefined") {
+          return 0;
+        }
+        let sum = 0;
+        let setup = 0;
+        let partTime = 0;
+        for (let i in part) {
+          for (let j in part[i].cycle) {
+            sum += part[i].cycle[j];
+          }
+        };
+        return sum.toFixed(2); //productTime.toFixed(1)
+      },
+
+      storageError: function (e) {
+        console.info("Storage error:" + e.message);
+      },
+
+      testTrigger(e) {
+        let data = e.target.getAttribute('data');
+        this.fire('toast', data);
+        // this.dispatchEvent(new CustomEvent('toast', {detail: {data: true}}));
+      }
+    });
+  </script>
+</dom-module>

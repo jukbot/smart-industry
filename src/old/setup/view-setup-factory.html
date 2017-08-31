@@ -1,0 +1,314 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../app-language-behavior.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-setup-factory">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-item-height: 50%;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      .factory-rule p {
+        margin: 12px 0;
+      }
+
+      .button-group paper-button {
+        width: 49%;
+      }
+
+      .operation-day-selector {
+        margin: 15px 0;
+        padding: 10px;
+        border: 1px solid #d6d6d6;
+        border-radius: 2px;
+      }
+
+      .checkbox {
+        padding: 0 5px;
+      }
+    </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1>{{localize('factory-initialize')}}</h1>
+          <div>
+            <paper-input label="{{localize('factory-name')}}" name="factory-name" id="factoryName" value="[[factoryOperation.name]]" type="text" 
+            required always-float-label auto-validate></paper-input>
+            <vaadin-combo-box label="{{localize('factory-type')}}" name="factory-type" id="factoryType" value="[[factoryOperation.type]]" 
+              items="[[factoryType]]" item-label-path="name" item-value-path="name" required always-float-label></vaadin-combo-box>
+            <paper-input label="{{localize('operation-start')}} (xx:xx)" name="opstart" id="opStart" value="[[factoryOperation.op_start]]" type="text" 
+              required always-float-label auto-validate></paper-input>
+            <paper-input label="{{localize('operation-end')}} (xx:xx)" name="opend" id="opEnd" value="[[factoryOperation.op_end]]" type="text"  required
+              always-float-label auto-validate></paper-input>
+            <paper-input label="{{localize('over-time-start')}} (xx:xx)" name="otstart" id="otStart" value="[[factoryOperation.ot_start]]" type="text" 
+              required always-float-label auto-validate></paper-input>
+            <paper-input label="{{localize('over-time-end')}} (xx:xx)" name="otend" id="otEnd" value="[[factoryOperation.ot_end]]" type="text" required
+              always-float-label auto-validate></paper-input>
+            <vaadin-combo-box label="{{localize('productivity-optimization')}}" name="optimize-type" id="optimizeType" value="[[factoryPerformance.optimize]]" 
+              items="[[optimizationType]]" item-value-path="value" item-label-path="name" required always-float-label>
+             <template><div>{{localize(item.value)}}</div></template></vaadin-combo-box>
+           <!-- <vaadin-combo-box label="{{localize('productivity-optimization')}}" name="optimize-type" id="optimizeType" value="[[factoryPerformance.optimize]]" 
+              items="[[optimizationType]]" item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box> -->
+            <paper-input label="{{localize('working-utilization')}} (0-100%)" name="workerUtilize" id="workerUtilize" value="[[factoryPerformance.wu]]"
+              type="number" min="0" max="100" step="1" required always-float-label auto-validate></paper-input>
+            <paper-input label="{{localize('standard-machine-efficiency')}} (0-100%)" name="machineStandardEfficiency" id="machineStandardEffi"
+              value="[[factoryStandard.machine]]" type="number" min="0" max="100" step="1" required always-float-label auto-validate></paper-input>
+            <paper-input label="{{localize('acceptable-waste')}} (0.00-1.00)" name="accept-waste" id="acceptWaste" value="[[factoryPerformance.aw]]"
+              type="number" min="0" max="1" step="0.01" required always-float-label auto-validate></paper-input>
+            <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" name="rescheduleInterval" id="scheduleInterval"
+              value="[[factoryStandard.interval]]" type="number" min="1" max="30" step="1" required always-float-label auto-validate></paper-input>
+            <div class="operation-day-selector">
+              <p>{{localize('operation-day')}}</p>
+              <paper-checkbox class="checkbox" tabindex="0" id="sunday" value="sun">Sun</paper-checkbox>
+              <paper-checkbox class="checkbox" tabindex="0" id="monday" value="mon">Mon</paper-checkbox>
+              <paper-checkbox class="checkbox" tabindex="0" id="tuesday" value="tue">Tue</paper-checkbox>
+              <paper-checkbox class="checkbox" tabindex="0" id="wednesday" value="wed">Wed</paper-checkbox>
+              <paper-checkbox class="checkbox" tabindex="0" id="thursday" value="thu">Thu</paper-checkbox>
+              <paper-checkbox class="checkbox" tabindex="0" id="friday" value="fri">Fri</paper-checkbox>
+              <paper-checkbox class="checkbox" tabindex="0" id="saturday" value="sat">Sat</paper-checkbox>
+            </div>
+            <div class="button-group">
+              <paper-button role="button" raised class="magic" on-tap="saveValue">{{localize('save-settings')}}</paper-button>
+              <paper-button role="button" raised class="dark" on-tap="resetValue">{{localize('restore')}}</paper-button>
+            </div>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="card factory-rule" style="margin-bottom: 20px">
+          <h1>{{localize('factory-information')}}</h1>
+          <p>{{localize('factory-name')}}: <span>[[factoryOperation.name]]</span></p>
+          <p>{{localize('factory-type')}}: <span>[[factoryOperation.type]]</span></p>
+          <p>{{localize('operation-start')}}: <span>[[factoryOperation.op_start]] </span></p>
+          <p>{{localize('operation-end')}}: <span>[[factoryOperation.op_end]]</span></p>
+          <p>{{localize('over-time-start')}}: <span>[[factoryOperation.ot_start]]</span></p>
+          <p>{{localize('over-time-end')}}: <span>[[factoryOperation.ot_end]]</span></p>
+          <p>{{localize('operation-day')}}: <span>[[factoryOperation.weekly]]</span></p>
+        </div>
+        <div class="card factory-rule" style="margin-top: 20px">
+          <h1>{{localize('factory-global-standard')}}</h1>
+          <p>{{localize('productivity-optimization')}}: <span>{{localize(factoryPerformance.optimize)}}</span></p>
+          <p>{{localize('working-utilization')}}: <span>[[factoryPerformance.wu]] &#37;</span></p>
+          <p>{{localize('standard-machine-efficiency')}}: <span>[[factoryStandard.machine]] &#37;</span></p>
+          <p>{{localize('acceptable-waste')}}: <span>[[factoryPerformance.aw]]</span></p>
+          <p>{{localize('reschedule-interval')}}: <span>[[factoryStandard.interval]] {{localize('day')}}</span></p>
+          <p>{{localize('last-reschedule')}}: <span>[[getLastInterval(factoryStandard.start_interval)]]</span></p>
+          <p>{{localize('next-reschedule')}}: <span>[[getNextInterval(factoryStandard.start_interval, factoryStandard.interval)]]</span></p>
+        </div>
+      </li>
+    </ul>
+    <paper-toast id="toastErrorIncompleteInput" always-on-top horizontal-align="right" text="{{localize('notification-error-incomplete-input')}}"></paper-toast>
+    <paper-toast id="toastSaveFactoryInfoSuccess" always-on-top horizontal-align="right" text="{{localize('notification-save-factory-information-successful')}}"></paper-toast>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-setup-factory',
+      properties: {
+        factoryStandard: {
+          type: Object
+        },
+        factoryOperation: {
+          type: Object,
+          observer: 'factoryOperationLoaded'
+        },
+        factoryPerformance: {
+          type: Object
+        },
+        operationDay: {
+          type: Array,
+          notify: true,
+          value: function () {
+            return []
+          }
+        },
+        factoryType: {
+          type: Object,
+          value: function () {
+            return [{
+                name: 'Job Shop',
+                value: 'JS',
+              },
+              {
+                name: 'Flow Shop',
+                value: 'FS',
+              },
+              {
+                name: 'Hybrid (Job + Flow)',
+                value: 'HB'
+              }
+            ];
+          }
+        },
+        optimizationType: {
+          type: Object,
+          value: function () {
+            return [{
+                name: 'Increase Profit',
+                value: 'increase-profit',
+              },
+              {
+                name: 'Reduce Cost',
+                value: 'reduce-cost',
+              },
+              {
+                name: 'Disabled',
+                value: 'disabled',
+              }
+            ];
+          }
+        }
+      },
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
+      ],
+      
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
+      },
+      saveValue: function () {
+        let fc = this.$.factoryName.value;
+        let ft = this.$.factoryType.value;
+        let aw = this.$.acceptWaste.value;
+        let wu = this.$.workerUtilize.value;
+        let opt = this.$.optimizeType.value;
+        let meffi = this.$.machineStandardEffi.value;
+        let inte = this.$.scheduleInterval.value;
+        let op_start = this.$.opStart.value;
+        let op_end = this.$.opEnd.value;
+        let ot_start = this.$.otStart.value;
+        let ot_end = this.$.otEnd.value;
+        let op_day = "";
+        this.operationDay = [];
+        if (this.$.monday.checked) this.push('operationDay', 'mon');
+        if (this.$.tuesday.checked) this.push('operationDay', 'tue');
+        if (this.$.wednesday.checked) this.push('operationDay', 'wed');
+        if (this.$.thursday.checked) this.push('operationDay', 'thu');
+        if (this.$.friday.checked) this.push('operationDay', 'fri');
+        if (this.$.saturday.checked) this.push('operationDay', 'sat');
+        if (this.$.sunday.checked) this.push('operationDay', 'sun');
+        op_day = this.operationDay.toString();
+
+        if (fc != "" && ft != "" && opt != "" && aw != "" && wu != "" && inte != "" && op_start != "" && op_end != "" &&
+          op_day != "") {
+          this.set('factoryOperation.name', fc);
+          this.set('factoryOperation.type', ft);
+          this.set('factoryPerformance.optimize', opt);
+          this.set('factoryPerformance.aw', aw);
+          this.set('factoryPerformance.wu', wu);
+          this.set('factoryStandard.machine', meffi);
+          this.set('factoryStandard.interval', inte);
+          this.set('factoryOperation.op_start', op_start);
+          this.set('factoryOperation.op_end', op_end);
+          this.set('factoryOperation.ot_start', ot_start);
+          this.set('factoryOperation.ot_end', ot_end);
+          this.set('factoryOperation.weekly', op_day);
+          this.$.toastSaveFactoryInfoSuccess.open();
+        } else {
+          this.$.toastErrorIncompleteInput.open();
+        }
+      },
+      resetValue: function () {
+        this.$.factoryName.value = "Example factory";
+        this.$.factoryType.value = "Flow Shop";
+        this.$.acceptWaste.value = "0.02";
+        this.$.workerUtilize.value = 85;
+        this.$.machineStandardEffi.value = 75;
+        this.$.scheduleInterval.value = 7;
+        this.$.sunday.checked = false;
+        this.$.monday.checked = true;
+        this.$.tuesday.checked = true;
+        this.$.wednesday.checked = true;
+        this.$.thursday.checked = true;
+        this.$.friday.checked = true;
+        this.$.saturday.checked = false;
+      },
+
+      factoryOperationLoaded: function () {
+        let cnt = 0;
+        if (this.get('factoryOperation.weekly') !== undefined) {
+          let opDayArr = this.get('factoryOperation.weekly').split(",");
+          for (let i in opDayArr) {
+            if (opDayArr[i] == 'mon') this.$.monday.checked = true;
+            else if (opDayArr[i] == 'tue') this.$.tuesday.checked = true;
+            else if (opDayArr[i] == 'wed') this.$.wednesday.checked = true;
+            else if (opDayArr[i] == 'thu') this.$.thursday.checked = true;
+            else if (opDayArr[i] == 'fri') this.$.friday.checked = true;
+            else if (opDayArr[i] == 'sat') this.$.saturday.checked = true;
+            else if (opDayArr[i] == 'sun') this.$.sunday.checked = true;
+          }
+        }
+      },
+
+      getNextInterval(last_timestamp, interval) {
+         if(!last_timestamp || !interval) return 0;
+         let current = Math.floor(Date.now() / 1000);
+         let diff = current - last_timestamp;
+         let range = interval * 24 * 60 * 60;
+         if(diff <= range) {
+         let nextIntervalStamp = (last_timestamp*1000) + (interval * 24 * 60 * 60 * 1000);
+         let nextIntervalDate = new Date(nextIntervalStamp);
+          let dd = nextIntervalDate.getDate();
+          let mm = nextIntervalDate.getMonth() + 1; //January is 0!
+          let yyyy = nextIntervalDate.getFullYear();
+          if (dd < 10) {
+           dd = '0' + dd
+          }
+          if (mm < 10) {
+           mm = '0' + mm
+         }
+          let nextInterval = dd + '/' + mm + '/' + yyyy;
+          return nextInterval;
+         } else {
+           this.set('factoryStandard.start_interval', current);
+         }
+      },
+
+      getLastInterval(last_timestamp) {
+          let lastIntervalDate = new Date(last_timestamp*1000);
+          let dd = lastIntervalDate.getDate();
+          let mm = lastIntervalDate.getMonth() + 1; //January is 0!
+          let yyyy = lastIntervalDate.getFullYear();
+          if (dd < 10) {
+           dd = '0' + dd
+          }
+          if (mm < 10) {
+           mm = '0' + mm
+         }
+          let lastInterval = dd + '/' + mm + '/' + yyyy;
+          return lastInterval;
+      }
+    });
+  </script>
+</dom-module>

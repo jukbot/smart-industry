@@ -1,0 +1,18 @@
+{
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "hosting": {
+    "public": "build/default",
+    "rewrites": [
+      {
+        "source": "!/__/**",
+        "destination": "/index.html"
+      },
+      {
+        "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "name": "imes",
+  "version": "1.0.5",
+  "description": "Intelligent Manufacturing Execution System",
+  "author": "KMUTT",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jukbot/smart-industry.git"
+  },
+  "dependencies": {
+    "countdown": "github:mckamey/countdownjs",
+    "firebase": "^4.3.0",
+    "intl": "^1.2.5",
+    "redux": "^3.7.2",
+    "requirejs": "^2.3.5",
+    "sugar": "^2.0.4",
+    "turbojs": "^1.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.5.0",
+    "eslint-config-google": "^0.9.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-html": "^3.2.0",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.1.1",
+    "eslint-plugin-polymer": "github:stramel/eslint-plugin-polymer",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1"
+  },
+  "scripts": {
+    "lint": "npm run lint:javascript && polymer lint",
+    "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
+    "test": "polymer test",
+    "test:integration": "polymer build # test that psk builds without error with the CLI"
+  }
+}

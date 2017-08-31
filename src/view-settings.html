@@ -1,0 +1,474 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<!-- import style component -->
+<link rel="import" href="style/flat-button.html">
+<link rel="import" href="style/shared-styles.html">
+<dom-module id="view-settings">
+  <template>
+    <style include="shared-styles app-grid-style flat-button">
+       :host {
+        display: block;
+        margin: 10px;
+        --app-grid-item-height: 50%;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+
+      flat-input {
+        width: 100%;
+      }
+
+      .btn {
+        margin-top: 10px;
+        width: 100%;
+      }
+
+      .upload-bar {
+        width: 100%;
+        height: 10px;
+      }
+
+      .switch {
+        padding: 10px 0;
+      }
+    </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+    <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
+      on-message="handleMessage" token="{{token}}"></firebase-messaging>
+    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.id]]/token" data="[[token]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appEmailNotification" path="/metadata/appEmailNotification" data="{{emailnotification}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appBackup" path="/metadata/appBackup" data="{{autobackup}}"></firebase-document>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
+    <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1>{{localize('general-settings')}}</h1>
+          <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector"
+            item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
+            required auto-validate always-float-label></vaadin-combo-box>
+          <paper-dropdown-menu label="Your favourite pastry">
+            <paper-listbox slot="dropdown-content">
+              <paper-item>Croissant</paper-item>
+              <paper-item>Donut</paper-item>
+              <paper-item>Financier</paper-item>
+              <paper-item>Madeleine</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu>
+          <h1>Sensor Devices</h1>
+          <flat-button role="button" class="btn" title="Search sensor"><button on-tap="_scanDevice" name="search sensor" type="button">Search Sensor</button></flat-button>
+          <flat-button role="button" class="btn" title="Show sensor"><button on-tap="_showDevice" name="show sensor" type="button">Show Sensor</button></flat-button>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>{{localize('account-settings')}}</h1>
+          <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text"></paper-input>
+          <p>Upload Profile Image</p>
+          <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress>
+          <!--<vaadin-upload id="uploadImageFile" nodrop no-auto max-files="1" accept="image/*"  max-file-size="1000000">
+          </vaadin-upload>-->
+          <flat-button role="button" class="btn" title="Upload Image"><input type="file" accept="image/*" name="file" id="uploadImageFile" class="inputfile" /></flat-button>
+          <flat-button role="button" class="btn" title="{{localize('remove-profile-image')}}"><button on-tap="deleteProfileImage" name="show sensor" type="button">{{localize('remove-profile-image')}}</button></flat-button>
+          <flat-button role="button" class="btn" disabled="[[user.emailVerified]]" title="{{localize('verify-account')}}"><button on-tap="verifyAccount" disabled="[[user.emailVerified]]" name="verify account" type="button">{{localize('verify-account')}}</button></flat-button>
+          <flat-button role="button" class="btn" title="{{localize('save-settings')}}"><button on-tap="saveSettings" name="save settings" type="button">{{localize('save-settings')}}</button></flat-button>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>{{localize('authentication-settings')}}</h1>
+
+          <paper-input label="{{localize('email')}}" id="userEmail" type="email" disabled="true" value="[[user.email]]"></paper-input>
+          <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password"></paper-input>
+          <paper-input label="{{localize('new-password')}}" id="newPassword" type="password"></paper-input>
+          <flat-button class="magic btn" on-tap="_changeAuthen" title="{{localize('change-password')}}" raised>{{localize('change-password')}}</flat-button>
+          <flat-button class="chilli btn" on-tap="_deleteAcount" title="{{localize('delete-account')}}" raised>{{localize('delete-account')}}</flat-button>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>{{localize('backup-settings')}}</h1>
+          <p>Export or Import factory data to backup as a file.</p>
+          <a class="link" href="data:[[getData(data)]]" download="data.json" rel="noopenner">
+            <flat-button class="carrot btn" title="Export backup" on-tap="_export-data" raised>{{localize('export-data')}}</flat-button>
+          </a>
+          <flat-button class="magic btn" title="Import backup" on-tap="_import-data" raised>{{localize('import-data')}}</flat-button>
+          <paper-toggle-button class="switch" value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>{{localize('notification-settings')}}</h1>
+          Token: [[token]]
+          <paper-toggle-button class="switch" value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" checked="[[token]]"
+            noink> {{localize('notification')}}</paper-toggle-button>
+          <paper-toggle-button class="switch" value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch"
+            noink>{{localize('email-notification')}}</paper-toggle-button>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1>{{localize('organization-settings')}}</h1>
+          <paper-button raised class="btn">{{localize('add-user')}}</paper-button>
+          Role: Administrator, Users Delete Edit
+        </div>
+      </li>
+    </ul>
+    <paper-tooltip for="switch" animation-delay="1000" offset="0" position="bottom">Notification is feature that notify you when the system has events.</paper-tooltip>
+    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
+  </template>
+
+  <script>
+    class ViewSettings extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+      Polymer.Element) {
+      static get is() {
+        return 'view-settings';
+      }
+      static get properties() {
+        return {
+          language: {
+            type: Object,
+            observer: '_changeLanguage',
+            notify: true
+          },
+
+          languageList: {
+            type: Array,
+            notify: true,
+            value() {
+              return [{
+                  name: 'English',
+                  value: 'en'
+                },
+                {
+                  name: 'ไทย',
+                  value: 'th'
+                },
+                {
+                  name: '日本語',
+                  value: 'jp'
+                },
+                {
+                  name: 'русский',
+                  value: 'rs'
+                }
+              ]
+            }
+          },
+          user: Object,
+          userData: Object,
+          notification: Object,
+          emailnotification: Object,
+          autobackup: Object,
+          statusKnown: Object,
+          active: Object,
+          pushSupported: Object,
+          token: String,
+          alertText: String
+        };
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this.loadResources(this.resolveUrl('../data/locales.json'));
+      }
+
+
+      getData(data) {
+        return "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+      }
+
+      _changeLanguage() {
+        let selectedLang = this.$.languageSelector.value;
+        if (selectedLang === "en" || selectedLang === "th" || selectedLang === "jp" || selectedLang === "ch" ||
+          selectedLang === "rs") {
+          this.language = selectedLang;
+        }
+      }
+
+      _changeAutoBackup() {
+        this.autobackup = this.$.autobackupSwitch.checked ? true : false;
+        if (this.$.autobackupSwitch.checked) {
+          this.alertText = 'backup-notification-alert-on';
+          this.$.toastAlert.open();
+        } else {
+          this.alertText = 'backup-alert-off';
+          this.$.toastAlert.open();
+        }
+      }
+
+      _changeNotification() {
+        this.notification = this.$.webNotificationSwitch.checked ? true : false;
+        if (this.$.webNotificationSwitch.checked) {
+          this.alertText = 'notification-alert-on';
+          this.$.toastAlert.open();
+          // Requesting notification permission
+          this.$.messaging.requestPermission()
+            .then(() => {
+              console.log("Notification permission granted");
+
+            })
+            .catch(err => {
+              console.log("Notification permission denied ", err);
+            });
+        } else {
+          this.alertText = 'notification-alert-off';
+          this.$.toastAlert.open();
+        }
+      }
+
+      _changeEmailNotification() {
+        this.emailnotification = this.$.emailNotificationSwitch.checked ? true : false;
+        if (this.$.emailNotificationSwitch.checked) {
+          this.alertText = 'email-notification-alert-on';
+          this.$.toastAlert.open();
+        } else {
+          this.alertText = 'email-notification-alert-off';
+          this.$.toastAlert.open();
+        }
+      }
+
+      _changeAuthen() {
+        let currentpassword = this.$.currentPassword.value;
+        let newPassword = this.$.newPassword.value;
+        let newemail = this.$.userEmail.value;
+        if (newPassword !== "" && currentpassword !== "") {
+          if (this.reauthenAccount(currentpassword)) {
+            this.user.updatePassword(newPassword)
+              .then(() => {
+                alert('Update your password successful, you will need to relogin');
+              })
+              .catch(err => {
+                alert("Error: " + err.message);
+              });
+          } else {
+            alert("Wrong password");
+          }
+        }
+
+        if (newemail !== "") {
+          this.user.updateEmail(newemail)
+            .then(() => {
+              alert('Update your email successful, you will need to relogin');
+            })
+            .catch(err => {
+              alert("Error: " + err.message);
+            });
+        }
+      }
+
+      _deleteAcount() {
+        this.$.auth.delete().then(function () {
+          alert("Delete successful, you'll now logout");
+          this.logout();
+        }, function (error) {
+          console.log(error);
+        });
+      }
+
+      logout() {
+        this.$.auth.signOut()
+          .then(() => {
+            this.authen = false;
+            //redirect to login page    
+            this.async(function () {
+              this.set('route.path', 'login');
+            }, 1000);
+            console.info("Logout successful");
+          })
+          .catch((error) => {
+            console.info("%cAuthenticate Failed: " + error.code, "color: crimson;");
+            alert("Authenticate Failed: " + error.message + " Please try again.");
+          });
+      }
+
+      _scanDevice() {
+        if ('usb' in navigator) {
+          let device;
+          device = navigator.usb.requestDevice({
+              filters: [{
+                vendorId: 0x2341
+              }, {
+                vendorId: 0x2a03
+              }]
+            })
+            .then(device => {
+              console.log(device.productName); // "Arduino Micro"
+              console.log(device.manufacturerName); // "Arduino LLC"
+            })
+            .catch(error => {
+              console.log(error);
+            });
+
+          if (device !== undefined) {
+            // Add |device| to the UI.
+          }
+        } else {
+          alert("Your web browser is not support physical device detection. Please use Google Chrome");
+        }
+      }
+
+      _showDevice() {
+        if ('usb' in navigator) {
+          navigator.usb.getDevices().then(devices => {
+            devices.map(device => {
+              console.log(device.productName); // "Arduino Micro"
+              console.log(device.manufacturerName); // "Arduino LLC"
+              console.log(device.vendorId); //"Vender ID"
+            });
+          }).catch(error => {
+            console.log(error);
+          });
+        } else {
+          alert("Your web browser is not support physical device detection. Please use Google Chrome");
+        }
+      }
+
+      handleMessage(message) {
+        console.log(message);
+        console.log('message received', arguments);
+      }
+
+      verifyAccount() {
+        this.user.sendEmailVerification()
+          .then(() => {
+            alert('Verification is send to your email');
+          })
+          .catch(err => {
+            alert("Error: " + err.message);
+          });
+      }
+
+      saveSettings() {
+        let displayNameInput = this.$.displayName.value;
+        if (displayNameInput !== "" && displayNameInput != this.user.displayName) {
+          this.user.updateProfile({
+            displayName: displayNameInput
+          });
+          this.updateProfileInfo(this.user.photoURL, displayNameInput);
+        }
+
+        if (this.$.uploadImageFile.files.length > 0) {
+          let result = this.uploadProfileImage();
+          // if (result !== null) {
+          //   this.$.uploadImageFile.files[0].value = null;
+          //   this.alertText = 'notification-save-settings';
+          //   this.$.toastAlert.open();
+          // }
+        }
+      }
+
+      uploadProfileImage() {
+        let file = this.$.uploadImageFile.files[0];
+        let uid = this.user.uid;
+        let name = this.user.displayName;
+        let storageRef = firebase.app('smart-mes').storage().ref();
+        let metadata = {
+          'contentType': file.type
+        };
+        let imagesRef = storageRef.child("user/" + uid + "/profile");
+        let uploadTask = imagesRef.put(file, metadata)
+          .then(snapshot => {
+            let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            this.$.uploadProgress.value = progress;
+            let url = snapshot.metadata.downloadURLs[0];
+            this.user.updateProfile({
+              photoURL: url
+            }).catch(function (error) {
+              console.error('Upload failed:', error);
+            });
+            if (url) {
+              this.updateProfileInfo(url, name);
+            }
+          });
+      }
+
+      updateProfileInfo(url, name) {
+        this.$.user.ref.update({
+            displayname: name,
+            photoURL: url
+          })
+          .then(() => {
+            this.alertText = 'notification-save-settings';
+            this.$.toastAlert.open();
+          })
+          .catch(err => {
+            alert("Error: " + err.message);
+          });
+      }
+
+      deleteProfileImage() {
+        if (this.user.photoURL) {
+          if (confirm("Delete profile image ?") == true) {
+            let storageRef = firebase.app('smart-mes').storage().ref("user/" + this.user.uid + "/profile");
+            // Delete the file
+            storageRef.delete()
+              .then(() => {
+                this.user.updateProfile({
+                  photoURL: null
+                });
+                this.alertText = 'Delete successful';
+                this.$.toastAlert.open();
+              })
+              .catch(err => {
+                alert("Error deleting file: " + err);
+              });
+          } else {}
+        } else {
+          this.alertText = 'No image file to delete';
+          this.$.toastAlert.open();
+        }
+      }
+
+      reauthenAccount(currentpassword) {
+        let credential = firebase.auth.EmailAuthProvider.credential(this.user.email, currentpassword);
+        this.user.reauthenticateWithCredential(credential)
+          .then(() => {
+            return true;
+          })
+          .catch(err => {
+            console.log("Error: " + err.message);
+            return false;
+          });
+      }
+    }
+
+    window.customElements.define(ViewSettings.is, ViewSettings);
+  </script>
+</dom-module>

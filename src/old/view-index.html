@@ -1,0 +1,393 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<!-- app modules - used for core functions -->
+<link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<!-- iron modules -used for component functions -->
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<!-- paper modules - used for user interface -->
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/paper-swatch-picker/paper-swatch-picker.html">
+<!-- neon modules - used for animation -->
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
+<!-- 3rd party modules -->
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
+<link rel="import" href="../bower_components/vaadin-charts/vaadin-charts.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
+<link rel="import" href="../bower_components/vaadin-grid/vaadin-grid-filter.html">
+<!-- import 3rd party libraries -->
+<link rel="import" href="../lib/webgl.html">
+<link rel="import" href="../lib/redux.html">
+<link rel="import" href="../lib/sugar.html">
+<link rel="import" href="../lib/turbo.html">
+<link rel="import" href="../lib/countdown.html">
+<link rel="import" href="../lib/intl.html">
+<!-- import shared style  -->
+<link rel="import" href="app-language-behavior.html">
+<link rel="import" href="shared-styles.html">
+<!-- import page router -->
+<link rel="import" href="page/view-login.html">
+<link rel="import" href="page/view-404.html">
+<link rel="import" href="page/view-dashboard.html">
+<link rel="import" href="page/view-setup.html">
+<link rel="import" href="page/view-planning.html">
+<link rel="import" href="page/view-tracking.html">
+<link rel="import" href="page/view-help.html">
+<link rel="import" href="page/view-settings.html">
+
+<dom-module id="view-index">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      app-drawer-layout:not([narrow]) [drawer-toggle] {
+        display: none !important;
+      }
+
+      .main-title {
+        font-size: 3.50rem;
+        line-height: normal;
+        text-align: center;
+      }
+
+      .main-describe {
+        font-size: 1.25rem;
+        text-align: center;
+        color: #7b7b7b;
+        margin-bottom: 20px;
+        font-weight: 300;
+      }
+
+      .drawer-list>a {
+        display: block;
+        padding: 10px 30px;
+      }
+
+      .drawer-list>a:hover {
+        background-color: #eeeeee;
+      }
+
+      .drawer-list>a.iron-selected {
+        color: #ffffff;
+        background-color: #333333;
+      }
+
+      .logo {
+        margin: 0 auto;
+        padding: 15px 0;
+        width: 50%;
+        height: auto;
+        text-align: center;
+        display: block;
+      }
+
+      .display-name,
+      .page-title {
+        color: #FFFFFF;
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 300;
+      }
+
+      .account-btn {
+        margin: 0;
+        padding: 4px;
+      }
+
+      .profile-image {
+        width: 150px;
+        border: 1px solid #eeeeee;
+      }
+
+      .center {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 5em;
+      }
+
+      .authen-btn {
+        text-align: center;
+        width: 60%;
+      }
+
+      .profile {
+        text-align: center;
+      }
+
+      .dropdown-content {
+        min-width: 200px;
+      }
+
+      .sidebar-menu-line {
+        border-bottom: 1px solid #eeeeee;
+      }
+    </style>
+    <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+    <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
+      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="userInformation" path="/user/[[user.uid]]" data="{{userdata}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryInformation" path="/metadata" data="{{metadata}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <app-indexeddb-mirror key="profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
+    <app-indexeddb-mirror key="metadata" data="{{metadata}}" persisted-data="{{persistedMetaData}}"></app-indexeddb-mirror>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
+    <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
+      <app-drawer hidden$="[[!signedIn]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]">
+        <img class="logo" role="img" src="../images/logo/industrial.svg" title="Logo" alt="application logo">
+        <h1 title="IMES" class="main-title">IMES</h1>
+        <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
+        <nav>
+          <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
+            <a name="dashboard" role="link" href="[[rootPath]]dashboard" rel="dashboard" title="Dashboard">
+              <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
+            <a name="setup" role="link" href="[[rootPath]]setup" rel="setup" title="Setup">
+              <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
+            <a name="planning" role="link" href="[[rootPath]]planning" rel="plan" title="Plan">
+              <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
+            <a name="tracking" role="link " href="[[rootPath]]tracking" rel="track" title="Track">
+              <paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
+            <a name="help" role="link" href="[[rootPath]]help" rel="help" title="Help">
+              <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
+            </a>
+            <a name="settings" role="link" href="[[rootPath]]settings" rel="settings" title="Settings">
+              <paper-icon-button icon="vaadin:cog"></paper-icon-button> {{localize('settings')}}
+            </a>
+          </iron-selector>
+        </nav>
+        <div class="sidebar-menu-line" role="separator"></div>
+        <div class="center">
+          <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button>
+        </div>
+        <dom-if if="[[signedIn]]">
+          <div class="profile" role="group">
+            <img class="profile-image" src$="[[getUserImage(user.photoURL)]]" alt="user photo">
+            <p>[[persistedProfileData.displayName]]</p>
+            <p>{{localize('email')}} : [[persistedProfileData.email]]</p>
+            <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(persistedProfileData.emailVerified)]]</span></p>
+            <p>{{localize('internet-status')}}: <span class="online">[[getOnlineStatus(online)]]</span></p>
+            <p>[[persistedMetaData.appName]] ({{localize('version')}} [[persistedMetaData.appVersion]])</p>
+            <p>{{localize('developed-by')}} [[persistedMetaData.appDeveloper]]</p>
+          </div>
+        </dom-if>
+      </app-drawer>
+      <app-header-layout has-scrolling-region>
+        <app-header hidden$="[[!signedIn]]" id="header" slot="header" condenses fixed>
+          <app-toolbar role="toolbar">
+            <paper-icon-button icon="vaadin:menu" drawer-toggle></paper-icon-button>
+            <h2 class="page-title" main-title>{{localize(page)}}</h2>
+            <div hidden$="[[!user]]">
+              <h2 class="display-name" hidden$="{{!wideLayout}}">
+                [[user.displayName]]</h2>
+            </div>
+          </app-toolbar>
+        </app-header>
+        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" role="main">
+          <view-dashboard name="dashboard" hidden$="[[!signedIn]]"></view-dashboard>
+          <view-setup name="setup" hidden$="[[!signedIn]]"></view-setup>
+          <view-planning name="planning" hidden$="[[!signedIn]]"></view-planning>
+          <view-tracking name="tracking" hidden$="[[!signedIn]]"></view-tracking>
+          <view-help name="help" hidden$="[[!signedIn]]"></view-help>
+          <view-settings name="settings" hidden$="[[!signedIn]]"></view-settings>
+          <view-404 name="404"></view-404>
+          <view-login name="login" hidden$="[[signedIn]]"></view-login>
+        </iron-pages>
+      </app-header-layout>
+    </app-drawer-layout>
+    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
+    <iron-media-query query="min-width: 600px" query-matches="{{wideLayout}}"></iron-media-query>
+  </template>
+  <script>
+    Polymer({
+      is: 'view-index',
+      properties: {
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged',
+        },
+        online: {
+          type: Boolean,
+          observer: '_internetChanged',
+        },
+        authen: {
+          type: Boolean,
+          oberserver: '_authenChanged',
+        },
+        signedIn: {
+          type: Boolean,
+          observer: '_signedInChanged',
+        },
+        alertText: String,
+        route: Object,
+        subroute: Object,
+        // Polymer.Element#rootPath
+        rootPath: String,
+        routeData: Object,
+        user: Object,
+        metadata: Object,
+        notification: Boolean,
+      },
+
+      observers: ['_routePageChanged(routeData.page)'],
+
+      behaviors: [Polymer.AppLocalizeBehavior, Polymer.AppLanguageBehavior],
+
+      attached() {
+        this.async(function () {
+          if (this.authen && this.route.path === '/login') {
+            this.page = 'dashboard';
+          }
+        });
+        this.loadResources(this.resolveUrl('../data/locales.json'));
+        const webgl = detectWebGL();
+        if (webgl !== 1) {
+          alert('GPU Acceleration (WebGL) is not supportted or disabled.');
+        }
+      },
+
+      ready() {
+        // If the path is blank, redirect to login
+        if (this.route.path === undefined) {
+          this.page = 'dashboard';
+        }
+      },
+
+      _authenChanged(authen) {
+        if (!authen) {
+          this.$.layout.resetLayout();
+          this.$.drawer.resetLayout();
+          this.page = 'login;';
+        }
+      },
+
+      _signedInChanged(signedIn) {
+        this.$.drawer.hidden = !signedIn;
+        this.$.header.hidden = !signedIn;
+        if (!signedIn) {
+          this.page = 'login';
+        } else {
+          this.page = 'dashboard';
+        }
+      },
+
+      getOnlineStatus(status) {
+        if (status) {
+          this.$$('.online').style.color = 'green';
+          return 'Online';
+        } else {
+          this.$$('.online').style.color = 'red';
+          return 'Offline';
+        }
+      },
+
+      getVerifyStatus(status) {
+        if (status) {
+          this.$$('.verify').style.color = 'green';
+          return 'Verified';
+        } else {
+          this.$$('.verify').style.color = 'red';
+          return 'Not Verify';
+        }
+      },
+
+      getUserImage(url) {
+        if (url) {
+          return url;
+        } else {
+          return '../images/profile/default.svg';
+        }
+      },
+
+      _internetChanged(online) {
+        if (!online) {
+          this.alertText = 'notification-offline';
+          this.$.toastAlert.open();
+        } else {
+          this.$.auth.refreshNetworkStatus();
+          this.$.appLanguage.refreshNetworkStatus();
+          this.$.factoryInformation.refreshNetworkStatus();
+        }
+      },
+
+      _routePageChanged(page) {
+        this.page = page || 'dashboard';
+
+        // Close a non-persistent drawer when the page & route are changed.
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close();
+        }
+      },
+
+      _pageChanged(page) {
+        let resolvedPageUrl = this.resolveUrl('page/view-' + page + '.html');
+        this.importHref(resolvedPageUrl, null, this._showPage404.bind(this), true);
+      },
+
+      _showPage404() {
+        this.page = '404';
+      },
+
+      // Signout Action
+      _logout() {
+        this.$.auth
+          .signOut()
+          .then(() => {
+            this.authen = false;
+            // redirect to login page
+            this.page = 'login';
+          })
+          .catch((error) => {
+            console.info('%cAuthenticate Failed: ' + error.code, 'color: crimson;');
+            alert('Authenticate Failed: ' + error.message + ' Please try again.');
+          });
+      },
+    });
+  </script>
+</dom-module>

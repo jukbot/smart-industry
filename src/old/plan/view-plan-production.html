@@ -1,0 +1,880 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-index.html">
+<link rel="import" href="../shared-styles.html">
+<dom-module id="view-plan-production">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+        --app-grid-item-height: 50%;
+        --vaadin-context-menu-overlay: {
+          background-color: #ffffff;
+        }
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
+
+      paper-button.play-btn {
+        background-color: green;
+      }
+
+      paper-button.play-btn[active] {
+        background-color: goldenrod;
+      }
+
+      paper-item:hover {
+        color: #FFFFFF;
+        background-color: #333333;
+      }
+
+      paper-slider #sliderContainer.editable.paper-slider {
+        margin: 0;
+      }
+
+      li {
+        display: block;
+      }
+
+      .frame {
+        border: solid 1px #757575;
+        border-radius: 2px;
+        margin: 10px;
+        min-height: 400px;
+        overflow: hidden;
+        padding: 10px;
+      }
+
+      .template-frame {
+        border: solid 1px #757575;
+        border-radius: 2px;
+        margin: 10px;
+        min-height: 130px;
+        overflow: hidden;
+      }
+
+      .output-frame {
+        border: solid 1px #757575;
+        border-radius: 2px;
+        margin: 10px;
+        min-height: 100px;
+        overflow: hidden;
+        padding: 10px;
+      }
+
+      .load-btn-group {
+        display: flex;
+        justify-content: center;
+        flex-flow: row nowrap;
+      }
+
+      .load-btn {
+        margin: 10px 0;
+        flex-grow: 1;
+      }
+
+      .add-btn {
+        margin: 10px 0;
+        width: 100%;
+      }
+
+      .frame p {
+        margin: 10px 0;
+      }
+
+      .slider {
+        width: 100%;
+      }
+
+      .production-block {
+        border: solid 1px #333333;
+        border-radius: 2px;
+        margin: 10px;
+        min-height: 500px;
+        overflow: auto;
+      }
+
+      .station-block {
+        height: auto;
+        min-height: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 10px;
+        padding: 10px;
+        color: #757575;
+        border: 4px dashed #757575;
+        border-radius: 2px;
+        flex-direction: column;
+        text-decoration: none;
+        position: relative;
+        box-sizing: border-box;
+      }
+
+      .machine {
+        height: auto;
+        min-height: 150px;
+        min-width: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 10px 10px 10px 10px;
+        padding: 10px;
+        background-color: #eeeeee;
+        border-radius: 2px;
+        flex-direction: row;
+        text-decoration: none;
+        position: relative;
+        box-sizing: border-box;
+      }
+
+      .empty-station-block {
+        min-height: 500px;
+      }
+
+      .empty-template-block {
+        min-height: 200px;
+      }
+
+      .flex-container {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        -ms-box-orient: horizontal;
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -moz-flex;
+        display: -webkit-flex;
+        display: flex;
+        align-items: center;
+      }
+
+      .nowrap {
+        -webkit-flex-wrap: nowrap;
+        flex-wrap: nowrap;
+      }
+
+      .wrap {
+        -webkit-flex-wrap: wrap;
+        flex-wrap: wrap;
+      }
+
+      .flex-item {
+        padding: 5px;
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+        line-height: 100px;
+        color: white;
+        font-weight: bold;
+        font-size: 2em;
+        text-align: center;
+      }
+
+      .plan-item {
+        padding: 5px;
+        width: 200px;
+        height: 100px;
+        margin: 10px;
+        line-height: 100px;
+        color: white;
+        background-color: slategrey;
+        font-weight: bold;
+        font-size: 2em;
+        text-align: center;
+      }
+
+      .plan-item:hover,
+      .plan-item:focus {
+        background-color: darkslategrey;
+      }
+
+      .iron-selected {
+        background-color: darkslategrey;
+      }
+
+      .flex-item-station {
+        width: 33.3333%;
+        height: auto;
+        min-height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        margin: 10px;
+        padding: 10px;
+        color: #757575;
+        border: 4px dashed #757575;
+        border-radius: 2px;
+        flex-direction: column;
+        text-decoration: none;
+        position: relative;
+        box-sizing: border-box;
+      }
+
+      .grabbable {
+        cursor: move;
+        /* fallback if grab cursor is unsupported */
+        cursor: grab;
+        cursor: -moz-grab;
+        cursor: -webkit-grab;
+      }
+      /* (Optional) Apply a "closed-hand" cursor during drag operation. */
+
+      .grabbable:active {
+        cursor: grabbing;
+        cursor: -moz-grabbing;
+        cursor: -webkit-grabbing;
+      }
+
+      .add-machine-menu {
+        overflow: auto;
+        height: 300px;
+      }
+
+      .control-btn {
+        margin: 10px 0;
+        width: 49%;
+      }
+
+      .progress-arrow {
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+      }
+
+      .progress-arrow__arrow {
+        width: 0.75rem;
+        position: relative;
+        border-left: 1rem solid white;
+        border-right: 0;
+        border-top: 1rem solid transparent;
+        border-bottom: 1rem solid transparent;
+        background: transparent;
+        -webkit-filter: drop-shadow(0.375rem 0 0 rgba(204, 204, 204, 0.4));
+        filter: drop-shadow(0.375rem 0 0 rgba(204, 204, 204, 0.4));
+        margin-left: -2px;
+      }
+
+      .progress-arrow--lg .progress-arrow__arrow {
+        border-left: 2rem solid white;
+        border-top: 2rem solid transparent;
+        border-bottom: 2rem solid transparent;
+      }
+
+      .progress-arrow--md .progress-arrow__arrow {
+        border-left: 1.5rem solid white;
+        border-top: 1.5rem solid transparent;
+        border-bottom: 1.5rem solid transparent;
+      }
+
+      .progress-arrow--sm .progress-arrow__arrow {
+        border-left: 0.66667rem solid white;
+        border-top: 0.66667rem solid transparent;
+        border-bottom: 0.66667rem solid transparent;
+      }
+
+      .progress-arrow--animated .progress-arrow__arrow {
+        -webkit-animation: pulse 2s infinite ease;
+        animation: pulse 2s infinite ease;
+      }
+
+      .progress-arrow--animated .arrow-1 {
+        -webkit-animation-delay: 0;
+        animation-delay: 0;
+      }
+
+      .progress-arrow--animated .arrow-2 {
+        -webkit-animation-delay: 0.25s;
+        animation-delay: 0.25s;
+      }
+
+      .progress-arrow--animated .arrow-3 {
+        -webkit-animation-delay: 0.5s;
+        animation-delay: 0.5s;
+      }
+
+      .progress-arrow--animated .arrow-4 {
+        -webkit-animation-delay: 0.75s;
+        animation-delay: 0.75s;
+      }
+
+      .progress-arrow--animated .arrow-5 {
+        -webkit-animation-delay: 1s;
+        animation-delay: 1s;
+      }
+
+      .progress-arrow--animated .arrow-6 {
+        -webkit-animation-delay: 1.25s;
+        animation-delay: 1.25s;
+      }
+
+      .running {
+        animation: blinker 1s linear infinite;
+      }
+
+      .status {
+        color: red;
+      }
+
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
+      }
+
+      @-webkit-keyframes pulse {
+        25% {
+          -webkit-filter: drop-shadow(0.375rem 0 0 #F44336);
+          filter: drop-shadow(0.375rem 0 0 #F44336);
+        }
+        50% {
+          -webkit-filter: drop-shadow(0.375rem 0 0 rgba(244, 67, 54, 0.4));
+          filter: drop-shadow(0.375rem 0 0 rgba(244, 67, 54, 0.4));
+        }
+      }
+
+      @keyframes pulse {
+        25% {
+          -webkit-filter: drop-shadow(0.375rem 0 0 #F44336);
+          filter: drop-shadow(0.375rem 0 0 #F44336);
+        }
+        50% {
+          -webkit-filter: drop-shadow(0.375rem 0 0 rgba(244, 67, 54, 0.4));
+          filter: drop-shadow(0.375rem 0 0 rgba(244, 67, 54, 0.4));
+        }
+      }
+    </style>
+    <firebase-query app-name="smart-mes" id="productQuery" path="/product" order-by-child="name" data="{{productItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" order-by-child="number" data="{{machineItems}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/plan" order-by-child="name" data="{{planItems}}"></firebase-query>
+    <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
+    <div class="card">
+      <h1>Production Simulator</h1>
+      <ul class="app-grid control-bar">
+        <li>
+          <div class="frame">
+            <h2>1. Load Simulator Plan</h2>
+            <vaadin-combo-box label="Load Plan" name="planload" items="[[planItems]]" id="planSelector" value="[[selectPlan]]" item-label-path="name"
+              item-value-path="name" selected-item="{{plan}}" required always-float-label></vaadin-combo-box>
+            <paper-input label="Plan Name" name="planname" id="stationName" type="text" always-float-label auto-validate></paper-input>
+            <div class="load-btn-group">
+              <paper-button class="load-btn dark" raised on-tap="_loadPlan">Load</paper-button>
+              <paper-button class="load-btn magic" raised on-tap="_savePlan">Save</paper-button>
+              <paper-button class="load-btn chilli" raised on-tap="_deletePlan">Delete</paper-button>
+            </div>
+            <h2>2. Add Station [[plan.stations.length]]/12</h2>
+            <paper-input label="Station Name" name="stationname" id="stationName" type="text" always-float-label auto-validate></paper-input>
+            <paper-button raised class="add-btn carrot" on-tap="_addStation">Add Station</paper-button>
+          </div>
+        </li>
+        <li>
+          <div class="frame">
+            <h2>3. Select Product</h2>
+            <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="$key"
+              selected-item='{{product}}' on-change="selectProduct" required always-float-label></vaadin-combo-box>
+            <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="productQuantity" type="number" min="1" max="1000"
+              step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
+            <p>Product: [[product.name]]</p>
+            <p>Required Station: [[product.part]]</p>
+            <p>Quantity: [[amount]]</p>
+            <p>Est. Duration: [[getEstDuration(product.part,amount)]]</p>
+          </div>
+        </li>
+        <li>
+          <div class="frame">
+            <h2>4. Simulator Control</h2>[[remaining]]
+            <div>
+              <p>Operation Duration: [[duration]] Hours</p>
+              <paper-slider class="slider" min="0" step="1" max="72" max-markers="72" value="{{duration}}" on-change="_changeDuration"
+                id="duration" pin noink snaps></paper-slider>
+            </div>
+            <div>
+              <p>Speed: x[[speed]]</p>
+              <paper-slider class="slider" min="1.00" step="0.50" max="4.00" max-markers="4.00" value="{{speed}}" pin noink snaps></paper-slider>
+            </div>
+            <p class="status">Status: [[simulatorStatus]]</p>
+            <p>Remaining: <span id="countdown"></span>[[countdownClock(duration,speed,state)]]</p>
+            <paper-button id="playBTN" class="control-btn play-btn" toggles raised active="{{state}}" on-tap="_simulatePlan">Play</paper-button>
+            <paper-button id="stopBTN" class="control-btn chilli" raised on-tap="_stopPlan">Stop</paper-button>
+          </div>
+        </li>
+      </ul>
+      <div class="template-frame">
+        <iron-selector class="flex-container wrap" selected="{{selectPlan}}" attr-for-selected="name">
+          <template is="dom-repeat" items="[[planItems]]" as="planItem">
+            <div class="plan-item" name="[[planItem.name]]" index="[[index]]">[[planItem.name]]</div>
+          </template>
+        </iron-selector>
+        <div class="station-block empty-template-block" hidden$="[[planItems]]">
+          <h1>No template found</h1>
+          <p>Please create a new plan to build your first model.</p>
+        </div>
+      </div>
+      <vaadin-context-menu selector=".simulate-machine">
+        <!-- ADD NEW STATIONS -->
+        <template>
+          <paper-listbox role="listbox">
+            <paper-item disabled$="[[!station.machine]]" on-tap="_renameStation">Edit machine [[target.station.name]]</paper-item>
+            <paper-item disabled$="[[!station.machine]]" on-tap="_removeStation">Delete machine</paper-item>
+          </paper-listbox>
+        </template>
+
+        <div class="production-block">
+          <ul class="flex-container wrap">
+            <template is="dom-repeat" items="{{plan.stations}}" as="station">
+              <li class="flex-item-station" index="[[index]]">
+                <h2>Station [[station.name]]</h2>
+                <p>Station ID [[index]]</p>
+                <p class="running">[[station.status]]</p>
+                <ul class="flex-container wrap">
+                  <template is="dom-repeat" items="[[station.machine]]" as="machineInStation">
+                    <li class="flex-item grabbable simulate-machine" style$="background-color: [[station.color]]" index="[[index]]">
+                      <p>[[machineInStation.name]]</p>
+                      <div>
+                        <paper-icon-button icon="delete" on-tap="_removeMachine"></paper-icon-button>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+                <div>
+                  <!-- ADD MACHINE TO THIS STATION -->
+                  <paper-menu-button>
+                    <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
+                    <paper-listbox slot="dropdown-content" role="listbox" class="add-machine-menu dropdown-content">
+                      <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
+                        <paper-item role="button" title="add machine to station" station=[[station]] on-tap="_addMachineToStation">[[machineItem.name]]</paper-item>
+                      </template>
+                    </paper-listbox slot="dropdown-content">
+                  </paper-menu-button>
+                  <paper-icon-button icon="create" on-tap="_renameStation"></paper-icon-button>
+                  <paper-swatch-picker on-color-changed="colorChange"></paper-swatch-picker>
+                  <paper-icon-button icon="delete" on-tap="_removeStation"></paper-icon-button>
+                </div>
+              </li>
+
+              <div class="progress-arrow progress-arrow--animated">
+                <div class="progress-arrow__arrow arrow-1"></div>
+                <div class="progress-arrow__arrow arrow-2"></div>
+                <div class="progress-arrow__arrow arrow-3"></div>
+                <div class="progress-arrow__arrow arrow-4"></div>
+                <div class="progress-arrow__arrow arrow-5"></div>
+                <div class="progress-arrow__arrow arrow-6"></div>
+              </div>
+            </template>
+            <template is="dom-repeat" items="{{stations}}" as="station">
+              <li class="flex-item-station" index="[[index]]">
+                <h2>Station [[station.name]]</h2>
+                <p>Station ID [[index]]</p>
+                <p class="running">[[station.status]]</p>
+                <ul class="flex-container wrap">
+                  <template is="dom-repeat" items="[[station.machine]]" as="machineInStation">
+                    <li class="flex-item grabbable" style$="background-color: [[station.color]]" index="[[index]]">[[machineInStation.name]]
+                      <div>
+                        <paper-icon-button icon="delete" on-tap="_removeMachine"></paper-icon-button>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+                <div>
+                  <!-- ADD MACHINE TO THIS STATION -->
+                  <paper-menu-button>
+                    <paper-icon-button icon="add" class="dropdown-trigger"></paper-icon-button>
+                    <paper-listbox slot="dropdown-content" role="listbox" class="add-machine-menu dropdown-content">
+                      <template is="dom-repeat" items="[[machineItems]]" as="machineItem">
+                        <paper-item role="button" title="add machine to station" station=[[station]] on-tap="_addMachineToStation">[[machineItem.name]]</paper-item>
+                      </template>
+                    </paper-listbox slot="dropdown-content">
+                  </paper-menu-button>
+                  <paper-icon-button icon="create" on-tap="_renameStation"></paper-icon-button>
+                  <paper-swatch-picker on-color-changed="colorChange"></paper-swatch-picker>
+                  <paper-icon-button icon="delete" on-tap="_removeStation"></paper-icon-button>
+                </div>
+              </li>
+
+              <div class="progress-arrow progress-arrow--animated">
+                <div class="progress-arrow__arrow arrow-1"></div>
+                <div class="progress-arrow__arrow arrow-2"></div>
+                <div class="progress-arrow__arrow arrow-3"></div>
+                <div class="progress-arrow__arrow arrow-4"></div>
+                <div class="progress-arrow__arrow arrow-5"></div>
+                <div class="progress-arrow__arrow arrow-6"></div>
+              </div>
+            </template>
+          </ul>
+          <div class="station-block empty-station-block" hidden$="[[emptyStation(plan.stations.length, stations.length)]]">
+            <h1>No station in production block.</h1>
+            <p>Please add your first station to the block.</p>
+          </div>
+          <div class="station-block empty-station-block" hidden$="[[emptyPlan(plan, stations.length)]]">
+            <h1>No plan in template.</h1>
+            <p>Please create your first plan.</p>
+          </div>
+        </div>
+      </vaadin-context-menu>
+      <template is="dom-repeat" items="[[plan.stations]]" as="station">
+        <div class="output-frame">
+          <h2>Station [[station.name]] Output</h2>
+          <p>Current quantity:[[amount]]items</p>
+          <p>Workload:[[getEstDuration(product.part,amount)]]</p>
+          <p>Used Machine: 4/4</p>
+          <p>Actual quantity: [[getActualQuantity(amount)]] items</p>
+        </div>
+      </template>
+      <div hidden$="[[!plan]]" class="output-frame">
+        <h2>Production Output</h2>
+        <p>Productivity Rate: null items/hr.</p>
+        <p>Total Lead Time: [[getEstDuration(product.part,amount)]]</p>
+        <p>Total Workload: [[getEstDuration(product.part,amount)]]</p>
+        <p>Total Actual quantity: [[getActualQuantity(amount)]] items</p>
+      </div>
+    </div>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'view-plan-production',
+      properties: {
+        // stations: {
+        //   type: Object,
+        //   reflectToAttribute: true,
+        //   value: () => [{
+        //     name: 'A',
+        //     number: 1,
+        //     machine: [{
+        //       name: 'A1'
+        //     }, {
+        //       name: 'A2'
+        //     }, {
+        //       name: 'A3'
+        //     }, {
+        //       name: 'A4'
+        //     }],
+        //     status: 'Running',
+        //     color: 'rgb(56,125,213)'
+        //   }, {
+        //     name: 'B',
+        //     number: 2,
+        //     machine: [{
+        //       name: 'B1'
+        //     }, {
+        //       name: 'B2'
+        //     }, {
+        //       name: 'B3'
+        //     }, {
+        //       name: 'B4'
+        //     }],
+        //     status: 'Running',
+        //     color: 'rgb(99,171,165)'
+        //   }, {
+        //     name: 'C',
+        //     number: 3,
+        //     machine: [{
+        //       name: 'C1'
+        //     }, {
+        //       name: 'C2'
+        //     }, {
+        //       name: 'C3'
+        //     }, {
+        //       name: 'C4'
+        //     }],
+        //     status: 'Running',
+        //     color: 'rgb(108,136,186)'
+        //   }]
+        // },
+        factoryPerformance: Object,
+        factoryStandard: Object,
+        factoryOperation: Object,
+        machineItems: Object,
+        productItems: Object,
+        duration: Number,
+        speed: Number,
+        remaining: Number,
+        state: Boolean,
+        plan: Object,
+        stations: {
+          type: Array,
+          value: []
+        },
+        simulatorStatus: {
+          type: String,
+          value: "Stopped"
+        }
+
+      },
+      behaviors: [
+        Polymer.AppLocalizeBehavior,
+        Polymer.AppLanguageBehavior
+      ],
+
+      attached: function () {
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
+      },
+
+      getEstDuration(part, amount) {
+        if (typeof part === "undefined" || typeof amount === "underfined") {
+          return 0;
+        }
+        let sum = 0;
+        let partTime = 0;
+        for (let i in part) {
+          for (let j in part[i].cycle) {
+            sum += part[i].cycle[j];
+          }
+        };
+        let sumDuration = (sum * amount);
+        this.orderDuration = sumDuration;
+        return this.minutesToStr(sumDuration); //productTime.toFixed(1)
+
+      },
+
+      getActualQuantity(amount) {
+        if (!amount) return 0;
+        let accept_waste = this.factoryPerformance.aw;
+        let actual_quantity = Math.ceil((amount / (1 - accept_waste)));
+        this.actualQuantity = actual_quantity; // set to global variable
+        return actual_quantity;
+      },
+
+      minutesToStr(minute) {
+        let sign = '';
+        if (minute < 0) {
+          sign = '0';
+        }
+        let hours = this.leftPad(Math.floor(Math.abs(minute) / 60));
+        let minutes = this.leftPad(Math.round(Math.abs(minute) % 60));
+        return sign + hours + 'hrs ' + minutes + 'min';
+      },
+
+      leftPad(number) {
+        /* 
+         * add zero to numbers less than 10,Eg: 2 -> 02 
+         */
+        return ((number < 10 && number >= 0) ? '0' : '') + number;
+      },
+
+
+      countdownClock(duration, speed, state) {
+        if (duration === 0 || state === false) {
+          return 0 + "d " + 0 + "h " + 0 + "m " + 0 + "s ";
+        } else {
+          let x;
+          let d = new Date();
+          // Get todays date and time
+          let now = new Date();
+          d.setHours(d.getHours() + duration);
+
+          // Update the count down every 1 second
+          x = setInterval(function () {
+
+            // Get todays date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now an the count down date
+            var distance = d - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Output the result in an element with id="demo"
+            this.$.countdownClock = days + "d " + hours + "h " +
+              minutes + "m " + seconds + "s ";
+
+            // If the count down is over, write some text 
+            if (distance < 0) {
+              clearInterval(x);
+              document.getElementById("countdown").innerHTML = "Finished";
+            }
+          }, 1000);
+
+
+        }
+      },
+
+      colorChange(e) {
+        let hex = e.currentTarget.color;
+        console.log(e.model.color);
+        let rgb = this.hexToRGB(hex);
+        let index = e.model.index;
+        this.stations[index].color = rgb;
+        //let foundIndex = stations.findIndex(x => x.id == item.number);
+        //stations[foundIndex] = item;
+      },
+
+      hexToRGB(hex) {
+        let c;
+        if (/^#([A-Fa-f0-9]{3}){1,2}$/.test(hex)) {
+          c = hex.substring(1).split('');
+          if (c.length == 3) {
+            c = [c[0], c[0], c[1], c[1], c[2], c[2]];
+          }
+          c = '0x' + c.join('');
+          return 'rgb(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ')';
+        }
+        throw new Error('Bad Hex');
+      },
+
+      emptyStation(plan_station, temp_station) {
+        if (typeof plan_station === "undefined") {
+          return true;
+        }
+        if (plan_station > 0 || temp_station > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+
+      emptyPlan(plan, temp_station) {
+        if (typeof plan === "undefined") {
+          return false;
+        }
+        if (plan || temp_station > 0) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+
+      selectProduct() {
+        console.log(this.$.productSelector.selectedItem);
+      },
+
+      _addStation() {
+        let sname = this.$.stationName.value;
+        let rgb = [];
+        for (let i = 0; i < 3; i++) {
+          rgb.push(Math.floor(Math.random() * 235));
+        }
+        if (this.stations.length <= 12) {
+          if (sname === "") {
+            alert("Station name cannot leave empty");
+          } else if (sname != "") {
+            let sno;
+            if (this.stations.length === 0) {
+              sno = 1;
+            } else {
+              sno = this.stations.lengt;
+            }
+            this.push('stations', {
+              number: sno,
+              name: sname,
+              machine: [],
+              color: 'rgb(' + rgb.join(',') + ')'
+            });
+            this.$.stationName.value = "";
+          }
+        } else {
+          alert("Can't add station more than 12 stations");
+        }
+      },
+      _renameStation(e) {
+        console.log('You pressed button ' + e.model.station.name);
+      },
+
+      _removeStation(e) {
+        if (confirm("Delete tihs station ?") == true) {
+          this.splice('stations', e.model.index, 1);
+        } else {}
+      },
+
+      _addMachineToStation(e) {
+        let mname = e.model.machineItem;
+        let sno = e.currentTarget.station.number - 1;
+        this.stations[sno].machine.push({
+          name: mname.name
+        });
+        console.log(JSON.stringify(this.stations));
+        // this.push('machines_s1', {
+        //   name: mname.name,
+        //   data: mname,
+        //   station: 1
+        // });
+      },
+
+      _savePlan() {
+        console.log("Saved plan successful");
+      },
+
+      _simulatePlan() {
+        let product = this.$.productSelector;
+        let quantity = this.$.productQuantity;
+        let play = this.$.playBTN;
+        if (product.value === "" || quantity.value <= 0) {
+          alert("Please select product and input quantity more than 0");
+        } else {
+          if (play.active) {
+            play.innerText = 'Pause';
+            this.$$('.progress-arrow__arrow').style.animationPlayState = 'paused';
+            this.$$('.status').style.color = 'green';
+            this.simulatorStatus = "Playing";
+            console.log("Pause");
+          } else {
+            play.innerText = 'Play';
+            this.$$('.progress-arrow__arrow').style.animationPlayState = 'running';
+            this.$$('.status').style.color = 'gold';
+            this.simulatorStatus = "Paused";
+            console.log("Play");
+          }
+          console.log(product.selectedItem);
+        }
+      },
+
+      _stopPlan() {
+        this.simulatorStatus = "Stopped";
+        this.$$('.progress-arrow__arrow').style.animation = 'pulse 0s infinite ease';
+        this.$$('.running').style.animationPlayState = 'paused';
+        this.$$('.status').style.color = 'red';
+      },
+
+      _deletePlan() {
+        let selectedPlan = this.$.planSelector.value;
+        if (selectedPlan !== "") {
+          if (confirm("Delete this plan ?") == true) {}
+
+        } else {
+          alert("No select plan to delete");
+        }
+      },
+      _changeDuration() {
+        console.log("Current duration: " + this.$.duration.value);
+      },
+
+      handleEvent: function (e) {
+        console.log(e.type, e.detail);
+      },
+    });
+  </script>
+</dom-module>

@@ -1,0 +1,51 @@
+# Test against this version of Node.js
+environment:
+  nodejs_version: "6.11.2"
+
+version: 1.0.{build}
+
+branches:
+  # whitelist
+  only:
+    - master
+    - production
+
+  # blacklist
+  except:
+    - gh-pages
+
+# Do not build on tags (GitHub and BitBucket)
+skip_tags: true
+
+# Start builds on tags only (GitHub and BitBucket)
+skip_non_tags: true
+
+# build cache to preserve files/folders between builds
+cache:
+  - node_modules                    # local npm modules
+
+# Install scripts. (runs after repo cloning)
+install:
+  # Get the latest stable version of Node.js or io.js
+  - ps: Install-Product node $env:nodejs_version
+  # Get npm 3
+  - npm install -g npm@lastest
+  - yarn add global bower
+  - yarn add global polymer-cli 
+ # install modules. Use --force to workaround permissions issues on Windows
+  - yarn install
+  - bower install
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: Any CPU
+
+# Post-install test scripts.
+test_script:
+  # Output useful info for debugging.
+  - node --version
+  - npm --version
+  - polymer --version
+  - yarn --version
+
+# Don't actually build.
+build: off

@@ -1,0 +1,99 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="style/shared-styles.html">
+<link rel="import" href="dashboard/view-dashboard-overview.html">
+<link rel="import" href="dashboard/view-dashboard-notification.html">
+<link rel="import" href="dashboard/view-dashboard-statistic.html">
+
+<dom-module id="view-dashboard">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+      }
+
+      app-header {
+        display: block;
+        top: 66px;
+      }
+    </style>
+    <app-route route="{{subroute}}" pattern="/:page" data="{{subrouteData}}"></app-route>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-header-layout fullbleed has-scrolling-region>
+      <app-header slot="header" role="rowheader" shadow fixed condenses>
+        <paper-tabs selected="{{tabs}}" attr-for-selected="name" sticky autoselect role="navigation" noink>
+          <template is="dom-repeat" items="{{submenus}}">
+            <paper-tab role="tab" name$="{{item.view}}">
+              <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>
+            </paper-tab>
+          </template>
+        </paper-tabs>
+      </app-header>
+    </app-header-layout>
+    <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
+      <view-dashboard-overview route="{{subroute}}" name="overview"></view-dashboard-overview>
+      <view-dashboard-notification route="{{subroute}}" name="notification"></view-dashboard-notification>
+      <view-dashboard-statistic route="{{subroute}}" name="statistic"></view-dashboard-statistic>
+    </iron-pages>
+  </template>
+
+  <script>
+    class ViewDashboard extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+      Polymer.Element) {
+      static get is() {
+        return 'view-dashboard';
+      }
+
+      static get properties() {
+        return {
+          tabs: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_tabsChanged',
+            value: 'overview'
+          },
+          submenus: {
+            type: Array,
+            value: () => {
+              return [{
+                  'title': 'overview',
+                  'view': 'overview',
+                  'icon': 'vaadin:grid-small'
+                },
+                {
+                  'title': 'notification',
+                  'view': 'notification',
+                  'icon': 'vaadin:bell-o'
+                },
+                {
+                  'title': 'statistics',
+                  'view': 'statistic',
+                  'icon': 'vaadin:chart'
+                }
+              ];
+            }
+          }
+
+        };
+      }
+      _tabsChanged(tabs) {
+        let resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html');
+        Polymer.importHref(resolvedTabsUrl, null, null, true);
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this.loadResources(this.resolveUrl('../data/locales.json'));
+      }
+    }
+    window.customElements.define(ViewDashboard.is, ViewDashboard);
+  </script>
+</dom-module>
