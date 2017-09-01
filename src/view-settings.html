@@ -83,7 +83,7 @@
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
             required auto-validate always-float-label></vaadin-combo-box>
-          <paper-dropdown-menu label="Your favourite pastry">
+          <paper-dropdown-menu no-animations label="Your favourite pastry">
             <paper-listbox slot="dropdown-content">
               <paper-item>Croissant</paper-item>
               <paper-item>Donut</paper-item>
@@ -239,14 +239,16 @@
           this.alertText = 'notification-alert-on';
           this.$.toastAlert.open();
           // Requesting notification permission
-          this.$.messaging.requestPermission()
-            .then(() => {
-              console.log("Notification permission granted");
+          if (this.$.user) {
+            this.$.messaging.requestPermission()
+              .then(() => {
+                console.log("Notification permission granted");
 
-            })
-            .catch(err => {
-              console.log("Notification permission denied ", err);
-            });
+              })
+              .catch(err => {
+                console.log("Notification permission denied ", err);
+              });
+          }
         } else {
           this.alertText = 'notification-alert-off';
           this.$.toastAlert.open();

@@ -9,31 +9,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <!-- app modules - used for core functions -->
 <link async rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-scroll-effects/effects/waterfall.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
-
 <!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <!-- paper modules - used for user interface -->
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <!-- 3rd party modules -->
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <!-- import localize behavior  -->
 <link rel="import" href="app-language-behavior.html">
 <!-- import style component -->
@@ -115,7 +109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .drawer-list>a:hover {
-        background-color: #eeeeee;
+        background-color: var(--app-background-color);
       }
 
       .drawer-list>a.iron-selected {
@@ -142,7 +136,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .profile-image {
         width: 150px;
-        border: 1px solid #eeeeee;
+        border: 1px solid var(--app-background-color);
         background-size: contain;
         border-radius: 50%;
       }
@@ -164,12 +158,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .sidebar-menu-line {
-        border-bottom: 1px solid #eeeeee;
+        border-bottom: 1px solid var(--app-background-color);
         text-align: center;
       }
 
-      #searchBox {
-        width: 100%;
+      .search-box {
+        width: 0%;
         float: right;
       }
 
@@ -188,14 +182,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="appInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
 
     <app-indexeddb-mirror id="profileIndexdb" key="profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
     <app-indexeddb-mirror id="metaIndexdb" key="metadata" data="{{metadata}}" persisted-data="{{persistedMetaData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
-    <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
+    <app-localstorage-document key="authen" data="{{signedIn}}"></app-localstorage-document>
 
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
       <app-drawer id="drawer" slot="drawer" hidden$="[[!signedIn]]" role="menu" swipe-open="[[narrow]]" tabindex="0">
@@ -225,7 +219,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </nav>
         <div class="sidebar-menu-line" role="separator"></div>
         <div class="flex-center">
-          <flat-button role="button" on-tap="_logout" hidden$="[[!user]]">
+          <flat-button role="button" on-tap="_logout" hidden$="[[!signedIn]]">
             <a role="link" href="/login" rel="logout" title="Logout">{{localize('logout-button')}}</a>
           </flat-button>
           <!-- <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button> -->
@@ -245,7 +239,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <!-- Main content -->
       <app-header-layout fullbleed>
-        <app-header hidden$="[[!signedIn]]" id="header" slot="header" effects="waterfall" reveals snaps condenses>
+        <app-header hidden$="[[!signedIn]]" id="header" slot="header" fixed snaps condenses>
           <app-toolbar>
             <paper-progress id="pageLoader" indeterminate top-item></paper-progress>
             <paper-icon-button icon="vaadin:menu" role="button" tabindex="0" drawer-toggle></paper-icon-button>
@@ -254,7 +248,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <h2 class="display-name">
                 [[user.displayName]]</h2>
             </div>
-            <input id="searchBox" type="search" class="search-box fit" placeholder="Search Polymer Site" aria-labelledby="searchLabel">
+            <paper-input id="searchBox" type="search" class="search-box fit" placeholder="Search Polymer Site" aria-labelledby="searchLabel"></paper-input>
             <paper-icon-button tabindex="-1" aria-label="Search Polymer site" role="button" on-tap="_openSearchBox" icon="vaadin:search"></paper-icon-button>
           </app-toolbar>
         </app-header>
@@ -267,9 +261,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <view-tracking name="tracking" route="[[subroute]]" hidden$="[[!signedIn]]"></view-tracking>
           <view-help name="help" route="[[subroute]]" hidden$="[[!signedIn]]"></view-help>
           <view-settings name="settings" route="[[subroute]]" hidden$="[[!signedIn]]"></view-settings>
-          <view-404 route="[[subroute]]" name="404"></view-404>
-          <view-offline route="[[subroute]]" name="offline"></view-offline>
-          <view-login name="login" route="[[subroute]]" hidden$="[[!signedIn]]"></view-login>
+          <view-404 name="404" route="[[subroute]]" hidden$="[[!signedIn]]"></view-404>
+          <view-offline name="offline" route="[[subroute]]" hidden$="[[!signedIn]]"></view-offline>
+          <view-error name="error" route="[[subroute]]" hidden$="[[!signedIn]]"></view-error>
+          <view-login name="login" route="[[subroute]]" hidden$="[[signedIn]]"></view-login>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -290,9 +285,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             reflectToAttribute: true,
             observer: '_pageChanged',
           },
-          signedIn: {
-            type: Boolean
-          },
           user: Object,
           metadata: Object,
           alertText: String
@@ -307,15 +299,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       constructor() {
         super();
-        console.log('Initializing..' + this.language)
+        console.log('Initializing..' + this.language);
       }
 
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../data/locales.json'));
         Polymer.Async.timeOut.run(() => {
-          if (this.authen && this.route.path === '/login') {
+          if (this.signedIn && this.route.path === '/login') {
             this.page = 'dashboard';
+          } else if (this.signedIn && this.route.path === '/') {
+            this.page = 'dashboard';
+          } else if (!this.signedIn) {
+            this.page = 'login';
           }
         }, 1);
       }
@@ -326,7 +322,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         document.body.removeAttribute('unresolved');
         // listen for custom events
         this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e));
-        this.addEventListener('signed-in-changed', (e) => this.signedInChanged(e));
+        this.addEventListener('signed-in-changed', (e) => this._signedInChanged(e));
+        this.addEventListener('on-error', (e) => this._handleError(e));
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, () => {
           window.addEventListener('online', (e) => this._networkChanged(e));
@@ -368,6 +365,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // do not appear), so reset the header's layout only when switching pages.
           Polymer.Async.timeOut.run(() => {
             this.$.header.resetLayout();
+            this.$.drawer.resetLayout();
           }, 1);
         }
       }
@@ -391,7 +389,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.page = 'login';
           //this.$.drawer.hidden = !signedIn;
           //this.$.header.hidden = !signedIn;
-          return;
+        } else {
+          console.log('You are signed in');
         }
       }
 
@@ -432,10 +431,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               this.authen = false;
               // redirect to login page
               this.page = 'login';
+              Polymer.Async.timeOut.run(() => {
+                this.$.header.resetLayout();
+                this.$.drawer.resetLayout();
+              }, 1);
             })
             .catch((error) => {
-              console.info('%cAuthenticate Failed: ' + error.code, 'color: crimson;');
-              alert('Authenticate Failed: ' + error.message + ' Please try again.');
+              console.error('Authenticate Failed: ' + error.code);
+              this.page = 'error';
             });
         } else {
           this.page = 'offline';
@@ -443,7 +446,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _openSearchBox() {
-        this.$.searchBox.style.display = 'block-inline';
+        this.$.searchBox.style.width = '100%';
       }
 
       getOnlineStatus(status) {
@@ -472,6 +475,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         } else {
           return '../images/profile/default.svg';
         }
+      }
+
+      _handleError() {
+        console.error("Error: " + error.message);
+        this.page = 'error';
       }
     }
     window.customElements.define(ViewApp.is, ViewApp);

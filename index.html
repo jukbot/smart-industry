@@ -22,20 +22,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="manifest" href="/manifest.json">
   <link rel="canonical" href="/">
   <meta name="theme-color" content="#202020">
-  <!-- Add to homescreen for Chrome on Android. Fallback for manifest.json -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="application-name" content="IMES">
-  <!-- Add to homescreen for Safari on iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="IMES">
-  <!-- Homescreen icons -->
   <link rel="apple-touch-icon" href="images/manifest/icon-48x48.png">
   <link rel="apple-touch-icon" sizes="72x72" href="images/manifest/icon-72x72.png">
   <link rel="apple-touch-icon" sizes="96x96" href="images/manifest/icon-96x96.png">
   <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png">
   <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png">
-  <!-- Tile icon for Windows 10 (144x144 + tile color) -->
   <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png">
   <meta name="msapplication-TileColor" content="#202020">
   <meta name="msapplication-tap-highlight" content="no">
@@ -47,14 +43,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       lazyRegister: true
     };
   </script>
-  <link async rel="import" href="src/style/index-styles.min.html">
+  <link async rel="import" href="src/style/index-styles.html">
   <link async rel="import" href="src/view-app.html">
 </head>
 
 <body unresolved>
   <view-app>
     <div class="container">
-      <h1>Initializing components..</h1>
+      <h1 class="loader-title">Initializing components..</h1>
     </div>
   </view-app>
   <script>

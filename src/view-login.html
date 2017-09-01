@@ -244,10 +244,9 @@
         if (this.$.email.value !== "" || this.$.passwd.value !== "") {
           this.$.auth.signInWithEmailAndPassword(this.$.email.value, this.$.passwd.value)
             .then((response) => {
+              this.set('route.path', '/');
               this.authen = true;
-              this.async(function () {
-                this.set('route.path', '../');
-              }, 500);
+              this.page = '/dashboard';
             })
             .catch((error) => {
               alert("Authenticate Failed: " + error.message);
