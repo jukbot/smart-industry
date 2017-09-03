@@ -1,54 +1,109 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../bower_components/vaadin-charts/vaadin-charts.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../view-dashboard.html">
 <link rel="import" href="../style/shared-styles.html">
+<link rel="import" href="../style/flat-button.html">
 
 <dom-module id="view-dashboard-statistic">
   <template>
-    <style include="shared-styles app-grid-style">
+    <style include="shared-styles app-grid-style flat-button">
        :host {
         margin: 10px;
         display: block;
-        --app-grid-columns: 3;
+        --app-grid-columns: 1;
         --app-grid-item-height: 50%;
       }
+
+      h1.title {
+        text-align: center;
+        margin: 20px 0 30px 0;
+        font-size: 1.75rem;
+      }
+
+      .clear-btn {
+        margin: 20px 0 4px 0;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+        h1.title {
+          font-size: 1.4rem;
+        }
+
+        .clear-btn {
+          width: 100%;
+        }
+      }
     </style>
+    <firebase-query app-name="smart-mes" id="orderHistoryQuery" path="/history/order" data="{{orderHistoryData}}"></firebase-query>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
     <ul class="app-grid">
       <li>
         <div class="card">
-          <div class="circle">12</div>
-          <h1>View statistics</h1>[[user.uid]]
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+          <h1 class="title">Productivity Statistic</h1>
+
+          <vaadin-column-chart class="chart">
+            <title>ERROR</title>
+            <x-axis type="category"></x-axis>
+            <y-axis>
+              <title>Total orders</title>
+            </y-axis>
+            <legend enabled="false"></legend>
+            <plot-options>
+              <series>
+                <data-labels enabled="true" format="{point.y} Orders">
+                </data-labels>
+              </series>
+            </plot-options>
+            <data-series>
+              <name>Product</name>
+              <color-by-point>true</color-by-point>
+              <data>
+                <template is="dom-repeat" items="[[orderHistoryData]]">
+                  <point>
+                    <name>[[item.order_product_name]]</name>
+                    <y>[[item.order_quantity]]</y>
+                  </point>
+                </template>
+              </data>
+            </data-series>
+          </vaadin-column-chart>
+
+          <flat-button class="clear-btn" on-tap="_clearStatistic"><button role="button">Reset Statistic</button></flat-button>
+          <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
         </div>
       </li>
       <li>
         <div class="card">
-          <div class="circle">12</div>
-          <h1>View statistics</h1>
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <div class="circle">12</div>
-          <h1>View statistics</h1>
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <div class="circle">12</div>
-          <h1>View statistics</h1>
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+          <h1 class="title">Monthly Order Statistic</h1>
+          <div id="flex-column">
+            <div id="flex-row">
+              <div class="flex-item-chart">
+                <vaadin-column-chart class="flex-item-chart" id="column-with-negative-values">
+                  <title>ERROR</title>
+                  <x-axis>
+                    <categories>
+                      <template is="dom-repeat" items="[[orderHistoryData]]">
+                        Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
+                      </template>
+                    </categories>
+                  </x-axis>
+                  <y-axis>
+                    <chart-title>Orders</chart-title>
+                  </y-axis>
+                  <tooltip point-format="{series.name}: {point.y} Orders"></tooltip>
+                  <data-series name="Revenue" data="[[revenueSeries]]"></data-series>
+                  <data-series name="Expenses" data="[[expensesSeries]]"></data-series>
+                  <data-series name="Net income" data="[[netSeries]]"></data-series>
+                </vaadin-column-chart>
+
+                <flat-button class="clear-btn" on-tap="_clearStatistic"><button role="button">Reset Statistic</button></flat-button>
+                <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
+              </div>
+            </div>
+          </div>
         </div>
       </li>
     </ul>
@@ -58,6 +113,12 @@
       Polymer.Element) {
       static get is() {
         return 'view-dashboard-statistic';
+      }
+
+      static get properties() {
+        return {
+          orderHistoryData: Object
+        }
       }
       connectedCallback() {
         super.connectedCallback();

@@ -9,11 +9,11 @@
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 
 <link rel="import" href="style/shared-styles.html">
-<link rel="import" href="dashboard/view-dashboard-overview.html">
-<link rel="import" href="dashboard/view-dashboard-notification.html">
-<link rel="import" href="dashboard/view-dashboard-statistic.html">
+<link rel="import" href="track/view-track-scheduling.html">
+<link rel="import" href="track/view-track-order.html">
+<link rel="import" href="track/view-track-production.html">
 
-<dom-module id="view-dashboard">
+<dom-module id="view-track">
   <template>
     <style include="shared-styles">
        :host {
@@ -29,20 +29,19 @@
           </paper-tab>
         </template>
       </paper-tabs>
-
     </app-header>
     <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
-      <view-dashboard-overview name="overview"></view-dashboard-overview>
-      <view-dashboard-notification name="notification"></view-dashboard-notification>
-      <view-dashboard-statistic name="statistic"></view-dashboard-statistic>
+      <view-track-scheduling name="scheduling"></view-track-scheduling>
+      <view-track-order name="order"></view-track-order>
+      <view-track-production name="production"></view-track-production>
     </iron-pages>
   </template>
 
   <script>
-    class ViewDashboard extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+    class ViewTrack extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
-        return 'view-dashboard';
+        return 'view-track';
       }
 
       static get properties() {
@@ -52,25 +51,25 @@
             type: String,
             reflectToAttribute: true,
             observer: '_tabsChanged',
-            value: 'overview'
+            value: 'production'
           },
           submenus: {
             type: Array,
             value: () => {
               return [{
-                  'title': 'overview',
-                  'view': 'overview',
-                  'icon': 'vaadin:cubes'
+                  'title': 'production',
+                  'view': 'production',
+                  'icon': 'vaadin:progressbar'
                 },
                 {
-                  'title': 'notification',
-                  'view': 'notification',
-                  'icon': 'vaadin:bell'
+                  'title': 'machine',
+                  'view': 'machine',
+                  'icon': 'vaadin:automation'
                 },
                 {
-                  'title': 'statistics',
-                  'view': 'statistic',
-                  'icon': 'vaadin:bar-chart'
+                  'title': 'energy',
+                  'view': 'energy',
+                  'icon': 'vaadin:bolt'
                 }
               ];
             }
@@ -79,7 +78,7 @@
         };
       }
       _tabsChanged(tabs) {
-        let resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html');
+        let resolvedTabsUrl = this.resolveUrl('track/view-track-' + tabs + '.html');
         Polymer.importHref(resolvedTabsUrl, null, null, true);
       }
       connectedCallback() {
@@ -87,6 +86,6 @@
         this.loadResources(this.resolveUrl('../data/locales.json'));
       }
     }
-    window.customElements.define(ViewDashboard.is, ViewDashboard);
+    window.customElements.define(ViewTrack.is, ViewTrack);
   </script>
 </dom-module>

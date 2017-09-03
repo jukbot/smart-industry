@@ -47,6 +47,7 @@
       }
 
       paper-tabs {
+        --paper-tab-ink: #FFFFFF;
         --paper-tabs-selection-bar-color: #FFFFFF;
         background-color: var(--app-primary-color);
         color: var(--app-secondary-color);
@@ -54,6 +55,18 @@
 
       paper-progress {
         width: 100%;
+      }
+
+      paper-tooltip.profile-tooltip {
+        --paper-tooltip-opacity: 0.95;
+        --paper-tooltip-background: #202020;
+        --paper-tooltip-text-color: #FFFFFF;
+        width: 240px;
+      }
+
+      paper-tooltip.profile-tooltip p {
+        font-size: 1rem;
+        padding: 2px 0;
       }
 
       [hidden] {
@@ -113,7 +126,7 @@
       }
 
       .profile-image {
-        width: 150px;
+        width: 120px;
         border: 1px solid var(--app-background-color);
         background-size: contain;
         border-radius: 50%;

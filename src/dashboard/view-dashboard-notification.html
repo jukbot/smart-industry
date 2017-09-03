@@ -1,54 +1,84 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../view-dashboard.html">
 <link rel="import" href="../style/shared-styles.html">
+<link rel="import" href="../style/flat-button.html">
 
 <dom-module id="view-dashboard-notification">
   <template>
-    <style include="shared-styles app-grid-style">
+    <style include="shared-styles app-grid-style flat-button">
        :host {
         margin: 10px;
         display: block;
-        --app-grid-columns: 3;
+        --app-grid-columns: 1;
         --app-grid-item-height: 50%;
+      }
+
+      h1.title {
+        text-align: center;
+        margin: 20px 0 30px 0;
+        font-size: 1.75rem;
+      }
+
+      .clear-btn {
+        margin: 20px 0 4px 0;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+        h1.title {
+          font-size: 1.4rem;
+        }
+
+        .clear-btn {
+          width: 100%;
+        }
       }
     </style>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
     <ul class="app-grid">
       <li>
         <div class="card">
-          <div class="circle">12</div>
-          <h1>View notification</h1>[[user.uid]]
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <div class="circle">12</div>
-          <h1>View notification</h1>
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <div class="circle">12</div>
-          <h1>View notification</h1>
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <div class="circle">12</div>
-          <h1>View notification</h1>
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+          <h1 class="title">Notification Center</h1>
+          <!-- Fetch an array of users to be shown in the grid -->
+          <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{notificationList}}"></iron-ajax>
+
+          <!-- The array is set as the <vaadin-grid>'s "items" property -->
+          <vaadin-grid aria-label="Basic Binding Example" items="[[notificationList.result]]">
+
+            <vaadin-grid-column width="50px" flex-grow="0">
+              <template class="header">#</template>
+              <template>[[index]]</template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <span draggable="true">
+                Type
+              </span>
+              </template>
+              <template>
+                <span draggable="true">
+                [[item.firstName]]
+              </span>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">Detail</template>
+              <template>[[item.lastName]]</template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="150px">
+              <template class="header">Datetime</template>
+              <template>
+                <p style="white-space: normal">[[item.address.street]], [[item.address.city]]</p>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+          <flat-button class="clear-btn" on-tap="_clearNotification"><button role="button">Clear All Notification</button></flat-button>
+          <paper-toast id="toast" always-on-top horizontal-align="right" text="No notification found"></paper-toast>
         </div>
       </li>
     </ul>
@@ -63,6 +93,9 @@
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../../data/locales.json'));
         console.log('Load dashboard');
+      }
+      _clearNotification() {
+        this.$.toast.open();
       }
     }
     window.customElements.define(ViewDashboardNotification.is, ViewDashboardNotification);

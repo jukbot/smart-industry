@@ -1,6 +1,21 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+
 <link rel="import" href="style/shared-styles.html">
-<link rel="import" href="view-app.html">
+<link rel="import" href="setup/view-setup-factory.html">
+<link rel="import" href="setup/view-setup-station.html">
+<link rel="import" href="setup/view-setup-machine.html">
+<link rel="import" href="setup/view-setup-factory.html">
+<link rel="import" href="setup/view-setup-factory.html">
+<link rel="import" href="setup/view-setup-factory.html">
+
 <dom-module id="view-setup">
   <template>
     <style include="shared-styles">
@@ -9,26 +24,94 @@
       }
     </style>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
-    <div class="card">
-      <div class="circle">3</div>
-      <h1>View Three</h1>
-      {{localize('app-description')}}
-      <p>Modus commodo minimum eum te, vero utinam assueverit per eu.</p>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.Has at minim mucius aliquam, est id tempor laoreet.Pro saepe pertinax
-        ei, ad pri animal labores suscipiantur.</p>
-    </div>
+    <app-header id="subheader" slot="header" fixed shadow>
+      <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect>
+        <template is="dom-repeat" items="{{submenus}}">
+          <paper-tab role="tab" name$="{{item.view}}" disabled="{{item.disable}}">
+            <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>
+          </paper-tab>
+        </template>
+      </paper-tabs>
+    </app-header>
+    <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
+      <view-setup-factory name="factory"></view-setup-factory>
+      <view-setup-station name="station"></view-setup-station>
+      <view-setup-machine name="machine"></view-setup-machine>
+      <view-setup-product name="product"></view-setup-product>
+      <view-setup-customer name="customer"></view-setup-customer>
+      <view-setup-inventory name="inventory"></view-setup-inventory>
+    </iron-pages>
   </template>
 
   <script>
-    class ViewSetup extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.AppLanguageBehavior], Polymer.Element) {
+    class ViewSetup extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+      Polymer.Element) {
       static get is() {
         return 'view-setup';
       }
 
+      static get properties() {
+        return {
+          language: String,
+          tabs: {
+            type: String,
+            reflectToAttribute: true,
+            observer: '_tabsChanged',
+            value: 'factory'
+          },
+          submenus: {
+            type: Array,
+            value: () => {
+              return [{
+                  'title': 'factory',
+                  'view': 'factory',
+                  'icon': 'vaadin:factory',
+                  'disable': false
+                },
+                {
+                  'title': 'station',
+                  'view': 'station',
+                  'icon': 'vaadin:viewport',
+                  'disable': false
+                },
+                {
+                  'title': 'machine',
+                  'view': 'machine',
+                  'icon': 'vaadin:automation',
+                  'disable': false
+                },
+
+                {
+                  'title': 'product',
+                  'view': 'product',
+                  'icon': 'vaadin:barcode',
+                  'disable': false
+                },
+                {
+                  'title': 'customer',
+                  'view': 'customer',
+                  'icon': 'vaadin:clipboard-user',
+                  'disable': false
+                },
+                {
+                  'title': 'inventory',
+                  'view': 'inventory',
+                  'icon': 'vaadin:stock',
+                  'disable': true
+                }
+              ];
+            }
+          }
+
+        };
+      }
+      _tabsChanged(tabs) {
+        let resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
+        Polymer.importHref(resolvedTabsUrl, null, null, true);
+      }
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../data/locales.json'));
-        console.log('Load setup');
       }
     }
     window.customElements.define(ViewSetup.is, ViewSetup);

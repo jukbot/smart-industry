@@ -24,6 +24,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <!-- 3rd party modules -->
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
@@ -48,10 +49,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="appInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <app-indexeddb-mirror id="profileIndexdb" key="profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
-    <app-indexeddb-mirror id="metaIndexdb" key="metadata" data="{{metadata}}" persisted-data="{{persistedMetaData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{signedIn}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
@@ -65,19 +64,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
             <a name="setup" role="link" href="/setup" rel="setup" title="Setup" tabindex="-1">
               <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-            <a name="planning" role="link" href="/planning" rel="plan" title="Plan" tabindex="-1">
+            <a name="plan" role="link" href="/plan" rel="plan" title="Plan" tabindex="-1">
               <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-            <a name="tracking" role="link " href="/tracking" rel="track" title="Track" tabindex="-1">
-              <paper-icon-button icon="vaadin:timer"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
+            <a name="track" role="link " href="/track" rel="track" title="Track" tabindex="-1">
+              <paper-icon-button icon="vaadin:progressbar"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
             <a name="help" role="link" href="/help" rel="help" title="Help" tabindex="-1">
               <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
             </a>
             <a name="settings" role="link" href="/settings" rel="settings" title="Settings" tabindex="-1">
               <paper-icon-button icon="vaadin:tools"></paper-icon-button> {{localize('settings')}}
             </a>
-            <a name="login" role="link" href="/login" rel="login" title="Login" tabindex="-1">
+            <!-- <a name="login" role="link" href="/login" rel="login" title="Login" tabindex="-1">
               <paper-icon-button icon="vaadin:sign-in"></paper-icon-button> Login (temp)
-            </a>
+            </a> -->
           </iron-selector>
         </nav>
         <div class="sidebar-menu-line" role="separator"></div>
@@ -88,13 +87,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
         <dom-if if="[[signedIn]]">
           <div class="center" role="group">
-            <img class="profile-image" src$="[[getUserImage(user.photoURL)]]" alt="user photo">
-            <p>[[persistedProfileData.displayName]]</p>
-            <p>{{localize('email')}} : [[persistedProfileData.email]]</p>
-            <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(persistedProfileData.emailVerified)]]</span></p>
-            <p>{{localize('internet-status')}}: <span class="online">[[getOnlineStatus(online)]]</span></p>
-            <p>[[persistedMetaData.appName]] ({{localize('version')}} [[persistedMetaData.appVersion]])</p>
-            <p>{{localize('developed-by')}} [[persistedMetaData.appDeveloper]]</p>
+            <img id="profile" class="profile-image" src$="[[getUserImage(user.photoURL)]]" alt="user photo">
+            <paper-tooltip position="bottom" for="profile" class="profile-tooltip" tabindex="0">
+              <p>{{localize('display-name')}} : [[persistedProfileData.displayName]]</p>
+              <p>{{localize('email')}} : [[persistedProfileData.email]]</p>
+              <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(persistedProfileData.emailVerified)]]</span></p>
+            </paper-tooltip>
+            <p><span class="online">[[getOnlineStatus(online)]]</span></p>
+            <p>{{localize('version')}} 1.0.5</p>
+            <p>{{localize('developed-by')}} KMUTT</p>
           </div>
         </dom-if>
       </app-drawer>
@@ -104,10 +105,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
             <paper-icon-button icon="vaadin:menu" role="button" tabindex="0" drawer-toggle></paper-icon-button>
             <h2 class="page-title" main-title>{{localize(page)}}</h2>
-
-            <!-- <paper-input type="search" class="search-box" placeholder="Search..">
-              <iron-icon icon="vaadin:search" slot="prefix"></iron-icon>
-            </paper-input> -->
             <input id="searchBox" type="search" name="search" placeholder="Search this app">
             <paper-icon-button icon="vaadin:search" tabindex="-1" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button>
             <div hidden$="[[!user]]">
@@ -119,8 +116,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
           <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!signedIn]]"></view-dashboard>
           <view-setup name="setup" route="[[subroute]]" hidden$="[[!signedIn]]"></view-setup>
-          <view-planning name="planning" route="[[subroute]]" hidden$="[[!signedIn]]"></view-planning>
-          <view-tracking name="tracking" route="[[subroute]]" hidden$="[[!signedIn]]"></view-tracking>
+          <view-plan name="plan" route="[[subroute]]" hidden$="[[!signedIn]]"></view-plan>
+          <view-track name="track" route="[[subroute]]" hidden$="[[!signedIn]]"></view-track>
           <view-help name="help" route="[[subroute]]" hidden$="[[!signedIn]]"></view-help>
           <view-settings name="settings" route="[[subroute]]" hidden$="[[!signedIn]]"></view-settings>
           <view-404 name="404" route="[[subroute]]" hidden$="[[!signedIn]]"></view-404>
@@ -149,7 +146,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             observer: '_pageChanged',
           },
           user: Object,
-          metadata: Object,
           alertText: String
         };
       }
@@ -276,7 +272,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _refreshNetworkStatus() {
         this.$.profileIndexdb.refreshNetworkStatus();
-        this.$.metaIndexdb.refreshNetworkStatus();
         this.$.auth.refreshNetworkStatus();
         this.$.appLanguage.refreshNetworkStatus();
         this.$.pageLoader.removeAttribute('indeterminate');

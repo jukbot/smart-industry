@@ -43,7 +43,7 @@
         background-repeat: no-repeat;
         background-position: center top;
         background-size: cover;
-        background-color: #333333;
+        background-color: #202020;
         flex: 1;
         padding: 1rem;
         margin: 0;
@@ -73,6 +73,7 @@
 
       .form-title>h2 {
         font-size: 1.5rem;
+        margin: 0;
       }
 
       .white {
@@ -91,24 +92,29 @@
         text-decoration: underline;
       }
 
-      .login-form,
       .login-btn,
+      .register-btn,
+      .reset-btn,
+      .login-form,
       .reset-form,
       .register-form {
         width: 100%;
-        margin: 0 auto;
+        margin: 10px auto;
         max-width: 30rem;
       }
 
       .login-input,
-      .register-input {
+      .register-input,
+      .reset-input {
+        --paper-input-container-focus-color: #202020;
         --paper-input-container-input: {
-          font-size: 1.25rem;
-          color: #333333;
+          font-size: 1.2rem;
+          color: #202020;
         }
       }
 
       .login-remember {
+        --paper-checkbox-checked-color: #202020;
         margin: 1rem 0;
       }
 
@@ -156,7 +162,6 @@
           <form hidden$="[[!login]]" class="login-form" on-submit="_login">
             <div class="form-title">
               <h2>User Login</h2>
-              [[user.uid]]
             </div>
             <paper-input class="login-input" name="e-mail" id="email" type="email" maxlength="50" auto-complete="email" placeholder="E-mail"
               autofocus auto-validate></paper-input>
@@ -182,10 +187,8 @@
               autofocus auto-validate></paper-input>
             <paper-input class="register-input" name="phone-number" id="register_phone" type="text" maxlength="15" placeholder="Phone Number"
               autofocus auto-validate></paper-input>
-            <!-- <paper-button raised class="smart authen-btn" on-tap="_register" role="button">Send Confirmation</paper-button> -->
             <flat-button class="register-btn" role="button" on-tap="_register">
-              <button role="button">Reset Password</button>
-              <a role="link" href="#" rel="logout" title="Logout">Send Confirmation</a>
+              <button role="button">Send Confirmation</button>
             </flat-button>
             <a href="javascript:void(0);" on-tap="_hideRegister" class="login-register">Already have account? Sign in</a>
           </form>
@@ -193,7 +196,7 @@
             <div class="form-title">
               <h2>Reset Your Password</h2>
             </div>
-            <paper-input class="login-input" name="e-mail" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail"
+            <paper-input class="reset-input" name="e-mail" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail"
               auto-focus auto-validate></paper-input>
             <flat-button class="reset-btn" role="button" on-tap="_resetPassword"><button role="button">Reset Password</button></flat-button>
             <a href="javascript:void(0);" rel="noopenner" on-tap="_hideReset" class="login-forget">Have an account? Sign in.</a>
@@ -341,5 +344,4 @@
     }
     window.customElements.define(ViewLogin.is, ViewLogin);
   </script>
-
 </dom-module>

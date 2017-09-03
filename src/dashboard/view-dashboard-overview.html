@@ -9,9 +9,27 @@
         margin: 10px;
         display: block;
         --app-grid-columns: 3;
-        --app-grid-item-height: 50%;
       }
 
+      .card {
+        min-height: 300px;
+      }
+
+      .number {
+        font-size: 8rem;
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .head {
+        font-size: 1.6rem;
+        text-align: center;
+      }
+
+      .status {
+        font-size: 4rem;
+        text-align: center;
+      }
 
       @media (min-width: 360px) and (max-width: 768px) {
          :host {
@@ -38,42 +56,67 @@
       }
     </style>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
+    <firebase-query app-name="smart-mes" id="orderQuery" path="/order" data="{{orderData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="waitQuery" path="/wait" data="{{waitData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="machineQuery" path="/machine" data="{{machineData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="stationQuery" path="/station" data="{{stationData}}"></firebase-query>
+    <firebase-document app-name="smart-mes" id="factoryStandard" path="/factory/standard" data="{{factoryStandard}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryOperation" path="/factory/operation" data="{{factoryOperation}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryPerformance" path="/factory/performance" data="{{factoryPerformance}}"></firebase-document>
     <ul class="app-grid">
       <li>
         <div class="card">
-          <div class="circle">12</div>
-          <h1>View Overview</h1>[[user.uid]]
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+          <h1 class="head">Waiting Order</h1>
+          <h1 class="number">[[waitData.length]]</h1>
         </div>
       </li>
       <li>
         <div class="card">
-          <div class="circle">12</div>
-          <h1>View Overview</h1>
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+          <h1 class="head">Order In queue</h1>
+          <h1 class="number">[[orderData.length]]</h1>
         </div>
       </li>
       <li>
         <div class="card">
-          <div class="circle">12</div>
-          <h1>View Overview</h1>
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+          <h1 class="head">Order Done</h1>
+          <h1 class="number">[[orderData.length]]</h1>
+        </div>
+      </li>
+
+      <li>
+        <div class="card">
+          <h1 class="head">Average OEE</h1>
+          <h1 class="number">90%</h1>
         </div>
       </li>
       <li>
         <div class="card">
-          <div class="circle">12</div>
-          <h1>View Overview</h1>
-          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
-            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+          <h1 class="head">Running Machines</h1>
+          <h1 class="number">[[machineData.length]]</h1>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="head">Working Stations</h1>
+          <h1 class="number">[[stationData.length]]</h1>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="head">Next Reschedule</h1>
+          <h1 class="number" style="font-size: 2.75rem;">[[getNextInterval(factoryStandard.start_interval, factoryStandard.interval)]]</h1>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="head">Reschedule Interval</h1>
+          <h1 class="number">[[factoryStandard.interval]]</h1>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="head">Operation Time Left</h1>
+          <h1 class="number" style="font-size: 2.75rem;">[[getRemainOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</h1>
         </div>
       </li>
     </ul>
@@ -84,10 +127,64 @@
       static get is() {
         return 'view-dashboard-overview';
       }
+
+      static get properties() {
+        return {
+          language: String,
+          waitData: Object,
+          orderData: Object,
+          machineData: Object,
+          stationData: Object,
+          factoryStandard: Object,
+          factoryOperation: Object,
+          factoryPerformance: Object
+        }
+      }
+
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../../data/locales.json'));
         console.log('Load dashboard');
+      }
+
+      getNextInterval(last_timestamp, interval) {
+        if (!last_timestamp || !interval) return 0;
+        let current = Math.floor(Date.now() / 1000);
+        let diff = current - last_timestamp;
+        let range = interval * 24 * 60 * 60;
+        if (diff <= range) {
+          let nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 * 1000);
+          let nextIntervalDate = new Date(nextIntervalStamp);
+          let dd = nextIntervalDate.getDate();
+          let mm = nextIntervalDate.getMonth() + 1; //January is 0!
+          let yyyy = nextIntervalDate.getFullYear();
+          if (dd < 10) {
+            dd = '0' + dd
+          }
+          if (mm < 10) {
+            mm = '0' + mm
+          }
+          let nextInterval = dd + '/' + mm + '/' + yyyy;
+          return nextInterval;
+        } else {
+          this.set('factoryStandard.start_interval', current);
+        }
+      }
+
+      getRemainOpTime(end, start) {
+        if (!end || !start) return 0;
+        let date = new Date();
+        let current_hour = date.getHours();
+        let current_minute = date.getMinutes();
+        let current = current_hour + "." + current_minute;
+        let endtime = end.replace(/\:/g, '.');
+        let starttime = start.replace(/\:/g, '.');
+        let timeleft = endtime - parseFloat(current);
+        if (parseFloat(current) < starttime || parseFloat(current) > endtime) {
+          return "Operation Ended";
+        } else {
+          return timeleft.toFixed(2) + " Hrs.";
+        }
       }
     }
     window.customElements.define(ViewDashboardOverview.is, ViewDashboardOverview);
