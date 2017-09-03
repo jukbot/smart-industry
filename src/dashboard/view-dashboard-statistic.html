@@ -29,7 +29,7 @@
 
       @media (min-width: 360px) and (max-width: 768px) {
         h1.title {
-          font-size: 1.4rem;
+          font-size: 1.5rem;
         }
 
         .clear-btn {
@@ -45,7 +45,7 @@
           <h1 class="title">Productivity Statistic</h1>
 
           <vaadin-column-chart class="chart">
-            <title>ERROR</title>
+            <title>Product Order Cumulative</title>
             <x-axis type="category"></x-axis>
             <y-axis>
               <title>Total orders</title>
@@ -63,7 +63,7 @@
               <data>
                 <template is="dom-repeat" items="[[orderHistoryData]]">
                   <point>
-                    <name>[[item.order_product_name]]</name>
+                    <name>Product [[item.order_product_name]]</name>
                     <y>[[item.order_quantity]]</y>
                   </point>
                 </template>

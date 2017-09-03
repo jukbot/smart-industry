@@ -1,20 +1,126 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-help">
   <template>
-    <style include="shared-styles">
+    <style include="shared-styles app-grid-style">
        :host {
         display: block;
+        margin: 10px;
+        --app-grid-columns: 1;
+        --app-grid-item-height: 50%;
+      }
+
+      h1.title {
+        margin: 10px 0;
+        font-size: 1.75rem;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+        h1.title {
+          font-size: 1.5rem;
+        }
       }
     </style>
 
-    <div class="card">
-      <div class="circle">6</div>
-      <h1>View help</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
-        soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
-    </div>
+    <ul class="app-grid">
+      <li>
+        <div class="card">
+          <h1 class="title">1. Getting started
+            <iron-icon icon="vaadin:open-book"></iron-icon>
+          </h1>
+          <p>Lorem cillum et excepteur ea minim.</p>
+          <p>Nisi ea aliquip id consequat in eu dolore cillum irure nisi tempor. In culpa eiusmod labore elit consequat. Duis
+            aliquip amet Lorem deserunt cupidatat. Voluptate tempor velit labore in cupidatat sunt sint commodo occaecat
+            commodo labore do et laboris. Sunt laboris fugiat cupidatat commodo tempor et eu amet.</p>
+          <p>In laborum irure ea laborum duis exercitation anim consequat tempor commodo. Sit reprehenderit ea sunt consectetur
+            pariatur nostrud fugiat eiusmod elit excepteur aliqua quis. Incididunt do nostrud ullamco sit et amet qui anim
+            elit et nulla in est reprehenderit. Magna reprehenderit culpa tempor qui sit proident magna velit pariatur ipsum
+            labore pariatur. Dolor ea culpa ad ipsum tempor cillum qui consectetur in. Sint commodo elit sunt enim id non
+            ipsum esse incididunt magna velit.</p>
+          <p>Reprehenderit eiusmod laboris ea id nisi id. Ipsum non ex consectetur eiusmod ex esse non id sit officia enim.
+            Enim aliqua ad id aliqua ex sint et laborum pariatur laborum. Cupidatat eiusmod sit id qui elit culpa anim occaecat
+            est officia enim reprehenderit magna.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="title">2. Setting up your factory</h1>
+          <p>Dolore velit est irure adipisicing dolor magna mollit amet duis. Aliqua ea reprehenderit ullamco amet ullamco quis
+            sint exercitation. Ex cupidatat exercitation adipisicing reprehenderit id ad id do ullamco Lorem aliquip veniam.
+            Ea magna magna aute est aliquip sint nostrud in ad nostrud sunt. Sint reprehenderit duis incididunt sint anim
+            et eu amet labore nisi sint consequat.</p>
+          <p>Deserunt eu laborum cupidatat nisi sint excepteur. Ad mollit dolor sit amet magna proident tempor voluptate aliquip.
+            Nostrud eu pariatur nisi magna proident enim.</p>
+          <p>Lorem labore nisi proident voluptate aute mollit eiusmod mollit. Exercitation culpa dolor adipisicing laboris Lorem
+            aliquip cillum irure tempor voluptate labore mollit. Do sunt labore elit officia irure. Fugiat nostrud ad commodo
+            mollit ex minim cillum veniam ullamco adipisicing amet laboris. Excepteur exercitation ut proident ullamco qui
+            elit qui veniam esse.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="title">3. Planning your production</h1>
+          <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
+          <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
+            soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+          <p>Velit minim labore et reprehenderit fugiat eu aute ex dolore aute velit. Quis aute et commodo ullamco eu aliqua.
+            Deserunt commodo id nostrud est do id irure. Incididunt ullamco est amet amet incididunt. Minim occaecat sint
+            consectetur voluptate.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="title">4. Tracking your productivity</h1>
+          <p>Tempor eiusmod magna deserunt elit adipisicing. Eiusmod veniam laboris culpa labore consequat veniam officia occaecat
+            ullamco mollit in. Veniam dolore laborum officia nostrud fugiat consectetur quis labore sit esse excepteur laborum
+            Lorem.
+          </p>
+          <p>Minim deserunt aliqua dolor est anim incididunt amet ex quis magna deserunt ex cillum. Ullamco dolore id anim nisi
+            amet ex enim sint enim consequat incididunt nostrud do do. Nulla ut dolor cillum nisi quis occaecat nulla occaecat
+            ad laboris nulla. Duis quis incididunt exercitation aute. Qui ad aliqua aliquip dolore sit consectetur laborum
+            esse ullamco. Consequat qui velit anim labore aliqua id proident reprehenderit incididunt. Officia aliqua aute
+            dolore adipisicing in pariatur do commodo ipsum officia est est anim ea.</p>
+          <p>Amet officia aute pariatur labore velit qui fugiat culpa exercitation quis ullamco. Eu culpa eiusmod non commodo
+            ex reprehenderit in commodo in reprehenderit velit consectetur. Incididunt nisi ipsum Lorem nostrud laborum aliquip
+            fugiat officia labore.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="title">5. Optimizing your process</h1>
+          <p>Velit aute mollit culpa et voluptate veniam nisi mollit mollit. Consequat laborum nostrud duis ut consequat. Adipisicing
+            eiusmod incididunt ad id nisi dolore Lorem duis veniam sint. Sit cupidatat ea nostrud id. Laborum ut cillum ea
+            eu laborum incididunt duis veniam aliqua qui reprehenderit laboris ea. Eiusmod dolore aliquip labore amet labore
+            laboris esse laborum tempor dolor in ipsum non..</p>
+          <p>Consectetur reprehenderit sunt voluptate anim. Sunt est fugiat ut in minim dolore ut cillum deserunt cupidatat
+            qui nostrud sunt sunt. Esse irure magna enim velit dolore in tempor anim veniam laborum est.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="title">6. Managing your inventory</h1>
+          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum minima, nihil dolore at dolor soluta labore quia
+            molestias modi quod quidem ad inventore numquam sint nemo eveniet tenetur, illum eaque?</p>
+          <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim
+            soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+          <p>Velit minim labore et reprehenderit fugiat eu aute ex dolore aute velit. Quis aute et commodo ullamco eu aliqua.
+            Deserunt commodo id nostrud est do id irure. Incididunt ullamco est amet amet incididunt. Minim occaecat sint
+            consectetur voluptate.
+          </p>
+          <p>Non amet ex laboris laborum irure in nulla laboris qui irure proident. Ea ut consectetur velit duis voluptate culpa.
+            Velit magna ad nulla proident laboris Lorem laborum. Amet consectetur qui anim pariatur. Ad dolor reprehenderit
+            culpa do qui.</p>
+
+        </div>
+      </li>
+    </ul>
   </template>
 
   <script>

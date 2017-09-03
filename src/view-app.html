@@ -20,11 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<!-- paper modules - used for user interface -->
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-progress/paper-progress.html">
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <!-- 3rd party modules -->
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
@@ -54,7 +50,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{signedIn}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
-      <app-drawer id="drawer" slot="drawer" hidden$="[[!signedIn]]" role="menu" swipe-open="[[narrow]]" tabindex="0">
+      <app-drawer hidden$="[[!signedIn]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="0">
         <div class="app-logo" role="logo" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -123,7 +119,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <view-404 name="404" route="[[subroute]]" hidden$="[[!signedIn]]"></view-404>
           <view-offline name="offline" route="[[subroute]]" hidden$="[[!signedIn]]"></view-offline>
           <view-error name="error" route="[[subroute]]" hidden$="[[!signedIn]]"></view-error>
-          <view-login name="login" route="[[subroute]]" hidden$="[[!signedIn]]"></view-login>
+          <view-login name="login" route="[[subroute]]" hidden$="[[signedIn]]"></view-login>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
