@@ -34,6 +34,10 @@
         }
       }
 
+      app-drawer {
+        border-right: 1px solid rgba(0, 0, 0, .10);
+      }
+
       app-drawer-layout:not([narrow]) [drawer-toggle] {
         display: none;
       }
@@ -89,11 +93,12 @@
 
       .logo {
         margin: 0 auto;
-        padding: 15px 0 0 0;
+        padding: 20px 0 10px 0;
         width: 50%;
         height: auto;
-        text-align: center;
         display: block;
+        box-sizing: border-box;
+        position: relative;
       }
 
       .display-name,
@@ -128,7 +133,7 @@
       }
 
       .sidebar-menu-line {
-        border-bottom: 1px solid var(--app-background-color);
+        border-bottom: 1px solid #e0e0e0;
         text-align: center;
       }
 
