@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="app-language-behavior.html">
 <link rel="import" href="style/flat-button.html">
+<link rel="import" href="style/flat-icons.html">
 
 <dom-module id="view-error">
   <template>
@@ -36,13 +36,12 @@
     </style>
     <div class="container">
       <div>
-        <iron-icon class="icon" icon="vaadin:exclamation-circle"></iron-icon>
+        <iron-icon class="icon" icon="icons:error"></iron-icon>
         <div>
           <h1>Sorry, Something went wrong</h1>
-          <p>An unexpected error has occured.</p>
         </div>
         <flat-button role="button">
-          <button on-tap="_goBack" type="button">Go back</button>
+          <button on-tap="_goBack" role="button">Go back</button>
         </flat-button>
       </div>
     </div>

@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
@@ -76,21 +77,14 @@
     <firebase-document app-name="smart-mes" id="appBackup" path="/metadata/appBackup" data="{{autobackup}}"></firebase-document>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
+    <iron-ajax url="../data/languages.json" auto last-response="{{languageItems}}"></iron-ajax>
     <ul class="app-grid">
       <li>
         <div class="card">
           <h1>{{localize('general-settings')}}</h1>
-          <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageList]]" name="language selector"
+          <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageItems]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
             required auto-validate always-float-label></vaadin-combo-box>
-          <paper-dropdown-menu no-animations label="Your favourite pastry">
-            <paper-listbox slot="dropdown-content">
-              <paper-item>Croissant</paper-item>
-              <paper-item>Donut</paper-item>
-              <paper-item>Financier</paper-item>
-              <paper-item>Madeleine</paper-item>
-            </paper-listbox>
-          </paper-dropdown-menu>
           <h1>Sensor Devices</h1>
           <flat-button role="button" class="btn" title="Search sensor"><button on-tap="_scanDevice" name="search sensor" type="button">Search Sensor</button></flat-button>
           <flat-button role="button" class="btn" title="Show sensor"><button on-tap="_showDevice" name="show sensor" type="button">Show Sensor</button></flat-button>
@@ -167,30 +161,7 @@
             observer: '_changeLanguage',
             notify: true
           },
-
-          languageList: {
-            type: Array,
-            notify: true,
-            value() {
-              return [{
-                  name: 'English',
-                  value: 'en'
-                },
-                {
-                  name: 'ไทย',
-                  value: 'th'
-                },
-                {
-                  name: '日本語',
-                  value: 'jp'
-                },
-                {
-                  name: 'русский',
-                  value: 'rs'
-                }
-              ]
-            }
-          },
+          languageItems: Array,
           user: Object,
           userData: Object,
           notification: Object,

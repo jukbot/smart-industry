@@ -1,0 +1,69 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-dashboard.html">
+<link rel="import" href="../style/shared-styles.html">
+
+<dom-module id="view-dashboard-statistic">
+  <template>
+    <style include="shared-styles app-grid-style">
+       :host {
+        margin: 10px;
+        display: block;
+        --app-grid-columns: 3;
+        --app-grid-item-height: 50%;
+      }
+    </style>
+    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>
+    <ul class="app-grid">
+      <li>
+        <div class="card">
+          <div class="circle">12</div>
+          <h1>View statistics</h1>[[user.uid]]
+          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
+          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
+            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <div class="circle">12</div>
+          <h1>View statistics</h1>
+          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
+          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
+            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <div class="circle">12</div>
+          <h1>View statistics</h1>
+          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
+          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
+            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <div class="circle">12</div>
+          <h1>View statistics</h1>
+          <p> {{localize('version')}} Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
+          <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet,
+            per in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+        </div>
+      </li>
+    </ul>
+  </template>
+  <script>
+    class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.AppLanguageBehavior],
+      Polymer.Element) {
+      static get is() {
+        return 'view-dashboard-statistic';
+      }
+      connectedCallback() {
+        super.connectedCallback();
+        this.loadResources(this.resolveUrl('../../data/locales.json'));
+      }
+    }
+    window.customElements.define(ViewDashboardStatistic.is, ViewDashboardStatistic);
+  </script>
+</dom-module>

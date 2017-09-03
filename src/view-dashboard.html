@@ -20,25 +20,19 @@
        :host {
         display: block;
       }
-
-      app-header {
-        display: block;
-        top: 63px;
-      }
     </style>
     <app-route route="{{subroute}}" pattern="/:page" data="{{subrouteData}}"></app-route>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
-    <app-header-layout fullbleed has-scrolling-region>
-      <app-header slot="header" role="rowheader" shadow fixed condenses>
-        <paper-tabs selected="{{tabs}}" attr-for-selected="name" sticky autoselect role="navigation" noink>
-          <template is="dom-repeat" items="{{submenus}}">
-            <paper-tab role="tab" name$="{{item.view}}">
-              <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>
-            </paper-tab>
-          </template>
-        </paper-tabs>
-      </app-header>
-    </app-header-layout>
+    <app-header id="subheader" slot="header" fixed shadow>
+      <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect>
+        <template is="dom-repeat" items="{{submenus}}">
+          <paper-tab role="tab" name$="{{item.view}}">
+            <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>
+          </paper-tab>
+        </template>
+      </paper-tabs>
+
+    </app-header>
     <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
       <view-dashboard-overview route="{{subroute}}" name="overview"></view-dashboard-overview>
       <view-dashboard-notification route="{{subroute}}" name="notification"></view-dashboard-notification>

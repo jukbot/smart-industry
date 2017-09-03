@@ -16,7 +16,7 @@
                 font-weight: 500;
                 color: var(--app-primary-color);
                 margin: 0;
-                padding: 8px 44px;
+                padding: 10px 44px;
                 text-align: center;
                 text-decoration: none;
                 text-transform: uppercase;
@@ -46,37 +46,6 @@
                 color: #EEEEEE;
                 cursor: not-allowed;
             }
-
-            @media (max-width: 767px) {
-
-                flat-button[responsive] {
-                    @apply --layout-fixed-bottom;
-                    height: 64px;
-                    z-index: 1;
-                }
-
-                flat-button[responsive]>* {
-                    background-color: var(--app-accent-color);
-                    border: none;
-                    color: white;
-                    padding: 20px;
-                    width: 100%;
-                    height: 100%;
-                    font-size: 15px;
-                }
-
-                flat-button[responsive]>*:focus {
-                    background-color: var(--app-accent-color);
-                }
-            }
         </style>
-        <script>
-            class FlatButton extends Polymer.Element {
-                static get is() {
-                    return 'flat-button';
-                }
-            }
-            window.customElements.define(FlatButton.is, FlatButton);
-        </script>
     </template>
 </dom-module>

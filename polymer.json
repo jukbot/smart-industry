@@ -6,14 +6,17 @@
     "src/page/view-setup.html",
     "src/page/view-planning.html",
     "src/page/view-tracking.html",
-    "src/page/view-404.html",
     "src/page/view-settings.html",
-    "src/page/view-login.html"
+    "src/page/view-login.html",
+    "src/page/view-404.html",
+    "src/page/view-error.html",
+    "src/page/view-offline.html",
+    "src/page/lazy-resources.html"
   ],
   "sources": [
     "src/**/*",
+    "data/**/*",
     "images/**/*",
-    "data/*",
     "lib/*",
     "bower.json"
   ],
@@ -23,7 +26,8 @@
     "bower_components/webcomponentsjs/*.js"
   ],
   "lint": {
-    "rules": ["polymer-2-hybrid"]
+    "rules": ["polymer-2-hybrid"],
+    "ignoreWarnings": ["undefined-elements"]
   },
   "builds": [{
     "preset": "es6-unbundled",

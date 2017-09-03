@@ -13,7 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <head>
   <base href="/">
   <meta charset="utf-8">
-  <title>IMES Project</title>
+  <title>IMES</title>
   <meta http-equiv="X-UA-Compatible" content="chrome=1" />
   <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
   <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry">
@@ -43,7 +43,70 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       lazyRegister: true
     };
   </script>
-  <link async rel="import" href="src/style/index-styles.html">
+  <style>
+    vaadin-license-box {
+      display: none !important;
+      /* REMOVE WHEN USE IN PRODUCTION */
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Roboto", "Noto", sans-serif;
+      color: #202020;
+      background-color: #eeeeee;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    /* styling for render while resources are loading */
+
+    body[unresolved] {
+      background-color: #ffffff;
+      display: block;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    h1.loader-title {
+      animation-duration: .8s;
+      animation-fill-mode: both;
+      animation-iteration-count: infinite;
+      transform-origin: center;
+      animation-name: fadeOut;
+      animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    }
+
+    div.container {
+      height: 50em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      text-align: center;
+    }
+
+    div.container h1 {
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 300;
+      color: #202020;
+    }
+
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+  </style>
   <link async rel="import" href="src/view-app.html">
 </head>
 

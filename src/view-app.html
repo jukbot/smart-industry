@@ -31,6 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- import localize behavior  -->
 <link rel="import" href="app-language-behavior.html">
 <!-- import style component -->
+<link rel="import" href="style/shared-styles.html">
 <link rel="import" href="style/flat-button.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
@@ -38,143 +39,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="view-app">
   <template>
-    <style include="flat-button">
-       :host {
-        display: block;
-        --app-primary-color: #202020;
-        --app-secondary-color: #FFFFFF;
-        --app-accent-color: #172C50;
-        --app-font-color: #333333;
-        --app-background-color: #eeeeee;
-        --paper-progress-active-color: gold;
-        --paper-progress-container-color: var(--app-primary-color);
-        --paper-progress-height: 2px;
-        --paper-progress-indeterminate-cycle-duration: 3s;
-        color: var(--app-font-color);
-        background-color: var(--app-background-color);
-      }
+    <style include="flat-button shared-styles">
 
-      app-header {
-        color: var(--app-secondary-color);
-        background-color: var(--app-primary-color);
-        --app-header-shadow: {
-          box-shadow: inset 0px 5px 6px -3px rgba(0, 0, 0, 0.2);
-          height: 10px;
-          bottom: -10px;
-        }
-      }
-
-      app-drawer-layout:not([narrow]) [drawer-toggle] {
-        display: none;
-      }
-
-      app-header paper-icon-button {
-        color: var(--app-secondary-color);
-        --paper-icon-button-ink-color: var(--app-primary-color);
-      }
-
-      paper-progress {
-        width: 100%;
-      }
-
-      p {
-        margin: 0;
-      }
-
-      [hidden] {
-        display: none !important;
-      }
-
-      .main-title {
-        font-size: 3.3rem;
-        line-height: normal;
-        text-align: center;
-        margin: 0;
-      }
-
-      .main-describe {
-        font-size: 1.2rem;
-        text-align: center;
-        color: #7b7b7b;
-        margin-top: 0;
-        margin-bottom: 10px;
-        font-weight: 300;
-      }
-
-      .drawer-list>a {
-        display: block;
-        padding: 10px 50px;
-        text-decoration: none;
-        color: var(--app-primary-color);
-      }
-
-      .drawer-list>a:hover {
-        background-color: var(--app-background-color);
-      }
-
-      .drawer-list>a.iron-selected {
-        color: var(--app-secondary-color);
-        background-color: var(--app-primary-color);
-      }
-
-      .logo {
-        margin: 0 auto;
-        padding: 15px 0 0 0;
-        width: 50%;
-        height: auto;
-        text-align: center;
-        display: block;
-      }
-
-      .display-name,
-      .page-title {
-        color: var(--app-secondary-color);
-        margin: 0;
-        font-size: 1.5rem;
-        font-weight: 300;
-      }
-
-      .profile-image {
-        width: 150px;
-        border: 1px solid var(--app-background-color);
-        background-size: contain;
-        border-radius: 50%;
-      }
-
-      .flex-center {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 5em;
-      }
-
-      .authen-btn {
-        text-align: center;
-        width: 60%;
-      }
-
-      .center {
-        text-align: center;
-      }
-
-      .sidebar-menu-line {
-        border-bottom: 1px solid var(--app-background-color);
-        text-align: center;
-      }
-
-      .search-box {
-        width: 0%;
-        float: right;
-      }
-
-      @media (min-width: 360px) and (max-width: 768px) {
-        .display-name {
-          display: none;
-        }
-        .page-title {
-          font-size: 1rem;
-        }
-      }
     </style>
 
     <!-- ENABLE WHEN DEPLOY PRODUCTION <app-analytics key="UA-51514677-9"></app-analytics> -->
@@ -220,7 +86,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div class="sidebar-menu-line" role="separator"></div>
         <div class="flex-center">
           <flat-button role="button" on-tap="_logout" hidden$="[[!signedIn]]">
-            <a role="link" href="/login" rel="logout" title="Logout">{{localize('logout-button')}}</a>
+            <button type="button">{{localize('logout-button')}}</button>
           </flat-button>
           <!-- <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button> -->
         </div>
@@ -236,10 +102,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </dom-if>
       </app-drawer>
-
       <!-- Main content -->
       <app-header-layout fullbleed>
-        <app-header hidden$="[[!signedIn]]" id="header" slot="header" fixed snaps condenses>
+        <app-header hidden$="[[!signedIn]]" id="header" slot="header" fixed>
           <app-toolbar>
             <paper-progress id="pageLoader" indeterminate top-item></paper-progress>
             <paper-icon-button icon="vaadin:menu" role="button" tabindex="0" drawer-toggle></paper-icon-button>
@@ -264,7 +129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <view-404 name="404" route="[[subroute]]" hidden$="[[!signedIn]]"></view-404>
           <view-offline name="offline" route="[[subroute]]" hidden$="[[!signedIn]]"></view-offline>
           <view-error name="error" route="[[subroute]]" hidden$="[[!signedIn]]"></view-error>
-          <view-login name="login" route="[[subroute]]" hidden$="[[signedIn]]"></view-login>
+          <view-login name="login" route="[[subroute]]" hidden$="[[!signedIn]]"></view-login>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -424,8 +289,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _logout() {
-        this.offline = !navigator.onLine;
-        if (!this.offline) {
+        if (!this.online) {
+          this.page = 'offline';
+        } else {
           this.$.auth.signOut()
             .then(() => {
               this.authen = false;
@@ -440,8 +306,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               console.error('Authenticate Failed: ' + error.code);
               this.page = 'error';
             });
-        } else {
-          this.page = 'offline';
         }
       }
 
@@ -477,8 +341,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _handleError() {
-        console.error("Error: " + error.message);
+      _handleError(e) {
+        console.error("Error: " + e.message);
         this.page = 'error';
       }
     }

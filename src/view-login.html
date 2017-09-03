@@ -99,9 +99,10 @@
       }
 
       .login-form,
+      .login-btn,
       .reset-form,
       .register-form {
-        width: 90%;
+        width: 100%;
         margin: 0 auto;
         max-width: 30rem;
       }
@@ -170,7 +171,9 @@
               placeholder="Password" auto-validate></paper-input>
             <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
             <paper-checkbox class="login-remember" tabindex="0" name="remember" checked="{{remember}}" noink>Keep me signed in</paper-checkbox>
-            <flat-button responsive role="button" on-tap="_login"><a role="link" href="#" rel="logout" title="Logout">Sign in</a> </flat-button>
+            <div>
+              <flat-button class="login-btn" role="button" on-tap="_login"><button role="button">LOG IN</button></flat-button>
+            </div>
             <a href="javascript:void(0);" on-tap="_showReset" class="login-forget">Forgot Password?</a>
             <a href="javascript:void(0);" on-tap="_showRegister" class="login-register">Don’t have an account? Get one here.</a>
           </form>
@@ -198,7 +201,7 @@
             </div>
             <paper-input class="login-input" name="e-mail" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail"
               auto-focus auto-validate></paper-input>
-            <paper-button raised class="fancy authen-btn" on-tap="_resetPassword" role="button">Reset Password</paper-button>
+            <flat-button class="authen-btn" role="button" on-tap="_resetPassword"><button role="button">Reset Password</button></flat-button>
             <a href="javascript:void(0);" rel="noopenner" on-tap="_hideReset" class="login-forget">Have an account? Sign in.</a>
           </form>
         </article>
