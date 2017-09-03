@@ -18,16 +18,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <!-- iron modules -used for component functions -->
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <!-- paper modules - used for user interface -->
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-progress/paper-progress.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <!-- 3rd party modules -->
-<link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
 <!-- import localize behavior  -->
 <link rel="import" href="app-language-behavior.html">
 <!-- import style component -->
@@ -40,10 +39,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="view-app">
   <template>
     <style include="flat-button shared-styles">
-
+       :host {
+        display: block;
+      }
     </style>
-
-    <!-- ENABLE WHEN DEPLOY PRODUCTION <app-analytics key="UA-51514677-9"></app-analytics> -->
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
@@ -51,15 +50,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="appInformation" path="/metadata" data="{{metadata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
-
     <app-indexeddb-mirror id="profileIndexdb" key="profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
     <app-indexeddb-mirror id="metaIndexdb" key="metadata" data="{{metadata}}" persisted-data="{{persistedMetaData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{signedIn}}"></app-localstorage-document>
-
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
       <app-drawer id="drawer" slot="drawer" hidden$="[[!signedIn]]" role="menu" swipe-open="[[narrow]]" tabindex="0">
-        <div class="app-logo" role="logo" title="Logo" alt="Application logo"></div>
+        <div class="app-logo" role="logo" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
         <nav>
@@ -88,7 +85,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <flat-button role="button" on-tap="_logout" hidden$="[[!signedIn]]">
             <button type="button">{{localize('logout-button')}}</button>
           </flat-button>
-          <!-- <paper-button raised class="chilli authen-btn" on-tap="_logout" role="button" hidden$="[[!user]]">{{localize('logout-button')}}</paper-button> -->
         </div>
         <dom-if if="[[signedIn]]">
           <div class="center" role="group">
@@ -102,23 +98,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </dom-if>
       </app-drawer>
-      <!-- Main content -->
       <app-header-layout fullbleed>
         <app-header hidden$="[[!signedIn]]" id="header" slot="header" fixed>
           <app-toolbar>
-            <paper-progress id="pageLoader" indeterminate top-item></paper-progress>
+            <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
             <paper-icon-button icon="vaadin:menu" role="button" tabindex="0" drawer-toggle></paper-icon-button>
             <h2 class="page-title" main-title>{{localize(page)}}</h2>
+
+            <!-- <paper-input type="search" class="search-box" placeholder="Search..">
+              <iron-icon icon="vaadin:search" slot="prefix"></iron-icon>
+            </paper-input> -->
+            <input id="searchBox" type="search" name="search" placeholder="Search this app">
+            <paper-icon-button icon="vaadin:search" tabindex="-1" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button>
             <div hidden$="[[!user]]">
               <h2 class="display-name">
                 [[user.displayName]]</h2>
             </div>
-            <paper-input id="searchBox" type="search" class="search-box fit" placeholder="Search Polymer Site" aria-labelledby="searchLabel"></paper-input>
-            <paper-icon-button tabindex="-1" aria-label="Search Polymer site" role="button" on-tap="_openSearchBox" icon="vaadin:search"></paper-icon-button>
           </app-toolbar>
         </app-header>
-
-        <!-- Main content -->
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
           <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!signedIn]]"></view-dashboard>
           <view-setup name="setup" route="[[subroute]]" hidden$="[[!signedIn]]"></view-setup>
@@ -134,6 +131,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header-layout>
     </app-drawer-layout>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
+    <!-- ENABLE WHEN DEPLOY PRODUCTION <app-analytics key="UA-51514677-9"></app-analytics> -->
   </template>
 
   <script>
@@ -310,7 +308,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _openSearchBox() {
-        this.$.searchBox.style.width = '100%';
+        this.$.searchBox.focus();
       }
 
       getOnlineStatus(status) {

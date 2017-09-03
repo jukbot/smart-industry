@@ -11,6 +11,31 @@
         --app-grid-columns: 3;
         --app-grid-item-height: 50%;
       }
+
+
+      @media (min-width: 360px) and (max-width: 768px) {
+         :host {
+          --app-grid-columns: 1;
+        }
+      }
+
+      @media (min-width: 769px) and (max-width: 1024px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1025px) and (max-width: 1200px) {
+         :host {
+          --app-grid-columns: 2;
+        }
+      }
+
+      @media (min-width: 1201px) and (max-width: 2560px) {
+         :host {
+          --app-grid-columns: 3;
+        }
+      }
     </style>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="handleError"></firebase-auth>

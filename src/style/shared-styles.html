@@ -10,11 +10,6 @@
         --app-accent-color: #172C50;
         --app-font-color: #333333;
         --app-background-color: #eeeeee;
-        --paper-tabs-selection-bar-color: gold;
-        --paper-progress-active-color: gold;
-        --paper-progress-container-color: transparent;
-        --paper-progress-height: 2px;
-        --paper-progress-indeterminate-cycle-duration: 3s;
         color: var(--app-font-color);
         background-color: var(--app-background-color);
       }
@@ -52,6 +47,7 @@
       }
 
       paper-tabs {
+        --paper-tabs-selection-bar-color: #FFFFFF;
         background-color: var(--app-primary-color);
         color: var(--app-secondary-color);
       }
@@ -97,17 +93,14 @@
       }
 
       .app-logo {
-        width: 200px;
-        height: 100px;
         background-image: url('/src/images/logo/logo.svg');
         background-repeat: no-repeat;
-        background-size: 200px;
+        background-size: cover;
         background-position: center;
-        margin: 0 auto;
-        padding: 20px 0 10px 0;
+        width: 140px;
+        height: 140px;
+        margin: 20px auto 10px auto;
         display: block;
-        box-sizing: border-box;
-        position: relative;
       }
 
       .display-name,
@@ -133,11 +126,6 @@
         height: 5em;
       }
 
-      .authen-btn {
-        text-align: center;
-        width: 60%;
-      }
-
       .center {
         text-align: center;
       }
@@ -147,9 +135,29 @@
         text-align: center;
       }
 
-      .search-box {
+      input[type=search] {
         width: 0%;
-        float: right;
+        height: 100%;
+        font-size: 20px;
+        -webkit-transition: width 0.2s ease-in-out;
+        transition: width 0.2s ease-in-out;
+        padding: 0 12px;
+        border: none;
+        box-sizing: border-box;
+        background: transparent;
+        color: #FFFFFF;
+      }
+
+      input[type=search]:focus {
+        width: 100%;
+        height: 100%;
+      }
+
+      .progress-loader {
+        --paper-progress-active-color: gold;
+        --paper-progress-container-color: transparent;
+        --paper-progress-height: 2px;
+        --paper-progress-indeterminate-cycle-duration: 3s;
       }
 
       .card {
