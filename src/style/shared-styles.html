@@ -24,6 +24,11 @@
         margin: 0;
       }
 
+      ul {
+        padding: 0;
+        list-style: none;
+      }
+
       app-header {
         color: var(--app-secondary-color);
         background-color: var(--app-primary-color);
@@ -91,11 +96,15 @@
         background-color: var(--app-primary-color);
       }
 
-      .logo {
+      .app-logo {
+        width: 200px;
+        height: 100px;
+        background-image: url('/src/images/logo/logo.svg');
+        background-repeat: no-repeat;
+        background-size: 200px;
+        background-position: center;
         margin: 0 auto;
         padding: 20px 0 10px 0;
-        width: 50%;
-        height: auto;
         display: block;
         box-sizing: border-box;
         position: relative;
@@ -103,6 +112,7 @@
 
       .display-name,
       .page-title {
+        display: none;
         color: var(--app-secondary-color);
         margin: 0;
         font-size: 1.5rem;
@@ -142,19 +152,6 @@
         float: right;
       }
 
-      @media (min-width: 360px) and (max-width: 768px) {
-        .display-name {
-          display: none;
-        }
-        .page-title {
-          font-size: 1.2rem;
-          margin-left: 5px;
-        }
-        .tab-title {
-          display: none;
-        }
-      }
-
       .card {
         margin: 10px;
         padding: 16px;
@@ -176,15 +173,18 @@
         line-height: 64px;
       }
 
-      h1 {
-        margin: 16px 0;
-        color: var(--app-primary-color);
-        font-size: 22px;
-      }
-
-      ul {
-        padding: 0;
-        list-style: none;
+      @media (min-width: 360px) and (max-width: 768px) {
+        .display-name {
+          display: none;
+        }
+        .page-title {
+          display: inline-block;
+          font-size: 1.2rem;
+          margin-left: 5px;
+        }
+        .tab-title {
+          display: none;
+        }
       }
     </style>
   </template>

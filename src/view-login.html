@@ -39,7 +39,7 @@
       }
 
       .left-half {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("../../images/cover/welcome.jpg");
+        background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/src/images/cover/welcome.jpg");
         background-repeat: no-repeat;
         background-position: center top;
         background-size: cover;
@@ -73,13 +73,6 @@
 
       .form-title>h2 {
         font-size: 1.5rem;
-      }
-
-      .authen-btn {
-        width: 100%;
-        margin: 0.5rem 0 1rem 0;
-        padding: 1rem 0;
-        font-size: 1.25rem;
       }
 
       .white {
@@ -158,7 +151,7 @@
       </figure>
       <div class="flex-layout right-half">
         <article>
-          <img class="logo" role="img" src="../../images/logo/industrial.svg" title="Logo" alt="application logo">
+          <img class="logo" role="img" src="/src/images/logo/logo.svg" title="Logo" alt="application logo">
           <h1 title="IMES" class="main-title mobile-title">Project IMES</h1>
           <form hidden$="[[!login]]" class="login-form" on-submit="_login">
             <div class="form-title">
@@ -190,7 +183,8 @@
             <paper-input class="register-input" name="phone-number" id="register_phone" type="text" maxlength="15" placeholder="Phone Number"
               autofocus auto-validate></paper-input>
             <!-- <paper-button raised class="smart authen-btn" on-tap="_register" role="button">Send Confirmation</paper-button> -->
-            <flat-button role="button" on-tap="_register">
+            <flat-button class="register-btn" role="button" on-tap="_register">
+              <button role="button">Reset Password</button>
               <a role="link" href="#" rel="logout" title="Logout">Send Confirmation</a>
             </flat-button>
             <a href="javascript:void(0);" on-tap="_hideRegister" class="login-register">Already have account? Sign in</a>
@@ -201,7 +195,7 @@
             </div>
             <paper-input class="login-input" name="e-mail" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail"
               auto-focus auto-validate></paper-input>
-            <flat-button class="authen-btn" role="button" on-tap="_resetPassword"><button role="button">Reset Password</button></flat-button>
+            <flat-button class="reset-btn" role="button" on-tap="_resetPassword"><button role="button">Reset Password</button></flat-button>
             <a href="javascript:void(0);" rel="noopenner" on-tap="_hideReset" class="login-forget">Have an account? Sign in.</a>
           </form>
         </article>

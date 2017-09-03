@@ -1,0 +1,41 @@
+{
+  "language": "node_js",
+  "node_js": "stable",
+  "cache": "bundler",
+  "sudo": "required",
+  "dist": "trusty",
+  "addons": {
+    "apt": {
+      "sources": [
+        "google-chrome"
+      ],
+      "packages": [
+        "google-chrome-stable"
+      ]
+    }
+  },
+  "before_install": [
+    "npm install -g npm@5.4.0"
+  ],
+  "install": [
+    "npm install -g yarn",
+    "yarn add global bower",
+    "yarn add global polymer-cli",
+    "node -v",
+    "npm -v",
+    "bower -v",
+    "polymer --version",
+    "yarn --version",
+    "yarn install",
+    "bower install"
+  ],
+  "before_script": [
+    "mkdir -p build/default",
+    "ls"
+  ],
+  "script": [
+    "polymer build"
+  ],
+  "group": "stable",
+  "os": "linux"
+}
