@@ -284,12 +284,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.auth.signOut()
             .then(() => {
               this.authen = false;
-              // redirect to login page
-              this.page = 'login';
               Polymer.Async.timeOut.run(() => {
                 this.$.header.resetLayout();
                 this.$.drawer.resetLayout();
               }, 1);
+              // redirect to login page
+              this.page = 'login';
             })
             .catch((error) => {
               console.error('Authenticate Failed: ' + error.code);

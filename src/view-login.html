@@ -153,7 +153,7 @@
     <section class="container">
       <figure class="flex-layout left-half">
         <article>
-          <h1 title="IMES" class="main-title white">Project IMES</h1>
+          <h1 title="IMES" class="main-title white">IMES</h1>
           <div title="Smart Industry Helper" class="main-describe white">Your Smart Industry Helper</div>
         </article>
       </figure>
@@ -248,7 +248,7 @@
             .then((response) => {
               this.set('route.path', '/');
               this.authen = true;
-              this.page = '/dashboard';
+              this.page = '/';
             })
             .catch((error) => {
               alert("Authenticate Failed: " + error.message);
