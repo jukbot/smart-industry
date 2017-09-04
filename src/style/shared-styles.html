@@ -58,9 +58,9 @@
       }
 
       paper-tooltip.profile-tooltip {
-        --paper-tooltip-opacity: 0.95;
-        --paper-tooltip-background: #202020;
-        --paper-tooltip-text-color: #FFFFFF;
+        --paper-tooltip-opacity: 1;
+        --paper-tooltip-background: #FFFFFF;
+        --paper-tooltip-text-color: 202020;
         width: 240px;
       }
 
@@ -130,6 +130,46 @@
         border: 1px solid var(--app-background-color);
         background-size: contain;
         border-radius: 50%;
+      }
+
+
+      #toastVerify {
+        --paper-toast-background-color: #e53935;
+        --paper-toast-color: #FFFFFF;
+        opacity: 0.95;
+        font-size: 1rem;
+        width: 100%;
+        padding: 10px;
+      }
+
+      .toast-flex-container {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-self: stretch;
+        align-self: stretch;
+        justify-content: space-between;
+        width: 100%;
+        height: auto;
+      }
+
+      .toast-flex-item:first-child {
+        align-self: stretch;
+        margin-right: auto;
+      }
+
+      .toast-flex-item:last-child {
+        align-self: flex-end;
+        margin-top: 0;
+      }
+
+      .toast-flex-item {
+        margin: auto 0;
+      }
+
+      .close-toast-button {
+        text-transform: none;
+        color: #FFFFFF;
+        float: right;
       }
 
       .flex-center {

@@ -46,6 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+
     <app-indexeddb-mirror id="profileIndexdb" key="profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{signedIn}}"></app-localstorage-document>
@@ -77,14 +78,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </nav>
         <div class="sidebar-menu-line" role="separator"></div>
         <div class="flex-center">
-          <flat-button role="button" on-tap="_logout" hidden$="[[!signedIn]]">
+          <flat-button role="button" on-tap="_logout" title="Logout" hidden$="[[!signedIn]]">
             <button type="button">{{localize('logout-button')}}</button>
           </flat-button>
         </div>
         <dom-if if="[[signedIn]]">
           <div class="center" role="group">
-            <img id="profile" class="profile-image" src$="[[getUserImage(user.photoURL)]]" alt="user photo">
-            <paper-tooltip position="bottom" for="profile" class="profile-tooltip" tabindex="0">
+            <img id="profile" class="profile-image" src$="[[getUserImage(user.photoURL)]]" title="Profile image" alt="user photo">
+            <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" tabindex="0">
               <p>{{localize('display-name')}} : [[persistedProfileData.displayName]]</p>
               <p>{{localize('email')}} : [[persistedProfileData.email]]</p>
               <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(persistedProfileData.emailVerified)]]</span></p>
@@ -124,6 +125,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header-layout>
     </app-drawer-layout>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
+    <paper-toast id="toastVerify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0" opened>
+      <div class="toast-flex-container">
+        <div class="toast-flex-item">
+          <p>We could not verify your account. To protect your account, we need to verify email that associated with your account
+            before using this application.
+          </p>
+        </div>
+        <div class="toast-flex-item">
+          <paper-icon-button on-tap="_closeToastVerify" role="bottom" class="close-toast-button" icon="vaadin:close-big" tabindex="-1"></paper-icon-button>
+        </div>
+      </div>
+    </paper-toast>
     <!-- ENABLE WHEN DEPLOY PRODUCTION <app-analytics key="UA-51514677-9"></app-analytics> -->
   </template>
 
@@ -305,10 +318,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       getOnlineStatus(status) {
         if (status) {
           this.$$('.online').style.color = 'green';
-          return 'online';
+          return 'Online';
         } else {
           this.$$('.online').style.color = 'red';
-          return 'offline';
+          return 'Offline';
         }
       }
 
@@ -328,6 +341,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         } else {
           return 'src/images/profile/default.svg';
         }
+      }
+
+      verifyAccountNotication() {
+        this.$.toastVerify.open();
+      }
+
+      _closeToastVerify() {
+        this.$.toastVerify.close();
       }
 
       _handleError(e) {

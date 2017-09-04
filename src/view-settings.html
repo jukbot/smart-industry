@@ -49,10 +49,6 @@
         }
       }
 
-      flat-input {
-        width: 100%;
-      }
-
       .btn {
         margin-top: 10px;
         width: 100%;
@@ -72,10 +68,12 @@
       on-message="handleMessage" token="{{token}}"></firebase-messaging>
     <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.id]]/token" data="[[token]]"></firebase-document>
+
     <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appEmailNotification" path="/metadata/appEmailNotification" data="{{emailnotification}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appBackup" path="/metadata/appBackup" data="{{autobackup}}"></firebase-document>
+
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
     <iron-ajax url="../data/languages.json" auto last-response="{{languageItems}}"></iron-ajax>
@@ -87,8 +85,8 @@
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
             required auto-validate always-float-label></vaadin-combo-box>
           <h1>Sensor Devices</h1>
-          <flat-button role="button" class="btn" title="Search sensor"><button on-tap="_scanDevice" name="search sensor" type="button">Search Sensor</button></flat-button>
-          <flat-button role="button" class="btn" title="Show sensor"><button on-tap="_showDevice" name="show sensor" type="button">Show Sensor</button></flat-button>
+          <flat-button on-tap="_scanDevice" class="btn" title="Search sensor"><button role="button">Search Sensor</button></flat-button>
+          <flat-button on-tap="_showDevice" class="btn" title="Show sensor"><button role="button">Show Sensor</button></flat-button>
         </div>
       </li>
       <li>
@@ -99,31 +97,28 @@
           <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress>
           <!--<vaadin-upload id="uploadImageFile" nodrop no-auto max-files="1" accept="image/*"  max-file-size="1000000">
           </vaadin-upload>-->
-          <flat-button role="button" class="btn" title="Upload Image"><input type="file" accept="image/*" name="file" id="uploadImageFile" class="inputfile" /></flat-button>
-          <flat-button role="button" class="btn" title="{{localize('remove-profile-image')}}"><button on-tap="deleteProfileImage" name="show sensor" type="button">{{localize('remove-profile-image')}}</button></flat-button>
-          <flat-button role="button" class="btn" disabled="[[user.emailVerified]]" title="{{localize('verify-account')}}"><button on-tap="verifyAccount" disabled="[[user.emailVerified]]" name="verify account" type="button">{{localize('verify-account')}}</button></flat-button>
-          <flat-button role="button" class="btn" title="{{localize('save-settings')}}"><button on-tap="saveSettings" name="save settings" type="button">{{localize('save-settings')}}</button></flat-button>
+          <input type="file" accept="image/*" name="file" id="uploadImageFile" class="inputfile" />
+          <flat-button on-tap="_deleteProfileImage" class="btn" title="{{localize('remove-profile-image')}}"><button role="button">{{localize('remove-profile-image')}}</button></flat-button>
+          <flat-button on-tap="_verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]" disabled="[[user.emailVerified]]"><button role="button" disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button></flat-button>
+          <flat-button on-tap="_saveSettings" class="btn" title="{{localize('save-settings')}}"><button role="button">{{localize('save-settings')}}</button></flat-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1>{{localize('authentication-settings')}}</h1>
-
           <paper-input label="{{localize('email')}}" id="userEmail" type="email" disabled="true" value="[[user.email]]"></paper-input>
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password"></paper-input>
           <paper-input label="{{localize('new-password')}}" id="newPassword" type="password"></paper-input>
-          <flat-button class="magic btn" on-tap="_changeAuthen" title="{{localize('change-password')}}" raised>{{localize('change-password')}}</flat-button>
-          <flat-button class="chilli btn" on-tap="_deleteAcount" title="{{localize('delete-account')}}" raised>{{localize('delete-account')}}</flat-button>
+          <flat-button on-tap="_changeAuthen" class="btn" title="{{localize('change-password')}}"><button role="button">{{localize('change-password')}}</button></flat-button>
+          <flat-button on-tap="_deleteAcount" class="btn" title="{{localize('delete-account')}}"><button role="button">{{localize('delete-account')}}</button></flat-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1>{{localize('backup-settings')}}</h1>
           <p>Export or Import factory data to backup as a file.</p>
-          <a class="link" href="data:[[getData(data)]]" download="data.json" rel="noopenner">
-            <flat-button class="carrot btn" title="Export backup" on-tap="_export-data" raised>{{localize('export-data')}}</flat-button>
-          </a>
-          <flat-button class="magic btn" title="Import backup" on-tap="_import-data" raised>{{localize('import-data')}}</flat-button>
+          <flat-button on-tap="_export-data" class="btn" title="{{localize('export-data')}}"><button role="button">{{localize('export-data')}}</button></flat-button>
+          <flat-button on-tap="_import-data" class="btn" title="{{localize('import-data')}}"><button role="button">{{localize('import-data')}}</button></flat-button>
           <paper-toggle-button class="switch" value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
         </div>
       </li>
@@ -145,7 +140,6 @@
         </div>
       </li>
     </ul>
-    <paper-tooltip for="switch" animation-delay="1000" offset="0" position="bottom">Notification is feature that notify you when the system has events.</paper-tooltip>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
   </template>
 
@@ -179,11 +173,6 @@
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../data/locales.json'));
-      }
-
-
-      getData(data) {
-        return "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
       }
 
       _changeLanguage() {
@@ -283,6 +272,7 @@
             //redirect to login page    
             this.async(function () {
               this.set('route.path', 'login');
+              this.page = 'login';
             }, 1000);
             console.info("Logout successful");
           })
@@ -339,7 +329,7 @@
         console.log('message received', arguments);
       }
 
-      verifyAccount() {
+      _verifyAccount() {
         this.user.sendEmailVerification()
           .then(() => {
             alert('Verification is send to your email');
@@ -349,7 +339,7 @@
           });
       }
 
-      saveSettings() {
+      _saveSettings() {
         let displayNameInput = this.$.displayName.value;
         if (displayNameInput !== "" && displayNameInput != this.user.displayName) {
           this.user.updateProfile({
@@ -407,7 +397,7 @@
           });
       }
 
-      deleteProfileImage() {
+      _deleteProfileImage() {
         if (this.user.photoURL) {
           if (confirm("Delete profile image ?") == true) {
             let storageRef = firebase.app('smart-mes').storage().ref("user/" + this.user.uid + "/profile");
