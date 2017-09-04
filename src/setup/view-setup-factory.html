@@ -1,0 +1,36 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../view-dashboard.html">
+<link rel="import" href="../style/shared-styles.html">
+<link rel="import" href="../style/flat-button.html">
+
+<dom-module id="view-setup-factory">
+    <template>
+        <style include="shared-styles app-grid-style flat-button">
+             :host {
+                margin: 10px;
+                display: block;
+            }
+        </style>
+        <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    </template>
+    <script>
+        class ViewSetupFactory extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+            Polymer.Element) {
+            static get is() {
+                return 'view-setup-factory';
+            }
+
+            static get properties() {
+                return {
+                    language: String
+                }
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                this.loadResources(this.resolveUrl('../../data/locales.json'));
+            }
+        }
+        window.customElements.define(ViewSetupFactory.is, ViewSetupFactory);
+    </script>
+</dom-module>

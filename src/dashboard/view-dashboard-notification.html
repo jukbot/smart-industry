@@ -43,7 +43,6 @@
           <h1 class="title">Notification Center</h1>
           <!-- Fetch an array of users to be shown in the grid -->
           <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{notificationList}}"></iron-ajax>
-
           <!-- The array is set as the <vaadin-grid>'s "items" property -->
           <vaadin-grid aria-label="Basic Binding Example" items="[[notificationList.result]]">
 
@@ -84,7 +83,7 @@
     </ul>
   </template>
   <script>
-    class ViewDashboardNotification extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.AppLanguageBehavior],
+    class ViewDashboardNotification extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
         return 'view-dashboard-notification';
@@ -92,7 +91,6 @@
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../../data/locales.json'));
-        console.log('Load dashboard');
       }
       _clearNotification() {
         this.$.toast.open();

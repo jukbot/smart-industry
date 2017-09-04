@@ -45,7 +45,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/appData/appLanguage" data="{{language}}"></firebase-document>
 
     <app-indexeddb-mirror id="profileIndexdb" key="profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
@@ -77,12 +77,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </iron-selector>
         </nav>
         <div class="sidebar-menu-line" role="separator"></div>
-        <div class="flex-center">
-          <flat-button role="button" on-tap="_logout" title="Logout" hidden$="[[!signedIn]]">
-            <button type="button">{{localize('logout-button')}}</button>
-          </flat-button>
-        </div>
         <dom-if if="[[signedIn]]">
+          <div class="flex-center">
+            <flat-button role="button" on-tap="_logout" title="Logout">
+              <button type="button">{{localize('logout-button')}}</button>
+            </flat-button>
+          </div>
           <div class="center" role="group">
             <img id="profile" class="profile-image" src$="[[getUserImage(user.photoURL)]]" title="Profile image" alt="user photo">
             <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" tabindex="0">
@@ -125,7 +125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header-layout>
     </app-drawer-layout>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
-    <paper-toast id="toastVerify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0" opened>
+    <paper-toast id="toastVerify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
       <div class="toast-flex-container">
         <div class="toast-flex-item">
           <p>We could not verify your account. To protect your account, we need to verify email that associated with your account
@@ -251,7 +251,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _signedInChanged() {
+      _signedInChanged(e) {
+        console.log(e);
         if (!this.signedIn) {
           console.log('You are not signin');
           this.page = 'login';
@@ -331,6 +332,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return 'Verified';
         } else {
           this.$$('.verify').style.color = 'red';
+          this.verifyAccountNotication(status);
           return 'Not verify';
         }
       }
@@ -343,8 +345,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      verifyAccountNotication() {
-        this.$.toastVerify.open();
+      verifyAccountNotication(status) {
+        if (!status) {
+          this.$.toastVerify.open();
+        }
       }
 
       _closeToastVerify() {

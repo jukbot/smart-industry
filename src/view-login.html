@@ -6,6 +6,8 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <!-- import style component -->
 <link rel="import" href="style/flat-button.html">
@@ -147,9 +149,11 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" on-error="handleError"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]"></firebase-document>
+    <firebase-query app-name="smart-mes" id="data" path="/data"></firebase-query>
     <app-localstorage-document key="session" data="{{remember}}"></app-localstorage-document>
     <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
+    <iron-ajax url="../data/sample.json" auto last-response="{{sampleData}}"></iron-ajax>
     <section class="container">
       <figure class="flex-layout left-half">
         <article>
@@ -238,7 +242,7 @@
             }
           },
           user: Object,
-          userData: Object,
+          sampleData: Object
         };
       }
 
@@ -259,20 +263,26 @@
       }
 
       _register() {
-        let email = this.$.register_email.value;
-        let organize = this.$.register_organization.value;
-        let phone = this.$.register_phone.value;
-        let username = "New User";
-        if (email !== "" && organize !== "" && phone !== "" && this.$.register_passwd.value !== "") {
+        const email = this.$.register_email.value;
+        const organize = this.$.register_organization.value;
+        const phone = this.$.register_phone.value;
+        const username = "New User";
+        if (email !== "" && organize !== "" && phone !== "" && this.$.register_passwd.value !== "" && this.sampleData !=
+          null) {
           this.$.auth.createUserWithEmailAndPassword(email, this.$.register_passwd.value)
             .then((response) => {
               this.$.auth.signInWithEmailAndPassword(email, this.$.register_passwd.value)
                 .then((response) => {
-                  this.user.updateProfile({
+                  this.$.user.updateProfile({
                     displayName: username,
                   });
-                  this.addProfileInfo(username, email, organize, phone);
-                  this.user.sendEmailVerification();
+                  const keyid = this.$.data.ref.push().key;
+                  const userid = this.user.uid;
+                  this.addProfileInfo(username, email, organize, phone, keyid, userid);
+                  this.$.data.ref.child(keyid).set(this.sampleData).catch(error => {
+                    alert("Register Failed: " + error.message + " Please contact administrator");
+                  });
+                  this.$.auth.sendEmailVerification();
                   alert("Register successful. We've sent verification code to your email");
                   // Signout Action
                   this.$.auth.signOut();
@@ -283,22 +293,23 @@
                 });
             })
             .catch((error) => {
-              alert("Register Failed: " + error.message);
+              alert("Register Failed: " + error.message + " Please contact administrator");
             });
         } else {
           alert("Please fill in the form completely.");
         }
       }
 
-      addProfileInfo(username, email, organize, phone) {
-        this.$.user.ref.set({
+      addProfileInfo(username, email, organize, phone, keyid, userid) {
+        this.$.user.ref.child(userid).set({
             displayname: username,
-            email: this.user.email,
+            email: email,
             photoURL: null,
             phone: phone,
-            organization: organize,
+            organization: "Sample Company",
             role: "admin",
-            description: "No description for this user"
+            description: "No description for this user",
+            keyid: keyid
           })
           .catch(error => {
             alert("Error: " + error.message);

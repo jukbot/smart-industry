@@ -1,5 +1,7 @@
-# About IMES
+!! NOTICE: DURING THIS WEEK WE WILL REBUILD THE DATABASE STRUCTURE FOR OPTIMIZING PERFORMANCE. !! 
+SO THIS PROJECT WILL BE TEMPORARY LOCKED DOWN FOR A WHILE. 
 
+# About IMES
 
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)

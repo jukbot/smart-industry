@@ -69,10 +69,10 @@
     <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.id]]/token" data="[[token]]"></firebase-document>
 
-    <firebase-document app-name="smart-mes" id="appLanguage" path="/metadata/appLanguage" data="{{language}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appNotification" path="/metadata/appNotification" data="{{notification}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appEmailNotification" path="/metadata/appEmailNotification" data="{{emailnotification}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appBackup" path="/metadata/appBackup" data="{{autobackup}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/appData/appLanguage" data="{{language}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appNotification" path="/appData/appNotification" data="{{notification}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/appData/appEmailAlert" data="{{emailnotification}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appBackup" path="/appData/appBackup" data="{{autobackup}}"></firebase-document>
 
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
