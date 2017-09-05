@@ -1,31 +1,30 @@
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
 <dom-module id="flat-input">
   <template>
     <style>
-
       flat-input {
         display: inline-block;
         margin: 20px 0;
       }
 
-      flat-input > input::-webkit-input-placeholder {
+      flat-input>input::-webkit-input-placeholder {
         color: transparent;
       }
 
-      flat-input > input::-moz-placeholder {
+      flat-input>input::-moz-placeholder {
         color: transparent;
       }
 
-      flat-input > input:-ms-input-placeholder {
+      flat-input>input:-ms-input-placeholder {
         color: transparent;
       }
 
-      flat-input > input::-ms-input-placeholder {
+      flat-input>input::-ms-input-placeholder {
         color: transparent;
       }
 
-      flat-input > input {
+      flat-input>input {
         font-size: 1em;
         font-weight: 300;
         color: var(--app-primary-color);
@@ -35,12 +34,12 @@
         outline: none;
       }
 
-      flat-input > input:invalid {
+      flat-input>input:invalid {
         /* reset the default style in FF */
         box-shadow: none;
       }
 
-      flat-input > flat-md-decorator {
+      flat-input>flat-md-decorator {
         display: block;
         height: 1px;
         width: 100%;
@@ -65,9 +64,9 @@
         transition: -webkit-transform 0.2s ease-in;
         transition: transform 0.2s ease-in;
       }
-
       /* input label */
-      flat-input > flat-md-decorator > label {
+
+      flat-input>flat-md-decorator>label {
         display: block;
         pointer-events: none;
         opacity: 0.5;
@@ -84,9 +83,9 @@
         -webkit-transform: translate3d(0px, -1.9em, 0px);
         transform: translate3d(0px, -1.9em, 0px);
       }
-
       /* Error message */
-      flat-input > flat-md-decorator::after {
+
+      flat-input>flat-md-decorator::after {
         position: absolute;
         top: 0;
         left: 0;
@@ -98,40 +97,41 @@
         white-space: nowrap;
       }
 
-      flat-input > input:focus + flat-md-decorator > flat-underline {
+      flat-input>input:focus+flat-md-decorator>flat-underline {
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
         transition: -webkit-transform 0.2s ease-out;
         transition: transform 0.2s ease-out;
       }
-
       /* Label: valid state */
-      flat-input > input:focus + flat-md-decorator > label {
+
+      flat-input>input:focus+flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
 
-      flat-input > input:optional:not(:placeholder-shown) + flat-md-decorator > label {
+      flat-input>input:optional:not(:placeholder-shown)+flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
 
-      _:-ms-lang(x), flat-input > input + flat-md-decorator > label {
+      _:-ms-lang(x),
+      flat-input>input+flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
 
-      flat-input > input:optional:-moz-ui-valid + flat-md-decorator > label {
+      flat-input>input:optional:-moz-ui-valid+flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
-
       /* Underline */
-      flat-input > input:not(:focus):not(:placeholder-shown):invalid + flat-md-decorator > flat-underline {
+
+      flat-input>input:not(:focus):not(:placeholder-shown):invalid+flat-md-decorator>flat-underline {
         background-color: #dd2c00;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
@@ -139,7 +139,7 @@
         transition: transform 0.2s ease-out;
       }
 
-      flat-input > input:not(:focus):-moz-ui-invalid:invalid + flat-md-decorator > flat-underline {
+      flat-input>input:not(:focus):-moz-ui-invalid:invalid+flat-md-decorator>flat-underline {
         background-color: #dd2c00;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
@@ -147,56 +147,55 @@
         transition: transform 0.2s ease-out;
       }
 
-      flat-input > input[aria-invalid='true']:not(:valid) + flat-md-decorator > flat-underline {
+      flat-input>input[aria-invalid='true']:not(:valid)+flat-md-decorator>flat-underline {
         background-color: #dd2c00;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
         transition: -webkit-transform 0.2s ease-out;
         transition: transform 0.2s ease-out;
       }
-
       /* Error message */
-      flat-input > input:not(:focus):not(:placeholder-shown):invalid + flat-md-decorator::after {
+
+      flat-input>input:not(:focus):not(:placeholder-shown):invalid+flat-md-decorator::after {
         display: block;
       }
 
-      flat-input > input:not(:focus):-moz-ui-invalid:invalid + flat-md-decorator::after {
+      flat-input>input:not(:focus):-moz-ui-invalid:invalid+flat-md-decorator::after {
         display: block;
       }
 
-      flat-input > input[aria-invalid='true']:not(:valid) + flat-md-decorator::after {
+      flat-input>input[aria-invalid='true']:not(:valid)+flat-md-decorator::after {
         display: block;
       }
-
       /* Error label */
-      flat-input > input:not(:focus):not(:placeholder-shown):invalid + flat-md-decorator > label {
+
+      flat-input>input:not(:focus):not(:placeholder-shown):invalid+flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
         color: #dd2c00;
       }
 
-      flat-input > input:not(:focus):-moz-ui-invalid:invalid + flat-md-decorator > label {
+      flat-input>input:not(:focus):-moz-ui-invalid:invalid+flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
         color: #dd2c00;
       }
 
-      flat-input > input[aria-invalid='true']:not(:valid) + flat-md-decorator > label {
+      flat-input>input[aria-invalid='true']:not(:valid)+flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
         color: #dd2c00;
       }
-
       /* Valid label */
-      flat-input > input:not(:focus):required:valid + flat-md-decorator > label {
+
+      flat-input>input:not(:focus):required:valid+flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
-
     </style>
   </template>
 </dom-module>

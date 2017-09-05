@@ -264,7 +264,7 @@
       <paper-toast id="toastAlert" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
         <div class="toast-flex-container">
           <div class="toast-flex-item">
-            <p>[[errorMessage]]
+            <p>[[alertMessage]]
             </p>
           </div>
           <div class="toast-flex-item">
@@ -307,7 +307,7 @@
           signedIn: Boolean,
           user: Object,
           sampleData: Object,
-          errorMessage: String,
+          alertMessage: String,
           keyid: {
             type: String,
             notify: true,
@@ -341,7 +341,7 @@
         const organize = this.$.register_organization.value;
         const phone = this.$.register_phone.value;
         const password = this.$.register_passwd.value;
-        const username = "New User";
+        const username = "Sample User";
         if (email && organize && phone && password && this.sampleData) {
           this.$.auth.createUserWithEmailAndPassword(email, password)
             .then((response) => {
@@ -379,7 +379,7 @@
             email: email,
             photoURL: null,
             phone: phone,
-            organization: "Sample Company",
+            organization: organize,
             role: "admin",
             description: "No description for this user",
             key: keyid
@@ -429,7 +429,7 @@
       }
 
       showAlertToast(error) {
-        this.errorMessage = error;
+        this.alertMessage = error;
         this.$.toastAlert.open();
       }
 
