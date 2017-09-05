@@ -1,12 +1,55 @@
-!! NOTICE: DURING THIS WEEK WE WILL REBUILD THE DATABASE STRUCTURE FOR OPTIMIZING PERFORMANCE. !! 
-SO THIS PROJECT WILL BE TEMPORARY LOCKED DOWN FOR A WHILE. 
-
-# About IMES
+`!! NOTICE: DURING THIS WEEK WE WILL REBUILD THE DATABASE STRUCTURE FOR OPTIMIZING PERFORMANCE. !! 
+SO THIS PROJECT WILL BE TEMPORARY LOCKED DOWN FOR A WHILE.
+`
 
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
 [![GitHub (pre-)release](https://img.shields.io/github/release/jukbot/smart-industry/all.svg)](https://github.com/jukbot/smart-industry/releases/)
 [![Polymer 2 supported](https://img.shields.io/badge/Polymer2-supported-f50057.svg)](https://github.com/jukbot/smart-industry/)
+
+# About IMES Project
+
+A manufacturing execution system (MES) involves using computers to track and record the entire manufacturing process from extracting raw materials to producing finished products. They mainly function as stand-alone systems that primarily collect data about the workplace. A MES can be used in a wide variety of industries including packing goods, metal or plastic production, and automation.  The main purpose for using a MES is to improve production, minimize delays, and make delivery of goods easier.
+
+A “Smart” MES builds on top of the original idea of MES by using mathematical algorithms that allow decision making. Henceforth, the information system will be able to select the most suitable solution in a problem scenario. By employing a Smart MES system with improved decision making, it can further enhance the performance of manufacturing and drive down production costs.
+
+While a majority of Thailand still utilizes Industry 2.0, it still lacks the support for manufacturing systems that can reduce errors in the workflow and allow businesses to work smarter. The problem can be seen when small to medium businesses are not able to invest in high-technology systems or hire adequate personnel to manage production, they will be stuck with the current standards. This is known as the Industry 2.0 “trap”. It is one of the driving forces that this project was put forth. Smart MES technology can provide an affordable solution to factory owners and advance the standards for industry into the future. 
+
+This project, involves building a Smart MES web application that will help manufacturers plan the manufacturing process, simulate the workflow of the planned process, track the events of the actual production line and finally generate a report  of the actual process. This will help manufacturers build a more effective production line as well as reduce and prevent potential problems that can occur throughout the manufacturing process. Chapter 2 will cover the feasibility study for the Smart MES project.
+
+### Project Objective
+
+- Help workers calculate and select the most suitable job priority for managing process scheduling.
+- Increase the degree of automation and digitization of production, manufacturing and industrial processes.
+- Improve efficiency in the production and planning processes by managing the entire value chain process.
+- Visualize the workflow and the status of jobs by simulating a building block diagram.
+
+
+### Implementation Techniques
+According to the scope, this project uses an Internet connection to connect to an online web-based application. Our implementation will attempt to work using the Javascript language which is cross platform, flexible and able to work on mobile devices. 
+
+
+In particular, the following processes and algorithms will be used in this project: linear programming (LP), Statistical Process Control (SPC), Overall Equipment Effectiveness (OEE) and production scheduling algorithms which include Earliest Due Date (EDD) and Shortest Processing Time (SPT).
+
+``Resource Usage Optimization using Linear Programming (LP)``
+Linear programming (LP) is used for resource optimization, as long as the output function is linear.  This helps in cases where there are feasible solutions, or better yet, optimal solutions. However, if specific algorithms are required, the correlation values of the outcome may be weak. LP can only solve convex problems directly.
+
+``Process Optimization using Statistical Process Control (SPC)``
+Statistical Process Control (SPC) is the statistical methods that apply in monitoring, corrective action and documenting the error results in production including material, worker, machine and environment. The strategy of SPC consists of collecting historical data in a perfect production line without error. Then, the data is analyzed and used to define the control line of production. This will be used as standard in warning of disorder information that occurs in the present or future which improves the process and product quality at the time. The benefit of SPC is we can decrease the cost of production by reducing repetitive manufacturing or damage of an item from an error in the production line. This provides useful information to an engineer to understand the root cause.
+
+SPC can be used in industry and business services, but mostly used in industries like the electronics industry, automotive industry, food processing industry, chemical and petrochemical industry, metal industry, paper industry and more. Overall, there are 5 factors that affect the production process and as a result, the customer satisfaction level. These factors include the environment, the equipment used in production, the methods, the quality of materials and the people who are operating the process. 
+
+``Overall Equipment Effectiveness (OEE)``
+Overall Equipment Effectiveness (OEE) is a tool used to measure manufacturing performance. In general, there are a lot of data and a large number of measurement methods that are outdated and cannot be used to improve productivity. Sometimes there are too many criteria that are unrelated to each other and an inconsistency of fragmented data. Thus, OEE is an ideal way to measure the quality standard of manufacturing apart from knowing the machine’s performance. It can provide information about the cause of performance loss and can suggest ways to decrease that loss accurately and systematically. 
+
+From the factors that are shown in Figure 2.6, there are three major components in calculating OEE. First, the availability that measures the total amount of time that the system is running along with undesired downtime. Second, performance that measures the number of units produced in a time cycle. A perfect performance rating would mean that the system is running as fast as possible. Third, quality of the manufacturing system is measured. Quality involves measuring the number of faulty parts in production. A system with 100% quality means that there is no defective parts being produced.
+
+``Original quantity (Q0)``
+Original quantity is the quantity of an order that includes the backup order items. A damaged item can  be replaced the with a backup when unexpected events occur.
+
+``Scheduling Algorithms``
+Scheduling optimization involves selecting the appropriate scheduling method by considering the resources and time available. By implementing the decision making model which analyzes the current job in the system, it rearranges the job priorities to meet the condition and get the best outcome. There are two production scheduling algorithms that will be used in this project. The first is EDD which takes into account the due date of the product and sorts the earliest items first. The second algorithm is SPT which considers the time to process the product. The products with the fastest processing time will take priority. 
+
 
 ### Demo User Login 
 
@@ -16,6 +59,12 @@ SO THIS PROJECT WILL BE TEMPORARY LOCKED DOWN FOR A WHILE.
 |---------|---------------|
 | demo@imes.in.th | demouser |
 
+### Changelog in 1.0.5 Preview
+
+Writing in progress..
+
+
+### About Polymer 2 
 
 This template is a starting point for building apps using a drawer-based
 layout. The layout is provided by `app-layout` elements.
