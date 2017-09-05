@@ -37,6 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="view-track.html">
 <link rel="import" href="view-help.html">
 <link rel="import" href="view-settings.html">
+<link rel="import" href="view-404.html">
 
 <dom-module id="view-app">
   <template>
@@ -157,12 +158,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: String,
             reflectToAttribute: true,
             observer: '_pageChanged',
-          },
-          keyid: {
-            type: String,
-            value: () => {
-              return this.keyid || 'default'
-            }
           },
           language: {
             type: String,

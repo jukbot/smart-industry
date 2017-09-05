@@ -38,7 +38,7 @@
         align-content: center;
       }
 
-      .flex-layout {
+      .flex-item {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -207,13 +207,13 @@
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <iron-ajax url="../data/sample.json" auto handle-as="json" last-response="{{sampleData}}"></iron-ajax>
     <section class="container">
-      <figure class="flex-layout left-half">
+      <figure class="flex-item left-half">
         <article>
           <h1 title="IMES" class="main-title white">IMES</h1>
           <div title="Smart Industry Helper" class="main-describe white">Your Smart Industry Helper</div>
         </article>
       </figure>
-      <div class="flex-layout right-half">
+      <div class="flex-item right-half">
         <article>
           <img class="logo" role="img" src="/src/images/logo/logo.svg" title="Logo" alt="application logo">
           <h1 title="IMES" class="main-title mobile-title">Project IMES</h1>

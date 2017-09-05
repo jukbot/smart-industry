@@ -45,19 +45,56 @@
                 margin: 12px 0;
             }
 
-            .button-group paper-button {
-                width: 49%;
+            .btn {
+                margin-top: 10px;
+                width: 100%;
             }
 
             .operation-day-selector {
-                margin: 15px 0;
+                margin: 10px 0;
                 padding: 10px;
-                border: 1px solid #d6d6d6;
-                border-radius: 2px;
+                border: 1px solid rgba(0, 0, 0, .10);
+                border-radius: 1px;
+            }
+
+            .operation-day-selector>p {
+                margin-bottom: 10px;
             }
 
             .checkbox {
                 padding: 0 5px;
+            }
+
+            .flex-container {
+                display: flex;
+                align-items: center;
+                justify-content: stretch;
+                width: 100%;
+            }
+
+            .flex-item {
+                flex: 1;
+            }
+
+            .flex-item:first-child>p {
+                font-weight: 500;
+            }
+
+            .flex-item:last-child>p {
+                font-weight: 300;
+            }
+
+            .info-group {
+                margin-top: 15px;
+            }
+
+            .info-group>p {
+                margin: 12px 0;
+            }
+
+            #toastSaveFactoryInfoSuccess,
+            #toastErrorIncompleteInput {
+                width: 350px;
             }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
@@ -104,7 +141,7 @@
                         <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[factorySchedule.interval]]"
                             type="number" min="1" max="30" step="1" required always-float-label auto-validate></paper-input>
                         <div class="operation-day-selector">
-                            <p>{{localize('operation-day')}}</p>
+                            <p>{{localize('operation-day')}}</p>[[factoryOperationLoaded(factoryOperation.op_day)]]
                             <paper-checkbox class="checkbox" tabindex="0" id="sunday" value="sun">Sun</paper-checkbox>
                             <paper-checkbox class="checkbox" tabindex="0" id="monday" value="mon">Mon</paper-checkbox>
                             <paper-checkbox class="checkbox" tabindex="0" id="tuesday" value="tue">Tue</paper-checkbox>
@@ -114,8 +151,8 @@
                             <paper-checkbox class="checkbox" tabindex="0" id="saturday" value="sat">Sat</paper-checkbox>
                         </div>
                         <div class="button-group">
-                            <paper-button role="button" raised class="magic" on-tap="saveValue">{{localize('save-settings')}}</paper-button>
-                            <paper-button role="button" raised class="dark" on-tap="resetValue">{{localize('restore')}}</paper-button>
+                            <flat-button on-tap="saveValue" class="btn" title="Save settings"><button role="button">{{localize('save-settings')}}</button></flat-button>
+                            <flat-button on-tap="resetValue" class="btn" title="Restore Default"><button role="button">{{localize('restore')}}</button></flat-button>
                         </div>
                     </div>
                 </div>
@@ -123,23 +160,73 @@
             <li>
                 <div class="card factory-rule" style="margin-bottom: 20px">
                     <h1>{{localize('factory-information')}}</h1>
-                    <p>{{localize('factory-name')}}: <span>[[factoryProfile.name]]</span></p>
-                    <p>{{localize('factory-type')}}: <span>[[factoryProfile.type]]</span></p>
-                    <p>{{localize('operation-start')}}: <span>[[factoryOperation.op_start]] </span></p>
-                    <p>{{localize('operation-end')}}: <span>[[factoryOperation.op_end]]</span></p>
-                    <p>{{localize('over-time-start')}}: <span>[[factoryOperation.ot_start]]</span></p>
-                    <p>{{localize('over-time-end')}}: <span>[[factoryOperation.ot_end]]</span></p>
-                    <p>{{localize('operation-day')}}: <span>[[factoryOperation.op_day]]</span></p>
+                    <div class="flex-container">
+                        <div class="info-group flex-item">
+                            <p>{{localize('factory-name')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('factory-type')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('operation-start')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('operation-end')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('over-time-start')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('over-time-end')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('operation-day')}}</p>
+                        </div>
+                        <div class="info-group flex-item">
+                            <p><span>[[factoryProfile.name]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[factoryProfile.type]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[factoryOperation.op_start]] </span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[factoryOperation.op_end]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[factoryOperation.ot_start]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[factoryOperation.ot_end]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[factoryOperation.op_day]]</span></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="card factory-rule" style="margin-top: 20px">
                     <h1>{{localize('factory-global-standard')}}</h1>
-                    <p>{{localize('productivity-optimization')}}: <span>{{localize(factoryPerformance.optimize)}}</span></p>
-                    <p>{{localize('working-utilization')}}: <span>[[factoryPerformance.au]] &#37;</span></p>
-                    <p>{{localize('standard-machine-efficiency')}}: <span>[[factoryPerformance.me]] &#37;</span></p>
-                    <p>{{localize('acceptable-waste')}}: <span>[[factoryPerformance.aw]]</span></p>
-                    <p>{{localize('reschedule-interval')}}: <span>[[factorySchedule.interval]] {{localize('day')}}</span></p>
-                    <p>{{localize('last-reschedule')}}: <span>[[getLastInterval(factorySchedule.start_interval)]]</span></p>
-                    <p>{{localize('next-reschedule')}}: <span>[[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</span></p>
+                    <div class="flex-container">
+                        <div class="info-group flex-item">
+                            <p>{{localize('productivity-optimization')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('working-utilization')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('standard-machine-efficiency')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('acceptable-waste')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('reschedule-interval')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('last-reschedule')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('next-reschedule')}}</p>
+                        </div>
+                        <div class="info-group flex-item">
+                            <p><span>{{localize(factoryPerformance.optimize)}}</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[factoryPerformance.au]] &#37;</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[factoryPerformance.me]] &#37;</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[factoryPerformance.aw]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[factorySchedule.interval]] {{localize('day')}}</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[getLastInterval(factorySchedule.start_interval)]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</span></p>
+                        </div>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -193,7 +280,7 @@
             }
 
             saveValue() {
-                let fc = this.$.factoryName.value;
+                let fn = this.$.factoryName.value;
                 let ft = this.$.factoryType.value;
                 let aw = this.$.acceptWaste.value;
                 let au = this.$.workerUtilize.value;
@@ -215,55 +302,52 @@
                 if (this.$.sunday.checked) this.push('operationDay', 'sun');
                 op_day = this.operationDay.toString();
 
-                if (fc != "" && ft != "" && opt != "" && aw != "" && au != "" && inte != "" && op_start != "" &&
-                    op_end != "" &&
-                    op_day != "") {
-                    this.set('factoryOperation.name', fc);
-                    this.set('factoryOperation.type', ft);
+                if (fn && ft && opt && aw && au && inte && meffi && op_start &&
+                    op_end && op_day) {
+                    this.set('factoryProfile.name', fn);
+                    this.set('factoryProfile.type', ft);
                     this.set('factoryPerformance.optimize', opt);
                     this.set('factoryPerformance.aw', aw);
                     this.set('factoryPerformance.au', au);
-                    this.set('factoryStandard.machine', meffi);
-                    this.set('factoryStandard.interval', inte);
+                    this.set('factoryPerformance.mae', meffi);
+                    this.set('factorySchedule.interval', inte);
                     this.set('factoryOperation.op_start', op_start);
                     this.set('factoryOperation.op_end', op_end);
                     this.set('factoryOperation.ot_start', ot_start);
                     this.set('factoryOperation.ot_end', ot_end);
-                    this.set('factoryOperation.weekly', op_day);
+                    this.set('factoryOperation.op_day', op_day);
                     this.$.toastSaveFactoryInfoSuccess.open();
                 } else {
                     this.$.toastErrorIncompleteInput.open();
                 }
             }
             resetValue() {
-                this.$.factoryName.value = "Example factory";
+                this.$.factoryName.value = "Sample factory";
                 this.$.factoryType.value = "Flow Shop";
                 this.$.acceptWaste.value = "0.02";
                 this.$.workerUtilize.value = 85;
                 this.$.machineStandardEffi.value = 75;
                 this.$.scheduleInterval.value = 7;
-                this.$.sunday.checked = false;
                 this.$.monday.checked = true;
                 this.$.tuesday.checked = true;
                 this.$.wednesday.checked = true;
                 this.$.thursday.checked = true;
                 this.$.friday.checked = true;
                 this.$.saturday.checked = false;
+                this.$.sunday.checked = false;
             }
 
-            factoryOperationLoaded() {
+            factoryOperationLoaded(e) {
                 let cnt = 0;
-                if (this.get('factoryOperation.weekly') !== undefined) {
-                    let opDayArr = this.get('factoryOperation.weekly').split(",");
-                    for (let i in opDayArr) {
-                        if (opDayArr[i] == 'mon') this.$.monday.checked = true;
-                        else if (opDayArr[i] == 'tue') this.$.tuesday.checked = true;
-                        else if (opDayArr[i] == 'wed') this.$.wednesday.checked = true;
-                        else if (opDayArr[i] == 'thu') this.$.thursday.checked = true;
-                        else if (opDayArr[i] == 'fri') this.$.friday.checked = true;
-                        else if (opDayArr[i] == 'sat') this.$.saturday.checked = true;
-                        else if (opDayArr[i] == 'sun') this.$.sunday.checked = true;
-                    }
+                if (this.get('factoryOperation.op_day')) {
+                    let opDayArr = this.get('factoryOperation.op_day').split(",");
+                    this.$.monday.checked = opDayArr.includes('mon') ? true : false;
+                    this.$.tuesday.checked = opDayArr.includes('tue') ? true : false;
+                    this.$.wednesday.checked = opDayArr.includes('wed') ? true : false;
+                    this.$.thursday.checked = opDayArr.includes('thu') ? true : false;
+                    this.$.friday.checked = opDayArr.includes('fri') ? true : false;
+                    this.$.saturday.checked = opDayArr.includes('sat') ? true : false;
+                    this.$.sunday.checked = opDayArr.includes('sun') ? true : false;
                 }
             }
 
@@ -287,7 +371,7 @@
                     let nextInterval = dd + '/' + mm + '/' + yyyy;
                     return nextInterval;
                 } else {
-                    this.set('factoryStandard.start_interval', current);
+                    this.set('factorySchedule.start_interval', current);
                 }
             }
 

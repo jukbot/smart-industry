@@ -29,7 +29,20 @@
     "ignoreWarnings": ["undefined-elements", "databind-with-unknown-property"]
   },
   "builds": [{
-    "preset": "es6-unbundled",
-    "name": "default"
+    "name": "default",
+    "browserCapabilities": ["es2015", "push"],
+    "js": {
+      "minify": false,
+      "compile": false
+    },
+    "css": {
+      "minify": true
+    },
+    "html": {
+      "minify": false
+    },
+    "bundle": false,
+    "addServiceWorker": true,
+    "addPushManifest": true
   }]
 }

@@ -1,7 +1,14 @@
 // These rules require authentication
 {
   "rules": {
+    //".read" : true,
     ".read": "auth != null  || root.child('user').child(auth.uid).child('role').val() == 'admin'",
-    ".write": "auth != null || root.child('user').child(auth.uid).child('role').val() == 'admin'"
+    ".write": "auth != null || root.child('user').child(auth.uid).child('role').val() == 'admin'",
+    "orderData": {
+      ".indexOn": ["order_delivery", "order_quantity", "order_status"]
+    },
+    "product": {
+      ".indexOn": ["sku"]
+    }
   }
 }
