@@ -32,6 +32,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-dashboard.html">
+<link rel="import" href="view-setup.html">
+<link rel="import" href="view-plan.html">
+<link rel="import" href="view-track.html">
+<link rel="import" href="view-help.html">
+<link rel="import" href="view-settings.html">
 
 <dom-module id="view-app">
   <template>
@@ -44,12 +49,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="appLanguage" path="/appData/appLanguage" data="{{language}}"></firebase-document>
-
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-change="_signedInChanged"
+      on-error="_handleError"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
     <app-indexeddb-mirror id="profileIndexdb" key="profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
-    <app-localstorage-document key="authen" data="{{signedIn}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
       <app-drawer hidden$="[[!signedIn]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="0">
         <div class="app-logo" role="logo" title="IMES" alt="Application logo"></div>
@@ -88,7 +93,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" tabindex="0">
               <p>{{localize('display-name')}} : [[persistedProfileData.displayName]]</p>
               <p>{{localize('email')}} : [[persistedProfileData.email]]</p>
-              <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(persistedProfileData.emailVerified)]]</span></p>
+              <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span></p>
             </paper-tooltip>
             <p><span class="online">[[getOnlineStatus(online)]]</span></p>
             <p>{{localize('version')}} 1.0.5</p>
@@ -128,8 +133,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <paper-toast id="toastVerify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
       <div class="toast-flex-container">
         <div class="toast-flex-item">
-          <p>We could not verify your account. To protect your account, we need to verify email that associated with your account
-            before using this application.
+          <p>[[toastText]]
           </p>
         </div>
         <div class="toast-flex-item">
@@ -154,9 +158,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             reflectToAttribute: true,
             observer: '_pageChanged',
           },
+          keyid: {
+            type: String,
+            value: () => {
+              return this.keyid || 'default'
+            }
+          },
+          language: {
+            type: String,
+            value: () => {
+              if (localStorage.getItem("lang") != null) {
+                return localStorage.getItem("lang");
+              } else if (localStorage.getItem("lang") == null || localStorage.getItem("lang") == {}) {
+                return "en";
+              }
+            }
+          },
           user: Object,
           alertText: String
-        };
+        }
       }
 
       static get observers() {
@@ -174,9 +194,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../data/locales.json'));
         Polymer.Async.timeOut.run(() => {
-          if (this.signedIn && this.route.path === '/login') {
+          if (this.signedIn && this.route.path == '/login') {
             this.page = 'dashboard';
-          } else if (this.signedIn && this.route.path === '/') {
+          } else if (this.signedIn && this.route.path == '/') {
             this.page = 'dashboard';
           } else if (!this.signedIn) {
             this.page = 'login';
@@ -258,8 +278,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.page = 'login';
           //this.$.drawer.hidden = !signedIn;
           //this.$.header.hidden = !signedIn;
-        } else {
-          console.log('You are signed in');
         }
       }
 
@@ -297,7 +315,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         } else {
           this.$.auth.signOut()
             .then(() => {
-              this.authen = false;
+              this._closeToastVerify();
               Polymer.Async.timeOut.run(() => {
                 this.$.header.resetLayout();
                 this.$.drawer.resetLayout();
@@ -316,6 +334,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.searchBox.focus();
       }
 
+      _closeToastVerify() {
+        this.$.toastVerify.close();
+      }
+
       getOnlineStatus(status) {
         if (status) {
           this.$$('.online').style.color = 'green';
@@ -332,7 +354,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return 'Verified';
         } else {
           this.$$('.verify').style.color = 'red';
-          this.verifyAccountNotication(status);
+          if (this.signedIn) {
+            this.showVerifyAccountToast();
+          }
           return 'Not verify';
         }
       }
@@ -345,14 +369,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      verifyAccountNotication(status) {
-        if (!status) {
-          this.$.toastVerify.open();
-        }
-      }
-
-      _closeToastVerify() {
-        this.$.toastVerify.close();
+      showVerifyAccountToast() {
+        this.toastText =
+          "We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.";
+        this.$.toastVerify.open();
       }
 
       _handleError(e) {

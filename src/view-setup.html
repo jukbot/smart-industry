@@ -10,11 +10,11 @@
 
 <link rel="import" href="style/shared-styles.html">
 <link rel="import" href="setup/view-setup-factory.html">
-<link rel="import" href="setup/view-setup-station.html">
+<!-- <link rel="import" href="setup/view-setup-station.html">
 <link rel="import" href="setup/view-setup-machine.html">
-<link rel="import" href="setup/view-setup-factory.html">
-<link rel="import" href="setup/view-setup-factory.html">
-<link rel="import" href="setup/view-setup-factory.html">
+<link rel="import" href="setup/view-setup-product.html">
+<link rel="import" href="setup/view-setup-customer.html">
+<link rel="import" href="setup/view-setup-inventory.html"> -->
 
 <dom-module id="view-setup">
   <template>
@@ -106,8 +106,10 @@
         };
       }
       _tabsChanged(tabs) {
-        let resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
-        Polymer.importHref(resolvedTabsUrl, null, null, true);
+        if (this.signedIn) {
+          let resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
+          Polymer.importHref(resolvedTabsUrl, null, null, true);
+        }
       }
       connectedCallback() {
         super.connectedCallback();

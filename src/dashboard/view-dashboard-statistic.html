@@ -1,4 +1,4 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-charts/vaadin-charts.html">
@@ -37,7 +37,9 @@
         }
       }
     </style>
-    <firebase-query app-name="smart-mes" id="orderHistoryQuery" path="/history/order" data="{{orderHistoryData}}"></firebase-query>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+    <firebase-query app-name="smart-mes" id="orderHistoryQuery" path="/data/[[k.key]]/historyData/order" data="{{orderHistoryData}}"></firebase-query>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
@@ -117,7 +119,14 @@
 
       static get properties() {
         return {
-          orderHistoryData: Object
+          keyid: {
+            type: String,
+            value: () => {
+              return this.keyid || 'default'
+            }
+          },
+          orderHistoryData: Object,
+          language: String
         }
       }
       connectedCallback() {

@@ -15,6 +15,7 @@
 <!-- import style component -->
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/shared-styles.html">
+<link rel="import" href="view-app.html">
 <dom-module id="view-settings">
   <template>
     <style include="shared-styles app-grid-style flat-button">
@@ -66,17 +67,16 @@
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
       on-message="handleMessage" token="{{token}}"></firebase-messaging>
-    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.id]]/token" data="[[token]]"></firebase-document>
-
-    <firebase-document app-name="smart-mes" id="appLanguage" path="/appData/appLanguage" data="{{language}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appNotification" path="/appData/appNotification" data="{{notification}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/appData/appEmailAlert" data="{{emailnotification}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appBackup" path="/appData/appBackup" data="{{autobackup}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="userToken" path="/user/[[k.key]]/token" data="[[token]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="{{language}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[k.key]]/appData/notification" data="{{notification}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[k.key]]/appData/email_alert" data="{{emailalert}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[k.key]]/appData/auto_backup" data="{{autobackup}}"></firebase-document>
 
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
-    <iron-ajax url="../data/languages.json" auto last-response="{{languageItems}}"></iron-ajax>
+    <iron-ajax url="../data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -128,8 +128,7 @@
           Token: [[token]]
           <paper-toggle-button class="switch" value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" checked="[[token]]"
             noink> {{localize('notification')}}</paper-toggle-button>
-          <paper-toggle-button class="switch" value="[[emailnotification]]" on-change="_changeEmailNotification" id="emailNotificationSwitch"
-            noink>{{localize('email-notification')}}</paper-toggle-button>
+          <paper-toggle-button class="switch" value="[[emailalert]]" on-change="_changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
         </div>
       </li>
       <li>
@@ -152,15 +151,18 @@
       static get properties() {
         return {
           language: {
-            type: Object,
+            type: String,
             observer: '_changeLanguage',
+            notify: true
+          },
+          notification: {
+            type: Boolean,
+            observer: '_changeNotification',
             notify: true
           },
           languageItems: Array,
           user: Object,
-          userData: Object,
-          notification: Object,
-          emailnotification: Object,
+          emailalert: Object,
           autobackup: Object,
           statusKnown: Object,
           active: Object,
@@ -180,6 +182,8 @@
         if (selectedLang === "en" || selectedLang === "th" || selectedLang === "jp" || selectedLang === "ch" ||
           selectedLang === "rs") {
           this.language = selectedLang;
+        } else {
+          this.language = "en";
         }
       }
 
@@ -200,11 +204,10 @@
           this.alertText = 'notification-alert-on';
           this.$.toastAlert.open();
           // Requesting notification permission
-          if (this.$.user) {
+          if (this.$.userData) {
             this.$.messaging.requestPermission()
               .then(() => {
                 console.log("Notification permission granted");
-
               })
               .catch(err => {
                 console.log("Notification permission denied ", err);
@@ -216,9 +219,9 @@
         }
       }
 
-      _changeEmailNotification() {
-        this.emailnotification = this.$.emailNotificationSwitch.checked ? true : false;
-        if (this.$.emailNotificationSwitch.checked) {
+      _changeEmailAlert() {
+        this.emailalert = this.$.emailAlertSwitch.checked ? true : false;
+        if (this.$.emailalertSwitch.checked) {
           this.alertText = 'email-notification-alert-on';
           this.$.toastAlert.open();
         } else {
@@ -230,7 +233,7 @@
       _changeAuthen() {
         let currentpassword = this.$.currentPassword.value;
         let newPassword = this.$.newPassword.value;
-        let newemail = this.$.userEmail.value;
+        let newemail = this.$.userDataEmail.value;
         if (newPassword !== "" && currentpassword !== "") {
           if (this.reauthenAccount(currentpassword)) {
             this.user.updatePassword(newPassword)
@@ -330,6 +333,8 @@
       }
 
       _verifyAccount() {
+        this.$.toastVerify.open();
+
         this.user.sendEmailVerification()
           .then(() => {
             alert('Verification is send to your email');
@@ -347,14 +352,8 @@
           });
           this.updateProfileInfo(this.user.photoURL, displayNameInput);
         }
-
         if (this.$.uploadImageFile.files.length > 0) {
-          let result = this.uploadProfileImage();
-          // if (result !== null) {
-          //   this.$.uploadImageFile.files[0].value = null;
-          //   this.alertText = 'notification-save-settings';
-          //   this.$.toastAlert.open();
-          // }
+          this.uploadProfileImage();
         }
       }
 
@@ -384,13 +383,14 @@
       }
 
       updateProfileInfo(url, name) {
-        this.$.user.ref.update({
+        this.$.userData.ref.update({
             displayname: name,
             photoURL: url
           })
           .then(() => {
             this.alertText = 'notification-save-settings';
             this.$.toastAlert.open();
+            alert("Refresh the application to reload the data.");
           })
           .catch(err => {
             alert("Error: " + err.message);

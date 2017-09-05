@@ -9,9 +9,9 @@
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 
 <link rel="import" href="style/shared-styles.html">
-<link rel="import" href="track/view-track-scheduling.html">
+<!-- <link rel="import" href="track/view-track-scheduling.html">
 <link rel="import" href="track/view-track-order.html">
-<link rel="import" href="track/view-track-production.html">
+<link rel="import" href="track/view-track-production.html"> -->
 
 <dom-module id="view-track">
   <template>
@@ -78,8 +78,10 @@
         };
       }
       _tabsChanged(tabs) {
-        let resolvedTabsUrl = this.resolveUrl('track/view-track-' + tabs + '.html');
-        Polymer.importHref(resolvedTabsUrl, null, null, true);
+        if (this.signedIn) {
+          let resolvedTabsUrl = this.resolveUrl('track/view-track-' + tabs + '.html');
+          Polymer.importHref(resolvedTabsUrl, null, null, true);
+        }
       }
       connectedCallback() {
         super.connectedCallback();

@@ -1,4 +1,4 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
@@ -36,6 +36,10 @@
         }
       }
     </style>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+    <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData" order-by-child="created_date"
+      data="{{notificationData}}"></firebase-query>
     <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
@@ -77,7 +81,7 @@
             </vaadin-grid-column>
           </vaadin-grid>
           <flat-button class="clear-btn" on-tap="_clearNotification"><button role="button">Clear All Notification</button></flat-button>
-          <paper-toast id="toast" always-on-top horizontal-align="right" text="No notification found"></paper-toast>
+          <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
         </div>
       </li>
     </ul>
@@ -88,12 +92,31 @@
       static get is() {
         return 'view-dashboard-notification';
       }
+      static get properties() {
+        return {
+          keyid: {
+            type: String,
+            value: () => {
+              return this.keyid || 'default'
+            }
+          },
+          alertText: String,
+          language: String,
+          notificationData: Object
+        }
+      }
+
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../../data/locales.json'));
       }
+
       _clearNotification() {
-        this.$.toast.open();
+        if (confirm("Are you sure do you want to clear all notifacation ?") == true) {
+          this.$.orderQuery.ref.remove();
+          this.alertText = "Deleted all notification successful";
+          this.$.toastAlert.open();
+        }
       }
     }
     window.customElements.define(ViewDashboardNotification.is, ViewDashboardNotification);

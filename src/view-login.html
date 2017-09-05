@@ -1,24 +1,26 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link async rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <!-- import style component -->
+<link rel="import" href="style/flat-checkbox.html">
 <link rel="import" href="style/flat-button.html">
 <dom-module id="view-login">
   <template>
-    <style include="flat-button">
+    <style include="flat-button flat-checkbox">
        :host {
         display: block;
         padding: 0px;
         --app-grid-columns: 1;
         --app-grid-item-height: 50%;
+        --paper-checkbox-checked-color: #202020;
       }
 
       h1 {
@@ -117,22 +119,70 @@
         }
       }
 
-      .login-remember {
-        --paper-checkbox-checked-color: #202020;
-        margin: 1rem 0;
+      .link {
+        margin: 10px 0;
       }
 
       .logo {
+        display: none;
         margin: 0 auto;
         padding: 10px 0;
         width: 35%;
         height: auto;
         text-align: center;
-        display: none;
       }
 
       .mobile-title {
         display: none;
+      }
+
+      .keep-session-checkbox {
+        margin: 10px 0;
+        height: 20px;
+        @apply --layout-horizontal;
+      }
+
+      .keep-session-checkbox>label {
+        margin-left: 10px;
+      }
+
+      #toastAlert {
+        --paper-toast-background-color: #e53935;
+        --paper-toast-color: #FFFFFF;
+        opacity: 0.95;
+        font-size: 1rem;
+        width: 100%;
+        padding: 10px;
+      }
+
+      .toast-flex-container {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-align-self: stretch;
+        align-self: stretch;
+        justify-content: space-between;
+        width: 100%;
+        height: auto;
+      }
+
+      .toast-flex-item:first-child {
+        align-self: stretch;
+        margin-right: auto;
+      }
+
+      .toast-flex-item:last-child {
+        align-self: flex-end;
+        margin-top: 0;
+      }
+
+      .toast-flex-item {
+        margin: auto 0;
+      }
+
+      .close-toast-button {
+        text-transform: none;
+        color: #FFFFFF;
+        float: right;
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
@@ -148,12 +198,14 @@
         }
       }
     </style>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" on-error="handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" signed-in="{{signedIn}}"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]"></firebase-document>
     <firebase-query app-name="smart-mes" id="data" path="/data"></firebase-query>
-    <app-localstorage-document key="session" data="{{remember}}"></app-localstorage-document>
-    <app-localstorage-document key="authen" data="{{authen}}"></app-localstorage-document>
-    <iron-ajax url="../data/sample.json" auto last-response="{{sampleData}}"></iron-ajax>
+    <app-localstorage-document key="user-authen" data="{{signedIn}}"></app-localstorage-document>
+    <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
+    <iron-ajax url="../data/sample.json" auto handle-as="json" last-response="{{sampleData}}"></iron-ajax>
     <section class="container">
       <figure class="flex-layout left-half">
         <article>
@@ -165,50 +217,61 @@
         <article>
           <img class="logo" role="img" src="/src/images/logo/logo.svg" title="Logo" alt="application logo">
           <h1 title="IMES" class="main-title mobile-title">Project IMES</h1>
-          <form hidden$="[[!login]]" class="login-form" on-submit="_login">
+          <form hidden$="[[!login]]" autocomplete="on" class="login-form" on-submit="_login">
             <div class="form-title">
               <h2>User Login</h2>
             </div>
-            <paper-input class="login-input" name="e-mail" id="email" type="email" maxlength="50" auto-complete="email" placeholder="E-mail"
-              autofocus auto-validate></paper-input>
-            <paper-input class="login-input" name="password" id="passwd" type="password" maxlength="50" auto-complete="current-password"
-              placeholder="Password" auto-validate></paper-input>
+            <paper-input class="login-input" id="email" type="email" maxlength="50" auto-complete="email" placeholder="E-mail" autofocus
+              auto-validate></paper-input>
+            <paper-input class="login-input" id="passwd" type="password" maxlength="50" auto-complete="current-password" placeholder="Password"
+              auto-validate></paper-input>
             <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
-            <paper-checkbox class="login-remember" tabindex="0" name="remember" checked="{{remember}}" noink>Keep me signed in</paper-checkbox>
-            <div>
-              <flat-button class="login-btn" role="button" on-tap="_login"><button role="button">LOG IN</button></flat-button>
+            <div class="keep-session-checkbox">
+              <flat-checkbox tabindex="0">
+                <input type="checkbox" id="setKeepSession" name="setKeepSession" checked$="[[remember]]" on-change="_toggleKeepSession">
+                <flat-md-decorator></flat-md-decorator aria-hidden="true">
+              </flat-checkbox>
+              <label for="setKeepSession">Keep me signed in</label>
             </div>
-            <div><a href="javascript:void(0);" on-tap="_showReset" class="login-forget">Forgot Password?</a></div>
-            <div><a href="javascript:void(0);" on-tap="_showRegister" class="login-register">Don’t have an account? Get one here.</a></div>
+            <flat-button class="login-btn" role="button" on-tap="_login"><button type="button">Log in</button></flat-button>
+            <div class="link"><a href="javascript:void(0);" on-click="_showReset" class="login-forget">Forgot Password?</a></div>
+            <div class="link"><a href="javascript:void(0);" on-click="_showRegister" class="login-register">Don’t have an account? Get one here.</a></div>
           </form>
-          <form hidden$="[[!register]]" class="register-form" on-submit="_register">
+          <form hidden$="[[!register]]" autocomplete="on" class="register-form" on-submit="_register">
             <div class="form-title">
               <h2>User Register</h2>
             </div>
-            <paper-input class="register-input" name="e-mail" id="register_email" type="email" maxlength="40" placeholder="E-mail" autofocus
-              auto-validate></paper-input>
-            <paper-input class="register-input" name="new-password" id="register_passwd" type="password" maxlength="30" placeholder="New Password"
-              auto-auto-validate></paper-input>
-            <paper-input class="register-input" name="organization" id="register_organization" type="text" maxlength="40" placeholder="Organization"
-              autofocus auto-validate></paper-input>
-            <paper-input class="register-input" name="phone-number" id="register_phone" type="text" maxlength="15" placeholder="Phone Number"
-              autofocus auto-validate></paper-input>
+            <paper-input class="register-input" id="register_email" type="email" maxlength="40" placeholder="E-mail" autofocus auto-validate></paper-input>
+            <paper-input class="register-input" id="register_passwd" type="password" maxlength="30" placeholder="New Password" auto-auto-validate></paper-input>
+            <paper-input class="register-input" id="register_organization" type="text" maxlength="40" placeholder="Organization" auto-validate></paper-input>
+            <paper-input class="register-input" id="register_phone" type="text" maxlength="15" placeholder="Phone Number" auto-validate></paper-input>
             <flat-button class="register-btn" role="button" on-tap="_register">
-              <button role="button">Send Confirmation</button>
+              <button type="button">Send Confirmation</button>
             </flat-button>
-            <a href="javascript:void(0);" on-tap="_hideRegister" class="login-register">Already have account? Sign in</a>
+            <a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Sign in</a>
           </form>
           <form hidden$="[[!reset]]" class="reset-form" on-submit="_resetPassword">
             <div class="form-title">
               <h2>Reset Your Password</h2>
             </div>
-            <paper-input class="reset-input" name="e-mail" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail"
-              auto-focus auto-validate></paper-input>
-            <flat-button class="reset-btn" role="button" on-tap="_resetPassword"><button role="button">Reset Password</button></flat-button>
-            <a href="javascript:void(0);" rel="noopenner" on-tap="_hideReset" class="login-forget">Have an account? Sign in.</a>
+            <paper-input class="reset-input" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail" auto-focus
+              auto-validate></paper-input>
+            <flat-button class="reset-btn" role="button" on-tap="_resetPassword"><button type="button">Reset Password</button></flat-button>
+            <a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Have an account? Sign in.</a>
           </form>
         </article>
       </div>
+      <paper-toast id="toastAlert" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
+        <div class="toast-flex-container">
+          <div class="toast-flex-item">
+            <p>[[errorMessage]]
+            </p>
+          </div>
+          <div class="toast-flex-item">
+            <paper-icon-button on-tap="_closeToastAlert" role="bottom" class="close-toast-button" icon="vaadin:close-big" tabindex="-1"></paper-icon-button>
+          </div>
+        </div>
+      </paper-toast>
     </section>
   </template>
   <script>
@@ -231,31 +294,42 @@
             type: Boolean,
             value: false
           },
-          authen: {
-            type: Boolean,
-            value: false
-          },
           target: {
             type: Object,
             value: () => {
               return this.passwd;
             }
           },
+          remember: {
+            type: Boolean,
+            value: false
+          },
+          signedIn: Boolean,
           user: Object,
-          sampleData: Object
+          sampleData: Object,
+          errorMessage: String,
+          keyid: {
+            type: String,
+            notify: true,
+            value: () => {
+              if (!JSON.stringify(this.keyid)) {
+                this.keyid = 'null';
+                return 'null';
+              }
+            }
+          }
         };
       }
 
       _login() {
-        if (this.$.email.value !== "" || this.$.passwd.value !== "") {
+        if (this.$.email.value && this.$.passwd.value) {
           this.$.auth.signInWithEmailAndPassword(this.$.email.value, this.$.passwd.value)
             .then((response) => {
               this.set('route.path', '/');
-              this.authen = true;
               this.page = '/';
             })
             .catch((error) => {
-              alert("Authenticate Failed: " + error.message);
+              this.showAlertToast(error.code);
             });
         } else {
           alert("Email or Password cannot leave blank");
@@ -266,42 +340,41 @@
         const email = this.$.register_email.value;
         const organize = this.$.register_organization.value;
         const phone = this.$.register_phone.value;
+        const password = this.$.register_passwd.value;
         const username = "New User";
-        if (email !== "" && organize !== "" && phone !== "" && this.$.register_passwd.value !== "" && this.sampleData !=
-          null) {
-          this.$.auth.createUserWithEmailAndPassword(email, this.$.register_passwd.value)
+        if (email && organize && phone && password && this.sampleData) {
+          this.$.auth.createUserWithEmailAndPassword(email, password)
             .then((response) => {
               this.$.auth.signInWithEmailAndPassword(email, this.$.register_passwd.value)
                 .then((response) => {
-                  this.$.user.updateProfile({
+                  this.user.updateProfile({
                     displayName: username,
                   });
                   const keyid = this.$.data.ref.push().key;
-                  const userid = this.user.uid;
-                  this.addProfileInfo(username, email, organize, phone, keyid, userid);
+                  this.addProfileInfo(username, email, organize, phone, keyid);
                   this.$.data.ref.child(keyid).set(this.sampleData).catch(error => {
-                    alert("Register Failed: " + error.message + " Please contact administrator");
+                    this.showAlertToast(error.code);
                   });
-                  this.$.auth.sendEmailVerification();
+                  this.user.sendEmailVerification();
                   alert("Register successful. We've sent verification code to your email");
                   // Signout Action
                   this.$.auth.signOut();
                   // Switch to login form
                   this._hideRegister();
                 }).catch((error) => {
-                  alert("Authenticate Failed: " + error.message);
+                  this.showAlertToast(error.code);
                 });
             })
             .catch((error) => {
-              alert("Register Failed: " + error.message + " Please contact administrator");
+              this.showAlertToast(error.code);
             });
         } else {
           alert("Please fill in the form completely.");
         }
       }
 
-      addProfileInfo(username, email, organize, phone, keyid, userid) {
-        this.$.user.ref.child(userid).set({
+      addProfileInfo(username, email, organize, phone, keyid) {
+        this.$.user.ref.set({
             displayname: username,
             email: email,
             photoURL: null,
@@ -309,26 +382,30 @@
             organization: "Sample Company",
             role: "admin",
             description: "No description for this user",
-            keyid: keyid
+            key: keyid
           })
           .catch(error => {
-            alert("Error: " + error.message);
+            this.showAlertToast(error.code);
           });
       }
 
       _resetPassword() {
-        if (this.$.resetEmail !== "") {
-          let resetEmail = this.$.resetEmail.value;
+        let resetEmail = this.$.resetEmail.value;
+        if (resetEmail) {
           this.$.auth.sendPasswordResetEmail(resetEmail)
             .then((response) => {
               alert("Reset password has been send to your email.")
             })
             .catch((error) => {
-              alert(error.message);
+              this.showAlertToast(error.code);
             });
         } else {
           alert("Email cannot leave blank");
         }
+      }
+
+      _toggleKeepSession() {
+        this.remember = this.$.setKeepSession.checked ? true : false;
       }
 
       _showReset() {
@@ -351,8 +428,13 @@
         this.login = true;
       }
 
-      handleError(e) {
-        console.info("%cAuthenticate Error: " + e.message, "color: crimson;");
+      showAlertToast(error) {
+        this.errorMessage = error;
+        this.$.toastAlert.open();
+      }
+
+      _closeToastAlert() {
+        this.$.toastAlert.close();
       }
     }
     window.customElements.define(ViewLogin.is, ViewLogin);
