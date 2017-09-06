@@ -8,13 +8,28 @@
         --app-primary-color: #202020;
         --app-secondary-color: #FFFFFF;
         --app-accent-color: #172C50;
-        --app-font-color: #202020;
-        --app-background-color: #eeeeee;
+        --app-font-color: #333333;
+        --app-background-color: #f2f2f2;
         color: var(--app-font-color);
         background-color: var(--app-background-color);
       }
 
       h1,
+      h2,
+      h3 {
+        font-weight: 500;
+      }
+
+      p {
+        font-weight: 400;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
       p {
         margin: 0;
       }
@@ -23,6 +38,7 @@
         padding: 0;
         list-style: none;
       }
+
 
       app-header {
         color: var(--app-secondary-color);
@@ -130,6 +146,7 @@
       .drawer-list>a.iron-selected {
         color: var(--app-secondary-color);
         background-color: var(--app-primary-color);
+        cursor: default;
       }
 
       .app-logo {
@@ -157,7 +174,7 @@
         border: 1px solid rgba(0, 0, 0, .10);
         background-size: contain;
         border-radius: 50%;
-        margin: 10px auto;
+        margin: 16px auto;
       }
 
 
@@ -195,7 +212,9 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 5em;
+        text-align: center;
+        margin: 16px 0;
+        flex-direction: column;
       }
 
       .center {
@@ -221,6 +240,11 @@
         background-color: var(--app-secondary-color);
         box-sizing: border-box;
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn {
+        margin-top: 16px;
+        width: 100%;
       }
 
       .circle {

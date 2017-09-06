@@ -119,9 +119,25 @@
         }
       }
 
-      .link {
-        margin: 10px 0;
+      .link>a {
+        color: #0070c9;
+        margin-top: .78571em;
+        margin-bottom: -.21429em;
+        display: block;
+        text-decoration: none;
       }
+
+      .link>a:hover {
+        color: #0070c9;
+      }
+
+      .link>a:before,
+      .link>a:after {
+        padding-left: .3em;
+        top: 0;
+      }
+
+
 
       .logo {
         display: none;
@@ -144,6 +160,7 @@
 
       .keep-session-checkbox>label {
         margin-left: 10px;
+        margin-top: -2px;
       }
 
       #toastAlert {
@@ -152,7 +169,7 @@
         opacity: 0.95;
         font-size: 1rem;
         width: 100%;
-        padding: 10px;
+        padding: 16px;
       }
 
       .toast-flex-container {
@@ -248,7 +265,7 @@
             <flat-button class="register-btn" role="button" on-tap="_register">
               <button type="button">Send Confirmation</button>
             </flat-button>
-            <a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Sign in</a>
+            <div class="link"><a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Sign in</a></div>
           </form>
           <form hidden$="[[!reset]]" class="reset-form" on-submit="_resetPassword">
             <div class="form-title">
@@ -257,15 +274,14 @@
             <paper-input class="reset-input" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail" auto-focus
               auto-validate></paper-input>
             <flat-button class="reset-btn" role="button" on-tap="_resetPassword"><button type="button">Reset Password</button></flat-button>
-            <a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Have an account? Sign in.</a>
+            <div class="link"><a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Have an account? Sign in.</a></div>
           </form>
         </article>
       </div>
-      <paper-toast id="toastAlert" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
+      <paper-toast id="toastAlert" always-on-top vertical-align="bottom" class="fit-bottom" duration="3000">
         <div class="toast-flex-container">
           <div class="toast-flex-item">
-            <p>[[alertMessage]]
-            </p>
+            <p>[[alertMessage]]</p>
           </div>
           <div class="toast-flex-item">
             <paper-icon-button on-tap="_closeToastAlert" role="bottom" class="close-toast-button" icon="vaadin:close-big" tabindex="-1"></paper-icon-button>
@@ -325,14 +341,14 @@
         if (this.$.email.value && this.$.passwd.value) {
           this.$.auth.signInWithEmailAndPassword(this.$.email.value, this.$.passwd.value)
             .then((response) => {
-              this.set('route.path', '/');
-              this.page = '/';
+              this.set('route.path', '/dashboard');
+              this.page = '/dashboard';
             })
             .catch((error) => {
               this.showAlertToast(error.code);
             });
         } else {
-          alert("Email or Password cannot leave blank");
+          this.showAlertToast("Email or Password cannot leave blank");
         }
       }
 
@@ -369,7 +385,7 @@
               this.showAlertToast(error.code);
             });
         } else {
-          alert("Please fill in the form completely.");
+          this.showAlertToast("Please fill in the form completely.");
         }
       }
 
@@ -400,7 +416,7 @@
               this.showAlertToast(error.code);
             });
         } else {
-          alert("Email cannot leave blank");
+          this.showAlertToast("Email cannot leave blank");
         }
       }
 

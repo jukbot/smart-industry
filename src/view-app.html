@@ -84,12 +84,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </nav>
         <div class="sidebar-menu-line" role="separator"></div>
         <dom-if if="[[signedIn]]">
-          <div class="flex-center">
+          <div class="flex-center" role="group">
             <flat-button role="button" on-tap="_logout" title="Logout">
               <button type="button">{{localize('logout-button')}}</button>
             </flat-button>
-          </div>
-          <div class="center" role="group">
+
             <img id="profile" class="profile-image" src$="[[getUserImage(user.photoURL)]]" title="Profile image" alt="user photo">
             <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" tabindex="0">
               <p>{{localize('display-name')}} : [[persistedProfileData.displayName]]</p>
@@ -194,7 +193,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           } else if (this.signedIn && this.route.path == '/') {
             this.page = 'dashboard';
           } else if (!this.signedIn) {
-            //this.page = 'login';
+            this.page = 'login';
+            this.set('route.path', '/login');
           }
         }, 1);
       }
