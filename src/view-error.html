@@ -8,6 +8,7 @@
     <style include="flat-button">
        :host {
         display: block;
+        overflow: hidden;
       }
 
       iron-icon {
@@ -22,24 +23,34 @@
       }
 
       .container {
-        height: 50em;
         display: flex;
-        align-items: center;
         justify-content: center;
-        flex: 1;
+        align-items: center;
+        align-content: center;
         text-align: center;
+        flex-direction: column;
+        height: 100vh;
+      }
+
+      .flex-grpup {
+        margin: auto;
       }
 
       .icon {
         fill: var(--app-font-color);
       }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+        h1 {
+          font-size: 1.4rem;
+          margin: 12px 0;
+        }
+      }
     </style>
     <div class="container">
-      <div>
+      <div class="flex-group">
         <iron-icon class="icon" icon="icons:error"></iron-icon>
-        <div>
-          <h1>Sorry, Something went wrong</h1>
-        </div>
+        <h1>Sorry, Something went wrong</h1>
         <flat-button role="button">
           <button on-tap="_goBack" role="button">Go back</button>
         </flat-button>

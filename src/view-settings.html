@@ -134,6 +134,7 @@
       <li>
         <div class="card">
           <h1>{{localize('organization-settings')}}</h1>
+          Organization: [[k.organization]]
           <paper-button raised class="btn">{{localize('add-user')}}</paper-button>
           Role: Administrator, Users Delete Edit
         </div>
@@ -188,7 +189,7 @@
       }
 
       _changeAutoBackup() {
-        this.autobackup = this.$.autobackupSwitch.checked ? true : false;
+        this.autobackup = this.$.autobackupSwitch.checked;
         if (this.$.autobackupSwitch.checked) {
           this.alertText = 'backup-notification-alert-on';
           this.$.toastAlert.open();
@@ -199,20 +200,20 @@
       }
 
       _changeNotification() {
-        this.notification = this.$.webNotificationSwitch.checked ? true : false;
+        this.notification = this.$.webNotificationSwitch.checked;
         if (this.$.webNotificationSwitch.checked) {
           this.alertText = 'notification-alert-on';
           this.$.toastAlert.open();
           // Requesting notification permission
-          if (this.$.userData) {
-            this.$.messaging.requestPermission()
-              .then(() => {
-                console.log("Notification permission granted");
-              })
-              .catch(err => {
-                console.log("Notification permission denied ", err);
-              });
-          }
+
+          this.$.messaging.requestPermission()
+            .then(() => {
+              console.log("Notification permission granted");
+            })
+            .catch(err => {
+              console.log("Notification permission denied ", err);
+            });
+
         } else {
           this.alertText = 'notification-alert-off';
           this.$.toastAlert.open();
@@ -220,7 +221,7 @@
       }
 
       _changeEmailAlert() {
-        this.emailalert = this.$.emailAlertSwitch.checked ? true : false;
+        this.emailalert = this.$.emailAlertSwitch.checked;
         if (this.$.emailalertSwitch.checked) {
           this.alertText = 'email-notification-alert-on';
           this.$.toastAlert.open();

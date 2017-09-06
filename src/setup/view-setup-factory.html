@@ -338,16 +338,15 @@
             }
 
             factoryOperationLoaded(e) {
-                let cnt = 0;
                 if (this.get('factoryOperation.op_day')) {
                     let opDayArr = this.get('factoryOperation.op_day').split(",");
-                    this.$.monday.checked = opDayArr.includes('mon') ? true : false;
-                    this.$.tuesday.checked = opDayArr.includes('tue') ? true : false;
-                    this.$.wednesday.checked = opDayArr.includes('wed') ? true : false;
-                    this.$.thursday.checked = opDayArr.includes('thu') ? true : false;
-                    this.$.friday.checked = opDayArr.includes('fri') ? true : false;
-                    this.$.saturday.checked = opDayArr.includes('sat') ? true : false;
-                    this.$.sunday.checked = opDayArr.includes('sun') ? true : false;
+                    this.$.monday.checked = opDayArr.includes('mon');
+                    this.$.tuesday.checked = opDayArr.includes('tue');
+                    this.$.wednesday.checked = opDayArr.includes('wed');
+                    this.$.thursday.checked = opDayArr.includes('thu');
+                    this.$.friday.checked = opDayArr.includes('fri');
+                    this.$.saturday.checked = opDayArr.includes('sat');
+                    this.$.sunday.checked = opDayArr.includes('sun');
                 }
             }
 
