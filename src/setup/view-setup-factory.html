@@ -108,7 +108,7 @@
                     <div>
                         <paper-input label="{{localize('factory-name')}}" id="factoryName" value="[[factoryProfile.name]]" type="text" required always-float-label></paper-input>
                         <vaadin-combo-box label="{{localize('factory-type')}}" id="factoryType" value="[[factoryProfile.type]]" items="[[factoryType]]"
-                            item-label-path="name" item-value-path="name" required always-float-label></vaadin-combo-box>
+                            item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box>
                         <paper-input label="{{localize('operation-start')}} (xx:xx)" id="opStart" value="[[factoryOperation.op_start]]" type="text"
                             required always-float-label auto-validate></paper-input>
                         <paper-input label="{{localize('operation-end')}} (xx:xx)" id="opEnd" value="[[factoryOperation.op_end]]" type="text" required
@@ -121,6 +121,12 @@
                             items="[[optimizationType]]" item-value-path="value" item-label-path="name" required always-float-label>
                             <template>
                                 <div>{{localize(item.value)}}</div>
+                            </template>
+                        </vaadin-combo-box>
+                        <vaadin-combo-box label="Production Mode" id="productionMode" value="[[factoryProfile.mode]]" items="[[productionMode]]"
+                            item-value-path="value" item-label-path="name" required always-float-label>
+                            <template>
+                                <div>item.value</div>
                             </template>
                         </vaadin-combo-box>
                         <paper-input label="{{localize('working-utilization')}} (0-100%)" id="workerUtilize" value="[[factoryPerformance.au]]" type="number"
@@ -171,7 +177,7 @@
                         <div class="info-group flex-item">
                             <p><span>[[factoryProfile.name]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[factoryProfile.type]]</span></p>
+                            <p><span>[[getFactoryType(factoryProfile.type)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[factoryOperation.op_start]] </span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
@@ -262,6 +268,24 @@
                                 }
                             ];
                         }
+                    },
+                    productionMode: {
+                        type: Array,
+                        value: () => {
+                            return [{
+                                    name: 'Serial Production',
+                                    value: 'serial',
+                                },
+                                {
+                                    name: 'Parallel Production',
+                                    value: 'parallel',
+                                },
+                                {
+                                    name: 'Multi-Component Production',
+                                    value: 'multi',
+                                }
+                            ];
+                        }
                     }
                 }
             }
@@ -315,7 +339,7 @@
             }
             resetValue() {
                 this.$.factoryName.value = "Sample factory";
-                this.$.factoryType.value = "Flow Shop";
+                this.$.factoryType.value = "FS";
                 this.$.acceptWaste.value = "0.02";
                 this.$.workerUtilize.value = 85;
                 this.$.machineStandardEffi.value = 75;
@@ -367,6 +391,7 @@
             }
 
             getLastInterval(last_timestamp) {
+                if (!last_timestamp) return 0;
                 let lastIntervalDate = new Date(last_timestamp * 1000);
                 let dd = lastIntervalDate.getDate();
                 let mm = lastIntervalDate.getMonth() + 1; //January is 0!
@@ -379,6 +404,23 @@
                 }
                 let lastInterval = dd + '/' + mm + '/' + yyyy;
                 return lastInterval;
+            }
+
+            getFactoryType(factory_type) {
+                if (!factory_type) return;
+                switch (factory_type) {
+                    case "JS":
+                        return "Job Shop";
+                        break;
+                    case "FS":
+                        return "Flow Shop";
+                        break;
+                    case "HB":
+                        return "Hybrid (Job + Flow)";
+                        break;
+                    default:
+                        return "";
+                }
             }
         }
         window.customElements.define(ViewSetupFactory.is, ViewSetupFactory);
