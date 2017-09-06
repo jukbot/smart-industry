@@ -99,10 +99,6 @@
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
-        <app-indexeddb-mirror id="profileIndexdb" key="setup-profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
-        <app-indexeddb-mirror id="profileIndexdb" key="setup-peration" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
-        <app-indexeddb-mirror id="profileIndexdb" key="setup-performance" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
-        <app-indexeddb-mirror id="profileIndexdb" key="setup-schedule" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
         <iron-ajax url="../data/factory.json" auto handle-as="json" last-response="{{factoryType}}"></iron-ajax>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">

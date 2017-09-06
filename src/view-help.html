@@ -28,7 +28,7 @@
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1 class="title">1. Getting started {{localize('description')}}
+          <h1 class="title">1. Getting started
             <iron-icon icon="vaadin:open-book"></iron-icon>
           </h1>
           <p>Lorem cillum et excepteur ea minim.</p>
@@ -125,8 +125,7 @@
   </template>
 
   <script>
-    class ViewHelp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
-      Polymer.Element) {
+    class ViewHelp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
         return 'view-help';
       }

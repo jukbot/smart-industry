@@ -217,9 +217,9 @@
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" signed-in="{{signedIn}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]"></firebase-document>
-    <firebase-query app-name="smart-mes" id="data" path="/data"></firebase-query>
+    <app-localstorage-document key="user-uid" data="{{user.uid}}"></app-localstorage-document>
+    <app-localstorage-document key="user-key" data="{{k.key}}"></app-localstorage-document>
     <app-localstorage-document key="user-authen" data="{{signedIn}}"></app-localstorage-document>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <iron-ajax url="../data/sample.json" auto handle-as="json" last-response="{{sampleData}}"></iron-ajax>

@@ -38,17 +38,15 @@
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-    <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData" order-by-child="created_date"
+    <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData" order-by-child="created"
       data="{{notificationData}}"></firebase-query>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
         <div class="card">
           <h1 class="title">Notification Center</h1>
-          <!-- Fetch an array of users to be shown in the grid -->
-          <iron-ajax auto url="https://demo.vaadin.com/demo-data/1.0/people?count=200" handle-as="json" last-response="{{notificationList}}"></iron-ajax>
           <!-- The array is set as the <vaadin-grid>'s "items" property -->
-          <vaadin-grid aria-label="Basic Binding Example" items="[[notificationList.result]]">
+          <vaadin-grid aria-label="Basic Binding Example" items="[[notificationData]]">
 
             <vaadin-grid-column width="50px" flex-grow="0">
               <template class="header">#</template>
@@ -63,20 +61,20 @@
               </template>
               <template>
                 <span draggable="true">
-                [[item.firstName]]
+                [[item.type]]
               </span>
               </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column>
               <template class="header">Detail</template>
-              <template>[[item.lastName]]</template>
+              <template>[[item.detail]]</template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="150px">
               <template class="header">Datetime</template>
               <template>
-                <p style="white-space: normal">[[item.address.street]], [[item.address.city]]</p>
+                <p style="white-space: normal">[[item.created]]</p>
               </template>
             </vaadin-grid-column>
           </vaadin-grid>
