@@ -24,20 +24,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- 3rd party modules -->
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
-<!-- import localize behavior  -->
-<link rel="import" href="app-language-behavior.html">
 <!-- import style component -->
 <link rel="import" href="style/shared-styles.html">
 <link rel="import" href="style/flat-button.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-dashboard.html">
-<link rel="import" href="view-setup.html">
-<link rel="import" href="view-plan.html">
-<link rel="import" href="view-track.html">
-<link rel="import" href="view-help.html">
-<link rel="import" href="view-settings.html">
-<link rel="import" href="view-404.html">
+
 
 <dom-module id="view-app">
   <template>
@@ -55,7 +48,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
     <app-indexeddb-mirror id="profileIndexdb" key="profile" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
-    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
       <app-drawer hidden$="[[!signedIn]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="0">
         <div class="app-logo" role="logo" title="IMES" alt="Application logo"></div>
@@ -129,7 +122,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
-    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
+    <paper-toast id="toastNotification" always-on-top horizontal-align="right" text="{{localize(notificationText)}}"></paper-toast>
     <paper-toast id="toastVerify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
       <div class="toast-flex-container">
         <div class="toast-flex-item">
@@ -137,7 +130,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </p>
         </div>
         <div class="toast-flex-item">
-          <paper-icon-button on-tap="_closeToastVerify" role="bottom" class="close-toast-button" icon="vaadin:close-big" tabindex="-1"></paper-icon-button>
+          <paper-icon-button on-tap="_closeToastAlert" role="bottom" class="close-toast-button" icon="vaadin:close-big" tabindex="-1"></paper-icon-button>
         </div>
       </div>
     </paper-toast>
@@ -145,8 +138,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.AppLanguageBehavior],
-      Polymer.Element) {
+    class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
         return 'view-app';
       }
@@ -161,15 +153,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           language: {
             type: String,
             value: () => {
-              if (localStorage.getItem("lang") != null) {
-                return localStorage.getItem("lang");
-              } else if (localStorage.getItem("lang") == null || localStorage.getItem("lang") == {}) {
+              if (localStorage.getItem("app-lang") != null) {
+                return localStorage.getItem("app-lang");
+              } else if (localStorage.getItem("app-lang") == null || localStorage.getItem("app-lang") == {}) {
                 return "en";
               }
             }
           },
           user: Object,
-          alertText: String
+          notificationText: String
         }
       }
 
@@ -181,7 +173,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       constructor() {
         super();
-        console.log('Initializing..' + this.language);
+        console.log('Initializing application..' + this.language);
       }
 
       connectedCallback() {
@@ -193,8 +185,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           } else if (this.signedIn && this.route.path == '/') {
             this.page = 'dashboard';
           } else if (!this.signedIn) {
-            this.page = 'login';
-            this.set('route.path', '/login');
+            // this.page = 'login';
+            // this.set('route.path', '/login');
           }
         }, 1);
       }
@@ -254,10 +246,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _ensureLazyLoaded() {
+        console.log(this.signedIn);
         // load lazy resources after render and set `loadComplete` when done.
         if (!this.loadComplete) {
           Polymer.RenderStatus.afterNextRender(this, () => {
             Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
+              const greenColor = "color: green;"
+              const crimsonColor = "color: crimson;"
+              // Load and register pre-caching Service Worker
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/service-worker.js', {
+                    scope: '/'
+                  })
+                  .then((registration) => {
+                    console.log('%cService Worker Registered', greenColor);
+                  }).catch((err) => {
+                    console.warn('%cService Worker Register Failed ' + err, crimsonColor);
+                  });
+                navigator.serviceWorker.ready.then((registration) => {
+                  console.log('%cService Worker Ready', greenColor);
+                });
+              } else {
+                alert("Service Worker is not support by your browser. Please upgrade your browser");
+              }
               this._networkChanged();
               this.loadComplete = true;
               this.$.pageLoader.removeAttribute('indeterminate');
@@ -282,8 +293,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // Show the snackbar if the user is offline when starting a new session
         // or if the network status changed.
         if (this.offline || (!this.offline && oldOffline === true)) {
-          this.alertText = this.offline ? 'notification-offline' : 'notification-online';
-          this.$.toastAlert.open();
+          this.notificationText = this.offline ? 'notification-offline' : 'notification-online';
+          this.$.toastNotification.open();
           if (!this.offline && oldOffline === true) {
             this.$.pageLoader.setAttribute('indeterminate', '');
             this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(5000), () => {
@@ -310,7 +321,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         } else {
           this.$.auth.signOut()
             .then(() => {
-              this._closeToastVerify();
+              this._closeToastAlert();
               Polymer.Async.timeOut.run(() => {
                 this.$.header.resetLayout();
                 this.$.drawer.resetLayout();
@@ -329,7 +340,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.searchBox.focus();
       }
 
-      _closeToastVerify() {
+      _closeToastAlert() {
         this.$.toastVerify.close();
       }
 
@@ -350,7 +361,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         } else {
           this.$$('.verify').style.color = 'red';
           if (this.signedIn) {
-            this.showVerifyAccountToast();
+            this.showAlertToast(
+              "We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application."
+            );
           }
           return 'Not verify';
         }
@@ -360,13 +373,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (url) {
           return url;
         } else {
-          return 'src/images/profile/default.svg';
+          return 'images/profile/default.svg';
         }
       }
 
-      showVerifyAccountToast() {
-        this.toastText =
-          "We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.";
+      showAlertToast(text) {
+        this.toastText = text;
         this.$.toastVerify.open();
       }
 

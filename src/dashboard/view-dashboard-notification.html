@@ -40,7 +40,7 @@
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData" order-by-child="created_date"
       data="{{notificationData}}"></firebase-query>
-    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
         <div class="card">

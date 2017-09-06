@@ -3,6 +3,7 @@
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
@@ -103,7 +104,7 @@
         <app-indexeddb-mirror id="profileIndexdb" key="setup-performance" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
         <app-indexeddb-mirror id="profileIndexdb" key="setup-schedule" data="{{user}}" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
         <iron-ajax url="../data/factory.json" auto handle-as="json" last-response="{{factoryType}}"></iron-ajax>
-        <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
                 <div class="card">
@@ -211,7 +212,7 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[factoryPerformance.au]] &#37;</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[factoryPerformance.me]] &#37;</span></p>
+                            <p><span>[[factoryPerformance.meff]] &#37;</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[factoryPerformance.aw]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
@@ -280,7 +281,7 @@
                 let aw = this.$.acceptWaste.value;
                 let au = this.$.workerUtilize.value;
                 let opt = this.$.optimizeType.value;
-                let meffi = this.$.machineStandardEffi.value;
+                let meff = this.$.machineStandardEffi.value;
                 let inte = this.$.scheduleInterval.value;
                 let op_start = this.$.opStart.value;
                 let op_end = this.$.opEnd.value;
@@ -297,14 +298,14 @@
                 if (this.$.sunday.checked) this.push('operationDay', 'sun');
                 op_day = this.operationDay.toString();
 
-                if (fn && ft && opt && aw && au && inte && meffi && op_start &&
+                if (fn && ft && opt && aw && au && inte && meff && op_start &&
                     op_end && op_day) {
                     this.set('factoryProfile.name', fn);
                     this.set('factoryProfile.type', ft);
                     this.set('factoryPerformance.optimize', opt);
                     this.set('factoryPerformance.aw', aw);
                     this.set('factoryPerformance.au', au);
-                    this.set('factoryPerformance.mae', meffi);
+                    this.set('factoryPerformance.meff', meff);
                     this.set('factorySchedule.interval', inte);
                     this.set('factoryOperation.op_start', op_start);
                     this.set('factoryOperation.op_end', op_end);

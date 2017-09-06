@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en-US">
 
 <head>
@@ -6,10 +6,10 @@
   <meta charset="utf-8">
   <title>IMES</title>
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry">
   <meta name="author" content="KMUTT">
-  <link rel="shortcut icon" href="src/images/favicon.png">
+  <link rel="shortcut icon" href="images/favicon.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="canonical" href="/">
   <meta name="theme-color" content="#202020">
@@ -18,12 +18,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="IMES">
-  <link rel="apple-touch-icon" href="src/images/manifest/icon-144x144.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="src/images/manifest/icon-152x152.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="src/images/manifest/icon-192x192.png">
-  <link rel="apple-touch-icon" sizes="256x256" href="src/images/manifest/icon-256x256.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="src/images/manifest/icon-512x512.png">
-  <meta name="msapplication-TileImage" content="src/images/manifest/icon-192x192.png">
+  <link rel="apple-touch-icon" href="images/manifest/icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="images/manifest/icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png">
+  <link rel="apple-touch-icon" sizes="256x256" href="images/manifest/icon-256x256.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="images/manifest/icon-512x512.png">
+  <meta name="msapplication-TileImage" content="images/manifest/icon-192x192.png">
   <meta name="msapplication-TileColor" content="#202020">
   <meta name="msapplication-tap-highlight" content="no">
   <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
@@ -68,8 +68,8 @@
 
     img.loader-logo,
     h1.loader-title {
-      -webkit-animation-duration: .8s;
-      animation-duration: .8s;
+      -webkit-animation-duration: 1s;
+      animation-duration: 1s;
       -webkit-animation-fill-mode: both;
       animation-fill-mode: both;
       -webkit-animation-iteration-count: infinite;
@@ -109,17 +109,15 @@
 
 
     div.container h1 {
-      margin: 10px 0;
-      text-align: center;
+      margin: 10px;
       font-size: 1.25rem;
-      font-weight: 300;
+      font-weight: 400;
       color: #202020;
     }
 
     img.loader-logo {
       width: 150px;
-      height: auto;
-      display: block;
+      height: 150px;
     }
 
     @-webkit-keyframes fadeOut {
@@ -147,38 +145,11 @@
   <view-app>
     <div class="container">
       <div class="flex-group">
-        <img class="loader-logo" src="src/images/logo/logo.svg" alt="app-logo">
+        <img class="loader-logo" src="images/logo/logo.svg" alt="app-logo"></img>
         <h1 class="loader-title">Initializing your data</h1>
       </div>
     </div>
   </view-app>
-  <script>
-    // Service worker status
-    const swFailed = "%cService Worker Register Failed: "
-    const swReady = "%cService Worker Ready"
-    const swRegistered = "%cService Worker Registered"
-    const greenColor = "color: green;"
-    const crimsonColor = "color: crimson;"
-    // Load and register pre-caching Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js', {
-            scope: '/',
-          })
-          .then(() => {
-            console.info(swRegisterd, greenColor)
-          }).catch((err) => {
-            console.warn(swFailed, err)
-          })
-        navigator.serviceWorker.ready
-          .catch((err) => {
-            console.error(swFailed, err)
-          })
-      })
-    } else {
-      alert("Service Worker is not supportted by your browser. Please upgrade your browser");
-    }
-  </script>
   <noscript>
     Please enable JavaScript to view this website.
   </noscript>

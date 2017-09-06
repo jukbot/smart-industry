@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-help">
@@ -23,11 +24,11 @@
         }
       }
     </style>
-
+    <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1 class="title">1. Getting started
+          <h1 class="title">1. Getting started {{localize('description')}}
             <iron-icon icon="vaadin:open-book"></iron-icon>
           </h1>
           <p>Lorem cillum et excepteur ea minim.</p>
@@ -124,9 +125,21 @@
   </template>
 
   <script>
-    class ViewHelp extends Polymer.Element {
+    class ViewHelp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+      Polymer.Element) {
       static get is() {
         return 'view-help';
+      }
+
+      static get properties() {
+        return {
+          language: String
+        }
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        this.loadResources(this.resolveUrl('../data/locales.json'));
       }
     }
 

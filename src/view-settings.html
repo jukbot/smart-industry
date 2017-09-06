@@ -60,8 +60,8 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
-    <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
-      on-message="handleMessage" token="{{token}}"></firebase-messaging>
+    <!-- <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
+      on-message="handleMessage" token="{{token}}"></firebase-messaging> -->
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userToken" path="/user/[[k.key]]/token" data="[[token]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="{{language}}"></firebase-document>
@@ -69,7 +69,7 @@
     <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[k.key]]/appData/email_alert" data="{{emailalert}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[k.key]]/appData/auto_backup" data="{{autobackup}}"></firebase-document>
 
-    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
     <iron-ajax url="../data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
     <ul class="app-grid">
@@ -201,13 +201,13 @@
           this.$.toastAlert.open();
           // Requesting notification permission
 
-          this.$.messaging.requestPermission()
-            .then(() => {
-              console.log("Notification permission granted");
-            })
-            .catch(err => {
-              console.log("Notification permission denied ", err);
-            });
+          // this.$.messaging.requestPermission()
+          //   .then(() => {
+          //     console.log("Notification permission granted");
+          //   })
+          //   .catch(err => {
+          //     console.log("Notification permission denied ", err);
+          //   });
 
         } else {
           this.alertText = 'notification-alert-off';

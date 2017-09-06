@@ -64,7 +64,7 @@
     <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
-    <app-localstorage-document key="lang" data="{{language}}"></app-localstorage-document>
+    <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -202,15 +202,10 @@
         if (!orderData) return 0;
         if (orderData.length > 0) {
           let query = this.$.orderQuery.ref.orderByChild("order_status").equalTo('waiting');
-          query.on("value", (snapshot) => this.setWaitOrder(snapshot.numChildren()));
+          query.on("value", (snapshot) => this.set('waitOrderCount', snapshot.numChildren()));
         } else {
-          this.setWaitOrder(0);
+          this.set('waitOrderCount', 0);
         }
-      }
-
-      setWaitOrder(count) {
-        console.log(count);
-        this.waitOrderCount = count;
       }
 
     }
