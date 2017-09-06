@@ -86,8 +86,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <img id="profile" class="profile-image" src$="[[getUserImage(user.photoURL)]]" title="Profile image" alt="user photo">
             <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" tabindex="0">
               <p>{{localize('email')}}: [[persistedProfileData.email]]</p>
-              <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
               <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span></p>
+              <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
             </paper-tooltip>
             <p>[[persistedProfileData.displayName]]</p>
             <p class="online">[[getOnlineStatus(online)]]</p>

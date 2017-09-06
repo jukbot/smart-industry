@@ -17,7 +17,6 @@
     <style include="flat-button flat-checkbox">
        :host {
         display: block;
-        padding: 0px;
         --app-grid-columns: 1;
         --app-grid-item-height: 50%;
         --paper-checkbox-checked-color: #202020;
@@ -84,18 +83,6 @@
 
       .white {
         color: #ffffff;
-      }
-
-      .login-forget:focus,
-      .login-forget:hover {
-        color: red;
-        text-decoration: underline;
-      }
-
-      .login-register:focus,
-      .login-register:hover {
-        color: red;
-        text-decoration: underline;
       }
 
       .login-btn,
@@ -215,10 +202,9 @@
         }
       }
     </style>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" signed-in="{{signedIn}}"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]"></firebase-document>
-    <app-localstorage-document key="user-uid" data="{{user.uid}}"></app-localstorage-document>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" signed-in="[[signedIn]]"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="[[k]]"></firebase-document>
+    <firebase-query app-name="smart-mes" id="data" path="/data"></firebase-query>
     <app-localstorage-document key="user-key" data="{{k.key}}"></app-localstorage-document>
     <app-localstorage-document key="user-authen" data="{{signedIn}}"></app-localstorage-document>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
