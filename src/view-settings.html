@@ -141,10 +141,10 @@
   <script>
     class ViewSettings extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
-      static get is () {
+      static get is() {
         return 'view-settings'
       }
-      static get properties () {
+      static get properties() {
         return {
           language: {
             type: String,
@@ -168,12 +168,12 @@
         }
       }
 
-      connectedCallback () {
+      connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
       }
 
-      _changeLanguage () {
+      _changeLanguage() {
         let selectedLang = this.$.languageSelector.value
         if (selectedLang === 'en' || selectedLang === 'th' || selectedLang === 'jp' || selectedLang === 'ch' ||
           selectedLang === 'rs') {
@@ -183,22 +183,22 @@
         }
       }
 
-      _changeAutoBackup () {
+      _changeAutoBackup() {
         this.autobackup = this.$.autobackupSwitch.checked
         if (this.$.autobackupSwitch.checked) {
           this.toastText = 'backup-notification-alert-on'
-          this.$.toastAlert.open()
+          //this.$.toastAlert.open()
         } else {
           this.toastText = 'backup-alert-off'
-          this.$.toastAlert.open()
+          //this.$.toastAlert.open()
         }
       }
 
-      _changeNotification () {
+      _changeNotification() {
         this.notification = this.$.webNotificationSwitch.checked
         if (this.$.webNotificationSwitch.checked) {
           this.toastText = 'notification-alert-on'
-          this.$.toastAlert.open()
+          //this.$.toastAlert.open()
           // Requesting notification permission
 
           // this.$.messaging.requestPermission()
@@ -210,22 +210,22 @@
           //   });
         } else {
           this.toastText = 'notification-alert-off'
-          this.$.toastAlert.open()
+          //this.$.toastAlert.open()
         }
       }
 
-      _changeEmailAlert () {
+      _changeEmailAlert() {
         this.emailalert = this.$.emailAlertSwitch.checked
         if (this.$.emailalertSwitch.checked) {
           this.toastText = 'email-notification-alert-on'
-          this.$.toastAlert.open()
+          //this.$.toastAlert.open()
         } else {
           this.toastText = 'email-notification-alert-off'
-          this.$.toastAlert.open()
+          //this.$.toastAlert.open()
         }
       }
 
-      _changeAuthen () {
+      _changeAuthen() {
         let currentpassword = this.$.currentPassword.value
         let newPassword = this.$.newPassword.value
         let newemail = this.$.userDataEmail.value
@@ -254,7 +254,7 @@
         }
       }
 
-      _deleteAcount () {
+      _deleteAcount() {
         this.$.auth.delete().then(function () {
           window.alert("Delete successful, you'll now logout")
           this.logout()
@@ -263,7 +263,7 @@
         })
       }
 
-      logout () {
+      logout() {
         this.$.auth.signOut()
           .then(() => {
             this.authen = false
@@ -280,16 +280,16 @@
           })
       }
 
-      _scanDevice () {
+      _scanDevice() {
         if ('usb' in navigator) {
           let device
           device = navigator.usb.requestDevice({
-            filters: [{
+              filters: [{
                 vendorId: 0x2341
               }, {
                 vendorId: 0x2a03
               }]
-          })
+            })
             .then(device => {
               console.log(device.productName) // "Arduino Micro"
               console.log(device.manufacturerName) // "Arduino LLC"
@@ -306,23 +306,24 @@
         }
       }
 
-      _showDevice () {
+      _showDevice() {
         if ('usb' in navigator) {
           navigator.usb.getDevices().then(devices => {
-            devices.map(device => {
-              console.log(device.productName) // "Arduino Micro"
-              console.log(device.manufacturerName) // "Arduino LLC"
-              console.log(device.vendorId) // "Vender ID"
+              devices.map(device => {
+                console.log(device.productName) // "Arduino Micro"
+                console.log(device.manufacturerName) // "Arduino LLC"
+                console.log(device.vendorId) // "Vender ID"
+              })
             })
-          }).catch(error => {
-            console.log(error)
-          })
+            .catch(error => {
+              console.log(error)
+            })
         } else {
           window.alert('Your web browser is not support physical device detection. Please use Google Chrome')
         }
       }
 
-      _verifyAccount () {
+      _verifyAccount() {
         this.$.toastVerify.open()
 
         this.user.sendEmailVerification()
@@ -334,7 +335,7 @@
           })
       }
 
-      _saveSettings () {
+      _saveSettings() {
         let displayNameInput = this.$.displayName.value
         if (displayNameInput !== '' && displayNameInput != this.user.displayName) {
           this.user.updateProfile({
@@ -347,7 +348,7 @@
         }
       }
 
-      uploadProfileImage () {
+      uploadProfileImage() {
         let file = this.$.uploadImageFile.files[0]
         let uid = this.user.uid
         let name = this.user.displayName
@@ -372,14 +373,14 @@
           })
       }
 
-      updateProfileInfo (url, name) {
+      updateProfileInfo(url, name) {
         this.$.userData.ref.update({
-          displayname: name,
-          photoURL: url
-        })
+            displayname: name,
+            photoURL: url
+          })
           .then(() => {
             this.toastText = 'notification-save-settings'
-            this.$.toastAlert.open()
+            //this.$.toastAlert.open()
             window.window.alert('Refresh the application to reload the data.')
           })
           .catch(error => {
@@ -387,7 +388,7 @@
           })
       }
 
-      _deleteProfileImage () {
+      _deleteProfileImage() {
         if (this.user.photoURL) {
           if (window.confirm('Delete profile image ?') === true) {
             let storageRef = firebase.app('smart-mes').storage().ref('user/' + this.user.uid + '/profile')
@@ -398,7 +399,7 @@
                   photoURL: null
                 })
                 this.toastText = 'notification-delete-profile-image-successful'
-                this.$.toastAlert.open()
+                //this.$.toastAlert.open()
               })
               .catch(error => {
                 console.error('Error delete file:', error)
@@ -406,11 +407,11 @@
           } else {}
         } else {
           this.toastText = 'No image file to delete'
-          this.$.toastAlert.open()
+          //this.$.toastAlert.open()
         }
       }
 
-      reauthenAccount (currentpassword) {
+      reauthenAccount(currentpassword) {
         let credential = this.$.auth.EmailAuthProvider.credential(this.user.email, currentpassword)
         this.user.reauthenticateWithCredential(credential)
           .then(() => {
@@ -422,7 +423,7 @@
           })
       }
 
-      handleMessage (message) {
+      handleMessage(message) {
         console.log(message)
         console.log('message received', arguments)
       }

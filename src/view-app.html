@@ -98,13 +98,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-header hidden$="[[!signedIn]]" id="header" slot="header">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
           <paper-icon-button icon="vaadin:menu" role="button" tabindex="0" drawer-toggle></paper-icon-button>
-          <h2 class="page-title" main-title>{{localize(page)}}</h2>
+          <!-- <h2 class="page-title" main-title>{{localize(page)}}</h2> -->
           <input id="searchBox" type="search" name="search" placeholder="Search this app">
           <paper-icon-button icon="vaadin:search" tabindex="-1" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button>
-          <div hidden$="[[!user]]">
-            <h2 class="display-name">
-              [[user.displayName]]</h2>
-          </div>
         </app-header>
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
           <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!signedIn]]"></view-dashboard>
@@ -293,6 +289,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         //  if (!this.signedIn) {
         //    this.page = 'login'
         //   }
+        if (this.signedIn && !this.user.emailVerified) {
+          this.showAlertToast(
+            "We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application."
+          );
+
+        }
       }
 
       _networkChanged() {
@@ -368,11 +370,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return 'Verified'
         } else {
           this.$$('.verify').style.color = 'red'
-          // if (this.signedIn) {
-          //   this.showAlertToast(
-          //     "We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application."
-          //   );
-          // }
           return 'Not verify'
         }
       }

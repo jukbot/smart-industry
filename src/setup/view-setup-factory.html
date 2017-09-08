@@ -111,7 +111,7 @@
                         <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[factoryProfile.model]]" items="[[productionModel]]"
                             item-value-path="value" item-label-path="name" required auto-validate always-float-label>
                             <template>
-                                <div>[[item.value]]</div>
+                                <div>[[item.name]]</div>
                             </template>
                         </vaadin-combo-box>
                         <paper-input label="{{localize('operation-start')}} (xx:xx)" id="opStart" value="[[factoryOperation.op_start]]" type="text"
