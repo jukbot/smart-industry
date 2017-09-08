@@ -47,5 +47,16 @@
                 cursor: not-allowed;
             }
         </style>
+        <script>
+            class FlatButton extends Polymer.Element {
+                static get is() {
+                    return "flat-button";
+                }
+                constructor() {
+                    super();
+                }
+            }
+            customElements.define(FlatButton.is, FlatButton);
+        </script>
     </template>
 </dom-module>

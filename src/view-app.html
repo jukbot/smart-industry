@@ -39,6 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
     </style>
+    <app-analytics key="UA-51514677-9"></app-analytics>
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
@@ -47,10 +48,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
-    <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="[[k]]" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
-    <app-indexeddb-mirror session="[[user.uid]]" id="profileIndexDB" key="profile-data" data="[[user]]" persisted-data="{{persistedProfileData}}"></app-indexeddb-mirror>
+    <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
+
       <app-drawer hidden$="[[!signedIn]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="0">
         <div class="app-logo" role="logo" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-title">IMES</h1>
@@ -71,43 +72,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <a name="settings" role="link" href="/settings" rel="settings" title="Settings" tabindex="-1">
               <paper-icon-button icon="vaadin:tools"></paper-icon-button> {{localize('settings')}}
             </a>
-            <!-- <a name="login" role="link" href="/login" rel="login" title="Login" tabindex="-1">
-              <paper-icon-button icon="vaadin:sign-in"></paper-icon-button> Login (temp)
-            </a> -->
           </iron-selector>
         </nav>
         <div class="sidebar-menu-line" role="separator"></div>
-        <dom-if if="[[signedIn]]">
-          <div class="flex-center" role="group">
-            <flat-button role="button" on-tap="_logout" title="Logout">
-              <button type="button">{{localize('logout-button')}}</button>
-            </flat-button>
+        <div class="flex-center" role="group">
+          <flat-button role="button" on-tap="_logout" title="Logout">
+            <button type="button">{{localize('logout-button')}}
+              </button>
+          </flat-button>
 
-            <img id="profile" class="profile-image" src$="[[getUserImage(user.photoURL)]]" title="Profile image" alt="user photo">
-            <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" tabindex="0">
-              <p>{{localize('email')}}: [[persistedProfileData.email]]</p>
-              <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span></p>
-              <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
-            </paper-tooltip>
-            <p>[[persistedProfileData.displayName]]</p>
-            <p class="online">[[getOnlineStatus(online)]]</p>
-            <p>{{localize('version')}} 1.0.5</p>
-          </div>
-        </dom-if>
+          <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="Profile image" alt="user photo">
+          <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" tabindex="0">
+            <p>{{localize('email')}}: [[persistedUserData.email]]</p>
+            <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span></p>
+            <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
+          </paper-tooltip>
+          <p>[[persistedUserData.displayName]]</p>
+          <p class="online">[[getOnlineStatus(online)]]</p>
+          <p>{{localize('version')}} 1.0.5</p>
+        </div>
       </app-drawer>
+      <dom-if if="[[signedIn]]">
+      </dom-if>
       <app-header-layout fullbleed>
-        <app-header hidden$="[[!signedIn]]" id="header" slot="header" fixed>
-          <app-toolbar>
-            <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
-            <paper-icon-button icon="vaadin:menu" role="button" tabindex="0" drawer-toggle></paper-icon-button>
-            <h2 class="page-title" main-title>{{localize(page)}}</h2>
-            <input id="searchBox" type="search" name="search" placeholder="Search this app">
-            <paper-icon-button icon="vaadin:search" tabindex="-1" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button>
-            <div hidden$="[[!user]]">
-              <h2 class="display-name">
-                [[user.displayName]]</h2>
-            </div>
-          </app-toolbar>
+        <app-header hidden$="[[!signedIn]]" id="header" slot="header">
+          <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
+          <paper-icon-button icon="vaadin:menu" role="button" tabindex="0" drawer-toggle></paper-icon-button>
+          <h2 class="page-title" main-title>{{localize(page)}}</h2>
+          <input id="searchBox" type="search" name="search" placeholder="Search this app">
+          <paper-icon-button icon="vaadin:search" tabindex="-1" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button>
+          <div hidden$="[[!user]]">
+            <h2 class="display-name">
+              [[user.displayName]]</h2>
+          </div>
         </app-header>
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
           <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!signedIn]]"></view-dashboard>
@@ -127,21 +124,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <paper-toast id="toastVerify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
       <div class="toast-flex-container">
         <div class="toast-flex-item">
-          <p>[[toastText]]
-          </p>
+          <p>[[toastText]]</p>
         </div>
         <div class="toast-flex-item">
           <paper-icon-button on-tap="_closeToastAlert" role="bottom" class="close-toast-button" icon="vaadin:close-big" tabindex="-1"></paper-icon-button>
         </div>
       </div>
     </paper-toast>
-    <!-- ENABLE WHEN DEPLOY PRODUCTION <app-analytics key="UA-51514677-9"></app-analytics> -->
   </template>
 
   <script>
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
-        return 'view-app';
+        return 'view-app'
       }
 
       static get properties() {
@@ -149,19 +144,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           page: {
             type: String,
             reflectToAttribute: true,
-            observer: '_pageChanged',
+            observer: '_pageChanged'
           },
           language: {
             type: String,
             value: () => {
-              if (localStorage.getItem("app-lang") != null) {
-                return localStorage.getItem("app-lang");
-              } else if (localStorage.getItem("app-lang") == null || localStorage.getItem("app-lang") == {}) {
-                return "en";
+              if (localStorage.getItem('app-lang') != null) {
+                return localStorage.getItem('app-lang')
+              } else if (localStorage.getItem('app-lang') == null || localStorage.getItem('app-lang') == {}) {
+                return 'en'
+              } else {
+                return language
               }
             }
           },
-          user: Object,
+          user: {
+            type: Object,
+            notify: true
+          },
+          signedIn: {
+            type: Boolean,
+            value: false,
+            observer: '_signedInChanged'
+          },
+          toastText: String,
           notificationText: String
         }
       }
@@ -169,79 +175,85 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get observers() {
         return [
           '_routePageChanged(routeData.page)'
-        ];
+        ]
       }
 
       constructor() {
-        super();
+        super()
       }
 
       connectedCallback() {
-        super.connectedCallback();
-        this.loadResources(this.resolveUrl('../data/locales.json'));
-        Polymer.Async.timeOut.run(() => {
-          if (this.signedIn && this.route.path == '/login') {
-            this.page = 'dashboard';
-          } else if (this.signedIn && this.route.path == '/') {
-            this.page = 'dashboard';
-          } else if (!this.signedIn) {
-            // this.page = 'login';
-            // this.set('route.path', '/login');
-          }
-        }, 1);
+        super.connectedCallback()
+        this.loadResources(this.resolveUrl('../data/locales.json'))
+        Polymer.RenderStatus.beforeNextRender(this, function () {
+          Polymer.Async.timeOut.run(() => {
+            if (this.signedIn && this.route.path == '/login') {
+              this.page = 'dashboard'
+              this.set('route.path', '/dashboard')
+            } else if (this.signedIn && this.route.path == '/') {
+              this.page = 'dashboard'
+              this.set('route.path', '/dashboard')
+            } //else if (!this.signedIn) {
+            // this.page = 'login'
+            // this.set('route.path', '/login')
+            // }
+          }, 1)
+          // measure something
+        })
       }
 
       ready() {
-        super.ready();
+        super.ready()
         // Custom elements polyfill safe way to indicate an element has been upgraded.
-        document.body.removeAttribute('unresolved');
+        document.body.removeAttribute('unresolved')
         // listen for custom events
-        this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e));
-        this.addEventListener('signed-in-changed', (e) => this._signedInChanged(e));
-        this.addEventListener('on-error', (e) => this._handleError(e));
+        this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e))
+        this.addEventListener('signed-in-changed', (e) => this._signedInChanged(e))
+        this.addEventListener('auth-changed', this._signedInChanged.bind(this))
+        this.addEventListener('on-error', (e) => this._handleError(e))
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, () => {
-          window.addEventListener('online', (e) => this._networkChanged(e));
-          window.addEventListener('offline', (e) => this._networkChanged(e));
-        });
+          window.addEventListener('online', (e) => this._networkChanged(e))
+          window.addEventListener('offline', (e) => this._networkChanged(e))
+        })
       }
 
       _routePageChanged(page) {
-        this.page = page || 'dashboard';
+        this.page = page || 'dashboard'
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
+          this.$.drawer.close()
         }
       }
 
       _pageChanged(page, oldPage) {
         if (page != null) {
           if (page == 'dashboard') {
-            this._pageLoaded(Boolean(oldPage));
+            this._pageLoaded(Boolean(oldPage))
             // other routes are lazy loaded
           } else {
             // When a load failed, it triggered a 404 which means we need to
             // eagerly load the 404 page definition
-            let callback = this._pageLoaded.bind(this, Boolean(oldPage));
-            let resolvedPageUrl = this.resolveUrl('view-' + page + '.html');
+            let callback = this._pageLoaded.bind(this, Boolean(oldPage))
+            let resolvedPageUrl = this.resolveUrl('view-' + page + '.html')
             Polymer.importHref(
               resolvedPageUrl,
               callback,
               callback,
-              true);
+              true)
           }
         }
       }
 
       _pageLoaded(shouldResetLayout) {
-        this._ensureLazyLoaded();
+        this._ensureLazyLoaded()
         if (shouldResetLayout) {
           // The size of the header depends on the page (e.g. on some pages the tabs
           // do not appear), so reset the header's layout only when switching pages.
           Polymer.Async.timeOut.run(() => {
-            this.$.header.resetLayout();
-            this.$.drawer.resetLayout();
-          }, 1);
+            this.$.header.resetLayout()
+            this.$.drawer.resetLayout()
+          }, 1)
         }
       }
 
@@ -250,138 +262,139 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (!this.loadComplete) {
           Polymer.RenderStatus.afterNextRender(this, () => {
             Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
-              const greenColor = "color: green;"
-              const crimsonColor = "color: crimson;"
+              const greenColor = 'color: green;'
+              const crimsonColor = 'color: crimson;'
               // Load and register pre-caching Service Worker
               if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/service-worker.js', {
                     scope: '/'
                   })
                   .then((registration) => {
-                    console.log('%cService Worker Registered', greenColor);
+                    console.log('%cService Worker Registered', greenColor)
                   }).catch((err) => {
-                    console.error('%cService Worker Register Failed ' + err, crimsonColor);
-                  });
+                    console.error('%cService Worker Register Failed ' + err, crimsonColor)
+                  })
                 navigator.serviceWorker.ready.then((registration) => {
-                  console.log('%cService Worker Ready', greenColor);
-                });
+                  console.log('%cService Worker Ready', greenColor)
+                })
               } else {
-                alert("Service Worker is not support by your browser. Please upgrade your browser");
+                alert('Service Worker is not support by your browser. Please upgrade your browser')
               }
-              this._networkChanged();
-              this.loadComplete = true;
-              this.$.pageLoader.removeAttribute('indeterminate');
-            });
-          });
+              this._networkChanged()
+              this.loadComplete = true
+              this.$.pageLoader.removeAttribute('indeterminate')
+            })
+          })
         }
       }
 
       _signedInChanged(e) {
-        if (!this.signedIn) {
-          this.page = 'login';
-        }
+        console.log(this.signedIn)
+        //  if (!this.signedIn) {
+        //    this.page = 'login'
+        //   }
       }
 
       _networkChanged() {
-        let oldOffline = this.offline;
-        this.offline = !navigator.onLine;
+        let oldOffline = this.offline
+        this.offline = !navigator.onLine
         // Show the snackbar if the user is offline when starting a new session
         // or if the network status changed.
         if (this.offline || (!this.offline && oldOffline === true)) {
-          this.notificationText = this.offline ? 'notification-offline' : 'notification-online';
-          this.$.toastNotification.open();
+          this.notificationText = this.offline ? 'notification-offline' : 'notification-online'
+          this.$.toastNotification.open()
           if (!this.offline && oldOffline === true) {
-            this.$.pageLoader.setAttribute('indeterminate', '');
+            this.$.pageLoader.setAttribute('indeterminate', '')
             this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(5000), () => {
-              this._refreshNetworkStatus();
-            });
+              this._refreshNetworkStatus()
+            })
           }
         }
       }
 
       _refreshNetworkStatus() {
-        this.$.profileIndexDB.refreshNetworkStatus();
-        this.$.appLanguage.refreshNetworkStatus();
-        this.$.pageLoader.removeAttribute('indeterminate');
+        this.$.profileIndexDB.refreshNetworkStatus()
+        this.$.appLanguage.refreshNetworkStatus()
+        this.$.pageLoader.removeAttribute('indeterminate')
       }
 
       _onFallbackSelectionTriggered() {
-        this.page = '404';
+        this.page = '404'
       }
 
       _logout() {
         if (!this.online) {
-          this.page = 'offline';
+          this.page = 'offline'
         } else {
           this.$.auth.signOut()
             .then(() => {
-              this.$.profileIndexDB.destroy();
-              this._closeToastAlert();
+              this.$.profileIndexDB.destroy()
+              this._closeToastAlert()
               Polymer.Async.timeOut.run(() => {
-                this.$.header.resetLayout();
-                this.$.drawer.resetLayout();
-              }, 1);
+                this.$.header.resetLayout()
+                this.$.drawer.resetLayout()
+              }, 1)
               // redirect to login page
-              this.page = 'login';
+              this.page = 'login'
             })
             .catch((error) => {
-              console.error('Authenticate Failed: ' + error.code);
-              this.page = 'error';
-            });
+              console.error('Authenticate Failed: ' + error.code)
+              this.page = 'error'
+            })
         }
       }
 
       _openSearchBox() {
-        this.$.searchBox.focus();
+        this.$.searchBox.focus()
       }
 
       _closeToastAlert() {
-        this.$.toastVerify.close();
+        this.$.toastVerify.close()
       }
 
       getOnlineStatus(status) {
         if (status) {
-          this.$$('.online').style.color = 'green';
-          return 'Online';
+          this.$$('.online').style.color = 'green'
+          return 'Online'
         } else {
-          this.$$('.online').style.color = 'red';
-          return 'Offline';
+          this.$$('.online').style.color = 'red'
+          return 'Offline'
         }
       }
 
       getVerifyStatus(status) {
         if (status) {
-          this.$$('.verify').style.color = 'green';
-          return 'Verified';
+          this.$$('.verify').style.color = 'green'
+          return 'Verified'
         } else {
-          this.$$('.verify').style.color = 'red';
-          if (this.signedIn) {
-            this.showAlertToast(
-              "We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application."
-            );
-          }
-          return 'Not verify';
+          this.$$('.verify').style.color = 'red'
+          // if (this.signedIn) {
+          //   this.showAlertToast(
+          //     "We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application."
+          //   );
+          // }
+          return 'Not verify'
         }
       }
 
       getUserImage(url) {
         if (url) {
-          return url;
+          return url
         } else {
-          return 'images/profile/default.svg';
+          return 'images/profile/default.svg'
         }
       }
 
       showAlertToast(text) {
-        this.toastText = text;
-        this.$.toastVerify.open();
+        this.toastText = text
+        this.$.toastVerify.open()
       }
 
       _handleError(e) {
-        console.error("Error: " + e.message);
-        this.page = 'error';
+        console.error('Error: ' + e.message)
+        this.page = 'error'
       }
     }
-    window.customElements.define(ViewApp.is, ViewApp);
+    customElements.define(ViewApp.is, ViewApp)
   </script>
 </dom-module>

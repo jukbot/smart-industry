@@ -47,7 +47,7 @@
             }
 
             .operation-day-selector {
-                margin-top: 16px;
+                margin: 10px 0;
                 padding: 10px;
                 border: 1px solid rgba(0, 0, 0, .10);
                 border-radius: 2px;
@@ -99,7 +99,6 @@
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
-        <iron-ajax url="../data/factory.json" auto handle-as="json" last-response="{{factoryType}}"></iron-ajax>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
@@ -109,6 +108,12 @@
                         <paper-input label="{{localize('factory-name')}}" id="factoryName" value="[[factoryProfile.name]]" type="text" required always-float-label></paper-input>
                         <vaadin-combo-box label="{{localize('factory-type')}}" id="factoryType" value="[[factoryProfile.type]]" items="[[factoryType]]"
                             item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box>
+                        <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[factoryProfile.model]]" items="[[productionModel]]"
+                            item-value-path="value" item-label-path="name" required auto-validate always-float-label>
+                            <template>
+                                <div>[[item.value]]</div>
+                            </template>
+                        </vaadin-combo-box>
                         <paper-input label="{{localize('operation-start')}} (xx:xx)" id="opStart" value="[[factoryOperation.op_start]]" type="text"
                             required always-float-label auto-validate></paper-input>
                         <paper-input label="{{localize('operation-end')}} (xx:xx)" id="opEnd" value="[[factoryOperation.op_end]]" type="text" required
@@ -117,27 +122,6 @@
                             required always-float-label auto-validate></paper-input>
                         <paper-input label="{{localize('over-time-end')}} (xx:xx)" id="otEnd" value="[[factoryOperation.ot_end]]" type="text" required
                             always-float-label auto-validate></paper-input>
-                        <vaadin-combo-box label="{{localize('productivity-optimization')}}" id="optimizeType" value="[[factoryPerformance.optimize]]"
-                            items="[[optimizationType]]" item-value-path="value" item-label-path="name" required always-float-label>
-                            <template>
-                                <div>{{localize(item.value)}}</div>
-                            </template>
-                        </vaadin-combo-box>
-                        <vaadin-combo-box label="Production Mode" id="productionMode" value="[[factoryProfile.mode]]" items="[[productionMode]]"
-                            item-value-path="value" item-label-path="name" required always-float-label>
-                            <template>
-                                <div>item.value</div>
-                            </template>
-                        </vaadin-combo-box>
-                        <paper-input label="{{localize('working-utilization')}} (0-100%)" id="workerUtilize" value="[[factoryPerformance.au]]" type="number"
-                            min="0" max="100" step="1" required always-float-label auto-validate></paper-input>
-                        <paper-input label="{{localize('standard-machine-efficiency')}} (0-100%)" name="machineStandardEfficiency" id="machineStandardEffi"
-                            value="[[factoryPerformance.meff]]" type="number" min="0" max="100" step="1" required always-float-label
-                            auto-validate></paper-input>
-                        <paper-input label="{{localize('acceptable-waste')}} (0.00-1.00)" id="acceptWaste" value="[[factoryPerformance.aw]]" type="number"
-                            min="0" max="1" step="0.01" required always-float-label auto-validate></paper-input>
-                        <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[factorySchedule.interval]]"
-                            type="number" min="1" max="30" step="1" required always-float-label auto-validate></paper-input>
                         <div class="operation-day-selector">
                             <p>{{localize('operation-day')}}</p>[[factoryOperationLoaded(factoryOperation.op_day)]]
                             <paper-checkbox class="checkbox" tabindex="0" id="sunday" value="sun">Sun</paper-checkbox>
@@ -148,6 +132,22 @@
                             <paper-checkbox class="checkbox" tabindex="0" id="friday" value="fri">Fri</paper-checkbox>
                             <paper-checkbox class="checkbox" tabindex="0" id="saturday" value="sat">Sat</paper-checkbox>
                         </div>
+                        <vaadin-combo-box label="{{localize('productivity-optimization')}}" id="optimizeType" value="[[factoryPerformance.optimize]]"
+                            items="[[optimizationType]]" item-value-path="value" item-label-path="name" required auto-validate
+                            always-float-label>
+                            <template>
+                                <div>{{localize(item.value)}}</div>
+                            </template>
+                        </vaadin-combo-box>
+                        <paper-input label="{{localize('standard-working-utilization')}} (0-100%)" id="workerUtilize" value="[[factoryPerformance.au]]"
+                            type="number" min="0" max="100" step="1" required always-float-label auto-validate></paper-input>
+                        <paper-input label="{{localize('standard-machine-efficiency')}} (0-100%)" name="machineStandardEfficiency" id="machineStandardEffi"
+                            value="[[factoryPerformance.meff]]" type="number" min="0" max="100" step="1" required always-float-label
+                            auto-validate></paper-input>
+                        <paper-input label="{{localize('acceptable-waste')}} (0.00-1.00)" id="acceptWaste" value="[[factoryPerformance.aw]]" type="number"
+                            min="0" max="1" step="0.01" required always-float-label auto-validate></paper-input>
+                        <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[factorySchedule.interval]]"
+                            type="number" min="1" max="30" step="1" required always-float-label auto-validate></paper-input>
                         <div class="button-group">
                             <flat-button on-tap="saveValue" class="btn" title="Save settings"><button role="button">{{localize('save-settings')}}</button></flat-button>
                             <flat-button on-tap="resetValue" class="btn" title="Restore Default"><button role="button">{{localize('restore')}}</button></flat-button>
@@ -164,6 +164,8 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>{{localize('factory-type')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
+                            <p>{{localize('production-model')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
                             <p>{{localize('operation-start')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>{{localize('operation-end')}}</p>
@@ -178,6 +180,8 @@
                             <p><span>[[factoryProfile.name]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[getFactoryType(factoryProfile.type)]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[getProductionModel(factoryProfile.model)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[factoryOperation.op_start]] </span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
@@ -197,7 +201,7 @@
                         <div class="info-group flex-item">
                             <p>{{localize('productivity-optimization')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>{{localize('working-utilization')}}</p>
+                            <p>{{localize('standard-working-utilization')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>{{localize('standard-machine-efficiency')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
@@ -235,18 +239,12 @@
         class ViewSetupFactory extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {
-                return 'view-setup-factory';
+                return 'view-setup-factory'
             }
 
             static get properties() {
                 return {
                     language: String,
-                    keyid: {
-                        type: String,
-                        value: () => {
-                            return this.keyid || 'default'
-                        }
-                    },
                     factoryType: Array,
                     factorySchedule: Object,
                     factoryOperation: Object,
@@ -255,174 +253,212 @@
                         type: Array,
                         value: () => {
                             return [{
-                                    name: 'Increase Profit',
-                                    value: 'increase-profit',
+                                    'name': 'Increase Profit',
+                                    'value': 'increase-profit'
                                 },
                                 {
-                                    name: 'Reduce Cost',
-                                    value: 'reduce-cost',
+                                    'name': 'Reduce Cost',
+                                    'value': 'reduce-cost'
                                 },
                                 {
-                                    name: 'Disabled',
-                                    value: 'disabled',
+                                    'name': 'Disabled',
+                                    'value': 'disabled'
                                 }
-                            ];
+                            ]
                         }
                     },
-                    productionMode: {
+                    productionModel: {
                         type: Array,
                         value: () => {
                             return [{
-                                    name: 'Serial Production',
-                                    value: 'serial',
+                                    'name': 'Serial Production',
+                                    'value': 'serial'
                                 },
                                 {
-                                    name: 'Parallel Production',
-                                    value: 'parallel',
+                                    'name': 'Parallel Production',
+                                    'value': 'parallel'
                                 },
                                 {
-                                    name: 'Multi-Component Production',
-                                    value: 'multi',
+                                    'name': 'Multi-Component Production',
+                                    'value': 'multi'
                                 }
-                            ];
+                            ]
+                        }
+                    },
+                    factoryType: {
+                        type: Array,
+                        value: () => {
+                            return [{
+                                    'name': 'Job Shop',
+                                    'value': 'js'
+                                },
+                                {
+                                    'name': 'Flow Shop',
+                                    'value': 'fs'
+                                },
+                                {
+                                    'name': 'Hybrid (Jobshop + Flowshop)',
+                                    'value': 'hb'
+                                }
+                            ]
                         }
                     }
                 }
             }
 
             connectedCallback() {
-                super.connectedCallback();
-                this.loadResources(this.resolveUrl('../../data/locales.json'));
+                super.connectedCallback()
+                this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
 
             saveValue() {
-                let fn = this.$.factoryName.value;
-                let ft = this.$.factoryType.value;
-                let aw = this.$.acceptWaste.value;
-                let au = this.$.workerUtilize.value;
-                let opt = this.$.optimizeType.value;
-                let meff = this.$.machineStandardEffi.value;
-                let inte = this.$.scheduleInterval.value;
-                let op_start = this.$.opStart.value;
-                let op_end = this.$.opEnd.value;
-                let ot_start = this.$.otStart.value;
-                let ot_end = this.$.otEnd.value;
-                let op_day = "";
-                this.operationDay = [];
-                if (this.$.monday.checked) this.push('operationDay', 'mon');
-                if (this.$.tuesday.checked) this.push('operationDay', 'tue');
-                if (this.$.wednesday.checked) this.push('operationDay', 'wed');
-                if (this.$.thursday.checked) this.push('operationDay', 'thu');
-                if (this.$.friday.checked) this.push('operationDay', 'fri');
-                if (this.$.saturday.checked) this.push('operationDay', 'sat');
-                if (this.$.sunday.checked) this.push('operationDay', 'sun');
-                op_day = this.operationDay.toString();
+                let fn = this.$.factoryName.value
+                let ft = this.$.factoryType.value
+                let mod = this.$.productionModel.value
+                let aw = this.$.acceptWaste.value
+                let au = this.$.workerUtilize.value
+                let opt = this.$.optimizeType.value
+                let meff = this.$.machineStandardEffi.value
+                let inte = this.$.scheduleInterval.value
+                let op_start = this.$.opStart.value
+                let op_end = this.$.opEnd.value
+                let ot_start = this.$.otStart.value
+                let ot_end = this.$.otEnd.value
+                let op_day = ''
+                this.operationDay = []
+                if (this.$.monday.checked) this.push('operationDay', 'mon')
+                if (this.$.tuesday.checked) this.push('operationDay', 'tue')
+                if (this.$.wednesday.checked) this.push('operationDay', 'wed')
+                if (this.$.thursday.checked) this.push('operationDay', 'thu')
+                if (this.$.friday.checked) this.push('operationDay', 'fri')
+                if (this.$.saturday.checked) this.push('operationDay', 'sat')
+                if (this.$.sunday.checked) this.push('operationDay', 'sun')
+                op_day = this.operationDay.toString()
 
-                if (fn && ft && opt && aw && au && inte && meff && op_start &&
+                if (fn && ft && mod && opt && aw && au && inte && meff && op_start &&
                     op_end && op_day) {
-                    this.set('factoryProfile.name', fn);
-                    this.set('factoryProfile.type', ft);
-                    this.set('factoryPerformance.optimize', opt);
-                    this.set('factoryPerformance.aw', aw);
-                    this.set('factoryPerformance.au', au);
-                    this.set('factoryPerformance.meff', meff);
-                    this.set('factorySchedule.interval', inte);
-                    this.set('factoryOperation.op_start', op_start);
-                    this.set('factoryOperation.op_end', op_end);
-                    this.set('factoryOperation.ot_start', ot_start);
-                    this.set('factoryOperation.ot_end', ot_end);
-                    this.set('factoryOperation.op_day', op_day);
-                    this.$.toastSaveFactoryInfoSuccess.open();
+                    this.set('factoryProfile.name', fn)
+                    this.set('factoryProfile.type', ft)
+                    this.set('factoryProfile.model', mod)
+                    this.set('factoryPerformance.optimize', opt)
+                    this.set('factoryPerformance.aw', aw)
+                    this.set('factoryPerformance.au', au)
+                    this.set('factoryPerformance.meff', meff)
+                    this.set('factorySchedule.interval', inte)
+                    this.set('factoryOperation.op_start', op_start)
+                    this.set('factoryOperation.op_end', op_end)
+                    this.set('factoryOperation.ot_start', ot_start)
+                    this.set('factoryOperation.ot_end', ot_end)
+                    this.set('factoryOperation.op_day', op_day)
+                    this.$.toastSaveFactoryInfoSuccess.open()
                 } else {
-                    this.$.toastErrorIncompleteInput.open();
+                    this.$.toastErrorIncompleteInput.open()
                 }
             }
             resetValue() {
-                this.$.factoryName.value = "Sample factory";
-                this.$.factoryType.value = "FS";
-                this.$.acceptWaste.value = "0.02";
-                this.$.workerUtilize.value = 85;
-                this.$.machineStandardEffi.value = 75;
-                this.$.scheduleInterval.value = 7;
-                this.$.monday.checked = true;
-                this.$.tuesday.checked = true;
-                this.$.wednesday.checked = true;
-                this.$.thursday.checked = true;
-                this.$.friday.checked = true;
-                this.$.saturday.checked = false;
-                this.$.sunday.checked = false;
+                this.$.factoryName.value = 'Sample factory'
+                this.$.factoryType.value = 'FS'
+                this.$.productionModel.value = 'parallel'
+                this.$.acceptWaste.value = '0.02'
+                this.$.workerUtilize.value = 85
+                this.$.machineStandardEffi.value = 75
+                this.$.scheduleInterval.value = 7
+                this.$.monday.checked = true
+                this.$.tuesday.checked = true
+                this.$.wednesday.checked = true
+                this.$.thursday.checked = true
+                this.$.friday.checked = true
+                this.$.saturday.checked = false
+                this.$.sunday.checked = false
             }
 
             factoryOperationLoaded(e) {
                 if (this.get('factoryOperation.op_day')) {
-                    let opDayArr = this.get('factoryOperation.op_day').split(",");
-                    this.$.monday.checked = opDayArr.includes('mon');
-                    this.$.tuesday.checked = opDayArr.includes('tue');
-                    this.$.wednesday.checked = opDayArr.includes('wed');
-                    this.$.thursday.checked = opDayArr.includes('thu');
-                    this.$.friday.checked = opDayArr.includes('fri');
-                    this.$.saturday.checked = opDayArr.includes('sat');
-                    this.$.sunday.checked = opDayArr.includes('sun');
+                    let opDayArr = this.get('factoryOperation.op_day').split(',')
+                    this.$.monday.checked = opDayArr.includes('mon')
+                    this.$.tuesday.checked = opDayArr.includes('tue')
+                    this.$.wednesday.checked = opDayArr.includes('wed')
+                    this.$.thursday.checked = opDayArr.includes('thu')
+                    this.$.friday.checked = opDayArr.includes('fri')
+                    this.$.saturday.checked = opDayArr.includes('sat')
+                    this.$.sunday.checked = opDayArr.includes('sun')
                 }
             }
 
             getNextInterval(last_timestamp, interval) {
-                if (!last_timestamp || !interval) return 0;
-                let current = Math.floor(Date.now() / 1000);
-                let diff = current - last_timestamp;
-                let range = interval * 24 * 60 * 60;
+                if (!last_timestamp || !interval) return 0
+                let current = Math.floor(Date.now() / 1000)
+                let diff = current - last_timestamp
+                let range = interval * 24 * 60 * 60
                 if (diff <= range) {
-                    let nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 * 1000);
-                    let nextIntervalDate = new Date(nextIntervalStamp);
-                    let dd = nextIntervalDate.getDate();
-                    let mm = nextIntervalDate.getMonth() + 1; //January is 0!
-                    let yyyy = nextIntervalDate.getFullYear();
+                    let nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 * 1000)
+                    let nextIntervalDate = new Date(nextIntervalStamp)
+                    let dd = nextIntervalDate.getDate()
+                    let mm = nextIntervalDate.getMonth() + 1 // January is 0!
+                    let yyyy = nextIntervalDate.getFullYear()
                     if (dd < 10) {
                         dd = '0' + dd
                     }
                     if (mm < 10) {
                         mm = '0' + mm
                     }
-                    let nextInterval = dd + '/' + mm + '/' + yyyy;
-                    return nextInterval;
+                    let nextInterval = dd + '/' + mm + '/' + yyyy
+                    return nextInterval
                 } else {
-                    this.set('factorySchedule.start_interval', current);
+                    this.set('factorySchedule.start_interval', current)
                 }
             }
 
             getLastInterval(last_timestamp) {
-                if (!last_timestamp) return 0;
-                let lastIntervalDate = new Date(last_timestamp * 1000);
-                let dd = lastIntervalDate.getDate();
-                let mm = lastIntervalDate.getMonth() + 1; //January is 0!
-                let yyyy = lastIntervalDate.getFullYear();
+                if (!last_timestamp) return 0
+                let lastIntervalDate = new Date(last_timestamp * 1000)
+                let dd = lastIntervalDate.getDate()
+                let mm = lastIntervalDate.getMonth() + 1 // January is 0!
+                let yyyy = lastIntervalDate.getFullYear()
                 if (dd < 10) {
                     dd = '0' + dd
                 }
                 if (mm < 10) {
                     mm = '0' + mm
                 }
-                let lastInterval = dd + '/' + mm + '/' + yyyy;
-                return lastInterval;
+                let lastInterval = dd + '/' + mm + '/' + yyyy
+                return lastInterval
             }
 
             getFactoryType(factory_type) {
-                if (!factory_type) return;
+                if (!factory_type) return
                 switch (factory_type) {
-                    case "JS":
-                        return "Job Shop";
-                        break;
-                    case "FS":
-                        return "Flow Shop";
-                        break;
-                    case "HB":
-                        return "Hybrid (Job + Flow)";
-                        break;
+                    case 'js':
+                        return 'Job Shop'
+                        break
+                    case 'fs':
+                        return 'Flow Shop'
+                        break
+                    case 'hb':
+                        return 'Hybrid (Job + Flow)'
+                        break
                     default:
-                        return "";
+                        return 'N/A'
+                }
+            }
+
+            getProductionModel(production_model) {
+                if (!production_model) return
+                switch (production_model) {
+                    case 'serial':
+                        return 'Serial'
+                        break
+                    case 'parallel':
+                        return 'Parallel'
+                        break
+                    case 'multi':
+                        return 'Multi-Component'
+                        break
+                    default:
+                        return 'N/A'
                 }
             }
         }
-        window.customElements.define(ViewSetupFactory.is, ViewSetupFactory);
+        window.customElements.define(ViewSetupFactory.is, ViewSetupFactory)
     </script>
 </dom-module>

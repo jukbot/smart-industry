@@ -1,599 +1,842 @@
 {
-    "factoryData": {
-        "profile": {
-            "name": "Sample Factory",
-            "type": "Job Shop",
-            "size": "m",
-            "time_unit": "hr",
-            "mode": "parallel",
-        },
-        "operation": {
-            "op_day": "mon,tue,wed,thu,fri",
-            "ot_day": "sat",
-            "op_start": "8:00",
-            "op_end": "17:00",
-            "ot_start": "19:00",
-            "ot_end": "21:00"
-        },
-        "performance": {
-            "aw": 0.02,
-            "au": 85,
-            "meff": 75,
-            "optimize": "increase-profit"
-        },
-        "schedule": {
-            "interval": 7,
-            "priority": "EDD",
-            "start_interval": 1493588631
-        },
-        "product": {
-            "4w8tugjnhlsuzgvlkhd": {
-                "add": 1493380800,
-                "cost": 600,
-                "id": 1,
-                "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2F1500.jpg?alt=media&token=3fbe5372-5714-4dd9-95af-596c879b8351",
-                "name": "A",
-                "part": [{
-                    "cycle": [0.7, 1.85, 0.4, 2.3],
-                    "name": "A1",
-                    "process": "1,2,3,4",
-                    "setup": [10, 30, 20, 40],
-                    "sku": 1702
-                }, {
-                    "cycle": [0, 0.8, 0.7, 0.3],
-                    "name": "A2",
-                    "process": "2,3,4",
-                    "setup": [0, 40, 10, 40],
-                    "sku": 1701
-                }, {
-                    "cycle": [0, 1.2, 1.8, 2.3],
-                    "name": "A3",
-                    "process": "1,2,4",
-                    "setup": [0, 10, 40, 40],
-                    "sku": 1703
-                }],
-                "sku": 1700
-            },
-            "b6kavyltg02gx": {
-                "cost": 200,
-                "id": 7,
-                "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Fbernhard-chair-white__0094409_PE232293_S4.JPG?alt=media&token=16142002-9c10-4372-8542-06299a7b1575",
-                "name": "B2",
-                "part": [{
-                    "cycle": [10.2, 0, 0, 33.6, 0, 10.2],
-                    "name": "B2",
-                    "process": "1,4,6",
-                    "setup": [10, 0, 0, 10, 10, 10],
-                    "sku": 2301
-                }],
-                "sku": 2300
-            },
-            "esjhgvsdluighst": {
-                "add": 1493380400,
-                "cost": 120,
-                "id": 2,
-                "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2F1600.jpg?alt=media&token=dc186c83-9d44-4500-8cb2-b24cbed13016",
-                "name": "E",
-                "part": [{
-                    "cycle": [0.3, 0, 0.05, 0.1],
-                    "name": "D",
-                    "process": "1,3,4",
-                    "setup": [50, 0, 25, 50],
-                    "sku": 1603
-                }, {
-                    "cycle": [0.3, 0.5, 0, 0.1],
-                    "name": "B",
-                    "process": "1,2,4",
-                    "setup": [50, 50, 0, 50],
-                    "sku": 1601
-                }, {
-                    "cycle": [0, 0.15, 0.05, 0.1],
-                    "name": "C",
-                    "process": "2,3,4",
-                    "setup": [0, 25, 25, 50],
-                    "sku": 1602
-                }],
-                "sku": 1600
-            },
-            "gfagaajrithijsbio": {
-                "cost": 150,
-                "id": 5,
-                "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Ftobias-chair__74048_PE190789_S4.JPG?alt=media&token=1e59e6af-5370-4899-b25d-a60337e929b2",
-                "name": "A2",
-                "part": [{
-                    "cycle": [120, 0, 16.8, 75, 0, 10.2],
-                    "name": "A2",
-                    "process": "1,3,4,6",
-                    "setup": [10, 0, 10, 10, 0, 10],
-                    "sku": 2201
-                }],
-                "sku": 2200
-            },
-            "rtugv8wirnhsifbsds": {
-                "add": 1493380270,
-                "cost": 160,
-                "id": 1,
-                "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2F1700.jpg?alt=media&token=63ea82b1-528b-4637-add8-a58e9b494636",
-                "name": "D",
-                "part": [{
-                    "cycle": [0.8, 3.8, 2.8, 6.4],
-                    "name": "A",
-                    "process": "1,2,3,4",
-                    "setup": [20, 20, 20, 60],
-                    "sku": 1501
-                }, {
-                    "cycle": [0, 1.5, 5.5, 6.4],
-                    "name": "B",
-                    "process": "2,3,4",
-                    "setup": [0, 50, 50, 60],
-                    "sku": 1502
-                }, {
-                    "cycle": [2.75, 0.8, 0, 6.4],
-                    "name": "C",
-                    "process": "1,2,4",
-                    "setup": [25, 20, 0, 60],
-                    "sku": 1503
-                }],
-                "sku": 1500
-            },
-            "sjnsbsgkggifvk": {
-                "cost": 175,
-                "id": 4,
-                "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Fhenriksdal-chair-black__0105965_PE253735_S4.JPG?alt=media&token=f635aa22-739e-4930-ae97-eb5edaf229bf",
-                "name": "A1",
-                "part": [{
-                    "cycle": [90, 0, 15, 72, 0, 10.2],
-                    "name": "A1",
-                    "process": "1,3,4,6",
-                    "setup": [10, 0, 10, 10, 0, 10],
-                    "sku": 2001
-                }],
-                "sku": 2000
-            },
-            "ssjeww3rkzjrkr8zhy": {
-                "cost": 180,
-                "id": 9,
-                "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Fnils-armchair-gray__0449221_PE598746_S4.JPG?alt=media&token=60d4ed47-01ee-49d6-9b78-476e06d58ae6",
-                "name": "C2",
-                "part": [{
-                    "cycle": [66.6, 15, 19.8, 0, 70.2, 10.2],
-                    "name": "C2",
-                    "process": "1,2,3,5,6",
-                    "setup": [10, 10, 10, 0, 10, 10],
-                    "sku": 2501
-                }],
-                "sku": 2500
-            },
-            "zhztrjxryskt": {
-                "cost": 190,
-                "id": 6,
-                "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Fpreben-chair-gray__0140020_PE299967_S4.JPG?alt=media&token=6b145c36-4938-41c1-8871-468ccf97cb72",
-                "name": "B1",
-                "part": [{
-                    "cycle": [86.4, 0, 0, 30, 0, 10.2],
-                    "name": "B1",
-                    "process": "1,4,6",
-                    "setup": [10, 0, 0, 10, 0, 10],
-                    "sku": 2201
-                }],
-                "sku": 2200
-            },
-            "zjynsr6sumsjs": {
-                "cost": 165,
-                "id": 8,
-                "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Ffrode-folding-chair-turquoise__0156177_PE315312_S4.JPG?alt=media&token=b9f10d72-cbc3-47c0-9bd3-90cdb1d9940d",
-                "name": "C1",
-                "part": [{
-                    "cycle": [60, 15, 15, 0, 70.2, 10.2],
-                    "name": "C1",
-                    "process": "1,2,3,5,6",
-                    "setup": [10, 10, 10, 0, 10, 10],
-                    "sku": 2401
-                }],
-                "sku": 2400
-            }
-        },
-        "device": {
-            "-KjXc5Hfk8-vUE6NN3Fb": {
-                "count": 0,
-                "enable": 1,
-                "name": "Sensor 1",
-                "machine": "A1"
-            }
-        },
-        "machine": {
-            "-Kiztt5iZ-77NtpQzLBG": {
-                "capacity": "100",
-                "code": "cut",
-                "install": 1493573276,
-                "name": "Cutting Machine 1",
-                "number": 1,
-                "station": "-Kl0IT2AlzuQTentNLVu",
-                "type": "Cutting"
-            },
-            "-KizuFLlQXwhkRbMokaQ": {
-                "capacity": "400",
-                "code": "cut",
-                "install": 1493573276,
-                "name": "Cutting Machine 2",
-                "number": 2,
-                "station": "-Kl0IT2AlzuQTentNLVu",
-                "type": "Cutting"
-            },
-            "-KizuHgMboBMFUMmWu8M": {
-                "capacity": "400",
-                "code": "cut",
-                "install": 1493573276,
-                "name": "Cutting Machine 3",
-                "number": 3,
-                "station": "-Kl0IT2AlzuQTentNLVu",
-                "type": "Cutting"
-            },
-            "-Kizu8ucOa7u7WeYttDP": {
-                "capacity": "300",
-                "code": "fold",
-                "install": 1493573345,
-                "name": "Folding Machine 1",
-                "number": 4,
-                "station": "-Kl5CWt64LGJqm8oEMcS",
-                "type": "Folding"
-            },
-            "-KizuAZlfYqTO8sDbO03": {
-                "capacity": "300",
-                "code": "fold",
-                "install": 1493573352,
-                "name": "Folding Machine 2",
-                "number": 5,
-                "station": "-Kl5CWt64LGJqm8oEMcS",
-                "type": "Folding"
-            },
-            "-KizuBpB5A0u5VXf_J72": {
-                "capacity": "300",
-                "code": "fold",
-                "install": 1493573357,
-                "name": "Folding Machine 3",
-                "number": 6,
-                "station": "-Kl5CWt64LGJqm8oEMcS",
-                "type": "Folding"
-            },
-            "-KizuJEEh8gDdjy7rC_E": {
-                "capacity": "200",
-                "code": "slot",
-                "install": 1493573294,
-                "name": "Slotting Machine 1",
-                "number": 7,
-                "station": "",
-                "type": "Slotting"
-            },
-            "-Kiztyuja5Ab699NtXx9": {
-                "capacity": "200",
-                "code": "slot",
-                "install": 1493573300,
-                "name": "Slotting Machine 2",
-                "number": 8,
-                "station": "",
-                "type": "Slotting"
-            },
-            "-Kizu-HZ7xRR_2EnZWzL": {
-                "capacity": "200",
-                "code": "slot",
-                "install": 1493573306,
-                "name": "Slotting Machine 3",
-                "number": 9,
-                "station": "",
-                "type": "Slotting"
-            },
-            "-KizuD5OAfKFPRF-JbFa": {
-                "capacity": "10",
-                "code": "glue",
-                "install": 1493573362,
-                "name": "Glueing Machine 1",
-                "number": 10,
-                "station": "",
-                "type": "Glueing"
-            },
-            "-KiztuvqORJsmCcNgGIP": {
-                "capacity": "10",
-                "code": "glue",
-                "install": 1493573284,
-                "name": "Glueing Machine 2",
-                "number": 11,
-                "station": "",
-                "type": "Glueing"
-            },
-            "-KiztxY3ON0DK-QBf9-F": {
-                "capacity": "10",
-                "code": "glue",
-                "install": 1493573294,
-                "name": "Glueing Machine 3",
-                "number": 12,
-                "station": "",
-                "type": "Glueing"
-            }
-        },
-        "station": {
-            "-Kl0IT2AlzuQTentNLVu": {
-                "st_machine": [{
-                    "mid": "-Kiztt5iZ-77NtpQzLBG",
-                    "code": "cut",
-                    "effi": 100,
-                    "name": "Cutting Machine 1",
-                    "queue": 0,
-                    "status": "Stopped"
-                }, {
-                    "mid": "-KizuFLlQXwhkRbMokaQ",
-                    "code": "cut",
-                    "effi": 100,
-                    "name": "Cutting Machine 2",
-                    "queue": 0,
-                    "status": "Stopped"
-                }, {
-                    "mid": "-KizuHgMboBMFUMmWu8M",
-                    "code": "cut",
-                    "effi": 100,
-                    "name": "Cutting Machine 3",
-                    "queue": 0,
-                    "status": "Stopped"
-                }],
-                "st_name": "Cutting Station",
-                "st_number": 1
-            },
-            "-Kl5CWt64LGJqm8oEMcS": {
-                "st_machine": [{
-                    "mid": "-Kizu8ucOa7u7WeYttDP",
-                    "code": "fold",
-                    "effi": 100,
-                    "name": "Folding Machine 1",
-                    "queue": 0,
-                    "status": "Stopped"
-                }, {
-                    "mid": "-KizuAZlfYqTO8sDbO03",
-                    "code": "fold",
-                    "effi": 100,
-                    "name": "Folding Machine 2",
-                    "queue": 0,
-                    "status": "Stopped"
-                }, {
-                    "mid": "-KizuBpB5A0u5VXf_J72",
-                    "code": "fold",
-                    "effi": 100,
-                    "name": "Folding Machine 3",
-                    "queue": 0,
-                    "status": "Stopped"
-                }],
-                "st_name": "Folding Station",
-                "st_number": 2
-            },
-            "-Kl5HQJrig6oW9vWiaZr": {
-                "st_machine": [{
-                    "mid": "-Kiztyuja5Ab699NtXx9",
-                    "code": "slot",
-                    "effi": 100,
-                    "name": "Slotting Machine 1",
-                    "queue": 0,
-                    "status": "Stopped"
-                }, {
-                    "mid": "-Kiztyuja5Ab699NtXx9",
-                    "code": "slot",
-                    "effi": 100,
-                    "name": "Slotting Machine 2",
-                    "queue": 0,
-                    "status": "Stopped"
-                }, {
-                    "mid": "-Kizu-HZ7xRR_2EnZWzL",
-                    "code": "slot",
-                    "effi": 100,
-                    "name": "Slotting Machine 3",
-                    "queue": 0,
-                    "status": "Stopped"
-                }],
-                "st_name": "Slotting Station",
-                "st_number": 3
-            },
-            "-Kl5pRCsMWkfBNJ_MXv6": {
-                "st_machine": [{
-                    "mid": "-KizuD5OAfKFPRF-JbFa",
-                    "code": "glue",
-                    "effi": 100,
-                    "name": "Glueing Machine 1",
-                    "queue": 0,
-                    "status": "Stopped"
-                }, {
-                    "mid": "-KiztuvqORJsmCcNgGIP",
-                    "code": "glue",
-                    "effi": 100,
-                    "name": "Glueing Machine 2",
-                    "queue": 0,
-                    "status": "Stopped"
-                }, {
-                    "mid": "-KiztxY3ON0DK-QBf9-F",
-                    "code": "glue",
-                    "effi": 100,
-                    "name": "Glueing Machine 3",
-                    "queue": 0,
-                    "status": "Stopped"
-                }],
-                "st_name": "Glueing Station",
-                "st_number": 4
-            }
-        }
+  "appData": {
+    "auto_backup": "false",
+    "email_alert": "false",
+    "language": "en",
+    "notification": "false",
+    "sms_alert": "false"
+  },
+  "customerData": {
+    "-Kiud-39xvJcY8pPl8XZ": {
+      "email": "krissada017@gmail.com",
+      "fname": "Krissada",
+      "lname": "Wutthicha",
+      "mobile": "098-815-5185"
     },
-    "orderData": {
-        "-KsbQS-wjnSdQ1r5wweu": {
-            "order_customer": "Krissada",
-            "order_date": 1503900060,
-            "order_delivery": 1504396800,
-            "order_duration": 2908.7999999999997,
-            "order_no": 2,
-            "order_product_name": "C2",
-            "order_product_part": [{
-                "cycle": [66.6, 15, 19.8, 0, 70.2, 10.2],
-                "name": "C2",
-                "process": "1,2,3,5,6",
-                "setup": [10, 10, 10, 0, 10, 10],
-                "sku": 2501
-            }],
-            "order_product_sku": 2500,
-            "order_quantity": 16,
-            "order_status": "waiting"
-        }
+    "-KiyQh0J7_UCcyqAgGw_": {
+      "email": "prayut@gmail.com",
+      "fname": "Prayut",
+      "lname": "Chachacha",
+      "mobile": "085-555-5555"
     },
-    "historyData": {
-        "order": {
-            "-KlMA3V5d40ZQ2nb21zh": {
-                "order_no": 1,
-                "order_date": 1496111139,
-                "order_delivery": 1495152000,
-                "order_customer": "David Lee",
-                "order_customerid": "-KsbOmwjuwcejdqWOaA0",
-                "order_product": "E2",
-                "order_quantity": 40
-            }
-        }
+    "-Kj-M7TX3FVyyFxvA_mt": {
+      "email": "anderson.t@hotmail.com",
+      "fname": "Thomus",
+      "lname": "Anderson",
+      "mobile": "083-333-3333"
     },
-    "customerData": {
-        "-KsbOmwjuwcejdqWOaA0": {
-            "email": "david.lee@gmail.com",
-            "fname": "David",
-            "lname": "Lee",
-            "mobile": "083-233-2222"
-        },
-        "-Kiud-39xvJcY8pPl8XZ": {
-            "email": "krissada017@gmail.com",
-            "fname": "Krissada",
-            "lname": "Wutthicha",
-            "mobile": "098-815-5185"
-        },
-        "-KiyQh0J7_UCcyqAgGw_": {
-            "email": "prayut@gmail.com",
-            "fname": "Prayut",
-            "lname": "Chachacha",
-            "mobile": "085-555-5555"
-        },
-        "-Kj-M7TX3FVyyFxvA_mt": {
-            "email": "anderson.t@hotmail.com",
-            "fname": "Thomus",
-            "lname": "Anderson",
-            "mobile": "083-333-3333"
-        },
-        "-KjXc5Hfk8-vUE6NN3Fb": {
-            "email": "dankinson.mark@gmail.com",
-            "fname": "Mark",
-            "lname": "Dankinson",
-            "mobile": "053-134-1111"
-        }
+    "-KjXc5Hfk8-vUE6NN3Fb": {
+      "email": "dankinson.mark@gmail.com",
+      "fname": "Mark",
+      "lname": "Dankinson",
+      "mobile": "053-134-1111"
     },
-    "notificationData": {
-        "-KjXc5Hfk8-vUE6NN3Fb": {
-            "created": 1496111139,
-            "type": "normal",
-            "detail": "Create order no.2"
-        }
+    "-KsbOmwjuwcejdqWOaA0": {
+      "email": "david.lee@gmail.com",
+      "fname": "David",
+      "lname": "Lee",
+      "mobile": "083-233-2222"
+    }
+  },
+  "factoryData": {
+    "device": {
+      "-KjXc5Hfk8-vUE6NN3Fb": {
+        "count": 0,
+        "enable": 1,
+        "machine": "A1",
+        "name": "Sensor 1"
+      }
     },
-    "appData": {
-        "language": "en",
-        "notification": "false",
-        "email_alert": "false",
-        "sms_alert": "false",
-        "auto_backup": "false"
+    "machine": {
+      "-Kiztt5iZ-77NtpQzLBG": {
+        "capacity": "100",
+        "code": "cut",
+        "install": 1493573276,
+        "name": "Cutting Machine 1",
+        "number": 1,
+        "station": "-Kl0IT2AlzuQTentNLVu",
+        "type": "Cutting"
+      },
+      "-KiztuvqORJsmCcNgGIP": {
+        "capacity": "10",
+        "code": "glue",
+        "install": 1493573284,
+        "name": "Glueing Machine 2",
+        "number": 11,
+        "station": "",
+        "type": "Glueing"
+      },
+      "-KiztxY3ON0DK-QBf9-F": {
+        "capacity": "10",
+        "code": "glue",
+        "install": 1493573294,
+        "name": "Glueing Machine 3",
+        "number": 12,
+        "station": "",
+        "type": "Glueing"
+      },
+      "-Kiztyuja5Ab699NtXx9": {
+        "capacity": "200",
+        "code": "slot",
+        "install": 1493573300,
+        "name": "Slotting Machine 2",
+        "number": 8,
+        "station": "",
+        "type": "Slotting"
+      },
+      "-Kizu-HZ7xRR_2EnZWzL": {
+        "capacity": "200",
+        "code": "slot",
+        "install": 1493573306,
+        "name": "Slotting Machine 3",
+        "number": 9,
+        "station": "",
+        "type": "Slotting"
+      },
+      "-Kizu8ucOa7u7WeYttDP": {
+        "capacity": "300",
+        "code": "fold",
+        "install": 1493573345,
+        "name": "Folding Machine 1",
+        "number": 4,
+        "station": "-Kl5CWt64LGJqm8oEMcS",
+        "type": "Folding"
+      },
+      "-KizuAZlfYqTO8sDbO03": {
+        "capacity": "300",
+        "code": "fold",
+        "install": 1493573352,
+        "name": "Folding Machine 2",
+        "number": 5,
+        "station": "-Kl5CWt64LGJqm8oEMcS",
+        "type": "Folding"
+      },
+      "-KizuBpB5A0u5VXf_J72": {
+        "capacity": "300",
+        "code": "fold",
+        "install": 1493573357,
+        "name": "Folding Machine 3",
+        "number": 6,
+        "station": "-Kl5CWt64LGJqm8oEMcS",
+        "type": "Folding"
+      },
+      "-KizuD5OAfKFPRF-JbFa": {
+        "capacity": "10",
+        "code": "glue",
+        "install": 1493573362,
+        "name": "Glueing Machine 1",
+        "number": 10,
+        "station": "",
+        "type": "Glueing"
+      },
+      "-KizuFLlQXwhkRbMokaQ": {
+        "capacity": "400",
+        "code": "cut",
+        "install": 1493573276,
+        "name": "Cutting Machine 2",
+        "number": 2,
+        "station": "-Kl0IT2AlzuQTentNLVu",
+        "type": "Cutting"
+      },
+      "-KizuHgMboBMFUMmWu8M": {
+        "capacity": "400",
+        "code": "cut",
+        "install": 1493573276,
+        "name": "Cutting Machine 3",
+        "number": 3,
+        "station": "-Kl0IT2AlzuQTentNLVu",
+        "type": "Cutting"
+      },
+      "-KizuJEEh8gDdjy7rC_E": {
+        "capacity": "200",
+        "code": "slot",
+        "install": 1493573294,
+        "name": "Slotting Machine 1",
+        "number": 7,
+        "station": "",
+        "type": "Slotting"
+      }
     },
-    "planData": [{
-        "name": "Plan A",
-        "stations": [{
-            "color": "rgb(56,125,213)",
-            "machine": [{
-                "name": "A1"
-            }, {
-                "name": "A2"
-            }, {
-                "name": "A3"
-            }, {
-                "name": "A4"
-            }],
-            "name": "A",
-            "number": 1,
-            "status": "Running"
-        }, {
-            "color": "rgb(99,171,165)",
-            "machine": [{
-                "name": "B1"
-            }, {
-                "name": "B2"
-            }, {
-                "name": "B3"
-            }, {
-                "name": "B4"
-            }],
-            "name": "B",
-            "number": 2,
-            "status": "Running"
-        }, {
-            "color": "rgb(108,136,186)",
-            "machine": [{
-                "name": "C1"
-            }, {
-                "name": "C2"
-            }, {
-                "name": "C3"
-            }, {
-                "name": "C4"
-            }],
-            "name": "C",
-            "number": 3,
-            "status": "Running"
-        }]
-    }, {
-        "name": "Plan B",
-        "stations": [{
-            "color": "rgb(56,125,213)",
-            "machine": [{
-                "name": "A1"
-            }, {
-                "name": "A2"
-            }, {
-                "name": "A3"
-            }],
-            "name": "A",
-            "number": 1,
-            "status": "Running"
-        }, {
-            "color": "rgb(99,171,165)",
-            "machine": [{
-                "name": "B1"
-            }, {
-                "name": "B2"
-            }, {
-                "name": "B3"
-            }],
-            "name": "B",
-            "number": 2,
-            "status": "Running"
-        }, {
-            "color": "rgb(108,136,186)",
-            "machine": [{
-                "name": "C1"
-            }, {
-                "name": "C2"
-            }, {
-                "name": "C3"
-            }],
-            "name": "C",
-            "number": 3,
-            "status": "Running"
-        }, {
-            "color": "rgb(237,71,59)",
-            "machine": [{
-                "name": "D1"
-            }, {
-                "name": "D2"
-            }, {
-                "name": "D3"
-            }],
+    "operation": {
+      "op_day": "mon,tue,wed,thu,fri",
+      "op_end": "17:00",
+      "op_start": "8:00",
+      "ot_day": "sat",
+      "ot_end": "21:00",
+      "ot_start": "19:00"
+    },
+    "performance": {
+      "au": 85,
+      "aw": 0.02,
+      "meff": 75,
+      "optimize": "increase-profit"
+    },
+    "product": {
+      "4w8tugjnhlsuzgvlkhd": {
+        "add": 1493380800,
+        "cost": 600,
+        "id": 1,
+        "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2F1500.jpg?alt=media&token=3fbe5372-5714-4dd9-95af-596c879b8351",
+        "name": "A",
+        "part": [{
+            "cycle": [
+              0.4,
+              0.7,
+              1.85,
+              2.3
+            ],
+            "name": "A1",
+            "process": "1,2,3,4",
+            "setup": [
+              10,
+              20,
+              30,
+              40
+            ],
+            "sku": 1702
+          },
+          {
+            "cycle": [
+              0,
+              0.3,
+              0.7,
+              0.8
+            ],
+            "name": "A2",
+            "process": "2,3,4",
+            "setup": [
+              0,
+              10,
+              40,
+              40
+            ],
+            "sku": 1701
+          },
+          {
+            "cycle": [
+              0,
+              1.2,
+              1.8,
+              2.3
+            ],
+            "name": "A3",
+            "process": "1,2,4",
+            "setup": [
+              0,
+              10,
+              40,
+              40
+            ],
+            "sku": 1703
+          }
+        ],
+        "sku": 1700
+      },
+      "b6kavyltg02gx": {
+        "cost": 200,
+        "id": 7,
+        "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Fbernhard-chair-white__0094409_PE232293_S4.JPG?alt=media&token=16142002-9c10-4372-8542-06299a7b1575",
+        "name": "B2",
+        "part": [{
+          "cycle": [
+            0,
+            0,
+            0,
+            10.2,
+            10.2,
+            33.6
+          ],
+          "name": "B2",
+          "process": "1,4,6",
+          "setup": [
+            0,
+            0,
+            10,
+            10,
+            10,
+            10
+          ],
+          "sku": 2301
+        }],
+        "sku": 2300
+      },
+      "esjhgvsdluighst": {
+        "add": 1493380400,
+        "cost": 120,
+        "id": 2,
+        "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2F1600.jpg?alt=media&token=dc186c83-9d44-4500-8cb2-b24cbed13016",
+        "name": "E",
+        "part": [{
+            "cycle": [
+              0,
+              0.05,
+              0.1,
+              0.3
+            ],
             "name": "D",
-            "number": 4,
-            "status": "Running"
-        }]
-    }, {
-        "name": "Plan C"
-    }]
+            "process": "1,3,4",
+            "setup": [
+              0,
+              25,
+              50,
+              50
+            ],
+            "sku": 1603
+          },
+          {
+            "cycle": [
+              0,
+              0.1,
+              0.3,
+              0.5
+            ],
+            "name": "B",
+            "process": "1,2,4",
+            "setup": [
+              0,
+              50,
+              50,
+              50
+            ],
+            "sku": 1601
+          },
+          {
+            "cycle": [
+              0,
+              0.05,
+              0.1,
+              0.15
+            ],
+            "name": "C",
+            "process": "2,3,4",
+            "setup": [
+              0,
+              25,
+              25,
+              50
+            ],
+            "sku": 1602
+          }
+        ],
+        "sku": 1600
+      },
+      "gfagaajrithijsbio": {
+        "cost": 150,
+        "id": 5,
+        "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Ftobias-chair__74048_PE190789_S4.JPG?alt=media&token=1e59e6af-5370-4899-b25d-a60337e929b2",
+        "name": "A2",
+        "part": [{
+          "cycle": [
+            0,
+            0,
+            10.2,
+            120,
+            16.8,
+            75
+          ],
+          "name": "A2",
+          "process": "1,3,4,6",
+          "setup": [
+            0,
+            0,
+            10,
+            10,
+            10,
+            10
+          ],
+          "sku": 2201
+        }],
+        "sku": 2200
+      },
+      "rtugv8wirnhsifbsds": {
+        "add": 1493380270,
+        "cost": 160,
+        "id": 1,
+        "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2F1700.jpg?alt=media&token=63ea82b1-528b-4637-add8-a58e9b494636",
+        "name": "D",
+        "part": [{
+            "cycle": [
+              0.8,
+              2.8,
+              3.8,
+              6.4
+            ],
+            "name": "A",
+            "process": "1,2,3,4",
+            "setup": [
+              20,
+              20,
+              20,
+              60
+            ],
+            "sku": 1501
+          },
+          {
+            "cycle": [
+              0,
+              1.5,
+              5.5,
+              6.4
+            ],
+            "name": "B",
+            "process": "2,3,4",
+            "setup": [
+              0,
+              50,
+              50,
+              60
+            ],
+            "sku": 1502
+          },
+          {
+            "cycle": [
+              0,
+              0.8,
+              2.75,
+              6.4
+            ],
+            "name": "C",
+            "process": "1,2,4",
+            "setup": [
+              0,
+              20,
+              25,
+              60
+            ],
+            "sku": 1503
+          }
+        ],
+        "sku": 1500
+      },
+      "sjnsbsgkggifvk": {
+        "cost": 175,
+        "id": 4,
+        "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Fhenriksdal-chair-black__0105965_PE253735_S4.JPG?alt=media&token=f635aa22-739e-4930-ae97-eb5edaf229bf",
+        "name": "A1",
+        "part": [{
+          "cycle": [
+            0,
+            0,
+            10.2,
+            15,
+            72,
+            90
+          ],
+          "name": "A1",
+          "process": "1,3,4,6",
+          "setup": [
+            0,
+            0,
+            10,
+            10,
+            10,
+            10
+          ],
+          "sku": 2001
+        }],
+        "sku": 2000
+      },
+      "ssjeww3rkzjrkr8zhy": {
+        "cost": 180,
+        "id": 9,
+        "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Fnils-armchair-gray__0449221_PE598746_S4.JPG?alt=media&token=60d4ed47-01ee-49d6-9b78-476e06d58ae6",
+        "name": "C2",
+        "part": [{
+          "cycle": [
+            0,
+            10.2,
+            15,
+            19.8,
+            66.6,
+            70.2
+          ],
+          "name": "C2",
+          "process": "1,2,3,5,6",
+          "setup": [
+            0,
+            10,
+            10,
+            10,
+            10,
+            10
+          ],
+          "sku": 2501
+        }],
+        "sku": 2500
+      },
+      "zhztrjxryskt": {
+        "cost": 190,
+        "id": 6,
+        "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Fpreben-chair-gray__0140020_PE299967_S4.JPG?alt=media&token=6b145c36-4938-41c1-8871-468ccf97cb72",
+        "name": "B1",
+        "part": [{
+          "cycle": [
+            0,
+            0,
+            0,
+            10.2,
+            30,
+            86.4
+          ],
+          "name": "B1",
+          "process": "1,4,6",
+          "setup": [
+            0,
+            0,
+            0,
+            10,
+            10,
+            10
+          ],
+          "sku": 2201
+        }],
+        "sku": 2200
+      },
+      "zjynsr6sumsjs": {
+        "cost": 165,
+        "id": 8,
+        "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Ffrode-folding-chair-turquoise__0156177_PE315312_S4.JPG?alt=media&token=b9f10d72-cbc3-47c0-9bd3-90cdb1d9940d",
+        "name": "C1",
+        "part": [{
+          "cycle": [
+            0,
+            10.2,
+            15,
+            15,
+            60,
+            70.2
+          ],
+          "name": "C1",
+          "process": "1,2,3,5,6",
+          "setup": [
+            0,
+            10,
+            10,
+            10,
+            10,
+            10
+          ],
+          "sku": 2401
+        }],
+        "sku": 2400
+      }
+    },
+    "profile": {
+      "model": "parallel",
+      "name": "Sample Factory",
+      "size": "m",
+      "time_unit": "hr",
+      "type": "js"
+    },
+    "schedule": {
+      "interval": 7,
+      "priority": "EDD",
+      "start_interval": 1493588631
+    },
+    "station": {
+      "-Kl0IT2AlzuQTentNLVu": {
+        "st_machine": [{
+            "code": "cut",
+            "effi": 100,
+            "mid": "-Kiztt5iZ-77NtpQzLBG",
+            "name": "Cutting Machine 1",
+            "queue": 0,
+            "status": "Stopped"
+          },
+          {
+            "code": "cut",
+            "effi": 100,
+            "mid": "-KizuFLlQXwhkRbMokaQ",
+            "name": "Cutting Machine 2",
+            "queue": 0,
+            "status": "Stopped"
+          },
+          {
+            "code": "cut",
+            "effi": 100,
+            "mid": "-KizuHgMboBMFUMmWu8M",
+            "name": "Cutting Machine 3",
+            "queue": 0,
+            "status": "Stopped"
+          }
+        ],
+        "st_name": "Cutting Station",
+        "st_number": 1
+      },
+      "-Kl5CWt64LGJqm8oEMcS": {
+        "st_machine": [{
+            "code": "fold",
+            "effi": 100,
+            "mid": "-Kizu8ucOa7u7WeYttDP",
+            "name": "Folding Machine 1",
+            "queue": 0,
+            "status": "Stopped"
+          },
+          {
+            "code": "fold",
+            "effi": 100,
+            "mid": "-KizuAZlfYqTO8sDbO03",
+            "name": "Folding Machine 2",
+            "queue": 0,
+            "status": "Stopped"
+          },
+          {
+            "code": "fold",
+            "effi": 100,
+            "mid": "-KizuBpB5A0u5VXf_J72",
+            "name": "Folding Machine 3",
+            "queue": 0,
+            "status": "Stopped"
+          }
+        ],
+        "st_name": "Folding Station",
+        "st_number": 2
+      },
+      "-Kl5HQJrig6oW9vWiaZr": {
+        "st_machine": [{
+            "code": "slot",
+            "effi": 100,
+            "mid": "-Kiztyuja5Ab699NtXx9",
+            "name": "Slotting Machine 1",
+            "queue": 0,
+            "status": "Stopped"
+          },
+          {
+            "code": "slot",
+            "effi": 100,
+            "mid": "-Kiztyuja5Ab699NtXx9",
+            "name": "Slotting Machine 2",
+            "queue": 0,
+            "status": "Stopped"
+          },
+          {
+            "code": "slot",
+            "effi": 100,
+            "mid": "-Kizu-HZ7xRR_2EnZWzL",
+            "name": "Slotting Machine 3",
+            "queue": 0,
+            "status": "Stopped"
+          }
+        ],
+        "st_name": "Slotting Station",
+        "st_number": 3
+      },
+      "-Kl5pRCsMWkfBNJ_MXv6": {
+        "st_machine": [{
+            "code": "glue",
+            "effi": 100,
+            "mid": "-KizuD5OAfKFPRF-JbFa",
+            "name": "Glueing Machine 1",
+            "queue": 0,
+            "status": "Stopped"
+          },
+          {
+            "code": "glue",
+            "effi": 100,
+            "mid": "-KiztuvqORJsmCcNgGIP",
+            "name": "Glueing Machine 2",
+            "queue": 0,
+            "status": "Stopped"
+          },
+          {
+            "code": "glue",
+            "effi": 100,
+            "mid": "-KiztxY3ON0DK-QBf9-F",
+            "name": "Glueing Machine 3",
+            "queue": 0,
+            "status": "Stopped"
+          }
+        ],
+        "st_name": "Glueing Station",
+        "st_number": 4
+      }
+    }
+  },
+  "historyData": {
+    "order": {
+      "-KlMA3V5d40ZQ2nb21zh": {
+        "order_customer": "David Lee",
+        "order_customerid": "-KsbOmwjuwcejdqWOaA0",
+        "order_date": 1496111139,
+        "order_delivery": 1495152000,
+        "order_no": 1,
+        "order_product": "E2",
+        "order_quantity": 40
+      }
+    }
+  },
+  "notificationData": {
+    "-KjXc5Hfk8-vUE6NN3Fb": {
+      "created": 1496111139,
+      "detail": "Create order no.2",
+      "type": "normal"
+    }
+  },
+  "orderData": {
+    "-KsbQS-wjnSdQ1r5wweu": {
+      "order_customer": "Krissada",
+      "order_date": 1503900060,
+      "order_delivery": 1504396800,
+      "order_duration": 2908.7999999999997,
+      "order_no": 2,
+      "order_product_name": "C2",
+      "order_product_part": [{
+        "cycle": [
+          0,
+          10.2,
+          15,
+          19.8,
+          66.6,
+          70.2
+        ],
+        "name": "C2",
+        "process": "1,2,3,5,6",
+        "setup": [
+          0,
+          10,
+          10,
+          10,
+          10,
+          10
+        ],
+        "sku": 2501
+      }],
+      "order_product_sku": 2500,
+      "order_quantity": 16,
+      "order_status": "waiting"
+    }
+  },
+  "planData": [{
+      "name": "Plan A",
+      "stations": [{
+          "color": "rgb(56,125,213)",
+          "machine": [{
+              "name": "A1"
+            },
+            {
+              "name": "A2"
+            },
+            {
+              "name": "A3"
+            },
+            {
+              "name": "A4"
+            }
+          ],
+          "name": "A",
+          "number": 1,
+          "status": "Running"
+        },
+        {
+          "color": "rgb(99,171,165)",
+          "machine": [{
+              "name": "B1"
+            },
+            {
+              "name": "B2"
+            },
+            {
+              "name": "B3"
+            },
+            {
+              "name": "B4"
+            }
+          ],
+          "name": "B",
+          "number": 2,
+          "status": "Running"
+        },
+        {
+          "color": "rgb(108,136,186)",
+          "machine": [{
+              "name": "C1"
+            },
+            {
+              "name": "C2"
+            },
+            {
+              "name": "C3"
+            },
+            {
+              "name": "C4"
+            }
+          ],
+          "name": "C",
+          "number": 3,
+          "status": "Running"
+        }
+      ]
+    },
+    {
+      "name": "Plan B",
+      "stations": [{
+          "color": "rgb(56,125,213)",
+          "machine": [{
+              "name": "A1"
+            },
+            {
+              "name": "A2"
+            },
+            {
+              "name": "A3"
+            }
+          ],
+          "name": "A",
+          "number": 1,
+          "status": "Running"
+        },
+        {
+          "color": "rgb(99,171,165)",
+          "machine": [{
+              "name": "B1"
+            },
+            {
+              "name": "B2"
+            },
+            {
+              "name": "B3"
+            }
+          ],
+          "name": "B",
+          "number": 2,
+          "status": "Running"
+        },
+        {
+          "color": "rgb(108,136,186)",
+          "machine": [{
+              "name": "C1"
+            },
+            {
+              "name": "C2"
+            },
+            {
+              "name": "C3"
+            }
+          ],
+          "name": "C",
+          "number": 3,
+          "status": "Running"
+        },
+        {
+          "color": "rgb(237,71,59)",
+          "machine": [{
+              "name": "D1"
+            },
+            {
+              "name": "D2"
+            },
+            {
+              "name": "D3"
+            }
+          ],
+          "name": "D",
+          "number": 4,
+          "status": "Running"
+        }
+      ]
+    },
+    {
+      "name": "Plan C"
+    }
+  ]
 }

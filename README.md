@@ -6,6 +6,7 @@ SO THIS PROJECT WILL BE TEMPORARY LOCKED DOWN FOR A WHILE.
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
 [![GitHub (pre-)release](https://img.shields.io/github/release/jukbot/smart-industry/all.svg)](https://github.com/jukbot/smart-industry/releases/)
 [![Polymer 2 supported](https://img.shields.io/badge/Polymer2-supported-f50057.svg)](https://github.com/jukbot/smart-industry/)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 # About IMES Project
 
@@ -90,19 +91,23 @@ The PRPL pattern, in a nutshell:
 
 ##### Prerequisites
 
-NodeJS version >= 6.x
+NodeJS (required version >= 6.x)
 
     https://nodejs.org/en/
 
-Install [polymer-cli](https://github.com/Polymer/polymer-cli):
+Install [Yarn](https://yarnpkg.com/en/)
 
-    npm install -g polymer-cli
+    npm install -g yarn
+
+Install [polymer-cli](https://github.com/Polymer/polymer-cli): (require version >= 1.5.x)
+
+    yarn add global polymer-cli
 
 `Note: polymer-cli is not able to install with npm version 5.x.x for now. Please use yarn or npm version 4.x.x to install.`
 
-Install bower:
+Install bower: (require version >= 1.8.x)
 
-    npm install -g bower
+    yarn add global bower
 
 
 ### Start the development server

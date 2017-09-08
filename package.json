@@ -21,6 +21,7 @@
     "turbojs": "^1.0.2"
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
     "eslint": "^4.6.1",
     "eslint-config-google": "^0.9.1",
     "eslint-config-standard": "^10.2.1",
@@ -37,5 +38,11 @@
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "polymer test",
     "test:integration": "polymer build # test that psk builds without error with the CLI"
+  },
+  "standard": {
+    "parser": "babel-eslint",
+    "globals": ["$", "jQuery", "fetch"],
+    "ignore": ["node_modules/**", "bower_components/**"],
+    "plugins": ["html", "polymer"]
   }
 }

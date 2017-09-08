@@ -132,12 +132,6 @@
 
       static get properties() {
         return {
-          keyid: {
-            type: String,
-            value: () => {
-              return this.keyid || 'default'
-            }
-          },
           language: String,
           orderData: Object,
           machineData: Object,
@@ -154,9 +148,6 @@
         this.loadResources(this.resolveUrl('../../data/locales.json'));
       }
 
-      ready() {
-        super.ready();
-      }
       getNextInterval(last_timestamp, interval) {
         if (!last_timestamp || !interval) return 0;
         let current = Math.floor(Date.now() / 1000);

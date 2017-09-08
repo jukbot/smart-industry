@@ -197,5 +197,16 @@
         opacity: 1;
       }
     </style>
+    <script>
+      class FlatInput extends Polymer.Element {
+        static get is() {
+          return "flat-input";
+        }
+        constructor() {
+          super();
+        }
+      }
+      customElements.define(FlatInput.is, FlatInput);
+    </script>
   </template>
 </dom-module>

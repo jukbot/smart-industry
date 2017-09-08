@@ -28,7 +28,7 @@
       <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect>
         <template is="dom-repeat" items="{{submenus}}">
           <paper-tab role="tab" name$="{{item.view}}" disabled="{{item.disable}}">
-            <paper-icon-button icon="{{item.icon}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>
+            <paper-icon-button icon="{{item.icon}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}} [[page]]</span>
           </paper-tab>
         </template>
       </paper-tabs>
