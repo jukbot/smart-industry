@@ -252,7 +252,8 @@
               }
             })
         } else {
-          window.alert('Error: Invalid file format')
+          this.toastText = 'Error: Invalid file format'
+          this.$.toastAlert.open()
           this.$.uploadImageFile.value = null
         }
       }
@@ -309,11 +310,11 @@
       _changeAutoBackup() {
         this.autobackup = this.$.autobackupSwitch.checked
         if (this.$.autobackupSwitch.checked) {
-          this.toastText = 'backup-notification-alert-on'
-          // this.$.toastAlert.open()
+          this.toastText = 'autobackup-notification-alert-on'
+          //this.$.toastAlert.open()
         } else {
-          this.toastText = 'backup-alert-off'
-          // this.$.toastAlert.open()
+          this.toastText = 'autobackup-notification-alert-off'
+          //this.$.toastAlert.open()
         }
       }
 
