@@ -3,7 +3,8 @@
 <link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/vaadin-core-elements/vaadin-core-elements.html">
+<link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
@@ -25,6 +26,8 @@
         --app-grid-columns: 3;
         --app-grid-item-height: 50%;
       }
+
+
 
       @media (min-width: 360px) and (max-width: 768px) {
          :host {
@@ -76,6 +79,7 @@
       <li>
         <div class="card">
           <h1>{{localize('general-settings')}}</h1>
+          <firebase-upload url="https://<YOUR FIREBASE>.firebaseio.com"></firebase-upload>
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageItems]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
             required auto-validate always-float-label></vaadin-combo-box>
@@ -90,9 +94,10 @@
           <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text"></paper-input>
           <p>Upload Profile Image</p>
           <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress>
-          <!--<vaadin-upload id="uploadImageFile" nodrop no-auto max-files="1" accept="image/*"  max-file-size="1000000">
-          </vaadin-upload>-->
-          <input type="file" accept="image/*" name="file" id="uploadImageFile" class="inputfile" />
+          <!-- <vaadin-upload class="inputfile" id="uploadImageFile" no-auto max-files="[[maxFiles]]" accept="[[accept]]" max-file-size="[[maxFileSize]]">
+          </vaadin-upload> -->
+          <input type="file" accept="image/*" name="file" id="uploadImageFile" accept="[[accept]]" on-change="_verifyUploadFile" class="inputfile"
+          />
           <flat-button on-tap="_deleteProfileImage" class="btn" title="{{localize('remove-profile-image')}}"><button role="button">{{localize('remove-profile-image')}}</button></flat-button>
           <flat-button on-tap="_verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]" disabled="[[user.emailVerified]]"><button role="button" disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button></flat-button>
           <flat-button on-tap="_saveSettings" class="btn" title="{{localize('save-settings')}}"><button role="button">{{localize('save-settings')}}</button></flat-button>
@@ -156,6 +161,18 @@
             observer: '_changeNotification',
             notify: true
           },
+          accept: {
+            type: String,
+            value: 'image/*'
+          },
+          maxFiles: {
+            type: Number,
+            value: 1
+          },
+          maxFileSize: {
+            type: Number,
+            value: 1000000
+          },
           languageItems: Array,
           user: Object,
           emailalert: Object,
@@ -171,6 +188,112 @@
       connectedCallback () {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
+      }
+
+      ready () {
+        super.ready()
+        this.addEventListener('show-invalid-url-warning', (e) => this._test(e))
+      }
+
+      _verifyUploadFile () {
+        let file = this.$.uploadImageFile.files[0]
+        if (!file.type.match(/image.*/)) {
+          window.alert('Error: Invalid file format')
+          this.$.uploadImageFile.value = null
+        } else if (file.size > this.maxFileSize) {
+          window.alert('Error: File size maximum is 1 MB')
+          this.$.uploadImageFile.value = null
+        }
+      }
+
+      _saveSettings () {
+        let displayNameInput = this.$.displayName.value
+        if (displayNameInput !== '' && displayNameInput !== this.user.displayName) {
+          this.user.updateProfile({
+            displayName: displayNameInput
+          })
+          this.updateProfileInfo(this.user.photoURL, displayNameInput)
+        }
+        if (this.$.uploadImageFile.files.length > 0) {
+          this.uploadProfileImage()
+        }
+      }
+
+      uploadProfileImage () {
+        let file = this.$.uploadImageFile.files[0]
+        if (file.type.match(/image.*/) && file.size < this.maxFileSize) {
+          let uid = this.user.uid
+          let name = this.user.displayName
+          let storageRef = this.$.auth.app.storage().ref()
+          let metadata = {
+            'contentType': file.type
+          }
+          let imagesRef = storageRef.child('user/' + uid + '/profile')
+          imagesRef.put(file, metadata)
+            .then(snapshot => {
+              let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+              this.$.uploadProgress.value = progress
+              this.$.uploadImageFile.files.uploading = true
+              this.$.uploadImageFile.files.status = snapshot.state
+              this.$.uploadImageFile.files.progress = progress
+              this.$.uploadImageFile.files.loaded = snapshot.bytesTransferred
+              this.$.uploadImageFile.files.size = snapshot.totalBytes
+              let url = snapshot.metadata.downloadURLs[0]
+              this.user.updateProfile({
+                photoURL: url
+              }).catch(function (error) {
+                this.$.uploadImageFile.files.error = error
+                this.$.uploadImageFile.value = null
+                console.error('Upload failed:', error)
+              })
+              if (url) {
+                this.$.uploadImageFile.files.complete = true
+                this.updateProfileInfo(url, name)
+              }
+            })
+        } else {
+          window.alert('Error: Invalid file format')
+          this.$.uploadImageFile.value = null
+        }
+      }
+
+      updateProfileInfo (url, name) {
+        this.$.userData.ref.update({
+          displayname: name,
+          photoURL: url
+        })
+          .then(() => {
+            this.toastText = 'notification-save-settings'
+            this.$.toastAlert.open()
+            this.$.uploadImageFile.files[0] = null
+          })
+          .catch(error => {
+            this.$.uploadImageFile.value = null
+            console.error('Update profile failed:', error)
+          })
+      }
+
+      _deleteProfileImage () {
+        if (this.user.photoURL) {
+          if (window.confirm('Delete profile image ?') === true) {
+            let storageRef = firebase.app('smart-mes').storage().ref('user/' + this.user.uid + '/profile')
+            // Delete the file
+            storageRef.delete()
+              .then(() => {
+                this.user.updateProfile({
+                  photoURL: null
+                })
+                this.toastText = 'notification-delete-profile-image-successful'
+                this.$.toastAlert.open()
+              })
+              .catch(error => {
+                console.error('Error delete file:', error)
+              })
+          } else { }
+        } else {
+          this.toastText = 'No image file to delete'
+          this.$.toastAlert.open()
+        }
       }
 
       _changeLanguage () {
@@ -285,10 +408,10 @@
           let device
           device = navigator.usb.requestDevice({
             filters: [{
-                vendorId: 0x2341
-              }, {
-                vendorId: 0x2a03
-              }]
+              vendorId: 0x2341
+            }, {
+              vendorId: 0x2a03
+            }]
           })
             .then(device => {
               console.log(device.productName) // "Arduino Micro"
@@ -310,10 +433,10 @@
         if ('usb' in navigator) {
           navigator.usb.getDevices().then(devices => {
             devices.map(device => {
-                console.log(device.productName) // "Arduino Micro"
-                console.log(device.manufacturerName) // "Arduino LLC"
-                console.log(device.vendorId) // "Vender ID"
-              })
+              console.log(device.productName) // "Arduino Micro"
+              console.log(device.manufacturerName) // "Arduino LLC"
+              console.log(device.vendorId) // "Vender ID"
+            })
           })
             .catch(error => {
               console.log(error)
@@ -333,82 +456,6 @@
           .catch(err => {
             window.alert('Error: ' + err.message)
           })
-      }
-
-      _saveSettings () {
-        let displayNameInput = this.$.displayName.value
-        if (displayNameInput !== '' && displayNameInput != this.user.displayName) {
-          this.user.updateProfile({
-            displayName: displayNameInput
-          })
-          this.updateProfileInfo(this.user.photoURL, displayNameInput)
-        }
-        if (this.$.uploadImageFile.files.length > 0) {
-          this.uploadProfileImage()
-        }
-      }
-
-      uploadProfileImage () {
-        let file = this.$.uploadImageFile.files[0]
-        let uid = this.user.uid
-        let name = this.user.displayName
-        let storageRef = firebase.app('smart-mes').storage().ref()
-        let metadata = {
-          'contentType': file.type
-        }
-        let imagesRef = storageRef.child('user/' + uid + '/profile')
-        imagesRef.put(file, metadata)
-          .then(snapshot => {
-            let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-            this.$.uploadProgress.value = progress
-            let url = snapshot.metadata.downloadURLs[0]
-            this.user.updateProfile({
-              photoURL: url
-            }).catch(function (error) {
-              console.error('Upload failed:', error)
-            })
-            if (url) {
-              this.updateProfileInfo(url, name)
-            }
-          })
-      }
-
-      updateProfileInfo (url, name) {
-        this.$.userData.ref.update({
-          displayname: name,
-          photoURL: url
-        })
-          .then(() => {
-            this.toastText = 'notification-save-settings'
-            // this.$.toastAlert.open()
-            window.window.alert('Refresh the application to reload the data.')
-          })
-          .catch(error => {
-            console.error('Update profile failed:', error)
-          })
-      }
-
-      _deleteProfileImage () {
-        if (this.user.photoURL) {
-          if (window.confirm('Delete profile image ?') === true) {
-            let storageRef = firebase.app('smart-mes').storage().ref('user/' + this.user.uid + '/profile')
-            // Delete the file
-            storageRef.delete()
-              .then(() => {
-                this.user.updateProfile({
-                  photoURL: null
-                })
-                this.toastText = 'notification-delete-profile-image-successful'
-                // this.$.toastAlert.open()
-              })
-              .catch(error => {
-                console.error('Error delete file:', error)
-              })
-          } else {}
-        } else {
-          this.toastText = 'No image file to delete'
-          // this.$.toastAlert.open()
-        }
       }
 
       reauthenAccount (currentpassword) {

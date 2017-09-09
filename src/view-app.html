@@ -52,7 +52,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
-
       <app-drawer hidden$="[[!signedIn]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="0">
         <div class="app-logo" role="logo" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-title">IMES</h1>
@@ -206,7 +205,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // listen for custom events
         this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e))
         this.addEventListener('signed-in-changed', (e) => this._signedInChanged(e))
-        this.addEventListener('auth-changed', this._signedInChanged.bind(this))
         this.addEventListener('on-error', (e) => this._handleError(e))
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, () => {
