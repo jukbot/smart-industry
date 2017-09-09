@@ -109,19 +109,19 @@
                         <vaadin-combo-box label="{{localize('factory-type')}}" id="factoryType" value="[[factoryProfile.type]]" items="[[factoryType]]"
                             item-label-path="name" item-value-path="value" required always-float-label></vaadin-combo-box>
                         <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[factoryProfile.model]]" items="[[productionModel]]"
-                            item-value-path="value" item-label-path="name" required auto-validate always-float-label>
+                            item-value-path="value" item-label-path="name" required always-float-label>
                             <template>
-                                <div>[[item.name]]</div>
+                                <div readonly>[[item.name]]</div>
                             </template>
                         </vaadin-combo-box>
-                        <paper-input label="{{localize('operation-start')}} (xx:xx)" id="opStart" value="[[factoryOperation.op_start]]" type="text"
-                            required always-float-label auto-validate></paper-input>
-                        <paper-input label="{{localize('operation-end')}} (xx:xx)" id="opEnd" value="[[factoryOperation.op_end]]" type="text" required
-                            always-float-label auto-validate></paper-input>
-                        <paper-input label="{{localize('over-time-start')}} (xx:xx)" id="otStart" value="[[factoryOperation.ot_start]]" type="text"
-                            required always-float-label auto-validate></paper-input>
-                        <paper-input label="{{localize('over-time-end')}} (xx:xx)" id="otEnd" value="[[factoryOperation.ot_end]]" type="text" required
-                            always-float-label auto-validate></paper-input>
+                        <paper-input label="{{localize('operation-start')}} (xx:xx)" id="opStart" value="[[factoryOperation.op_start]]" type="time"
+                            required pattern="[0-9]{2}:[0-9]{2}" always-float-label auto-validate></paper-input>
+                        <paper-input label="{{localize('operation-end')}} (xx:xx)" id="opEnd" value="[[factoryOperation.op_end]]" type="time" required
+                            pattern="[0-9]{2}:[0-9]{2}" always-float-label auto-validate></paper-input>
+                        <paper-input label="{{localize('over-time-start')}} (xx:xx)" id="otStart" value="[[factoryOperation.ot_start]]" type="time"
+                            required pattern="[0-9]{2}:[0-9]{2}" always-float-label auto-validate></paper-input>
+                        <paper-input label="{{localize('over-time-end')}} (xx:xx)" id="otEnd" value="[[factoryOperation.ot_end]]" type="time" required
+                            pattern="[0-9]{2}:[0-9]{2}" always-float-label auto-validate></paper-input>
                         <div class="operation-day-selector">
                             <p>{{localize('operation-day')}}</p>[[factoryOperationLoaded(factoryOperation.op_day)]]
                             <paper-checkbox class="checkbox" tabindex="0" id="sunday" value="sun">Sun</paper-checkbox>
@@ -139,15 +139,15 @@
                                 <div>{{localize(item.value)}}</div>
                             </template>
                         </vaadin-combo-box>
-                        <paper-input label="{{localize('standard-working-utilization')}} (0-100%)" id="workerUtilize" value="[[factoryPerformance.au]]"
-                            type="number" min="0" max="100" step="1" required always-float-label auto-validate></paper-input>
-                        <paper-input label="{{localize('standard-machine-efficiency')}} (0-100%)" name="machineStandardEfficiency" id="machineStandardEffi"
-                            value="[[factoryPerformance.meff]]" type="number" min="0" max="100" step="1" required always-float-label
+                        <paper-input label="{{localize('standard-working-utilization')}} (30-100%)" id="workerUtilize" value="[[factoryPerformance.au]]"
+                            type="number" min="30" max="100" step="1" required always-float-label auto-validate></paper-input>
+                        <paper-input label="{{localize('standard-machine-efficiency')}} (30-100%)" name="machineStandardEfficiency" id="machineStandardEffi"
+                            value="[[factoryPerformance.meff]]" type="number" min="30" max="100" step="1" required always-float-label
                             auto-validate></paper-input>
                         <paper-input label="{{localize('acceptable-waste')}} (0.00-1.00)" id="acceptWaste" value="[[factoryPerformance.aw]]" type="number"
                             min="0" max="1" step="0.01" required always-float-label auto-validate></paper-input>
                         <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[factorySchedule.interval]]"
-                            type="number" min="1" max="30" step="1" required always-float-label auto-validate></paper-input>
+                            type="number" min="1" max="60" step="1" required always-float-label auto-validate></paper-input>
                         <div class="button-group">
                             <flat-button on-tap="saveValue" class="btn" title="Save settings"><button role="button">{{localize('save-settings')}}</button></flat-button>
                             <flat-button on-tap="resetValue" class="btn" title="Restore Default"><button role="button">{{localize('restore')}}</button></flat-button>
@@ -253,17 +253,17 @@
                         type: Array,
                         value: () => {
                             return [{
-                                    'name': 'Increase Profit',
-                                    'value': 'increase-profit'
-                                },
-                                {
-                                    'name': 'Reduce Cost',
-                                    'value': 'reduce-cost'
-                                },
-                                {
-                                    'name': 'Disabled',
-                                    'value': 'disabled'
-                                }
+                                'name': 'Increase Profit',
+                                'value': 'increase-profit'
+                            },
+                            {
+                                'name': 'Reduce Cost',
+                                'value': 'reduce-cost'
+                            },
+                            {
+                                'name': 'Disabled',
+                                'value': 'disabled'
+                            }
                             ]
                         }
                     },
@@ -271,17 +271,17 @@
                         type: Array,
                         value: () => {
                             return [{
-                                    'name': 'Serial Production',
-                                    'value': 'serial'
-                                },
-                                {
-                                    'name': 'Parallel Production',
-                                    'value': 'parallel'
-                                },
-                                {
-                                    'name': 'Multi-Component Production',
-                                    'value': 'multi'
-                                }
+                                'name': 'Serial Production',
+                                'value': 'serial'
+                            },
+                            {
+                                'name': 'Parallel Production',
+                                'value': 'parallel'
+                            },
+                            {
+                                'name': 'Multi-Component Production',
+                                'value': 'multi'
+                            }
                             ]
                         }
                     },
@@ -289,17 +289,17 @@
                         type: Array,
                         value: () => {
                             return [{
-                                    'name': 'Job Shop',
-                                    'value': 'js'
-                                },
-                                {
-                                    'name': 'Flow Shop',
-                                    'value': 'fs'
-                                },
-                                {
-                                    'name': 'Hybrid (Jobshop + Flowshop)',
-                                    'value': 'hb'
-                                }
+                                'name': 'Job Shop',
+                                'value': 'js'
+                            },
+                            {
+                                'name': 'Flow Shop',
+                                'value': 'fs'
+                            },
+                            {
+                                'name': 'Hybrid (Jobshop + Flowshop)',
+                                'value': 'hb'
+                            }
                             ]
                         }
                     }

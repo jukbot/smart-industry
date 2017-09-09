@@ -233,9 +233,9 @@
             <div class="form-title">
               <h2>User Login</h2>
             </div>
-            <paper-input class="login-input" id="email" type="email" maxlength="50" auto-complete="email" placeholder="E-mail" autofocus
+            <paper-input class="login-input" id="email" type="email" maxlength="40" auto-complete="email" placeholder="E-mail" autofocus
               auto-validate></paper-input>
-            <paper-input class="login-input" id="passwd" type="password" maxlength="50" auto-complete="current-password" placeholder="Password"
+            <paper-input class="login-input" id="passwd" type="password" maxlength="40" auto-complete="current-password" placeholder="Password"
               auto-validate></paper-input>
             <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
             <div class="keep-session-checkbox">
@@ -254,9 +254,10 @@
               <h2>User Register</h2>
             </div>
             <paper-input class="register-input" id="register_email" type="email" maxlength="40" placeholder="E-mail" autofocus auto-validate></paper-input>
-            <paper-input class="register-input" id="register_passwd" type="password" maxlength="30" placeholder="New Password" auto-auto-validate></paper-input>
+            <paper-input class="register-input" id="register_passwd" type="password" maxlength="40" placeholder="New Password" auto-auto-validate></paper-input>
             <paper-input class="register-input" id="register_organization" type="text" maxlength="40" placeholder="Organization" auto-validate></paper-input>
-            <paper-input class="register-input" id="register_phone" type="text" maxlength="15" placeholder="Phone Number" auto-validate></paper-input>
+            <paper-input class="register-input" id="register_phone" type="tel" maxlength="15" pattern="\d{3}[\-]\d{3}[\-]\d{4}" placeholder="Phone Number"
+              auto-validate></paper-input>
             <flat-button class="register-btn" role="button" on-tap="_register">
               <button type="button">Send Confirmation</button>
             </flat-button>
@@ -392,15 +393,15 @@
 
       addProfileInfo(username, email, organize, phone, keyid) {
         this.$.user.ref.set({
-            displayname: username,
-            email: email,
-            photoURL: null,
-            phone: phone,
-            organization: organize,
-            role: 'admin',
-            description: 'No description for this user',
-            key: keyid
-          })
+          displayname: username,
+          email: email,
+          photoURL: null,
+          phone: phone,
+          organization: organize,
+          role: 'admin',
+          description: 'No description for this user',
+          key: keyid
+        })
           .catch(error => {
             this.showAlertToast(error.code)
           })
