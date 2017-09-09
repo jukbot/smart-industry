@@ -1,0 +1,55 @@
+[debug] [2017-09-09T19:18:35.870Z] ----------------------------------------------------------------------
+[debug] [2017-09-09T19:18:35.876Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2017-09-09T19:18:35.879Z] CLI Version:   3.10.0
+[debug] [2017-09-09T19:18:35.879Z] Platform:      darwin
+[debug] [2017-09-09T19:18:35.879Z] Node Version:  v6.11.2
+[debug] [2017-09-09T19:18:35.880Z] Time:          Sun Sep 10 2017 02:18:35 GMT+0700 (+07)
+[debug] [2017-09-09T19:18:35.881Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-09-09T19:18:35.908Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-09-09T19:18:35.909Z] > authorizing via signed-in user
+[debug] [2017-09-09T19:18:35.912Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/smart-mes  
+ Sun Sep 10 2017 02:18:35 GMT+0700 (+07)
+[debug] [2017-09-09T19:18:37.550Z] <<< HTTP RESPONSE 200
+[debug] [2017-09-09T19:18:37.551Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/smart-mes/tokens  
+ Sun Sep 10 2017 02:18:37 GMT+0700 (+07)
+[debug] [2017-09-09T19:18:38.975Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'smart-mes'...
+[info] 
+[info] i  deploying database, functions, hosting
+[info] ✔  database: rules ready to deploy.
+[debug] [2017-09-09T19:18:41.662Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "dependencies": {
+    "firebase-admin": "~5.2.1",
+    "firebase-functions": "^0.6.3"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[info] i  runtimeconfig: ensuring necessary APIs are enabled...
+[debug] [2017-09-09T19:18:41.665Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/smart-mes?view=CONSUMER_VIEW  
+ Sun Sep 10 2017 02:18:41 GMT+0700 (+07)
+[debug] [2017-09-09T19:18:41.665Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/smart-mes?view=CONSUMER_VIEW  
+ Sun Sep 10 2017 02:18:41 GMT+0700 (+07)
+[debug] [2017-09-09T19:18:43.530Z] <<< HTTP RESPONSE 200
+[info] ✔  runtimeconfig: all necessary APIs are enabled
+[debug] [2017-09-09T19:18:43.539Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] [2017-09-09T19:18:43.540Z] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/smart-mes  
+ Sun Sep 10 2017 02:18:43 GMT+0700 (+07)
+[debug] [2017-09-09T19:18:43.541Z] >>> HTTP REQUEST GET https://apikeys.googleapis.com/v1/projects/smart-mes/apiKeys  
+ Sun Sep 10 2017 02:18:43 GMT+0700 (+07)
+[debug] [2017-09-09T19:18:45.118Z] <<< HTTP RESPONSE 200
+[debug] [2017-09-09T19:18:45.424Z] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] [2017-09-09T19:18:46.857Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/smart-mes/configs  
+ Sun Sep 10 2017 02:18:46 GMT+0700 (+07)
+[debug] [2017-09-09T19:18:48.804Z] <<< HTTP RESPONSE 200
+[info] i  hosting: preparing build/default directory for upload...
+[debug] [2017-09-09T19:18:49.780Z] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/smart-mes/uploads/-Ktc46R9lcCZpI5HIitw?fileCount=342&message=  
+ Sun Sep 10 2017 02:18:49 GMT+0700 (+07)
+[debug] [2017-09-09T19:18:57.362Z] <<< HTTP RESPONSE 200
+[debug] [2017-09-09T19:18:57.362Z] [hosting] .tgz uploaded successfully, waiting for extraction

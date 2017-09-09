@@ -450,7 +450,7 @@
         if (!this.user.emailVerified) {
           this.user.sendEmailVerification()
             .then(() => {
-              window.alert('Verification is send to your email')
+              window.alert('Verification link has been sent to your email')
             })
             .catch(err => {
               window.alert('Error: ' + err.message)
