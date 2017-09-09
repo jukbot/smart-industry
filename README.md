@@ -1,9 +1,6 @@
-`!! NOTICE: DURING THIS WEEK WE WILL MIGRATE ALL COMPONENTS TO POLYMER 2 !! 
-SO THIS PROJECT WILL BE TEMPORARY LOCKED DOWN FOR A WHILE.
-`
-
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
+[![Dependency Status](https://gemnasium.com/badges/github.com/jukbot/smart-industry.svg)](https://gemnasium.com/github.com/jukbot/smart-industry)
 [![GitHub (pre-)release](https://img.shields.io/github/release/jukbot/smart-industry/all.svg)](https://github.com/jukbot/smart-industry/releases/)
 [![Polymer 2 supported](https://img.shields.io/badge/Polymer2-supported-f50057.svg)](https://github.com/jukbot/smart-industry/)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
