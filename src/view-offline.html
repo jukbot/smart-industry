@@ -1,5 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="app-language-behavior.html">
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/flat-icons.html">
 
@@ -61,18 +60,17 @@
   </template>
   <script>
     class ViewOffline extends Polymer.Element {
-
-      static get is() {
-        return 'view-offline';
+      static get is () {
+        return 'view-offline'
       }
 
-      _tryReconnect() {
+      _tryReconnect () {
         this.dispatchEvent(new CustomEvent('try-reconnect', {
           composed: true
-        }));
+        }))
       }
     }
-    customElements.define(ViewOffline.is, ViewOffline);
+    customElements.define(ViewOffline.is, ViewOffline)
   </script>
 
 </dom-module>

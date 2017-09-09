@@ -32,6 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="view-dashboard.html">
 
 
+
 <dom-module id="view-app">
   <template>
     <style include="flat-button shared-styles">
@@ -131,11 +132,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
-      static get is() {
+      static get is () {
         return 'view-app'
       }
 
-      static get properties() {
+      static get properties () {
         return {
           page: {
             type: String,
@@ -168,17 +169,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      static get observers() {
+      static get observers () {
         return [
           '_routePageChanged(routeData.page)'
         ]
       }
 
-      constructor() {
+      constructor () {
         super()
       }
 
-      connectedCallback() {
+      connectedCallback () {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
         Polymer.RenderStatus.beforeNextRender(this, function () {
@@ -189,7 +190,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             } else if (this.signedIn && this.route.path == '/') {
               this.page = 'dashboard'
               this.set('route.path', '/dashboard')
-            } //else if (!this.signedIn) {
+            } // else if (!this.signedIn) {
             // this.page = 'login'
             // this.set('route.path', '/login')
             // }
@@ -198,7 +199,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         })
       }
 
-      ready() {
+      ready () {
         super.ready()
         // Custom elements polyfill safe way to indicate an element has been upgraded.
         document.body.removeAttribute('unresolved')
@@ -214,7 +215,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         })
       }
 
-      _routePageChanged(page) {
+      _routePageChanged (page) {
         this.page = page || 'dashboard'
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
@@ -222,7 +223,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _pageChanged(page, oldPage) {
+      _pageChanged (page, oldPage) {
         if (page != null) {
           if (page == 'dashboard') {
             this._pageLoaded(Boolean(oldPage))
@@ -241,7 +242,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _pageLoaded(shouldResetLayout) {
+      _pageLoaded (shouldResetLayout) {
         this._ensureLazyLoaded()
         if (shouldResetLayout) {
           // The size of the header depends on the page (e.g. on some pages the tabs
@@ -253,7 +254,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _ensureLazyLoaded() {
+      _ensureLazyLoaded () {
         // load lazy resources after render and set `loadComplete` when done.
         if (!this.loadComplete) {
           Polymer.RenderStatus.afterNextRender(this, () => {
@@ -263,8 +264,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               // Load and register pre-caching Service Worker
               if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/service-worker.js', {
-                    scope: '/'
-                  })
+                  scope: '/'
+                })
                   .then((registration) => {
                     console.log('%cService Worker Registered', greenColor)
                   }).catch((err) => {
@@ -277,27 +278,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 alert('Service Worker is not support by your browser. Please upgrade your browser')
               }
               this._networkChanged()
-              this.loadComplete = true
               this.$.pageLoader.removeAttribute('indeterminate')
+              this.loadComplete = true
             })
           })
         }
       }
 
-      _signedInChanged(e) {
+      _signedInChanged (e) {
         console.log(this.signedIn)
         //  if (!this.signedIn) {
         //    this.page = 'login'
         //   }
         if (this.signedIn && !this.user.emailVerified) {
           this.showAlertToast(
-            "We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application."
-          );
-
+            'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
+          )
         }
       }
 
-      _networkChanged() {
+      _networkChanged () {
         let oldOffline = this.offline
         this.offline = !navigator.onLine
         // Show the snackbar if the user is offline when starting a new session
@@ -314,23 +314,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _refreshNetworkStatus() {
-        this.$.profileIndexDB.refreshNetworkStatus()
+      _refreshNetworkStatus () {
+        this.$.userIndexDB.refreshNetworkStatus()
         this.$.appLanguage.refreshNetworkStatus()
         this.$.pageLoader.removeAttribute('indeterminate')
       }
 
-      _onFallbackSelectionTriggered() {
+      _onFallbackSelectionTriggered () {
         this.page = '404'
       }
 
-      _logout() {
+      _logout () {
         if (!this.online) {
           this.page = 'offline'
         } else {
           this.$.auth.signOut()
             .then(() => {
-              this.$.profileIndexDB.destroy()
+              this.$.userIndexDB.destroy()
               this._closeToastAlert()
               Polymer.Async.timeOut.run(() => {
                 this.$.header.resetLayout()
@@ -346,15 +346,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _openSearchBox() {
+      _openSearchBox () {
         this.$.searchBox.focus()
       }
 
-      _closeToastAlert() {
+      _closeToastAlert () {
         this.$.toastVerify.close()
       }
 
-      getOnlineStatus(status) {
+      getOnlineStatus (status) {
         if (status) {
           this.$$('.online').style.color = 'green'
           return 'Online'
@@ -364,7 +364,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      getVerifyStatus(status) {
+      getVerifyStatus (status) {
         if (status) {
           this.$$('.verify').style.color = 'green'
           return 'Verified'
@@ -374,7 +374,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      getUserImage(url) {
+      getUserImage (url) {
         if (url) {
           return url
         } else {
@@ -382,12 +382,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      showAlertToast(text) {
+      showAlertToast (text) {
         this.toastText = text
         this.$.toastVerify.open()
       }
 
-      _handleError(e) {
+      _handleError (e) {
         console.error('Error: ' + e.message)
         this.page = 'error'
       }

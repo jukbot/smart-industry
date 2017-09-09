@@ -1,5 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="app-language-behavior.html">
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/flat-icons.html">
 
@@ -60,17 +59,16 @@
   </template>
   <script>
     class ViewError extends Polymer.Element {
+      static get is () {
+        return 'view-error'
+  }
 
-      static get is() {
-        return 'view-error';
-      }
-
-      _goBack() {
-        window.history.back();
-      }
+      _goBack () {
+        window.history.back()
+  }
     }
 
-    customElements.define(ViewError.is, ViewError);
+    customElements.define(ViewError.is, ViewError)
   </script>
 
 </dom-module>

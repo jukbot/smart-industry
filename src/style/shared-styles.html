@@ -44,6 +44,7 @@
         color: var(--app-secondary-color);
         background-color: var(--app-primary-color);
         --app-header-shadow: {
+          -webkit-box-shadow: inset 0px 5px 6px -3px rgba(0, 0, 0, 0.2);
           box-shadow: inset 0px 5px 6px -3px rgba(0, 0, 0, 0.2);
           height: 10px;
           bottom: -10px;
@@ -93,6 +94,7 @@
         transition: width 0.2s ease-in-out;
         padding: 0 12px;
         border: none;
+        -webkit-box-sizing: border-box;
         box-sizing: border-box;
         background: transparent;
         color: #FFFFFF;
@@ -179,21 +181,27 @@
 
 
       .toast-flex-container {
-        display: -webkit-flex;
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
         -webkit-align-self: stretch;
+        -ms-flex-item-align: stretch;
         align-self: stretch;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
         justify-content: space-between;
         width: 100%;
         height: auto;
       }
 
       .toast-flex-item:first-child {
+        -ms-flex-item-align: stretch;
         align-self: stretch;
         margin-right: auto;
       }
 
       .toast-flex-item:last-child {
+        -ms-flex-item-align: end;
         align-self: flex-end;
         margin-top: 0;
       }
@@ -209,11 +217,20 @@
       }
 
       .flex-center {
+        display: -webkit-box;
+        display: -ms-flexbox;
         display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
         align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
         justify-content: center;
         text-align: center;
         margin: 16px 0;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
         flex-direction: column;
       }
 
@@ -238,7 +255,9 @@
         padding: 16px;
         border-radius: 2px;
         background-color: var(--app-secondary-color);
+        -webkit-box-sizing: border-box;
         box-sizing: border-box;
+        -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
       }
 
