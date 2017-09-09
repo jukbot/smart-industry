@@ -131,11 +131,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
-      static get is () {
+      static get is() {
         return 'view-app'
       }
 
-      static get properties () {
+      static get properties() {
         return {
           page: {
             type: String,
@@ -168,17 +168,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      static get observers () {
+      static get observers() {
         return [
           '_routePageChanged(routeData.page)'
         ]
       }
 
-      constructor () {
+      constructor() {
         super()
       }
 
-      connectedCallback () {
+      connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
         Polymer.RenderStatus.beforeNextRender(this, function () {
@@ -194,11 +194,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             // this.set('route.path', '/login')
             // }
           }, 1)
-          // measure something
         })
       }
 
-      ready () {
+      ready() {
         super.ready()
         // Custom elements polyfill safe way to indicate an element has been upgraded.
         document.body.removeAttribute('unresolved')
@@ -213,7 +212,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         })
       }
 
-      _routePageChanged (page) {
+      _routePageChanged(page) {
         this.page = page || 'dashboard'
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
@@ -221,7 +220,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _pageChanged (page, oldPage) {
+      _pageChanged(page, oldPage) {
         if (page != null) {
           if (page == 'dashboard') {
             this._pageLoaded(Boolean(oldPage))
@@ -240,7 +239,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _pageLoaded (shouldResetLayout) {
+      _pageLoaded(shouldResetLayout) {
         this._ensureLazyLoaded()
         if (shouldResetLayout) {
           // The size of the header depends on the page (e.g. on some pages the tabs
@@ -252,7 +251,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _ensureLazyLoaded () {
+      _ensureLazyLoaded() {
         // load lazy resources after render and set `loadComplete` when done.
         if (!this.loadComplete) {
           Polymer.RenderStatus.afterNextRender(this, () => {
@@ -283,7 +282,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _signedInChanged (e) {
+      _onFallbackSelectionTriggered() {
+        this.page = '404'
+      }
+
+      _signedInChanged(e) {
         console.log(this.signedIn)
         //  if (!this.signedIn) {
         //    this.page = 'login'
@@ -295,7 +298,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _networkChanged () {
+      _networkChanged() {
         let oldOffline = this.offline
         this.offline = !navigator.onLine
         // Show the snackbar if the user is offline when starting a new session
@@ -312,17 +315,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _refreshNetworkStatus () {
+      _refreshNetworkStatus() {
         this.$.userIndexDB.refreshNetworkStatus()
         this.$.appLanguage.refreshNetworkStatus()
         this.$.pageLoader.removeAttribute('indeterminate')
       }
 
-      _onFallbackSelectionTriggered () {
-        this.page = '404'
-      }
 
-      _logout () {
+      _logout() {
         if (!this.online) {
           this.page = 'offline'
         } else {
@@ -344,15 +344,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _openSearchBox () {
+      _openSearchBox() {
         this.$.searchBox.focus()
       }
 
-      _closeToastAlert () {
+      _closeToastAlert() {
         this.$.toastVerify.close()
       }
 
-      getOnlineStatus (status) {
+      _handleError(e) {
+        console.error('Error: ' + e.message)
+        this.page = 'error'
+      }
+
+      getOnlineStatus(status) {
         if (status) {
           this.$$('.online').style.color = 'green'
           return 'Online'
@@ -362,7 +367,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      getVerifyStatus (status) {
+      getVerifyStatus(status) {
         if (status) {
           this.$$('.verify').style.color = 'green'
           return 'Verified'
@@ -372,7 +377,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      getUserImage (url) {
+      getUserImage(url) {
         if (url) {
           return url
         } else {
@@ -380,15 +385,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      showAlertToast (text) {
+      showAlertToast(text) {
         this.toastText = text
         this.$.toastVerify.open()
       }
 
-      _handleError (e) {
-        console.error('Error: ' + e.message)
-        this.page = 'error'
-      }
     }
     customElements.define(ViewApp.is, ViewApp)
   </script>

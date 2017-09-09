@@ -146,10 +146,10 @@
   <script>
     class ViewSettings extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
-      static get is () {
+      static get is() {
         return 'view-settings'
       }
-      static get properties () {
+      static get properties() {
         return {
           language: {
             type: String,
@@ -185,17 +185,17 @@
         }
       }
 
-      connectedCallback () {
+      connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
       }
 
-      ready () {
+      ready() {
         super.ready()
         this.addEventListener('show-invalid-url-warning', (e) => this._test(e))
       }
 
-      _verifyUploadFile () {
+      _verifyUploadFile() {
         let file = this.$.uploadImageFile.files[0]
         if (!file.type.match(/image.*/)) {
           window.alert('Error: Invalid file format')
@@ -206,7 +206,7 @@
         }
       }
 
-      _saveSettings () {
+      _saveSettings() {
         let displayNameInput = this.$.displayName.value
         if (displayNameInput !== '' && displayNameInput !== this.user.displayName) {
           this.user.updateProfile({
@@ -219,7 +219,7 @@
         }
       }
 
-      uploadProfileImage () {
+      uploadProfileImage() {
         let file = this.$.uploadImageFile.files[0]
         if (file.type.match(/image.*/) && file.size < this.maxFileSize) {
           let uid = this.user.uid
@@ -257,7 +257,7 @@
         }
       }
 
-      updateProfileInfo (url, name) {
+      updateProfileInfo(url, name) {
         this.$.userData.ref.update({
           displayname: name,
           photoURL: url
@@ -273,7 +273,7 @@
           })
       }
 
-      _deleteProfileImage () {
+      _deleteProfileImage() {
         if (this.user.photoURL) {
           if (window.confirm('Delete profile image ?') === true) {
             let storageRef = firebase.app('smart-mes').storage().ref('user/' + this.user.uid + '/profile')
@@ -296,7 +296,7 @@
         }
       }
 
-      _changeLanguage () {
+      _changeLanguage() {
         let selectedLang = this.$.languageSelector.value
         if (selectedLang === 'en' || selectedLang === 'th' || selectedLang === 'jp' || selectedLang === 'ch' ||
           selectedLang === 'rs') {
@@ -306,7 +306,7 @@
         }
       }
 
-      _changeAutoBackup () {
+      _changeAutoBackup() {
         this.autobackup = this.$.autobackupSwitch.checked
         if (this.$.autobackupSwitch.checked) {
           this.toastText = 'backup-notification-alert-on'
@@ -317,7 +317,7 @@
         }
       }
 
-      _changeNotification () {
+      _changeNotification() {
         this.notification = this.$.webNotificationSwitch.checked
         if (this.$.webNotificationSwitch.checked) {
           this.toastText = 'notification-alert-on'
@@ -337,7 +337,7 @@
         }
       }
 
-      _changeEmailAlert () {
+      _changeEmailAlert() {
         this.emailalert = this.$.emailAlertSwitch.checked
         if (this.$.emailalertSwitch.checked) {
           this.toastText = 'email-notification-alert-on'
@@ -348,7 +348,7 @@
         }
       }
 
-      _changeAuthen () {
+      _changeAuthen() {
         let currentpassword = this.$.currentPassword.value
         let newPassword = this.$.newPassword.value
         let newemail = this.$.userDataEmail.value
@@ -377,7 +377,7 @@
         }
       }
 
-      _deleteAcount () {
+      _deleteAcount() {
         this.$.auth.delete().then(function () {
           window.alert("Delete successful, you'll now logout")
           this.logout()
@@ -386,7 +386,7 @@
         })
       }
 
-      logout () {
+      logout() {
         this.$.auth.signOut()
           .then(() => {
             this.authen = false
@@ -403,7 +403,7 @@
           })
       }
 
-      _scanDevice () {
+      _scanDevice() {
         if ('usb' in navigator) {
           let device
           device = navigator.usb.requestDevice({
@@ -429,7 +429,7 @@
         }
       }
 
-      _showDevice () {
+      _showDevice() {
         if ('usb' in navigator) {
           navigator.usb.getDevices().then(devices => {
             devices.map(device => {
@@ -446,19 +446,19 @@
         }
       }
 
-      _verifyAccount () {
-        this.$.toastVerify.open()
-
-        this.user.sendEmailVerification()
-          .then(() => {
-            window.alert('Verification is send to your email')
-          })
-          .catch(err => {
-            window.alert('Error: ' + err.message)
-          })
+      _verifyAccount() {
+        if (!this.user.emailVerified) {
+          this.user.sendEmailVerification()
+            .then(() => {
+              window.alert('Verification is send to your email')
+            })
+            .catch(err => {
+              window.alert('Error: ' + err.message)
+            })
+        }
       }
 
-      reauthenAccount (currentpassword) {
+      reauthenAccount(currentpassword) {
         let credential = this.$.auth.EmailAuthProvider.credential(this.user.email, currentpassword)
         this.user.reauthenticateWithCredential(credential)
           .then(() => {
@@ -470,7 +470,7 @@
           })
       }
 
-      handleMessage (message) {
+      handleMessage(message) {
         console.log(message)
         console.log('message received', arguments)
       }
