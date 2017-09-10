@@ -1,0 +1,244 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
+<link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../view-setup.html">
+<link rel="import" href="../style/shared-styles.html">
+<link rel="import" href="../style/flat-button.html">
+
+<dom-module id="view-setup-customer">
+    <template>
+        <style include="shared-styles app-grid-style flat-button">
+             :host {
+                margin: 10px;
+                display: block;
+                --app-grid-columns: 1;
+                --app-grid-item-height: 50%;
+            }
+
+            h1.title {
+                text-align: center;
+                margin: 15px 0 25px 0;
+                font-size: 1.75rem;
+            }
+
+            .btn {
+                margin: 20px 10px 0 0;
+                width: 250px;
+            }
+
+            vaadin-grid#customerTable {
+                --vaadin-grid-cell: {
+                    padding: 0;
+                }
+
+                --vaadin-grid-header-cell: {
+                    height: 64px;
+                }
+
+                --vaadin-grid-body-cell: {
+                    height: 48px;
+                    font-size: 1rem;
+                }
+
+                --vaadin-grid-body-row-hover-cell: {
+                    background-color: #eeeeee;
+                }
+
+                --vaadin-grid-body-row-selected-cell: {
+                    background-color: #eeeeee;
+                }
+
+                --vaadin-grid-focused-cell: {
+                    font-weight: bold;
+                }
+            }
+
+            vaadin-grid#customerTable .cell {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding: 0 10px;
+            }
+
+            vaadin-grid#customerTable paper-checkbox {
+                margin: 0 16px;
+            }
+
+            @media (min-width: 360px) and (max-width: 768px) {
+                h1.title {
+                    font-size: 1.5rem;
+                }
+
+                .btn {
+                    width: 100%;
+                }
+            }
+        </style>
+        <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+        <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerData}}"></firebase-query>
+        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
+        <app-indexeddb-mirror id="customerIndexDB" key="customer-data" data="{{customerData}}" persisted-data="{{persistedCustomerData}}"></app-indexeddb-mirror>
+        <ul class="app-grid">
+            <li>
+                <div class="card" hidden="[[showAddCustomer]]">
+                    <h1 class="title">{{localize('add-customer')}}</h1>
+                    <paper-input label="First name" id="customerFirstName" type="text" required always-float-label></paper-input>
+                    <paper-input label="Last name" id="customerLastName" type="text" required always-float-label></paper-input>
+                    <paper-input label="E-mail" id="customerEmail" type="email" required always-float-label></paper-input>
+                    <paper-input label="Mobile" id="customerMobile" type="tel" required always-float-label></paper-input>
+                    <flat-button class="btn" on-tap="_openCustomerTable"><button role="button">{{localize('dismiss')}}</button></flat-button>
+                    <flat-button class="btn shamrock" on-tap="_addCustomer"><button role="button">{{localize('add')}}</button></flat-button>
+                </div>
+                <div class="card" hidden="[[!showAddCustomer]]">
+                    <h1 class="title">{{localize('customer-management')}}</h1>
+                    <!-- <vaadin-combo-box label="Search customer" aria-label="Search customer" items="" value=""></vaadin-combo-box> -->
+                    <vaadin-grid id="customerTable" aria-label="Customer Management" items="[[persistedCustomerData]]">
+                        <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
+                            <template class="header">
+                                <paper-checkbox role="checkbox" checked="{{selectAll}}"></paper-checkbox>
+                            </template>
+                            <template>
+                                <paper-checkbox role="checkbox" checked="{{selected}}"></paper-checkbox>
+                            </template>
+                        </vaadin-grid-selection-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">#</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[index]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">First name</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[item.fname]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">Last name</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[item.lname]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">E-mail</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[item.email]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell last">Mobile</div>
+                            </template>
+                            <template>
+                                <div class="cell numeric last">[[item.mobile]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="0">
+                            <template class="header">
+                                <div class="cell center last">Delete</div>
+                            </template>
+                            <template>
+                                <div class="cell center last">
+                                    <paper-icon-button on-tap="_deleteCustomer" customer="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                </div>
+                            </template>
+                        </vaadin-grid-column>
+                    </vaadin-grid>
+                    <flat-button class="btn" on-tap="_openAddCustomerCard"><button role="button">{{localize('add-customer')}}</button></flat-button>
+                </div>
+            </li>
+        </ul>
+        <paper-toast id="toastSetupCustomer" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
+    </template>
+    <script>
+        class ViewSetupCustomer extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+            Polymer.Element) {
+            static get is() {
+                return 'view-setup-customer'
+            }
+
+            static get properties() {
+                return {
+                    language: String,
+                    customerData: Object,
+                    selectAll: Boolean,
+                    toastText: String,
+                    showAddCustomer: {
+                        type: Boolean,
+                        value: true
+                    }
+                }
+            }
+
+            connectedCallback() {
+                super.connectedCallback()
+                this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+
+            _openAddCustomerCard() {
+                this.showAddCustomer = false;
+            }
+
+            _openCustomerTable() {
+                this.showAddCustomer = true;
+            }
+
+            _addCustomer() {
+                let fname = this.$.customerFirstName.value;
+                let lname = this.$.customerLastName.value;
+                let email = this.$.customerEmail.value;
+                let mobile = this.$.customerMobile.value;
+                if (fname && lname && email && mobile) {
+                    this.$.customerQuery.ref.push({
+                        fname: fname,
+                        lname: lname,
+                        email: email,
+                        mobile: mobile
+                    });
+                    this.clearField();
+                    this.toastText = 'notification-add-success'
+                    this.$.toastSetupCustomer.open();
+                } else {
+                    this.toastText = 'notification-error-incomplete-input';
+                    this.$.toastSetupCustomer.open();
+                }
+            }
+
+            _deleteCustomer(e) {
+                if (window.confirm("Delete this customer ?") == true) {
+                    let key = e.currentTarget.customer.$key;
+                    this.$.customerQuery.ref.child(key).remove();
+                    this.toastText = 'notification-delete-success'
+                    this.$.toastSetupCustomer.open();
+                }
+            }
+
+            clearField() {
+                this.$.customerFirstName.value = "";
+                this.$.customerLastName.value = "";
+                this.$.customerEmail.value = "";
+                this.$.customerMobile.value = "";
+            }
+        }
+        customElements.define(ViewSetupCustomer.is, ViewSetupCustomer)
+    </script>
+</dom-module>

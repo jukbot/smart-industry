@@ -9,8 +9,8 @@
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 
 <link rel="import" href="style/shared-styles.html">
-<link rel="import" href="plan/view-plan-scheduling.html">
 <link rel="import" href="plan/view-plan-order.html">
+<link rel="import" href="plan/view-plan-scheduling.html">
 <link rel="import" href="plan/view-plan-production.html">
 
 <dom-module id="view-plan">
@@ -31,8 +31,8 @@
       </paper-tabs>
     </app-header>
     <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
-      <view-plan-scheduling name="scheduling"></view-plan-scheduling>
       <view-plan-order name="order"></view-plan-order>
+      <view-plan-scheduling name="scheduling"></view-plan-scheduling>
       <view-plan-production name="production"></view-plan-production>
     </iron-pages>
   </template>
@@ -51,27 +51,28 @@
             type: String,
             reflectToAttribute: true,
             observer: '_tabsChanged',
-            value: 'production'
+            value: 'order'
           },
           submenus: {
             type: Array,
             value: () => {
-              return [{
-                  'title': 'production',
-                  'view': 'production',
-                  'icon': 'vaadin:start-cog'
+              return [
+                {
+                  "title": "order",
+                  "view": "order",
+                  "icon": "vaadin:list-ol"
                 },
                 {
-                  'title': 'order',
-                  'view': 'order',
-                  'icon': 'vaadin:date-input'
+                  "title": "scheduling",
+                  "view": "scheduling",
+                  "icon": "vaadin:calendar"
                 },
                 {
-                  'title': 'scheduling',
-                  'view': 'scheduling',
-                  'icon': 'vaadin:list-ol'
+                  "title": "production",
+                  "view": "production",
+                  "icon": "vaadin:start-cog"
                 }
-              ];
+              ]
             }
           }
 
@@ -88,6 +89,6 @@
         this.loadResources(this.resolveUrl('../data/locales.json'));
       }
     }
-    window.customElements.define(ViewPlan.is, ViewPlan);
+    customElements.define(ViewPlan.is, ViewPlan);
   </script>
 </dom-module>

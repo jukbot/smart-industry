@@ -1,0 +1,449 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../view-setup.html">
+<link rel="import" href="../style/shared-styles.html">
+<link rel="import" href="../style/flat-button.html">
+<link rel="import" href="../style/flat-icons.html">
+<link rel="import" href="redux-store.html">
+
+<dom-module id="view-setup-station">
+    <template>
+        <style include="shared-styles app-grid-style flat-button">
+             :host {
+                display: block;
+                margin: 10px;
+                --app-grid-item-height: 50%;
+            }
+
+            @media (min-width: 360px) and (max-width: 768px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            @media (min-width: 769px) and (max-width: 1024px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            @media (min-width: 1025px) and (max-width: 1200px) {
+                 :host {
+                    --app-grid-columns: 2;
+                }
+            }
+
+            @media (min-width: 1201px) and (max-width: 2560px) {
+                 :host {
+                    --app-grid-columns: 4;
+                }
+            }
+
+            iron-list {
+                flex: 1 1 auto;
+            }
+
+            h1.main-title {
+                text-align: center;
+                margin: 15px 0 25px 0;
+                font-size: 2.5rem;
+            }
+
+            h1.title {
+                text-align: center;
+                margin: 15px 0 25px 0;
+                font-size: 1.75rem;
+            }
+
+            .station-dialog {
+                width: 50%;
+                padding: 10px;
+                top: 200px;
+            }
+
+            .station {
+                margin: 10px;
+                padding: 20px;
+                border: 1px solid rgba(0, 0, 0, .10);
+                border-radius: 2px;
+            }
+
+            .station p {
+                margin: 10px 0;
+            }
+
+            .station h1 {
+                text-align: center;
+            }
+
+            .station-info-group {
+                margin-bottom: auto;
+            }
+
+            .no-machine-title {
+                font-size: 2rem;
+                font-weight: 400;
+                text-align: center;
+                padding: 30px 0;
+            }
+
+            .flex-container {
+                padding: 0;
+                margin: 0;
+                list-style: none;
+                -ms-box-orient: horizontal;
+                display: -webkit-box;
+                display: -moz-box;
+                display: -ms-flexbox;
+                display: -moz-flex;
+                display: -webkit-flex;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+
+            .wrap {
+                -webkit-flex-flow: row wrap;
+                flex-flow: row wrap;
+            }
+
+            .flex-item {
+                background: #202020;
+                padding: 5px;
+                width: 250px;
+                height: 75px;
+                margin: 10px;
+                line-height: 75px;
+                color: white;
+                font-size: 1.25em;
+                text-align: center;
+            }
+
+            .machine-item {
+                cursor: pointer;
+            }
+
+            .machine-counter {
+                margin: 10px 0 0 0;
+            }
+
+            .machine-list {
+                height: 300px;
+            }
+
+            .frame {
+                border: 1px solid rgba(0, 0, 0, .10);
+                border-radius: 2px;
+                min-height: 350px;
+                overflow: auto;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .add-btn {
+                margin: 20px 0;
+                width: 250px;
+            }
+
+            .item {
+                border-bottom: 1px solid #eee;
+                padding: 10px;
+            }
+
+            .item:hover {
+                background-color: #eee;
+            }
+
+            .big-btn button {
+                width: 400px;
+                height: 100px;
+                font-size: 2rem;
+                display: block;
+                font-size: 1.75rem;
+                font-weight: 300;
+            }
+
+            .big-btn {
+                margin: 10px 0 20px 0;
+            }
+
+            .main-card {
+                margin-top: 26px;
+            }
+
+            p.machine-title {
+                font-weight: 500;
+            }
+        </style>
+        <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+        <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+        <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
+            order-by-value="true" data="{{stationItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" order-by-child="number"
+            order-by-value="true" data="{{machineItems}}"></firebase-query>
+        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
+        <app-indexeddb-mirror key="machine-data" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror key="station-data" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
+
+        <div class="card main-card" hidden="[[!showAddStation]]">
+            <h1 class="title">{{localize('add-station')}}</h1>
+            <paper-input type="number" id="stationNumber" name="station-number" label="{{localize('station-number')}}" value="[[getStationNumber(stationItems.length)]]"
+                min="1" max="999" step="1" readonly required always-float-label></paper-input>
+            <paper-input type="text" id="stationName" name="station-name" label="{{localize('station-name')}}" required always-float-label></paper-input>
+            <vaadin-combo-box label="Machine" id="machineSelector" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
+                item-value-path="name" required always-float-label></vaadin-combo-box>
+            <p class="machine-counter">You added [[stationMachineCount]] / [[stationMaxMachine]] machines</p>
+            <flat-button class="add-btn" on-tap="_addMachine"><button role="button">{{localize('add-machine')}}</button></flat-button>
+            <div class="frame">
+                <ul class="flex-container wrap">
+                    <template is="dom-repeat" items="{{machines}}" as="machineItem">
+                        <li class="flex-item machine-item" on-tap="_removeMachine" number="[[index]]" title="Click this to remove">[[machineItem.name]]
+                            <!-- <iron-icon on-tap="_removeMachine" number="[[index]]" icon="icons:close"></iron-icon> -->
+                        </li>
+                    </template>
+                </ul>
+            </div>
+            <flat-button class="btn" on-tap="_openStationListCard"><button role="button">{{localize('dismiss')}}</button></flat-button>
+            <flat-button class="btn shamrock" on-tap="_addStation"><button role="button">{{localize('add')}}</button></flat-button>
+        </div>
+        <div class="card main-card" hidden="[[showAddStation]]">
+            <h1 class="main-title">Station Management</h1>
+            <h1 class="no-machine-title" hidden="[[machineItems]]">Please add machine before adding station.</h1>
+            <ul class="app-grid">
+                <template is="dom-repeat" items="{{persistedStationData}}" as="stationItem">
+                    <li>
+                        <div class="station">
+                            <div class="station-info-group">
+                                <h1 class="title">[[stationItem.st_name]]</h1>
+                                <p>{{localize('station-number')}}: [[stationItem.st_number]]</p>
+                                <p>{{localize('station-machine')}}: [[stationItem.st_machine.length]] / [[stationMaxMachine]]</p>
+                                <p>Station ID: [[stationItem.$key]]</p>
+                                <div class="frame">
+                                    <div class="machine-list">
+                                        <iron-list items="[[stationItem.st_machine]]" as="machineItem">
+                                            <template>
+                                                <div tabindex$="[[tabIndex]]" class="item">
+                                                    <p class="machine-title">[[machineItem.name]]</p>
+                                                    <p>Type: [[machineItem.code]]</p>
+                                                    <p>Machine ID: [[machineItem.mid]]</p>
+                                                </div>
+                                            </template>
+                                        </iron-list>
+                                    </div>
+                                </div>
+                            </div>
+                            <flat-button class="btn" on-tap="_editStation" station="[[stationItem]]"><button role="button">{{localize('edit')}}</button></flat-button>
+                            <flat-button class="thunderbird btn" on-tap="_removeStation" station="[[stationItem]]"><button role="button">{{localize('remove')}}</button></flat-button>
+
+
+                            <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" always-on-top no-cancel-on-outside-click>
+                                <h1 class="title">{{localize('edit-station')}}</h1>
+                                <paper-input type="number" id="number_[[stationItem.$key]]" name="station-number" class="_editStationNumber" value="[[stationItem.st_number]]"
+                                    label="{{localize('station-number')}}" min="1" max="999" step="1" disabled="true" required
+                                    always-float-label></paper-input>
+                                <paper-input type="text" id="name_[[stationItem.$key]]" name="station-name" class="_editStationName" value="[[stationItem.st_name]]"
+                                    label="{{localize('station-name')}}" required always-float-label></paper-input>
+                                <vaadin-combo-box label="Machine" id="machineSelector" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
+                                    item-value-path="name" required always-float-label></vaadin-combo-box>
+                                <p class="machine-counter">You added [[stationItem.st_machine.length]] / [[stationMaxMachine]]</p>
+                                <flat-button class="btn" on-tap="_addMachine"><button role="button">{{localize('add-machine')}}</button></flat-button>
+                                <paper-dialog-scrollable>
+                                    <div class="frame">
+                                        <ul class="flex-container wrap">
+                                            <template is="dom-repeat" items="[[stationItem.st_machine]]" as="machineItem">
+                                                <li class="flex-item">[[machineItem.name]]
+                                                    <iron-icon on-tap="_removeMachine" number="[[index]]" icon="icons:close" title="Delete"></iron-icon>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </paper-dialog-scrollable>
+                                <div class="buttons">
+                                    <paper-button station="[[stationItem]]" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+                                    <paper-button station="[[stationItem]]" on-tap="_saveEditStation" dialog-confirm autofocus>{{localize('save')}}</paper-button>
+                                </div>
+                            </paper-dialog>
+
+                        </div>
+                    </li>
+                </template>
+            </ul>
+            <div class="center">
+                <flat-button class="big-btn" on-tap="_openAddStationCard"><button role="button"> {{localize('add-station')}}</button></flat-button>
+            </div>
+        </div>
+        <paper-toast id="toastAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
+        <paper-toast id="toastSaveStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-save-station')}}"></paper-toast>
+        <paper-toast id="toastDeleteStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-delete-station')}}"></paper-toast>
+        <paper-toast id="toastEmptyAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-empty-add-station')}}"></paper-toast>
+    </template>
+    <script>
+        class ViewSetupStation extends ReduxMixin(Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element)) {
+            static get is() {
+                return 'view-setup-station'
+            }
+
+            static get properties() {
+                return {
+                    language: String,
+                    stationItems: Object,
+                    machineItems: Object,
+                    stationMaxMachine: {
+                        type: Number,
+                        value: 20
+                    },
+                    showAddStation: {
+                        type: Boolean,
+                        value: false
+                    },
+                    machines: {
+                        type: Array,
+                        statePath: 'machines',
+                    },
+                    stationMachineCount: {
+                        type: Number,
+                        computed: 'computeMachineCount(machines)'
+                    }
+                }
+            }
+
+            static get actions() {
+                return {
+                    add(data) {
+                        return {
+                            type: 'ADD_MACHINE',
+                            machines: data
+                        }
+                    },
+                    remove(data) {
+                        return {
+                            type: 'REMOVE_MACHINE',
+                            index: data
+                        }
+                    },
+                    clear() {
+                        return {
+                            type: 'CLEAR_MACHINE'
+                        }
+                    }
+                }
+            }
+
+            getStationNumber(length) {
+                if (length == 0) {
+                    return 1;
+                } else {
+                    return length + 1;
+                }
+            }
+
+            computeMachineCount(machines) {
+                return machines.length;
+            }
+
+            connectedCallback() {
+                super.connectedCallback()
+                this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+
+            _openAddStationCard() {
+                this.showAddStation = true;
+            }
+
+            _openStationListCard() {
+                this.showAddStation = false;
+                this.clearField();
+                if (this.machines.length > 0) {
+                    this.dispatch('clear');
+                }
+            }
+
+            _addMachine() {
+                let selector = this.$.machineSelector;
+                if (selector.value) {
+                    if (this.machines.length < this.stationMaxMachine) {
+                        this.dispatch('add', selector.selectedItem);
+                        selector.value = null;
+                        selector.focus();
+                    } else {
+                        window.alert("Can't add more than 20 machines per station");
+                    }
+                } else {
+                    window.alert('Select a machine to add')
+                }
+            }
+
+            _removeMachine(e) {
+                if (this.machines.length > 0) {
+                    this.dispatch('remove', e.currentTarget.number);
+                }
+            }
+
+            _addStation() {
+                let sname = this.$.stationName.value;
+                let snumber = this.$.stationNumber.value;
+                let machine = this.machines;
+                if (sname && snumber && machine.length > 0) {
+                    this.$.stationQuery.ref.push({
+                        st_name: sname,
+                        st_number: snumber,
+                        st_machine: machine
+                    });
+                    this.clearField();
+                    this.machines = [];
+                    this.dispatch('clear');
+                    this.$.toastAddStation.open();
+                } else {
+                    this.$.toastEmptyAddStation.open();
+                }
+            }
+
+            _editStation(e) {
+                let key = e.currentTarget.station.$key;
+                this.$$('#edit_' + key).open();
+            }
+
+            _removeStation(e) {
+                if (window.confirm("Delete this station ?") == true) {
+                    let key = e.currentTarget.station.$key;
+                    this.$.stationQuery.ref.child(key).remove();
+                    this.$.toastDeleteStation.open();
+                }
+            }
+
+            // _saveEditStation(e) {
+            //     let key = e.currentTarget.station.$key;
+            //     let sname = this.$$('#name_' + key).value;
+            //     let snumber = this.$$('#number_' + key).value;
+            //     let smachine = this.machines;
+            //     if (sname !== "" && snumber !== "") {
+            //         this.$.stationQuery.ref.child(key).set({
+            //             name: sname,
+            //             number: snumber,
+            //             machine: smachine
+            //         });
+            //         this.$$('.station-dialog').close();
+            //         this.$.toastSaveStation.open();
+            //     } else {
+            //         this.$.toastEmpty_addStation.open();
+            //     }
+            // }
+
+            clearField() {
+                this.$.stationNumber.value = this.stationItems.length + 1;
+                this.$.stationName.value = "";
+                this.$.machineSelector.value = "";
+            }
+        }
+        customElements.define(ViewSetupStation.is, ViewSetupStation)
+    </script>
+</dom-module>

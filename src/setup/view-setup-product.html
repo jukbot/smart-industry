@@ -1,0 +1,37 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../view-setup.html">
+<link rel="import" href="../style/shared-styles.html">
+<link rel="import" href="../style/flat-button.html">
+
+<dom-module id="view-setup-product">
+    <template>
+        <style include="shared-styles app-grid-style flat-button">
+             :host {
+                margin: 10px;
+                display: block;
+                --app-grid-item-height: 50%;
+            }
+        </style>
+        <h1>Product Setup Polymer 2</h1>
+    </template>
+    <script>
+        class ViewSetupProduct extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+            Polymer.Element) {
+            static get is() {
+                return 'view-setup-product'
+            }
+
+            connectedCallback() {
+                super.connectedCallback()
+                this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+        }
+        customElements.define(ViewSetupProduct.is, ViewSetupProduct)
+    </script>
+</dom-module>

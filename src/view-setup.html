@@ -1,13 +1,12 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-
 <link rel="import" href="style/shared-styles.html">
 <link rel="import" href="setup/view-setup-factory.html">
 <link rel="import" href="setup/view-setup-station.html">
@@ -27,8 +26,8 @@
     <app-header id="subheader" slot="header" fixed shadow>
       <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect>
         <template is="dom-repeat" items="{{submenus}}">
-          <paper-tab role="tab" name$="{{item.view}}" disabled="{{item.disable}}">
-            <paper-icon-button icon="{{item.icon}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}} [[page]]</span>
+          <paper-tab role="tab" name$="{{item.view}}">
+            <paper-icon-button icon="{{item.icon}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>
           </paper-tab>
         </template>
       </paper-tabs>
@@ -63,43 +62,36 @@
             type: Array,
             value: () => {
               return [{
-                  'title': 'factory',
-                  'view': 'factory',
-                  'icon': 'vaadin:factory',
-                  'disable': false
-                },
-                {
-                  'title': 'station',
-                  'view': 'station',
-                  'icon': 'vaadin:viewport',
-                  'disable': false
-                },
-                {
-                  'title': 'machine',
-                  'view': 'machine',
-                  'icon': 'vaadin:automation',
-                  'disable': false
-                },
-
-                {
-                  'title': 'product',
-                  'view': 'product',
-                  'icon': 'vaadin:barcode',
-                  'disable': false
-                },
-                {
-                  'title': 'customer',
-                  'view': 'customer',
-                  'icon': 'vaadin:clipboard-user',
-                  'disable': false
-                },
-                {
-                  'title': 'inventory',
-                  'view': 'inventory',
-                  'icon': 'vaadin:stock',
-                  'disable': true
-                }
-              ];
+                "title": "factory",
+                "view": "factory",
+                "icon": "vaadin:factory"
+              },
+              {
+                "title": "station",
+                "view": "station",
+                "icon": "vaadin:viewport"
+              },
+              {
+                "title": "machine",
+                "view": "machine",
+                "icon": "vaadin:automation"
+              },
+              {
+                "title": "product",
+                "view": "product",
+                "icon": "vaadin:barcode"
+              },
+              {
+                "title": "customer",
+                "view": "customer",
+                "icon": "vaadin:clipboard-user"
+              },
+              {
+                "title": "inventory",
+                "view": "inventory",
+                "icon": "vaadin:stock"
+              }
+              ]
             }
           }
 
@@ -116,6 +108,6 @@
         this.loadResources(this.resolveUrl('../data/locales.json'));
       }
     }
-    window.customElements.define(ViewSetup.is, ViewSetup);
+    customElements.define(ViewSetup.is, ViewSetup);
   </script>
 </dom-module>

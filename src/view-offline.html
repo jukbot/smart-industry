@@ -60,11 +60,11 @@
   </template>
   <script>
     class ViewOffline extends Polymer.Element {
-      static get is () {
+      static get is() {
         return 'view-offline'
       }
 
-      _tryReconnect () {
+      _tryReconnect() {
         this.dispatchEvent(new CustomEvent('try-reconnect', {
           composed: true
         }))

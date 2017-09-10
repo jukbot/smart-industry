@@ -20,6 +20,9 @@
         --app-grid-columns: 1;
         --app-grid-item-height: 50%;
         --paper-checkbox-checked-color: #202020;
+        --paper-input-container: {
+          padding: 5px 0;
+        }
       }
 
       h1,
@@ -31,6 +34,10 @@
       section {
         height: 100vh;
         width: 100%;
+      }
+
+      article {
+        padding: 0 100px;
       }
 
       .container {
@@ -95,7 +102,6 @@
       .register-form {
         width: 100%;
         margin: 10px auto;
-        max-width: 30rem;
       }
 
       .login-input,
@@ -103,7 +109,7 @@
       .reset-input {
         --paper-input-container-focus-color: #202020;
         --paper-input-container-input: {
-          font-size: 1.2rem;
+          font-size: 1rem;
           color: #202020;
         }
       }
@@ -129,10 +135,9 @@
       .logo {
         display: none;
         margin: 0 auto;
-        padding: 10px 0;
-        width: 165px;
-        height: auto;
-        text-align: center;
+        padding: 0;
+        width: 150px;
+        height: 150px;
       }
 
       .mobile-title {
@@ -147,7 +152,6 @@
 
       .keep-session-checkbox>label {
         margin-left: 10px;
-        margin-top: -2px;
       }
 
       #toastAlert {
@@ -198,18 +202,18 @@
         float: right;
       }
 
-      @media (min-width: 360px) and (max-width: 768px) {
+      @media (min-width: 320px) and (max-width: 1024px) {
         .left-half {
           display: none;
-        }
-        .mobile-title {
-          display: block;
         }
         .logo {
           display: block;
         }
         article {
           padding: 0 30px;
+        }
+        button {
+          font-size: 0.95rem;
         }
       }
     </style>
@@ -245,7 +249,7 @@
               </flat-checkbox>
               <label for="setKeepSession">Keep me signed in</label>
             </div>
-            <flat-button class="login-btn" role="button" on-tap="_login"><button type="button">Log in</button></flat-button>
+            <flat-button class="login-btn" role="button" on-click="_login"><button type="button">Log in</button></flat-button>
             <div class="link"><a href="javascript:void(0);" on-click="_showReset" class="login-forget">Forgot Password?</a></div>
             <div class="link"><a href="javascript:void(0);" on-click="_showRegister" class="login-register">Don’t have an account? Get one here.</a></div>
           </form>
@@ -258,7 +262,7 @@
             <paper-input class="register-input" id="register_organization" type="text" maxlength="40" placeholder="Organization" auto-validate></paper-input>
             <paper-input class="register-input" id="register_phone" type="tel" maxlength="15" pattern="\d{3}[\-]\d{3}[\-]\d{4}" placeholder="Phone Number"
               auto-validate></paper-input>
-            <flat-button class="register-btn" role="button" on-tap="_register">
+            <flat-button class="register-btn" role="button" on-click="_register">
               <button type="button">Send Confirmation</button>
             </flat-button>
             <div class="link"><a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Sign in</a></div>
@@ -269,7 +273,7 @@
             </div>
             <paper-input class="reset-input" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail" auto-focus
               auto-validate></paper-input>
-            <flat-button class="reset-btn" role="button" on-tap="_resetPassword"><button type="button">Reset Password</button></flat-button>
+            <flat-button class="reset-btn" role="button" on-click="_resetPassword"><button type="button">Reset Password</button></flat-button>
             <div class="link"><a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Have an account? Sign in.</a></div>
           </form>
         </article>
@@ -371,9 +375,7 @@
                   this.$.data.ref.child(keyid).set(this.sampleData).catch(error => {
                     this.showAlertToast(error.code)
                   })
-                  // Signout Action
                   this.$.auth.signOut()
-                  // Switch to login form
                   this._hideRegister()
                   complete = 1
                 }).catch((error) => {

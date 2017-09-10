@@ -1,6 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../view-dashboard.html">
@@ -128,6 +127,6 @@
         this.loadResources(this.resolveUrl('../../data/locales.json'));
       }
     }
-    window.customElements.define(ViewDashboardStatistic.is, ViewDashboardStatistic);
+    customElements.define(ViewDashboardStatistic.is, ViewDashboardStatistic);
   </script>
 </dom-module>

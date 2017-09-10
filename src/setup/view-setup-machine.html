@@ -1,0 +1,410 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">\
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../view-setup.html">
+<link rel="import" href="../style/shared-styles.html">
+<link rel="import" href="../style/flat-button.html">
+<link rel="import" href="../style/flat-icons.html">
+
+<dom-module id="view-setup-machine">
+    <template>
+        <style include="shared-styles app-grid-style flat-button">
+             :host {
+                display: block;
+                margin: 10px;
+                --app-grid-item-height: 50%;
+            }
+
+            @media (min-width: 360px) and (max-width: 768px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            @media (min-width: 769px) and (max-width: 1024px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            @media (min-width: 1025px) and (max-width: 1200px) {
+                 :host {
+                    --app-grid-columns: 2;
+                }
+            }
+
+            @media (min-width: 1201px) and (max-width: 2560px) {
+                 :host {
+                    --app-grid-columns: 4;
+                }
+            }
+
+            iron-list {
+                flex: 1 1 auto;
+            }
+
+            h1.main-title {
+                text-align: center;
+                margin: 15px 0 25px 0;
+                font-size: 2.5rem;
+            }
+
+            h1.title {
+                text-align: center;
+                margin: 15px 0 25px 0;
+                font-size: 1.75rem;
+            }
+
+            .machine-dialog {
+                width: 50%;
+                padding: 10px;
+                top: 200px;
+            }
+
+            .machine {
+                margin: 10px;
+                padding: 20px;
+                border: 1px solid rgba(0, 0, 0, .10);
+                border-radius: 2px;
+            }
+
+            .machine p {
+                margin: 10px 0;
+            }
+
+            .machine h1 {
+                text-align: center;
+            }
+
+            .machine-info-group {
+                margin-bottom: auto;
+            }
+
+            .no-machine-title {
+                font-size: 2rem;
+                font-weight: 400;
+                text-align: center;
+                padding: 30px 0;
+            }
+
+            .flex-container {
+                padding: 0;
+                margin: 0;
+                list-style: none;
+                -ms-box-orient: horizontal;
+                display: -webkit-box;
+                display: -moz-box;
+                display: -ms-flexbox;
+                display: -moz-flex;
+                display: -webkit-flex;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+
+            .wrap {
+                -webkit-flex-flow: row wrap;
+                flex-flow: row wrap;
+            }
+
+            .flex-item {
+                background: #202020;
+                padding: 5px;
+                width: 250px;
+                height: 75px;
+                margin: 10px;
+                line-height: 75px;
+                color: white;
+                font-size: 1.25em;
+                text-align: center;
+            }
+
+            .machine-item {
+                cursor: pointer;
+            }
+
+            .machine-counter {
+                margin: 10px 0 0 0;
+            }
+
+            .machine-list {
+                height: 300px;
+            }
+
+            .frame {
+                border: 1px solid rgba(0, 0, 0, .10);
+                border-radius: 2px;
+                min-height: 350px;
+                overflow: auto;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .add-btn {
+                margin: 20px 0;
+                width: 250px;
+            }
+
+            .item {
+                border-bottom: 1px solid #eee;
+                padding: 10px;
+            }
+
+            .item:hover {
+                background-color: #eee;
+            }
+
+            .big-btn button {
+                width: 400px;
+                height: 100px;
+                font-size: 2rem;
+                display: block;
+                font-size: 1.75rem;
+                font-weight: 300;
+            }
+
+            .big-btn {
+                margin: 10px 0 20px 0;
+            }
+
+            .main-card {
+                margin-top: 26px;
+            }
+        </style>
+        <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+        <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+        <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" order-by-child="number"
+            order-by-value="true" data="{{machineItems}}"></firebase-query>
+        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
+        <app-indexeddb-mirror key="machine-data" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
+
+        <div class="card main-card" hidden="[[!showAddMachine]]">
+            <h1 class="title">{{localize('add-machine')}}</h1>
+            <paper-input type="number" id="machineNumber" label="{{localize('machine-number')}}" value="[[getMachineNumber(machineItems.length)]]"
+                min="1" max="999" step="1" readonly required always-float-label></paper-input>
+            <paper-input type="text" id="machineName" label="Machine Name" required always-float-label></paper-input>
+            <vaadin-combo-box id="machineType" label="{{localize('machine-type')}}" items="[[machineType]]" item-value-path="value" item-label-path="name"
+                required always-float-label>
+                <template>
+                    <div readonly>[[item.name]]</div>
+                </template>
+            </vaadin-combo-box>
+            <paper-input type="number" id="machineCapacity" label="{{localize('machine-max-capacity')}}" min="1" max="9999" step="1"
+                required always-float-label></paper-input>
+            <flat-button class="btn" on-tap="_openMachineListCard"><button role="button">{{localize('dismiss')}}</button></flat-button>
+            <flat-button class="btn shamrock" on-tap="_addmachine"><button role="button">{{localize('add')}}</button></flat-button>
+        </div>
+        <div class="card main-card" hidden="[[showAddMachine]]">
+            <h1 class="main-title">Machine Management</h1>
+            <ul class="app-grid">
+                <template is="dom-repeat" items="{{persistedMachineData}}" as="machineItem">
+                    <li>
+                        <div class="machine">
+                            <div class="machine-info-group">
+                                <h1 class="title">[[machineItem.name]]</h1>
+                                <p>{{localize('machine-number')}}: [[machineItem.number]]</p>
+                                <p>Machine Name: [[machineItem.name]]</p>
+                                <p>{{localize('machine-type')}}: [[machineItem.type]]</p>
+                                <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] items/day</p>
+                                <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
+                                <p style="color:#e53935">Machine Key: [[machineItem.$key]]</p>
+                                <p style="color:#e53935">{{localize('machine-station')}}: [[machineItem.station]]</p>
+                            </div>
+                            <flat-button class="btn" on-tap="_editmachine" machine="[[machineItem]]"><button role="button">{{localize('edit')}}</button></flat-button>
+                            <flat-button class="thunderbird btn" on-tap="_removemachine" machine="[[machineItem]]"><button role="button">{{localize('remove')}}</button></flat-button>
+
+                            <!-- <paper-dialog id="edit_[[machineItem.$key]]" class="machine-dialog" always-on-top no-cancel-on-outside-click>
+                                <h1 class="title">{{localize('edit-machine')}}</h1>
+                                <paper-input type="number" id="number_[[machineItem.$key]]" name="machine-number" class="_editmachineNumber" value="[[machineItem.st_number]]"
+                                    label="{{localize('machine-number')}}" min="1" max="999" step="1" disabled="true" required
+                                    always-float-label></paper-input>
+                                <paper-input type="text" id="name_[[machineItem.$key]]" name="machine-name" class="_editmachineName" value="[[machineItem.st_name]]"
+                                    label="{{localize('machine-name')}}" required always-float-label></paper-input>
+                                <vaadin-combo-box label="Machine" id="machineSelector" items="[[persistedMachineData]]" name="machineName" item-label-path="name"
+                                    item-value-path="name" required always-float-label></vaadin-combo-box>
+                                <p class="machine-counter">You added [[machineMachineCount]]/20 machines</p>
+                                <flat-button class="btn" on-tap="_addMachine"><button role="button">{{localize('add-machine')}}</button></flat-button>
+                                <paper-dialog-scrollable>
+                                    <div class="frame">
+                                        <ul class="flex-container wrap">
+                                            <template is="dom-repeat" items="[[machineItem.st_machine]]" as="machineItem">
+                                                <li class="flex-item">[[machineItem.name]]
+                                                    <iron-icon on-tap="_removeMachine" number="[[index]]" icon="icons:close" title="Delete"></iron-icon>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </paper-dialog-scrollable>
+                                <div class="buttons">
+                                    <paper-button machine="[[machineItem]]" dialog-dismiss>{{localize('dismiss')}}</paper-button>
+                                    <paper-button machine="[[machineItem]]" on-tap="_saveEditmachine" dialog-confirm autofocus>{{localize('save')}}</paper-button>
+                                </div>
+                            </paper-dialog> -->
+
+                        </div>
+                    </li>
+                </template>
+            </ul>
+            <div class="center">
+                <flat-button class="big-btn" on-tap="_openAddMachineCard"><button role="button"> {{localize('add-machine')}}</button></flat-button>
+            </div>
+        </div>
+        <paper-toast id="toastAddMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-machine')}}"></paper-toast>
+        <paper-toast id="toastSaveMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-save-machine')}}"></paper-toast>
+        <paper-toast id="toastDeleteMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-delete-machine')}}"></paper-toast>
+        <paper-toast id="toastEmptyAddMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-empty-add-machine')}}"></paper-toast>
+    </template>
+    <script>
+        class ViewSetupMachine extends ReduxMixin(Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element)) {
+            static get is() {
+                return 'view-setup-machine'
+            }
+
+            static get properties() {
+                return {
+                    language: String,
+                    machineItems: Object,
+                    showAddMachine: {
+                        type: Boolean,
+                        value: false
+                    },
+                    machineType: {
+                        type: Array,
+                        value: function () {
+                            return [{
+                                "name": "Milling",
+                                "value": "mill"
+                            },
+                            {
+                                "name": "Drilling",
+                                "value": "drill"
+                            },
+                            {
+                                "name": "Trimming",
+                                "value": "trim"
+                            },
+                            {
+                                "name": "Polishing",
+                                "value": "polish"
+                            },
+                            {
+                                "name": "Welding",
+                                "value": "weld"
+                            },
+                            {
+                                "name": "Packing",
+                                "value": "pack"
+                            }
+                            ]
+                        }
+                    }
+                }
+            }
+
+            getInstallDate(timestamp) {
+                let today = new Date(timestamp * 1000);
+                let dd = today.getDate();
+                let mm = today.getMonth() + 1; //January is 0!
+                let yyyy = today.getFullYear();
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+                let deliveryDate = dd + '/' + mm + '/' + yyyy;
+                return deliveryDate;
+            }
+
+            getMachineNumber(length) {
+                if (length == 0) {
+                    return 1;
+                } else {
+                    return length + 1;
+                }
+            }
+
+            connectedCallback() {
+                super.connectedCallback()
+                this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+
+            _openAddMachineCard() {
+                this.showAddMachine = true;
+            }
+
+            _openMachineListCard() {
+                this.showAddMachine = false;
+                this.clearField();
+                if (this.machines.length > 0) {
+                    this.dispatch('clear');
+                }
+            }
+
+            _addMachine() {
+                let sname = this.$.machineName.value;
+                let snumber = this.$.machineNumber.value;
+                let machine = this.machines;
+                if (sname && snumber && machine.length > 0) {
+                    this.$.machineQuery.ref.push({
+                        st_name: sname,
+                        st_number: snumber,
+                        st_machine: machine
+                    });
+                    this.clearField();
+                    this.machines = [];
+                    this.dispatch('clear');
+                    this.$.toastAddMachine.open();
+                } else {
+                    this.$.toastEmptyAddMachine.open();
+                }
+            }
+
+            _editMachine(e) {
+                let key = e.currentTarget.machine.$key;
+                this.$$('#edit_' + key).open();
+            }
+
+            _removeMachine(e) {
+                if (window.confirm("Delete this machine ?") == true) {
+                    let key = e.currentTarget.machine.$key;
+                    this.$.machineQuery.ref.child(key).remove();
+                    this.$.toastDeleteMachine.open();
+                }
+            }
+
+            // _saveEditmachine(e) {
+            //     let key = e.currentTarget.machine.$key;
+            //     let sname = this.$$('#name_' + key).value;
+            //     let snumber = this.$$('#number_' + key).value;
+            //     let smachine = this.machines;
+            //     if (sname !== "" && snumber !== "") {
+            //         this.$.machineQuery.ref.child(key).set({
+            //             name: sname,
+            //             number: snumber,
+            //             machine: smachine
+            //         });
+            //         this.$$('.machine-dialog').close();
+            //         this.$.toastSaveMachine.open();
+            //     } else {
+            //         this.$.toastEmpty_addmachine.open();
+            //     }
+            // }
+
+            clearField() {
+                this.$.machineNumber.value = this.machineItems.length + 1;
+                this.$.machineCapacity.value = "";
+                this.$.machineName.value = "";
+                this.$.machineType.value = "";
+            }
+        }
+        customElements.define(ViewSetupMachine.is, ViewSetupMachine)
+    </script>
+</dom-module>

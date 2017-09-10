@@ -1,0 +1,38 @@
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<script src="../../node_modules/redux/dist/redux.min.js"></script>
+<script>
+    const initialState = {
+        machines: [] // default machines array constructor
+    };
+
+    const reducer = (state, action) => {
+        if (!state) return initialState;
+
+        switch (action.type) {
+            case 'ADD_MACHINE':
+                const machines = state.machines.slice(0);
+                delete action.machines["$key"];
+                return Object.assign({}, state, {
+                    machines: [...state.machines, action.machines]
+                });
+                break;
+            case 'REMOVE_MACHINE':
+                return Object.assign({}, state, {
+                    machines: state.machines.filter((item, index) => index !== action.index)
+                    // machines: [...state.machines.slice(0, action.index), ...state.machines.slice(action.index + 1)]  
+                });
+                break;
+            case 'CLEAR_MACHINE':
+                return Object.assign({}, state, {
+                    machines: state.machines = []
+                });
+                break;
+            default:
+                return state
+        }
+    };
+
+    const store = Redux.createStore(reducer);
+    const ReduxMixin = PolymerRedux(store);
+
+</script>

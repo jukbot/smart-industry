@@ -31,8 +31,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-dashboard.html">
 
-
-
 <dom-module id="view-app">
   <template>
     <style include="flat-button shared-styles">
@@ -40,7 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
       }
     </style>
-    <app-analytics key="UA-51514677-9"></app-analytics>
+    <!-- <app-analytics key="UA-51514677-9"></app-analytics> ENABLE WHEN DEPLOY PRODUCTION -->
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
@@ -52,24 +50,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
-      <app-drawer hidden$="[[!signedIn]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="0">
+      <app-drawer hidden$="[[!signedIn]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
         <div class="app-logo" role="logo" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
         <nav>
           <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
-            <a name="dashboard" role="link" href="/dashboard" rel="dashboard" title="Dashboard" tabindex="-1">
+            <a name="dashboard" role="link" href="/dashboard" rel="dashboard" title="Dashboard">
               <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
-            <a name="setup" role="link" href="/setup" rel="setup" title="Setup" tabindex="-1">
+            <a name="setup" role="link" href="/setup" rel="setup" title="Setup">
               <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-            <a name="plan" role="link" href="/plan" rel="plan" title="Plan" tabindex="-1">
+            <a name="plan" role="link" href="/plan" rel="plan" title="Plan">
               <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-            <a name="track" role="link " href="/track" rel="track" title="Track" tabindex="-1">
+            <a name="track" role="link " href="/track" rel="track" title="Track">
               <paper-icon-button icon="vaadin:progressbar"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
-            <a name="help" role="link" href="/help" rel="help" title="Help" tabindex="-1">
+            <a name="help" role="link" href="/help" rel="help" title="Help">
               <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
             </a>
-            <a name="settings" role="link" href="/settings" rel="settings" title="Settings" tabindex="-1">
+            <a name="settings" role="link" href="/settings" rel="settings" title="Settings">
               <paper-icon-button icon="vaadin:tools"></paper-icon-button> {{localize('settings')}}
             </a>
           </iron-selector>
@@ -82,12 +80,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </flat-button>
 
           <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="Profile image" alt="user photo">
-          <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" tabindex="0">
+          <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip">
             <p>{{localize('email')}}: [[persistedUserData.email]]</p>
             <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span></p>
             <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
           </paper-tooltip>
-          <p>[[persistedUserData.displayName]]</p>
+          <p>[[persistedUserData.displayname]]</p>
           <p class="online">[[getOnlineStatus(online)]]</p>
           <p>{{localize('version')}} 1.0.5</p>
         </div>
@@ -97,10 +95,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <app-header-layout fullbleed>
         <app-header hidden$="[[!signedIn]]" id="header" slot="header">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
-          <paper-icon-button icon="vaadin:menu" role="button" tabindex="0" drawer-toggle></paper-icon-button>
-          <!-- <h2 class="page-title" main-title>{{localize(page)}}</h2> -->
+          <paper-icon-button icon="vaadin:menu" role="button" drawer-toggle></paper-icon-button>
+          <h2 class="page-title" main-title>{{localize(page)}}</h2>
           <input id="searchBox" type="search" name="search" placeholder="Search this app">
-          <paper-icon-button icon="vaadin:search" tabindex="-1" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button>
+          <paper-icon-button icon="vaadin:search" tabindex="0" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button>
         </app-header>
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
           <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!signedIn]]"></view-dashboard>
@@ -123,7 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <p>[[toastText]]</p>
         </div>
         <div class="toast-flex-item">
-          <paper-icon-button on-tap="_closeToastAlert" role="bottom" class="close-toast-button" icon="vaadin:close-big" tabindex="-1"></paper-icon-button>
+          <paper-icon-button on-tap="_closeToastAlert" role="bottom" class="close-toast-button" icon="vaadin:close-big"></paper-icon-button>
         </div>
       </div>
     </paper-toast>
@@ -181,20 +179,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
-        Polymer.RenderStatus.beforeNextRender(this, function () {
-          Polymer.Async.timeOut.run(() => {
-            if (this.signedIn && this.route.path == '/login') {
-              this.page = 'dashboard'
-              this.set('route.path', '/dashboard')
-            } else if (this.signedIn && this.route.path == '/') {
-              this.page = 'dashboard'
-              this.set('route.path', '/dashboard')
-            } // else if (!this.signedIn) {
-            // this.page = 'login'
-            // this.set('route.path', '/login')
-            // }
-          }, 1)
-        })
+
       }
 
       ready() {
@@ -202,9 +187,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // Custom elements polyfill safe way to indicate an element has been upgraded.
         document.body.removeAttribute('unresolved')
         // listen for custom events
+        requestAnimationFrame(this._installListeners.bind(this));
+        // listen for navigation preload activate
+        self.addEventListener('activate', (e) => {
+          e.waitUntil(async function () {
+            // Feature-detect
+            if (!self.registration.navigationPreload) {
+              return;
+            }
+            // Enable navigation preloads;
+            await self.registration.navigationPreload.enable();
+          }());
+        });
+        // listen for navigation preload fetch
+        self.addEventListener('fetch', (e) => {
+          e.respondWith(async function () {
+            // Respond from the cache if we can
+            const cachedResponse = await caches.match(e.request);
+            if (cachedResponse) return cachedResponse;
+            // Else, try to use preloaded response
+            const response = await e.preloadResponse;
+            if (response) return response;
+            // Else try the network.
+            return fetch(e.request);
+          }());
+        });
+      }
+
+      _installListeners() {
+        // listen for custom events
         this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e))
         this.addEventListener('signed-in-changed', (e) => this._signedInChanged(e))
-        this.addEventListener('on-error', (e) => this._handleError(e))
+        this.addEventListener('on-error', (e) => this._handleError(e).bind(this))
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, () => {
           window.addEventListener('online', (e) => this._networkChanged(e))
@@ -262,16 +276,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               if ('serviceWorker' in navigator) {
                 navigator.serviceWorker.register('/service-worker.js', {
                   scope: '/'
+                }).then((registration) => {
+                  console.log('%cService Worker Registered in ' + registration.scope, greenColor)
+                }).catch((err) => {
+                  console.error('%cService Worker Register Failed ' + err, crimsonColor)
                 })
-                  .then((registration) => {
-                    console.log('%cService Worker Registered', greenColor)
-                  }).catch((err) => {
-                    console.error('%cService Worker Register Failed ' + err, crimsonColor)
-                  })
                 navigator.serviceWorker.ready.then((registration) => {
                   console.log('%cService Worker Ready', greenColor)
                 })
               } else {
+                console.error('%cService Worker is not support by your browser.' + err, crimsonColor)
                 alert('Service Worker is not support by your browser. Please upgrade your browser')
               }
               this._networkChanged()
@@ -287,10 +301,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _signedInChanged(e) {
-        console.log(this.signedIn)
-        //  if (!this.signedIn) {
-        //    this.page = 'login'
-        //   }
+        Polymer.RenderStatus.beforeNextRender(this, function () {
+          Polymer.Async.timeOut.run(() => {
+            if (this.signedIn && this.route.path == '/login') {
+              this.page = 'dashboard'
+              this.set('route.path', '/dashboard')
+            } else if (this.signedIn && this.route.path == '/') {
+              this.page = 'dashboard'
+              this.set('route.path', '/dashboard')
+            } //else if (!this.signedIn) {
+            //this.page = 'login'
+            //this.set('route.path', '/login')
+            //}
+          }, 1)
+        })
         if (this.signedIn && !this.user.emailVerified) {
           this.showAlertToast(
             'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
@@ -301,8 +325,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _networkChanged() {
         let oldOffline = this.offline
         this.offline = !navigator.onLine
-        // Show the snackbar if the user is offline when starting a new session
-        // or if the network status changed.
+        // Show the snackbar if the user is offline when starting a new session or if the network status changed.
         if (this.offline || (!this.offline && oldOffline === true)) {
           this.notificationText = this.offline ? 'notification-offline' : 'notification-online'
           this.$.toastNotification.open()
@@ -320,7 +343,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.appLanguage.refreshNetworkStatus()
         this.$.pageLoader.removeAttribute('indeterminate')
       }
-
 
       _logout() {
         if (!this.online) {
@@ -389,7 +411,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.toastText = text
         this.$.toastVerify.open()
       }
-
     }
     customElements.define(ViewApp.is, ViewApp)
   </script>

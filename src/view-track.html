@@ -31,9 +31,9 @@
       </paper-tabs>
     </app-header>
     <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
-      <view-track-scheduling name="scheduling"></view-track-scheduling>
+      <!-- <view-track-scheduling name="scheduling"></view-track-scheduling>
       <view-track-order name="order"></view-track-order>
-      <view-track-production name="production"></view-track-production>
+      <view-track-production name="production"></view-track-production> -->
     </iron-pages>
   </template>
 
@@ -57,21 +57,21 @@
             type: Array,
             value: () => {
               return [{
-                  'title': 'production',
-                  'view': 'production',
-                  'icon': 'vaadin:progressbar'
-                },
-                {
-                  'title': 'machine',
-                  'view': 'machine',
-                  'icon': 'vaadin:automation'
-                },
-                {
-                  'title': 'energy',
-                  'view': 'energy',
-                  'icon': 'vaadin:bolt'
-                }
-              ];
+                "title": "production",
+                "view": "production",
+                "icon": "vaadin:progressbar"
+              },
+              {
+                "title": "machine",
+                "view": "machine",
+                "icon": "vaadin:automation"
+              },
+              {
+                "title": "energy",
+                "view": "energy",
+                "icon": "vaadin:bolt"
+              }
+              ]
             }
           }
 
@@ -88,6 +88,6 @@
         this.loadResources(this.resolveUrl('../data/locales.json'));
       }
     }
-    window.customElements.define(ViewTrack.is, ViewTrack);
+    customElements.define(ViewTrack.is, ViewTrack);
   </script>
 </dom-module>

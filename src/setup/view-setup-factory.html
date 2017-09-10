@@ -2,9 +2,9 @@
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -42,7 +42,13 @@
                 }
             }
 
-            .factory-rule p {
+            h1.title {
+                text-align: center;
+                margin: 15px 0 25px 0;
+                font-size: 1.75rem;
+            }
+
+            .factory-rule>p {
                 margin: 16px 0;
             }
 
@@ -80,17 +86,8 @@
                 font-weight: 400;
             }
 
-            .info-group {
-                margin-top: 15px;
-            }
-
             .info-group>p {
                 margin: 12px 0;
-            }
-
-            #toastSaveFactoryInfoSuccess,
-            #toastErrorIncompleteInput {
-                width: 350px;
             }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
@@ -103,7 +100,7 @@
         <ul class="app-grid">
             <li>
                 <div class="card">
-                    <h1>{{localize('factory-initialize')}}</h1>
+                    <h1 class="title">{{localize('factory-initialize')}}</h1>
                     <div>
                         <paper-input label="{{localize('factory-name')}}" id="factoryName" value="[[factoryProfile.name]]" type="text" required always-float-label></paper-input>
                         <vaadin-combo-box label="{{localize('factory-type')}}" id="factoryType" value="[[factoryProfile.type]]" items="[[factoryType]]"
@@ -149,7 +146,7 @@
                         <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[factorySchedule.interval]]"
                             type="number" min="1" max="60" step="1" required always-float-label auto-validate></paper-input>
                         <div class="button-group">
-                            <flat-button on-tap="saveValue" class="btn" title="Save settings"><button role="button">{{localize('save-settings')}}</button></flat-button>
+                            <flat-button on-tap="saveValue" class="shamrock btn" title="Save settings"><button role="button">{{localize('save-settings')}}</button></flat-button>
                             <flat-button on-tap="resetValue" class="btn" title="Restore Default"><button role="button">{{localize('restore')}}</button></flat-button>
                         </div>
                     </div>
@@ -157,7 +154,7 @@
             </li>
             <li>
                 <div class="card factory-rule" style="margin-bottom: 20px">
-                    <h1>{{localize('factory-information')}}</h1>
+                    <h1 class="title">{{localize('factory-information')}}</h1>
                     <div class="flex-container">
                         <div class="info-group flex-item">
                             <p>{{localize('factory-name')}}</p>
@@ -196,7 +193,7 @@
                     </div>
                 </div>
                 <div class="card factory-rule" style="margin-top: 20px">
-                    <h1>{{localize('factory-global-standard')}}</h1>
+                    <h1 class="title">{{localize('factory-global-standard')}}</h1>
                     <div class="flex-container">
                         <div class="info-group flex-item">
                             <p>{{localize('productivity-optimization')}}</p>
@@ -245,7 +242,6 @@
             static get properties() {
                 return {
                     language: String,
-                    factoryType: Array,
                     factorySchedule: Object,
                     factoryOperation: Object,
                     factoryPerformance: Object,
@@ -253,16 +249,16 @@
                         type: Array,
                         value: () => {
                             return [{
-                                'name': 'Increase Profit',
-                                'value': 'increase-profit'
+                                "name": "Increase Profit",
+                                "value": "increase-profit"
                             },
                             {
-                                'name': 'Reduce Cost',
-                                'value': 'reduce-cost'
+                                "name": "Reduce Cost",
+                                "value": "reduce-cost"
                             },
                             {
-                                'name': 'Disabled',
-                                'value': 'disabled'
+                                "name": "Disabled",
+                                "value": "disabled"
                             }
                             ]
                         }
@@ -271,16 +267,16 @@
                         type: Array,
                         value: () => {
                             return [{
-                                'name': 'Serial Production',
-                                'value': 'serial'
+                                "name": "Serial Production",
+                                "value": "serial"
                             },
                             {
-                                'name': 'Parallel Production',
-                                'value': 'parallel'
+                                "name": "Parallel Production",
+                                "value": "parallel"
                             },
                             {
-                                'name': 'Multi-Component Production',
-                                'value': 'multi'
+                                "name": "Multi-Component Production",
+                                "value": "multi"
                             }
                             ]
                         }
@@ -289,16 +285,16 @@
                         type: Array,
                         value: () => {
                             return [{
-                                'name': 'Job Shop',
-                                'value': 'js'
+                                "name": "Job Shop",
+                                "value": "jobshop"
                             },
                             {
-                                'name': 'Flow Shop',
-                                'value': 'fs'
+                                "name": "Flow Shop",
+                                "value": "flowshop"
                             },
                             {
-                                'name': 'Hybrid (Jobshop + Flowshop)',
-                                'value': 'hb'
+                                "name": "Hybrid (Jobshop + Flowshop)",
+                                "value": "hybrid"
                             }
                             ]
                         }
@@ -428,13 +424,13 @@
             getFactoryType(factory_type) {
                 if (!factory_type) return
                 switch (factory_type) {
-                    case 'js':
+                    case 'jobshop':
                         return 'Job Shop'
                         break
-                    case 'fs':
+                    case 'flowshop':
                         return 'Flow Shop'
                         break
-                    case 'hb':
+                    case 'hybrid':
                         return 'Hybrid (Job + Flow)'
                         break
                     default:
@@ -459,6 +455,6 @@
                 }
             }
         }
-        window.customElements.define(ViewSetupFactory.is, ViewSetupFactory)
+        customElements.define(ViewSetupFactory.is, ViewSetupFactory)
     </script>
 </dom-module>

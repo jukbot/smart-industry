@@ -81,7 +81,7 @@
       <li>
         <div class="card">
           <h1 class="head">Order Done</h1>
-          <h1 class="number">[[orderData.length]]</h1>
+          <h1 class="number">[[getDoneOrder(orderData)]] [[doneOrderCount]]</h1>
         </div>
       </li>
 
@@ -139,7 +139,8 @@
           factorySchedule: Object,
           factoryOperation: Object,
           factoryPerformance: Object,
-          waitOrderCount: Number
+          waitOrderCount: Number,
+          doneOrderCount: Number
         }
       }
 
@@ -198,7 +199,17 @@
         }
       }
 
+      getDoneOrder(orderData) {
+        if (!orderData) return 0;
+        if (orderData.length > 0) {
+          let query = this.$.orderQuery.ref;
+          query.orderByChild("order_status").equalTo("done").on("child_added", (snapshot) => { this.set('doneOrderCount', snapshot.numChildren()); console.log(snapshot.val()) });
+        } else {
+          this.set('doneOrderCount', 0);
+        }
+      }
+
     }
-    window.customElements.define(ViewDashboardOverview.is, ViewDashboardOverview);
+    customElements.define(ViewDashboardOverview.is, ViewDashboardOverview);
   </script>
 </dom-module>

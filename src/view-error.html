@@ -59,13 +59,13 @@
   </template>
   <script>
     class ViewError extends Polymer.Element {
-      static get is () {
+      static get is() {
         return 'view-error'
-  }
+      }
 
-      _goBack () {
+      _goBack() {
         window.history.back()
-  }
+      }
     }
 
     customElements.define(ViewError.is, ViewError)

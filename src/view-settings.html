@@ -9,10 +9,6 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
 <!-- import style component -->
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/shared-styles.html">
@@ -134,9 +130,12 @@
       <li>
         <div class="card">
           <h1>{{localize('organization-settings')}}</h1>
-          Organization: [[k.organization]]
-          <paper-button raised class="btn">{{localize('add-user')}}</paper-button>
-          Role: Administrator, Users Delete Edit
+          <p>Organization: [[k.organization]]</p>
+          <p>Data key: [[k.key]]</p>
+          <p>Role: [[k.role]]</p>
+          <flat-button class="btn"><button>Manage Keychain</button></flat-button>
+          <flat-button class="btn"><button>Manager User</button></flat-button>
+
         </div>
       </li>
     </ul>
@@ -477,6 +476,6 @@
       }
     }
 
-    window.customElements.define(ViewSettings.is, ViewSettings)
+    customElements.define(ViewSettings.is, ViewSettings)
   </script>
 </dom-module>

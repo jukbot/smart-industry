@@ -1,0 +1,56 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../view-setup.html">
+<link rel="import" href="../style/shared-styles.html">
+<link rel="import" href="../style/flat-button.html">
+
+<dom-module id="view-plan-order">
+    <template>
+        <style include="shared-styles app-grid-style flat-button">
+             :host {
+                margin: 10px;
+                display: block;
+                --app-grid-item-height: 50%;
+            }
+        </style>
+        <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+        <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_no" order-by-value="true"
+            data="{{orderItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="id" order-by-value="true"
+            data="{{productItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" order-by-value="true"
+            data="{{customerItems}}"></firebase-query>
+        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
+
+
+        <div class="card">
+            <h1>Plan order</h1>
+        </div>
+    </template>
+    <script>
+        class ViewPlanOrder extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+            Polymer.Element) {
+            static get is() {
+                return 'view-plan-order'
+            }
+
+            static get properties() {
+                return {
+                    language: String
+                }
+            }
+            connectedCallback() {
+                super.connectedCallback()
+                this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+        }
+        customElements.define(ViewPlanOrder.is, ViewPlanOrder)
+    </script>
+</dom-module>
