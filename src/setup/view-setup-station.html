@@ -3,7 +3,6 @@
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
@@ -219,7 +218,7 @@
             <h1 class="main-title">Station Management</h1>
             <h1 class="no-machine-title" hidden="[[machineItems]]">Please add machine before adding station.</h1>
             <ul class="app-grid">
-                <template is="dom-repeat" items="{{persistedStationData}}" as="stationItem">
+                <template is="dom-repeat" items="[[persistedStationData]]" as="stationItem">
                     <li>
                         <div class="station">
                             <div class="station-info-group">

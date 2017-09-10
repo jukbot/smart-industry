@@ -18,6 +18,30 @@
                 display: block;
                 --app-grid-item-height: 50%;
             }
+
+            @media (min-width: 360px) and (max-width: 768px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            @media (min-width: 769px) and (max-width: 1024px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            @media (min-width: 1025px) and (max-width: 1200px) {
+                 :host {
+                    --app-grid-columns: 2;
+                }
+            }
+
+            @media (min-width: 1201px) and (max-width: 2560px) {
+                 :host {
+                    --app-grid-columns: 2;
+                }
+            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -30,9 +54,18 @@
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
 
 
-        <div class="card">
-            <h1>Plan order</h1>
-        </div>
+        <ul class="app-grid">
+            <li>
+                <div class="card">
+                    <h1>Plan order</h1>
+                </div>
+            </li>
+            <li>
+                <div class="card">
+                    <h1>Order Detail</h1>
+                </div>
+            </li>
+        </ul>
     </template>
     <script>
         class ViewPlanOrder extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],

@@ -3,9 +3,9 @@
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -18,6 +18,30 @@
                 display: block;
                 --app-grid-item-height: 50%;
             }
+
+            @media (min-width: 360px) and (max-width: 768px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            @media (min-width: 769px) and (max-width: 1024px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            @media (min-width: 1025px) and (max-width: 1200px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            @media (min-width: 1201px) and (max-width: 2560px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -29,9 +53,73 @@
             data="{{orderItems}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
 
-        <div class="card">
-            <h1>Plan scheduling</h1>
-        </div>
+        <ul class="app-grid">
+            <li>
+                <div class="card">
+                    <h1>Plan scheduling</h1>
+                </div>
+            </li>
+
+            <li>
+                <div class="card">
+                    <h1>Gantt Chart</h1>
+
+                    <vaadin-columnrange-chart id="column-range-resource-usage">
+                        <chart inverted="true"></chart>
+                        <chart-title>Resource usage</chart-title>
+                        <x-axis>
+                            <categories>Printer, Coffee machine</categories>
+                        </x-axis>
+                        <y-axis type="datetime">
+                            <chart-title>Time</chart-title>
+                        </y-axis>
+                        <tooltip formatter="function () {return this.series.name +': '+ Highcharts.dateFormat('%H:%M', this.point.low) + ' - ' + Highcharts.dateFormat('%H:%M', this.point.high)}"></tooltip>
+                        <plot-options>
+                            <columnrange grouping="false">
+                                <data-labels enabled="true" inside="true" color="white" formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
+
+                            </columnrange>
+                        </plot-options>
+                        <data-series name="Team Alpha">
+                            <color>rgba(255, 60, 125, 1.0)</color>
+                            <data>[Date.UTC(2013,5,7,12,0,0),Date.UTC(2013,5,7,15,0,0)], [Date.UTC(2013,5,7,13,0,0),Date.UTC(2013,5,7,17,0,0)]
+                            </data>
+                        </data-series>
+                        <data-series name="Team Beta">
+                            <color>rgba(60, 125, 255, 1.0)</color>
+                            <data>[Date.UTC(2013,5,7,16,0,0),Date.UTC(2013,5,7,17,0,0)], [Date.UTC(2013,5,7,12,0,0),Date.UTC(2013,5,7,14,0,0)]
+                            </data>
+                        </data-series>
+
+                    </vaadin-columnrange-chart>
+
+                    <vaadin-columnrange-chart id="column-range">
+                        <chart inverted="true"></chart>
+                        <chart-title>Temperature variation by month</chart-title>
+                        <subtitle>Observed in Vik i Sogn, Norway</subtitle>
+                        <x-axis>
+                            <categories>Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec</categories>
+                        </x-axis>
+                        <y-axis>
+                            <chart-title>Temperature ( °C )</chart-title>
+                        </y-axis>
+                        <tooltip value-suffix="°C"></tooltip>
+                        <plot-options>
+                            <columnrange>
+                                <data-labels enabled="true" formatter="function () {return this.y + '°C';}"></data-labels>
+                            </columnrange>
+                        </plot-options>
+                        <legend enabled="false"></legend>
+                        <data-series name="Temperatures">
+                            <data>
+                                [-9.7, 9.4], [-8.7, 6.5], [-3.5, 9.4], [-1.4, 19.9], [0.0, 22.6], [2.9, 29.5], [9.2, 30.7], [7.3, 26.5], [4.4, 18.0], [-3.1,
+                                11.4], [-5.2, 10.4], [-13.5, 9.8]
+                            </data>
+                        </data-series>
+                    </vaadin-columnrange-chart>
+                </div>
+            </li>
+        </ul>
     </template>
     <script>
         class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
