@@ -80,7 +80,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </flat-button>
 
           <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="Profile image" alt="user photo">
-          <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip">
+          <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-config="{{tooltipAnimation}}"
+            animation-delay="0">
             <p>{{localize('email')}}: [[persistedUserData.email]]</p>
             <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span></p>
             <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
@@ -150,6 +151,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               } else {
                 return language
               }
+            }
+          },
+          tooltipAnimation: {
+            type: Object,
+            value: {
+              "entry": [{ "name": "fade-in-animation" }],
+              "exit": [{ "name": "fade-out-animation" }]
             }
           },
           user: {
