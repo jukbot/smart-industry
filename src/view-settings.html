@@ -23,8 +23,6 @@
         --app-grid-item-height: 50%;
       }
 
-
-
       @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
@@ -269,7 +267,6 @@
           })
           .catch(error => {
             this.$.uploadImageFile.value = null
-            console.error('Update profile failed:', error)
           })
       }
 
