@@ -152,8 +152,8 @@
                         <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[factorySchedule.interval]]"
                             type="number" min="1" max="60" step="1" required always-float-label></paper-input>
                         <div class="button-group">
-                            <flat-button on-tap="saveValue" class="shamrock btn" title="Save settings"><button role="button">{{localize('save-settings')}}</button></flat-button>
                             <flat-button on-tap="restoreDefault" class="btn" title="Restore Default"><button role="button">{{localize('restore')}}</button></flat-button>
+                            <flat-button on-tap="saveValue" class="shamrock btn" title="Save settings"><button role="button">{{localize('save-settings')}}</button></flat-button>
                         </div>
                     </div>
                 </div>
@@ -194,7 +194,7 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[factoryOperation.ot_end]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[factoryOperation.op_day]]</span></p>
+                            <p><span>[[getOperationDay(factoryOperation.op_day)]]</span></p>
                         </div>
                     </div>
                 </div>
@@ -310,7 +310,7 @@
 
             static get observers() {
                 return [
-                    'factoryOperationLoaded(factoryOperation.op_day)'
+                    'setOperationDay(factoryOperation.op_day)'
                 ]
             }
 
@@ -386,7 +386,7 @@
                 this.$.sunday.checked = false
             }
 
-            factoryOperationLoaded(op_day) {
+            setOperationDay(op_day) {
                 if (op_day) {
                     let opDayArr = op_day.split(',')
                     this.$.monday.checked = opDayArr.includes('mon')
@@ -437,6 +437,12 @@
                 }
                 let lastInterval = dd + '/' + mm + '/' + yyyy
                 return lastInterval
+            }
+
+            getOperationDay(opday) {
+                if (!opday) return
+                return opday.split(',').join(' ');
+
             }
 
             getFactoryType(factory_type) {

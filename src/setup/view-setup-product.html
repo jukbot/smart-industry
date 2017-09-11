@@ -188,6 +188,19 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
+                                <div class="cell">Cycle Time</div>
+                            </template>
+                            <template>
+                                <div class="cell">
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.cycle]]</p>
+                                    </template>
+                                </div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
                                 <div class="cell">Cost</div>
                             </template>
                             <template>
