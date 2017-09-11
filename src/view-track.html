@@ -1,13 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-
 <link rel="import" href="style/shared-styles.html">
 <!-- <link rel="import" href="track/view-track-scheduling.html">
 <link rel="import" href="track/view-track-order.html">
@@ -31,9 +22,9 @@
       </paper-tabs>
     </app-header>
     <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
-      <!-- <view-track-scheduling name="scheduling"></view-track-scheduling>
+      <view-track-scheduling name="scheduling"></view-track-scheduling>
       <view-track-order name="order"></view-track-order>
-      <view-track-production name="production"></view-track-production> -->
+      <view-track-production name="production"></view-track-production>
     </iron-pages>
   </template>
 

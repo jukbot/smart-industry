@@ -11,16 +11,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- iron modules -used for component functions -->
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <!-- 3rd party modules -->
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
@@ -46,12 +47,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-change="_signedInChanged"
       on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
       <app-drawer hidden$="[[!signedIn]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
-        <div class="app-logo" role="logo" title="IMES" alt="Application logo"></div>
+        <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
         <nav>
@@ -96,12 +96,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <app-header-layout fullbleed>
         <app-header hidden$="[[!signedIn]]" id="header" slot="header">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
+
           <paper-icon-button icon="vaadin:menu" role="button" drawer-toggle></paper-icon-button>
           <h2 class="page-title" main-title>{{localize(page)}}</h2>
           <input id="searchBox" type="search" name="search" placeholder="Search this app">
           <paper-icon-button icon="vaadin:search" tabindex="0" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button>
         </app-header>
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+        <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
+          role="main">
           <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!signedIn]]"></view-dashboard>
           <view-setup name="setup" route="[[subroute]]" hidden$="[[!signedIn]]"></view-setup>
           <view-plan name="plan" route="[[subroute]]" hidden$="[[!signedIn]]"></view-plan>
@@ -116,13 +118,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header-layout>
     </app-drawer-layout>
     <paper-toast id="toastNotification" always-on-top horizontal-align="right" text="{{localize(notificationText)}}"></paper-toast>
-    <paper-toast id="toastVerify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
+    <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
       <div class="toast-flex-container">
         <div class="toast-flex-item">
           <p>[[toastText]]</p>
         </div>
         <div class="toast-flex-item">
-          <paper-icon-button on-tap="_closeToastAlert" role="bottom" class="close-toast-button" icon="vaadin:close-big"></paper-icon-button>
+          <paper-icon-button on-tap="_closeToastAlert" class="close-toast-button" icon="vaadin:close-big"></paper-icon-button>
         </div>
       </div>
     </paper-toast>
@@ -176,7 +178,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get observers() {
         return [
-          '_routePageChanged(routeData.page)'
+          '_routePageChanged(routeData.page)',
+          '_handleUser(user)'
         ]
       }
 
@@ -187,7 +190,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
-
       }
 
       ready() {
@@ -209,6 +211,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
         // listen for navigation preload fetch
         self.addEventListener('fetch', (e) => {
+          console.log(e.request.url);
           e.respondWith(async function () {
             // Respond from the cache if we can
             const cachedResponse = await caches.match(e.request);
@@ -229,9 +232,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.addEventListener('on-error', (e) => this._handleError(e).bind(this))
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, () => {
+          window.addEventListener('online-changed', (e) => this._networkChanged(e))
           window.addEventListener('online', (e) => this._networkChanged(e))
           window.addEventListener('offline', (e) => this._networkChanged(e))
         })
+      }
+
+      _handleUser(user) {
+        if (user) {
+          console.log(user);
+        }
       }
 
       _routePageChanged(page) {
@@ -280,19 +290,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
               const greenColor = 'color: green;'
               const crimsonColor = 'color: crimson;'
-              // Load and register pre-caching Service Worker
+              // Load and register pre-caching Service Worker for offline usage
               if ('serviceWorker' in navigator) {
+                // Register service worker
                 navigator.serviceWorker.register('/service-worker.js', {
                   scope: '/'
                 }).then((registration) => {
-                  console.log('%cService Worker Registered in ' + registration.scope, greenColor)
+                  console.info('%cService Worker Registered in ' + registration.scope, greenColor)
                 }).catch((err) => {
                   console.error('%cService Worker Register Failed ' + err, crimsonColor)
                 })
+                // Check state of service worker
                 navigator.serviceWorker.ready.then((registration) => {
-                  console.log('%cService Worker Ready', greenColor)
-                })
+                  console.info('%cService Worker Ready', greenColor)
+                  return registration.navigationPreload.getState();
+                }).then(state => {
+                  console.info("%cService Worker state: " + JSON.stringify(state), 'color: purple;'); // state
+                });
               } else {
+                // Browser not support service worker
                 console.error('%cService Worker is not support by your browser.' + err, crimsonColor)
                 alert('Service Worker is not support by your browser. Please upgrade your browser')
               }
@@ -365,6 +381,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.drawer.resetLayout()
               }, 1)
               // redirect to login page
+              this.set('route.path', '/login')
               this.page = 'login'
             })
             .catch((error) => {

@@ -47,6 +47,12 @@
         }
       }
 
+      h1.title {
+        text-align: center;
+        margin: 15px 0 25px 0;
+        font-size: 1.75rem;
+      }
+
       .upload-bar {
         width: 100%;
         height: 10px;
@@ -57,34 +63,32 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
-    <!-- <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
-      on-message="handleMessage" token="{{token}}"></firebase-messaging> -->
+    <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
+      on-message="handleMessage" token="{{token}}"></firebase-messaging>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userToken" path="/user/[[k.key]]/token" data="[[token]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="{{language}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[k.key]]/appData/notification" data="{{notification}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[k.key]]/appData/email_alert" data="{{emailalert}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[k.key]]/appData/auto_backup" data="{{autobackup}}"></firebase-document>
-
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[k.key]]/appData/notification" data="[[notification]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[k.key]]/appData/email_alert" data="[[emailalert]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[k.key]]/appData/auto_backup" data="[[autobackup]]"></firebase-document>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
     <iron-ajax url="../data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
     <ul class="app-grid">
       <li>
         <div class="card">
-          <h1>{{localize('general-settings')}}</h1>
-          <firebase-upload url="https://<YOUR FIREBASE>.firebaseio.com"></firebase-upload>
+          <h1 class="title">{{localize('general-settings')}}</h1>
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageItems]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
             required auto-validate always-float-label></vaadin-combo-box>
-          <h1>Sensor Devices</h1>
+          <p>Sensor Devices</p>
           <flat-button on-tap="_scanDevice" class="btn" title="Search sensor"><button role="button">Search Sensor</button></flat-button>
           <flat-button on-tap="_showDevice" class="btn" title="Show sensor"><button role="button">Show Sensor</button></flat-button>
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>{{localize('account-settings')}}</h1>
+          <h1 class="title">{{localize('account-settings')}}</h1>
           <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text"></paper-input>
           <p>Upload Profile Image</p>
           <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress>
@@ -99,8 +103,8 @@
       </li>
       <li>
         <div class="card">
-          <h1>{{localize('authentication-settings')}}</h1>
-          <paper-input label="{{localize('email')}}" id="userEmail" type="email" disabled="true" value="[[user.email]]"></paper-input>
+          <h1 class="title">{{localize('authentication-settings')}}</h1>
+          <paper-input label="{{localize('email')}}" id="userEmail" type="email" readonly value="[[user.email]]"></paper-input>
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password"></paper-input>
           <paper-input label="{{localize('new-password')}}" id="newPassword" type="password"></paper-input>
           <flat-button on-tap="_changeAuthen" class="btn" title="{{localize('change-password')}}"><button role="button">{{localize('change-password')}}</button></flat-button>
@@ -109,7 +113,7 @@
       </li>
       <li>
         <div class="card">
-          <h1>{{localize('backup-settings')}}</h1>
+          <h1 class="title">{{localize('backup-settings')}}</h1>
           <p>Export or Import factory data to backup as a file.</p>
           <flat-button on-tap="_export-data" class="btn" title="{{localize('export-data')}}"><button role="button">{{localize('export-data')}}</button></flat-button>
           <flat-button on-tap="_import-data" class="btn" title="{{localize('import-data')}}"><button role="button">{{localize('import-data')}}</button></flat-button>
@@ -118,18 +122,19 @@
       </li>
       <li>
         <div class="card">
-          <h1>{{localize('notification-settings')}}</h1>
-          Token: [[token]]
+          <h1 class="title">{{localize('notification-settings')}}</h1>
+          <p>Web Notification</p>
           <paper-toggle-button class="switch" value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" checked="[[token]]"
             noink> {{localize('notification')}}</paper-toggle-button>
+          <p>E-mail Notification</p>
           <paper-toggle-button class="switch" value="[[emailalert]]" on-change="_changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
         </div>
       </li>
       <li>
         <div class="card">
-          <h1>{{localize('organization-settings')}}</h1>
+          <h1 class="title">{{localize('organization-settings')}}</h1>
           <p>Organization: [[k.organization]]</p>
-          <p>Data key: [[k.key]]</p>
+          <p>Data keychain: [[k.key]]</p>
           <p>Role: [[k.role]]</p>
           <flat-button class="btn"><button>Manage Keychain</button></flat-button>
           <flat-button class="btn"><button>Manager User</button></flat-button>
@@ -149,14 +154,10 @@
       static get properties() {
         return {
           language: {
-            type: String,
-            observer: '_changeLanguage',
-            notify: true
+            type: String
           },
           notification: {
-            type: Boolean,
-            observer: '_changeNotification',
-            notify: true
+            type: Boolean
           },
           accept: {
             type: String,
@@ -189,7 +190,6 @@
 
       ready() {
         super.ready()
-        this.addEventListener('show-invalid-url-warning', (e) => this._test(e))
       }
 
       _verifyUploadFile() {
@@ -295,11 +295,13 @@
 
       _changeLanguage() {
         let selectedLang = this.$.languageSelector.value
-        if (selectedLang === 'en' || selectedLang === 'th' || selectedLang === 'jp' || selectedLang === 'ch' ||
-          selectedLang === 'rs') {
-          this.language = selectedLang
-        } else {
-          this.language = 'en'
+        if (selectedLang) {
+          if (selectedLang === "en" || selectedLang === "th" || selectedLang === "jp" || selectedLang === "ch" ||
+            selectedLang === "rs") {
+            this.language = selectedLang
+          } else {
+            this.language = "en"
+          }
         }
       }
 
@@ -317,31 +319,30 @@
       _changeNotification() {
         this.notification = this.$.webNotificationSwitch.checked
         if (this.$.webNotificationSwitch.checked) {
-          this.toastText = 'notification-alert-on'
-          // this.$.toastAlert.open()
           // Requesting notification permission
-
-          // this.$.messaging.requestPermission()
-          //   .then(() => {
-          //     console.log("Notification permission granted");
-          //   })
-          //   .catch(err => {
-          //     console.log("Notification permission denied ", err);
-          //   });
+          this.$.messaging.requestPermission()
+            .then(() => {
+              console.log("%cWeb notification permission granted", 'color:green');
+              this.toastText = 'notification-alert-on'
+              this.$.toastAlert.open()
+            })
+            .catch(err => {
+              console.error("Web notification permission denied", err);
+            });
         } else {
           this.toastText = 'notification-alert-off'
-          // this.$.toastAlert.open()
+          this.$.toastAlert.open()
         }
       }
 
       _changeEmailAlert() {
-        this.emailalert = this.$.emailAlertSwitch.checked
-        if (this.$.emailalertSwitch.checked) {
+        this.emailAlert = this.$.emailAlertSwitch.checked
+        if (this.$.emailAlertSwitch.checked) {
           this.toastText = 'email-notification-alert-on'
-          // this.$.toastAlert.open()
+          this.$.toastAlert.open()
         } else {
           this.toastText = 'email-notification-alert-off'
-          // this.$.toastAlert.open()
+          this.$.toastAlert.open()
         }
       }
 

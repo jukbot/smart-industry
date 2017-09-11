@@ -41,36 +41,41 @@
                 }
             }
 
-            h1.title {
-                text-align: center;
-                margin: 15px 0 25px 0;
-                font-size: 1.75rem;
-            }
-
             .factory-rule>p {
                 margin: 16px 0;
             }
 
             .operation-day-selector {
                 margin: 10px 0;
-                padding: 10px;
+                padding: 10px 10px 20px 10px;
                 border: 1px solid rgba(0, 0, 0, .10);
                 border-radius: 2px;
             }
 
             .operation-day-selector>p {
                 margin-bottom: 10px;
+                color: var(--paper-input-container-color, var(--secondary-text-color));
+                font-size: 0.75rem;
+                font-family: var(--paper-font-subhead_-_font-family);
+                -webkit-font-smoothing: var(--paper-font-subhead_-_-webkit-font-smoothing);
+                line-height: var(--paper-font-subhead_-_line-height);
             }
 
             .checkbox {
                 padding: 0 5px;
+                flex: auto;
+                align-content: stretch;
             }
 
             .flex-container {
                 display: flex;
                 align-items: center;
-                justify-content: stretch;
-                width: 100%;
+                justify-content: center;
+            }
+
+            .wrap {
+                -webkit-flex-flow: row wrap;
+                flex-flow: row wrap;
             }
 
             .flex-item {
@@ -118,17 +123,20 @@
                             required pattern="[0-9]{2}:[0-9]{2}" always-float-label auto-validate></paper-input>
                         <paper-input label="{{localize('over-time-end')}} (xx:xx)" id="otEnd" value="[[factoryOperation.ot_end]]" type="time" required
                             pattern="[0-9]{2}:[0-9]{2}" always-float-label auto-validate></paper-input>
+
                         <div class="operation-day-selector">
-                            <p>{{localize('operation-day')}}</p>[[factoryOperationLoaded(factoryOperation.op_day)]]
-                            <paper-checkbox class="checkbox" tabindex="0" id="sunday" value="sun">Sun</paper-checkbox>
-                            <paper-checkbox class="checkbox" tabindex="0" id="monday" value="mon">Mon</paper-checkbox>
-                            <paper-checkbox class="checkbox" tabindex="0" id="tuesday" value="tue">Tue</paper-checkbox>
-                            <paper-checkbox class="checkbox" tabindex="0" id="wednesday" value="wed">Wed</paper-checkbox>
-                            <paper-checkbox class="checkbox" tabindex="0" id="thursday" value="thu">Thu</paper-checkbox>
-                            <paper-checkbox class="checkbox" tabindex="0" id="friday" value="fri">Fri</paper-checkbox>
-                            <paper-checkbox class="checkbox" tabindex="0" id="saturday" value="sat">Sat</paper-checkbox>
+                            <p>{{localize('operation-day')}}</p>
+                            <div class="flex-container wrap">
+                                <paper-checkbox class="checkbox" tabindex="0" id="sunday" value="sun" noink>Sun</paper-checkbox>
+                                <paper-checkbox class="checkbox" tabindex="0" id="monday" value="mon" noink>Mon</paper-checkbox>
+                                <paper-checkbox class="checkbox" tabindex="0" id="tuesday" value="tue" noink>Tue</paper-checkbox>
+                                <paper-checkbox class="checkbox" tabindex="0" id="wednesday" value="wed" noink>Wed</paper-checkbox>
+                                <paper-checkbox class="checkbox" tabindex="0" id="thursday" value="thu" noink>Thu</paper-checkbox>
+                                <paper-checkbox class="checkbox" tabindex="0" id="friday" value="fri" noink>Fri</paper-checkbox>
+                                <paper-checkbox class="checkbox" tabindex="0" id="saturday" value="sat" noink>Sat</paper-checkbox>
+                            </div>
                         </div>
-                        <vaadin-combo-box label="{{localize('productivity-optimization')}}" id="optimizeType" value="[[factoryPerformance.optimize]]"
+                        <vaadin-combo-box label="{{localize('productivity-optimization')}}" id="optimizationType" value="[[factoryPerformance.optimize]]"
                             items="[[optimizationType]]" item-value-path="value" item-label-path="name" required auto-validate
                             always-float-label>
                             <template>
@@ -146,7 +154,7 @@
                             type="number" min="1" max="60" step="1" required always-float-label auto-validate></paper-input>
                         <div class="button-group">
                             <flat-button on-tap="saveValue" class="shamrock btn" title="Save settings"><button role="button">{{localize('save-settings')}}</button></flat-button>
-                            <flat-button on-tap="resetValue" class="btn" title="Restore Default"><button role="button">{{localize('restore')}}</button></flat-button>
+                            <flat-button on-tap="restoreDefault" class="btn" title="Restore Default"><button role="button">{{localize('restore')}}</button></flat-button>
                         </div>
                     </div>
                 </div>
@@ -301,6 +309,12 @@
                 }
             }
 
+            static get observers() {
+                return [
+                    'factoryOperationLoaded(factoryOperation.op_day)'
+                ]
+            }
+
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
@@ -312,7 +326,7 @@
                 let mod = this.$.productionModel.value
                 let aw = this.$.acceptWaste.value
                 let au = this.$.workerUtilize.value
-                let opt = this.$.optimizeType.value
+                let opt = this.$.optimizationType.value
                 let meff = this.$.machineStandardEffi.value
                 let inte = this.$.scheduleInterval.value
                 let op_start = this.$.opStart.value
@@ -331,7 +345,7 @@
                 op_day = this.operationDay.toString()
 
                 if (fn && ft && mod && opt && aw && au && inte && meff && op_start &&
-                    op_end && op_day) {
+                    op_end && op_day && ot_start && ot_end) {
                     this.set('factoryProfile.name', fn)
                     this.set('factoryProfile.type', ft)
                     this.set('factoryProfile.model', mod)
@@ -342,22 +356,28 @@
                     this.set('factorySchedule.interval', inte)
                     this.set('factoryOperation.op_start', op_start)
                     this.set('factoryOperation.op_end', op_end)
+                    this.set('factoryOperation.op_day', op_day)
                     this.set('factoryOperation.ot_start', ot_start)
                     this.set('factoryOperation.ot_end', ot_end)
-                    this.set('factoryOperation.op_day', op_day)
                     this.$.toastSaveFactoryInfoSuccess.open()
                 } else {
                     this.$.toastErrorIncompleteInput.open()
                 }
             }
-            resetValue() {
+
+            restoreDefault() {
                 this.$.factoryName.value = 'Sample factory'
-                this.$.factoryType.value = 'FS'
+                this.$.factoryType.value = 'jobshop'
                 this.$.productionModel.value = 'parallel'
-                this.$.acceptWaste.value = '0.02'
+                this.$.optimizationType.value = 'disabled'
+                this.$.acceptWaste.value = 0.02
                 this.$.workerUtilize.value = 85
                 this.$.machineStandardEffi.value = 75
                 this.$.scheduleInterval.value = 7
+                this.$.opStart.value = '08:00'
+                this.$.opEnd.value = '17:00'
+                this.$.otStart.value = '19:00'
+                this.$.otEnd.value = '21:00'
                 this.$.monday.checked = true
                 this.$.tuesday.checked = true
                 this.$.wednesday.checked = true
@@ -367,9 +387,9 @@
                 this.$.sunday.checked = false
             }
 
-            factoryOperationLoaded(e) {
-                if (this.get('factoryOperation.op_day')) {
-                    let opDayArr = this.get('factoryOperation.op_day').split(',')
+            factoryOperationLoaded(op_day) {
+                if (op_day) {
+                    let opDayArr = op_day.split(',')
                     this.$.monday.checked = opDayArr.includes('mon')
                     this.$.tuesday.checked = opDayArr.includes('tue')
                     this.$.wednesday.checked = opDayArr.includes('wed')

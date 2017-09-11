@@ -58,7 +58,7 @@
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-    <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_status" data="{{orderData}}"></firebase-query>
+    <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" data="{{orderData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" data="{{machineData}}"></firebase-query>
     <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" data="{{stationData}}"></firebase-query>
     <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
@@ -69,7 +69,7 @@
       <li>
         <div class="card">
           <h1 class="head">Waiting Order</h1>
-          <h1 class="number">[[getWaitOrder(orderData)]][[waitOrderCount]]</h1>
+          <h1 class="number">[[waitOrderCount]]</h1>
         </div>
       </li>
       <li>
@@ -144,6 +144,12 @@
         }
       }
 
+      static get observers() {
+        return [
+          'getWaitOrder(orderData)'
+        ]
+      }
+
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../../data/locales.json'));
@@ -193,7 +199,10 @@
         if (!orderData) return 0;
         if (orderData.length > 0) {
           let query = this.$.orderQuery.ref;
-          query.orderByChild("order_status").equalTo("waiting").on("child_added", (snapshot) => { this.set('waitOrderCount', snapshot.numChildren()); console.log(snapshot.val()) });
+          query.orderByChild("order_status").equalTo("waiting").on("value", (snapshot) => {
+            this.set('waitOrderCount', snapshot.numChildren());
+            console.log(snapshot.val())
+          });
         } else {
           this.set('waitOrderCount', 0);
         }

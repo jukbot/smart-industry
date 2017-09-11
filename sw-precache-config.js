@@ -1,13 +1,12 @@
-/* eslint-env node */
 module.exports = {
   staticFileGlobs: [
-    'index.html',
-    'manifest.json',
+    '/index.html',
+    '/manifest.json',
     '/bower_components/webcomponentsjs/webcomponents-loader.js',
-    '/data/*',
-    '/lib/*',
     '/images/*',
+    '/data/*',
     '/src/*',
+    '/lib/*',
   ],
   runtimeCaching: [
     {

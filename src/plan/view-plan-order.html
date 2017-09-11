@@ -6,6 +6,7 @@
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -45,24 +46,36 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_no" order-by-value="true"
-            data="{{orderItems}}"></firebase-query>
-        <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="id" order-by-value="true"
-            data="{{productItems}}"></firebase-query>
-        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" order-by-value="true"
-            data="{{customerItems}}"></firebase-query>
+        <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operarion" data="{{factoryOperarion}}"></firebase-document>
+        <!-- <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" order-by-child="order_no" data="{{scheduleItems}}"></firebase-query> IN MIGRATION -->
+        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_no" data="{{orderItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="id" data="{{productItems}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-
-
         <ul class="app-grid">
             <li>
                 <div class="card">
-                    <h1>Plan order</h1>
+                    <h1 class="title">Plan order</h1>
+                    <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerItems]]" item-label-path="$key"
+                        item-value-path="fname" selected-item='{{selectCustomer}}' loading="[[!customerItems]]" required allow-custom-value
+                        prevent-invalid-input always-float-label auto-validate></vaadin-combo-box>
+                    <vaadin-combo-box label="Product" name="product" items="[[productData]]" id="productSelector" item-label-path="name" item-value-path="name"
+                        selected-item='{{selectProduct}}' required prevent-invalid-input always-float-label auto-validate></vaadin-combo-box>
+                    <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
+                        step="1" allowed-pattern="[0-9]" required always-float-label auto-validate></paper-input>
+                    <vaadin-date-picker label="Delivery Date" name="delivery" id="deliverySelector" value="{{delivery}}" error-message="Invalid input"
+                        required always-float-label></vaadin-date-picker>
+                    <!-- <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload> -->
+                    <div class="button-group">
+                        <paper-button raised class="smart" on-tap="_createOrder">Add to schedule</paper-button>
+                        <paper-button raised class="fancy" on-tap="_saveOrder">Save to waiting</paper-button>
+                    </div>
                 </div>
             </li>
             <li>
                 <div class="card">
-                    <h1>Order Detail</h1>
+                    <h1 class="title">Order Detail</h1>
                 </div>
             </li>
         </ul>

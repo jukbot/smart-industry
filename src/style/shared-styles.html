@@ -8,8 +8,10 @@
         --app-primary-color: #202020;
         --app-secondary-color: #FFFFFF;
         --app-accent-color: #172C50;
-        --app-font-color: #333333;
+        --app-font-color: #202020;
         --app-background-color: #f2f2f2;
+        --paper-checkbox-checked-color: var( --app-primary-color);
+        --paper-checkbox-checked-ink-color: var( --app-primary-color);
         color: var(--app-font-color);
         background-color: var(--app-background-color);
       }
@@ -65,7 +67,7 @@
 
       paper-tabs {
         --paper-tab-ink: #FFFFFF;
-        --paper-tabs-selection-bar-color: #FFFFFF;
+        --paper-tabs-selection-bar-color: gold;
         background-color: var(--app-primary-color);
         color: var(--app-secondary-color);
       }
@@ -105,10 +107,22 @@
         height: 100%;
       }
 
-      #toastVerify {
+      h1.main-title {
+        text-align: center;
+        margin: 15px 0 25px 0;
+        font-size: 2.5rem;
+      }
+
+      h1.title {
+        text-align: center;
+        margin: 15px 0 25px 0;
+        font-size: 1.75rem;
+      }
+
+      paper-toast.toast-verify {
         --paper-toast-background-color: #e53935;
         --paper-toast-color: #FFFFFF;
-        opacity: 0.95;
+        opacity: 1;
         font-size: 1rem;
         width: 100%;
         padding: 10px;
@@ -183,6 +197,10 @@
         margin: 16px auto;
       }
 
+      .wrap {
+        -webkit-flex-flow: row wrap;
+        flex-flow: row wrap;
+      }
 
       .toast-flex-container {
         display: -webkit-box;

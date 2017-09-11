@@ -1,19 +1,12 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="style/shared-styles.html">
 <link rel="import" href="setup/view-setup-factory.html">
 <link rel="import" href="setup/view-setup-station.html">
 <link rel="import" href="setup/view-setup-machine.html">
 <link rel="import" href="setup/view-setup-product.html">
 <link rel="import" href="setup/view-setup-customer.html">
 <link rel="import" href="setup/view-setup-inventory.html">
+<link rel="import" href="view-app.html">
+<link rel="import" href="style/shared-styles.html">
 
 <dom-module id="view-setup">
   <template>
@@ -23,7 +16,7 @@
       }
     </style>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-    <app-header id="subheader" slot="header" fixed shadow>
+    <app-header id="subheader" slot="header" shadow>
       <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect>
         <template is="dom-repeat" items="{{submenus}}">
           <paper-tab role="tab" name$="{{item.view}}">
@@ -32,7 +25,7 @@
         </template>
       </paper-tabs>
     </app-header>
-    <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
+    <iron-pages selected="[[tabs]]" attr-for-selected="name" fallback-selection="404" role="main">
       <view-setup-factory name="factory"></view-setup-factory>
       <view-setup-station name="station"></view-setup-station>
       <view-setup-machine name="machine"></view-setup-machine>

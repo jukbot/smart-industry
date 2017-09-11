@@ -15,35 +15,47 @@
   ],
   "sources": [
     "src/**/*",
-    "data/**/*",
     "images/**/*",
+    "data/*",
     "lib/*",
     "bower.json"
   ],
   "extraDependencies": [
     "app.yaml",
     "manifest.json",
-    "bower_components/webcomponentsjs/*.js"
+    "bower_components/webcomponentsjs/webcomponents-loader.js"
   ],
   "lint": {
-    "rules": ["polymer-2-hybrid"],
-    "ignoreWarnings": ["undefined-elements"]
+    "rules": [
+      "polymer-2"
+    ],
+    "ignoreWarnings": [
+      "undefined-elements"
+    ]
   },
-  "builds": [{
-    "name": "default",
-    "browserCapabilities": ["es2015", "push"],
-    "js": {
-      "minify": false,
-      "compile": false
-    },
-    "css": {
-      "minify": true
-    },
-    "html": {
-      "minify": false
-    },
-    "bundle": false,
-    "addServiceWorker": true,
-    "addPushManifest": true
-  }]
+  "builds": [
+    {
+      "name": "default",
+      "browserCapabilities": [
+        "es2015",
+        "push"
+      ],
+      "js": {
+        "minify": false,
+        "compile": false
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": false
+      },
+      "basePath": true,
+      "bundle": false,
+      "addServiceWorker": true,
+      "addPushManifest": true,
+      "insertPrefetchLinks:": true,
+      "swPrecacheConfig": "sw-precache-config.js"
+    }
+  ]
 }
