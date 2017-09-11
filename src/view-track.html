@@ -1,8 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="style/shared-styles.html">
-<!-- <link rel="import" href="track/view-track-scheduling.html">
-<link rel="import" href="track/view-track-order.html">
-<link rel="import" href="track/view-track-production.html"> -->
+<link rel="import" href="track/view-track-production.html">
+<link rel="import" href="track/view-track-performance.html">
+<link rel="import" href="track/view-track-energy.html">
 
 <dom-module id="view-track">
   <template>
@@ -21,10 +21,10 @@
         </template>
       </paper-tabs>
     </app-header>
-    <iron-pages selected="[[tabs]]" attr-for-selected="name" role="main">
-      <view-track-scheduling name="scheduling"></view-track-scheduling>
-      <view-track-order name="order"></view-track-order>
+    <iron-pages selected="[[tabs]]" attr-for-selected="name" fallback-selection="404" role="main">
       <view-track-production name="production"></view-track-production>
+      <view-track-performance name="performance"></view-track-performance>
+      <view-track-energy name="energy"></view-track-energy>
     </iron-pages>
   </template>
 
@@ -53,9 +53,9 @@
                 "icon": "vaadin:progressbar"
               },
               {
-                "title": "machine",
-                "view": "machine",
-                "icon": "vaadin:automation"
+                "title": "performance",
+                "view": "performance",
+                "icon": "vaadin:stopwatch"
               },
               {
                 "title": "energy",

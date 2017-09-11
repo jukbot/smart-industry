@@ -15,12 +15,203 @@
              :host {
                 margin: 10px;
                 display: block;
+                --app-grid-columns: 1;
                 --app-grid-item-height: 50%;
             }
+
+            .btn {
+                margin: 20px 10px 0 0;
+                width: 250px;
+            }
+
+            .product-image {
+                height: 120px;
+                width: 120px;
+            }
+
+            .cell {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 8px;
+            }
+
+            .frozen {
+                background: lightgray;
+            }
+
+            .numeric {
+                text-align: right;
+            }
+
+            vaadin-grid#productTable {
+                height: 500px;
+
+                --vaadin-grid-cell: {
+                    padding: 0;
+                }
+
+                --vaadin-grid-header-cell: {
+                    height: 64px;
+                }
+
+                --vaadin-grid-body-cell: {
+                    height: 150px;
+                    font-size: 1rem;
+                }
+
+                --vaadin-grid-body-row-hover-cell: {
+                    background-color: #eeeeee;
+                }
+
+                --vaadin-grid-body-row-selected-cell: {
+                    background-color: #eeeeee;
+                }
+
+                --vaadin-grid-focused-cell: {
+                    font-weight: bold;
+                }
+            }
+
+            vaadin-grid#productTable .cell {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding: 0;
+            }
+
+            vaadin-grid#productTable paper-checkbox {
+                margin: 0 16px;
+            }
+
+            @media (min-width: 360px) and (max-width: 768px) {
+                h1.title {
+                    font-size: 1.5rem;
+                }
+                .btn {
+                    width: 100%;
+                }
+            }
         </style>
-        <div class="card">
-            <h1>Product Setup Polymer 2</h1>
-        </div>
+        <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+        <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+        <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
+        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
+        <app-indexeddb-mirror key="product-data" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
+        <ul class="app-grid">
+            <li>
+                <div class="card" hidden="[[showAddProduct]]">
+                    <h1 class="title">Add Product</h1>
+                    <paper-input label="Name" id="productName" type="text" required always-float-label></paper-input>
+                    <paper-input label="Code" id="productCode" type="text" required always-float-label></paper-input>
+                    <paper-input label="Quantity" id="productQuantity" type="number" min="0" max="5000" required always-float-label>
+                    </paper-input>
+                    <div class="center">
+                        <flat-button class="btn" on-tap="_openProductList"><button role="button">{{localize('dismiss')}}</button></flat-button>
+                        <flat-button class="btn shamrock" on-tap="_addproduct"><button role="button">{{localize('add')}}</button></flat-button>
+                    </div>
+                </div>
+                <div class="card" hidden="[[!showAddProduct]]">
+                    <h1 class="title">Product Management</h1>
+                    <!-- <vaadin-combo-box label="Search product" aria-label="Search product" items="" value=""></vaadin-combo-box> -->
+                    <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]">
+                        <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
+                            <template class="header">
+                                <paper-checkbox role="checkbox" checked="{{selectAll}}"></paper-checkbox>
+                            </template>
+                            <template>
+                                <paper-checkbox role="checkbox" checked="{{selected}}"></paper-checkbox>
+                            </template>
+                        </vaadin-grid-selection-column>
+
+                        <vaadin-grid-column flex="0">
+                            <template class="header">
+                                <div class="cell">#</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[index]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="3">
+                            <template class="header">
+                                <div class="cell center">Image</div>
+                            </template>
+                            <template>
+                                <div class="cell center"><img class="product-image" src="[[item.image]]" alt="image"></div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div>Name</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[item.name]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">SKU</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[item.sku]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">Part</div>
+                            </template>
+                            <template>
+                                <div class="cell">
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.name]]</p>
+                                    </template>
+                                </div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">Process</div>
+                            </template>
+                            <template>
+                                <div class="cell">
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.process]]</p>
+                                    </template>
+                                </div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">Cost</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[item.cost]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell center last">Delete</div>
+                            </template>
+                            <template>
+                                <div class="cell center last">
+                                    <paper-icon-button on-tap="_deleteproduct" product="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                </div>
+                            </template>
+                        </vaadin-grid-column>
+                    </vaadin-grid>
+                    <div class="center">
+                        <flat-button class="btn" on-tap="_openAddProductCard"><button role="button">Add product</button></flat-button>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </template>
     <script>
         class ViewSetupProduct extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
@@ -29,9 +220,29 @@
                 return 'view-setup-product'
             }
 
+            static get properties() {
+                return {
+                    language: String,
+                    productData: Object,
+                    toastText: String,
+                    showAddProduct: {
+                        type: Boolean,
+                        value: true
+                    }
+                }
+            }
+
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+
+            _openAddProductCard() {
+                this.showAddProduct = false;
+            }
+
+            _openProductList() {
+                this.showAddProduct = true;
             }
         }
         customElements.define(ViewSetupProduct.is, ViewSetupProduct)

@@ -12,6 +12,10 @@
         --app-background-color: #f2f2f2;
         --paper-checkbox-checked-color: var( --app-primary-color);
         --paper-checkbox-checked-ink-color: var( --app-primary-color);
+        --paper-toggle-button-unchecked-ink-color: var( --app-primary-color);
+        --paper-toggle-button-checked-bar-color: var( --app-primary-color);
+        --paper-toggle-button-checked-button-color: var( --app-primary-color);
+        --paper-toggle-button-checked-ink-color: var( --app-primary-color);
         color: var(--app-font-color);
         background-color: var(--app-background-color);
       }
@@ -67,7 +71,7 @@
 
       paper-tabs {
         --paper-tab-ink: #FFFFFF;
-        --paper-tabs-selection-bar-color: gold;
+        --paper-tabs-selection-bar-color: #FFFFFF;
         background-color: var(--app-primary-color);
         color: var(--app-secondary-color);
       }
@@ -126,6 +130,7 @@
         font-size: 1rem;
         width: 100%;
         padding: 10px;
+        margin: 0;
       }
 
       [hidden] {
@@ -318,6 +323,11 @@
         }
         .tab-title {
           display: none;
+        }
+
+        h1.main-title,
+        h1.title {
+          font-size: 1.5rem;
         }
       }
     </style>

@@ -24,6 +24,9 @@
                  :host {
                     --app-grid-columns: 1;
                 }
+                .fixed-btn {
+                    width: 100%;
+                }
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
@@ -42,6 +45,11 @@
                  :host {
                     --app-grid-columns: 4;
                 }
+            }
+
+            .fixed-btn {
+                margin: 20px 10px 10px 0;
+                width: 250px;
             }
 
             iron-list {
@@ -160,7 +168,7 @@
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" order-by-child="number"
-            order-by-value="true" data="{{machineItems}}"></firebase-query>
+            data="{{machineItems}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <app-indexeddb-mirror key="machine-data" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
 
@@ -177,8 +185,10 @@
             </vaadin-combo-box>
             <paper-input type="number" id="machineCapacity" label="{{localize('machine-max-capacity')}}" min="1" max="9999" step="1"
                 required always-float-label></paper-input>
-            <flat-button class="btn" on-tap="_openMachineListCard"><button role="button">{{localize('dismiss')}}</button></flat-button>
-            <flat-button class="btn shamrock" on-tap="_addmachine"><button role="button">{{localize('add')}}</button></flat-button>
+            <div class="center">
+                <flat-button class="fixed-btn" on-tap="_openMachineListCard"><button role="button">{{localize('dismiss')}}</button></flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_addmachine"><button role="button">{{localize('add')}}</button></flat-button>
+            </div>
         </div>
         <div class="card main-card" hidden="[[showAddMachine]]">
             <h1 class="main-title">Machine Management</h1>
@@ -226,7 +236,6 @@
                                     <paper-button machine="[[machineItem]]" on-tap="_saveEditmachine" dialog-confirm autofocus>{{localize('save')}}</paper-button>
                                 </div>
                             </paper-dialog> -->
-
                         </div>
                     </li>
                 </template>
@@ -322,9 +331,6 @@
             _openMachineListCard() {
                 this.showAddMachine = false;
                 this.clearField();
-                if (this.machines.length > 0) {
-                    this.dispatch('clear');
-                }
             }
 
             _addMachine() {

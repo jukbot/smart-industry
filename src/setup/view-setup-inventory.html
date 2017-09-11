@@ -27,6 +27,8 @@
             }
 
             vaadin-grid#inventoryTable {
+                height: 500px;
+
                 --vaadin-grid-cell: {
                     padding: 0;
                 }
@@ -56,7 +58,7 @@
             vaadin-grid#inventoryTable .cell {
                 overflow: hidden;
                 text-overflow: ellipsis;
-                padding: 0 10px;
+                padding: 0;
             }
 
             vaadin-grid#inventoryTable paper-checkbox {
@@ -75,19 +77,24 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-query app-name="smart-mes" id="inventoryQuery" path="/data/[[k.key]]/inventoryData" order-by-child="fname" data="{{inventoryData}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="inventoryQuery" path="/data/[[k.key]]/factoryData/inventory" order-by-child="fname"
+            data="{{inventoryData}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <app-indexeddb-mirror id="inventoryIndexDB" key="inventory-data" data="{{inventoryData}}" persisted-data="{{persistedinventoryData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
                 <div class="card" hidden="[[showAddInventory]]">
                     <h1 class="title">Add Inventory</h1>
-                    <paper-input label="Name" id="inventoryName" type="text" required always-float-label></paper-input>
-                    <paper-input label="Code" id="inventoryCode" type="text" required always-float-label></paper-input>
+                    <paper-input label="Name" id="inventoryName" type="text" max-length="40" required always-float-label></paper-input>
+                    <paper-input label="Code" id="inventoryCode" type="text" max-length="20" required always-float-label></paper-input>
+                    <paper-input label="Cost" id="inventoryCost" type="number" min="0" max="10000" step="0.01" onkeypress='return event.charCode >= 46 && event.charCode <= 57'
+                        required always-float-label></paper-input>
                     <paper-input label="Quantity" id="inventoryQuantity" type="number" min="0" max="5000" required always-float-label>
                     </paper-input>
-                    <flat-button class="btn" on-tap="_openInventoryTable"><button role="button">{{localize('dismiss')}}</button></flat-button>
-                    <flat-button class="btn shamrock" on-tap="_addInventory"><button role="button">{{localize('add')}}</button></flat-button>
+                    <div class="center">
+                        <flat-button class="btn" on-tap="_openInventoryTable"><button role="button">{{localize('dismiss')}}</button></flat-button>
+                        <flat-button class="btn shamrock" on-tap="_addInventory"><button role="button">{{localize('add')}}</button></flat-button>
+                    </div>
                 </div>
                 <div class="card" hidden="[[!showAddInventory]]">
                     <h1 class="title">Inventory Management</h1>
@@ -102,7 +109,7 @@
                             </template>
                         </vaadin-grid-selection-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column flex="0">
                             <template class="header">
                                 <div class="cell">#</div>
                             </template>
@@ -131,6 +138,15 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
+                                <div class="cell">Cost</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[item.cost]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
                                 <div class="cell">Quantity</div>
                             </template>
                             <template>
@@ -149,7 +165,9 @@
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
-                    <flat-button class="btn" on-tap="_openAddInventoryCard"><button role="button">Add Inventory</button></flat-button>
+                    <div class="center">
+                        <flat-button class="btn" on-tap="_openAddInventoryCard"><button role="button">Add Inventory</button></flat-button>
+                    </div>
                 </div>
             </li>
         </ul>
@@ -191,13 +209,15 @@
             _addInventory() {
                 let name = this.$.inventoryName.value;
                 let code = this.$.inventoryCode.value;
+                let cost = this.$.inventoryCost.value;
                 let quantity = this.$.inventoryQuantity.value;
                 const dateTime = Date.now();
                 const timestamp = Math.floor(dateTime / 1000);
-                if (name && code && quantity) {
+                if (name && code && cost && quantity) {
                     this.$.inventoryQuery.ref.push({
                         name: name,
                         code: code,
+                        cost: cost,
                         quantity: quantity,
                         add: timestamp
                     });
@@ -211,7 +231,7 @@
             }
 
             _deleteInventory(e) {
-                if (window.confirm("Delete this inventory ?") == true) {
+                if (window.confirm("Delete this inventory item ?") == true) {
                     let key = e.currentTarget.inventory.$key;
                     this.$.inventoryQuery.ref.child(key).remove();
                     this.toastText = 'notification-delete-success'
@@ -222,7 +242,8 @@
             clearField() {
                 this.$.inventoryName.value = "";
                 this.$.inventoryCode.value = "";
-                this.$.inventoryQuantity.value = 0;
+                this.$.inventoryCost.value = "";
+                this.$.inventoryQuantity.value = "";
             }
         }
         customElements.define(ViewSetupInventory.is, ViewSetupInventory)

@@ -5,7 +5,9 @@
     <style>
       flat-input {
         display: inline-block;
-        margin: 20px 0;
+        font-size: 1rem;
+        margin: 10px 0;
+        width: 100%;
       }
 
       flat-input>input::-webkit-input-placeholder {
@@ -25,8 +27,8 @@
       }
 
       flat-input>input {
-        font-size: 1em;
-        font-weight: 300;
+        font-size: 1rem;
+        font-weight: 400;
         color: var(--app-primary-color);
         border: none;
         padding: 8px 0;
@@ -44,7 +46,7 @@
         height: 1px;
         width: 100%;
         margin: auto;
-        border-top: 1px solid #ccc;
+        border-top: 1px solid rgba(0, 0, 0, .10);
         position: relative;
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
@@ -55,7 +57,7 @@
         height: 2px;
         width: 100%;
         margin: auto;
-        background-color: var(--app-accent-color);
+        background-color: var(--app-primary-color);
         position: absolute;
         top: -1px;
         left: 0;
@@ -90,11 +92,12 @@
         top: 0;
         left: 0;
         right: 0;
-        font-size: 0.65em;
-        color: #dd2c00;
+        font-size: 0.65rem;
+        color: #e53935;
         content: attr(error-message);
         display: none;
         white-space: nowrap;
+        margin-top: 5px;
       }
 
       flat-input>input:focus+flat-md-decorator>flat-underline {
@@ -132,7 +135,7 @@
       /* Underline */
 
       flat-input>input:not(:focus):not(:placeholder-shown):invalid+flat-md-decorator>flat-underline {
-        background-color: #dd2c00;
+        background-color: #e53935;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
         transition: -webkit-transform 0.2s ease-out;
@@ -140,7 +143,7 @@
       }
 
       flat-input>input:not(:focus):-moz-ui-invalid:invalid+flat-md-decorator>flat-underline {
-        background-color: #dd2c00;
+        background-color: #e53935;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
         transition: -webkit-transform 0.2s ease-out;
@@ -148,7 +151,7 @@
       }
 
       flat-input>input[aria-invalid='true']:not(:valid)+flat-md-decorator>flat-underline {
-        background-color: #dd2c00;
+        background-color: #e53935;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
         transition: -webkit-transform 0.2s ease-out;
@@ -173,21 +176,21 @@
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
-        color: #dd2c00;
+        color: #e53935;
       }
 
       flat-input>input:not(:focus):-moz-ui-invalid:invalid+flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
-        color: #dd2c00;
+        color: #e53935;
       }
 
       flat-input>input[aria-invalid='true']:not(:valid)+flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
-        color: #dd2c00;
+        color: #e53935;
       }
       /* Valid label */
 

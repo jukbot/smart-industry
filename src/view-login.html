@@ -3,18 +3,18 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <!-- import style component -->
 <link rel="import" href="style/flat-icons.html">
+<link rel="import" href="style/flat-input.html">
 <link rel="import" href="style/flat-checkbox.html">
 <link rel="import" href="style/flat-button.html">
 <dom-module id="view-login">
   <template>
-    <style include="flat-button flat-checkbox">
+    <style include="flat-button flat-input flat-checkbox">
        :host {
         display: block;
         --paper-checkbox-checked-color: #202020;
@@ -82,7 +82,7 @@
 
       .form-title>h2 {
         font-size: 1.5rem;
-        margin: 0;
+        margin-bottom: 20px;
       }
 
       .white {
@@ -97,16 +97,6 @@
       .register-form {
         width: 100%;
         margin: 10px auto;
-      }
-
-      .login-input,
-      .register-input,
-      .reset-input {
-        --paper-input-container-focus-color: #202020;
-        --paper-input-container-input: {
-          font-size: 1rem;
-          color: #202020;
-        }
       }
 
       .link>a {
@@ -232,11 +222,23 @@
             <div class="form-title">
               <h2>User Login</h2>
             </div>
-            <paper-input class="login-input" id="email" type="email" maxlength="40" auto-complete="email" placeholder="E-mail" autofocus
-              auto-validate></paper-input>
-            <paper-input class="login-input" id="passwd" type="password" maxlength="40" auto-complete="current-password" placeholder="Password"
-              auto-validate></paper-input>
-            <iron-a11y-keys id="a11y" target="[[target]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
+            <flat-input>
+              <input type="email" id="accountEmail" name="Email" placeholder="Email" maxlength="40" auto-complete="email" autofocus required
+                aria-labelledby="accountEmailLabel">
+              <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
+                <label id="accountEmailLabel">Email</label>
+                <flat-underline></flat-underline>
+              </flat-md-decorator>
+            </flat-input>
+            <flat-input>
+              <input type="password" id="accountPassword" name="Password" placeholder="Passwrod" maxlength="40" auto-complete="current-password"
+                autofocus required aria-labelledby="accountPasswordLabel">
+              <flat-md-decorator error-message="Invalid Input" aria-hidden="true">
+                <label id="accountPasswordLabel">Password</label>
+                <flat-underline></flat-underline>
+              </flat-md-decorator>
+            </flat-input>
+
             <div class="keep-session-checkbox">
               <flat-checkbox tabindex="0">
                 <input type="checkbox" id="setKeepSession" name="setKeepSession" checked$="[[remember]]" on-change="_toggleKeepSession">
@@ -248,15 +250,41 @@
             <div class="link"><a href="javascript:void(0);" on-click="_showReset" class="login-forget">Forgot Password?</a></div>
             <div class="link"><a href="javascript:void(0);" on-click="_showRegister" class="login-register">Don’t have an account? Get one here.</a></div>
           </form>
+
+
           <form hidden$="[[!register]]" autocomplete="on" class="register-form" on-submit="_register">
             <div class="form-title">
               <h2>User Register</h2>
             </div>
-            <paper-input class="register-input" id="register_email" type="email" maxlength="40" placeholder="E-mail" autofocus auto-validate></paper-input>
-            <paper-input class="register-input" id="register_passwd" type="password" maxlength="40" placeholder="New Password" auto-auto-validate></paper-input>
-            <paper-input class="register-input" id="register_organization" type="text" maxlength="40" placeholder="Organization" auto-validate></paper-input>
-            <paper-input class="register-input" id="register_phone" type="tel" maxlength="15" pattern="\d{3}[\-]\d{3}[\-]\d{4}" placeholder="Phone Number"
-              auto-validate></paper-input>
+            <flat-input>
+              <input type="email" id="register_email" name="Email" placeholder="Email" maxlength="40" auto-complete="email" required aria-labelledby="registerEmailLabel">
+              <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
+                <label id="registerEmailLabel">Email</label>
+                <flat-underline></flat-underline>
+              </flat-md-decorator>
+            </flat-input>
+            <flat-input>
+              <input type="password" id="register_passwd" name="Password" placeholder="New Password" maxlength="40" required aria-labelledby="registerPasswordLabel">
+              <flat-md-decorator error-message="Invalid Input" aria-hidden="true">
+                <label id="registerPasswordLabel">Password</label>
+                <flat-underline></flat-underline>
+              </flat-md-decorator>
+            </flat-input>
+            <flat-input>
+              <input type="text" id="register_organization" name="Organization" placeholder="Organization" maxlength="40" required aria-labelledby="registerOrganizationLabel">
+              <flat-md-decorator error-message="Invalid Input" aria-hidden="true">
+                <label id="registerOrganizationLabel">Organization</label>
+                <flat-underline></flat-underline>
+              </flat-md-decorator>
+            </flat-input>
+            <flat-input>
+              <input type="tel" id="register_phone" name="Phone" placeholder="Phone" maxlength="10" required aria-labelledby="registerPhoneLabel"
+                pattern="\d{10}" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+              <flat-md-decorator error-message="Invalid Phone Number" aria-hidden="true">
+                <label id="registerPhoneLabel">Phone</label>
+                <flat-underline></flat-underline>
+              </flat-md-decorator>
+            </flat-input>
             <flat-button class="register-btn" role="button" on-click="_register">
               <button type="button">Send Confirmation</button>
             </flat-button>
@@ -266,8 +294,14 @@
             <div class="form-title">
               <h2>Reset Your Password</h2>
             </div>
-            <paper-input class="reset-input" id="resetEmail" type="email" maxlength="40" auto-complete="email" placeholder="E-mail" auto-focus
-              auto-validate></paper-input>
+            <flat-input>
+              <input type="email" id="resetPassword" name="resetPassword" placeholder="Email" maxlength="40" auto-complete="email" required
+                aria-labelledby="resetPasswordLabel">
+              <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
+                <label id="resetPasswordLabel">Email</label>
+                <flat-underline></flat-underline>
+              </flat-md-decorator>
+            </flat-input>
             <flat-button class="reset-btn" role="button" on-click="_resetPassword"><button type="button">Reset Password</button></flat-button>
             <div class="link"><a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Have an account? Log in.</a></div>
           </form>
@@ -293,6 +327,8 @@
           </div>
         </div>
       </paper-toast>
+      <iron-a11y-keys id="a11y" target="[[loginTarget]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
+      <iron-a11y-keys id="a11y" target="[[resetTarget]]" keys="enter" on-keys-pressed="_resetPassword"></iron-a11y-keys>
     </section>
   </template>
   <script>
@@ -319,10 +355,16 @@
             type: Boolean,
             value: false
           },
-          target: {
+          loginTarget: {
             type: Object,
             value: () => {
-              return this.passwd
+              return this.accountPassword
+            }
+          },
+          resetTarget: {
+            type: Object,
+            value: () => {
+              return this.resetPassword
             }
           },
           user: Object,
@@ -333,8 +375,8 @@
       }
 
       _login() {
-        if (this.$.email.value && this.$.passwd.value) {
-          this.$.auth.signInWithEmailAndPassword(this.$.email.value, this.$.passwd.value)
+        if (this.$.accountEmail.value && this.$.accountPassword.value) {
+          this.$.auth.signInWithEmailAndPassword(this.$.accountEmail.value, this.$.accountPassword.value)
             .then((response) => {
               this.set('route.path', '/dashboard')
               this.page = '/dashboard'
@@ -419,9 +461,9 @@
       }
 
       _resetPassword() {
-        let resetEmail = this.$.resetEmail.value
-        if (resetEmail) {
-          this.$.auth.sendPasswordResetEmail(resetEmail)
+        let resetPassword = this.$.resetPassword.value
+        if (resetPassword) {
+          this.$.auth.sendPasswordresetPassword(resetPassword)
             .then((response) => {
               this.showSuccessToast('Reset password has been send to your email.')
             })

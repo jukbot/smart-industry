@@ -26,6 +26,8 @@
             }
 
             vaadin-grid#customerTable {
+                height: 500px;
+
                 --vaadin-grid-cell: {
                     padding: 0;
                 }
@@ -55,7 +57,7 @@
             vaadin-grid#customerTable .cell {
                 overflow: hidden;
                 text-overflow: ellipsis;
-                padding: 0 10px;
+                padding: 0;
             }
 
             vaadin-grid#customerTable paper-checkbox {
@@ -85,8 +87,10 @@
                     <paper-input label="Last name" id="customerLastName" type="text" required always-float-label></paper-input>
                     <paper-input label="E-mail" id="customerEmail" type="email" required always-float-label></paper-input>
                     <paper-input label="Mobile" id="customerMobile" type="tel" required always-float-label></paper-input>
-                    <flat-button class="btn" on-tap="_openCustomerTable"><button role="button">{{localize('dismiss')}}</button></flat-button>
-                    <flat-button class="btn shamrock" on-tap="_addCustomer"><button role="button">{{localize('add')}}</button></flat-button>
+                    <div class="center">
+                        <flat-button class="btn" on-tap="_openCustomerTable"><button role="button">{{localize('dismiss')}}</button></flat-button>
+                        <flat-button class="btn shamrock" on-tap="_addCustomer"><button role="button">{{localize('add')}}</button></flat-button>
+                    </div>
                 </div>
                 <div class="card" hidden="[[!showAddCustomer]]">
                     <h1 class="title">{{localize('customer-management')}}</h1>
@@ -101,7 +105,7 @@
                             </template>
                         </vaadin-grid-selection-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column flex="0">
                             <template class="header">
                                 <div class="cell">#</div>
                             </template>
@@ -157,7 +161,9 @@
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
-                    <flat-button class="btn" on-tap="_openAddCustomerCard"><button role="button">{{localize('add-customer')}}</button></flat-button>
+                    <div class="center">
+                        <flat-button class="btn" on-tap="_openAddCustomerCard"><button role="button">{{localize('add-customer')}}</button></flat-button>
+                    </div>
                 </div>
             </li>
         </ul>

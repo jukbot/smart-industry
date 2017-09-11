@@ -26,6 +26,40 @@
         margin: 20px 0 4px 0;
       }
 
+      vaadin-grid#notificationTable {
+
+        --vaadin-grid-cell: {
+          padding: 0 10px;
+        }
+
+        --vaadin-grid-header-cell: {
+          height: 64px;
+        }
+
+        --vaadin-grid-body-cell: {
+          height: 48px;
+          font-size: 1rem;
+        }
+
+        --vaadin-grid-body-row-hover-cell: {
+          background-color: #eeeeee;
+        }
+
+        --vaadin-grid-body-row-selected-cell: {
+          background-color: #eeeeee;
+        }
+
+        --vaadin-grid-focused-cell: {
+          font-weight: bold;
+        }
+      }
+
+      vaadin-grid#notificationTable .cell {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0;
+      }
+
       @media (min-width: 360px) and (max-width: 768px) {
         h1.title {
           font-size: 1.5rem;
@@ -45,8 +79,7 @@
       <li>
         <div class="card">
           <h1 class="title">{{localize('notification-center')}}</h1>
-          <!-- The array is set as the <vaadin-grid>'s "items" property -->
-          <vaadin-grid aria-label="Notification Center" items="[[notificationData]]">
+          <vaadin-grid id="notificationTable" aria-label="Notification Center" items="[[notificationData]]">
 
             <vaadin-grid-column width="50px" flex-grow="0">
               <template class="header">#</template>

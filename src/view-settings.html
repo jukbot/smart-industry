@@ -80,7 +80,7 @@
           <h1 class="title">{{localize('general-settings')}}</h1>
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageItems]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
-            required auto-validate always-float-label></vaadin-combo-box>
+            loading="[[!languageItems]]" required always-float-label></vaadin-combo-box>
           <p>Sensor Devices</p>
           <flat-button on-tap="_scanDevice" class="btn" title="Search sensor"><button role="button">Search Sensor</button></flat-button>
           <flat-button on-tap="_showDevice" class="btn" title="Show sensor"><button role="button">Show Sensor</button></flat-button>
