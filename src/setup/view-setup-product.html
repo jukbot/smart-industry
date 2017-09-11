@@ -180,7 +180,7 @@
                             <template>
                                 <div class="cell">
                                     <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.process]]</p>
+                                        <p>[[getProductProcess(productPart.process)]]</p>
                                     </template>
                                 </div>
                             </template>
@@ -235,6 +235,13 @@
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+
+            getProductProcess(process) {
+                if (!process) {
+                    return 0;
+                }
+                return process.split(',').join(' → ');
             }
 
             _openAddProductCard() {
