@@ -45,6 +45,10 @@
                     --app-grid-columns: 2;
                 }
             }
+
+            vaadin-date-picker.date-picker {
+                width: 100%;
+            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -59,19 +63,18 @@
             <li>
                 <div class="card">
                     <h1 class="title">Create Order</h1>
-                    <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerItems]]" item-label-path="$key"
-                        item-value-path="fname" selected-item='{{selectCustomer}}' loading="[[!customerItems]]" required allow-custom-value
+                    <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerItems]]" item-label-path="lname"
+                        item-value-path="$key" selected-item='{{selectCustomer}}' loading="[[!customerItems]]" required allow-custom-value
                         prevent-invalid-input always-float-label></vaadin-combo-box>
-                    <vaadin-combo-box label="Product" name="product" items="[[productData]]" id="productSelector" item-label-path="name" item-value-path="name"
+                    <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="name"
                         selected-item='{{selectProduct}}' loading="[[!productItems]]" required prevent-invalid-input always-float-label></vaadin-combo-box>
                     <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
                         step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
                     <vaadin-date-picker class="date-picker" label="Delivery Date" min="2017-01-01" max="2040-01-01" name="delivery" id="deliverySelector"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
                     <!-- <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload> -->
-
                     <flat-button on-tap="_createOrder" class="shamrock btn" title="Add order"><button role="button">Add to schedule</button></flat-button>
-                    <flat-button on-tap="_saveValue" class="btn" title="Save to archive"><button role="button">Archive Order</button></flat-button>
+                    <flat-button on-tap="_saveValue" class="btn" title="Save to archive"><button role="button">Save Order</button></flat-button>
 
                 </div>
             </li>
@@ -99,6 +102,10 @@
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+
+            getFullName(fname) {
+                return 'test'
             }
         }
         customElements.define(ViewPlanOrder.is, ViewPlanOrder)

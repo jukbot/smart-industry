@@ -83,10 +83,12 @@
             <li>
                 <div class="card" hidden="[[showAddCustomer]]">
                     <h1 class="title">{{localize('add-customer')}}</h1>
-                    <paper-input label="First name" id="customerFirstName" type="text" required always-float-label></paper-input>
-                    <paper-input label="Last name" id="customerLastName" type="text" required always-float-label></paper-input>
-                    <paper-input label="E-mail" id="customerEmail" type="email" required always-float-label></paper-input>
-                    <paper-input label="Mobile" id="customerMobile" type="tel" required always-float-label></paper-input>
+                    <paper-input label="First name" id="customerFirstName" max-length="40" type="text" required always-float-label></paper-input>
+                    <paper-input label="Last name" id="customerLastName" max-length="40" type="text" required always-float-label></paper-input>
+                    <paper-input label="E-mail" id="customerEmail" max-length="40" type="email" required always-float-label>
+                        <iron-icon icon="vaadin:envelope" slot="prefix"></iron-icon>
+                    </paper-input>
+                    <paper-input label="Mobile" id="customerMobile" max-length="15" type="tel" required always-float-label></paper-input>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openCustomerTable"><button role="button">{{localize('dismiss')}}</button></flat-button>
                         <flat-button class="btn shamrock" on-tap="_addCustomer"><button role="button">{{localize('add')}}</button></flat-button>
