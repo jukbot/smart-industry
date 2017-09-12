@@ -69,10 +69,10 @@
                     <vaadin-date-picker class="date-picker" label="Delivery Date" min="2017-01-01" max="2040-01-01" name="delivery" id="deliverySelector"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
                     <!-- <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload> -->
-                    <div class="button-group">
-                        <paper-button raised class="smart" on-tap="_createOrder">Add to schedule</paper-button>
-                        <paper-button raised class="fancy" on-tap="_saveOrder">Save to waiting</paper-button>
-                    </div>
+
+                    <flat-button on-tap="_createOrder" class="shamrock btn" title="Add order"><button role="button">Add to schedule</button></flat-button>
+                    <flat-button on-tap="_saveValue" class="btn" title="Save to archive"><button role="button">Archive Order</button></flat-button>
+
                 </div>
             </li>
             <li>

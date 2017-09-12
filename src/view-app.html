@@ -16,6 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
@@ -78,7 +79,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <button type="button">{{localize('logout-button')}}
               </button>
           </flat-button>
-
           <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="Profile image" alt="user photo">
           <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-config="{{tooltipAnimation}}"
             animation-delay="0">
@@ -91,16 +91,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <p>{{localize('version')}} 1.0.5</p>
         </div>
       </app-drawer>
-      <dom-if if="[[signedIn]]">
-      </dom-if>
       <app-header-layout fullbleed>
-        <app-header hidden$="[[!signedIn]]" id="header" slot="header">
+        <app-header hidden$="[[!signedIn]]" class="main-header" id="header" slot="header">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
-
-          <paper-icon-button icon="vaadin:menu" role="button" drawer-toggle></paper-icon-button>
-          <h2 class="page-title" main-title>{{localize(page)}}</h2>
-          <input id="searchBox" type="search" name="search" placeholder="Search this app">
-          <paper-icon-button icon="vaadin:search" tabindex="0" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button>
+          <app-toolbar>
+            <paper-icon-button icon="vaadin:menu" role="button" drawer-toggle></paper-icon-button>
+            <h2 class="page-title" main-title>{{localize(routeData.page)}}</h2>dd
+            <!-- <input id="searchBox" type="search" name="search" placeholder="Search this app">
+            <paper-icon-button icon="vaadin:search" tabindex="0" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button> -->
+          </app-toolbar>
         </app-header>
         <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
           role="main">
