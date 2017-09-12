@@ -29,7 +29,7 @@
   <template>
     <style include="flat-button shared-styles">
        :host {
-        display: block;
+        display: block
       }
     </style>
     <!-- <app-analytics key="UA-51514677-9"></app-analytics> ENABLE WHEN DEPLOY PRODUCTION -->
@@ -43,7 +43,8 @@
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
-      <app-drawer hidden$="[[!userauth]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
+      <!-- <div hidden$="[[!user]]" style="background-color:aqua"> -->
+      <app-drawer hidden$="[[!user]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-logo-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -83,8 +84,9 @@
           <p>{{localize('version')}} 1.0.5</p>
         </div>
       </app-drawer>
+      <!-- </div> -->
       <app-header-layout fullbleed>
-        <app-header hidden$="[[!signedIn]]" class="main-header" id="header" slot="header">
+        <app-header hidden$="[[!user]]" class="main-header" id="header" slot="header">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
           <app-toolbar>
             <paper-icon-button icon="vaadin:menu" role="button" drawer-toggle></paper-icon-button>
@@ -159,8 +161,7 @@
           },
           signedIn: {
             type: Boolean,
-            value: false,
-            observer: '_signedInChanged'
+            value: false
           },
           toastText: String,
           notificationText: String
@@ -170,7 +171,8 @@
       static get observers() {
         return [
           '_routePageChanged(routeData.page)',
-          '_handleUser(user)'
+          '_handleUser(user)',
+          '_signedInChanged(signedIn)'
         ]
       }
 
@@ -182,74 +184,70 @@
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
         // listen for custom events
-        requestAnimationFrame(this._installListeners.bind(this));
+        requestAnimationFrame(this._installListeners.bind(this))
       }
 
       ready() {
         super.ready()
         // Custom elements polyfill safe way to indicate an element has been upgraded.
         document.body.removeAttribute('unresolved')
-
         // listen for navigation preload activate
         self.addEventListener('activate', (e) => {
           e.waitUntil(async function () {
             // Feature-detect
             if (!self.registration.navigationPreload) {
-              return;
+              return
             }
-            // Enable navigation preloads;
-            await self.registration.navigationPreload.enable();
-          }());
-        });
+            // Enable navigation preloads
+            await self.registration.navigationPreload.enable()
+          }())
+        })
         // listen for navigation preload fetch
         self.addEventListener('fetch', (e) => {
-          console.log(e.request.url);
+          console.log(e.request.url)
           e.respondWith(async function () {
             // Respond from the cache if we can
-            const cachedResponse = await caches.match(e.request);
-            if (cachedResponse) return cachedResponse;
+            const cachedResponse = await caches.match(e.request)
+            if (cachedResponse) return cachedResponse
             // Else, try to use preloaded response
-            const response = await e.preloadResponse;
-            if (response) return response;
+            const response = await e.preloadResponse
+            if (response) return response
             // Else try the network.
-            return fetch(e.request);
-          }());
-        });
+            return fetch(e.request)
+          }())
+        })
       }
 
       _installListeners() {
-        this.addEventListener('auth-changed', this._onAuthChanged.bind(this));
         // listen for custom events
-        this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e))
-        this.addEventListener('signed-in-changed', (e) => this._signedInChanged(e))
-        this.addEventListener('on-error', (e) => this._handleError(e).bind(this))
+        window.addEventListener('auth-changed', this._onAuthChanged.bind(this))
+        window.addEventListener('show-invalid-url-warning', this._showPage404.bind(this))
+        window.addEventListener('on-error', this._handleError.bind(this))
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, () => {
-          window.addEventListener('online-changed', (e) => this._networkChanged(e))
           window.addEventListener('online', (e) => this._networkChanged(e))
           window.addEventListener('offline', (e) => this._networkChanged(e))
         })
       }
 
       _onAuthChanged(data) {
-        var user = data.detail.user;
-        if (!!user) {
+        var user = data.detail.user
+        if (user) {
           Polymer.Utils.importHref(
             this.resolveUrl('view-app.html'), function () {
-              this.$.drawer.hidden = false;
-              this.$.header.hidden = false;
-              this.$.header.resizeHeader();
-            });
-
+              this.$.drawer.hidden = false
+              this.$.header.hidden = false
+              this.$.header.resizeHeader()
+            })
         } else {
-          this.$.drawer.hidden = true;
-          this.$.header.hidden = true;
+          this.$.drawer.hidden = true
+          this.$.header.hidden = true
         }
       }
 
       _handleUser(user) {
         if (user) {
-          console.log(user);
+          console.log(user)
         }
       }
 
@@ -297,8 +295,8 @@
         if (!this.loadComplete) {
           Polymer.RenderStatus.afterNextRender(this, () => {
             Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
-              const greenColor = 'color: green;'
-              const crimsonColor = 'color: crimson;'
+              const greenColor = 'color: green'
+              const crimsonColor = 'color: crimson'
               // Load and register pre-caching Service Worker for offline usage
               if ('serviceWorker' in navigator) {
                 // Register service worker
@@ -312,10 +310,10 @@
                 // Check state of service worker
                 navigator.serviceWorker.ready.then((registration) => {
                   console.info('%cService Worker Ready', greenColor)
-                  return registration.navigationPreload.getState();
+                  return registration.navigationPreload.getState()
                 }).then(state => {
-                  console.info("%cService Worker state: " + JSON.stringify(state), 'color: purple;'); // state
-                });
+                  console.info("%cService Worker state: " + JSON.stringify(state), 'color: purple') // state
+                })
               } else {
                 // Browser not support service worker
                 console.error('%cService Worker is not support by your browser.' + err, crimsonColor)
@@ -329,7 +327,7 @@
         }
       }
 
-      _onFallbackSelectionTriggered() {
+      _showPage404() {
         this.page = '404'
       }
 
@@ -383,14 +381,12 @@
         } else {
           this.$.auth.signOut()
             .then(() => {
-              this.$.userIndexDB.destroy()
-              this._closeToastAlert()
               Polymer.Async.timeOut.run(() => {
-                this.$.header.resetLayout()
-                this.$.drawer.resetLayout()
+                this._closeToastAlert()
+                this.$.userIndexDB.destroy()
+                this.$.layout.resetLayout()
               }, 1)
               // redirect to login page
-              this.set('route.path', '/login')
               this.page = 'login'
             })
             .catch((error) => {

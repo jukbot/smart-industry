@@ -118,8 +118,8 @@
       }
 
       .logo {
-        display: none;
-        margin: 0 auto;
+        display: block;
+        margin: 30px auto;
         padding: 0;
         width: 150px;
         height: 150px;
@@ -193,6 +193,7 @@
         }
         .logo {
           display: block;
+          margin: 20px auto;
         }
         article {
           padding: 0 30px;
@@ -220,13 +221,13 @@
           <h1 title="IMES" class="main-title mobile-title">IMES</h1>
           <form hidden$="[[!login]]" autocomplete="on" class="login-form" on-submit="_login">
             <div class="form-title">
-              <h2>User Login</h2>
+              <h2>Log in with IMES account</h2>
             </div>
             <flat-input>
-              <input type="email" id="accountEmail" name="Email" placeholder="Email" maxlength="40" auto-complete="email" autofocus required
-                aria-labelledby="accountEmailLabel">
+              <input type="email" id="accountEmail" name="Email" placeholder="Email address" maxlength="40" auto-complete="email" autofocus
+                required aria-labelledby="accountEmailLabel">
               <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
-                <label id="accountEmailLabel">Email</label>
+                <label id="accountEmailLabel">Email address</label>
                 <flat-underline></flat-underline>
               </flat-md-decorator>
             </flat-input>
@@ -247,26 +248,29 @@
               <label for="setKeepSession">Keep me signed in</label>
             </div>
             <flat-button class="login-btn" role="button" on-click="_login"><button type="button">Log in</button></flat-button>
-            <div class="link"><a href="javascript:void(0);" on-click="_showReset" class="login-forget">Forgot Password?</a></div>
-            <div class="link"><a href="javascript:void(0);" on-click="_showRegister" class="login-register">Don’t have an account? Get one here.</a></div>
+            <div class="link"><a href="javascript:void(0);" on-click="_showReset" class="login-forget">Forgot?</a></div>
+            <div class="link"><a href="javascript:void(0);" on-click="_showRegister" class="login-register">Don’t have an account? Sign
+              up now.</a>
+            </div>
           </form>
 
 
           <form hidden$="[[!register]]" autocomplete="on" class="register-form" on-submit="_register">
             <div class="form-title">
-              <h2>User Register</h2>
+              <h2>IMES is a new way to plan and<br> manage your factory services.</h2>
             </div>
             <flat-input>
-              <input type="email" id="register_email" name="Email" placeholder="Email" maxlength="40" auto-complete="email" required aria-labelledby="registerEmailLabel">
+              <input type="email" id="register_email" name="Email" placeholder="Email address" maxlength="40" auto-complete="email" required
+                aria-labelledby="registerEmailLabel">
               <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
-                <label id="registerEmailLabel">Email</label>
+                <label id="registerEmailLabel">Email address</label>
                 <flat-underline></flat-underline>
               </flat-md-decorator>
             </flat-input>
             <flat-input>
-              <input type="password" id="register_passwd" name="Password" placeholder="New Password" maxlength="40" required aria-labelledby="registerPasswordLabel">
+              <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="40" required aria-labelledby="registerPasswordLabel">
               <flat-md-decorator error-message="Invalid Input" aria-hidden="true">
-                <label id="registerPasswordLabel">Password</label>
+                <label id="registerPasswordLabel">New password</label>
                 <flat-underline></flat-underline>
               </flat-md-decorator>
             </flat-input>
@@ -285,25 +289,27 @@
                 <flat-underline></flat-underline>
               </flat-md-decorator>
             </flat-input>
+            <p>By signing up you agree to IMES’s Terms of Service</p>
             <flat-button class="register-btn" role="button" on-click="_register">
-              <button type="button">Send Confirmation</button>
+              <button type="button">Register and Login</button>
             </flat-button>
             <div class="link"><a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Log in</a></div>
           </form>
           <form hidden$="[[!reset]]" class="reset-form" on-submit="_resetPassword">
             <div class="form-title">
-              <h2>Reset Your Password</h2>
+              <h2>Reset your password</h2>
+              <p>Enter the email you used to signup with and we'll send you a link to reset your password.</p>
             </div>
             <flat-input>
-              <input type="email" id="resetPassword" name="resetPassword" placeholder="Email" maxlength="40" auto-complete="email" required
-                aria-labelledby="resetPasswordLabel">
+              <input type="email" id="resetPassword" name="resetPassword" placeholder="Email address" maxlength="40" auto-complete="email"
+                required aria-labelledby="resetPasswordLabel">
               <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
-                <label id="resetPasswordLabel">Email</label>
+                <label id="resetPasswordLabel">Email address</label>
                 <flat-underline></flat-underline>
               </flat-md-decorator>
             </flat-input>
             <flat-button class="reset-btn" role="button" on-click="_resetPassword"><button type="button">Reset Password</button></flat-button>
-            <div class="link"><a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Have an account? Log in.</a></div>
+            <div class="link"><a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Return to login</a></div>
           </form>
         </article>
       </div>
@@ -421,8 +427,6 @@
                   this.$.data.ref.child(keyid).set(this.sampleData).catch(error => {
                     this.showAlertToast(error.code)
                   })
-                  this.$.auth.signOut()
-                  this._hideRegister()
                 }).catch((error) => {
                   this.showAlertToast(error.code)
                 })
@@ -455,7 +459,7 @@
         this.$.auth.onAuthStateChanged(user => {
           if (!user.emailVerified) {
             this.user.sendEmailVerification()
-            this.showSuccessToast("Register successful. We've sent verification code to your email")
+            this.showSuccessToast("Register successful. We've send verification link to your email")
           }
         });
       }
@@ -465,7 +469,7 @@
         if (resetPassword) {
           this.$.auth.sendPasswordresetPassword(resetPassword)
             .then((response) => {
-              this.showSuccessToast('Reset password has been send to your email.')
+              this.showSuccessToast('Reset password link has been send to your email.')
             })
             .catch((error) => {
               this.showAlertToast(error.code)
