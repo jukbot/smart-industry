@@ -12,24 +12,27 @@
         --app-grid-columns: 3;
       }
 
-      .card {
-        min-height: 300px;
-      }
-
       .number {
         font-size: 8rem;
         text-align: center;
         margin-top: 20px;
       }
 
-      .head {
-        font-size: 1.6rem;
-        text-align: center;
-      }
-
       .status {
         font-size: 4rem;
         text-align: center;
+      }
+
+      .frame {
+        margin: 10px;
+      }
+
+      .app-grid {
+        margin: 0;
+      }
+
+      .main-card {
+        margin-top: 20px;
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
@@ -65,63 +68,65 @@
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-    <ul class="app-grid">
-      <li>
-        <div class="card">
-          <h1 class="head">Waiting Order</h1>
-          <h1 class="number">[[waitOrderCount]]</h1>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <h1 class="head">Order In queue</h1>
-          <h1 class="number">[[orderData.length]]</h1>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <h1 class="head">Order Done</h1>
-          <h1 class="number">[[getDoneOrder(orderData)]] [[doneOrderCount]]</h1>
-        </div>
-      </li>
+    <div class="card main-card">
+      <ul class="app-grid">
+        <li>
+          <div class="frame">
+            <h1 class="title">Waiting Order</h1>
+            <h1 class="number">[[waitOrderCount]]</h1>
+          </div>
+        </li>
+        <li>
+          <div class="frame">
+            <h1 class="title">Order In queue</h1>
+            <h1 class="number">[[orderData.length]]</h1>
+          </div>
+        </li>
+        <li>
+          <div class="frame">
+            <h1 class="title">Order Done</h1>
+            <h1 class="number">[[getDoneOrder(orderData)]] [[doneOrderCount]]</h1>
+          </div>
+        </li>
 
-      <li>
-        <div class="card">
-          <h1 class="head">Average OEE</h1>
-          <h1 class="number">N/A</h1>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <h1 class="head">Running Machines</h1>
-          <h1 class="number">[[machineData.length]]</h1>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <h1 class="head">Working Stations</h1>
-          <h1 class="number">[[stationData.length]]</h1>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <h1 class="head">Next Reschedule</h1>
-          <h1 class="number" style="font-size: 2.75rem;">[[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</h1>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <h1 class="head">Reschedule Interval</h1>
-          <h1 class="number">[[factorySchedule.interval]]</h1>
-        </div>
-      </li>
-      <li>
-        <div class="card">
-          <h1 class="head">Operation Time Left</h1>
-          <h1 class="number" style="font-size: 2.75rem;">[[getRemainOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</h1>
-        </div>
-      </li>
-    </ul>
+        <li>
+          <div class="frame">
+            <h1 class="title">Average OEE</h1>
+            <h1 class="number">N/A</h1>
+          </div>
+        </li>
+        <li>
+          <div class="frame">
+            <h1 class="title">Running Machines</h1>
+            <h1 class="number">[[machineData.length]]</h1>
+          </div>
+        </li>
+        <li>
+          <div class="frame">
+            <h1 class="title">Working Stations</h1>
+            <h1 class="number">[[stationData.length]]</h1>
+          </div>
+        </li>
+        <li>
+          <div class="frame">
+            <h1 class="title">Next Reschedule</h1>
+            <h1 class="number" style="font-size: 2.75rem;">[[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</h1>
+          </div>
+        </li>
+        <li>
+          <div class="frame">
+            <h1 class="title">Reschedule Interval</h1>
+            <h1 class="number">[[factorySchedule.interval]]</h1>
+          </div>
+        </li>
+        <li>
+          <div class="frame">
+            <h1 class="title">Operation Time Left</h1>
+            <h1 class="number" style="font-size: 2.75rem;">[[getRemainOpTime(factoryOperation.op_end, factoryOperation.op_start)]]</h1>
+          </div>
+        </li>
+      </ul>
+    </div>
   </template>
   <script>
     class ViewDashboardOverview extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],

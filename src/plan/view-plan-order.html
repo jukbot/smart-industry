@@ -49,6 +49,37 @@
             vaadin-date-picker.date-picker {
                 width: 100%;
             }
+
+            .order-info>p {
+                margin: 16px 0;
+            }
+
+            .flex-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .wrap {
+                -webkit-flex-flow: row wrap;
+                flex-flow: row wrap;
+            }
+
+            .flex-item {
+                flex: 1;
+            }
+
+            .flex-item:first-child>p {
+                font-weight: 500;
+            }
+
+            .flex-item:last-child>p {
+                font-weight: 400;
+            }
+
+            .info-group>p {
+                margin: 12px 0;
+            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -73,18 +104,81 @@
                     <vaadin-date-picker class="date-picker" label="Delivery Date" min="2017-01-01" max="2040-01-01" name="delivery" id="deliverySelector"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
                     <!-- <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload> -->
-                    <flat-button on-tap="_createOrder" class="shamrock btn" title="Add order"><button role="button">Add to schedule</button></flat-button>
                     <flat-button on-tap="_saveValue" class="btn" title="Save to archive"><button role="button">Save Order</button></flat-button>
-
+                    <flat-button on-tap="_createOrder" class="shamrock btn" title="Add order"><button role="button">Add to schedule</button></flat-button>
                 </div>
             </li>
             <li>
-                <div class="card">
+                <div class="card order-info">
                     <h1 class="title">Order Detail</h1>
-                    [[delivery]]
+
+                    <div class="flex-container">
+                        <div class="info-group flex-item">
+                            <p>Order Number</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>Customer Name</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>Product Name</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>SKU Number</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>Actual Quantity</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>Delivery Date</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>Raw Material Used</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>Operation hours</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>Cost</p>
+                        </div>
+                        <div class="info-group flex-item">
+                            <p><span>[[getOrderNumber]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[selectCustomer.fname]] [[selectCustomer.lname]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[setOrderProduct(selectProduct)]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[setProductSKU(selectProduct.sku)]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[getActualQuantity(amount)]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[getSumProductTime(selectProduct.part,amount)]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[delivery]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[selectProduct.raw]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]] Hrs.</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span>[[getProductCost(selectProduct.cost,amount)]]</span></p>
+                        </div>
+                    </div>
                 </div>
             </li>
         </ul>
+        <div class="card">
+            <h1 class="title">Product Information</h1>
+            <div class="frame" hidden$="[[selectProduct.part]]">
+                <h1 class="no-product-title">No Product Selected</h1>
+            </div>
+            <div class="frame" hidden$="[[!selectProduct.part]]">
+                <img class="product-image" src$="[[selectProduct.image]]" alt="[[selectProduct.name]]">
+                <h2>Product Name [[selectProduct.name]]</h2>
+                <p>Product SKU: [[selectProduct.sku]]</p>
+                <p>Product Fragment: [[selectProduct.part.length]] part</p>
+                <p>Total Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p>
+            </div>
+            <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
+                <div class="frame">
+                    <h2>Product Part [[part.name]]</h2>
+                    <p>Part SKU: [[part.sku]]</p>
+                    <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
+                    <p>Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
+                    <p>Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+                </div>
+            </template>
+        </div>
     </template>
     <script>
         class ViewPlanOrder extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
@@ -95,7 +189,8 @@
 
             static get properties() {
                 return {
-                    language: String
+                    language: String,
+                    orderNumber: Number
                 }
             }
 
@@ -104,8 +199,15 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
 
-            getFullName(fname) {
-                return 'test'
+            static get getOrderNumber() {
+                if (orderData.length == 0 || orderData.length == null) {
+                    this.orderNumber = 1;
+                    return 1;
+                } else {
+                    this.orderNumber = orderData.length + 1;
+                    return orderData.length + 1;
+                }
+
             }
         }
         customElements.define(ViewPlanOrder.is, ViewPlanOrder)

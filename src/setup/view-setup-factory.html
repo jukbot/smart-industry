@@ -41,10 +41,6 @@
                 }
             }
 
-            .factory-rule>p {
-                margin: 16px 0;
-            }
-
             .operation-day-selector {
                 margin: 10px 0;
                 padding: 10px 10px 20px 10px;
@@ -65,6 +61,10 @@
                 padding: 0 5px;
                 flex: auto;
                 align-content: stretch;
+            }
+
+            .factory-info>p {
+                margin: 16px 0;
             }
 
             .flex-container {
@@ -143,7 +143,7 @@
                                 <div>{{localize(item.value)}}</div>
                             </template>
                         </vaadin-combo-box>
-                        <paper-input label="{{localize('standard-working-utilization')}} (30-100%)" id="workerUtilize" value="[[factoryPerformance.au]]"
+                        <paper-input label="{{localize('standard-acceptable-utilization')}} (30-100%)" id="workerUtilize" value="[[factoryPerformance.au]]"
                             type="number" min="30" max="100" step="1" required always-float-label></paper-input>
                         <paper-input label="{{localize('standard-machine-efficiency')}} (30-100%)" name="machineStandardEfficiency" id="machineStandardEffi"
                             value="[[factoryPerformance.meff]]" type="number" min="30" max="100" step="1" required always-float-label></paper-input>
@@ -159,7 +159,7 @@
                 </div>
             </li>
             <li>
-                <div class="card factory-rule" style="margin-bottom: 20px">
+                <div class="card factory-info" style="margin-bottom: 20px">
                     <h1 class="title">{{localize('factory-information')}}</h1>
                     <div class="flex-container">
                         <div class="info-group flex-item">
@@ -198,13 +198,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="card factory-rule" style="margin-top: 20px">
+                <div class="card factory-info" style="margin-top: 20px">
                     <h1 class="title">{{localize('factory-global-standard')}}</h1>
                     <div class="flex-container">
                         <div class="info-group flex-item">
                             <p>{{localize('productivity-optimization')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>{{localize('standard-working-utilization')}}</p>
+                            <p>{{localize('standard-acceptable-utilization')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>{{localize('standard-machine-efficiency')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>

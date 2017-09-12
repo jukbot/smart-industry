@@ -1,12 +1,4 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+<!-- POLYMER 2 -->
 <!-- app modules - used for core functions -->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
@@ -45,15 +37,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-change="_signedInChanged"
-      on-error="_handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" auth="{{userauth}}" signed-in="{{signedIn}}"
+      on-change="_signedInChanged" on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
-      <app-drawer hidden$="[[!signedIn]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
+      <app-drawer hidden$="[[!userauth]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
-        <h1 title="IMES" class="main-title">IMES</h1>
+        <h1 title="IMES" class="main-logo-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
         <nav>
           <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
@@ -189,14 +181,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
+        // listen for custom events
+        requestAnimationFrame(this._installListeners.bind(this));
       }
 
       ready() {
         super.ready()
         // Custom elements polyfill safe way to indicate an element has been upgraded.
         document.body.removeAttribute('unresolved')
-        // listen for custom events
-        requestAnimationFrame(this._installListeners.bind(this));
+
         // listen for navigation preload activate
         self.addEventListener('activate', (e) => {
           e.waitUntil(async function () {
@@ -225,6 +218,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _installListeners() {
+        this.addEventListener('auth-changed', this._onAuthChanged.bind(this));
         // listen for custom events
         this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e))
         this.addEventListener('signed-in-changed', (e) => this._signedInChanged(e))
@@ -237,9 +231,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         })
       }
 
+      _onAuthChanged(data) {
+        var user = data.detail.user;
+        if (!!user) {
+          Polymer.Utils.importHref(
+            this.resolveUrl('view-app.html'), function () {
+              this.$.drawer.hidden = false;
+              this.$.header.hidden = false;
+              this.$.header.resizeHeader();
+            });
+
+        } else {
+          this.$.drawer.hidden = true;
+          this.$.header.hidden = true;
+        }
+      }
+
       _handleUser(user) {
         if (user) {
-          console.log('user-data');
           console.log(user);
         }
       }
