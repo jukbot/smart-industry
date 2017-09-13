@@ -85,15 +85,16 @@
             <li>
                 <div class="card" hidden="[[showAddInventory]]">
                     <h1 class="title">Add Inventory</h1>
-                    <paper-input label="Name" id="inventoryName" type="text" max-length="40" required always-float-label></paper-input>
-                    <paper-input label="Code" id="inventoryCode" type="text" max-length="20" required always-float-label></paper-input>
-                    <paper-input label="Cost" id="inventoryCost" type="number" min="0" max="10000" step="0.01" onkeypress='return event.charCode >= 46 && event.charCode <= 57'
-                        required always-float-label></paper-input>
-                    <paper-input label="Quantity" id="inventoryQuantity" type="number" min="0" max="5000" required always-float-label>
+                    <paper-input label="Name" id="inventoryName" type="text" maxlength="40" auto-validate required always-float-label></paper-input>
+                    <paper-input label="Code" id="inventoryCode" type="text" maxlength="20" auto-validate required always-float-label></paper-input>
+                    <paper-input label="Cost" id="inventoryCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only"
+                        min="0" max="[[maxInput]]" step="0.01" auto-validate required always-float-label></paper-input>
+                    <paper-input label="Quantity" id="inventoryQuantity" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)$" error-message="number only"
+                        min="1" max$="[[maxInput]]" step="1" auto-validate required always-float-label>
                     </paper-input>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openInventoryTable"><button>{{localize('dismiss')}}</button></flat-button>
-                        <flat-button class="btn shamrock" on-tap="_addInventory"><button disabled>{{localize('add')}}</button></flat-button>
+                        <flat-button class="btn shamrock" on-tap="_addInventory"><button disabled$="[[disabled]]">{{localize('add')}}</button></flat-button>
                     </div>
                 </div>
                 <li>
@@ -188,6 +189,14 @@
                     inventoryData: Object,
                     selectAll: Boolean,
                     toastText: String,
+                    maxInput: {
+                        type: Number,
+                        value: 999999
+                    },
+                    disabled: {
+                        type: Boolean,
+                        value: true
+                    },
                     showAddInventory: {
                         type: Boolean,
                         value: true
@@ -200,21 +209,35 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
 
+            ready() {
+                super.ready()
+                requestAnimationFrame(this._installListeners.bind(this))
+            }
+
+            _installListeners() {
+                this.$.inventoryName.addEventListener('input', this._validateInput.bind(this))
+                this.$.inventoryCode.addEventListener('input', this._validateInput.bind(this))
+                this.$.inventoryCost.addEventListener('input', this._validateInput.bind(this))
+                this.$.inventoryQuantity.addEventListener('input', this._validateInput.bind(this))
+                this.$.inventoryCost.addEventListener('keypress', (e) => this._validateNumber(e))
+                this.$.inventoryQuantity.addEventListener('keypress', (e) => this._validateNumber(e))
+            }
+
             _openAddInventoryCard() {
-                this.showAddInventory = false;
+                this.showAddInventory = false
             }
 
             _openInventoryTable() {
-                this.showAddInventory = true;
+                this.showAddInventory = true
             }
 
             _addInventory() {
-                let name = this.$.inventoryName.value;
-                let code = this.$.inventoryCode.value;
-                let cost = this.$.inventoryCost.value;
-                let quantity = this.$.inventoryQuantity.value;
-                const dateTime = Date.now();
-                const timestamp = Math.floor(dateTime / 1000);
+                let name = this.$.inventoryName.value
+                let code = this.$.inventoryCode.value
+                let cost = this.$.inventoryCost.value
+                let quantity = this.$.inventoryQuantity.value
+                const dateTime = Date.now()
+                const timestamp = Math.floor(dateTime / 1000)
                 if (name && code && cost && quantity) {
                     this.$.inventoryQuery.ref.push({
                         name: name,
@@ -222,30 +245,51 @@
                         cost: cost,
                         quantity: quantity,
                         add: timestamp
-                    });
-                    this.clearField();
+                    })
+                    this.clearField()
                     this.toastText = 'notification-add-success'
-                    this.$.toastSetupinventory.open();
+                    this.$.toastSetupinventory.open()
                 } else {
-                    this.toastText = 'notification-error-incomplete-input';
-                    this.$.toastSetupinventory.open();
+                    this.toastText = 'notification-error-incomplete-input'
+                    this.$.toastSetupinventory.open()
                 }
             }
 
             _deleteInventory(e) {
                 if (window.confirm("Delete this inventory item ?") == true) {
-                    let key = e.currentTarget.inventory.$key;
-                    this.$.inventoryQuery.ref.child(key).remove();
+                    let key = e.currentTarget.inventory.$key
+                    this.$.inventoryQuery.ref.child(key).remove()
                     this.toastText = 'notification-delete-success'
-                    this.$.toastSetupinventory.open();
+                    this.$.toastSetupinventory.open()
+                }
+            }
+
+            _validateNumber(e) {
+                // alow only 0-9
+                if (e.which != 8 && e.which != 0 && e.which < 48 || e.which > 57) {
+                    e.preventDefault();
+                }
+            }
+
+            _validateInput() {
+                let name = this.$.inventoryName.value
+                let code = this.$.inventoryCode.value
+                let cost = this.$.inventoryCost.value
+                let quantity = this.$.inventoryQuantity.value
+                const decimal = /^(0|[1-9]\d*)(\.\d+)?$/ // alow decimal 2 points
+                const integer = /^(0|[1-9]\d*)$/ // alow only positive interger
+                if (name && code && cost && quantity && cost.match(decimal) && cost <= this.maxInput && quantity.match(integer) && quantity > 0 && quantity <= this.maxInput) {
+                    this.disabled = false
+                } else {
+                    this.disabled = true
                 }
             }
 
             clearField() {
-                this.$.inventoryName.value = "";
-                this.$.inventoryCode.value = "";
-                this.$.inventoryCost.value = "";
-                this.$.inventoryQuantity.value = "";
+                this.$.inventoryName.value = ""
+                this.$.inventoryCode.value = ""
+                this.$.inventoryCost.value = ""
+                this.$.inventoryQuantity.value = ""
             }
         }
         customElements.define(ViewSetupInventory.is, ViewSetupInventory)

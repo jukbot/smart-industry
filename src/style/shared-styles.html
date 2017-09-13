@@ -23,7 +23,6 @@
         background-color: var(--app-background-color);
       }
 
-
       h1,
       h2,
       h3,
@@ -104,16 +103,11 @@
         height: 100%;
       }
 
-      h1.main-title {
-        text-align: center;
-        margin: 15px 0 25px 0;
-        font-size: 2.5rem;
-      }
-
       h1.title {
         text-align: center;
         margin: 15px 0 25px 0;
         font-size: 1.75rem;
+        font-weight: 400;
       }
 
       paper-toast.toast-verify {
@@ -275,7 +269,7 @@
       }
 
       .progress-loader {
-        --paper-progress-active-color: gold;
+        --paper-progress-active-color: #FFC107;
         --paper-progress-container-color: rgba(0, 0, 0, 0);
         --paper-progress-height: 2px;
         --paper-progress-indeterminate-cycle-duration: 2s;
@@ -310,13 +304,18 @@
       }
 
       .shamrock:hover button {
-        background-color: #2ECC71;
-        border: 2px solid #2ECC71;
+        background-color: #43A047;
+        border: 2px solid #43A047;
       }
 
       .thunderbird:hover button {
         background-color: #e53935;
         border: 2px solid #e53935;
+      }
+
+      .deep-orange:hover button {
+        background-color: #F4511E;
+        border: 2px solid #F4511E;
       }
 
       @media (min-width: 360px) and (max-width: 768px) {

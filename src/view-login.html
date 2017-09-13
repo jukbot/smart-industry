@@ -215,14 +215,14 @@
       </figure>
       <div class="flex-item right-half">
         <article>
-          <img class="logo" role="img" src="/images/logo/logo.svg" title="Logo" alt="application logo">
+          <img class="logo" src="/images/logo/logo.svg" title="Logo" alt="app logo">
           <h1 title="IMES" class="main-title mobile-title">IMES</h1>
           <form hidden$="[[!login]]" autocomplete="on" class="login-form" on-submit="_login">
             <div class="form-title">
               <h2>Log in with IMES account</h2>
             </div>
             <flat-input>
-              <input type="email" id="accountEmail" name="Email" placeholder="Email address" maxlength="40" auto-complete="email" autofocus
+              <input type="email" id="accountEmail" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" autofocus
                 required aria-labelledby="accountEmailLabel">
               <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
                 <label id="accountEmailLabel">Email address</label>
@@ -230,7 +230,7 @@
               </flat-md-decorator>
             </flat-input>
             <flat-input>
-              <input type="password" id="accountPassword" name="Password" placeholder="Passwrod" maxlength="40" auto-complete="current-password"
+              <input type="password" id="accountPassword" name="Password" placeholder="Passwrod" maxlength="30" auto-complete="current-password"
                 autofocus required aria-labelledby="accountPasswordLabel">
               <flat-md-decorator error-message="Invalid Input" aria-hidden="true">
                 <label id="accountPasswordLabel">Password</label>
@@ -258,7 +258,7 @@
               <h2>IMES is a new way to plan and<br> manage your factory services.</h2>
             </div>
             <flat-input>
-              <input type="email" id="register_email" name="Email" placeholder="Email address" maxlength="40" auto-complete="email" required
+              <input type="email" id="register_email" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" required
                 aria-labelledby="registerEmailLabel">
               <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
                 <label id="registerEmailLabel">Email address</label>
@@ -266,14 +266,14 @@
               </flat-md-decorator>
             </flat-input>
             <flat-input>
-              <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="40" required aria-labelledby="registerPasswordLabel">
+              <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="30" required aria-labelledby="registerPasswordLabel">
               <flat-md-decorator error-message="Invalid Input" aria-hidden="true">
                 <label id="registerPasswordLabel">New password</label>
                 <flat-underline></flat-underline>
               </flat-md-decorator>
             </flat-input>
             <flat-input>
-              <input type="text" id="register_organization" name="Organization" placeholder="Organization" maxlength="40" required aria-labelledby="registerOrganizationLabel">
+              <input type="text" id="register_organization" name="Organization" placeholder="Organization" maxlength="30" required aria-labelledby="registerOrganizationLabel">
               <flat-md-decorator error-message="Invalid Input" aria-hidden="true">
                 <label id="registerOrganizationLabel">Organization</label>
                 <flat-underline></flat-underline>
@@ -299,7 +299,7 @@
               <p>Enter the email you used to signup with and we'll send you a link to reset your password.</p>
             </div>
             <flat-input>
-              <input type="email" id="resetPassword" name="resetPassword" placeholder="Email address" maxlength="40" auto-complete="email"
+              <input type="email" id="resetPassword" name="resetPassword" placeholder="Email address" maxlength="30" auto-complete="email"
                 required aria-labelledby="resetPasswordLabel">
               <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
                 <label id="resetPasswordLabel">Email address</label>

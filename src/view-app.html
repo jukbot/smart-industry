@@ -3,12 +3,7 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
@@ -48,7 +43,7 @@
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-logo-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
-        <nav>
+        <nav role="navigation">
           <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
             <a name="dashboard" role="link" href="/dashboard" rel="dashboard" title="Dashboard">
               <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
@@ -72,7 +67,7 @@
             <button type="button">{{localize('logout-button')}}
               </button>
           </flat-button>
-          <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="Profile image" alt="user photo">
+          <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="User image" alt="user image">
           <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-config="{{tooltipAnimation}}"
             animation-delay="0">
             <p>{{localize('email')}}: [[persistedUserData.email]]</p>
@@ -85,7 +80,7 @@
         </div>
       </app-drawer>
       <app-header-layout fullbleed>
-        <app-header hidden$="[[!user]]" class="main-header" id="header" slot="header">
+        <app-header hidden$="[[!user]]" class="main-header" id="header" slot="header" role="banner">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
           <app-toolbar>
             <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
@@ -189,7 +184,7 @@
       ready() {
         super.ready()
         // Custom elements polyfill safe way to indicate an element has been upgraded.
-        document.body.removeAttribute('unresolved')
+        this.removeAttribute('unresolved')
         // listen for navigation preload activate
         self.addEventListener('activate', (e) => {
           e.waitUntil(async function () {
@@ -203,7 +198,7 @@
         })
         // listen for navigation preload fetch
         self.addEventListener('fetch', (e) => {
-          console.log(e.request.url)
+          console.info(e.request.url)
           e.respondWith(async function () {
             // Respond from the cache if we can
             const cachedResponse = await caches.match(e.request)
@@ -246,7 +241,7 @@
 
       _handleUser(user) {
         if (user) {
-          console.log(user)
+          console.info(user)
         }
       }
 
@@ -315,7 +310,7 @@
                 })
               } else {
                 // Browser not support service worker
-                console.error('%cService Worker is not support by your browser.' + err, crimsonColor)
+                console.warn('%cService Worker is not support by your browser.' + err, crimsonColor)
                 alert('Service Worker is not support by your browser. Please upgrade your browser')
               }
               this._networkChanged()

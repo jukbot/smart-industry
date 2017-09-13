@@ -83,15 +83,19 @@
             <li>
                 <div class="card" hidden="[[showAddCustomer]]">
                     <h1 class="title">{{localize('add-customer')}}</h1>
-                    <paper-input label="First name" id="customerFirstName" max-length="40" type="text" required always-float-label></paper-input>
-                    <paper-input label="Last name" id="customerLastName" max-length="40" type="text" required always-float-label></paper-input>
-                    <paper-input label="E-mail" id="customerEmail" max-length="40" type="email" required always-float-label>
+                    <paper-input label="First name" id="customerFirstName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
+                        error-message="text only" required always-float-label></paper-input>
+                    <paper-input label="Last name" id="customerLastName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
+                        error-message="text only" required always-float-label></paper-input>
+                    <paper-input label="E-mail" id="customerEmail" max-length="40" type="email" auto-validate error-message="invalid input" required
+                        always-float-label>
                         <iron-icon icon="vaadin:envelope" slot="prefix"></iron-icon>
                     </paper-input>
-                    <paper-input label="Mobile" id="customerMobile" max-length="15" type="tel" required always-float-label></paper-input>
+                    <paper-input label="Mobile" id="customerMobile" max-length="15" type="tel" auto-validate allowed-pattern="^(0|[1-9]\d*)$"
+                        error-message="number only" required always-float-label></paper-input>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openCustomerTable"><button>{{localize('dismiss')}}</button></flat-button>
-                        <flat-button class="btn shamrock" on-tap="_addCustomer"><button>{{localize('add')}}</button></flat-button>
+                        <flat-button class="btn shamrock" on-tap="_addCustomer"><button disabled$="[[disabled]]">{{localize('add')}}</button></flat-button>
                     </div>
                 </div>
                 <li>
@@ -186,6 +190,10 @@
                     customerData: Object,
                     selectAll: Boolean,
                     toastText: String,
+                    disabled: {
+                        type: Boolean,
+                        value: true
+                    },
                     showAddCustomer: {
                         type: Boolean,
                         value: true
@@ -196,6 +204,18 @@
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+
+            ready() {
+                super.ready()
+                requestAnimationFrame(this._installListeners.bind(this))
+            }
+
+            _installListeners() {
+                this.$.customerFirstName.addEventListener('input', this._validateInput.bind(this))
+                this.$.customerLastName.addEventListener('input', this._validateInput.bind(this))
+                this.$.customerEmail.addEventListener('input', this._validateInput.bind(this))
+                this.$.customerMobile.addEventListener('input', this._validateInput.bind(this))
             }
 
             _openAddCustomerCard() {
@@ -233,6 +253,18 @@
                     this.$.customerQuery.ref.child(key).remove();
                     this.toastText = 'notification-delete-success'
                     this.$.toastSetupCustomer.open();
+                }
+            }
+
+            _validateInput() {
+                let fname = this.$.customerFirstName.value;
+                let lname = this.$.customerLastName.value;
+                let email = this.$.customerEmail.value;
+                let mobile = this.$.customerMobile.value;
+                if (fname && lname && email && mobile) {
+                    this.disabled = false
+                } else {
+                    this.disabled = true
                 }
             }
 

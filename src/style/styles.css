@@ -1,8 +1,3 @@
-vaadin-license-box {
-    display: none !important;
-    /* REMOVE WHEN USE IN PRODUCTION */
-  }
-
   * {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -20,12 +15,11 @@ vaadin-license-box {
     color: #202020;
     min-height: 100vh;
   }
-  /* styling for render while resources are loading */
 
-  body[unresolved] {
+  view-app[unresolved] {
     background-color: #ffffff;
     display: block;
-    min-height: 100vh;
+    height: 100vh;
     overflow: hidden;
   }
 
@@ -74,8 +68,8 @@ vaadin-license-box {
 
   div.container h1 {
     margin: 10px;
-    font-size: 1.25rem;
-    font-weight: 400;
+    font-size: 1.6180rem;
+    font-weight: 500;
     color: #202020;
   }
 
@@ -100,4 +94,9 @@ vaadin-license-box {
     100% {
       opacity: 0;
     }
+  }
+
+  vaadin-license-box {
+    display: none !important;
+    /* REMOVE WHEN USE IN PRODUCTION */
   }

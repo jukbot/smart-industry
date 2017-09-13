@@ -198,7 +198,7 @@
             </div>
         </div>
         <div class="card main-card" hidden="[[showAddStation]]">
-            <h1 class="main-title">Station Management</h1>
+            <h1 class="title">Station Management</h1>
             <h1 class="no-machine-title" hidden="[[machineItems]]">Please add machine before adding station.</h1>
             <ul class="app-grid">
                 <template is="dom-repeat" items="[[persistedStationData]]" as="stationItem">
@@ -389,17 +389,17 @@
                 }
             }
 
-            _editStation(e) {
-                let key = e.currentTarget.station.$key;
-                this.$$('#edit_' + key).open();
-            }
-
             _removeStation(e) {
                 if (window.confirm("Delete this station ?") == true) {
                     let key = e.currentTarget.station.$key;
                     this.$.stationQuery.ref.child(key).remove();
                     this.$.toastDeleteStation.open();
                 }
+            }
+
+            _editStation(e) {
+                let key = e.currentTarget.station.$key;
+                this.$$('#edit_' + key).open();
             }
 
             // _saveEditStation(e) {

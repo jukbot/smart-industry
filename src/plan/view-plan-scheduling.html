@@ -125,6 +125,11 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryProfile" path="/data/[[k.key]]/factoryData/profile" data="{{factoryProfile}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
+
         <firebase-query app-name="smart-mes" id="schedulingQuery" path="/data/[[k.key]]/schedulingData" order-by-child="scheduling_no"
             scheduling-by-value="true" data="{{schedulingItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="id" scheduling-by-value="true"
@@ -136,9 +141,9 @@
         <ul class="app-grid">
             <li>
                 <div class="card">
-                    <h1 class="title">Production Scheduling</h1>
+                    <h1 class="title">Order Scheduling</h1>
 
-                    <h2>Order Schedule Table</h2>
+                    <p>Production Model: [[]]</p>
                     <vaadin-grid id="material" items="[[items]]" size="200">
 
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
@@ -225,7 +230,8 @@
 
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_refreshStatus"><button>Reschedule</button></flat-button>
+                        <flat-button class="btn" on-tap="_refreshStatus"><button>Manage Order</button></flat-button>
+                        <flat-button class="btn deep-orange" on-tap="_refreshStatus"><button>Reschedule</button></flat-button>
                     </div>
                 </div>
             </li>
