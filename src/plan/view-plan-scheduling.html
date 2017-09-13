@@ -142,8 +142,8 @@
             <li>
                 <div class="card">
                     <h1 class="title">Order Scheduling</h1>
-
-                    <p>Production Model: [[]]</p>
+                    <p>Next Reschedule: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
+                    <p>Production Model: [[factoryProfile.model]]</p>
                     <vaadin-grid id="material" items="[[items]]" size="200">
 
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
@@ -231,13 +231,13 @@
                     </vaadin-grid>
                     <div class="center">
                         <flat-button class="btn" on-tap="_refreshStatus"><button>Manage Order</button></flat-button>
-                        <flat-button class="btn deep-orange" on-tap="_refreshStatus"><button>Reschedule</button></flat-button>
+                        <flat-button class="btn thunderbird" on-tap="_refreshStatus"><button>Reschedule</button></flat-button>
                     </div>
                 </div>
             </li>
             <li>
                 <div class="card">
-                    <h1 class="title">Job Scheduling and Station Workload</h1>
+                    <h1 class="title">Job Scheduling and Work station Workload</h1>
 
                     <vaadin-grid id="material" items="[[items]]" size="200">
 
@@ -304,14 +304,16 @@
                                 <div class="cell numeric last">[[item.location.zip]]</div>
                             </template>
                         </vaadin-grid-column>
-
                     </vaadin-grid>
+                    <div class="center">
+                        <flat-button class="btn shamrock" on-tap="_refreshStatus"><button>Start Work</button></flat-button>
+                    </div>
                 </div>
             </li>
 
             <li>
                 <div class="card">
-                    <h1>Gantt Chart</h1>
+                    <h1 class="title">Job Scheduling Gantt Chart</h1>
 
                     <vaadin-columnrange-chart id="column-range-resource-usage">
                         <chart inverted="true"></chart>
@@ -386,6 +388,31 @@
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
+
+            getNextInterval(last_timestamp, interval) {
+                if (!last_timestamp || !interval) return 0
+                let current = Math.floor(Date.now() / 1000)
+                let diff = current - last_timestamp
+                let range = interval * 24 * 60 * 60
+                if (diff <= range) {
+                    let nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 * 1000)
+                    let nextIntervalDate = new Date(nextIntervalStamp)
+                    let dd = nextIntervalDate.getDate()
+                    let mm = nextIntervalDate.getMonth() + 1 // January is 0!
+                    let yyyy = nextIntervalDate.getFullYear()
+                    if (dd < 10) {
+                        dd = '0' + dd
+                    }
+                    if (mm < 10) {
+                        mm = '0' + mm
+                    }
+                    let nextInterval = dd + '/' + mm + '/' + yyyy
+                    return nextInterval
+                } else {
+                    this.set('factorySchedule.start_interval', current)
+                }
+            }
+
         }
         customElements.define(ViewPlanScheduling.is, ViewPlanScheduling)
     </script>

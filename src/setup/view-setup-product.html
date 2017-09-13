@@ -45,6 +45,18 @@
                 text-align: right;
             }
 
+            .details {
+                padding: 10px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                background-color: papayawhip;
+            }
+
+            .flex-item {
+                flex: 1;
+            }
+
             vaadin-grid#productTable {
                 height: 500px;
 
@@ -116,7 +128,37 @@
                 <div class="card" hidden="[[!showAddProduct]]">
                     <h1 class="title">Product Management</h1>
                     <!-- <vaadin-combo-box label="Search product" aria-label="Search product" items="" value=""></vaadin-combo-box> -->
-                    <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]">
+                    <vaadin-grid id="productTable" on-active-item-changed="_onActiveItemChanged" aria-label="product Management" items="[[persistedProductData]]"
+                        size="10">
+                        <template class="row-details">
+                            <div class="details">
+                                <div class="flex-item">
+                                    <h3>Part name</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.name]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>SKU</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.sku]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>Setup time</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.setup]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>Cycle time</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.cycle]]</p>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+
                         <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
@@ -190,19 +232,6 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Cycle Time</div>
-                            </template>
-                            <template>
-                                <div class="cell">
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.cycle]]</p>
-                                    </template>
-                                </div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column flex="1">
-                            <template class="header">
                                 <div class="cell">Cost</div>
                             </template>
                             <template>
@@ -212,10 +241,10 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center last">Delete</div>
+                                <div class="cell last">Delete</div>
                             </template>
                             <template>
-                                <div class="cell center last">
+                                <div class="cell last">
                                     <paper-icon-button on-tap="_deleteproduct" product="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
@@ -265,6 +294,10 @@
 
             _openProductList() {
                 this.showAddProduct = true;
+            }
+
+            _onActiveItemChanged(e) {
+                this.$.productTable.expandedItems = [e.detail.value];
             }
         }
         customElements.define(ViewSetupProduct.is, ViewSetupProduct)

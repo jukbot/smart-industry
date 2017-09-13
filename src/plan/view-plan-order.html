@@ -122,13 +122,13 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>SKU Number</p>
                             <div class="sidebar-menu-line" role="separator"></div>
+                            <p>Product Part</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
                             <p>Actual Quantity</p>
                             <div class="sidebar-menu-line" role="separator"></div>
+                            <p>Order Duration</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
                             <p>Delivery Date</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>Raw Material Used</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>Operation hours</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>Cost</p>
                         </div>
@@ -137,19 +137,19 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[selectCustomer.fname]] [[selectCustomer.lname]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[setOrderProduct(selectProduct)]]</span></p>
+                            <p><span>[[setProductPart(selectProduct)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[setProductSKU(selectProduct.sku)]]</span></p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p><span><template is="dom-repeat" items="[[selectProduct.part]]" as="productPart">
+                                          [[productPart.name]]
+                                      </template></span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[getActualQuantity(amount)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[getSumProductTime(selectProduct.part,amount)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[delivery]]</span></p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[selectProduct.raw]]</span></p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getOpTime(factoryOperation.op_end, factoryOperation.op_start)]] Hrs.</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[getProductCost(selectProduct.cost,amount)]]</span></p>
                         </div>
@@ -160,26 +160,28 @@
         <div class="card">
             <h1 class="title">Product Information</h1>
             <div class="frame" hidden$="[[selectProduct.part]]">
-                <h1 class="no-product-title">No Product Selected</h1>
+                <h1 class="center no-product-title">No Product Selected</h1>
             </div>
             <div class="frame" hidden$="[[!selectProduct.part]]">
                 <img class="product-image" src$="[[selectProduct.image]]" alt="selected product image">
                 <h2>Product Name [[selectProduct.name]]</h2>
                 <p>Product SKU: [[selectProduct.sku]]</p>
                 <p>Product Fragment: [[selectProduct.part.length]] part</p>
-                <p>Total Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p>
+                <!-- <p>Total Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p> -->
+
+                <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
+                    <div class="frame">
+                        <h2>Product Part [[part.name]]</h2>
+                        <p>Part SKU: [[part.sku]]</p>
+                        <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
+                        <p>Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
+                        <p>Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+                    </div>
+                </template>
             </div>
-            <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
-                <div class="frame">
-                    <h2>Product Part [[part.name]]</h2>
-                    <p>Part SKU: [[part.sku]]</p>
-                    <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
-                    <p>Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
-                    <p>Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
-                </div>
-            </template>
         </div>
     </template>
+    <script src="../../node_modules/sugar/dist/sugar.min.js"></script>
     <script>
         class ViewPlanOrder extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
@@ -191,7 +193,10 @@
                 return {
                     language: String,
                     orderItems: Object,
-                    orderNumber: Number
+                    orderNumber: Number,
+                    orderProductPart: Object,
+                    productSKU: Number,
+                    actualQuantity: Number
                 }
             }
 
@@ -201,19 +206,162 @@
                 ]
             }
 
+            ready() {
+                super.ready();
+                this._setupDatePicker();
+            }
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
 
+            // GET VALUE
+
             getOrderNumber(o) {
                 if (o.length == 0 || o.length == null) {
-                    this.orderNumber = 1;
+                    this.orderNumber = 1; // set to global variable
                 } else {
-                    this.orderNumber = length + 1222;
+                    this.orderNumber = length + 1;
                 }
             }
 
+            getActualQuantity(amount) {
+                if (!amount) return 0;
+                let accept_waste = this.factoryPerformance.aw;
+                let actual_quantity = Math.ceil((amount / (1 - accept_waste)));
+                this.actualQuantity = actual_quantity; // set to global variable
+                return actual_quantity;
+            }
+
+            getSumProductTime(part, amount) {
+                if (!part || !amount) return 0;
+                let productCycleArr = []
+                let partArr = Object.values(part); // convert obj to arr
+                for (let i = part.length; i--;) {
+                    productCycleArr.push(partArr[i].cycle) // loop push cycle arr to big arr
+                }
+                let flatCycleArr = [].concat(...productCycleArr); // flat subarr concat to arr
+                let sumCycle = flatCycleArr.reduce((a, b) => a + b); // reduce arr to get sumCycle
+                let sumDuration = (sumCycle * this.getActualQuantity(amount)); // sumCycle * quantity
+                this.orderDuration = sumDuration;
+                return this._minutesToStr(sumDuration); // convert to hr and min
+            }
+
+            getProductCost(cost, amount) {
+                if (!cost || !amount) return 0;
+                let actual_amount = this.getActualQuantity(amount);
+                let total_cost = (cost * actual_amount);
+                return total_cost;
+            }
+
+            // PRODUCT VIEWER SECTION
+            getProductProcess(process) {
+                if (!process) {
+                    return 0;
+                }
+                return process.split(',').join(' → ');
+            }
+
+            getSumSetupTime(setup) {
+                if (!setup) return 0;
+                let setupTime = 0;
+                for (let i in setup) {
+                    setupTime += setup[i];
+                };
+                return setupTime;
+            }
+
+            getSumCycleTime(cycle) {
+                if (!cycle) return 0;
+                let processTime = 0;
+                for (let i in cycle) {
+                    processTime += cycle[i];
+                };
+                return processTime;
+            }
+
+            // SET VALUE
+
+            setProductPart(product) {
+                if (!product) return 0;
+                this.orderProductPart = product.part; // set to global variable
+                return product.name;
+            }
+
+            setProductSKU(sku) {
+                if (!sku) return 0;
+                this.productSKU = sku; // set to global variable
+                return sku;
+            }
+
+            // SAVE ORDER
+            saveOrder() {
+                alert('Saved order to order save list successful');
+                _clearField();
+            }
+
+            // CONVERT TIME TO STRING
+            _minutesToStr(minute) {
+                let sign = '';
+                if (minute < 0) {
+                    sign = '0';
+                }
+                let hours = this._leftPad(Math.floor(Math.abs(minute) / 60));
+                let minutes = this._leftPad(Math.round(Math.abs(minute) % 60));
+                return sign + hours + 'hrs ' + minutes + 'min';
+            }
+
+            // FILL 0 TO 2 DIGIT TIME
+            _leftPad(number) {
+                /* 
+                 * add zero to numbers less than 10,Eg: 2 -> 02 
+                 */
+                return ((number < 10 && number >= 0) ? '0' : '') + number;
+            }
+
+            // SETUP CALENDAR DATE PICKER FORMAT
+            _setupDatePicker() {
+                Sugar.Date.setLocale('en-GB'); // USE SUGAR LIBRARY TO REF FROM LOCALE DATE FORMAT
+                let deliverypicker = this.$.deliverySelector;
+                deliverypicker.addEventListener('value-changed', function () {
+                    let deliveryTimeStamp = (new Date(deliverypicker.value).getTime() / 1000);
+                    this.orderDelivery = deliveryTimeStamp;
+                });
+                // INTERNATIONA LOCALIZATION
+                deliverypicker.i18n = {
+                    week: 'Week',
+                    calendar: 'Calendar',
+                    clear: 'Clear',
+                    today: 'Today',
+                    cancel: 'Cancel',
+                    firstDayOfWeek: 1,
+                    monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'.split(
+                        '_'),
+                    weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
+                    weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
+                    formatDate: function (date) {
+                        return Sugar.Date.format(date, '{short}');
+                    },
+                    formatTitle: function (monthName, fullYear) {
+                        return monthName + ' ' + fullYear;
+                    },
+                    parseDate: function (dateString) {
+                        let matches = deliverypicker.i18n.monthNames.filter(function (monthName) {
+                            return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
+                        });
+                        dateString = matches.length === 1 ? matches[0] : dateString;
+                        return Sugar.Date.create(dateString);
+                    }
+                }
+            }
+
+            // CLEAR INPUT FORM FIELD
+            _clearField() {
+                this.$.customerSelector.value = "";
+                this.$.productSelector.value = "";
+                this.$.orderQuantity.value = 1;
+                this.$.deliverySelector.value = "";
+            }
         }
         customElements.define(ViewPlanOrder.is, ViewPlanOrder)
     </script>
