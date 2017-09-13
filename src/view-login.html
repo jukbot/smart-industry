@@ -169,12 +169,10 @@
 
       .toast-flex-item:first-child {
         align-self: stretch;
-        margin-right: auto;
       }
 
       .toast-flex-item:last-child {
         align-self: flex-end;
-        margin-top: 0;
       }
 
       .toast-flex-item {
@@ -247,7 +245,7 @@
               </flat-checkbox>
               <label for="setKeepSession">Keep me signed in</label>
             </div>
-            <flat-button class="login-btn" role="button" on-click="_login"><button type="button">Log in</button></flat-button>
+            <flat-button class="login-btn" on-click="_login"><button type="button">Log in</button></flat-button>
             <div class="link"><a href="javascript:void(0);" on-click="_showReset" class="login-forget">Forgot?</a></div>
             <div class="link"><a href="javascript:void(0);" on-click="_showRegister" class="login-register">Don’t have an account? Sign
               up now.</a>
@@ -290,7 +288,7 @@
               </flat-md-decorator>
             </flat-input>
             <p>By signing up you agree to IMES’s Terms of Service</p>
-            <flat-button class="register-btn" role="button" on-click="_register">
+            <flat-button class="register-btn" on-click="_register">
               <button type="button">Register and Login</button>
             </flat-button>
             <div class="link"><a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Log in</a></div>
@@ -308,7 +306,7 @@
                 <flat-underline></flat-underline>
               </flat-md-decorator>
             </flat-input>
-            <flat-button class="reset-btn" role="button" on-click="_resetPassword"><button type="button">Reset Password</button></flat-button>
+            <flat-button class="reset-btn" on-click="_resetPassword"><button type="button">Reset Password</button></flat-button>
             <div class="link"><a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Return to login</a></div>
           </form>
         </article>
@@ -319,17 +317,17 @@
             <p>[[successMessage]]</p>
           </div>
           <div class="toast-flex-item">
-            <paper-icon-button on-tap="_closeToastSuccess" role="bottom" class="close-toast-button" icon="icons:close-big" tabindex="-1"></paper-icon-button>
+            <paper-icon-button on-tap="_closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1"></paper-icon-button>
           </div>
         </div>
       </paper-toast>
-      <paper-toast id="toastAlert" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000">
+      <paper-toast id="toastAlert" role="alert" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000">
         <div class="toast-flex-container">
           <div class="toast-flex-item">
             <p>[[alertMessage]]</p>
           </div>
           <div class="toast-flex-item">
-            <paper-icon-button on-tap="_closeToastAlert" role="bottom" class="close-toast-button" icon="icons:close-big" tabindex="-1"></paper-icon-button>
+            <paper-icon-button on-tap="_closeToastAlert" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
           </div>
         </div>
       </paper-toast>

@@ -19,7 +19,7 @@
     <app-header id="subheader" slot="header" shadow>
       <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect>
         <template is="dom-repeat" items="{{submenus}}">
-          <paper-tab role="tab" name$="{{item.view}}">
+          <paper-tab name$="{{item.view}}">
             <paper-icon-button icon="{{item.icon}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>
           </paper-tab>
         </template>

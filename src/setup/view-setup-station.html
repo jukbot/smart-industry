@@ -183,7 +183,7 @@
             <vaadin-combo-box label="Machine" id="machineSelector" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
                 item-value-path="name" required always-float-label></vaadin-combo-box>
             <p class="machine-counter">You added [[stationMachineCount]] / [[stationMaxMachine]] machines</p>
-            <flat-button class="add-btn" on-tap="_addMachine"><button role="button">{{localize('add-machine')}}</button></flat-button>
+            <flat-button class="add-btn" on-tap="_addMachine"><button>{{localize('add-machine')}}</button></flat-button>
             <div class="frame">
                 <ul class="flex-container wrap">
                     <template is="dom-repeat" items="{{machines}}" as="machineItem">
@@ -193,8 +193,8 @@
                 </ul>
             </div>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="_openStationListCard"><button role="button">{{localize('dismiss')}}</button></flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_addStation"><button role="button">{{localize('add')}}</button></flat-button>
+                <flat-button class="fixed-btn" on-tap="_openStationListCard"><button>{{localize('dismiss')}}</button></flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_addStation"><button>{{localize('add')}}</button></flat-button>
             </div>
         </div>
         <div class="card main-card" hidden="[[showAddStation]]">
@@ -223,8 +223,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <flat-button class="btn" on-tap="_editStation" station="[[stationItem]]"><button role="button">{{localize('edit')}}</button></flat-button>
-                            <flat-button class="thunderbird btn" on-tap="_removeStation" station="[[stationItem]]"><button role="button">{{localize('remove')}}</button></flat-button>
+                            <flat-button class="btn" on-tap="_editStation" station="[[stationItem]]"><button>{{localize('edit')}}</button></flat-button>
+                            <flat-button class="thunderbird btn" on-tap="_removeStation" station="[[stationItem]]"><button>{{localize('remove')}}</button></flat-button>
 
 
                             <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" always-on-top no-cancel-on-outside-click>
@@ -237,7 +237,7 @@
                                 <vaadin-combo-box label="Machine" id="machineSelector" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
                                     item-value-path="name" required always-float-label></vaadin-combo-box>
                                 <p class="machine-counter">You added [[stationItem.st_machine.length]] / [[stationMaxMachine]]</p>
-                                <flat-button class="btn" on-tap="_addMachine"><button role="button">{{localize('add-machine')}}</button></flat-button>
+                                <flat-button class="btn" on-tap="_addMachine"><button>{{localize('add-machine')}}</button></flat-button>
                                 <paper-dialog-scrollable>
                                     <div class="frame">
                                         <ul class="flex-container wrap">
@@ -260,7 +260,7 @@
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-tap="_openAddStationCard"><button role="button"> {{localize('add-station')}}</button></flat-button>
+                <flat-button class="big-btn" on-tap="_openAddStationCard"><button> {{localize('add-station')}}</button></flat-button>
             </div>
         </div>
         <paper-toast id="toastAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>

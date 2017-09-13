@@ -90,20 +90,22 @@
                     </paper-input>
                     <paper-input label="Mobile" id="customerMobile" max-length="15" type="tel" required always-float-label></paper-input>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openCustomerTable"><button role="button">{{localize('dismiss')}}</button></flat-button>
-                        <flat-button class="btn shamrock" on-tap="_addCustomer"><button role="button">{{localize('add')}}</button></flat-button>
+                        <flat-button class="btn" on-tap="_openCustomerTable"><button>{{localize('dismiss')}}</button></flat-button>
+                        <flat-button class="btn shamrock" on-tap="_addCustomer"><button>{{localize('add')}}</button></flat-button>
                     </div>
                 </div>
+                <li>
+                </li>
                 <div class="card" hidden="[[!showAddCustomer]]">
                     <h1 class="title">{{localize('customer-management')}}</h1>
                     <!-- <vaadin-combo-box label="Search customer" aria-label="Search customer" items="" value=""></vaadin-combo-box> -->
                     <vaadin-grid id="customerTable" aria-label="Customer Management" items="[[persistedCustomerData]]">
                         <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
                             <template class="header">
-                                <paper-checkbox role="checkbox" checked="{{selectAll}}"></paper-checkbox>
+                                <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
                             </template>
                             <template>
-                                <paper-checkbox role="checkbox" checked="{{selected}}"></paper-checkbox>
+                                <paper-checkbox checked="{{selected}}"></paper-checkbox>
                             </template>
                         </vaadin-grid-selection-column>
 
@@ -164,7 +166,7 @@
                         </vaadin-grid-column>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openAddCustomerCard"><button role="button">{{localize('add-customer')}}</button></flat-button>
+                        <flat-button class="btn" on-tap="_openAddCustomerCard"><button>{{localize('add-customer')}}</button></flat-button>
                     </div>
                 </div>
             </li>

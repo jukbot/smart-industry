@@ -82,8 +82,8 @@
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
             loading="[[!languageItems]]" required always-float-label></vaadin-combo-box>
           <p>Sensor Devices</p>
-          <flat-button on-tap="_scanDevice" class="btn" title="Search sensor"><button role="button">Search Sensor</button></flat-button>
-          <flat-button on-tap="_showDevice" class="btn" title="Show sensor"><button role="button">Show Sensor</button></flat-button>
+          <flat-button on-tap="_scanDevice" class="btn" title="Search sensor"><button>Search Sensor</button></flat-button>
+          <flat-button on-tap="_showDevice" class="btn" title="Show sensor"><button>Show Sensor</button></flat-button>
         </div>
       </li>
       <li>
@@ -96,9 +96,9 @@
           </vaadin-upload> -->
           <input type="file" accept="image/*" name="file" id="uploadImageFile" accept="[[accept]]" on-change="_verifyUploadFile" class="inputfile"
           />
-          <flat-button on-tap="_deleteProfileImage" class="btn" title="{{localize('remove-profile-image')}}"><button role="button">{{localize('remove-profile-image')}}</button></flat-button>
-          <flat-button on-tap="_verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]" disabled="[[user.emailVerified]]"><button role="button" disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button></flat-button>
-          <flat-button on-tap="_saveSettings" class="btn" title="{{localize('save-settings')}}"><button role="button">{{localize('save-settings')}}</button></flat-button>
+          <flat-button on-tap="_deleteProfileImage" class="btn" title="{{localize('remove-profile-image')}}"><button>{{localize('remove-profile-image')}}</button></flat-button>
+          <flat-button on-tap="_verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]" disabled="[[user.emailVerified]]"><button disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button></flat-button>
+          <flat-button on-tap="_saveSettings" class="btn" title="{{localize('save-settings')}}"><button>{{localize('save-settings')}}</button></flat-button>
         </div>
       </li>
       <li>
@@ -107,16 +107,16 @@
           <paper-input label="{{localize('email')}}" id="userEmail" type="email" readonly value="[[user.email]]"></paper-input>
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password"></paper-input>
           <paper-input label="{{localize('new-password')}}" id="newPassword" type="password"></paper-input>
-          <flat-button on-tap="_changeAuthen" class="btn" title="{{localize('change-password')}}"><button role="button">{{localize('change-password')}}</button></flat-button>
-          <flat-button on-tap="_deleteAcount" class="btn" title="{{localize('delete-account')}}"><button role="button">{{localize('delete-account')}}</button></flat-button>
+          <flat-button on-tap="_changeAuthen" class="btn" title="{{localize('change-password')}}"><button>{{localize('change-password')}}</button></flat-button>
+          <flat-button on-tap="_deleteAcount" class="btn" title="{{localize('delete-account')}}"><button>{{localize('delete-account')}}</button></flat-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1 class="title">{{localize('backup-settings')}}</h1>
           <p>Export or Import factory data to backup as a file.</p>
-          <flat-button on-tap="_export-data" class="btn" title="{{localize('export-data')}}"><button role="button">{{localize('export-data')}}</button></flat-button>
-          <flat-button on-tap="_import-data" class="btn" title="{{localize('import-data')}}"><button role="button">{{localize('import-data')}}</button></flat-button>
+          <flat-button on-tap="_export-data" class="btn" title="{{localize('export-data')}}"><button>{{localize('export-data')}}</button></flat-button>
+          <flat-button on-tap="_import-data" class="btn" title="{{localize('import-data')}}"><button>{{localize('import-data')}}</button></flat-button>
           <paper-toggle-button class="switch" value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
         </div>
       </li>

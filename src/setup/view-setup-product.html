@@ -107,20 +107,22 @@
                     <paper-input label="Quantity" id="productQuantity" type="number" min="0" max="5000" required always-float-label>
                     </paper-input>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openProductList"><button role="button">{{localize('dismiss')}}</button></flat-button>
-                        <flat-button class="btn shamrock" on-tap="_addproduct"><button role="button">{{localize('add')}}</button></flat-button>
+                        <flat-button class="btn" on-tap="_openProductList"><button>{{localize('dismiss')}}</button></flat-button>
+                        <flat-button class="btn shamrock" on-tap="_addproduct"><button>{{localize('add')}}</button></flat-button>
                     </div>
                 </div>
+                <li>
+                </li>
                 <div class="card" hidden="[[!showAddProduct]]">
                     <h1 class="title">Product Management</h1>
                     <!-- <vaadin-combo-box label="Search product" aria-label="Search product" items="" value=""></vaadin-combo-box> -->
                     <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]">
                         <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
                             <template class="header">
-                                <paper-checkbox role="checkbox" checked="{{selectAll}}"></paper-checkbox>
+                                <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
                             </template>
                             <template>
-                                <paper-checkbox role="checkbox" checked="{{selected}}"></paper-checkbox>
+                                <paper-checkbox checked="{{selected}}"></paper-checkbox>
                             </template>
                         </vaadin-grid-selection-column>
 
@@ -220,7 +222,7 @@
                         </vaadin-grid-column>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openAddProductCard"><button role="button">Add product</button></flat-button>
+                        <flat-button class="btn" on-tap="_openAddProductCard"><button>Add product</button></flat-button>
                     </div>
                 </div>
             </li>

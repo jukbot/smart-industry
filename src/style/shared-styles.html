@@ -23,15 +23,6 @@
         background-color: var(--app-background-color);
       }
 
-      h1,
-      h2,
-      h3 {
-        font-weight: 500;
-      }
-
-      p {
-        font-weight: 400;
-      }
 
       h1,
       h2,
@@ -47,7 +38,6 @@
         padding: 0;
         list-style: none;
       }
-
 
       app-header {
         color: var(--app-secondary-color);
@@ -142,18 +132,19 @@
 
       .main-logo-title {
         font-size: 3.3rem;
-        line-height: normal;
         text-align: center;
         margin: 0;
       }
 
       .main-describe {
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         text-align: center;
-        color: #7b7b7b;
-        margin-top: 0;
-        margin-bottom: 10px;
+        color: #999999;
         font-weight: 400;
+      }
+
+      .mobile-menu-btn {
+        padding: 0;
       }
 
       .center {
@@ -167,6 +158,10 @@
         overflow: auto;
         display: flex;
         flex-direction: column;
+      }
+
+      nav {
+        margin-top: 10px;
       }
 
       .drawer-list>a {
@@ -191,8 +186,8 @@
         background-repeat: no-repeat;
         background-size: cover;
         background-position: center;
-        width: 140px;
-        height: 140px;
+        width: 120px;
+        height: 120px;
         margin: 20px auto 10px auto;
         display: block;
       }
@@ -235,13 +230,11 @@
       .toast-flex-item:first-child {
         -ms-flex-item-align: stretch;
         align-self: stretch;
-        margin-right: auto;
       }
 
       .toast-flex-item:last-child {
         -ms-flex-item-align: end;
         align-self: flex-end;
-        margin-top: 0;
       }
 
       .toast-flex-item {
@@ -285,14 +278,14 @@
         --paper-progress-active-color: gold;
         --paper-progress-container-color: rgba(0, 0, 0, 0);
         --paper-progress-height: 2px;
-        --paper-progress-indeterminate-cycle-duration: 3s;
+        --paper-progress-indeterminate-cycle-duration: 2s;
       }
 
       .card {
         margin: 10px;
-        padding: 16px;
+        padding: 20px;
         border-radius: 2px;
-        background-color: var(--app-secondary-color);
+        background-color: #FFFFFF;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
@@ -311,7 +304,7 @@
         text-align: center;
         color: #202020;
         border-radius: 50%;
-        background: #eeeeee;
+        background: #EEEEEE;
         font-size: 30px;
         line-height: 64px;
       }

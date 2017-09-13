@@ -21,6 +21,7 @@
 <!-- import style component -->
 <link rel="import" href="style/shared-styles.html">
 <link rel="import" href="style/flat-button.html">
+<link rel="import" href="style/flat-icons.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-dashboard.html">
@@ -43,7 +44,6 @@
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
-      <!-- <div hidden$="[[!user]]" style="background-color:aqua"> -->
       <app-drawer hidden$="[[!user]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-logo-title">IMES</h1>
@@ -67,8 +67,8 @@
           </iron-selector>
         </nav>
         <div class="sidebar-menu-line" role="separator"></div>
-        <div class="flex-center" role="group">
-          <flat-button role="button" on-tap="_logout" title="Logout">
+        <div class="flex-center">
+          <flat-button on-tap="_logout" title="Logout">
             <button type="button">{{localize('logout-button')}}
               </button>
           </flat-button>
@@ -84,15 +84,14 @@
           <p>{{localize('version')}} 1.0.5</p>
         </div>
       </app-drawer>
-      <!-- </div> -->
       <app-header-layout fullbleed>
         <app-header hidden$="[[!user]]" class="main-header" id="header" slot="header">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
           <app-toolbar>
-            <paper-icon-button icon="vaadin:menu" role="button" drawer-toggle></paper-icon-button>
+            <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
             <h2 class="page-title" main-title>{{localize(routeData.page)}}</h2>
             <!-- <input id="searchBox" type="search" name="search" placeholder="Search this app">
-            <paper-icon-button icon="vaadin:search" tabindex="0" aria-label="Search site" role="button" on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button> -->
+            <paper-icon-button icon="vaadin:search" tabindex="0" aria-label="Search site"  on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button> -->
           </app-toolbar>
         </app-header>
         <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
@@ -117,7 +116,7 @@
           <p>[[toastText]]</p>
         </div>
         <div class="toast-flex-item">
-          <paper-icon-button on-tap="_closeToastAlert" class="close-toast-button" icon="vaadin:close-big"></paper-icon-button>
+          <paper-icon-button on-tap="_closeToastAlert" class="close-toast-button" icon="vaadin:close-big" noink></paper-icon-button>
         </div>
       </div>
     </paper-toast>
@@ -232,7 +231,7 @@
 
       _onAuthChanged(data) {
         var user = data.detail.user
-        if (user) {
+        if (!!user) { // cast from obj to boolean
           Polymer.Utils.importHref(
             this.resolveUrl('view-app.html'), function () {
               this.$.drawer.hidden = false

@@ -50,14 +50,13 @@
 
             .operation-day-selector>p {
                 margin-bottom: 10px;
-                color: var(--paper-input-container-color, var(--secondary-text-color));
                 font-size: 0.75rem;
                 font-family: var(--paper-font-subhead_-_font-family);
                 -webkit-font-smoothing: var(--paper-font-subhead_-_-webkit-font-smoothing);
                 line-height: var(--paper-font-subhead_-_line-height);
             }
 
-            .checkbox {
+            paper-checkbox.checkbox {
                 padding: 0 5px;
                 flex: auto;
                 align-content: stretch;
@@ -90,7 +89,7 @@
                 font-weight: 400;
             }
 
-            .info-group>p {
+            .flex-item>p {
                 margin: 12px 0;
             }
         </style>
@@ -152,8 +151,8 @@
                         <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[factorySchedule.interval]]"
                             type="number" min="1" max="60" step="1" required always-float-label></paper-input>
 
-                        <flat-button on-tap="restoreDefault" class="btn" title="Restore Default"><button role="button">{{localize('restore')}}</button></flat-button>
-                        <flat-button on-tap="saveValue" class="shamrock btn" title="Save settings"><button role="button">{{localize('save-settings')}}</button></flat-button>
+                        <flat-button on-tap="restoreDefault" class="btn" title="Restore Default"><button>{{localize('restore')}}</button></flat-button>
+                        <flat-button on-tap="saveValue" class="shamrock btn" title="Save settings"><button>{{localize('save-settings')}}</button></flat-button>
 
                     </div>
                 </div>
@@ -162,7 +161,7 @@
                 <div class="card factory-info" style="margin-bottom: 20px">
                     <h1 class="title">{{localize('factory-information')}}</h1>
                     <div class="flex-container">
-                        <div class="info-group flex-item">
+                        <div class="flex-item">
                             <p>{{localize('factory-name')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>{{localize('factory-type')}}</p>
@@ -179,7 +178,7 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>{{localize('operation-day')}}</p>
                         </div>
-                        <div class="info-group flex-item">
+                        <div class="flex-item">
                             <p><span>[[factoryProfile.name]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[getFactoryType(factoryProfile.type)]]</span></p>

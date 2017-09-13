@@ -92,20 +92,22 @@
                     <paper-input label="Quantity" id="inventoryQuantity" type="number" min="0" max="5000" required always-float-label>
                     </paper-input>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openInventoryTable"><button role="button">{{localize('dismiss')}}</button></flat-button>
-                        <flat-button class="btn shamrock" on-tap="_addInventory"><button role="button">{{localize('add')}}</button></flat-button>
+                        <flat-button class="btn" on-tap="_openInventoryTable"><button>{{localize('dismiss')}}</button></flat-button>
+                        <flat-button class="btn shamrock" on-tap="_addInventory"><button disabled>{{localize('add')}}</button></flat-button>
                     </div>
                 </div>
+                <li>
+                </li>
                 <div class="card" hidden="[[!showAddInventory]]">
                     <h1 class="title">Inventory Management</h1>
                     <!-- <vaadin-combo-box label="Search inventory" aria-label="Search inventory" items="" value=""></vaadin-combo-box> -->
                     <vaadin-grid id="inventoryTable" aria-label="inventory Management" items="[[persistedinventoryData]]">
                         <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
                             <template class="header">
-                                <paper-checkbox role="checkbox" checked="{{selectAll}}"></paper-checkbox>
+                                <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
                             </template>
                             <template>
-                                <paper-checkbox role="checkbox" checked="{{selected}}"></paper-checkbox>
+                                <paper-checkbox checked="{{selected}}"></paper-checkbox>
                             </template>
                         </vaadin-grid-selection-column>
 
@@ -166,7 +168,7 @@
                         </vaadin-grid-column>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openAddInventoryCard"><button role="button">Add Inventory</button></flat-button>
+                        <flat-button class="btn" on-tap="_openAddInventoryCard"><button>Add Inventory</button></flat-button>
                     </div>
                 </div>
             </li>

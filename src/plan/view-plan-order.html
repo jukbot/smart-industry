@@ -77,7 +77,7 @@
                 font-weight: 400;
             }
 
-            .info-group>p {
+            .flex-item>p {
                 margin: 12px 0;
             }
         </style>
@@ -104,8 +104,8 @@
                     <vaadin-date-picker class="date-picker" label="Delivery Date" min="2017-01-01" max="2040-01-01" name="delivery" id="deliverySelector"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
                     <!-- <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload> -->
-                    <flat-button on-tap="_saveValue" class="btn" title="Save to archive"><button role="button">Save Order</button></flat-button>
-                    <flat-button on-tap="_createOrder" class="shamrock btn" title="Add order"><button role="button">Add to schedule</button></flat-button>
+                    <flat-button on-tap="_saveValue" class="btn" title="Save to archive"><button>Save Order</button></flat-button>
+                    <flat-button on-tap="_createOrder" class="shamrock btn" title="Add order"><button>Add to schedule</button></flat-button>
                 </div>
             </li>
             <li>
@@ -113,7 +113,7 @@
                     <h1 class="title">Order Detail</h1>
 
                     <div class="flex-container">
-                        <div class="info-group flex-item">
+                        <div class="flex-item">
                             <p>Order Number</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>Customer Name</p>
@@ -132,8 +132,8 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>Cost</p>
                         </div>
-                        <div class="info-group flex-item">
-                            <p><span>[[getOrderNumber]]</span></p>
+                        <div class="flex-item">
+                            <p><span>[[orderNumber]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[selectCustomer.fname]] [[selectCustomer.lname]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
@@ -190,8 +190,15 @@
             static get properties() {
                 return {
                     language: String,
+                    orderItems: Object,
                     orderNumber: Number
                 }
+            }
+
+            static get observers() {
+                return [
+                    'getOrderNumber(orderItems)'
+                ]
             }
 
             connectedCallback() {
@@ -199,16 +206,14 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
 
-            static get getOrderNumber() {
-                if (orderData.length == 0 || orderData.length == null) {
+            getOrderNumber(o) {
+                if (o.length == 0 || o.length == null) {
                     this.orderNumber = 1;
-                    return 1;
                 } else {
-                    this.orderNumber = orderData.length + 1;
-                    return orderData.length + 1;
+                    this.orderNumber = length + 1222;
                 }
-
             }
+
         }
         customElements.define(ViewPlanOrder.is, ViewPlanOrder)
     </script>

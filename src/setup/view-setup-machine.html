@@ -177,8 +177,8 @@
             <paper-input type="number" id="machineCapacity" label="{{localize('machine-max-capacity')}}" min="1" max="9999" step="1"
                 required always-float-label></paper-input>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="_openMachineListCard"><button role="button">{{localize('dismiss')}}</button></flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_addmachine"><button role="button">{{localize('add')}}</button></flat-button>
+                <flat-button class="fixed-btn" on-tap="_openMachineListCard"><button>{{localize('dismiss')}}</button></flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_addmachine"><button>{{localize('add')}}</button></flat-button>
             </div>
         </div>
         <div class="card main-card" hidden="[[showAddMachine]]">
@@ -197,8 +197,8 @@
                                 <p style="color:#e53935">Machine Key: [[machineItem.$key]]</p>
                                 <p style="color:#e53935">{{localize('machine-station')}}: [[machineItem.station]]</p>
                             </div>
-                            <flat-button class="btn" on-tap="_editmachine" machine="[[machineItem]]"><button role="button">{{localize('edit')}}</button></flat-button>
-                            <flat-button class="thunderbird btn" on-tap="_removemachine" machine="[[machineItem]]"><button role="button">{{localize('remove')}}</button></flat-button>
+                            <flat-button class="btn" on-tap="_editmachine" machine="[[machineItem]]"><button>{{localize('edit')}}</button></flat-button>
+                            <flat-button class="thunderbird btn" on-tap="_removemachine" machine="[[machineItem]]"><button>{{localize('remove')}}</button></flat-button>
 
                             <!-- <paper-dialog id="edit_[[machineItem.$key]]" class="machine-dialog" always-on-top no-cancel-on-outside-click>
                                 <h1 class="title">{{localize('edit-machine')}}</h1>
@@ -210,7 +210,7 @@
                                 <vaadin-combo-box label="Machine" id="machineSelector" items="[[persistedMachineData]]" name="machineName" item-label-path="name"
                                     item-value-path="name" required always-float-label></vaadin-combo-box>
                                 <p class="machine-counter">You added [[machineMachineCount]]/20 machines</p>
-                                <flat-button class="btn" on-tap="_addMachine"><button role="button">{{localize('add-machine')}}</button></flat-button>
+                                <flat-button class="btn" on-tap="_addMachine"><button >{{localize('add-machine')}}</button></flat-button>
                                 <paper-dialog-scrollable>
                                     <div class="frame">
                                         <ul class="flex-container wrap">
@@ -232,7 +232,7 @@
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-tap="_openAddMachineCard"><button role="button"> {{localize('add-machine')}}</button></flat-button>
+                <flat-button class="big-btn" on-tap="_openAddMachineCard"><button> {{localize('add-machine')}}</button></flat-button>
             </div>
         </div>
         <paper-toast id="toastAddMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-machine')}}"></paper-toast>

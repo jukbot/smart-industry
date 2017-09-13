@@ -19,7 +19,6 @@ vaadin-license-box {
     background-color: #f2f2f2;
     color: #202020;
     min-height: 100vh;
-    margin: 0;
   }
   /* styling for render while resources are loading */
 
@@ -34,8 +33,8 @@ vaadin-license-box {
   h1.loader-title {
     -webkit-animation-play-state: linear;
     animation-play-state: linear;
-    -webkit-animation-duration: 1s;
-    animation-duration: 1s;
+    -webkit-animation-duration: 0.75s;
+    animation-duration: 0.75s;
     -webkit-animation-fill-mode: both;
     animation-fill-mode: both;
     -webkit-animation-iteration-count: infinite;
@@ -69,10 +68,9 @@ vaadin-license-box {
     height: 100vh;
   }
 
-  .flex-grpup {
+  div.flex-grpup {
     margin: auto;
   }
-
 
   div.container h1 {
     margin: 10px;
@@ -82,8 +80,8 @@ vaadin-license-box {
   }
 
   img.loader-logo {
-    width: 150px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
   }
 
   @-webkit-keyframes fadeOut {
