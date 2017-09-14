@@ -6,6 +6,9 @@
 <link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-date-picker.html">
@@ -58,6 +61,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                flex-direction: row;
             }
 
             .wrap {
@@ -69,11 +73,11 @@
                 flex: 1;
             }
 
-            .flex-item:first-child>p {
+            .left-group>p {
                 font-weight: 500;
             }
 
-            .flex-item:last-child>p {
+            .right-group>p {
                 font-weight: 400;
             }
 
@@ -82,16 +86,13 @@
             }
 
             .frame {
-                margin: 10px;
                 padding: 10px;
             }
 
             .frame-small {
-                height: 100px;
                 width: 33.333%;
+                margin: 10px;
             }
-
-            .item {}
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -107,11 +108,30 @@
             <li>
                 <div class="card">
                     <h1 class="title">Create Order</h1>
-                    <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerItems]]" item-label-path="fname + lname"
-                        item-value-path="$key" selected-item='{{selectCustomer}}' loading="[[!customerItems]]" required allow-custom-value
-                        prevent-invalid-input always-float-label></vaadin-combo-box>
+                    <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerItems]]" item-label-path="name"
+                        item-value-path="name" selected-item='{{selectCustomer}}' loading="[[!customerItems]]" required allow-custom-value
+                        prevent-invalid-input always-float-label>
+                        <template>
+                            <paper-item>
+                                <paper-item-body two-line style="min-height: 0">
+                                    <div style="text-transform: capitalize">[[item.name]]</div>
+                                    <div secondary>[[item.email]]</div>
+                                </paper-item-body>
+                            </paper-item>
+                        </template>
+                    </vaadin-combo-box>
                     <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="name"
-                        selected-item='{{selectProduct}}' loading="[[!productItems]]" required prevent-invalid-input always-float-label></vaadin-combo-box>
+                        selected-item='{{selectProduct}}' loading="[[!productItems]]" required prevent-invalid-input always-float-label>
+                        <template>
+                            <paper-icon-item style="padding: 0">
+                                <img src="[[item.image]]" style="border-radius: 50%; width: 48px; height: 48px;" slot="item-icon">
+                                <paper-item-body two-line style="min-height: 0">
+                                    <div style="text-transform: capitalize">[[item.name]]</div>
+                                    <div secondary>SKU: [[item.sku]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                    </vaadin-combo-box>
                     <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
                         step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
                     <vaadin-date-picker class="date-picker" label="Delivery Date" min="2017-01-01" max="2040-01-01" name="delivery" id="deliverySelector"
@@ -124,9 +144,8 @@
             <li>
                 <div class="card order-info">
                     <h1 class="title">Order Detail</h1>
-
                     <div class="flex-container">
-                        <div class="flex-item">
+                        <div class="flex-item left-group">
                             <p>Order Number</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>Customer Name</p>
@@ -145,10 +164,10 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>Cost</p>
                         </div>
-                        <div class="flex-item">
+                        <div class="flex-item right-group">
                             <p><span>[[getOrderNumber(orderItems.length)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[selectCustomer.fname]] [[selectCustomer.lname]]</span></p>
+                            <p><span>[[selectCustomer.name]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[setProductPart(selectProduct)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
@@ -171,15 +190,8 @@
             </li>
         </ul>
         <div class="card">
-            <h1 class="title">Product Information</h1>
-            <div class="frame" hidden="[[selectProduct.part]]">
-                <h1 class="center no-product-title">No Product Selected</h1>
-            </div>
-            <div class="frame" hidden="[[!selectProduct.part]]">
-                <img class="product-image" src$="[[selectProduct.image]]" alt="selected product image">
-                <h3>Product Name [[selectProduct.name]]</h3>
-                <p>Product SKU: [[selectProduct.sku]]</p>
-                <p>Product Fragment: [[selectProduct.part.length]] part</p>
+            <h1 class="title">Product Fragmentation</h1>
+            <div class="flex-container">
                 <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
                     <div class="frame frame-small flex-item">
                         <h2 class="title">Product Part [[part.name]]</h2>
@@ -244,15 +256,20 @@
             getSumProductTime(part, amount) {
                 if (!part || !amount) return 0;
                 let productCycleArr = []
+                let productSetupArr = []
                 let partArr = Object.values(part); // convert obj to arr
                 for (let i = part.length; i--;) {
                     productCycleArr.push(partArr[i].cycle) // loop push cycle arr to big arr
                 }
+                for (let i = part.length; i--;) {
+                    productSetupArr.push(partArr[i].setup) // loop push setup arr to big arr
+                }
                 let flatCycleArr = [].concat(...productCycleArr); // flat subarr concat to arr
+                let flatSetupArr = [].concat(...productSetupArr); // flat subarr concat to arr
                 let sumCycle = flatCycleArr.reduce((a, b) => a + b); // reduce arr to get sumCycle
-                let sumDuration = (sumCycle * this.getActualQuantity(amount)); // sumCycle * quantity
+                let sumSetup = flatSetupArr.reduce((a, b) => a + b); // reduce arr to get sumCycle
+                let sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
                 this.orderDuration = sumDuration;
-                console.log(this.orderDuration)
                 return this._minutesToStr(sumDuration); // convert to hr and min
             }
 
@@ -274,13 +291,13 @@
             getSumSetupTime(setup) {
                 if (!setup) return 0;
                 let sumSetupTime = setup.reduce((a, b) => a + b);
-                return sumSetupTime;
+                return sumSetupTime.toFixed(1);
             }
 
             getSumCycleTime(cycle) {
                 if (!cycle) return 0;
                 let sumCycleTime = cycle.reduce((a, b) => a + b);
-                return sumCycleTime;
+                return sumCycleTime.toFixed(1);
             }
 
             // SET VALUE
@@ -308,11 +325,8 @@
                 return sign + hours + 'hrs ' + minutes + 'min';
             }
 
-            // FILL 0 TO 2 DIGIT TIME
+            // ADD 0 to numbers less than 10,Eg: 2 -> 02 
             _leftPad(number) {
-                /* 
-                 * add zero to numbers less than 10,Eg: 2 -> 02 
-                 */
                 return ((number < 10 && number >= 0) ? '0' : '') + number;
             }
 

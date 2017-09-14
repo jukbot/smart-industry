@@ -188,14 +188,14 @@
                     <li>
                         <div class="machine">
                             <div class="machine-info-group">
-                                <h1 class="title">[[machineItem.name]]</h1>
-                                <p>{{localize('machine-number')}}: [[machineItem.number]]</p>
-                                <p>Machine Name: [[machineItem.name]]</p>
-                                <p>{{localize('machine-type')}}: [[machineItem.type]]</p>
-                                <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] items/day</p>
-                                <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
-                                <p style="color:#e53935">Machine Key: [[machineItem.$key]]</p>
-                                <p style="color:#e53935">{{localize('machine-station')}}: [[machineItem.station]]</p>
+                                <h2 class="title">[[machineItem.name]]</h1>
+                                    <p>{{localize('machine-number')}}: [[machineItem.number]]</p>
+                                    <p>Machine Name: [[machineItem.name]]</p>
+                                    <p>{{localize('machine-type')}}: [[machineItem.type]]</p>
+                                    <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] items/day</p>
+                                    <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
+                                    <p style="color:#e53935">Machine Key: [[machineItem.$key]]</p>
+                                    <p style="color:#e53935">{{localize('machine-station')}}: [[machineItem.station]]</p>
                             </div>
                             <flat-button class="btn" on-tap="_editmachine" machine="[[machineItem]]"><button>{{localize('edit')}}</button></flat-button>
                             <flat-button class="thunderbird btn" on-tap="_removemachine" machine="[[machineItem]]"><button>{{localize('remove')}}</button></flat-button>

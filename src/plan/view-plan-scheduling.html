@@ -138,16 +138,15 @@
         <firebase-document app-name="smart-mes" id="factoryProfile" path="/data/[[k.key]]/factoryData/profile" data="{{factoryProfile}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"
+            limit-to-first="[[maxNodes]]"></firebase-document>
 
         <firebase-query app-name="smart-mes" id="schedulingQuery" path="/data/[[k.key]]/schedulingData" order-by-child="scheduling_no"
-            scheduling-by-value="true" data="{{schedulingItems}}"></firebase-query>
-        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" order-by-value="true"
-            data="{{orderItems}}"></firebase-query>
-
-        <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="id" scheduling-by-value="true"
-            data="{{productItems}}"></firebase-query>
-
+            data="{{schedulingItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
+            data="{{stationItems}}"></firebase-query>
+        <app-indexeddb-mirror key="station-data" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
 
         <ul class="app-grid">
@@ -158,8 +157,7 @@
                         <p>Next Reschedule: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
                         <p>Production Model: [[factoryProfile.model]]</p>
                     </div>
-                    <vaadin-grid id="material" items="[[orderItems]]" size="200">
-
+                    <vaadin-grid id="material" items="[[orderItems]]" size="100">
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
@@ -171,7 +169,9 @@
 
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
-                                <div class="cell">Order No.</div>
+                                <vaadin-grid-sorter path="order_no">
+                                    <div class="cell">Order No.</div>
+                                </vaadin-grid-sorter>
                             </template>
                             <template>
                                 <div class="cell">[[item.order_no]]</div>
@@ -205,7 +205,6 @@
                                 <vaadin-grid-sorter path="order_quantity">
                                     <div class="cell">
                                         <span>Quantity</span>
-                                        <iron-icon icon="vaadin:arrow-up"></iron-icon>
                                     </div>
                                 </vaadin-grid-sorter>
                             </template>
@@ -221,13 +220,15 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[item.order_duration]]</div>
+                                <div class="cell">[[getOrderDuration(item.order_duration)]]</div>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Remaining</div>
+                                <vaadin-grid-sorter path="order_delivery">
+                                    <div class="cell">Remaining</div>
+                                </vaadin-grid-sorter>
                             </template>
                             <template>
                                 <div class="cell">[[getRemainDay(item.order_date,item.order_delivery)]] days</div>
@@ -241,7 +242,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[item.order_delivery]]</div>
+                                <div class="cell">[[getDeliveryDate(item.order_delivery)]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -276,78 +277,117 @@
             </li>
             <li>
                 <div class="card">
-                    <h1 class="title">Job Scheduling and Work station Workload</h1>
+                    <h1 class="title">Job Scheduling and Station Workload</h1>
 
-                    <vaadin-grid id="material" items="[[items]]" size="200">
+                    <vaadin-grid id="material" items="[[scheduleItems]]" size="100">
 
-                        <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
+                        <vaadin-grid-column width="66px" flex="0">
                             <template class="header">
-                                <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
+                                <vaadin-grid-sorter path="order_no">
+                                    <div class="cell">Station</div>
+                                </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <paper-checkbox checked="{{selected}}"></paper-checkbox>
+                                <div class="cell">[[item.station_no]]</div>
                             </template>
-                        </vaadin-grid-selection-column>
+                        </vaadin-grid-column>
+
 
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
+
                                 <div class="cell">Order No.</div>
+
                             </template>
                             <template>
-                                <div class="cell">[[item.name.first]]</div>
+                                <div class="cell">[[item.order_no]]</div>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column flex="2">
                             <template class="header">
-                                <div class="cell">Customer</div>
+                                <div class="cell">Product</div>
                             </template>
                             <template>
-                                <div class="cell">[[item.email]]</div>
+                                <div class="cell">[[item.order_customer]]</div>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column>
                             <template class="header">
-                                <vaadin-grid-sorter path="location.city">
-                                    <div class="cell">
-                                        <span>Product</span>
-                                        <iron-icon icon="vaadin:arrow-up"></iron-icon>
-                                    </div>
-                                </vaadin-grid-sorter>
+
+                                <div class="cell">
+                                    <span>Part</span>
+                                </div>
+
                             </template>
                             <template>
-                                <div class="cell">[[item.location.city]]</div>
+                                <div class="cell">[[item.order_product_name]]</div>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column>
                             <template class="header">
-                                <vaadin-grid-sorter path="location.city">
-                                    <div class="cell">
-                                        <span>Quantity</span>
-                                        <iron-icon icon="vaadin:arrow-up"></iron-icon>
-                                    </div>
-                                </vaadin-grid-sorter>
+
+                                <div class="cell">
+                                    <span>Quantity</span>
+                                </div>
+
                             </template>
                             <template>
-                                <div class="cell">[[item.location.city]]</div>
+                                <div class="cell">[[item.order_quantity]]</div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="100px" flex="0">
+                        <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell numeric last">Delete</div>
+
+                                <div class="cell">Workload</div>
+
+                            </template>
+                            <template>
+                                <div class="cell">[[getOrderDuration(item.order_duration)]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+
+                                <div class="cell">Used Machines</div>
+
+                            </template>
+                            <template>
+                                <div class="cell">[[getRemainDay(item.order_date,item.order_delivery)]] days</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+
+                                <div class="cell">Status</div>
+
+                            </template>
+                            <template>
+                                <div class="cell" style$="color:[[getColorStatus(item.order_status)]]">[[getOrderStatus(item.order_status)]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <!-- <vaadin-grid-column width="100px" flex="0">
+                            <template class="header">
+                                <div class="cell numeric last">Cancel</div>
                             </template>
                             <template>
                                 <div class="cell numeric last">
-                                    X
+                                    <paper-icon-button on-tap="_deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.order_status)]]"></paper-icon-button>
                                 </div>
                             </template>
-                        </vaadin-grid-column>
+                        </vaadin-grid-column> -->
+
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn shamrock" on-tap="_refreshStatus"><button>Start Work</button></flat-button>
+                        <template is="dom-repeat" items="[[persistedStationData]]" as="stationItem">
+                            <flat-button class="btn" on-tap="_openStationSchedule"><button>Station [[stationItem.st_number]]</button></flat-button>
+                        </template>
                     </div>
                 </div>
             </li>
@@ -385,7 +425,7 @@
 
                     </vaadin-columnrange-chart>
 
-                    <vaadin-columnrange-chart id="column-range">
+                    <!-- <vaadin-columnrange-chart id="column-range">
                         <chart inverted="true"></chart>
                         <chart-title>Temperature variation by month</chart-title>
                         <subtitle>Observed in Vik i Sogn, Norway</subtitle>
@@ -408,13 +448,13 @@
                                 11.4], [-5.2, 10.4], [-13.5, 9.8]
                             </data>
                         </data-series>
-                    </vaadin-columnrange-chart>
+                    </vaadin-columnrange-chart> -->
                 </div>
             </li>
         </ul>
     </template>
     <script>
-        class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+        class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.FirebaseDatabaseBehavior, Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {
                 return 'view-plan-scheduling'
@@ -427,8 +467,9 @@
                 }
             }
 
-            static get observer() {
-
+            ready() {
+                super.ready()
+                this.parallelSchedule()
             }
 
             connectedCallback() {
@@ -460,6 +501,12 @@
                 }
             }
 
+            getOrderDuration(order_duration) {
+                if (!order_duration) return 0
+                return this._minutesToStr(order_duration)
+            }
+
+
             getRemainDay(order_date, delivery_date) {
                 if (!order_date || !delivery_date) return 0
                 if (delivery_date <= order_date) {
@@ -469,6 +516,21 @@
                     let day = (remain / 86400)
                     return Math.trunc(day)
                 }
+            }
+
+            getDeliveryDate(timestamp) {
+                let today = new Date(timestamp * 1000);
+                let dd = today.getDate();
+                let mm = today.getMonth() + 1; //January is 0!
+                let yyyy = today.getFullYear();
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+                let deliveryDate = dd + '/' + mm + '/' + yyyy;
+                return deliveryDate;
             }
 
             getOrderStatus(order_status) {
@@ -493,7 +555,6 @@
                 }
             }
 
-
             getColorStatus(order_status) {
                 switch (order_status) {
                     case 'waiting':
@@ -513,6 +574,14 @@
                         break;
                     default:
                         return '#202020'
+                }
+            }
+
+            parallelSchedule() {
+                if (this.orderData) {
+                    let concurrent = this.factoryProfile.concurrency
+                    let t = this.orderData.slice(0, concurrent)
+                    console.log(t)
                 }
             }
 
@@ -536,6 +605,22 @@
                     default:
                         return false
                 }
+            }
+
+            // CONVERT TIME TO STRING
+            _minutesToStr(minute) {
+                let sign = '';
+                if (minute < 0) {
+                    sign = '0';
+                }
+                let hours = this._leftPad(Math.floor(Math.abs(minute) / 60));
+                let minutes = this._leftPad(Math.round(Math.abs(minute) % 60));
+                return sign + hours + 'hrs ' + minutes + 'min';
+            }
+
+            // ADD 0 to numbers less than 10,Eg: 2 -> 02 
+            _leftPad(number) {
+                return ((number < 10 && number >= 0) ? '0' : '') + number;
             }
 
             _deleteOrder(e) {

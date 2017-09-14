@@ -123,19 +123,10 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">First name</div>
+                                <div class="cell">Name</div>
                             </template>
                             <template>
-                                <div class="cell">[[item.fname]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column flex="1">
-                            <template class="header">
-                                <div class="cell">Last name</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.lname]]</div>
+                                <div class="cell">[[item.name]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -228,13 +219,14 @@
             _addCustomer() {
                 let fname = this.$.customerFirstName.value;
                 let lname = this.$.customerLastName.value;
+                let fullname = fname + lname;
                 let email = this.$.customerEmail.value;
                 let mobile = this.$.customerMobile.value;
-                if (fname && lname && email && mobile) {
+                if (fullname && email && mobile) {
                     this.$.customerQuery.ref.push({
-                        fname: fname,
-                        lname: lname,
+                        name: fullname,
                         email: email,
+                        address: 'no address',
                         mobile: mobile
                     });
                     this.clearField();

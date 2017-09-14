@@ -47,10 +47,12 @@
           <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
             <a name="dashboard" role="link" href="/dashboard" rel="dashboard" title="Dashboard">
               <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
-            <a name="setup" role="link" href="/setup" rel="setup" title="Setup">
+            <a name="setup" role="link" href="/setup" rel="setup" title="Setup" hidden="[[userAccess]]">
               <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-            <a name="plan" role="link" href="/plan" rel="plan" title="Plan">
+            <a name="plan" role="link" href="/plan" rel="plan" title="Plan" hidden="[[userAccess]]">
               <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
+            <a name="control" role="link" href="/control" rel="control" title="Control" hidden="[[!userAccess]]">
+              <paper-icon-button icon="vaadin:controller"></paper-icon-button> {{localize('view-index-menu-control')}}</a>
             <a name="track" role="link " href="/track" rel="track" title="Track">
               <paper-icon-button icon="vaadin:progressbar"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
             <a name="help" role="link" href="/help" rel="help" title="Help">
@@ -79,28 +81,26 @@
           <p>{{localize('version')}} 1.0.5</p>
         </div>
       </app-drawer>
-      <app-header-layout fullbleed>
+      <app-header-layout fullbleed id="mainHeader">
         <app-header hidden$="[[!user]]" class="main-header" id="header" slot="header" role="banner">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
           <app-toolbar>
             <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
             <h2 class="page-title" main-title>{{localize(routeData.page)}}</h2>
-            <!-- <input id="searchBox" type="search" name="search" placeholder="Search this app">
-            <paper-icon-button icon="vaadin:search" tabindex="0" aria-label="Search site"  on-tap="_openSearchBox" aria-disabled="false"></paper-icon-button> -->
           </app-toolbar>
         </app-header>
         <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
           role="main">
-          <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!signedIn]]"></view-dashboard>
-          <view-setup name="setup" route="[[subroute]]" hidden$="[[!signedIn]]"></view-setup>
-          <view-plan name="plan" route="[[subroute]]" hidden$="[[!signedIn]]"></view-plan>
-          <view-track name="track" route="[[subroute]]" hidden$="[[!signedIn]]"></view-track>
-          <view-help name="help" route="[[subroute]]" hidden$="[[!signedIn]]"></view-help>
-          <view-settings name="settings" route="[[subroute]]" hidden$="[[!signedIn]]"></view-settings>
-          <view-404 name="404" route="[[subroute]]" hidden$="[[!signedIn]]"></view-404>
-          <view-offline name="offline" route="[[subroute]]" hidden$="[[!signedIn]]"></view-offline>
-          <view-error name="error" route="[[subroute]]" hidden$="[[!signedIn]]"></view-error>
-          <view-login name="login" route="[[subroute]]" hidden$="[[signedIn]]"></view-login>
+          <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!user]]"></view-dashboard>
+          <view-setup name="setup" route="[[subroute]]" hidden$="[[!user]]"></view-setup>
+          <view-plan name="plan" route="[[subroute]]" hidden$="[[!user]]"></view-plan>
+          <view-track name="track" route="[[subroute]]" hidden$="[[!user]]"></view-track>
+          <view-help name="help" route="[[subroute]]" hidden$="[[!user]]"></view-help>
+          <view-settings name="settings" route="[[subroute]]" hidden$="[[!user]]"></view-settings>
+          <view-404 name="404" route="[[subroute]]" hidden$="[[!user]]"></view-404>
+          <view-offline name="offline" route="[[subroute]]" hidden$="[[!user]]"></view-offline>
+          <view-error name="error" route="[[subroute]]" hidden$="[[!user]]"></view-error>
+          <view-login name="login" route="[[subroute]]" hidden$="[[user]]" style="z-index:999999999"></view-login>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -157,6 +157,10 @@
             type: Boolean,
             value: false
           },
+          userAccess: {
+            type: Boolean,
+            value: true
+          },
           toastText: String,
           notificationText: String
         }
@@ -166,7 +170,8 @@
         return [
           '_routePageChanged(routeData.page)',
           '_handleUser(user)',
-          '_signedInChanged(signedIn)'
+          '_signedInChanged(signedIn)',
+          '_setUserRoleAccess(persistedUserData.role)'
         ]
       }
 
@@ -314,8 +319,8 @@
                 alert('Service Worker is not support by your browser. Please upgrade your browser')
               }
               this._networkChanged()
-              this.$.pageLoader.removeAttribute('indeterminate')
               this.loadComplete = true
+              this.$.pageLoader.removeAttribute('indeterminate')
             })
           })
         }
@@ -377,20 +382,20 @@
               Polymer.Async.timeOut.run(() => {
                 this._closeToastAlert()
                 this.$.userIndexDB.destroy()
+                this.$.drawer.hidden = true
                 this.$.layout.resetLayout()
+                this.$.mainHeader.resetLayout()
+                this.$.header.resetLayout()
+                // redirect to login page
+                this.page = 'login'
+                this.set('route.path', '/login')
               }, 1)
-              // redirect to login page
-              this.page = 'login'
             })
             .catch((error) => {
               console.error('Authenticate Failed: ' + error.code)
               this.page = 'error'
             })
         }
-      }
-
-      _openSearchBox() {
-        this.$.searchBox.focus()
       }
 
       _closeToastAlert() {
@@ -400,6 +405,14 @@
       _handleError(e) {
         console.error('Error: ' + e.message)
         this.page = 'error'
+      }
+
+      _setUserRoleAccess(role) {
+        if (role === 'admin') {
+          this.userAccess = false
+        } else {
+          this.userAccess = true
+        }
       }
 
       getOnlineStatus(status) {

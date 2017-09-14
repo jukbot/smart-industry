@@ -332,7 +332,6 @@
         </div>
       </paper-toast>
       <iron-a11y-keys id="a11y" target="[[loginTarget]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
-      <iron-a11y-keys id="a11y" target="[[resetTarget]]" keys="enter" on-keys-pressed="_resetPassword"></iron-a11y-keys>
     </section>
   </template>
   <script>
@@ -365,12 +364,6 @@
               return this.accountPassword
             }
           },
-          resetTarget: {
-            type: Object,
-            value: () => {
-              return this.resetPassword
-            }
-          },
           user: Object,
           sampleData: Object,
           alertMessage: String,
@@ -382,8 +375,8 @@
         if (this.$.accountEmail.value && this.$.accountPassword.value) {
           this.$.auth.signInWithEmailAndPassword(this.$.accountEmail.value, this.$.accountPassword.value)
             .then((response) => {
-              this.set('route.path', '/dashboard')
               this.page = '/dashboard'
+              this.set('route.path', '/dashboard')
             })
             .catch((error) => {
               this.showAlertToast(error.code)
