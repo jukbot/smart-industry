@@ -22,16 +22,26 @@
                 --app-grid-item-height: 50%;
             }
 
+
+            .btn {
+                margin: 20px 10px 0 0;
+                width: 250px;
+            }
+
+            .order-schedule-info {
+                margin: 10px 0;
+            }
+
+            .order-schedule-info>p {
+                margin: 10px 0;
+            }
+
             @media (min-width: 360px) and (max-width: 768px) {
                 .btn {
                     width: 100%;
                 }
             }
 
-            .btn {
-                margin: 20px 10px 0 0;
-                width: 250px;
-            }
 
             vaadin-grid#material {
 
@@ -144,8 +154,10 @@
             <li>
                 <div class="card">
                     <h1 class="title">Order Scheduling</h1>
-                    <p>Next Reschedule: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
-                    <p>Production Model: [[factoryProfile.model]]</p>
+                    <div class="order-schedule-info">
+                        <p>Next Reschedule: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
+                        <p>Production Model: [[factoryProfile.model]]</p>
+                    </div>
                     <vaadin-grid id="material" items="[[orderItems]]" size="200">
 
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
@@ -177,10 +189,9 @@
 
                         <vaadin-grid-column>
                             <template class="header">
-                                <vaadin-grid-sorter path="location.city">
+                                <vaadin-grid-sorter path="order_product_name">
                                     <div class="cell">
                                         <span>Product</span>
-                                        <iron-icon icon="vaadin:arrow-up"></iron-icon>
                                     </div>
                                 </vaadin-grid-sorter>
                             </template>
@@ -191,7 +202,7 @@
 
                         <vaadin-grid-column>
                             <template class="header">
-                                <vaadin-grid-sorter path="location.city">
+                                <vaadin-grid-sorter path="order_quantity">
                                     <div class="cell">
                                         <span>Quantity</span>
                                         <iron-icon icon="vaadin:arrow-up"></iron-icon>
@@ -205,7 +216,9 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Duration (hr)</div>
+                                <vaadin-grid-sorter path="order_duration">
+                                    <div class="cell">Duration (hr)</div>
+                                </vaadin-grid-sorter>
                             </template>
                             <template>
                                 <div class="cell">[[item.order_duration]]</div>
@@ -214,16 +227,18 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Remaining (day)</div>
+                                <div class="cell">Remaining</div>
                             </template>
                             <template>
-                                <div class="cell">[[getRemainDay(item.order_date,item.order_delivery)]]</div>
+                                <div class="cell">[[getRemainDay(item.order_date,item.order_delivery)]] days</div>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Delivery</div>
+                                <vaadin-grid-sorter path="order_delivery">
+                                    <div class="cell">Delivery</div>
+                                </vaadin-grid-sorter>
                             </template>
                             <template>
                                 <div class="cell">[[item.order_delivery]]</div>
@@ -232,7 +247,9 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Status</div>
+                                <vaadin-grid-sorter path="order_status">
+                                    <div class="cell">Status</div>
+                                </vaadin-grid-sorter>
                             </template>
                             <template>
                                 <div class="cell" style$="color:[[getColorStatus(item.order_status)]]">[[getOrderStatus(item.order_status)]]</div>
@@ -241,11 +258,11 @@
 
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
-                                <div class="cell numeric last">Delete</div>
+                                <div class="cell numeric last">Cancel</div>
                             </template>
                             <template>
                                 <div class="cell numeric last">
-                                    <paper-icon-button on-tap="_deleteOrder" order="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-tap="_deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.order_status)]]"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -469,7 +486,7 @@
                         return 'LATED'
                         break;
                     case 'cancel':
-                        return 'CANCEL'
+                        return 'CANCELED'
                         break;
                     default:
                         return 'N/A'
@@ -496,6 +513,36 @@
                         break;
                     default:
                         return '#202020'
+                }
+            }
+
+            isDeletable(order_status) {
+                switch (order_status) {
+                    case 'waiting':
+                        return false
+                        break;
+                    case 'wip':
+                        return true
+                        break;
+                    case 'done':
+                        return false
+                        break;
+                    case 'lated':
+                        return false
+                        break;
+                    case 'cancel':
+                        return false
+                        break;
+                    default:
+                        return false
+                }
+            }
+
+            _deleteOrder(e) {
+                if (confirm("Delete this order ?") == true) {
+                    let key = e.currentTarget.order.$key;
+                    this.$.orderQuery.ref.child(key).remove();
+                    alert("Delete order successfully");
                 }
             }
         }

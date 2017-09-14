@@ -86,6 +86,11 @@
                 padding: 10px;
             }
 
+            .frame-small {
+                height: 100px;
+                width: 33.333%;
+            }
+
             .item {}
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
@@ -94,6 +99,7 @@
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" data="{{orderItems}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData/order"></firebase-query>
+        <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
         <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="name" data="{{productItems}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
@@ -101,7 +107,7 @@
             <li>
                 <div class="card">
                     <h1 class="title">Create Order</h1>
-                    <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerItems]]" item-label-path="lname"
+                    <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerItems]]" item-label-path="fname + lname"
                         item-value-path="$key" selected-item='{{selectCustomer}}' loading="[[!customerItems]]" required allow-custom-value
                         prevent-invalid-input always-float-label></vaadin-combo-box>
                     <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="name"
@@ -166,21 +172,19 @@
         </ul>
         <div class="card">
             <h1 class="title">Product Information</h1>
-            <div class="frame" hidden$="[[selectProduct.part]]">
+            <div class="frame" hidden="[[selectProduct.part]]">
                 <h1 class="center no-product-title">No Product Selected</h1>
             </div>
-            <div class="frame" hidden$="[[!selectProduct.part]]">
+            <div class="frame" hidden="[[!selectProduct.part]]">
                 <img class="product-image" src$="[[selectProduct.image]]" alt="selected product image">
                 <h3>Product Name [[selectProduct.name]]</h3>
                 <p>Product SKU: [[selectProduct.sku]]</p>
                 <p>Product Fragment: [[selectProduct.part.length]] part</p>
-                <!-- <p>Total Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p> -->
-
                 <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
-                    <div class="frame item">
-                        <h2>Product Part [[part.name]]</h2>
+                    <div class="frame frame-small flex-item">
+                        <h2 class="title">Product Part [[part.name]]</h2>
                         <p>Part SKU: [[part.sku]]</p>
-                        <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
+                        <p>Process Sequence: [[getProductProcess(part.process)]]</p>
                         <p>Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
                         <p>Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
                     </div>
@@ -211,7 +215,6 @@
             ready() {
                 super.ready();
                 this._setupDatePicker();
-                console.log(Object.keys(orderItems).length)
             }
             connectedCallback() {
                 super.connectedCallback()
@@ -249,6 +252,7 @@
                 let sumCycle = flatCycleArr.reduce((a, b) => a + b); // reduce arr to get sumCycle
                 let sumDuration = (sumCycle * this.getActualQuantity(amount)); // sumCycle * quantity
                 this.orderDuration = sumDuration;
+                console.log(this.orderDuration)
                 return this._minutesToStr(sumDuration); // convert to hr and min
             }
 
@@ -269,20 +273,14 @@
 
             getSumSetupTime(setup) {
                 if (!setup) return 0;
-                let setupTime = 0;
-                for (let i in setup) {
-                    setupTime += setup[i];
-                };
-                return setupTime;
+                let sumSetupTime = setup.reduce((a, b) => a + b);
+                return sumSetupTime;
             }
 
             getSumCycleTime(cycle) {
                 if (!cycle) return 0;
-                let processTime = 0;
-                for (let i in cycle) {
-                    processTime += cycle[i];
-                };
-                return processTime;
+                let sumCycleTime = cycle.reduce((a, b) => a + b);
+                return sumCycleTime;
             }
 
             // SET VALUE
@@ -402,6 +400,13 @@
                         order_customer: customerID,
                         order_product: orderProductName,
                         order_quantity: orderQuantity
+                    });
+
+                    let detail = 'Created order no.' + orderNo;
+                    this.$.notificationQuery.ref.push({
+                        created: orderDate,
+                        detail: detail,
+                        type: 'nornal'
                     });
                     alert("Added to production schedule successfully");
                     this._clearField();

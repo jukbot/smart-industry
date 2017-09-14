@@ -109,10 +109,14 @@
                         <vaadin-combo-box label="{{localize('factory-type')}}" id="factoryType" value="[[factoryProfile.type]]" items="[[factoryType]]"
                             item-label-path="name" item-value-path="value" loading="[[!factoryType]]" required always-float-label></vaadin-combo-box>
                         <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[factoryProfile.model]]" items="[[productionModel]]"
-                            item-value-path="value" item-label-path="name" loading="[[!productionModel]]" required always-float-label>
+                            item-value-path="value" item-label-path="name" loading="[[!productionModel]]" selected-item="{{selectProductionModel}}"
+                            required always-float-label>
                             <template>
                                 <div readonly>[[item.name]]</div>
                             </template>
+                        </vaadin-combo-box>
+                        <vaadin-combo-box label="Station Concurrency" id="concurrency" value="[[factoryProfile.concurrency]]" items="[[concurrencyItems]]"
+                            item-value-path="value" item-label-path="value" loading="[[!concurrencyItems]]" required always-float-label>
                         </vaadin-combo-box>
                         <paper-input label="{{localize('operation-start')}} (xx:xx)" id="opStart" value="[[factoryOperation.op_start]]" type="time"
                             required pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
@@ -168,6 +172,8 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>{{localize('production-model')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
+                            <p id="concurrencyTitle">Station Concurrency</p>
+                            <div class="sidebar-menu-line" role="separator" id="concurrencyTitleSeparate"></div>
                             <p>{{localize('operation-start')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>{{localize('operation-end')}}</p>
@@ -185,6 +191,8 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[getProductionModel(factoryProfile.model)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
+                            <p id="concurrencyData"><span>[[factoryProfile.concurrency]]</span></p>
+                            <div class="sidebar-menu-line" role="separator" id="concurrencyDataSeparate"></div>
                             <p><span>[[factoryOperation.op_start]] </span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[factoryOperation.op_end]]</span></p>
@@ -250,6 +258,28 @@
                     factorySchedule: Object,
                     factoryOperation: Object,
                     factoryPerformance: Object,
+                    maxConcurrency: {
+                        type: Number,
+                        value: 3
+                    },
+                    concurrencyItems: {
+                        type: Array,
+                        value: () => {
+                            return [{
+                                "value": 2
+                            },
+                            {
+                                "value": 3
+                            },
+                            {
+                                "value": 4
+                            },
+                            {
+                                "value": 5
+                            }
+                            ]
+                        }
+                    },
                     optimizationType: {
                         type: Array,
                         value: () => {
@@ -309,7 +339,8 @@
 
             static get observers() {
                 return [
-                    'setOperationDay(factoryOperation.op_day)'
+                    'setOperationDay(factoryOperation.op_day)',
+                    '_isParallelModel(selectProductionModel.value)'
                 ]
             }
 
@@ -322,6 +353,7 @@
                 let fn = this.$.factoryName.value
                 let ft = this.$.factoryType.value
                 let mod = this.$.productionModel.value
+                let con = this.$.concurrency.value
                 let aw = this.$.acceptWaste.value
                 let au = this.$.workerUtilize.value
                 let opt = this.$.optimizationType.value
@@ -347,6 +379,11 @@
                     this.set('factoryProfile.name', fn)
                     this.set('factoryProfile.type', ft)
                     this.set('factoryProfile.model', mod)
+                    if (con) {
+                        this.set('factoryProfile.concurrency', con)
+                    } else {
+                        this.set('factoryProfile.concurrency', 3)
+                    }
                     this.set('factoryPerformance.optimize', opt)
                     this.set('factoryPerformance.aw', aw)
                     this.set('factoryPerformance.au', au)
@@ -367,6 +404,7 @@
                 this.$.factoryName.value = 'Sample factory'
                 this.$.factoryType.value = 'jobshop'
                 this.$.productionModel.value = 'parallel'
+                this.$.concurrency.value = 3
                 this.$.optimizationType.value = 'disabled'
                 this.$.acceptWaste.value = 0.02
                 this.$.workerUtilize.value = 85
@@ -475,6 +513,59 @@
                         break
                     default:
                         return 'N/A'
+                }
+            }
+
+            isParallelModel(production_model) {
+                switch (production_model) {
+                    case 'serial':
+                        return true
+                        break
+                    case 'parallel':
+                        return false
+                        break
+                    case 'multi':
+                        return true
+                        break
+                    default:
+                        return true
+                }
+            }
+
+            _isParallelModel(production_model) {
+                switch (production_model) {
+                    case 'serial':
+                        this.$.concurrency.hidden = true
+                        this.$.concurrency.disabled = true
+                        this.$.concurrencyData.hidden = true
+                        this.$.concurrencyDataSeparate.hidden = true
+                        this.$.concurrencyTitle.hidden = true
+                        this.$.concurrencyTitleSeparate.hidden = true
+                        break
+                    case 'parallel':
+                        this.$.concurrency.hidden = false
+                        this.$.concurrency.disabled = false
+                        this.$.concurrencyData.hidden = false
+                        this.$.concurrencyDataSeparate.hidden = false
+                        this.$.concurrencyTitle.hidden = false
+                        this.$.concurrencyTitleSeparate.hidden = false
+                        break
+                    case 'multi':
+                        this.$.concurrency.hidden = true
+                        this.$.concurrency.disabled = true
+                        this.$.concurrencyData.hidden = true
+                        this.$.concurrencyDataSeparate.hidden = true
+                        this.$.concurrencyTitle.hidden = true
+                        this.$.concurrencyTitleSeparate.hidden = true
+                        break
+                    default:
+                        this.$.concurrency.hidden = true
+                        this.$.concurrency.disabled = true
+                        this.$.concurrencyData.hidden = true
+                        this.$.concurrencyDataSeparate.hidden = true
+                        this.$.concurrencyTitle.hidden = true
+                        this.$.concurrencyTitleSeparate.hidden = true
+                        return true
                 }
             }
         }

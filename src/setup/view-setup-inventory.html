@@ -85,12 +85,12 @@
             <li>
                 <div class="card" hidden="[[showAddInventory]]">
                     <h1 class="title">Add Inventory</h1>
-                    <paper-input label="Name" id="inventoryName" type="text" maxlength="40" auto-validate required always-float-label></paper-input>
-                    <paper-input label="Code" id="inventoryCode" type="text" maxlength="20" auto-validate required always-float-label></paper-input>
+                    <paper-input label="Name" id="inventoryName" type="text" maxlength="40" auto-validate always-float-label></paper-input>
+                    <paper-input label="Code" id="inventoryCode" type="text" maxlength="20" auto-validate always-float-label></paper-input>
                     <paper-input label="Cost" id="inventoryCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only"
-                        min="0" max="[[maxInput]]" step="0.01" auto-validate required always-float-label></paper-input>
+                        min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
                     <paper-input label="Quantity" id="inventoryQuantity" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)$" error-message="number only"
-                        min="1" max$="[[maxInput]]" step="1" auto-validate required always-float-label>
+                        min="1" max$="[[maxInput]]" step="1" auto-validate always-float-label>
                     </paper-input>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openInventoryTable"><button>{{localize('dismiss')}}</button></flat-button>

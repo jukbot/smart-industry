@@ -84,15 +84,14 @@
                 <div class="card" hidden="[[showAddCustomer]]">
                     <h1 class="title">{{localize('add-customer')}}</h1>
                     <paper-input label="First name" id="customerFirstName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
-                        error-message="text only" required always-float-label></paper-input>
+                        error-message="text only" always-float-label></paper-input>
                     <paper-input label="Last name" id="customerLastName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
-                        error-message="text only" required always-float-label></paper-input>
-                    <paper-input label="E-mail" id="customerEmail" max-length="40" type="email" auto-validate error-message="invalid input" required
-                        always-float-label>
+                        error-message="text only" always-float-label></paper-input>
+                    <paper-input label="E-mail" id="customerEmail" max-length="40" type="email" auto-validate error-message="invalid input" always-float-label>
                         <iron-icon icon="vaadin:envelope" slot="prefix"></iron-icon>
                     </paper-input>
                     <paper-input label="Mobile" id="customerMobile" max-length="15" type="tel" auto-validate allowed-pattern="^(0|[1-9]\d*)$"
-                        error-message="number only" required always-float-label></paper-input>
+                        error-message="number only" always-float-label></paper-input>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openCustomerTable"><button>{{localize('dismiss')}}</button></flat-button>
                         <flat-button class="btn shamrock" on-tap="_addCustomer"><button disabled$="[[disabled]]">{{localize('add')}}</button></flat-button>
