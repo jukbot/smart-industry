@@ -132,7 +132,7 @@
 
         <firebase-query app-name="smart-mes" id="schedulingQuery" path="/data/[[k.key]]/schedulingData" order-by-child="scheduling_no"
             scheduling-by-value="true" data="{{schedulingItems}}"></firebase-query>
-        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_no" order-by-value="true"
+        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" order-by-value="true"
             data="{{orderItems}}"></firebase-query>
 
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="id" scheduling-by-value="true"
@@ -218,6 +218,24 @@
                             </template>
                             <template>
                                 <div class="cell">[[getRemainDay(item.order_date,item.order_delivery)]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">Delivery</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[item.order_delivery]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">Status</div>
+                            </template>
+                            <template>
+                                <div class="cell" style$="color:[[getColorStatus(item.order_status)]]">[[getOrderStatus(item.order_status)]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -387,9 +405,15 @@
 
             static get properties() {
                 return {
-                    language: String
+                    language: String,
+                    status: String
                 }
             }
+
+            static get observer() {
+
+            }
+
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
@@ -427,6 +451,51 @@
                     let remain = delivery_date - order_date
                     let day = (remain / 86400)
                     return Math.trunc(day)
+                }
+            }
+
+            getOrderStatus(order_status) {
+                switch (order_status) {
+                    case 'waiting':
+                        return 'WAITING'
+                        break;
+                    case 'wip':
+                        return 'WIP'
+                        break;
+                    case 'done':
+                        return 'DONE'
+                        break;
+                    case 'late':
+                        return 'LATED'
+                        break;
+                    case 'cancel':
+                        return 'CANCEL'
+                        break;
+                    default:
+                        return 'N/A'
+                }
+            }
+
+
+            getColorStatus(order_status) {
+                switch (order_status) {
+                    case 'waiting':
+                        return '#FFB300'
+                        break;
+                    case 'wip':
+                        return '#5E35B1'
+                        break;
+                    case 'done':
+                        return '#7CB342'
+                        break;
+                    case 'lated':
+                        return '#E53935'
+                        break;
+                    case 'cancel':
+                        return '#E53935'
+                        break;
+                    default:
+                        return '#202020'
                 }
             }
         }

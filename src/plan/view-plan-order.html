@@ -85,6 +85,8 @@
                 margin: 10px;
                 padding: 10px;
             }
+
+            .item {}
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -138,7 +140,7 @@
                             <p>Cost</p>
                         </div>
                         <div class="flex-item">
-                            <p><span>[[orderNumber]]</span></p>
+                            <p><span>[[getOrderNumber(orderItems.length)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[selectCustomer.fname]] [[selectCustomer.lname]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
@@ -175,7 +177,7 @@
                 <!-- <p>Total Duration: [[getSumProductTime(selectProduct.part,amount)]] minutes</p> -->
 
                 <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
-                    <div class="frame">
+                    <div class="frame item">
                         <h2>Product Part [[part.name]]</h2>
                         <p>Part SKU: [[part.sku]]</p>
                         <p>Part Process Sequence: [[getProductProcess(part.process)]]</p>
@@ -206,15 +208,10 @@
                 }
             }
 
-            static get observers() {
-                return [
-                    'getOrderNumber(orderItems)'
-                ]
-            }
-
             ready() {
                 super.ready();
                 this._setupDatePicker();
+                console.log(Object.keys(orderItems).length)
             }
             connectedCallback() {
                 super.connectedCallback()
@@ -224,10 +221,12 @@
             // GET VALUE
 
             getOrderNumber(o) {
-                if (o.length == 0 || o.length == null) {
+                if (o == 0 || o == null) {
                     this.orderNumber = 1; // set to global variable
+                    return this.orderNumber
                 } else {
-                    this.orderNumber = length + 1;
+                    this.orderNumber = o + 1;
+                    return this.orderNumber
                 }
             }
 
