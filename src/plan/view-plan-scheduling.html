@@ -138,12 +138,13 @@
         <firebase-document app-name="smart-mes" id="factoryProfile" path="/data/[[k.key]]/factoryData/profile" data="{{factoryProfile}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"
-            limit-to-first="[[maxNodes]]"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
 
-        <firebase-query app-name="smart-mes" id="schedulingQuery" path="/data/[[k.key]]/schedulingData" order-by-child="scheduling_no"
-            data="{{schedulingItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="schedulingQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(station)]]"
+            order-by-child="scheduling_no" data="{{scheduleItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="orderQueryStack" path="/data/[[k.key]]/orderData" order-by-child="order_delivery"
+            limit-to-first="[[factoryProfile.concurrency]]" data="{{orderStack}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             data="{{stationItems}}"></firebase-query>
         <app-indexeddb-mirror key="station-data" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
@@ -156,6 +157,7 @@
                     <div class="order-schedule-info">
                         <p>Next Reschedule: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
                         <p>Production Model: [[factoryProfile.model]]</p>
+                        <p>Station Concurrency: [[factoryProfile.concurrency]]</p>
                     </div>
                     <vaadin-grid id="material" items="[[orderItems]]" size="100">
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
@@ -270,30 +272,29 @@
 
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_refreshStatus"><button>Manage Order</button></flat-button>
+                        <flat-button class="btn" on-tap="_parallelSchedule"><button>Refresh</button></flat-button>
                         <flat-button class="btn thunderbird" on-tap="_refreshStatus"><button>Reschedule</button></flat-button>
                     </div>
                 </div>
             </li>
             <li>
                 <div class="card">
-                    <h1 class="title">Job Scheduling and Station Workload</h1>
+                    <h1 class="title">Job Scheduling</h1>
+                    Selected Station: [[station]]
 
                     <vaadin-grid id="material" items="[[scheduleItems]]" size="100">
-
-                        <vaadin-grid-column width="66px" flex="0">
+                        <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_no">
                                     <div class="cell">Station</div>
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[item.station_no]]</div>
+                                <div class="cell">[[station]]</div>
                             </template>
                         </vaadin-grid-column>
 
-
-                        <vaadin-grid-column width="100px" flex="0">
+                        <vaadin-grid-column flex="1">
                             <template class="header">
 
                                 <div class="cell">Order No.</div>
@@ -309,7 +310,7 @@
                                 <div class="cell">Product</div>
                             </template>
                             <template>
-                                <div class="cell">[[item.order_customer]]</div>
+                                <div class="cell">[[item.order_product]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -322,7 +323,7 @@
 
                             </template>
                             <template>
-                                <div class="cell">[[item.order_product_name]]</div>
+                                <div class="cell">[[item.job_part]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -335,7 +336,7 @@
 
                             </template>
                             <template>
-                                <div class="cell">[[item.order_quantity]]</div>
+                                <div class="cell">[[item.job_quantity]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -346,7 +347,7 @@
 
                             </template>
                             <template>
-                                <div class="cell">[[getOrderDuration(item.order_duration)]]</div>
+                                <div class="cell">[[item.job_workload]] mins.</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -357,7 +358,7 @@
 
                             </template>
                             <template>
-                                <div class="cell">[[getRemainDay(item.order_date,item.order_delivery)]] days</div>
+                                <div class="cell">[[item.job_machine]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -385,9 +386,11 @@
 
                     </vaadin-grid>
                     <div class="center">
-                        <template is="dom-repeat" items="[[persistedStationData]]" as="stationItem">
-                            <flat-button class="btn" on-tap="_openStationSchedule"><button>Station [[stationItem.st_number]]</button></flat-button>
-                        </template>
+                        <iron-selector selected="{{station}}" attr-for-selected="name" fallback-selection="1" role="navigation">
+                            <template is="dom-repeat" items="[[persistedStationData]]" as="stationItem">
+                                <flat-button class="btn" name="[[stationItem.st_number]]"><button>Station [[stationItem.st_number]]</button></flat-button>
+                            </template>
+                        </iron-selector>
                     </div>
                 </div>
             </li>
@@ -462,19 +465,29 @@
 
             static get properties() {
                 return {
+                    station: {
+                        type: String,
+                        reflectToAttribute: true
+                    },
                     language: String,
-                    status: String
+                    status: String,
+                    orderItems: Object,
+                    factoryPerformance: Object,
+                    factoryOperation: Object,
+                    factoryProfile: Object,
+                    scheduleItems: Object,
+                    orderStack: Object
                 }
             }
-
             ready() {
                 super.ready()
-                this.parallelSchedule()
+
             }
 
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
+                //this.parallelSchedule();
             }
 
             getNextInterval(last_timestamp, interval) {
@@ -506,6 +519,9 @@
                 return this._minutesToStr(order_duration)
             }
 
+            getStationIndex(station) {
+                return station - 1
+            }
 
             getRemainDay(order_date, delivery_date) {
                 if (!order_date || !delivery_date) return 0
@@ -577,11 +593,29 @@
                 }
             }
 
-            parallelSchedule() {
-                if (this.orderData) {
-                    let concurrent = this.factoryProfile.concurrency
-                    let t = this.orderData.slice(0, concurrent)
+            getStationSchedule(schedule, station) {
+                //return schedule[Object.keys(schedule)[station - 1]];
+            }
+
+            _parallelSchedule() {
+
+                if (this.orderItems) {
+                    let order = this.orderItems;
+                    let concurrent = this.factoryProfile.concurrencys;
+                    let obj = {};
+                    order.map(k => Object.keys(k).map(a => obj[a] = k[a]))
+                    console.log(obj)
+                    let t = Object.entries(order).slice(0, concurrent).map(entry => entry[1]);
                     console.log(t)
+                    let sliced = Array.prototype.slice.call(order, 3);
+                    console.log(sliced);
+                    let sortedKeys = Object.keys(order).sort();
+                    let first = order[sortedKeys[0]];
+                    console.log(first)
+                    console.log(this.orderStack)
+                    this.$.schedulingQuery.ref.push({
+
+                    })
                 }
             }
 

@@ -96,7 +96,6 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <!-- <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" order-by-child="order_no" data="{{scheduleItems}}"></firebase-query> IN MIGRATION -->
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" data="{{orderItems}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData/order"></firebase-query>
@@ -240,7 +239,7 @@
                     this.orderNumber = 1; // set to global variable
                     return this.orderNumber
                 } else {
-                    this.orderNumber = o + 1;
+                    this.orderNumber = o + 2; // start index is 0 
                     return this.orderNumber
                 }
             }
