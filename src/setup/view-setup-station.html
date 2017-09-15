@@ -1,18 +1,18 @@
-<link rel="import" href="../../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
-<link rel="import" href="../../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
-<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
-<link rel="import" href="../../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="/bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="/bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 <link rel="import" href="../style/flat-icons.html">
-<link rel="import" href="redux-store.html">
+<link rel="import" href="redux-mixin.html">
 
 <dom-module id="view-setup-station">
     <template>
@@ -201,31 +201,30 @@
             <h1 class="title">Station Management</h1>
             <h1 class="no-machine-title" hidden="[[machineItems]]">Please add machine before adding station.</h1>
             <ul class="app-grid">
-                <template is="dom-repeat" items="[[persistedStationData]]" as="stationItem">
+                <template items="[[persistedStationData]]" as="stationItem">
                     <li>
                         <div class="station">
                             <div class="station-info-group">
-                                <h2 class="title">[[stationItem.st_name]]</h1>
-                                    <p>Process number: [[stationItem.st_number]]</p>
-                                    <p>{{localize('station-machine')}}: [[stationItem.st_machine.length]] / [[stationMaxMachine]]</p>
-                                    <p>Station ID: [[stationItem.$key]]</p>
-                                    <div class="frame">
-                                        <div class="machine-list">
-                                            <iron-list items="[[stationItem.st_machine]]" as="machineItem">
-                                                <template>
-                                                    <div tabindex$="[[tabIndex]]" class="item">
-                                                        <p class="machine-title">[[machineItem.name]]</p>
-                                                        <p>Type: [[machineItem.code]]</p>
-                                                        <p>Machine ID: [[machineItem.mid]]</p>
-                                                    </div>
-                                                </template>
-                                            </iron-list>
-                                        </div>
+                                <h2 class="title">[[stationItem.st_name]]</h2>
+                                <p>Process number: [[stationItem.st_number]]</p>
+                                <p>{{localize('station-machine')}}: [[stationItem.st_machine.length]] / [[stationMaxMachine]]</p>
+                                <p>Station ID: [[stationItem.$key]]</p>
+                                <div class="frame">
+                                    <div class="machine-list">
+                                        <iron-list items="[[stationItem.st_machine]]" as="machineItem">
+                                            <template>
+                                                <div tabindex$="[[tabIndex]]" class="item">
+                                                    <p class="machine-title">[[machineItem.name]]</p>
+                                                    <p>Type: [[machineItem.code]]</p>
+                                                    <p>Machine ID: [[machineItem.mid]]</p>
+                                                </div>
+                                            </template>
+                                        </iron-list>
                                     </div>
+                                </div>
                             </div>
                             <flat-button class="btn" on-tap="_editStation" station="[[stationItem]]"><button>{{localize('edit')}}</button></flat-button>
                             <flat-button class="thunderbird btn" on-tap="_removeStation" station="[[stationItem]]"><button>{{localize('remove')}}</button></flat-button>
-
 
                             <paper-dialog id="edit_[[stationItem.$key]]" class="station-dialog" always-on-top no-cancel-on-outside-click>
                                 <h1 class="title">{{localize('edit-station')}}</h1>
@@ -254,7 +253,6 @@
                                     <paper-button station="[[stationItem]]" on-tap="_saveEditStation" dialog-confirm autofocus>{{localize('save')}}</paper-button>
                                 </div>
                             </paper-dialog>
-
                         </div>
                     </li>
                 </template>

@@ -1,18 +1,20 @@
 <!-- POLYMER 2 -->
 <!-- app modules - used for core functions -->
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/polymer/lib/utils/async.html">
+<link rel="import" href="/bower_components/lazy-imports/lazy-imports-mixin.html">
+<link rel="import" href="/bower_components/app-route/app-location.html">
+<link rel="import" href="/bower_components/app-route/app-route.html">
+<link rel="import" href="/bower_components/app-layout/app-layout.html">
+<link rel="import" href="/bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="/bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="/bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- iron modules -used for component functions -->
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="/bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="/bower_components/iron-pages/iron-pages.html">
 <!-- 3rd party modules -->
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="/bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
 <!-- import style component -->
 <link rel="import" href="style/shared-styles.html">
 <link rel="import" href="style/flat-button.html">
@@ -20,6 +22,7 @@
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-dashboard.html">
+
 
 <dom-module id="view-app">
   <template>
@@ -39,7 +42,7 @@
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
-      <app-drawer hidden$="[[!user]]" id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
+      <app-drawer id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-logo-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -47,12 +50,10 @@
           <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
             <a name="dashboard" role="link" href="/dashboard" rel="dashboard" title="Dashboard">
               <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
-            <a name="setup" role="link" href="/setup" rel="setup" title="Setup" hidden="[[userAccess]]">
+            <a name="setup" role="link" href="/setup" rel="setup" title="Setup">
               <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-            <a name="plan" role="link" href="/plan" rel="plan" title="Plan" hidden="[[userAccess]]">
+            <a name="plan" role="link" href="/plan" rel="plan" title="Plan">
               <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-            <a name="control" role="link" href="/control" rel="control" title="Control" hidden="[[!userAccess]]">
-              <paper-icon-button icon="vaadin:controller"></paper-icon-button> {{localize('view-index-menu-control')}}</a>
             <a name="track" role="link " href="/track" rel="track" title="Track">
               <paper-icon-button icon="vaadin:progressbar"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
             <a name="help" role="link" href="/help" rel="help" title="Help">
@@ -82,7 +83,7 @@
         </div>
       </app-drawer>
       <app-header-layout fullbleed id="mainHeader">
-        <app-header hidden$="[[!user]]" class="main-header" id="header" slot="header" role="banner">
+        <app-header class="main-header" id="header" slot="header" role="banner">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
           <app-toolbar>
             <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
@@ -118,7 +119,7 @@
   </template>
 
   <script>
-    class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
+    class ViewApp extends Polymer.LazyImportsMixin(Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element)) {
       static get is() {
         return 'view-app'
       }
@@ -157,9 +158,9 @@
             type: Boolean,
             value: false
           },
-          userAccess: {
+          loadComplete: {
             type: Boolean,
-            value: true
+            value: false
           },
           toastText: String,
           notificationText: String
@@ -170,8 +171,7 @@
         return [
           '_routePageChanged(routeData.page)',
           '_handleUser(user)',
-          '_signedInChanged(signedIn)',
-          '_setUserRoleAccess(persistedUserData.role)'
+          '_signedInChanged(signedIn)'
         ]
       }
 
@@ -293,6 +293,13 @@
         // load lazy resources after render and set `loadComplete` when done.
         if (!this.loadComplete) {
           Polymer.RenderStatus.afterNextRender(this, () => {
+
+            // trigger lazy import event
+            this.importLazyGroup('lazy').then((results) => {
+              this.dispatchEvent(new CustomEvent('import-loaded', results));
+            });
+
+            // import lazy reousrce file
             Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
               const greenColor = 'color: green'
               const crimsonColor = 'color: crimson'
@@ -382,7 +389,6 @@
               Polymer.Async.timeOut.run(() => {
                 this._closeToastAlert()
                 this.$.userIndexDB.destroy()
-                this.$.drawer.hidden = true
                 this.$.layout.resetLayout()
                 this.$.mainHeader.resetLayout()
                 this.$.header.resetLayout()
@@ -405,14 +411,6 @@
       _handleError(e) {
         console.error('Error: ' + e.message)
         this.page = 'error'
-      }
-
-      _setUserRoleAccess(role) {
-        if (role === 'admin') {
-          this.userAccess = false
-        } else {
-          this.userAccess = true
-        }
       }
 
       getOnlineStatus(status) {

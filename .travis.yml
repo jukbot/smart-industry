@@ -4,33 +4,31 @@ dist: trusty
 node_js: stable
 addons: 
   firefox: latest
-apt:
+  apt:
     sources:
-    - google-chrome
+      - google-chrome
     packages:
-    - google-chrome-stable
+      - google-chrome-stable
 cache:
   directories:
   - node_modules    
   - bower_components
-before_install: 
-  - npm install -g npm@5.4.0
 install: 
-  - npm install -g yarn
-  - yarn add global bower
-  - yarn add global polymer-cli
-  - node -v
-  - npm -v
-  - bower -v
-  - polymer --version
-  - yarn --version
-  - yarn install
-  - bower install
-before_script: 
-  - mkdir -p build/default
-  - ls
+- npm install -g yarn
+- yarn add global bower
+- yarn add global polymer-cli
+- node -v
+- polymer --version
+- yarn --version
+- yarn install
+- bower install
+before_script:
+- mkdir -p ~/bin
+- ln -s /usr/bin/google-chrome-beta ~/bin/google-chrome
+- export PATH=$HOME/bin:$PATH
+- ls
 script:
-  - polymer lint
-  - polymer build
-  notifications:
-    email: never
+- polymer lint
+- polymer build
+notifications:
+  email: false

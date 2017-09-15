@@ -4,9 +4,6 @@ module.exports = {
     '/manifest.json',
     '/bower_components/webcomponentsjs/webcomponents-loader.js',
     '/images/*',
-    '/data/*',
-    '/src/*',
-    '/lib/*',
   ],
   runtimeCaching: [
     {
