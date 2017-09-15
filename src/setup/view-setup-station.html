@@ -201,7 +201,7 @@
             <h1 class="title">Station Management</h1>
             <h1 class="no-machine-title" hidden="[[machineItems]]">Please add machine before adding station.</h1>
             <ul class="app-grid">
-                <template items="[[persistedStationData]]" as="stationItem">
+                <template is="dom-repeat" items="[[persistedStationData]]" as="stationItem">
                     <li>
                         <div class="station">
                             <div class="station-info-group">

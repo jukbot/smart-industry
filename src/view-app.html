@@ -36,13 +36,13 @@
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" auth="{{userauth}}" signed-in="{{signedIn}}"
-      on-change="_signedInChanged" on-error="_handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-change="_signedInChanged"
+      on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
-      <app-drawer id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
+      <app-drawer id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1" hidden$="[[!user]]">
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-logo-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -83,7 +83,7 @@
         </div>
       </app-drawer>
       <app-header-layout fullbleed id="mainHeader">
-        <app-header class="main-header" id="header" slot="header" role="banner">
+        <app-header class="main-header" id="header" slot="header" role="banner" hidden$="[[!user]]">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
           <app-toolbar>
             <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
