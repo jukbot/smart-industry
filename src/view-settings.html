@@ -94,7 +94,7 @@
           <input type="file" accept="image/*" name="file" id="uploadImageFile" accept="[[accept]]" on-change="_verifyUploadFile" class="inputfile"
           />
           <flat-button on-tap="_deleteProfileImage" class="btn" title="{{localize('remove-profile-image')}}"><button>{{localize('remove-profile-image')}}</button></flat-button>
-          <flat-button on-tap="_verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]" disabled="[[user.emailVerified]]"><button disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button></flat-button>
+          <flat-button on-tap="_verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]"><button disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button></flat-button>
           <flat-button on-tap="_saveSettings" class="btn" title="{{localize('save-settings')}}"><button>{{localize('save-settings')}}</button></flat-button>
         </div>
       </li>
