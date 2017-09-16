@@ -28,7 +28,7 @@ before_script:
 - export PATH=$HOME/bin:$PATH
 - ls
 script:
-- polymer lint
-- polymer build
+- polymer build -v
+- polymer lint --input src/**/*.html
 notifications:
   email: false

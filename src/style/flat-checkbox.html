@@ -63,5 +63,14 @@
                 will-change: transform;
             }
         </style>
+        <slot></slot>
     </template>
+    <script>
+        class FlatCheckbox extends Polymer.Element {
+            static get is() {
+                return 'flat-checkbox';
+            }
+        }
+        customElements.define(FlatCheckbox.is, FlatCheckbox);
+    </script>
 </dom-module>

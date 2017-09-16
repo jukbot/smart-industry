@@ -201,11 +201,11 @@
         }
       }
     </style>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" signed-in="[[signedIn]]"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="user" path="/user/[[user.uid]]" data="[[k]]"></firebase-document>
-    <firebase-query app-name="smart-mes" id="data" path="/data"></firebase-query>
+    <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" signed-in="[[signedIn]]"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="[[k]]"></firebase-document>
+    <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
-    <iron-ajax id="requestSampleData" url="../data/sample.json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="/data/sample.json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <section class="container">
       <figure class="flex-item left-half">
         <article>
@@ -224,24 +224,24 @@
             <flat-input>
               <input type="email" id="accountEmail" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" autofocus
                 required aria-labelledby="accountEmailLabel">
-              <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
+              <span class="flat-md-decorator" error-message="Invalid Email" aria-hidden="true">
                 <label id="accountEmailLabel">Email address</label>
-                <flat-underline></flat-underline>
-              </flat-md-decorator>
+                <span class="flat-underline"></span>
+              </span>
             </flat-input>
             <flat-input>
               <input type="password" id="accountPassword" name="Password" placeholder="Passwrod" maxlength="30" auto-complete="current-password"
                 autofocus required aria-labelledby="accountPasswordLabel">
-              <flat-md-decorator error-message="Invalid Input" aria-hidden="true">
+              <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="accountPasswordLabel">Password</label>
-                <flat-underline></flat-underline>
-              </flat-md-decorator>
+                <span class="flat-underline"></span>
+              </span>
             </flat-input>
 
             <div class="keep-session-checkbox">
               <flat-checkbox tabindex="0">
                 <input type="checkbox" id="setKeepSession" name="setKeepSession" checked$="[[remember]]" on-change="_toggleKeepSession">
-                <flat-md-decorator></flat-md-decorator aria-hidden="true">
+                <span class="flat-md-decorator"></flat-md-decorator aria-hidden="true">
               </flat-checkbox>
               <label for="setKeepSession">Keep me signed in</label>
             </div>
@@ -260,38 +260,38 @@
             <flat-input>
               <input type="email" id="register_email" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" required
                 aria-labelledby="registerEmailLabel">
-              <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
+              <span class="flat-md-decorator" error-message="Invalid Email" aria-hidden="true">
                 <label id="registerEmailLabel">Email address</label>
-                <flat-underline></flat-underline>
-              </flat-md-decorator>
-            </flat-input>
-            <flat-input>
-              <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="30" required aria-labelledby="registerPasswordLabel">
-              <flat-md-decorator error-message="Invalid Input" aria-hidden="true">
+                <span class="flat-underline"></span>
+                </span>
+                </flat-input>
+                <flat-input>
+                  <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="30" required aria-labelledby="registerPasswordLabel">
+                  <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="registerPasswordLabel">New password</label>
-                <flat-underline></flat-underline>
-              </flat-md-decorator>
-            </flat-input>
-            <flat-input>
-              <input type="text" id="register_organization" name="Organization" placeholder="Organization" maxlength="30" required aria-labelledby="registerOrganizationLabel">
-              <flat-md-decorator error-message="Invalid Input" aria-hidden="true">
+                <span class="flat-underline"></span>
+                  </span>
+                </flat-input>
+                <flat-input>
+                  <input type="text" id="register_organization" name="Organization" placeholder="Organization" maxlength="30" required aria-labelledby="registerOrganizationLabel">
+                  <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="registerOrganizationLabel">Organization</label>
-                <flat-underline></flat-underline>
-              </flat-md-decorator>
-            </flat-input>
-            <flat-input>
-              <input type="tel" id="register_phone" name="Phone" placeholder="Phone" maxlength="10" required aria-labelledby="registerPhoneLabel"
-                pattern="\d{10}" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
-              <flat-md-decorator error-message="Invalid Phone Number" aria-hidden="true">
+                <span class="flat-underline"></span>
+                  </span>
+                </flat-input>
+                <flat-input>
+                  <input type="tel" id="register_phone" name="Phone" placeholder="Phone" maxlength="10" required aria-labelledby="registerPhoneLabel"
+                    pattern="\d{10}" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+                  <span class="flat-md-decorator" error-message="Invalid Phone Number" aria-hidden="true">
                 <label id="registerPhoneLabel">Phone</label>
-                <flat-underline></flat-underline>
-              </flat-md-decorator>
-            </flat-input>
-            <p>By signing up you agree to IMES’s Terms of Service</p>
-            <flat-button class="register-btn" on-click="_register">
-              <button type="button">Register and Login</button>
-            </flat-button>
-            <div class="link"><a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Log in</a></div>
+                <span class="flat-underline"></span>
+                  </span>
+                </flat-input>
+                <p>By signing up you agree to IMES’s Terms of Service</p>
+                <flat-button class="register-btn" on-click="_register">
+                  <button type="button">Register and Login</button>
+                </flat-button>
+                <div class="link"><a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Log in</a></div>
           </form>
           <form hidden$="[[!reset]]" class="reset-form" on-submit="_resetPassword">
             <div class="form-title">
@@ -301,37 +301,37 @@
             <flat-input>
               <input type="email" id="resetPassword" name="resetPassword" placeholder="Email address" maxlength="30" auto-complete="email"
                 required aria-labelledby="resetPasswordLabel">
-              <flat-md-decorator error-message="Invalid Email" aria-hidden="true">
+              <span class="flat-md-decorator" error-message="Invalid Email" aria-hidden="true">
                 <label id="resetPasswordLabel">Email address</label>
-                <flat-underline></flat-underline>
-              </flat-md-decorator>
+                <span class="flat-underline"></span>
+              </span>
             </flat-input>
             <flat-button class="reset-btn" on-click="_resetPassword"><button type="button">Reset Password</button></flat-button>
             <div class="link"><a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Return to login</a></div>
           </form>
         </article>
-      </div>
-      <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000">
-        <div class="toast-flex-container">
-          <div class="toast-flex-item">
-            <p>[[successMessage]]</p>
-          </div>
-          <div class="toast-flex-item">
-            <paper-icon-button on-tap="_closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1"></paper-icon-button>
-          </div>
         </div>
-      </paper-toast>
-      <paper-toast id="toastAlert" role="alert" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000">
-        <div class="toast-flex-container">
-          <div class="toast-flex-item">
-            <p>[[alertMessage]]</p>
+        <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000">
+          <div class="toast-flex-container">
+            <div class="toast-flex-item">
+              <p>[[successMessage]]</p>
+            </div>
+            <div class="toast-flex-item">
+              <paper-icon-button on-tap="_closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1"></paper-icon-button>
+            </div>
           </div>
-          <div class="toast-flex-item">
-            <paper-icon-button on-tap="_closeToastAlert" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
+        </paper-toast>
+        <paper-toast id="toastAlert" role="alert" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000">
+          <div class="toast-flex-container">
+            <div class="toast-flex-item">
+              <p>[[alertMessage]]</p>
+            </div>
+            <div class="toast-flex-item">
+              <paper-icon-button on-tap="_closeToastAlert" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
+            </div>
           </div>
-        </div>
-      </paper-toast>
-      <iron-a11y-keys id="a11y" target="[[loginTarget]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
+        </paper-toast>
+        <iron-a11y-keys id="a11y" target="[[loginTarget]]" keys="enter" on-keys-pressed="_login"></iron-a11y-keys>
     </section>
   </template>
   <script>
@@ -354,16 +354,14 @@
             type: Boolean,
             value: false
           },
-          remember: {
-            type: Boolean,
-            value: false
-          },
           loginTarget: {
             type: Object,
             value: () => {
               return this.accountPassword
             }
           },
+          remember: Boolean,
+          signedIn: Boolean,
           user: Object,
           sampleData: Object,
           alertMessage: String,
@@ -373,7 +371,7 @@
 
       _login() {
         if (this.$.accountEmail.value && this.$.accountPassword.value) {
-          this.$.auth.signInWithEmailAndPassword(this.$.accountEmail.value, this.$.accountPassword.value)
+          this.$.userAuth.signInWithEmailAndPassword(this.$.accountEmail.value, this.$.accountPassword.value)
             .then((response) => {
               this.page = '/dashboard'
               this.set('route.path', '/dashboard')
@@ -405,17 +403,17 @@
         }
 
         if (email && organize && phone && password && username && this.sampleData) {
-          this.$.auth.createUserWithEmailAndPassword(email, password)
+          this.$.userAuth.createUserWithEmailAndPassword(email, password)
             .then((response) => {
-              this.$.auth.signInWithEmailAndPassword(email, password)
+              this.$.userAuth.signInWithEmailAndPassword(email, password)
                 .then((response) => {
                   this.user.updateProfile({
                     displayName: username
                   })
                   this.sendEmailVeirify()
-                  const keyid = this.$.data.ref.push().key
+                  const keyid = this.$.factoryData.ref.push().key
                   this.addProfileInfo(username, email, organize, phone, keyid)
-                  this.$.data.ref.child(keyid).set(this.sampleData).catch(error => {
+                  this.$.factoryData.ref.child(keyid).set(this.sampleData).catch(error => {
                     this.showAlertToast(error.code)
                   })
                 }).catch((error) => {
@@ -431,7 +429,7 @@
       }
 
       addProfileInfo(username, email, organize, phone, keyid) {
-        this.$.user.ref.set({
+        this.$.userData.ref.set({
           displayname: username,
           email: email,
           photoURL: null,
@@ -447,7 +445,7 @@
       }
 
       sendEmailVeirify() {
-        this.$.auth.onAuthStateChanged(user => {
+        this.$.userAuth.onAuthStateChanged(user => {
           if (!user.emailVerified) {
             this.user.sendEmailVerification()
             this.showSuccessToast("Register successful. We've send verification link to your email")
@@ -458,7 +456,7 @@
       _resetPassword() {
         let resetPassword = this.$.resetPassword.value
         if (resetPassword) {
-          this.$.auth.sendPasswordresetPassword(resetPassword)
+          this.$.userAuth.sendPasswordresetPassword(resetPassword)
             .then((response) => {
               this.showSuccessToast('Reset password link has been send to your email.')
             })

@@ -41,7 +41,7 @@
         box-shadow: none;
       }
 
-      flat-input>flat-md-decorator {
+      flat-input>span.flat-md-decorator {
         display: block;
         height: 1px;
         width: 100%;
@@ -52,7 +52,7 @@
         transform: translateZ(0);
       }
 
-      flat-input flat-underline {
+      flat-input span.flat-underline {
         display: block;
         height: 2px;
         width: 100%;
@@ -68,7 +68,7 @@
       }
       /* input label */
 
-      flat-input>flat-md-decorator>label {
+      flat-input>span.flat-md-decorator>label {
         display: block;
         pointer-events: none;
         opacity: 0.5;
@@ -87,7 +87,7 @@
       }
       /* Error message */
 
-      flat-input>flat-md-decorator::after {
+      flat-input>span.flat-md-decorator::after {
         position: absolute;
         top: 0;
         left: 0;
@@ -100,7 +100,7 @@
         margin-top: 5px;
       }
 
-      flat-input>input:focus+flat-md-decorator>flat-underline {
+      flat-input>input:focus+span.flat-md-decorator>span.flat-underline {
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
         transition: -webkit-transform 0.2s ease-out;
@@ -108,33 +108,33 @@
       }
       /* Label: valid state */
 
-      flat-input>input:focus+flat-md-decorator>label {
+      flat-input>input:focus+span.flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
 
-      flat-input>input:optional:not(:placeholder-shown)+flat-md-decorator>label {
+      flat-input>input:optional:not(:placeholder-shown)+span.flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
 
       _:-ms-lang(x),
-      flat-input>input+flat-md-decorator>label {
+      flat-input>input+span.flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
 
-      flat-input>input:optional:-moz-ui-valid+flat-md-decorator>label {
+      flat-input>input:optional:-moz-ui-valid+span.flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
       /* Underline */
 
-      flat-input>input:not(:focus):not(:placeholder-shown):invalid+flat-md-decorator>flat-underline {
+      flat-input>input:not(:focus):not(:placeholder-shown):invalid+span.flat-md-decorator>span.flat-underline {
         background-color: #e53935;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
@@ -142,7 +142,7 @@
         transition: transform 0.2s ease-out;
       }
 
-      flat-input>input:not(:focus):-moz-ui-invalid:invalid+flat-md-decorator>flat-underline {
+      flat-input>input:not(:focus):-moz-ui-invalid:invalid+span.flat-md-decorator>span.flat-underline {
         background-color: #e53935;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
@@ -150,7 +150,7 @@
         transition: transform 0.2s ease-out;
       }
 
-      flat-input>input[aria-invalid='true']:not(:valid)+flat-md-decorator>flat-underline {
+      flat-input>input[aria-invalid='true']:not(:valid)+span.flat-md-decorator>span.flat-underline {
         background-color: #e53935;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
@@ -159,34 +159,34 @@
       }
       /* Error message */
 
-      flat-input>input:not(:focus):not(:placeholder-shown):invalid+flat-md-decorator::after {
+      flat-input>input:not(:focus):not(:placeholder-shown):invalid+span.flat-md-decorator::after {
         display: block;
       }
 
-      flat-input>input:not(:focus):-moz-ui-invalid:invalid+flat-md-decorator::after {
+      flat-input>input:not(:focus):-moz-ui-invalid:invalid+span.flat-md-decorator::after {
         display: block;
       }
 
-      flat-input>input[aria-invalid='true']:not(:valid)+flat-md-decorator::after {
+      flat-input>input[aria-invalid='true']:not(:valid)+span.flat-md-decorator::after {
         display: block;
       }
       /* Error label */
 
-      flat-input>input:not(:focus):not(:placeholder-shown):invalid+flat-md-decorator>label {
+      flat-input>input:not(:focus):not(:placeholder-shown):invalid+span.flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
         color: #e53935;
       }
 
-      flat-input>input:not(:focus):-moz-ui-invalid:invalid+flat-md-decorator>label {
+      flat-input>input:not(:focus):-moz-ui-invalid:invalid+span.flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
         color: #e53935;
       }
 
-      flat-input>input[aria-invalid='true']:not(:valid)+flat-md-decorator>label {
+      flat-input>input[aria-invalid='true']:not(:valid)+span.flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
@@ -194,11 +194,20 @@
       }
       /* Valid label */
 
-      flat-input>input:not(:focus):required:valid+flat-md-decorator>label {
+      flat-input>input:not(:focus):required:valid+span.flat-md-decorator>label {
         -webkit-transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
     </style>
+    <slot></slot>
   </template>
+  <script>
+    class FlatInput extends Polymer.Element {
+      static get is() {
+        return 'flat-input';
+      }
+    }
+    customElements.define(FlatInput.is, FlatInput);
+  </script>
 </dom-module>

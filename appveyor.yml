@@ -36,16 +36,21 @@ install:
   - yarn install
   - bower install
   
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform: Any CPU
-
-# Post-install test scripts.
-test_script:
+# scripts to run before build
+before_build:
   # Output useful info for debugging.
   - node --version
   - npm --version
   - polymer --version
   - yarn --version
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+  - polymer build -v
+
+# Post-install test scripts.
+test_script:
+  - polymer lint --input src/**/*.html
 
 # Don't actually build.
 build: off

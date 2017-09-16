@@ -12,6 +12,8 @@
 <!-- iron modules -used for component functions -->
 <link rel="import" href="/bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="/bower_components/iron-pages/iron-pages.html">
+<!-- paper modules -used for component style -->
+<link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
 <!-- 3rd party modules -->
 <link rel="import" href="/bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
@@ -22,7 +24,15 @@
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-dashboard.html">
-
+<!-- import lazy page router -->
+<link rel="lazy-import" href="view-setup.html">
+<link rel="lazy-import" href="view-plan.html">
+<link rel="lazy-import" href="view-track.html">
+<link rel="lazy-import" href="view-settings.html">
+<link rel="lazy-import" href="view-help.html">
+<link rel="lazy-import" href="view-offline.html">
+<link rel="lazy-import" href="view-error.html">
+<link rel="lazy-import" href="view-404.html">
 
 <dom-module id="view-app">
   <template>
@@ -36,7 +46,7 @@
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-change="_signedInChanged"
+    <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-change="_signedInChanged"
       on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
@@ -188,33 +198,35 @@
 
       ready() {
         super.ready()
-        // Custom elements polyfill safe way to indicate an element has been upgraded.
-        this.removeAttribute('unresolved')
-        // listen for navigation preload activate
-        self.addEventListener('activate', (e) => {
-          e.waitUntil(async function () {
-            // Feature-detect
-            if (!self.registration.navigationPreload) {
-              return
-            }
-            // Enable navigation preloads
-            await self.registration.navigationPreload.enable()
-          }())
-        })
-        // listen for navigation preload fetch
-        self.addEventListener('fetch', (e) => {
-          console.info(e.request.url)
-          e.respondWith(async function () {
-            // Respond from the cache if we can
-            const cachedResponse = await caches.match(e.request)
-            if (cachedResponse) return cachedResponse
-            // Else, try to use preloaded response
-            const response = await e.preloadResponse
-            if (response) return response
-            // Else try the network.
-            return fetch(e.request)
-          }())
-        })
+        Polymer.RenderStatus.afterNextRender(this, () => {
+          // Custom elements polyfill safe way to indicate an element has been upgraded.
+          this.removeAttribute('unresolved')
+          // listen for navigation preload activate
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(async function () {
+              // Feature-detect
+              if (!self.registration.navigationPreload) {
+                return
+              }
+              // Enable navigation preloads
+              await self.registration.navigationPreload.enable()
+            }())
+          })
+          // listen for navigation preload fetch
+          self.addEventListener('fetch', (e) => {
+            console.info(e.request.url)
+            e.respondWith(async function () {
+              // Respond from the cache if we can
+              const cachedResponse = await caches.match(e.request)
+              if (cachedResponse) return cachedResponse
+              // Else, try to use preloaded response
+              const response = await e.preloadResponse
+              if (response) return response
+              // Else try the network.
+              return fetch(e.request)
+            }())
+          })
+        });
       }
 
       _installListeners() {
@@ -233,7 +245,7 @@
         var user = data.detail.user
         if (!!user) { // cast from obj to boolean
           Polymer.Utils.importHref(
-            this.resolveUrl('view-app.html'), function () {
+            this.resolveUrl('view-app.html'), () => {
               this.$.drawer.hidden = false
               this.$.header.hidden = false
               this.$.header.resizeHeader()
@@ -377,6 +389,8 @@
 
       _refreshNetworkStatus() {
         this.$.userIndexDB.refreshNetworkStatus()
+        this.$.userAuth.refreshNetworkStatus()
+        this.$.userData.refreshNetworkStatus()
         this.$.pageLoader.removeAttribute('indeterminate')
       }
 
@@ -384,7 +398,7 @@
         if (!this.online) {
           this.page = 'offline'
         } else {
-          this.$.auth.signOut()
+          this.$.userAuth.signOut()
             .then(() => {
               Polymer.Async.timeOut.run(() => {
                 this._closeToastAlert()
