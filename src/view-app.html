@@ -13,7 +13,9 @@
 <link rel="import" href="/bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="/bower_components/iron-pages/iron-pages.html">
 <!-- paper modules -used for component style -->
+<link rel="import" href="/bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="/bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="/bower_components/paper-tooltip/paper-tooltip.html">
 <!-- 3rd party modules -->
 <link rel="import" href="/bower_components/polymerfire/polymerfire.html">
@@ -41,6 +43,30 @@
        :host {
         display: block
       }
+
+      div.container {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -ms-flex-line-pack: center;
+        align-content: center;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        text-align: center;
+        height: 100vh;
+      }
+
+      div.flex-grpup {
+        margin: auto;
+      }
     </style>
     <!-- <app-analytics key="UA-51514677-9"></app-analytics> ENABLE WHEN DEPLOY PRODUCTION -->
     <app-location route="{{route}}"></app-location>
@@ -53,7 +79,7 @@
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
-      <app-drawer id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1" hidden$="[[!user]]">
+      <app-drawer id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-logo-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -94,7 +120,7 @@
         </div>
       </app-drawer>
       <app-header-layout fullbleed id="mainHeader">
-        <app-header class="main-header" id="header" slot="header" role="banner" hidden$="[[!user]]">
+        <app-header class="main-header" id="header" slot="header" role="banner">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
           <app-toolbar>
             <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
@@ -103,10 +129,34 @@
         </app-header>
         <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
           role="main">
-          <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!user]]"></view-dashboard>
-          <view-setup name="setup" route="[[subroute]]" hidden$="[[!user]]"></view-setup>
-          <view-plan name="plan" route="[[subroute]]" hidden$="[[!user]]"></view-plan>
-          <view-track name="track" route="[[subroute]]" hidden$="[[!user]]"></view-track>
+          <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
+            </div>
+          </view-dashboard>
+          <view-setup name="setup" route="[[subroute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
+            </div>
+          </view-setup>
+          <view-plan name="plan" route="[[subroute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
+            </div>
+          </view-plan>
+          <view-track name="track" route="[[subroute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
+            </div>
+          </view-track>
           <view-help name="help" route="[[subroute]]" hidden$="[[!user]]"></view-help>
           <view-settings name="settings" route="[[subroute]]" hidden$="[[!user]]"></view-settings>
           <view-404 name="404" route="[[subroute]]" hidden$="[[!user]]"></view-404>

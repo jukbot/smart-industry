@@ -50,7 +50,6 @@
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
-                background-color: papayawhip;
             }
 
             .flex-item {
@@ -139,9 +138,9 @@
                 </li>
                 <div class="card" hidden="[[!showAddProduct]]">
                     <h1 class="title">Product Management</h1>
-                    <!-- <vaadin-combo-box label="Search product" aria-label="Search product" items="" value=""></vaadin-combo-box> -->
-                    <vaadin-grid id="productTable" on-active-item-changed="_onActiveItemChanged" aria-label="product Management" items="[[persistedProductData]]"
+                    <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]" on-active-item-changed="_onActiveItemChanged"
                         size="10">
+
                         <template class="row-details">
                             <div class="details">
                                 <div class="flex-item">
@@ -170,15 +169,6 @@
                                 </div>
                             </div>
                         </template>
-
-                        <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
-                            <template class="header">
-                                <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
-                            </template>
-                            <template>
-                                <paper-checkbox checked="{{selected}}"></paper-checkbox>
-                            </template>
-                        </vaadin-grid-selection-column>
 
                         <vaadin-grid-column flex="0">
                             <template class="header">
@@ -248,6 +238,15 @@
                             </template>
                             <template>
                                 <div class="cell">[[item.cost]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column width="100px">
+                            <template class="header">
+                                <div class="cell">Detail</div>
+                            </template>
+                            <template>
+                                <paper-checkbox aria-label$="Show Details for [[item.name.first]]" checked="{{expanded}}"></paper-checkbox>
                             </template>
                         </vaadin-grid-column>
 
