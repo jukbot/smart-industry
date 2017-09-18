@@ -1,38 +1,56 @@
 <link rel="import" href="/bower_components/polymer-redux/polymer-redux.html">
 <script src="/node_modules/redux/dist/redux.min.js"></script>
 <script>
-    const initialState = {
-        machines: [] // default machines array constructor
+    const initial = {
+        machines: [],
+        editMachines: []
     };
-
+    // helper function
+    const remove = (index, data) => index === 0 ? data.slice(1) : [
+        ...data.slice(0, index),
+        ...data.slice(index + 1, data.length)
+    ]
+    // Object.assign({}, state === ...state to prevent arr mutation
+    // remove(action.index, state.machines) === [...state.editMchines.slice(0, action.index), ...state.editMachines.slice(action.index + 1)] 
     const reducer = (state, action) => {
-        if (!state) return initialState;
-
+        if (!state) return initial;
         switch (action.type) {
             case 'ADD_MACHINE':
-                const machines = state.machines.slice(0);
-                delete action.machines["$key"];
-                return Object.assign({}, state, {
+                delete action.machines["$key"]
+                return {
+                    ...state,
                     machines: [...state.machines, action.machines]
-                });
-                break;
+                }
+                break
             case 'REMOVE_MACHINE':
-                return Object.assign({}, state, {
-                    machines: state.machines.filter((item, index) => index !== action.index)
-                    // machines: [...state.machines.slice(0, action.index), ...state.machines.slice(action.index + 1)]  
-                });
-                break;
+                return {
+                    ...state,
+                    machines: remove(action.index, state.machines)
+                }
+                break
+            case 'EDIT_ADD_MACHINE':
+                // rest operator
+                const { $key, ...editMachines } = action.editMachines // remove child key to use 0 1 2 3 without edit original
+                return {
+                    // spread operator
+                    ...state,
+                    editMachines: [...state.editMachines, ...editMachines]
+                }
+                break
+            case 'EDIT_REMOVE_MACHINE':
+                return {
+                    ...state,
+                    editMachines: remove(action.index, state.editMachines)
+                }
+                break
             case 'CLEAR_MACHINE':
-                return Object.assign({}, state, {
-                    machines: state.machines = []
-                });
-                break;
+                return []
+                break
             default:
                 return state
         }
     };
-
-    const store = Redux.createStore(reducer);
-    const ReduxMixin = PolymerRedux(store);
+    const store = Redux.createStore(reducer, initial);
+    ReduxMixin = PolymerRedux(store);
 
 </script>

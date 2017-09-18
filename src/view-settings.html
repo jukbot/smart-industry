@@ -20,6 +20,10 @@
         --app-grid-item-height: 50%;
       }
 
+      .card {
+        min-height: 440px;
+      }
+
       @media (min-width: 360px) and (max-width: 768px) {
          :host {
           --app-grid-columns: 1;
@@ -93,9 +97,9 @@
           </vaadin-upload> -->
           <input type="file" accept="image/*" name="file" id="uploadImageFile" accept="[[accept]]" on-change="_verifyUploadFile" class="inputfile"
           />
-          <flat-button on-tap="_deleteProfileImage" class="btn" title="{{localize('remove-profile-image')}}"><button>{{localize('remove-profile-image')}}</button></flat-button>
+          <flat-button on-tap="_deleteProfileImage" class="btn thunderbird" title="{{localize('remove-profile-image')}}"><button>{{localize('remove-profile-image')}}</button></flat-button>
           <flat-button on-tap="_verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]"><button disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button></flat-button>
-          <flat-button on-tap="_saveSettings" class="btn" title="{{localize('save-settings')}}"><button>{{localize('save-settings')}}</button></flat-button>
+          <flat-button on-tap="_saveSettings" class="btn shamrock" title="{{localize('save-settings')}}"><button>{{localize('save-settings')}}</button></flat-button>
         </div>
       </li>
       <li>
@@ -105,7 +109,7 @@
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password"></paper-input>
           <paper-input label="{{localize('new-password')}}" id="newPassword" type="password"></paper-input>
           <flat-button on-tap="_changeAuthen" class="btn" title="{{localize('change-password')}}"><button>{{localize('change-password')}}</button></flat-button>
-          <flat-button on-tap="_deleteAcount" class="btn" title="{{localize('delete-account')}}"><button>{{localize('delete-account')}}</button></flat-button>
+          <flat-button on-tap="_deleteAcount" class="btn thunderbird" title="{{localize('delete-account')}}"><button>{{localize('delete-account')}}</button></flat-button>
         </div>
       </li>
       <li>

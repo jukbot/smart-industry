@@ -2,7 +2,6 @@
 <link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
@@ -88,7 +87,6 @@
                     <paper-input label="Last name" id="customerLastName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
                         error-message="text only" always-float-label></paper-input>
                     <paper-input label="E-mail" id="customerEmail" max-length="40" type="email" auto-validate error-message="invalid input" always-float-label>
-                        <iron-icon icon="vaadin:envelope" slot="prefix"></iron-icon>
                     </paper-input>
                     <paper-input label="Mobile" id="customerMobile" max-length="15" type="tel" auto-validate allowed-pattern="^(0|[1-9]\d*)$"
                         error-message="number only" always-float-label></paper-input>
@@ -221,12 +219,13 @@
                 let fullname = fname + lname;
                 let email = this.$.customerEmail.value;
                 let mobile = this.$.customerMobile.value;
+                let mobileHyphens = mobile.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
                 if (fullname && email && mobile) {
                     this.$.customerQuery.ref.push({
                         name: fullname,
                         email: email,
                         address: 'no address',
-                        mobile: mobile
+                        mobile: mobileHyphens
                     });
                     this.clearField();
                     this.toastText = 'notification-add-success'
@@ -253,7 +252,7 @@
                 let lname = this.$.customerLastName.value;
                 let email = this.$.customerEmail.value;
                 let mobile = this.$.customerMobile.value;
-                if (fname && lname && email && mobile) {
+                if (fname && lname && email && mobile && this.$.customerEmail.validate()) {
                     this.disabled = false
                 } else {
                     this.disabled = true

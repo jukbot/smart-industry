@@ -24,6 +24,11 @@
                 width: 250px;
             }
 
+            .add-btn {
+                margin: 20px 0;
+                width: 250px;
+            }
+
             .product-image {
                 height: 120px;
                 width: 120px;
@@ -119,7 +124,10 @@
                     </paper-input>
                     <paper-input label="Cost" id="productCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only"
                         min="0" max="999999" step="0.01" auto-validate always-float-label></paper-input>
-                    <p>Upload Profile Image</p>
+                    <div>
+                        <p>Upload Profile Image</p>
+                        <input type="file" accept="image/*" name="file" id="uploadImageFile" accept="[[accept]]" on-change="_verifyUploadFile" class="inputfile"
+                        /></div>
                     <flat-button class="add-btn" on-tap="_addMachine"><button>Add Part</button></flat-button>
                     <div class="frame">
                         <ul class="flex-container wrap">

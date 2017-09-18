@@ -118,14 +118,14 @@
                         <vaadin-combo-box label="Station Concurrency" id="concurrency" value="[[factoryProfile.concurrency]]" items="[[concurrencyItems]]"
                             item-value-path="value" item-label-path="value" loading="[[!concurrencyItems]]" required always-float-label>
                         </vaadin-combo-box>
-                        <paper-input label="{{localize('operation-start')}} (xx:xx)" id="opStart" value="[[factoryOperation.op_start]]" type="time"
-                            required pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
-                        <paper-input label="{{localize('operation-end')}} (xx:xx)" id="opEnd" value="[[factoryOperation.op_end]]" type="time" required
+                        <paper-input label="{{localize('operation-start')}}" id="opStart" value="[[factoryOperation.op_start]]" type="time" required
                             pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
-                        <paper-input label="{{localize('over-time-start')}} (xx:xx)" id="otStart" value="[[factoryOperation.ot_start]]" type="time"
-                            required pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
-                        <paper-input label="{{localize('over-time-end')}} (xx:xx)" id="otEnd" value="[[factoryOperation.ot_end]]" type="time" required
+                        <paper-input label="{{localize('operation-end')}}" id="opEnd" value="[[factoryOperation.op_end]]" type="time" required pattern="[0-9]{2}:[0-9]{2}"
+                            always-float-label></paper-input>
+                        <paper-input label="{{localize('over-time-start')}}" id="otStart" value="[[factoryOperation.ot_start]]" type="time" required
                             pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
+                        <paper-input label="{{localize('over-time-end')}}" id="otEnd" value="[[factoryOperation.ot_end]]" type="time" required pattern="[0-9]{2}:[0-9]{2}"
+                            always-float-label></paper-input>
 
                         <div class="operation-day-selector">
                             <p>{{localize('operation-day')}}</p>
@@ -147,13 +147,16 @@
                             </template>
                         </vaadin-combo-box>
                         <paper-input label="{{localize('standard-acceptable-utilization')}} (30-100%)" id="workerUtilize" value="[[factoryPerformance.au]]"
-                            type="number" min="30" max="100" step="1" required always-float-label></paper-input>
+                            type="number" min="30" max="100" step="1" auto-validate error-message="Input out of range" required
+                            always-float-label></paper-input>
                         <paper-input label="{{localize('standard-machine-efficiency')}} (30-100%)" name="machineStandardEfficiency" id="machineStandardEffi"
-                            value="[[factoryPerformance.meff]]" type="number" min="30" max="100" step="1" required always-float-label></paper-input>
+                            value="[[factoryPerformance.meff]]" type="number" min="30" max="100" step="1" auto-validate error-message="Input out of range"
+                            required always-float-label></paper-input>
                         <paper-input label="{{localize('acceptable-waste')}} (0.00-1.00)" id="acceptWaste" value="[[factoryPerformance.aw]]" type="number"
-                            min="0" max="1" step="0.01" required always-float-label></paper-input>
+                            min="0" max="1" step="0.01" auto-validate error-message="Input out of range" required always-float-label></paper-input>
                         <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[factorySchedule.interval]]"
-                            type="number" min="1" max="60" step="1" required always-float-label></paper-input>
+                            type="number" min="1" max="30" step="1" auto-validate error-message="Input out of range" required
+                            always-float-label></paper-input>
 
                         <flat-button on-tap="restoreDefault" class="btn" title="Restore Default"><button>{{localize('restore')}}</button></flat-button>
                         <flat-button on-tap="saveValue" class="shamrock btn" title="Save settings"><button>{{localize('save-settings')}}</button></flat-button>
@@ -258,10 +261,6 @@
                     factorySchedule: Object,
                     factoryOperation: Object,
                     factoryPerformance: Object,
-                    maxConcurrency: {
-                        type: Number,
-                        value: 3
-                    },
                     concurrencyItems: {
                         type: Array,
                         value: () => {
@@ -332,7 +331,7 @@
             static get observers() {
                 return [
                     'setOperationDay(factoryOperation.op_day)',
-                    '_isParallelModel(selectProductionModel.value)'
+                    'isParallelModel(selectProductionModel.value)'
                 ]
             }
 
@@ -355,7 +354,6 @@
                 let op_end = this.$.opEnd.value
                 let ot_start = this.$.otStart.value
                 let ot_end = this.$.otEnd.value
-                let op_day = ''
                 this.operationDay = []
                 if (this.$.monday.checked) this.push('operationDay', 'mon')
                 if (this.$.tuesday.checked) this.push('operationDay', 'tue')
@@ -364,17 +362,18 @@
                 if (this.$.friday.checked) this.push('operationDay', 'fri')
                 if (this.$.saturday.checked) this.push('operationDay', 'sat')
                 if (this.$.sunday.checked) this.push('operationDay', 'sun')
-                op_day = this.operationDay.toString()
+                let op_day = this.operationDay.toString()
 
                 if (fn && ft && mod && opt && aw && au && inte && meff && op_start &&
-                    op_end && op_day && ot_start && ot_end) {
+                    op_end && op_day && ot_start && ot_end &&
+                    this.$.workerUtilize.validate() && this.$.machineStandardEffi.validate() && this.$.acceptWaste.validate() && this.$.scheduleInterval.validate()) {
                     this.set('factoryProfile.name', fn)
                     this.set('factoryProfile.type', ft)
                     this.set('factoryProfile.model', mod)
                     if (con) {
                         this.set('factoryProfile.concurrency', con)
                     } else {
-                        this.set('factoryProfile.concurrency', 3)
+                        this.set('factoryProfile.concurrency', 2)
                     }
                     this.set('factoryPerformance.optimize', opt)
                     this.set('factoryPerformance.aw', aw)
@@ -396,7 +395,7 @@
                 this.$.factoryName.value = 'Sample factory'
                 this.$.factoryType.value = 'jobshop'
                 this.$.productionModel.value = 'parallel'
-                this.$.concurrency.value = 3
+                this.$.concurrency.value = 2
                 this.$.optimizationType.value = 'disabled'
                 this.$.acceptWaste.value = 0.02
                 this.$.workerUtilize.value = 85
@@ -509,55 +508,21 @@
             }
 
             isParallelModel(production_model) {
-                switch (production_model) {
-                    case 'serial':
-                        return true
-                        break
-                    case 'parallel':
-                        return false
-                        break
-                    case 'multi':
-                        return true
-                        break
-                    default:
-                        return true
+                if (production_model === 'parallel') {
+                    this.$.concurrency.hidden = false
+                    this.$.concurrency.disabled = false
+                    this.$.concurrencyData.hidden = false
+                    this.$.concurrencyDataSeparate.hidden = false
+                    this.$.concurrencyTitle.hidden = false
+                    this.$.concurrencyTitleSeparate.hidden = false
                 }
-            }
-
-            _isParallelModel(production_model) {
-                switch (production_model) {
-                    case 'serial':
-                        this.$.concurrency.hidden = true
-                        this.$.concurrency.disabled = true
-                        this.$.concurrencyData.hidden = true
-                        this.$.concurrencyDataSeparate.hidden = true
-                        this.$.concurrencyTitle.hidden = true
-                        this.$.concurrencyTitleSeparate.hidden = true
-                        break
-                    case 'parallel':
-                        this.$.concurrency.hidden = false
-                        this.$.concurrency.disabled = false
-                        this.$.concurrencyData.hidden = false
-                        this.$.concurrencyDataSeparate.hidden = false
-                        this.$.concurrencyTitle.hidden = false
-                        this.$.concurrencyTitleSeparate.hidden = false
-                        break
-                    case 'multi':
-                        this.$.concurrency.hidden = true
-                        this.$.concurrency.disabled = true
-                        this.$.concurrencyData.hidden = true
-                        this.$.concurrencyDataSeparate.hidden = true
-                        this.$.concurrencyTitle.hidden = true
-                        this.$.concurrencyTitleSeparate.hidden = true
-                        break
-                    default:
-                        this.$.concurrency.hidden = true
-                        this.$.concurrency.disabled = true
-                        this.$.concurrencyData.hidden = true
-                        this.$.concurrencyDataSeparate.hidden = true
-                        this.$.concurrencyTitle.hidden = true
-                        this.$.concurrencyTitleSeparate.hidden = true
-                        return true
+                else {
+                    this.$.concurrency.hidden = true
+                    this.$.concurrency.disabled = true
+                    this.$.concurrencyData.hidden = true
+                    this.$.concurrencyDataSeparate.hidden = true
+                    this.$.concurrencyTitle.hidden = true
+                    this.$.concurrencyTitleSeparate.hidden = true
                 }
             }
         }

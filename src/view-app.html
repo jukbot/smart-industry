@@ -43,30 +43,6 @@
        :host {
         display: block
       }
-
-      div.container {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        -ms-flex-line-pack: center;
-        align-content: center;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        text-align: center;
-        height: 100vh;
-      }
-
-      div.flex-grpup {
-        margin: auto;
-      }
     </style>
     <!-- <app-analytics key="UA-51514677-9"></app-analytics> ENABLE WHEN DEPLOY PRODUCTION -->
     <app-location route="{{route}}"></app-location>
@@ -454,9 +430,11 @@
               Polymer.Async.timeOut.run(() => {
                 this._closeToastAlert()
                 this.$.userIndexDB.destroy()
+                this.$.drawer.resetLayout()
                 this.$.layout.resetLayout()
                 this.$.mainHeader.resetLayout()
                 this.$.header.resetLayout()
+                this.$.contentContainer.style.display = none
                 // redirect to login page
                 this.page = 'login'
                 this.set('route.path', '/login')

@@ -1,10 +1,6 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="/bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="/bower_components/paper-item/paper-item-body.html">
@@ -164,7 +160,7 @@
                             <p>Cost</p>
                         </div>
                         <div class="flex-item right-group">
-                            <p><span>[[getOrderNumber(orderItems.length)]]</span></p>
+                            <p><span>[[orderNumber]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[selectCustomer.name]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
@@ -223,32 +219,39 @@
                 }
             }
 
+            static get observers() {
+                return [
+                    'getOrderNumber(orderItems.length)'
+                ]
+            }
             ready() {
                 super.ready();
                 this._setupDatePicker();
             }
+
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
 
             // GET VALUE
-
-            getOrderNumber(o) {
-                if (o == 0 || o == null) {
-                    this.orderNumber = 1; // set to global variable
+            getOrderNumber(order) {
+                //let orderNo = Math.max(order.map(item => item.order_no));
+                //console.log(orderNo)
+                if (!order) {
+                    this.orderNumber = 1;
                     return this.orderNumber
                 } else {
-                    this.orderNumber = o + 2; // start index is 0 
+                    this.orderNumber = order + 1 // start index is 0 
                     return this.orderNumber
                 }
             }
 
             getActualQuantity(amount) {
                 if (!amount) return 0;
-                let accept_waste = this.factoryPerformance.aw;
-                let actual_quantity = Math.ceil((amount / (1 - accept_waste)));
-                this.actualQuantity = actual_quantity; // set to global variable
+                const accept_waste = this.factoryPerformance.aw;
+                const actual_quantity = Math.ceil((amount / (1 - accept_waste)));
+                this.actualQuantity = actual_quantity;
                 return actual_quantity;
             }
 
@@ -256,30 +259,25 @@
                 if (!part || !amount) return 0;
                 let productCycleArr = []
                 let productSetupArr = []
-                let partArr = Object.values(part); // convert obj to arr
-                for (let i = part.length; i--;) {
-                    productCycleArr.push(partArr[i].cycle) // loop push cycle arr to big arr
-                }
-                for (let i = part.length; i--;) {
-                    productSetupArr.push(partArr[i].setup) // loop push setup arr to big arr
-                }
-                let flatCycleArr = [].concat(...productCycleArr); // flat subarr concat to arr
-                let flatSetupArr = [].concat(...productSetupArr); // flat subarr concat to arr
-                let sumCycle = flatCycleArr.reduce((a, b) => a + b); // reduce arr to get sumCycle
-                let sumSetup = flatSetupArr.reduce((a, b) => a + b); // reduce arr to get sumCycle
-                let sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
+                const partArr = Object.values(part); // convert obj to arr
+                productCycleArr = part.map(part => part.cycle); // returns a new array of part cycle iterated
+                productSetupArr = part.map(part => part.setup); // returns a new array of part setup iterated
+                const flatCycleArr = productSetupArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
+                const flatSetupArr = productSetupArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
+                const sumCycle = flatCycleArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumCycle
+                const sumSetup = flatSetupArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
+                const sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
                 this.orderDuration = sumDuration;
                 return this._minutesToStr(sumDuration); // convert to hr and min
             }
 
             getProductCost(cost, amount) {
                 if (!cost || !amount) return 0;
-                let actual_amount = this.getActualQuantity(amount);
-                let total_cost = (cost * actual_amount);
+                const actual_amount = this.getActualQuantity(amount);
+                const total_cost = (cost * actual_amount);
                 return total_cost;
             }
 
-            // PRODUCT VIEWER SECTION
             getProductProcess(process) {
                 if (!process) {
                     return 0;
@@ -289,18 +287,17 @@
 
             getSumSetupTime(setup) {
                 if (!setup) return 0;
-                let sumSetupTime = setup.reduce((a, b) => a + b);
+                let sumSetupTime = setup.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
                 return sumSetupTime.toFixed(1);
             }
 
             getSumCycleTime(cycle) {
                 if (!cycle) return 0;
-                let sumCycleTime = cycle.reduce((a, b) => a + b);
+                let sumCycleTime = cycle.reduce((a, b) => a + b); // apply sum function to all arr items to get sumCycle
                 return sumCycleTime.toFixed(1);
             }
 
             // SET VALUE
-
             setProductPart(product) {
                 if (!product) return 0;
                 this.orderProductPart = product.part; // set to global variable
@@ -334,7 +331,7 @@
                 Sugar.Date.setLocale('en-GB'); // USE SUGAR LIBRARY TO REF FROM LOCALE DATE FORMAT
                 let deliverypicker = this.$.deliverySelector;
                 deliverypicker.addEventListener('value-changed', function () {
-                    let deliveryTimeStamp = (new Date(deliverypicker.value).getTime() / 1000);
+                    const deliveryTimeStamp = (new Date(deliverypicker.value).getTime() / 1000);
                     this.orderDelivery = deliveryTimeStamp;
                 });
                 // INTERNATIONA LOCALIZATION
@@ -375,21 +372,21 @@
 
             // SAVE ORDER
             saveOrder() {
-                alert('Saved order to order save list successful');
+                window.alert('Saved order to order save list successful');
                 _clearField();
             }
 
             // CREATE ORDER
             createOrder() {
-                let orderNo = this.orderNumber;
-                let customerID = this.$.customerSelector.value;
-                let orderDate = Math.round(new Date().getTime() / 1000.0);
-                let orderProductName = this.$.productSelector.value;
-                let orderProductPart = this.orderProductPart;
-                let orderProductSKU = this.productSKU;
-                let orderQuantity = this.actualQuantity;
-                let orderDuration = this.orderDuration;
-                let orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
+                const orderNo = this.orderNumber;
+                const customerID = this.$.customerSelector.value;
+                const orderDate = Math.round(new Date().getTime() / 1000.0);
+                const orderProductName = this.$.productSelector.value;
+                const orderProductPart = this.orderProductPart;
+                const orderProductSKU = this.productSKU;
+                const orderQuantity = this.actualQuantity;
+                const orderDuration = this.orderDuration;
+                const orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
 
                 if (orderNo !== "" && customerID !== "" && orderProductName !== "" && orderProductPart !== "" &&
                     orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery))) {
@@ -414,17 +411,15 @@
                         order_product: orderProductName,
                         order_quantity: orderQuantity
                     });
-
-                    let detail = 'Created order no.' + orderNo;
                     this.$.notificationQuery.ref.push({
                         created: orderDate,
-                        detail: detail,
+                        detail: 'Created order no.' + orderNo,
                         type: 'nornal'
                     });
-                    alert("Added to production schedule successfully");
+                    window.alert("Added to production schedule successfully");
                     this._clearField();
                 } else {
-                    alert("Input field cannot be blank, please fill in completely.");
+                    window.alert("Input field cannot be blank, please fill in completely.");
                 }
             }
         }
