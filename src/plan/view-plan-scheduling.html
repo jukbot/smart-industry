@@ -232,7 +232,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[getRemainDay(item.order_date,item.order_delivery)]] days</div>
+                                <div class="cell">[[getRemainDay(item.order_delivery)]] days</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -522,14 +522,14 @@
                 return station - 1
             }
 
-            getRemainDay(order_date, delivery_date) {
-                if (!order_date || !delivery_date) return 0
-                if (delivery_date <= order_date) {
+            getRemainDay(delivery_date) {
+                if (!delivery_date) return 0
+                let current_date = Math.round(new Date().getTime() / 1000.0);
+                if (delivery_date <= current_date) {
                     return 0;
                 } else {
-                    let remain = delivery_date - order_date
-                    let day = (remain / 86400)
-                    return Math.round(day)
+                    let remain = (delivery_date - current_date) / 86400
+                    return Math.round(remain)
                 }
             }
 

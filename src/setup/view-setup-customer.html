@@ -95,8 +95,8 @@
                         <flat-button class="btn shamrock" on-tap="_addCustomer"><button disabled$="[[disabled]]">{{localize('add')}}</button></flat-button>
                     </div>
                 </div>
-                <li>
-                </li>
+            </li>
+            <li>
                 <div class="card" hidden="[[!showAddCustomer]]">
                     <h1 class="title">{{localize('customer-management')}}</h1>[[selectItem]]
                     <vaadin-grid id="customerTable" aria-label="Customer Management" items="[[persistedCustomerData]]" selected-items="{{selectItem}}">
