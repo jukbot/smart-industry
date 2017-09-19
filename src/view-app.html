@@ -54,8 +54,9 @@
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-    <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}">
-      <app-drawer id="drawer" slot="drawer" role="menu" swipe-open="[[narrow]]" tabindex="-1">
+
+    <app-drawer-layout id="layout" fullbleed>
+      <app-drawer id="drawer" slot="drawer" tabindex="-1" hidden="[[!user]]">
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-logo-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -95,8 +96,9 @@
           <p>{{localize('version')}} 1.0.5</p>
         </div>
       </app-drawer>
-      <app-header-layout fullbleed id="mainHeader">
-        <app-header class="main-header" id="header" slot="header" role="banner">
+
+      <app-header-layout has-scrolling-region id="mainHeader">
+        <app-header class="main-header" id="header" slot="header" role="banner" hidden="[[!user]]">
           <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
           <app-toolbar>
             <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
@@ -293,7 +295,7 @@
         this.page = page || 'dashboard'
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
-          this.$.drawer.close()
+          this.$.drawer.close();
         }
       }
 
@@ -434,7 +436,6 @@
                 this.$.layout.resetLayout()
                 this.$.mainHeader.resetLayout()
                 this.$.header.resetLayout()
-                this.$.contentContainer.style.display = none
                 // redirect to login page
                 this.page = 'login'
                 this.set('route.path', '/login')

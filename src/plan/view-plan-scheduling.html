@@ -8,7 +8,6 @@
 <link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
-<link rel="import" href="/lib/amcharts.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -408,7 +407,7 @@
             <li>
                 <div class="card">
                     <h1 class="title">Job Scheduling Gantt Chart</h1>
-                    <div id="chartdiv"></div>
+
                 </div>
             </li>
         </ul>
@@ -434,8 +433,7 @@
                     factoryProfile: Object,
                     scheduleItems: Object,
                     orderStack: Object,
-                    chartData: Object,
-                    chartProperties: Object
+                    chartData: Object
                 }
             }
             ready() {
@@ -449,86 +447,6 @@
                 //this.parallelSchedule();
 
             }
-
-            setupGanttChart() {
-                AmCharts.useUTC = true;
-                this.chartProperties = AmCharts.makeChart(this.$.chartdiv, {
-                    "type": "gantt",
-                    "theme": "light",
-                    "addClassNames": true,
-                    "marginRight": 70,
-                    "period": "hh",
-                    "dataDateFormat": "YYYY-MM-DD",
-                    "balloonDateFormat": "JJ:NN",
-                    "columnWidth": 0.5,
-                    "listeners": [{
-                        "event": "rendered",
-                        "method": this.handleRender()
-                    }],
-                    "valueAxis": {
-                        "type": "date",
-                        "minimum": 7,
-                        "maximum": 31
-                    },
-                    "brightnessStep": 10,
-                    "graph": {
-                        "fillAlphas": 1,
-                        "balloonText": "<b>[[task]]</b>: [[open]] [[value]]"
-                    },
-                    "rotate": true,
-                    "categoryField": "category",
-                    "segmentsField": "segments",
-                    "colorField": "color",
-                    "startDate": "2015-01-01",
-                    "startField": "start",
-                    "endField": "end",
-                    "durationField": "duration",
-                    "dataProvider": this.chartData,
-                    "valueScrollbar": {
-                        "autoGridCount": true
-                    },
-                    "chartCursor": {
-                        "cursorColor": "#55bb76",
-                        "valueBalloonsEnabled": false,
-                        "cursorAlpha": 0,
-                        "valueLineAlpha": 0.5,
-                        "valueLineBalloonEnabled": true,
-                        "valueLineEnabled": true,
-                        "zoomable": false,
-                        "valueZoomable": true
-                    },
-                    "export": {
-                        "enabled": true
-                    },
-                    "categoryAxis": {
-                        "gridPosition": "start",
-                        "gridAlpha": 0,
-                        "tickPosition": "start",
-                        "tickLength": 20
-                    }
-                });
-                console.log(this.chartProperties.categoryAxis)
-            }
-
-            handleRender(event) {
-                console.log('rendered');
-                // this.chartProperties.categoryAxis.addListener("rollOverItem", function (event) {
-                //     event.target.setAttr("cursor", "default");
-                //     event.chart.balloon.borderColor = '#FF0000';
-                //     event.chart.balloon.fillColor = '#FF0000';
-                //     event.chart.balloon.color = '#FFFFFF';
-                //     event.chart.balloon.followCursor(true);
-                //     // event.chart.balloon.changeColor( '#FF0000');
-                //     event.chart.balloon.showBalloon(event.value + " teste");
-                // });
-
-                // this.chartProperties.categoryAxis.addListener("rollOutItem", function (event) {
-                //     event.chart.balloon.borderColor = '#000000';
-                //     event.chart.balloon.fillColor = '#FFFFFF';
-                //     event.chart.balloon.color = '#000000';
-                //     event.chart.balloon.hide();
-                // });
-            };
 
             getNextInterval(last_timestamp, interval) {
                 if (!last_timestamp || !interval) return 0

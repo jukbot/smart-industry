@@ -112,6 +112,9 @@
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
+        <!-- <firebase-storage-ref app-name="smart-mes" path="data/[[k.key]]/product" metadata="{{metadata}}" storage-uri="gs://smart-mes.appspot.com/data/[[k.key]]/product"
+            download-url="{{downloadUrl}}">
+        </firebase-storage-ref> -->
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <app-indexeddb-mirror key="product-data" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
         <ul class="app-grid">

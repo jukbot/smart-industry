@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "countdown": "github:mckamey/countdownjs",
-    "firebase": "^4.3.1",
     "intl": "^1.2.5",
     "javascript-lp-solver": "^0.4.5",
     "redux": "^3.7.2",
@@ -24,23 +23,25 @@
     "workbox-sw": "^2.0.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.0",
-    "eslint": "^4.7.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "eslint": "^4.7.1",
     "eslint-config-google": "^0.9.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-html": "^3.2.2",
-    "eslint-plugin-import": "^2.7.0",
-    "eslint-plugin-node": "^5.1.1",
     "eslint-plugin-polymer": "^0.1.0",
-    "eslint-plugin-promise": "^3.5.0",
-    "eslint-plugin-standard": "^3.0.1",
     "standard": "^10.0.3"
   },
   "scripts": {
-    "lint": "npm run lint:javascript && polymer lint",
+    "lint": "npm run lint:javascript",
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "polymer test",
-    "test:integration": "polymer build # test that psk builds without error with the CLI"
+    "test:integration": "polymer build"
   },
   "standard": {
     "parser": "babel-eslint",
