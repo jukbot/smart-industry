@@ -312,6 +312,12 @@
                             index: data
                         }
                     },
+                    editCreate(data) {
+                        return {
+                            type: 'EDIT_SET_MACHINE',
+                            editMachines: data
+                        }
+                    },
                     editAdd(data) {
                         return {
                             type: 'EDIT_ADD_MACHINE',
@@ -360,7 +366,7 @@
             }
 
             setEditStationMachine(m) {
-                this.editMachines = m;
+                this.dispatch('editCreate', m);
             }
 
             _openAddStationCard() {
@@ -387,7 +393,7 @@
 
             _addMachine() {
                 let selector = this.$.machineSelector
-                let machines = this.machines || [];
+                let machines = this.machines = [];
 
                 if (selector.value) {
                     // if found duplicate it will return index > -1

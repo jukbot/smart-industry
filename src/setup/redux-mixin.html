@@ -21,31 +21,38 @@
                     ...state,
                     machines: [...state.machines, action.machines]
                 }
-                break
             case 'REMOVE_MACHINE':
+                console.log('removeMachine', action.index, state.machines, remove)
                 return {
                     ...state,
                     machines: remove(action.index, state.machines)
                 }
-                break
             case 'EDIT_ADD_MACHINE':
                 // rest operator
                 const { $key, ...editMachines } = action.editMachines // remove child key to use 0 1 2 3 without edit original
-                return {
-                    // spread operator
-                    ...state,
-                    editMachines: [...state.editMachines, ...editMachines]
+
+                if (state.editMachines && editMachines) {
+                    return {
+                        // spread operator
+                        ...state,
+                        editMachines: [...state.editMachines, editMachines]
+                    }
                 }
-                break
+                return state
             case 'EDIT_REMOVE_MACHINE':
-                return {
-                    ...state,
-                    editMachines: remove(action.index, state.editMachines)
+                console.log('editRemoveMachine', action.index, state.editMachines, remove)
+
+                if (state.editMachines) {
+                    return {
+                        ...state,
+                        editMachines: remove(action.index, state.editMachines)
+                    }
                 }
-                break
+                return state
+            case 'EDIT_SET_MACHINE':
+                return { ...state, editMachines: action.editMachines }
             case 'CLEAR_MACHINE':
                 return []
-                break
             default:
                 return state
         }

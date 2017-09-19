@@ -8,6 +8,7 @@
 <link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/amcharts.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -131,6 +132,16 @@
             vaadin-grid#material vaadin-grid-sorter[direction=desc] iron-icon {
                 transform: scale(0.8) rotate(180deg);
             }
+            /* gantt chart */
+
+            #chartdiv {
+                width: 100%;
+                height: 500px;
+            }
+
+            .amcharts-category-axis>text {
+                cursor: pointer;
+            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -148,7 +159,7 @@
             data="{{stationItems}}"></firebase-query>
         <app-indexeddb-mirror key="station-data" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-
+        <iron-ajax url="../data/chart.json" auto handle-as="json" last-response="{{chartData}}"></iron-ajax>
         <ul class="app-grid">
             <li>
                 <div class="card">
@@ -397,60 +408,7 @@
             <li>
                 <div class="card">
                     <h1 class="title">Job Scheduling Gantt Chart</h1>
-
-                    <vaadin-columnrange-chart id="column-range-resource-usage">
-                        <chart inverted="true"></chart>
-                        <chart-title>Resource usage</chart-title>
-                        <x-axis>
-                            <categories>Printer, Coffee machine</categories>
-                        </x-axis>
-                        <y-axis type="datetime">
-                            <chart-title>Time</chart-title>
-                        </y-axis>
-                        <tooltip formatter="function () {return this.series.name +': '+ Highcharts.dateFormat('%H:%M', this.point.low) + ' - ' + Highcharts.dateFormat('%H:%M', this.point.high)}"></tooltip>
-                        <plot-options>
-                            <columnrange grouping="false">
-                                <data-labels enabled="true" inside="true" color="white" formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
-
-                            </columnrange>
-                        </plot-options>
-                        <data-series name="Team Alpha">
-                            <color>rgba(255, 60, 125, 1.0)</color>
-                            <data>[Date.UTC(2013,5,7,12,0,0),Date.UTC(2013,5,7,15,0,0)], [Date.UTC(2013,5,7,13,0,0),Date.UTC(2013,5,7,17,0,0)]
-                            </data>
-                        </data-series>
-                        <data-series name="Team Beta">
-                            <color>rgba(60, 125, 255, 1.0)</color>
-                            <data>[Date.UTC(2013,5,7,16,0,0),Date.UTC(2013,5,7,17,0,0)], [Date.UTC(2013,5,7,12,0,0),Date.UTC(2013,5,7,14,0,0)]
-                            </data>
-                        </data-series>
-
-                    </vaadin-columnrange-chart>
-
-                    <!-- <vaadin-columnrange-chart id="column-range">
-                        <chart inverted="true"></chart>
-                        <chart-title>Temperature variation by month</chart-title>
-                        <subtitle>Observed in Vik i Sogn, Norway</subtitle>
-                        <x-axis>
-                            <categories>Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec</categories>
-                        </x-axis>
-                        <y-axis>
-                            <chart-title>Temperature ( °C )</chart-title>
-                        </y-axis>
-                        <tooltip value-suffix="°C"></tooltip>
-                        <plot-options>
-                            <columnrange>
-                                <data-labels enabled="true" formatter="function () {return this.y + '°C';}"></data-labels>
-                            </columnrange>
-                        </plot-options>
-                        <legend enabled="false"></legend>
-                        <data-series name="Temperatures">
-                            <data>
-                                [-9.7, 9.4], [-8.7, 6.5], [-3.5, 9.4], [-1.4, 19.9], [0.0, 22.6], [2.9, 29.5], [9.2, 30.7], [7.3, 26.5], [4.4, 18.0], [-3.1,
-                                11.4], [-5.2, 10.4], [-13.5, 9.8]
-                            </data>
-                        </data-series>
-                    </vaadin-columnrange-chart> -->
+                    <div id="chartdiv"></div>
                 </div>
             </li>
         </ul>
@@ -475,7 +433,9 @@
                     factoryOperation: Object,
                     factoryProfile: Object,
                     scheduleItems: Object,
-                    orderStack: Object
+                    orderStack: Object,
+                    chartData: Object,
+                    chartProperties: Object
                 }
             }
             ready() {
@@ -487,7 +447,88 @@
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
                 //this.parallelSchedule();
+
             }
+
+            setupGanttChart() {
+                AmCharts.useUTC = true;
+                this.chartProperties = AmCharts.makeChart(this.$.chartdiv, {
+                    "type": "gantt",
+                    "theme": "light",
+                    "addClassNames": true,
+                    "marginRight": 70,
+                    "period": "hh",
+                    "dataDateFormat": "YYYY-MM-DD",
+                    "balloonDateFormat": "JJ:NN",
+                    "columnWidth": 0.5,
+                    "listeners": [{
+                        "event": "rendered",
+                        "method": this.handleRender()
+                    }],
+                    "valueAxis": {
+                        "type": "date",
+                        "minimum": 7,
+                        "maximum": 31
+                    },
+                    "brightnessStep": 10,
+                    "graph": {
+                        "fillAlphas": 1,
+                        "balloonText": "<b>[[task]]</b>: [[open]] [[value]]"
+                    },
+                    "rotate": true,
+                    "categoryField": "category",
+                    "segmentsField": "segments",
+                    "colorField": "color",
+                    "startDate": "2015-01-01",
+                    "startField": "start",
+                    "endField": "end",
+                    "durationField": "duration",
+                    "dataProvider": this.chartData,
+                    "valueScrollbar": {
+                        "autoGridCount": true
+                    },
+                    "chartCursor": {
+                        "cursorColor": "#55bb76",
+                        "valueBalloonsEnabled": false,
+                        "cursorAlpha": 0,
+                        "valueLineAlpha": 0.5,
+                        "valueLineBalloonEnabled": true,
+                        "valueLineEnabled": true,
+                        "zoomable": false,
+                        "valueZoomable": true
+                    },
+                    "export": {
+                        "enabled": true
+                    },
+                    "categoryAxis": {
+                        "gridPosition": "start",
+                        "gridAlpha": 0,
+                        "tickPosition": "start",
+                        "tickLength": 20
+                    }
+                });
+                console.log(this.chartProperties.categoryAxis)
+            }
+
+            handleRender(event) {
+                console.log('rendered');
+                // this.chartProperties.categoryAxis.addListener("rollOverItem", function (event) {
+                //     event.target.setAttr("cursor", "default");
+                //     event.chart.balloon.borderColor = '#FF0000';
+                //     event.chart.balloon.fillColor = '#FF0000';
+                //     event.chart.balloon.color = '#FFFFFF';
+                //     event.chart.balloon.followCursor(true);
+                //     // event.chart.balloon.changeColor( '#FF0000');
+                //     event.chart.balloon.showBalloon(event.value + " teste");
+                // });
+
+                // this.chartProperties.categoryAxis.addListener("rollOutItem", function (event) {
+                //     event.chart.balloon.borderColor = '#000000';
+                //     event.chart.balloon.fillColor = '#FFFFFF';
+                //     event.chart.balloon.color = '#000000';
+                //     event.chart.balloon.hide();
+                // });
+            };
 
             getNextInterval(last_timestamp, interval) {
                 if (!last_timestamp || !interval) return 0
@@ -592,8 +633,8 @@
                 }
             }
 
-            getStationSchedule(schedule, station) {
-                //return schedule[Object.keys(schedule)[station - 1]];
+            _refreshStatus() {
+                this.setupGanttChart();
             }
 
             _parallelSchedule() {
@@ -663,6 +704,7 @@
                     alert("Delete order successfully");
                 }
             }
+
         }
         customElements.define(ViewPlanScheduling.is, ViewPlanScheduling)
     </script>
