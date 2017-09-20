@@ -10,7 +10,7 @@
         ...data.slice(0, index),
         ...data.slice(index + 1)
     ]
-    const reducer = (state, action) => {
+    const reducer = (state = initial, action) => {
         if (!state) return initial;
         switch (action.type) {
             case 'ADD_MACHINE':
@@ -57,7 +57,7 @@
                 return state
         }
     };
-    const store = Redux.createStore(reducer, initial);
+    const store = Redux.createStore(reducer);
     ReduxMixin = PolymerRedux(store);
 
 </script>

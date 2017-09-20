@@ -1,18 +1,14 @@
 {
     "extends": [
         "plugin:polymer/polymer-2",
-        "eslint:recommended"
+        "eslint:recommended",
+        "google"
     ],
     "parserOptions": {
         "ecmaVersion": 6
     },
-    "env": {
-        "browser": true
-    },
     "plugins": [
+        "syntax-dynamic-import",
         "polymer"
-    ],
-    "globals": {
-        "Polymer": true
-    }
+    ]
 }
