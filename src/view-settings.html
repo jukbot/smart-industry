@@ -67,7 +67,7 @@
     <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
       on-message="handleMessage" token="{{token}}"></firebase-messaging>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="userToken" path="/user/[[k.key]]/token" data="[[token]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.uid]]/token" data="[[token]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[k.key]]/appData/notification" data="[[notification]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[k.key]]/appData/email_alert" data="[[emailalert]]"></firebase-document>
