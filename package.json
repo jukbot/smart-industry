@@ -28,9 +28,11 @@
     "babel-eslint": "^8.0.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.0",
     "eslint": "^4.7.1",
+    "eslint-config-esnext": "^1.6.0",
     "eslint-config-google": "^0.9.1",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-html": "^3.2.2",
@@ -39,6 +41,7 @@
     "webpack": "^3.6.0"
   },
   "scripts": {
+    "babel-version": "babel --version",
     "lint": "npm run lint:javascript",
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "polymer test",
