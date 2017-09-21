@@ -205,7 +205,7 @@
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="[[k]]"></firebase-document>
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
-    <iron-ajax id="requestSampleData" url="/data/sample.json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="/data/sample.json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <section class="container">
       <figure class="flex-item left-half">
         <article>
@@ -414,13 +414,16 @@
                   const keyid = this.$.factoryData.ref.push().key
                   this.addProfileInfo(username, email, organize, phone, keyid)
                   this.$.factoryData.ref.child(keyid).set(this.sampleData).catch(error => {
+                    console.log(error)
                     this.showAlertToast(error.code)
                   })
                 }).catch((error) => {
+                  console.log(error)
                   this.showAlertToast(error.code)
                 })
             })
             .catch((error) => {
+              console.log(error)
               this.showAlertToast(error.code)
             })
         } else {
@@ -445,12 +448,8 @@
       }
 
       sendEmailVeirify() {
-        this.$.userAuth.onAuthStateChanged(user => {
-          if (!user.emailVerified) {
-            this.user.sendEmailVerification()
-            this.showSuccessToast("Register successful. We've send verification link to your email")
-          }
-        });
+        this.user.sendEmailVerification()
+        this.showSuccessToast("Register successful. We've send verification link to your email")
       }
 
       _resetPassword() {

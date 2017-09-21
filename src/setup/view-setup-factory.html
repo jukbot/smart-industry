@@ -508,7 +508,7 @@
             }
 
             isParallelModel(production_model) {
-                if (production_model === 'parallel') {
+                if (production_model === 'parallel' || production_model === 'multi') {
                     this.$.concurrency.hidden = false
                     this.$.concurrency.disabled = false
                     this.$.concurrencyData.hidden = false

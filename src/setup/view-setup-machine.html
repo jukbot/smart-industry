@@ -364,7 +364,7 @@
                 const name = this.$.edit_machineName.value;
                 const capacity = this.$.edit_machineCapacity.value;
                 const type = this.$.edit_machineType.value;
-                const code = this.$.edit_machinetyle.selectedItem.code;
+                const code = this.$.edit_machineType.selectedItem.code;
 
                 if (name && capacity && type && code) {
                     this.$.editMachineQuery.ref.update({
@@ -374,8 +374,8 @@
                         code: code,
                     });
                     this.$.toastSaveMachine.open()
-                    this._openMachineMainCard()
                 }
+                this._openMachineMainCard()
             }
 
             clearField() {

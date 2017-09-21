@@ -482,7 +482,7 @@
                 //let key = e.currentTarget.station.$key;
                 const sname = this.$.edit_stationName.value;
                 const smachine = this.editMachines;
-                if (sname && editMachine.length > 0) {
+                if (sname && smachine.length > 0) {
                     this.$.editStationQuery.ref.update({
                         name: sname,
                         machine: smachine

@@ -247,7 +247,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[getRemainDay(item.order_delivery, item.$key)]] days</div>
+                                <div class="cell">[[getRemainDay(item.order_delivery, item.order_status, item.$key)]] days</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -406,7 +406,7 @@
             <li>
                 <div class="card">
                     <h1 class="title">Job Scheduling Gantt Chart</h1>
-                    <!-- <div id="chart_div"></div> -->
+                    <div id="chart_div"></div>
                 </div>
             </li>
         </ul>
@@ -803,7 +803,7 @@
                 return station - 1
             }
 
-            getRemainDay(delivery_date, key) {
+            getRemainDay(delivery_date, status, key) {
                 if (!delivery_date) return 0
                 const current_date = Math.round(new Date().getTime() / 1000.0);
                 const remain = Math.round((delivery_date - current_date) / 86400);
@@ -813,10 +813,13 @@
                         order_status: 'late'
                     });
                     return 0;
-                } else {
+                } else if (status !== 'wip') {
                     this.$.orderQuery.ref.child(key).update({
                         order_status: 'waiting'
                     });
+                    return remain;
+                } else {
+
                     return remain;
                 }
             }

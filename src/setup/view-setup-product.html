@@ -152,8 +152,7 @@
             <li>
                 <div class="card" hidden="[[!showAddProduct]]">
                     <h1 class="title">Product Management</h1>
-                    <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]" on-active-item-changed="_onActiveItemChanged"
-                        size="10">
+                    <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]" size="10">
 
                         <template class="row-details">
                             <div class="details">
@@ -262,11 +261,22 @@
 
                         <vaadin-grid-column width="50px">
                             <template class="header">
+                                <div class="cell last">Edit</div>
+                            </template>
+                            <template>
+                                <div class="cell last">
+                                    <paper-icon-button on-tap="_editProduct" product="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                </div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column width="50px">
+                            <template class="header">
                                 <div class="cell last">Delete</div>
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="_deleteproduct" product="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-tap="_deleteProduct" product="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
