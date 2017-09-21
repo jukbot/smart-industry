@@ -8,9 +8,15 @@
 <link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/lib/google-chart.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
+<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script src="https://www.amcharts.com/lib/3/serial.js"></script>
+<script src="https://www.amcharts.com/lib/3/gantt.js"></script>
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
 
 <dom-module id="view-plan-scheduling">
     <template>
@@ -33,6 +39,16 @@
 
             .order-schedule-info>p {
                 margin: 10px 0;
+            }
+            /* gantt chart */
+
+            #chartdiv {
+                width: 100%;
+                height: 500px;
+            }
+
+            .amcharts-category-axis>text {
+                cursor: pointer;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
@@ -131,16 +147,6 @@
             vaadin-grid#material vaadin-grid-sorter[direction=desc] iron-icon {
                 transform: scale(0.8) rotate(180deg);
             }
-            /* gantt chart */
-
-            #chartdiv {
-                width: 100%;
-                height: 500px;
-            }
-
-            .amcharts-category-axis>text {
-                cursor: pointer;
-            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -151,9 +157,8 @@
 
         <firebase-query app-name="smart-mes" id="schedulingQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(station)]]"
             data="{{scheduleItems}}"></firebase-query>
+
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
-        <firebase-query app-name="smart-mes" id="orderQueryStack" path="/data/[[k.key]]/orderData" order-by-child="order_delivery"
-            limit-to-first="[[factoryProfile.concurrency]]" data="{{orderStack}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             data="{{stationItems}}"></firebase-query>
         <app-indexeddb-mirror key="station-data" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
@@ -242,7 +247,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[getRemainDay(item.order_delivery)]] days</div>
+                                <div class="cell">[[getRemainDay(item.order_delivery, item.$key)]] days</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -281,8 +286,8 @@
 
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_parallelSchedule"><button>Refresh</button></flat-button>
-                        <flat-button class="btn thunderbird" on-tap="_refreshStatus"><button>Reschedule</button></flat-button>
+                        <flat-button class="btn" on-tap="_refreshStatus"><button>Refresh</button></flat-button>
+                        <flat-button class="btn thunderbird" on-tap="_parallelSchedule"><button>Reschedule</button></flat-button>
                     </div>
                 </div>
             </li>
@@ -294,9 +299,7 @@
                     <vaadin-grid id="material" items="[[scheduleItems]]" size="100">
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
-                                <vaadin-grid-sorter path="order_no">
-                                    <div class="cell">Station</div>
-                                </vaadin-grid-sorter>
+                                <div class="cell">Station</div>
                             </template>
                             <template>
                                 <div class="cell">[[station]]</div>
@@ -305,9 +308,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-
                                 <div class="cell">Order No.</div>
-
                             </template>
                             <template>
                                 <div class="cell">[[item.order_no]]</div>
@@ -325,11 +326,9 @@
 
                         <vaadin-grid-column>
                             <template class="header">
-
                                 <div class="cell">
                                     <span>Part</span>
                                 </div>
-
                             </template>
                             <template>
                                 <div class="cell">[[item.job_part]]</div>
@@ -378,7 +377,7 @@
 
                             </template>
                             <template>
-                                <div class="cell" style$="color:[[getColorStatus(item.order_status)]]">[[getOrderStatus(item.order_status)]]</div>
+                                <div class="cell" style$="color:[[getColorStatus(item.job_status)]]">[[getOrderStatus(item.job_status)]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -407,7 +406,7 @@
             <li>
                 <div class="card">
                     <h1 class="title">Job Scheduling Gantt Chart</h1>
-
+                    <!-- <div id="chart_div"></div> -->
                 </div>
             </li>
         </ul>
@@ -432,13 +431,13 @@
                     factoryOperation: Object,
                     factoryProfile: Object,
                     scheduleItems: Object,
-                    orderStack: Object,
-                    chartData: Object
+                    chartData: Object,
+                    chartProperties: Object
                 }
             }
             ready() {
                 super.ready()
-
+                this.initialGanttChart()
             }
 
             connectedCallback() {
@@ -447,6 +446,329 @@
                 //this.parallelSchedule();
 
             }
+
+            initialGanttChart() {
+                AmCharts.useUTC = true;
+                this.chartProperties = AmCharts.makeChart(this.$.chart_div, {
+                    "type": "gantt",
+                    "theme": "light",
+                    "addClassNames": true,
+                    "marginRight": 70,
+                    "period": "hh",
+                    "dataDateFormat": "YYYY-MM-DD",
+                    "balloonDateFormat": "JJ:NN",
+                    "columnWidth": 0.5,
+                    // "listeners": [{
+                    //     "event": "rendered",
+                    //     "method": handleRender
+                    // }],
+                    "valueAxis": {
+                        "type": "date",
+                        "minimum": 7,
+                        "maximum": 31
+                    },
+                    "brightnessStep": 10,
+                    "graph": {
+                        "fillAlphas": 1,
+                        "balloonText": "<b>[[task]]</b>: [[open]] [[value]]"
+                    },
+                    "rotate": true,
+                    "categoryField": "category",
+                    "segmentsField": "segments",
+                    "colorField": "color",
+                    "startDate": "2017-09-21",
+                    "startField": "start",
+                    "endField": "end",
+                    "durationField": "duration",
+                    "dataProvider": [{
+                        "category": "John",
+                        "url": "https://www.google.com.br",
+                        "segments": [{
+                            "start": 7,
+                            "duration": 2,
+                            "color": "#46615e",
+                            "task": "Task #1"
+                        }, {
+                            "duration": 2,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "duration": 2,
+                            "color": "#8dc49f",
+                            "task": "Task #3"
+                        }]
+                    }, {
+                        "category": "Smith",
+                        "segments": [{
+                            "start": 10,
+                            "duration": 2,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "duration": 1,
+                            "color": "#8dc49f",
+                            "task": "Task #3"
+                        }, {
+                            "duration": 4,
+                            "color": "#46615e",
+                            "task": "Task #1"
+                        }]
+                    }, {
+                        "category": "Ben",
+                        "segments": [{
+                            "start": 12,
+                            "duration": 2,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "start": 16,
+                            "duration": 2,
+                            "color": "#FFE4C4",
+                            "task": "Task #4"
+                        }]
+                    }, {
+                        "category": "Mike",
+                        "segments": [{
+                            "start": 9,
+                            "duration": 6,
+                            "color": "#46615e",
+                            "task": "Task #1"
+                        }, {
+                            "duration": 4,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }]
+                    }, {
+                        "category": "Lenny",
+                        "segments": [{
+                            "start": 8,
+                            "duration": 1,
+                            "color": "#8dc49f",
+                            "task": "Task #3"
+                        }, {
+                            "duration": 4,
+                            "color": "#46615e",
+                            "task": "Task #1"
+                        }]
+                    }, {
+                        "category": "Scott",
+                        "segments": [{
+                            "start": 15,
+                            "duration": 3,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }]
+                    }, {
+                        "category": "Julia",
+                        "segments": [{
+                            "start": 9,
+                            "duration": 2,
+                            "color": "#46615e",
+                            "task": "Task #1"
+                        }, {
+                            "duration": 1,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "duration": 8,
+                            "color": "#8dc49f",
+                            "task": "Task #3"
+                        }]
+                    }, {
+                        "category": "Bob",
+                        "segments": [{
+                            "start": 9,
+                            "duration": 8,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "duration": 7,
+                            "color": "#8dc49f",
+                            "task": "Task #3"
+                        }]
+                    }, {
+                        "category": "Kendra",
+                        "segments": [{
+                            "start": 11,
+                            "duration": 8,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "start": 16,
+                            "duration": 2,
+                            "color": "#FFE4C4",
+                            "task": "Task #4"
+                        }]
+                    }, {
+                        "category": "Tom",
+                        "segments": [{
+                            "start": 9,
+                            "duration": 4,
+                            "color": "#46615e",
+                            "task": "Task #1"
+                        }, {
+                            "duration": 3,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "duration": 5,
+                            "color": "#8dc49f",
+                            "task": "Task #3"
+                        }]
+                    }, {
+                        "category": "Kyle",
+                        "segments": [{
+                            "start": 6,
+                            "duration": 3,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }]
+                    }, {
+                        "category": "Anita",
+                        "segments": [{
+                            "start": 12,
+                            "duration": 2,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "start": 16,
+                            "duration": 2,
+                            "color": "#FFE4C4",
+                            "task": "Task #4"
+                        }]
+                    }, {
+                        "category": "Jack",
+                        "segments": [{
+                            "start": 8,
+                            "duration": 10,
+                            "color": "#46615e",
+                            "task": "Task #1"
+                        }, {
+                            "duration": 2,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }]
+                    }, {
+                        "category": "Kim",
+                        "segments": [{
+                            "start": 12,
+                            "duration": 2,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "duration": 3,
+                            "color": "#8dc49f",
+                            "task": "Task #3"
+                        }]
+                    }, {
+                        "category": "Aaron",
+                        "segments": [{
+                            "start": 18,
+                            "duration": 2,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "duration": 2,
+                            "color": "#FFE4C4",
+                            "task": "Task #4"
+                        }]
+                    }, {
+                        "category": "Alan",
+                        "segments": [{
+                            "start": 17,
+                            "duration": 2,
+                            "color": "#46615e",
+                            "task": "Task #1"
+                        }, {
+                            "duration": 2,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "duration": 2,
+                            "color": "#8dc49f",
+                            "task": "Task #3"
+                        }]
+                    }, {
+                        "category": "Ruth",
+                        "segments": [{
+                            "start": 13,
+                            "duration": 2,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "duration": 1,
+                            "color": "#8dc49f",
+                            "task": "Task #3"
+                        }, {
+                            "duration": 4,
+                            "color": "#46615e",
+                            "task": "Task #1"
+                        }]
+                    }, {
+                        "category": "Simon",
+                        "segments": [{
+                            "start": 10,
+                            "duration": 3,
+                            "color": "#727d6f",
+                            "task": "Task #2"
+                        }, {
+                            "start": 17,
+                            "duration": 4,
+                            "color": "#FFE4C4",
+                            "task": "Task #4"
+                        }]
+                    }],
+                    "valueScrollbar": {
+                        "autoGridCount": true
+                    },
+                    "chartCursor": {
+                        "cursorColor": "#55bb76",
+                        "valueBalloonsEnabled": false,
+                        "cursorAlpha": 0,
+                        "valueLineAlpha": 0.5,
+                        "valueLineBalloonEnabled": true,
+                        "valueLineEnabled": true,
+                        "zoomable": false,
+                        "valueZoomable": true
+                    },
+                    "export": {
+                        "enabled": true
+                    },
+                    "categoryAxis": {
+                        "gridPosition": "start",
+                        "gridAlpha": 0,
+                        "tickPosition": "start",
+                        "tickLength": 20
+                    }
+                });
+
+                var links = {
+                    'John': 'https://www.uol.com.br',
+                    'Smith': 'https://www.google.com.br',
+                    'Ben': 'https://www.terra.com.br',
+                };
+
+                // function handleRender(event) {
+                //     console.log('rendered');
+                //     this.chartProperties.categoryAxis.addListener("rollOverItem", function (event) {
+                //         event.target.setAttr("cursor", "default");
+                //         event.chart.balloon.borderColor = '#FF0000';
+                //         event.chart.balloon.fillColor = '#FF0000';
+                //         event.chart.balloon.color = '#FFFFFF';
+                //         event.chart.balloon.followCursor(true);
+                //         // event.chart.balloon.changeColor( '#FF0000');
+                //         event.chart.balloon.showBalloon(event.value + " teste");
+                //     });
+
+                //     this.chartProperties.categoryAxis.addListener("rollOutItem", function (event) {
+                //         event.chart.balloon.borderColor = '#000000';
+                //         event.chart.balloon.fillColor = '#FFFFFF';
+                //         event.chart.balloon.color = '#000000';
+                //         event.chart.balloon.hide();
+                //     });
+                // };
+            }
+
 
             getNextInterval(last_timestamp, interval) {
                 if (!last_timestamp || !interval) return 0
@@ -481,14 +803,21 @@
                 return station - 1
             }
 
-            getRemainDay(delivery_date) {
+            getRemainDay(delivery_date, key) {
                 if (!delivery_date) return 0
-                let current_date = Math.round(new Date().getTime() / 1000.0);
-                if (delivery_date <= current_date) {
+                const current_date = Math.round(new Date().getTime() / 1000.0);
+                const remain = Math.round((delivery_date - current_date) / 86400);
+
+                if (remain < 0) {
+                    this.$.orderQuery.ref.child(key).update({
+                        order_status: 'late'
+                    });
                     return 0;
                 } else {
-                    let remain = (delivery_date - current_date) / 86400
-                    return Math.round(remain)
+                    this.$.orderQuery.ref.child(key).update({
+                        order_status: 'waiting'
+                    });
+                    return remain;
                 }
             }
 
@@ -540,7 +869,7 @@
                     case 'done':
                         return '#7CB342'
                         break;
-                    case 'lated':
+                    case 'late':
                         return '#E53935'
                         break;
                     case 'cancel':
@@ -552,28 +881,40 @@
             }
 
             _refreshStatus() {
-                this.setupGanttChart();
+                window.alert('Your schedule is the lastest update');
+            }
+
+            _rescheduleOrder() {
+                window.alert('Note: Orders that are working in process will not able to reschedule.');
             }
 
             _parallelSchedule() {
+                let order = this.orderItems;
+                if (order) {
 
-                if (this.orderItems) {
-                    let order = this.orderItems;
                     let concurrent = this.factoryProfile.concurrencys;
-                    let obj = {};
-                    order.map(k => Object.keys(k).map(a => obj[a] = k[a]))
-                    console.log(obj)
-                    let t = Object.entries(order).slice(0, concurrent).map(entry => entry[1]);
-                    console.log(t)
-                    let sliced = Array.prototype.slice.call(order, 3);
-                    console.log(sliced);
-                    let sortedKeys = Object.keys(order).sort();
-                    let first = order[sortedKeys[0]];
-                    console.log(first)
-                    console.log(this.orderStack)
-                    this.$.schedulingQuery.ref.push({
+                    let order_part_wip = []
+                    let order_quantity_wip = []
+                    order_part_wip = order
+                        .filter(order => order.order_status === 'waiting')
+                        .map(order => order.order_product_part)
 
-                    })
+                    order_quantity_wip = order
+                        .filter(order => order.order_status === 'waiting')
+                        .map(order => order.order_quantity)
+                    console.log(order_part_wip)
+
+                    let jobCycle = order_part_wip[0][0].cycle;
+
+                    console.log(jobCycle);
+                    let jobWorkload = jobCycle.map((x) => x * order_quantity_wip[0])
+                    console.log(jobWorkload);
+
+                    let station_quantity = this.stationItems.length
+
+                    // this.$.schedulingQuery.ref.push({
+                    // })
+
                 }
             }
 

@@ -130,9 +130,8 @@
                     </vaadin-combo-box>
                     <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
                         step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
-                    <vaadin-date-picker class="date-picker" label="Delivery Date" min="2017-01-01" max="2040-01-01" name="delivery" id="deliverySelector"
+                    <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2020-01-01" name="delivery" id="deliverySelector"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
-                    <!-- <vaadin-upload id="uploadOrder" max-files="1" accept=".csv" max-file-size="1000000"></vaadin-upload> -->
                     <flat-button on-tap="saveValue" class="btn" title="Save to archive"><button>Save Order</button></flat-button>
                     <flat-button on-tap="createOrder" class="shamrock btn" title="Add order"><button>Add to schedule</button></flat-button>
                 </div>
@@ -210,6 +209,7 @@
             static get properties() {
                 return {
                     language: String,
+                    todayDate: String,
                     orderNumber: Number,
                     orderItems: Object,
                     factoryPerformance: Object,
@@ -226,7 +226,8 @@
             }
             ready() {
                 super.ready();
-                this._setupDatePicker();
+                this.setDatePicker();
+                this.setMinOrderDate();
             }
 
             connectedCallback() {
@@ -234,7 +235,6 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
 
-            // GET VALUE
             getOrderNumber(order) {
                 //let orderNo = Math.max(order.map(item => item.order_no));
                 //console.log(orderNo)
@@ -259,10 +259,9 @@
                 if (!part || !amount) return 0;
                 let productCycleArr = []
                 let productSetupArr = []
-                const partArr = Object.values(part); // convert obj to arr
                 productCycleArr = part.map(part => part.cycle); // returns a new array of part cycle iterated
                 productSetupArr = part.map(part => part.setup); // returns a new array of part setup iterated
-                const flatCycleArr = productSetupArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
+                const flatCycleArr = productCycleArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
                 const flatSetupArr = productSetupArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
                 const sumCycle = flatCycleArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumCycle
                 const sumSetup = flatSetupArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
@@ -297,6 +296,11 @@
                 return sumCycleTime.toFixed(1);
             }
 
+            getRandomColor() {
+                const color = Math.floor(0x1000000 * Math.random()).toString(16);
+                return '#' + ('000000' + color).slice(-6);
+            }
+
             // SET VALUE
             setProductPart(product) {
                 if (!product) return 0;
@@ -326,8 +330,18 @@
                 return ((number < 10 && number >= 0) ? '0' : '') + number;
             }
 
+            setMinOrderDate() {
+                const today = new Date();
+                let dd = today.getDate()
+                let mm = today.getMonth() + 1
+                let yyyy = today.getFullYear()
+                if (dd < 10) { dd = '0' + dd }
+                if (mm < 10) { mm = '0' + mm }
+                this.todayDate = yyyy + '-' + mm + '-' + dd
+            }
+
             // SETUP CALENDAR DATE PICKER FORMAT
-            _setupDatePicker() {
+            setDatePicker() {
                 Sugar.Date.setLocale('en-GB'); // USE SUGAR LIBRARY TO REF FROM LOCALE DATE FORMAT
                 let deliverypicker = this.$.deliverySelector;
                 deliverypicker.addEventListener('value-changed', function () {
@@ -387,6 +401,7 @@
                 const orderQuantity = this.actualQuantity;
                 const orderDuration = this.orderDuration;
                 const orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
+                const orderColor = this.getRandomColor();
 
                 if (orderNo !== "" && customerID !== "" && orderProductName !== "" && orderProductPart !== "" &&
                     orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery))) {
@@ -402,6 +417,7 @@
                         order_duration: orderDuration,
                         order_delivery: orderDelivery,
                         order_status: "waiting",
+                        order_color: orderColor
                     });
                     this.$.historyQuery.ref.push({
                         order_date: orderDate,

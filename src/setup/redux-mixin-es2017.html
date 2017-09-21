@@ -1,65 +1,62 @@
 <!-- <link rel="import" href="/bower_components/polymer-redux/polymer-redux.html">
 <script src="/node_modules/redux/dist/redux.min.js"></script>
 <script>
-    "use strict";
-
-    var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-    function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
-
     const initial = {
         machines: [],
         editMachines: []
     };
     // helper function
-    const remove = (index, data) => index === 0 ? data.slice(1) : [...data.slice(0, index), ...data.slice(index + 1)];
+    const remove = (index, data) => index === 0 ? data.slice(1) : [
+        ...data.slice(0, index),
+        ...data.slice(index + 1)
+    ]
     const reducer = (state = initial, action) => {
         if (!state) return initial;
         switch (action.type) {
-            case "ADD_MACHINE":
-                const _action$machines = action.machines,
-                    { $key } = _action$machines,
-                    machines = _objectWithoutProperties(_action$machines, ["$key"]);
-                return _extends({}, state, {
+            case 'ADD_MACHINE':
+                const { $key, ...machines } = action.machines
+                return {
+                    ...state,
                     machines: [...state.machines, action.machines]
-                });
-            case "REMOVE_MACHINE":
+                }
+            case 'REMOVE_MACHINE':
                 // console.log('removeMachine', action.index, state.machines, remove)
                 if (state.machines) {
-                    return _extends({}, state, {
+                    return {
+                        ...state,
                         machines: remove(action.index, state.machines)
-                    });
+                    }
                 }
-                return state;
-            case "EDIT_ADD_MACHINE":
+                return state
+            case 'EDIT_ADD_MACHINE':
                 if (state.editMachines) {
-                    const _action$editMachines = action.editMachines,
-                        { $key } = _action$editMachines,
-                        editMachines = _objectWithoutProperties(_action$editMachines, ["$key"]);
-                    return _extends({}, state, {
+                    const { $key, ...editMachines } = action.editMachines
+                    return {
+                        ...state,
                         editMachines: [...state.editMachines, action.editMachines]
-                    });
+                    }
                 }
-                return state;
-            case "EDIT_REMOVE_MACHINE":
+                return state
+            case 'EDIT_REMOVE_MACHINE':
                 // console.log('editRemoveMachine', action.index, state.editMachines, remove)
                 if (state.editMachines) {
-                    return _extends({}, state, {
+                    return {
+                        ...state,
                         editMachines: remove(action.index, state.editMachines)
-                    });
+                    }
                 }
-                return state;
-            case "EDIT_SET_MACHINE":
-                return _extends({}, state, {
+                return state
+            case 'EDIT_SET_MACHINE':
+                return {
+                    ...state,
                     editMachines: action.editMachines
-                });
-            case "CLEAR_MACHINE":
-                return [];
+                }
+            case 'CLEAR_MACHINE':
+                return []
             default:
-                return state;
+                return state
         }
     };
     const store = Redux.createStore(reducer);
-    ReduxMixin = PolymerRedux(store);
-
+    const ReduxMixin = PolymerRedux(store);
 </script> -->

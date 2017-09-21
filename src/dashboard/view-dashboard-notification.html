@@ -107,11 +107,11 @@
             <vaadin-grid-column width="150px">
               <template class="header">Datetime</template>
               <template>
-                <p>[[item.created]]</p>
+                <p>[[getDate(item.created)]]</p>
               </template>
             </vaadin-grid-column>
           </vaadin-grid>
-          <flat-button class="clear-btn" on-tap="_clearNotification"><button>Clear All Notification</button></flat-button>
+          <flat-button class="clear-btn" on-tap="clearNotification"><button>Clear All Notification</button></flat-button>
           <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
         </div>
       </li>
@@ -136,12 +136,27 @@
         this.loadResources(this.resolveUrl('../../data/locales.json'));
       }
 
-      _clearNotification() {
+      clearNotification() {
         if (confirm("Are you sure do you want to clear all notifacation ?") == true) {
           this.$.orderQuery.ref.remove();
           this.alertText = "Deleted all notification successful";
           this.$.toastAlert.open();
         }
+      }
+
+      getDate(timestamp) {
+        let today = new Date(timestamp * 1000);
+        let dd = today.getDate();
+        let mm = today.getMonth() + 1; //January is 0!
+        let yyyy = today.getFullYear();
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        let date = dd + '/' + mm + '/' + yyyy;
+        return date;
       }
     }
     customElements.define(ViewDashboardNotification.is, ViewDashboardNotification);
