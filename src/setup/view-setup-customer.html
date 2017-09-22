@@ -205,6 +205,18 @@
                 this.$.customerMobile.addEventListener('input', this._validateInput.bind(this))
             }
 
+            _validateInput() {
+                const fname = this.$.customerFirstName.value;
+                const lname = this.$.customerLastName.value;
+                const email = this.$.customerEmail.value;
+                const mobile = this.$.customerMobile.value;
+                if (fname && lname && email && mobile && this.$.customerEmail.validate()) {
+                    this.disabled = false
+                } else {
+                    this.disabled = true
+                }
+            }
+
             _openAddCustomerCard() {
                 this.showAddCustomer = false;
             }
@@ -214,12 +226,12 @@
             }
 
             _addCustomer() {
-                let fname = this.$.customerFirstName.value;
-                let lname = this.$.customerLastName.value;
-                let fullname = fname + lname;
-                let email = this.$.customerEmail.value;
-                let mobile = this.$.customerMobile.value;
-                let mobileHyphens = mobile.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
+                const fname = this.$.customerFirstName.value;
+                const lname = this.$.customerLastName.value;
+                const fullname = fname + lname;
+                const email = this.$.customerEmail.value;
+                const mobile = this.$.customerMobile.value;
+                const mobileHyphens = mobile.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
                 if (fullname && email && mobile) {
                     this.$.customerQuery.ref.push({
                         name: fullname,
@@ -245,18 +257,6 @@
                     this.$.customerQuery.ref.child(key).remove();
                     this.toastText = 'notification-delete-success'
                     this.$.toastSetupCustomer.open();
-                }
-            }
-
-            _validateInput() {
-                let fname = this.$.customerFirstName.value;
-                let lname = this.$.customerLastName.value;
-                let email = this.$.customerEmail.value;
-                let mobile = this.$.customerMobile.value;
-                if (fname && lname && email && mobile && this.$.customerEmail.validate()) {
-                    this.disabled = false
-                } else {
-                    this.disabled = true
                 }
             }
 

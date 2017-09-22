@@ -137,6 +137,8 @@
             <paper-input type="number" id="machineNumber" label="{{localize('machine-number')}}" value="[[getMachineNumber(machineItems.length)]]"
                 min="1" max="999" readonly required always-float-label></paper-input>
             <paper-input type="text" id="machineName" label="Machine Name" required error-message="Invalid Input" always-float-label></paper-input>
+            <paper-input type="number" id="machineCapacity" label="{{localize('machine-max-capacity')}}" min="1" max="9999" step="1"
+                allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
             <vaadin-combo-box id="machineType" label="{{localize('machine-type')}}" items="[[machineType]]" item-value-path="name" item-label-path="name"
                 loading="[[!machineType]]" required always-float-label>
                 <template>
@@ -148,11 +150,9 @@
                     </paper-item>
                 </template>
             </vaadin-combo-box>
-            <paper-input type="number" id="machineCapacity" label="{{localize('machine-max-capacity')}}" min="1" max="9999" step="1"
-                required always-float-label></paper-input>
             <div class="center">
                 <flat-button class="fixed-btn" on-tap="_openMachineMainCard"><button>{{localize('dismiss')}}</button></flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_addMachine"><button>{{localize('add')}}</button></flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_addMachine"><button disabled$="[[disabled]]">{{localize('add')}}</button></flat-button>
             </div>
         </div>
         <!-- Edit Station Card -->
@@ -176,10 +176,9 @@
                 </template>
             </vaadin-combo-box>
 
-            <div class="center">
-                <flat-button class="fixed-btn" on-tap="_openMachineMainCard"><button>{{localize('dismiss')}}</button></flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_saveMachine"><button>{{localize('save')}}</button></flat-button>
-            </div>
+            <flat-button class="fixed-btn" on-tap="_openMachineMainCard"><button>{{localize('dismiss')}}</button></flat-button>
+            <flat-button class="fixed-btn shamrock" on-tap="_saveMachine"><button>{{localize('save')}}</button></flat-button>
+        </div>
         </div>
         <!-- Machine Management -->
         <div class="card main-card" hidden="[[showListMachine]]">
@@ -235,6 +234,10 @@
                         type: Boolean,
                         value: false
                     },
+                    disabled: {
+                        type: Boolean,
+                        value: true
+                    },
                     machineType: {
                         type: Array,
                         value: function () {
@@ -280,10 +283,33 @@
                 }
             }
 
-
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+
+            ready() {
+                super.ready()
+                requestAnimationFrame(this._installListeners.bind(this))
+            }
+
+            _installListeners() {
+                this.$.machineNumber.addEventListener('input', this._validateInput.bind(this))
+                this.$.machineName.addEventListener('input', this._validateInput.bind(this))
+                this.$.machineType.addEventListener('input', this._validateInput.bind(this))
+                this.$.machineCapacity.addEventListener('input', this._validateInput.bind(this))
+            }
+
+            _validateInput() {
+                const number = this.$.machineNumber.value;
+                const name = this.$.machineName.value;
+                const type = this.$.machineType.value;
+                const capacity = this.$.machineCapacity.value;
+                if (number && name && type && capacity > 0 && capacity <= 100) {
+                    this.disabled = false
+                } else {
+                    this.disabled = true
+                }
             }
 
             getInstallDate(timestamp) {
@@ -302,10 +328,10 @@
             }
 
             getMachineNumber(length) {
-                if (length === 0) {
-                    return 1;
-                } else {
+                if (length > 0) {
                     return length + 1;
+                } else {
+                    return 1;
                 }
             }
 

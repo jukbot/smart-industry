@@ -345,10 +345,10 @@
             }
 
             getStationNumber(length) {
-                if (length === 0) {
-                    return 1;
-                } else {
+                if (length > 0) {
                     return length + 1;
+                } else {
+                    return 1;
                 }
             }
 

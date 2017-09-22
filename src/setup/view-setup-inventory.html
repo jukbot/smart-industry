@@ -223,6 +223,27 @@
                 this.$.inventoryQuantity.addEventListener('keypress', (e) => this._validateNumber(e))
             }
 
+            _validateInput() {
+                const name = this.$.inventoryName.value
+                const code = this.$.inventoryCode.value
+                const cost = this.$.inventoryCost.value
+                const quantity = this.$.inventoryQuantity.value
+                const decimal = /^(0|[1-9]\d*)(\.\d+)?$/ // alow decimal 2 points
+                const integer = /^(0|[1-9]\d*)$/ // alow only positive interger
+                if (name && code && cost && quantity && cost.match(decimal) && cost <= this.maxInput && quantity.match(integer) && quantity > 0 && quantity <= this.maxInput) {
+                    this.disabled = false
+                } else {
+                    this.disabled = true
+                }
+            }
+
+            _validateNumber(e) {
+                // alow only 0-9
+                if (e.which != 8 && e.which != 0 && e.which < 48 || e.which > 57) {
+                    e.preventDefault();
+                }
+            }
+
             _openAddInventoryCard() {
                 this.showAddInventory = false
             }
@@ -232,10 +253,10 @@
             }
 
             _addInventory() {
-                let name = this.$.inventoryName.value
-                let code = this.$.inventoryCode.value
-                let cost = this.$.inventoryCost.value
-                let quantity = this.$.inventoryQuantity.value
+                const name = this.$.inventoryName.value
+                const code = this.$.inventoryCode.value
+                const cost = this.$.inventoryCost.value
+                const quantity = this.$.inventoryQuantity.value
                 const dateTime = Date.now()
                 const timestamp = Math.floor(dateTime / 1000)
                 if (name && code && cost && quantity) {
@@ -262,27 +283,6 @@
                     this.$.inventoryQuery.ref.child(key).remove()
                     this.toastText = 'notification-delete-success'
                     this.$.toastSetupinventory.open()
-                }
-            }
-
-            _validateNumber(e) {
-                // alow only 0-9
-                if (e.which != 8 && e.which != 0 && e.which < 48 || e.which > 57) {
-                    e.preventDefault();
-                }
-            }
-
-            _validateInput() {
-                let name = this.$.inventoryName.value
-                let code = this.$.inventoryCode.value
-                let cost = this.$.inventoryCost.value
-                let quantity = this.$.inventoryQuantity.value
-                const decimal = /^(0|[1-9]\d*)(\.\d+)?$/ // alow decimal 2 points
-                const integer = /^(0|[1-9]\d*)$/ // alow only positive interger
-                if (name && code && cost && quantity && cost.match(decimal) && cost <= this.maxInput && quantity.match(integer) && quantity > 0 && quantity <= this.maxInput) {
-                    this.disabled = false
-                } else {
-                    this.disabled = true
                 }
             }
 
