@@ -12,11 +12,6 @@
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
-<script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-<script src="https://www.amcharts.com/lib/3/serial.js"></script>
-<script src="https://www.amcharts.com/lib/3/gantt.js"></script>
-<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
-<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
 
 <dom-module id="view-plan-scheduling">
     <template>
@@ -286,7 +281,7 @@
 
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_refreshStatus"><button>Refresh</button></flat-button>
+                        <flat-button class="btn" on-tap="_clearSchedule"><button>CLEAR SCHEDULE</button></flat-button>
                         <flat-button class="btn thunderbird" on-tap="_parallelSchedule"><button>Reschedule</button></flat-button>
                     </div>
                 </div>
@@ -350,9 +345,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-
                                 <div class="cell">Workload</div>
-
                             </template>
                             <template>
                                 <div class="cell">[[item.job_workload]] mins.</div>
@@ -361,9 +354,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-
                                 <div class="cell">Used Machines</div>
-
                             </template>
                             <template>
                                 <div class="cell">[[item.job_machine]]</div>
@@ -448,325 +439,7 @@
             }
 
             initialGanttChart() {
-                AmCharts.useUTC = true;
-                this.chartProperties = AmCharts.makeChart(this.$.chart_div, {
-                    "type": "gantt",
-                    "theme": "light",
-                    "addClassNames": true,
-                    "marginRight": 70,
-                    "period": "hh",
-                    "dataDateFormat": "YYYY-MM-DD",
-                    "balloonDateFormat": "JJ:NN",
-                    "columnWidth": 0.5,
-                    // "listeners": [{
-                    //     "event": "rendered",
-                    //     "method": handleRender
-                    // }],
-                    "valueAxis": {
-                        "type": "date",
-                        "minimum": 7,
-                        "maximum": 31
-                    },
-                    "brightnessStep": 10,
-                    "graph": {
-                        "fillAlphas": 1,
-                        "balloonText": "<b>[[task]]</b>: [[open]] [[value]]"
-                    },
-                    "rotate": true,
-                    "categoryField": "category",
-                    "segmentsField": "segments",
-                    "colorField": "color",
-                    "startDate": "2017-09-21",
-                    "startField": "start",
-                    "endField": "end",
-                    "durationField": "duration",
-                    "dataProvider": [{
-                        "category": "John",
-                        "url": "https://www.google.com.br",
-                        "segments": [{
-                            "start": 7,
-                            "duration": 2,
-                            "color": "#46615e",
-                            "task": "Task #1"
-                        }, {
-                            "duration": 2,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "duration": 2,
-                            "color": "#8dc49f",
-                            "task": "Task #3"
-                        }]
-                    }, {
-                        "category": "Smith",
-                        "segments": [{
-                            "start": 10,
-                            "duration": 2,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "duration": 1,
-                            "color": "#8dc49f",
-                            "task": "Task #3"
-                        }, {
-                            "duration": 4,
-                            "color": "#46615e",
-                            "task": "Task #1"
-                        }]
-                    }, {
-                        "category": "Ben",
-                        "segments": [{
-                            "start": 12,
-                            "duration": 2,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "start": 16,
-                            "duration": 2,
-                            "color": "#FFE4C4",
-                            "task": "Task #4"
-                        }]
-                    }, {
-                        "category": "Mike",
-                        "segments": [{
-                            "start": 9,
-                            "duration": 6,
-                            "color": "#46615e",
-                            "task": "Task #1"
-                        }, {
-                            "duration": 4,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }]
-                    }, {
-                        "category": "Lenny",
-                        "segments": [{
-                            "start": 8,
-                            "duration": 1,
-                            "color": "#8dc49f",
-                            "task": "Task #3"
-                        }, {
-                            "duration": 4,
-                            "color": "#46615e",
-                            "task": "Task #1"
-                        }]
-                    }, {
-                        "category": "Scott",
-                        "segments": [{
-                            "start": 15,
-                            "duration": 3,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }]
-                    }, {
-                        "category": "Julia",
-                        "segments": [{
-                            "start": 9,
-                            "duration": 2,
-                            "color": "#46615e",
-                            "task": "Task #1"
-                        }, {
-                            "duration": 1,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "duration": 8,
-                            "color": "#8dc49f",
-                            "task": "Task #3"
-                        }]
-                    }, {
-                        "category": "Bob",
-                        "segments": [{
-                            "start": 9,
-                            "duration": 8,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "duration": 7,
-                            "color": "#8dc49f",
-                            "task": "Task #3"
-                        }]
-                    }, {
-                        "category": "Kendra",
-                        "segments": [{
-                            "start": 11,
-                            "duration": 8,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "start": 16,
-                            "duration": 2,
-                            "color": "#FFE4C4",
-                            "task": "Task #4"
-                        }]
-                    }, {
-                        "category": "Tom",
-                        "segments": [{
-                            "start": 9,
-                            "duration": 4,
-                            "color": "#46615e",
-                            "task": "Task #1"
-                        }, {
-                            "duration": 3,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "duration": 5,
-                            "color": "#8dc49f",
-                            "task": "Task #3"
-                        }]
-                    }, {
-                        "category": "Kyle",
-                        "segments": [{
-                            "start": 6,
-                            "duration": 3,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }]
-                    }, {
-                        "category": "Anita",
-                        "segments": [{
-                            "start": 12,
-                            "duration": 2,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "start": 16,
-                            "duration": 2,
-                            "color": "#FFE4C4",
-                            "task": "Task #4"
-                        }]
-                    }, {
-                        "category": "Jack",
-                        "segments": [{
-                            "start": 8,
-                            "duration": 10,
-                            "color": "#46615e",
-                            "task": "Task #1"
-                        }, {
-                            "duration": 2,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }]
-                    }, {
-                        "category": "Kim",
-                        "segments": [{
-                            "start": 12,
-                            "duration": 2,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "duration": 3,
-                            "color": "#8dc49f",
-                            "task": "Task #3"
-                        }]
-                    }, {
-                        "category": "Aaron",
-                        "segments": [{
-                            "start": 18,
-                            "duration": 2,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "duration": 2,
-                            "color": "#FFE4C4",
-                            "task": "Task #4"
-                        }]
-                    }, {
-                        "category": "Alan",
-                        "segments": [{
-                            "start": 17,
-                            "duration": 2,
-                            "color": "#46615e",
-                            "task": "Task #1"
-                        }, {
-                            "duration": 2,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "duration": 2,
-                            "color": "#8dc49f",
-                            "task": "Task #3"
-                        }]
-                    }, {
-                        "category": "Ruth",
-                        "segments": [{
-                            "start": 13,
-                            "duration": 2,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "duration": 1,
-                            "color": "#8dc49f",
-                            "task": "Task #3"
-                        }, {
-                            "duration": 4,
-                            "color": "#46615e",
-                            "task": "Task #1"
-                        }]
-                    }, {
-                        "category": "Simon",
-                        "segments": [{
-                            "start": 10,
-                            "duration": 3,
-                            "color": "#727d6f",
-                            "task": "Task #2"
-                        }, {
-                            "start": 17,
-                            "duration": 4,
-                            "color": "#FFE4C4",
-                            "task": "Task #4"
-                        }]
-                    }],
-                    "valueScrollbar": {
-                        "autoGridCount": true
-                    },
-                    "chartCursor": {
-                        "cursorColor": "#55bb76",
-                        "valueBalloonsEnabled": false,
-                        "cursorAlpha": 0,
-                        "valueLineAlpha": 0.5,
-                        "valueLineBalloonEnabled": true,
-                        "valueLineEnabled": true,
-                        "zoomable": false,
-                        "valueZoomable": true
-                    },
-                    "export": {
-                        "enabled": true
-                    },
-                    "categoryAxis": {
-                        "gridPosition": "start",
-                        "gridAlpha": 0,
-                        "tickPosition": "start",
-                        "tickLength": 20
-                    }
-                });
 
-                var links = {
-                    'John': 'https://www.uol.com.br',
-                    'Smith': 'https://www.google.com.br',
-                    'Ben': 'https://www.terra.com.br',
-                };
-
-                // function handleRender(event) {
-                //     console.log('rendered');
-                //     this.chartProperties.categoryAxis.addListener("rollOverItem", function (event) {
-                //         event.target.setAttr("cursor", "default");
-                //         event.chart.balloon.borderColor = '#FF0000';
-                //         event.chart.balloon.fillColor = '#FF0000';
-                //         event.chart.balloon.color = '#FFFFFF';
-                //         event.chart.balloon.followCursor(true);
-                //         // event.chart.balloon.changeColor( '#FF0000');
-                //         event.chart.balloon.showBalloon(event.value + " teste");
-                //     });
-
-                //     this.chartProperties.categoryAxis.addListener("rollOutItem", function (event) {
-                //         event.chart.balloon.borderColor = '#000000';
-                //         event.chart.balloon.fillColor = '#FFFFFF';
-                //         event.chart.balloon.color = '#000000';
-                //         event.chart.balloon.hide();
-                //     });
-                // };
             }
 
 
@@ -813,13 +486,7 @@
                         order_status: 'late'
                     });
                     return 0;
-                } else if (status !== 'wip') {
-                    this.$.orderQuery.ref.child(key).update({
-                        order_status: 'waiting'
-                    });
-                    return remain;
                 } else {
-
                     return remain;
                 }
             }
@@ -883,7 +550,7 @@
                 }
             }
 
-            _refreshStatus() {
+            _clearSchedule() {
                 window.alert('Your schedule is the lastest update');
             }
 
