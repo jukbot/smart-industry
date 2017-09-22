@@ -97,6 +97,7 @@
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" data="{{orderItems}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData/order"></firebase-query>
         <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
         <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerItems}}"></firebase-query>
@@ -215,6 +216,7 @@
                     orderNumber: Number,
                     orderItems: Object,
                     factoryPerformance: Object,
+                    factoryOperation: Object,
                     orderProductPart: Object,
                     productSKU: Number,
                     actualQuantity: Number
@@ -223,7 +225,8 @@
 
             static get observers() {
                 return [
-                    'getOrderNumber(orderItems.length)'
+                    'getOrderNumber(orderItems.length)',
+                    ' getOpTime(end, start, op_day)'
                 ]
             }
             ready() {
@@ -258,6 +261,16 @@
 
                 console.log(solver.Solve(model));
                 // {feasible: true, result: 1440-0, table: 8, dresser: 3}
+            }
+
+            getOpTime(end, start, op_day) {
+                if (!end || !start || !op_day) return 0;
+                const endtime = end.replace(/\:/g, '.');
+                const starttime = start.replace(/\:/g, '.');
+                const optime = endtime - starttime;
+                const opday = op_day.split(',').length
+                const totalOptime = optime * opday; // set to global variable
+                return totalOptime;
             }
 
             getOrderNumber(order) {

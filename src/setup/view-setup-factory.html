@@ -99,33 +99,38 @@
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
+        <app-indexeddb-mirror id="factoryProfileIndexDB" key="factory-profile-data" data="{{factoryProfile}}" persisted-data="{{persistedFactoryProfile}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror id="factoryOperationIndexDB" key="factory-operation-data" data="{{factoryOperation}}" persisted-data="{{persistedFactoryOperation}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror id="factoryPerformanceIndexDB" key="factory-performance-data" data="{{factoryPerformance}}" persisted-data="{{persistedFactoryPerformance}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror id="factoryScheduleIndexDB" key="factory-schedule-data" data="{{factorySchedule}}" persisted-data="{{persistedFactorySchedule}}"></app-indexeddb-mirror>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
                 <div class="card">
                     <h1 class="title">{{localize('factory-initialize')}}</h1>
                     <div>
-                        <paper-input label="{{localize('factory-name')}}" id="factoryName" value="[[factoryProfile.name]]" type="text" required always-float-label></paper-input>
-                        <vaadin-combo-box label="{{localize('factory-type')}}" id="factoryType" value="[[factoryProfile.type]]" items="[[factoryType]]"
+                        <paper-input label="{{localize('factory-name')}}" id="factoryName" value="[[persistedFactoryProfile.name]]" type="text" required
+                            always-float-label></paper-input>
+                        <vaadin-combo-box label="{{localize('factory-type')}}" id="factoryType" value="[[persistedFactoryProfile.type]]" items="[[factoryType]]"
                             item-label-path="name" item-value-path="value" loading="[[!factoryType]]" required always-float-label></vaadin-combo-box>
-                        <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[factoryProfile.model]]" items="[[productionModel]]"
-                            item-value-path="value" item-label-path="name" loading="[[!productionModel]]" selected-item="{{selectProductionModel}}"
-                            required always-float-label>
+                        <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[persistedFactoryProfile.model]]"
+                            items="[[productionModel]]" item-value-path="value" item-label-path="name" loading="[[!productionModel]]"
+                            selected-item="{{selectProductionModel}}" required always-float-label>
                             <template>
                                 <div readonly>[[item.name]]</div>
                             </template>
                         </vaadin-combo-box>
-                        <vaadin-combo-box label="Station Concurrency" id="concurrency" value="[[factoryProfile.concurrency]]" items="[[concurrencyItems]]"
+                        <vaadin-combo-box label="Station Concurrency" id="concurrency" value="[[persistedFactoryProfile.concurrency]]" items="[[concurrencyItems]]"
                             item-value-path="value" item-label-path="value" loading="[[!concurrencyItems]]" required always-float-label>
                         </vaadin-combo-box>
-                        <paper-input label="{{localize('operation-start')}}" id="opStart" value="[[factoryOperation.op_start]]" type="time" required
+                        <paper-input label="{{localize('operation-start')}}" id="opStart" value="[[persistedFactoryOperation.op_start]]" type="time"
+                            required pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
+                        <paper-input label="{{localize('operation-end')}}" id="opEnd" value="[[persistedFactoryOperation.op_end]]" type="time" required
                             pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
-                        <paper-input label="{{localize('operation-end')}}" id="opEnd" value="[[factoryOperation.op_end]]" type="time" required pattern="[0-9]{2}:[0-9]{2}"
-                            always-float-label></paper-input>
-                        <paper-input label="{{localize('over-time-start')}}" id="otStart" value="[[factoryOperation.ot_start]]" type="time" required
+                        <paper-input label="{{localize('over-time-start')}}" id="otStart" value="[[persistedFactoryOperation.ot_start]]" type="time"
+                            required pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
+                        <paper-input label="{{localize('over-time-end')}}" id="otEnd" value="[[persistedFactoryOperation.ot_end]]" type="time" required
                             pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
-                        <paper-input label="{{localize('over-time-end')}}" id="otEnd" value="[[factoryOperation.ot_end]]" type="time" required pattern="[0-9]{2}:[0-9]{2}"
-                            always-float-label></paper-input>
 
                         <div class="operation-day-selector">
                             <p>{{localize('operation-day')}}</p>
@@ -139,22 +144,23 @@
                                 <paper-checkbox class="checkbox" tabindex="0" id="saturday" value="sat" noink>Sat</paper-checkbox>
                             </div>
                         </div>
-                        <vaadin-combo-box label="{{localize('productivity-optimization')}}" id="optimizationType" value="[[factoryPerformance.optimize]]"
+                        <vaadin-combo-box label="{{localize('productivity-optimization')}}" id="optimizationType" value="[[persistedFactoryPerformance.optimize]]"
                             items="[[optimizationType]]" item-value-path="value" item-label-path="name" loading="[[!optimizationType]]"
                             required always-float-label>
                             <template>
                                 <div>{{localize(item.value)}}</div>
                             </template>
                         </vaadin-combo-box>
-                        <paper-input label="{{localize('standard-acceptable-utilization')}} (30-100%)" id="workerUtilize" value="[[factoryPerformance.au]]"
+                        <paper-input label="{{localize('standard-acceptable-utilization')}} (30-100%)" id="workerUtilize" value="[[persistedFactoryPerformance.au]]"
                             type="number" min="30" max="100" step="1" auto-validate error-message="Input out of range" required
                             always-float-label></paper-input>
                         <paper-input label="{{localize('standard-machine-efficiency')}} (30-100%)" name="machineStandardEfficiency" id="machineStandardEffi"
-                            value="[[factoryPerformance.meff]]" type="number" min="30" max="100" step="1" auto-validate error-message="Input out of range"
-                            required always-float-label></paper-input>
-                        <paper-input label="{{localize('acceptable-waste')}} (0.00-1.00)" id="acceptWaste" value="[[factoryPerformance.aw]]" type="number"
-                            min="0" max="1" step="0.01" auto-validate error-message="Input out of range" required always-float-label></paper-input>
-                        <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[factorySchedule.interval]]"
+                            value="[[persistedFactoryPerformance.meff]]" type="number" min="30" max="100" step="1" auto-validate
+                            error-message="Input out of range" required always-float-label></paper-input>
+                        <paper-input label="{{localize('acceptable-waste')}} (0.00-1.00)" id="acceptWaste" value="[[persistedFactoryPerformance.aw]]"
+                            type="number" min="0" max="1" step="0.01" auto-validate error-message="Input out of range" required
+                            always-float-label></paper-input>
+                        <paper-input label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[persistedFactorySchedule.interval]]"
                             type="number" min="1" max="30" step="1" auto-validate error-message="Input out of range" required
                             always-float-label></paper-input>
 
@@ -188,23 +194,23 @@
                             <p>{{localize('operation-day')}}</p>
                         </div>
                         <div class="flex-item">
-                            <p><span>[[factoryProfile.name]]</span></p>
+                            <p><span>[[persistedFactoryProfile.name]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getFactoryType(factoryProfile.type)]]</span></p>
+                            <p><span>[[getFactoryType(persistedFactoryProfile.type)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getProductionModel(factoryProfile.model)]]</span></p>
+                            <p><span>[[getProductionModel(persistedFactoryProfile.model)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p id="concurrencyData"><span>[[factoryProfile.concurrency]]</span></p>
+                            <p id="concurrencyData"><span>[[persistedFactoryProfile.concurrency]]</span></p>
                             <div class="sidebar-menu-line" role="separator" id="concurrencyDataSeparate"></div>
-                            <p><span>[[factoryOperation.op_start]] </span></p>
+                            <p><span>[[persistedFactoryOperation.op_start]] </span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[factoryOperation.op_end]]</span></p>
+                            <p><span>[[persistedFactoryOperation.op_end]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[factoryOperation.ot_start]]</span></p>
+                            <p><span>[[persistedFactoryOperation.ot_start]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[factoryOperation.ot_end]]</span></p>
+                            <p><span>[[persistedFactoryOperation.ot_end]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getOperationDay(factoryOperation.op_day)]]</span></p>
+                            <p><span>[[getOperationDay(persistedFactoryOperation.op_day)]]</span></p>
                         </div>
                     </div>
                 </div>
@@ -227,19 +233,19 @@
                             <p>{{localize('next-reschedule')}}</p>
                         </div>
                         <div class="info-group flex-item">
-                            <p><span>{{localize(factoryPerformance.optimize)}}</span></p>
+                            <p><span>{{localize(persistedFactoryPerformance.optimize)}}</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[factoryPerformance.au]] &#37;</span></p>
+                            <p><span>[[persistedFactoryPerformance.au]] &#37;</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[factoryPerformance.meff]] &#37;</span></p>
+                            <p><span>[[persistedFactoryPerformance.meff]] &#37;</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[factoryPerformance.aw]]</span></p>
+                            <p><span>[[persistedFactoryPerformance.aw]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[factorySchedule.interval]] {{localize('day')}}</span></p>
+                            <p><span>[[persistedFactorySchedule.interval]] {{localize('day')}}</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getLastInterval(factorySchedule.start_interval)]]</span></p>
+                            <p><span>[[getLastInterval(persistedFactorySchedule.start_interval)]]</span></p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</span></p>
+                            <p><span>[[getNextInterval(persistedFactorySchedule.start_interval, persistedFactorySchedule.interval)]]</span></p>
                         </div>
                     </div>
                 </div>
@@ -330,7 +336,7 @@
 
             static get observers() {
                 return [
-                    'setOperationDay(factoryOperation.op_day)',
+                    'setOperationDay(persistedFactoryOperation.op_day)',
                     'isParallelModel(selectProductionModel.value)'
                 ]
             }
@@ -367,24 +373,24 @@
                 if (fn && ft && mod && opt && aw && au && inte && meff && op_start &&
                     op_end && op_day && ot_start && ot_end &&
                     this.$.workerUtilize.validate() && this.$.machineStandardEffi.validate() && this.$.acceptWaste.validate() && this.$.scheduleInterval.validate()) {
-                    this.set('factoryProfile.name', fn)
-                    this.set('factoryProfile.type', ft)
-                    this.set('factoryProfile.model', mod)
+                    this.set('persistedFactoryProfile.name', fn)
+                    this.set('persistedFactoryProfile.type', ft)
+                    this.set('persistedFactoryProfile.model', mod)
                     if (con) {
-                        this.set('factoryProfile.concurrency', con)
+                        this.set('persistedFactoryProfile.concurrency', con)
                     } else {
-                        this.set('factoryProfile.concurrency', 2)
+                        this.set('persistedFactoryProfile.concurrency', 2)
                     }
-                    this.set('factoryPerformance.optimize', opt)
-                    this.set('factoryPerformance.aw', aw)
-                    this.set('factoryPerformance.au', au)
-                    this.set('factoryPerformance.meff', meff)
-                    this.set('factorySchedule.interval', inte)
-                    this.set('factoryOperation.op_start', op_start)
-                    this.set('factoryOperation.op_end', op_end)
-                    this.set('factoryOperation.op_day', op_day)
-                    this.set('factoryOperation.ot_start', ot_start)
-                    this.set('factoryOperation.ot_end', ot_end)
+                    this.set('persistedFactoryPerformance.optimize', opt)
+                    this.set('persistedFactoryPerformance.aw', aw)
+                    this.set('persistedFactoryPerformance.au', au)
+                    this.set('persistedFactoryPerformance.meff', meff)
+                    this.set('persistedFactorySchedule.interval', inte)
+                    this.set('persistedFactoryOperation.op_start', op_start)
+                    this.set('persistedFactoryOperation.op_end', op_end)
+                    this.set('persistedFactoryOperation.op_day', op_day)
+                    this.set('persistedFactoryOperation.ot_start', ot_start)
+                    this.set('persistedFactoryOperation.ot_end', ot_end)
                     this.$.toastSaveFactoryInfoSuccess.open()
                 } else {
                     this.$.toastErrorIncompleteInput.open()
@@ -447,7 +453,7 @@
                     let nextInterval = dd + '/' + mm + '/' + yyyy
                     return nextInterval
                 } else {
-                    this.set('factorySchedule.start_interval', current)
+                    this.set('persistedFactorySchedule.start_interval', current)
                 }
             }
 
