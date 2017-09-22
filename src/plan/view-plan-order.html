@@ -135,7 +135,7 @@
                         step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
                     <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2020-01-01" name="delivery" id="deliverySelector"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
-                    <flat-button on-tap="saveValue" class="btn" title="Save to archive"><button>Save Order</button></flat-button>
+                    <flat-button on-tap="linearProgramming" class="btn" title="Save to archive"><button>Save Order</button></flat-button>
                     <flat-button on-tap="createOrder" class="shamrock btn" title="Add order"><button>Add to schedule</button></flat-button>
                 </div>
             </li>
@@ -214,6 +214,7 @@
                     language: String,
                     todayDate: String,
                     orderNumber: Number,
+                    weekOptime: Number,
                     orderItems: Object,
                     factoryPerformance: Object,
                     factoryOperation: Object,
@@ -226,14 +227,14 @@
             static get observers() {
                 return [
                     'getOrderNumber(orderItems.length)',
-                    ' getOpTime(end, start, op_day)'
+                    'getOpTime(factoryOperation.op_end, factoryOperation.op_start, factoryOperation.op_day)'
                 ]
             }
+
             ready() {
                 super.ready();
                 this.setDatePicker();
                 this.setMinOrderDate();
-                this.linearProgramming();
             }
 
             connectedCallback() {
@@ -243,24 +244,25 @@
 
             linearProgramming() {
                 const optimizeRule = this.factoryPerformance.optimize;
+                if (optimizeRule === 'profile') {
+                    let model = {
+                        "optimize": "profit",
+                        "opType": "max",
+                        "constraints": {
+                            "wood": { "max": 300 },
+                            "labor": { "max": this.weekOptime },
+                            "storage": { "max": 400 }
+                        },
+                        "variables": {
+                            "table": { "wood": 30, "labor": 5, "profit": 1200, "table": 1, "storage": 30 },
+                            "dresser": { "wood": 20, "labor": 10, "profit": 1600, "dresser": 1, "storage": 50 }
+                        },
+                        "ints": { "table": 1, "dresser": 1 }
+                    }
 
-                let model = {
-                    "optimize": "profit",
-                    "opType": "max",
-                    "constraints": {
-                        "wood": { "max": 300 },
-                        "labor": { "max": 110 },
-                        "storage": { "max": 400 }
-                    },
-                    "variables": {
-                        "table": { "wood": 30, "labor": 5, "profit": 1200, "table": 1, "storage": 30 },
-                        "dresser": { "wood": 20, "labor": 10, "profit": 1600, "dresser": 1, "storage": 50 }
-                    },
-                    "ints": { "table": 1, "dresser": 1 }
+                    console.log(solver.Solve(model));
+                    // {feasible: true, result: 1440-0, table: 8, dresser: 3}
                 }
-
-                console.log(solver.Solve(model));
-                // {feasible: true, result: 1440-0, table: 8, dresser: 3}
             }
 
             getOpTime(end, start, op_day) {
@@ -269,8 +271,10 @@
                 const starttime = start.replace(/\:/g, '.');
                 const optime = endtime - starttime;
                 const opday = op_day.split(',').length
-                const totalOptime = optime * opday; // set to global variable
-                return totalOptime;
+                const weekOptime = this.weekOptime = optime * opday; // set to global variable
+                console.log(weekOptime)
+                console.log(this.weekOptime)
+                return weekOptime;
             }
 
             getOrderNumber(order) {
