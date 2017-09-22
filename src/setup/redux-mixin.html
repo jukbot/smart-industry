@@ -1,57 +1,57 @@
 <link rel="import" href="/bower_components/polymer-redux/dist/polymer-redux.html">
 <script src="/node_modules/redux/dist/redux.min.js"></script>
 <script>
-    "use strict";
     var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-    function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
     const initial = {
         machines: [],
         editMachines: []
     };
-    // helper function
-    const remove = (index, data) => index === 0 ? data.slice(1) : [...data.slice(0, index), ...data.slice(index + 1)];
+
     const reducer = (state = initial, action) => {
         if (!state) return initial;
         switch (action.type) {
-            case "ADD_MACHINE":
-                const _action$machines = action.machines,
-                    { $key } = _action$machines,
-                    machines = _objectWithoutProperties(_action$machines, ["$key"]);
+            case 'ADD_MACHINE':
+                // If state machine is undefined just initial it
+                if (!state.machines) {
+                    state.machines = initial.machines;
+                }
+                const { $key, ...newMachines } = action.machines;
+                const newerMachines = _extends({}, newMachines, { mid: action.machines.$key });
                 return _extends({}, state, {
-                    machines: [...state.machines, action.machines]
+                    machines: [...state.machines, newerMachines]
                 });
-            case "REMOVE_MACHINE":
-                // console.log('removeMachine', action.index, state.machines, remove)
+            case 'REMOVE_MACHINE':
                 if (state.machines) {
                     return _extends({}, state, {
-                        machines: remove(action.index, state.machines)
+                        machines: [...state.machines.slice(0, action.index), ...state.machines.slice(action.index + 1)]
                     });
                 }
                 return state;
-            case "EDIT_ADD_MACHINE":
-                if (state.editMachines) {
-                    const _action$editMachines = action.editMachines,
-                        { $key } = _action$editMachines,
-                        editMachines = _objectWithoutProperties(_action$editMachines, ["$key"]);
+            case 'EDIT_ADD_MACHINE':
+                // If state machine is undefined just initial it
+                if (!state.editMachines) {
+                    state.editMachines = initial.editMachines;
+                } else if (state.editMachines) {
+                    const { $key, ...newEditMachines } = action.editMachines;
+                    const newerEditMachines = _extends({}, newEditMachines, { mid: action.editMachines.$key });
                     return _extends({}, state, {
-                        editMachines: [...state.editMachines, action.editMachines]
+                        editMachines: [...state.editMachines, newerEditMachines]
                     });
                 }
                 return state;
-            case "EDIT_REMOVE_MACHINE":
-                // console.log('editRemoveMachine', action.index, state.editMachines, remove)
+            case 'EDIT_REMOVE_MACHINE':
                 if (state.editMachines) {
                     return _extends({}, state, {
-                        editMachines: remove(action.index, state.editMachines)
+                        editMachines: [...state.editMachines.slice(0, action.index), ...state.editMachines.slice(action.index + 1)]
                     });
                 }
                 return state;
-            case "EDIT_SET_MACHINE":
+            case 'EDIT_SET_MACHINE':
                 return _extends({}, state, {
                     editMachines: action.editMachines
                 });
-            case "CLEAR_MACHINE":
+            case 'CLEAR_MACHINE':
                 return [];
             default:
                 return state;
