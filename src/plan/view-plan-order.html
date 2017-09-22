@@ -9,6 +9,8 @@
 <link rel="import" href="/bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/bower_components/vaadin-material-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/sugar.html">
+<link rel="import" href="/lib/jsLPSolver.html">
+<!-- <link rel="import" href="/lib/require.html"> -->
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -228,11 +230,34 @@
                 super.ready();
                 this.setDatePicker();
                 this.setMinOrderDate();
+                this.linearProgramming();
             }
 
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+
+            linearProgramming() {
+                const optimizeRule = this.factoryPerformance.optimize;
+
+                let model = {
+                    "optimize": "profit",
+                    "opType": "max",
+                    "constraints": {
+                        "wood": { "max": 300 },
+                        "labor": { "max": 110 },
+                        "storage": { "max": 400 }
+                    },
+                    "variables": {
+                        "table": { "wood": 30, "labor": 5, "profit": 1200, "table": 1, "storage": 30 },
+                        "dresser": { "wood": 20, "labor": 10, "profit": 1600, "dresser": 1, "storage": 50 }
+                    },
+                    "ints": { "table": 1, "dresser": 1 }
+                }
+
+                console.log(solver.Solve(model));
+                // {feasible: true, result: 1440-0, table: 8, dresser: 3}
             }
 
             getOrderNumber(order) {

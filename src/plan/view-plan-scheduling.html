@@ -8,7 +8,6 @@
 <link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
-<link rel="import" href="/lib/google-chart.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -428,7 +427,6 @@
             }
             ready() {
                 super.ready()
-                this.initialGanttChart()
             }
 
             connectedCallback() {
@@ -437,11 +435,6 @@
                 //this.parallelSchedule();
 
             }
-
-            initialGanttChart() {
-
-            }
-
 
             getNextInterval(last_timestamp, interval) {
                 if (!last_timestamp || !interval) return 0

@@ -1,48 +1,60 @@
-<!-- <link rel="import" href="/bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="/bower_components/polymer-redux/polymer-redux.html">
 <script src="/node_modules/redux/dist/redux.min.js"></script>
 <script>
     const initial = {
         machines: [],
         editMachines: []
     };
-    // helper function
-    const remove = (index, data) => index === 0 ? data.slice(1) : [
-        ...data.slice(0, index),
-        ...data.slice(index + 1)
-    ]
+
     const reducer = (state = initial, action) => {
         if (!state) return initial;
         switch (action.type) {
             case 'ADD_MACHINE':
-                const { $key, ...machines } = action.machines
+                // If state machine is undefined just initial it
+                if (!state.machines) {
+                    state.machines = initial.machines
+                }
+                console.log('addMachine', action.machines, state.machines)
+                const { $key, ...newMachines } = action.machines
+                const newerMachines = { ...newMachines, mid: action.machines.$key };
                 return {
                     ...state,
-                    machines: [...state.machines, action.machines]
+                    machines: [...state.machines, newerMachines]
                 }
             case 'REMOVE_MACHINE':
-                // console.log('removeMachine', action.index, state.machines, remove)
+                console.log('removeMachine', action.index, state.machines)
                 if (state.machines) {
                     return {
                         ...state,
-                        machines: remove(action.index, state.machines)
+                        machines: [
+                            ...state.machines.slice(0, action.index),
+                            ...state.machines.slice(action.index + 1)
+                        ]
                     }
                 }
                 return state
             case 'EDIT_ADD_MACHINE':
-                if (state.editMachines) {
-                    const { $key, ...editMachines } = action.editMachines
+                // If state machine is undefined just initial it
+                if (!state.editMachines) {
+                    state.editMachines = initial.editMachines
+                }
+                else if (state.editMachines) {
+                    const { $key, ...newEditMachines } = action.editMachines
+                    const newerEditMachines = { ...newEditMachines, mid: action.editMachines.$key };
                     return {
                         ...state,
-                        editMachines: [...state.editMachines, action.editMachines]
+                        editMachines: [...state.editMachines, newerEditMachines]
                     }
                 }
                 return state
             case 'EDIT_REMOVE_MACHINE':
-                // console.log('editRemoveMachine', action.index, state.editMachines, remove)
                 if (state.editMachines) {
                     return {
                         ...state,
-                        editMachines: remove(action.index, state.editMachines)
+                        editMachines: [
+                            ...state.editMachines.slice(0, action.index),
+                            ...state.editMachines.slice(action.index + 1)
+                        ]
                     }
                 }
                 return state
@@ -59,4 +71,5 @@
     };
     const store = Redux.createStore(reducer);
     const ReduxMixin = PolymerRedux(store);
-</script> -->
+
+</script>

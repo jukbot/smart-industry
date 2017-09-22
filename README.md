@@ -2,7 +2,6 @@
 [![Build Status](https://semaphoreci.com/api/v1/jukbot/smart-industry/branches/master/shields_badge.svg)](https://semaphoreci.com/jukbot/smart-industry)
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
 [![Dependency Status](https://gemnasium.com/badges/github.com/jukbot/smart-industry.svg)](https://gemnasium.com/github.com/jukbot/smart-industry)
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 [![GitHub (pre-)release](https://img.shields.io/github/release/jukbot/smart-industry/all.svg)](https://github.com/jukbot/smart-industry/releases/)
 [![Polymer 2 supported](https://img.shields.io/badge/Polymer2-supported-f50057.svg)](https://github.com/jukbot/smart-industry/)
@@ -34,11 +33,6 @@ In particular, the following processes and algorithms will be used in this proje
 
 ``Resource Usage Optimization using Linear Programming (LP)``
 Linear programming (LP) is used for resource optimization, as long as the output function is linear.  This helps in cases where there are feasible solutions, or better yet, optimal solutions. However, if specific algorithms are required, the correlation values of the outcome may be weak. LP can only solve convex problems directly.
-
-``Process Optimization using Statistical Process Control (SPC)``
-Statistical Process Control (SPC) is the statistical methods that apply in monitoring, corrective action and documenting the error results in production including material, worker, machine and environment. The strategy of SPC consists of collecting historical data in a perfect production line without error. Then, the data is analyzed and used to define the control line of production. This will be used as standard in warning of disorder information that occurs in the present or future which improves the process and product quality at the time. The benefit of SPC is we can decrease the cost of production by reducing repetitive manufacturing or damage of an item from an error in the production line. This provides useful information to an engineer to understand the root cause.
-
-SPC can be used in industry and business services, but mostly used in industries like the electronics industry, automotive industry, food processing industry, chemical and petrochemical industry, metal industry, paper industry and more. Overall, there are 5 factors that affect the production process and as a result, the customer satisfaction level. These factors include the environment, the equipment used in production, the methods, the quality of materials and the people who are operating the process. 
 
 ``Overall Equipment Effectiveness (OEE)``
 Overall Equipment Effectiveness (OEE) is a tool used to measure manufacturing performance. In general, there are a lot of data and a large number of measurement methods that are outdated and cannot be used to improve productivity. Sometimes there are too many criteria that are unrelated to each other and an inconsistency of fragmented data. Thus, OEE is an ideal way to measure the quality standard of manufacturing apart from knowing the machine’s performance. It can provide information about the cause of performance loss and can suggest ways to decrease that loss accurately and systematically. 
@@ -95,20 +89,23 @@ NodeJS (required version >= 6.x)
 
     https://nodejs.org/en/
 
-Install [Yarn](https://yarnpkg.com/en/)
+Install [npm](https://www.npmjs.com) (required version >= 5.x)
+
+    npm i npm -g
+
+Install [Yarn](https://yarnpkg.com/en/) (required version >= 1.0.2)
 
     npm install -g yarn
 
-Install [polymer-cli](https://github.com/Polymer/polymer-cli): (require version >= 1.5.x)
+Install [polymer-cli](https://github.com/Polymer/polymer-cli): (require version >= 1.5.5)
 
     yarn add global polymer-cli
 
-`Note: polymer-cli is not able to install with npm version 5.x.x for now. Please use yarn or npm version 4.x.x to install.`
+`Note: polymer-cli is not able to install with npm version 5.x.x for now. Please use yarn to install.`
 
-Install bower: (require version >= 1.8.x)
+Install bower: (require version >= 1.8.2)
 
     yarn add global bower
-
 
 ### Start the development server
 
@@ -131,15 +128,17 @@ Build the project:
 
 ### Preview the build
 
-This command serves the minified version of the app at `http://127.0.0.1:8081`
-in an unbundled state, as it would be served by a push-compatible server:
-
-    polymer serve --open
-
 This command serves the production version of the app at `http://localhost:8080`
 generated using fragment bundling:
 
-    polymer serve build/default
+    polymer serve build/default --open
+
+### Run lint
+
+This command will run
+[Polymer Lint](https://github.com/Polymer/polymer-cli) 
+
+    polymer lint --input src/**/*.html
 
 ### Run tests
 

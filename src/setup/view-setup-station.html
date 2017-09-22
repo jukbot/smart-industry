@@ -12,7 +12,7 @@
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 <link rel="import" href="../style/flat-icons.html">
-<link rel="import" href="redux-mixin.html">
+<link rel="import" href="redux-mixin-es2017.html">
 
 <dom-module id="view-setup-station">
     <template>
@@ -388,17 +388,15 @@
                 this.clearField();
                 if (this.machines) {
                     this.dispatch('clear');
+                    this.machines = [];
                 }
             }
 
             _addMachine() {
                 let selector = this.$.machineSelector
-                let machines = this.machines = [];
-
                 if (selector.value) {
                     // if found duplicate it will return index > -1
-                    let isDuplicated = machines.map(item => item.number).indexOf(selector.selectedItem.number) > -1
-
+                    let isDuplicated = this.machines.map(item => item.number).indexOf(selector.selectedItem.number) > -1
                     if (this.machines.length < this.stationMaxMachine) {
                         if (isDuplicated) {
                             window.alert("You already added this machine")
@@ -417,17 +415,20 @@
 
             _removeMachine(e) {
                 if (this.machines.length > 0) {
-                    this.dispatch('remove', e.currentTarget.number);
+                    if (window.confirm("Delete this machines ?") == true) {
+                        this.dispatch('remove', e.currentTarget.number);
+                    }
                 }
             }
 
             _edit_addMachine() {
                 let selector = this.$.edit_machineSelector
-                let machines = this.editMachines
-
                 if (selector.value) {
                     // if found duplicate it will return index > -1
-                    let isDuplicated = machines.map(item => item.number).indexOf(selector.selectedItem.number) > -1
+                    if (!this.editMachines) {
+                        this.editMachines = [];
+                    }
+                    let isDuplicated = this.editMachines.map(item => item.number).indexOf(selector.selectedItem.number) > -1
 
                     if (this.editMachines.length < this.stationMaxMachine) {
                         if (isDuplicated) {
@@ -447,7 +448,9 @@
 
             _edit_removeMachine(e) {
                 if (this.editMachines.length > 0) {
-                    this.dispatch('editRemove', e.currentTarget.number);
+                    if (window.confirm("Delete this machines ?") == true) {
+                        this.dispatch('editRemove', e.currentTarget.number);
+                    }
                 }
             }
 
@@ -455,16 +458,17 @@
                 const sname = this.$.stationName.value;
                 const snumber = this.$.stationNumber.value;
                 const smachine = this.machines;
-                if (sname && snumber && machine.length > 0) {
+                if (sname && snumber && smachine.length > 0) {
                     this.$.stationQuery.ref.push({
                         st_name: sname,
                         st_number: snumber,
                         st_machine: smachine
                     });
                     this.clearField();
-                    this.machines = [];
                     this.dispatch('clear');
+                    this.machines = [];
                     this.$.toastAddStation.open();
+                    this._openStationMainCard();
                 } else {
                     this.$.toastEmptyAddStation.open();
                 }
@@ -479,13 +483,12 @@
             }
 
             _saveStation(e) {
-                //let key = e.currentTarget.station.$key;
                 const sname = this.$.edit_stationName.value;
                 const smachine = this.editMachines;
-                if (sname && smachine.length > 0) {
+                if (sname && smachine.length >= 0) {
                     this.$.editStationQuery.ref.update({
-                        name: sname,
-                        machine: smachine
+                        st_name: sname,
+                        st_machine: smachine
                     });
                 }
                 this.$.toastSaveStation.open()

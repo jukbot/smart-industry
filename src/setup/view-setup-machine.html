@@ -331,7 +331,7 @@
             _addMachine() {
                 const number = this.$.machineNumber.value;
                 const name = this.$.machineName.value;
-                const capacity = this.$machineCapacity.value;
+                const capacity = this.$.machineCapacity.value;
                 const type = this.$.machineType.value;
                 const code = this.$.machineType.selectedItem.code;
                 const install = Math.round(new Date().getTime() / 1000.0);
