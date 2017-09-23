@@ -302,13 +302,13 @@
                 return this.optimalQuantity || 0
             }
 
-            getOpTime(end, start, op_day) {
-                if (!end || !start || !op_day) return 0;
+            getOpTime(end, start, opday) {
+                if (!end || !start || !opday) return 0;
                 const endtime = end.replace(/\:/g, '.');
                 const starttime = start.replace(/\:/g, '.');
                 const optime = endtime - starttime;
-                const opday = op_day.split(',').length
-                const weekOptime = this.weekOptime = optime * opday; // set to global variable
+                const opday_length = opday.split(',').length
+                const weekOptime = this.weekOptime = optime * opday_length; // set to global variable
                 return weekOptime;
             }
 
