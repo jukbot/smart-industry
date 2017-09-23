@@ -155,7 +155,6 @@
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             data="{{stationItems}}"></firebase-query>
-        <app-indexeddb-mirror key="station-data" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <iron-ajax url="../data/chart.json" auto handle-as="json" last-response="{{chartData}}"></iron-ajax>
         <ul class="app-grid">
@@ -362,9 +361,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-
                                 <div class="cell">Status</div>
-
                             </template>
                             <template>
                                 <div class="cell" style$="color:[[getColorStatus(item.job_status)]]">[[getOrderStatus(item.job_status)]]</div>
@@ -385,7 +382,7 @@
                     </vaadin-grid>
                     <div class="center">
                         <iron-selector selected="{{station}}" attr-for-selected="name" fallback-selection="1" role="navigation">
-                            <template is="dom-repeat" items="[[persistedStationData]]" as="stationItem">
+                            <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
                                 <flat-button class="btn" name="[[stationItem.st_number]]"><button>Station [[stationItem.st_number]]</button></flat-button>
                             </template>
                         </iron-selector>
@@ -396,7 +393,37 @@
             <li>
                 <div class="card">
                     <h1 class="title">Job Scheduling Gantt Chart</h1>
-                    <!-- <div id="chart_div"></div> -->
+                    <vaadin-columnrange-chart id="column-range-resource-usage">
+                        <chart inverted="true"></chart>
+                        <chart-title>Resource usage</chart-title>
+                        <x-axis>
+                            <categories>test
+                                <!-- <template is="dom-repeat" items="[[stationItems]]" as="stationItem">[[stationItem.st_number]],</template> -->
+                            </categories>
+                            <categories>apple</categories>
+                        </x-axis>
+                        <y-axis type="datetime">
+                            <chart-title>Time</chart-title>
+                        </y-axis>
+                        <tooltip formatter="function () {return this.series.name +': '+ Highcharts.dateFormat('%H:%M', this.point.low) + ' - ' + Highcharts.dateFormat('%H:%M', this.point.high)}"></tooltip>
+                        <plot-options>
+                            <columnrange grouping="false">
+                                <data-labels enabled="true" inside="true" color="white" formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
+
+                            </columnrange>
+                        </plot-options>
+                        <data-series name="Order 1">
+                            <color>#85a637</color>
+                            <!-- STATION 1 / STATION 2 / STATION 3 / STATION 4 -->
+                            <data>[Date.UTC(2017,9,23,8,0,0),Date.UTC(2017,9,23,10,0,0)], [Date.UTC(2017,9,23,13,0,0),Date.UTC(2017,9,23,17,0,0)]
+                            </data>
+                        </data-series>
+                        <!-- <data-series name="Order 2">
+                            <color>#ff0000</color>
+                            <data>[Date.UTC(2013,5,7,12,0,0),Date.UTC(2013,5,7,14,0,0)]</data>
+                        </data-series> -->
+
+                    </vaadin-columnrange-chart>
                 </div>
             </li>
         </ul>

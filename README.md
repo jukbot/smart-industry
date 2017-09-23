@@ -103,9 +103,15 @@ Install [polymer-cli](https://github.com/Polymer/polymer-cli): (require version 
 
 `Note: polymer-cli is not able to install with npm version 5.x.x for now. Please use yarn to install.`
 
-Install bower: (require version >= 1.8.2)
+Install [bower](https://bower.io/) (require version >= 1.8.2)
 
     yarn add global bower
+
+
+### Install dependency
+
+    npm install
+    bower install
 
 ### Start the development server
 
