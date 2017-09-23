@@ -138,7 +138,7 @@
 
       clearNotification() {
         if (confirm("Are you sure do you want to clear all notifacation ?") == true) {
-          this.$.orderQuery.ref.remove();
+          this.$.notificationQuery.ref.remove();
           this.alertText = "Deleted all notification successful";
           this.$.toastAlert.open();
         }

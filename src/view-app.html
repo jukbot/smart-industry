@@ -54,7 +54,7 @@
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
 
     <app-drawer-layout id="layout" fullbleed>
-      <app-drawer id="drawer" slot="drawer" tabindex="-1">
+      <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open>
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-logo-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -91,7 +91,7 @@
           </paper-tooltip>
           <p>[[persistedUserData.displayname]]</p>
           <p class="online">[[getOnlineStatus(online)]]</p>
-          <p>{{localize('version')}} 1.0.5</p>
+          <p>{{localize('version')}} 1.0.6</p>
         </div>
       </app-drawer>
 

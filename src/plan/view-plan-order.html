@@ -163,25 +163,25 @@
                             <p>Cost</p>
                         </div>
                         <div class="flex-item right-group">
-                            <p><span>[[orderNumber]]</span></p>
+                            <p><span>[[orderNumber]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[selectCustomer.name]]</span></p>
+                            <p><span>[[selectCustomer.name]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[setProductPart(selectProduct)]]</span></p>
+                            <p><span>[[setProductPart(selectProduct)]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[setProductSKU(selectProduct.sku)]]</span></p>
+                            <p><span>[[setProductSKU(selectProduct.sku)]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span><template is="dom-repeat" items="[[selectProduct.part]]" as="productPart">
                                           [[productPart.name]]
-                                      </template></span></p>
+                                      </template></span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getActualQuantity(amount)]]</span></p>
+                            <p><span>[[getActualQuantity(amount)]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getSumProductTime(selectProduct.part,amount)]]</span></p>
+                            <p><span>[[getSumProductTime(selectProduct.part,amount)]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[delivery]]</span></p>
+                            <p><span>[[delivery]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getProductCost(selectProduct.cost,amount)]]</span></p>
+                            <p><span>[[getProductCost(selectProduct.cost,amount)]]</span>&nbsp;</p>
                         </div>
                     </div>
                 </div>
@@ -272,7 +272,6 @@
                 const optime = endtime - starttime;
                 const opday = op_day.split(',').length
                 const weekOptime = this.weekOptime = optime * opday; // set to global variable
-                console.log(weekOptime)
                 return weekOptime;
             }
 
@@ -434,25 +433,27 @@
             // CREATE ORDER
             createOrder() {
                 const orderNo = this.orderNumber;
-                const customerID = this.$.customerSelector.value;
+                const orderCustomerName = this.$.customerSelector.value;
                 const orderDate = Math.round(new Date().getTime() / 1000.0);
                 const orderProductName = this.$.productSelector.value;
                 const orderProductPart = this.orderProductPart;
+                const orderProductProcess = this.$.productSelector.selectedItem.process;
                 const orderProductSKU = this.productSKU;
                 const orderQuantity = this.actualQuantity;
                 const orderDuration = this.orderDuration;
                 const orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
                 const orderColor = this.getRandomColor();
 
-                if (orderNo !== "" && customerID !== "" && orderProductName !== "" && orderProductPart !== "" &&
-                    orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery))) {
+                if (orderNo !== "" && orderCustomerName !== "" && orderProductName !== "" && orderProductPart !== "" &&
+                    orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery))) {
 
                     this.$.orderQuery.ref.push({
                         order_date: orderDate,
                         order_no: orderNo,
-                        order_customer: customerID,
+                        order_customer: orderCustomerName,
                         order_product_name: orderProductName,
                         order_product_part: orderProductPart,
+                        order_product_process: orderProductProcess,
                         order_product_sku: orderProductSKU,
                         order_quantity: orderQuantity,
                         order_duration: orderDuration,
@@ -464,14 +465,14 @@
                         order_date: orderDate,
                         order_delivery: orderDelivery,
                         order_no: orderNo,
-                        order_customer: customerID,
+                        order_customer: orderCustomerName,
                         order_product: orderProductName,
                         order_quantity: orderQuantity
                     });
                     this.$.notificationQuery.ref.push({
                         created: orderDate,
                         detail: 'Created order no.' + orderNo,
-                        type: 'nornal'
+                        type: 'normal'
                     });
                     window.alert("Added to production schedule successfully");
                     this._clearField();
