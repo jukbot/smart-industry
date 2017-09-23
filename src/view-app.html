@@ -323,6 +323,7 @@
             Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
               const greenColor = 'color: green'
               const crimsonColor = 'color: crimson'
+              const purpleColor = 'color: purple'
               // Load and register pre-caching Service Worker for offline usage
               if ('serviceWorker' in navigator) {
                 // Register service worker
@@ -331,18 +332,18 @@
                 }).then((registration) => {
                   console.info('%cService Worker Registered in ' + registration.scope, greenColor)
                 }).catch((err) => {
-                  console.error('%cService Worker Register Failed ' + err, crimsonColor)
+                  console.error('%cService Worker Register Failed 😖: ' + err, crimsonColor)
                 })
                 // Check state of service worker
                 navigator.serviceWorker.ready.then((registration) => {
-                  console.info('%cService Worker Ready', greenColor)
+                  console.info('%cService Worker Ready 😃', greenColor)
                   return registration.navigationPreload.getState()
                 }).then(state => {
-                  console.info("%cService Worker state: " + JSON.stringify(state), 'color: purple') // state
+                  console.info('%cService Worker state:' + JSON.stringify(state), purpleColor) // state
                 })
               } else {
                 // Browser not support service worker
-                console.warn('%cService Worker is not support by your browser.' + err, crimsonColor)
+                console.warn('%cService Worker is not support by your browser. 😖' + err, crimsonColor)
                 alert('Service Worker is not support by your browser. Please upgrade your browser')
               }
               this._networkChanged()
