@@ -98,6 +98,8 @@
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" data="{{orderItems}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
+        <firebase-query app-name="smart-mes" id="factoryInventory" path="/data/[[k.key]]/factoryData/inventory" order-by-child="code"
+            equal-to="[[inventoryCode]]" data="{{factoryInventory}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData/order"></firebase-query>
         <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
         <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerItems}}"></firebase-query>
@@ -140,9 +142,9 @@
                 </div>
             </li>
             <li>
-                <div class="card order-info">
+                <div class="card">
                     <h1 class="title">Order Detail</h1>
-                    <div class="flex-container">
+                    <div class="flex-container order-info">
                         <div class="flex-item left-group">
                             <p>Order Number</p>
                             <div class="sidebar-menu-line" role="separator"></div>
@@ -161,6 +163,8 @@
                             <p>Delivery Date</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>Cost</p>
+                            <div class="sidebar-menu-line" role="separator" id="optimizeTitleSeparate"></div>
+                            <p id="optimizeTitle">Optimal quantity / week</p>
                         </div>
                         <div class="flex-item right-group">
                             <p><span>[[orderNumber]]</span>&nbsp;</p>
@@ -182,11 +186,14 @@
                             <p><span>[[delivery]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p><span>[[getProductCost(selectProduct.cost,amount)]]</span>&nbsp;</p>
+                            <div class="sidebar-menu-line" role="separator" id="optimizeDataSeparate"></div>
+                            <p id="optimizeData"><span>[[getOptimalQuantity(selectProduct.cost, selectProduct.part)]]</span>&nbsp;</p>
                         </div>
                     </div>
                 </div>
             </li>
         </ul>
+
         <div class="card">
             <h1 class="title">Product Fragmentation</h1>
             <div class="flex-container">
@@ -201,6 +208,7 @@
                 </template>
             </div>
         </div>
+
     </template>
     <script>
         class ViewPlanOrder extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
@@ -213,21 +221,28 @@
                 return {
                     language: String,
                     todayDate: String,
+                    inventoryCode: String,
                     orderNumber: Number,
                     weekOptime: Number,
                     orderItems: Object,
                     factoryPerformance: Object,
                     factoryOperation: Object,
+                    factoryInventory: Object,
                     orderProductPart: Object,
                     productSKU: Number,
-                    actualQuantity: Number
+                    actualQuantity: Number,
+                    optimalQuantity: Object,
+                    selectProduct: Object,
+                    selectCustomer: Object
                 }
             }
 
             static get observers() {
                 return [
                     'getOrderNumber(orderItems.length)',
-                    'getOpTime(factoryOperation.op_end, factoryOperation.op_start, factoryOperation.op_day)'
+                    'getOpTime(factoryOperation.op_end, factoryOperation.op_start, factoryOperation.op_day)',
+                    'isOptimizeModeEnabled(factoryPerformance.optimize)',
+                    'setProductInventory(selectProduct.inventory_code)'
                 ]
             }
 
@@ -242,27 +257,49 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
 
-            linearProgramming() {
-                const optimizeRule = this.factoryPerformance.optimize;
-                if (optimizeRule === 'profile') {
-                    let model = {
-                        "optimize": "profit",
-                        "opType": "max",
-                        "constraints": {
-                            "wood": { "max": 300 },
-                            "labor": { "max": this.weekOptime },
-                            "storage": { "max": 400 }
-                        },
-                        "variables": {
-                            "table": { "wood": 30, "labor": 5, "profit": 1200, "table": 1, "storage": 30 },
-                            "dresser": { "wood": 20, "labor": 10, "profit": 1600, "dresser": 1, "storage": 50 }
-                        },
-                        "ints": { "table": 1, "dresser": 1 }
-                    }
-
-                    console.log(solver.Solve(model));
-                    // {feasible: true, result: 1440-0, table: 8, dresser: 3}
+            isOptimizeModeEnabled(optimizeMode) {
+                if (optimizeMode === 'increase-profit' || optimizeMode === 'reduce-cost') {
+                    this.$.optimizeTitle.hidden = false;
+                    this.$.optimizeTitleSeparate.hidden = false;
+                    this.$.optimizeData.hidden = false;
+                    this.$.optimizeDataSeparate.hidden = false;
+                } else {
+                    this.$.optimizeTitle.hidden = true;
+                    this.$.optimizeTitleSeparate.hidden = true;
+                    this.$.optimizeData.hidden = true;
+                    this.$.optimizeDataSeparate.hidden = true;
                 }
+            }
+
+            getOptimalQuantity(cost, part) {
+                if (!cost || !part) return 0
+                const optimizeRule = this.factoryPerformance.optimize
+                const selectInventory = this.factoryInventory
+                const cycleTimePerItem = this.getCycleTimePerItem(part)
+                if (selectInventory) {
+                    if (optimizeRule === 'increase-profit' && this.selectProduct.inventory_use && this.selectProduct.cost && cycleTimePerItem) {
+                        let i = 0;
+                        let maxMaterial = 0;
+                        for (i in selectInventory) {
+                            maxMaterial = selectInventory[i].quantity
+                        }
+                        let model = {
+                            "optimize": "profit",
+                            "opType": "max",
+                            "constraints": {
+                                "paper": { "max": maxMaterial },
+                                "time": { "max": this.weekOptime }
+                            },
+                            "variables": {
+                                "product": { "paper": this.selectProduct.inventory_use, "time": cycleTimePerItem, "profit": this.selectProduct.cost, "product": 1 }
+                            },
+                            "ints": { "product": 1 }
+                        }
+                        this.optimalQuantity = solver.Solve(model).result;
+                        console.log(solver.Solve(model));
+                    }
+                }
+                return this.optimalQuantity || 0
             }
 
             getOpTime(end, start, op_day) {
@@ -342,6 +379,15 @@
             }
 
             // SET VALUE
+            getCycleTimePerItem(part) {
+                if (!part) return 0;
+                let productCycleArr = []
+                productCycleArr = part.map(part => part.cycle);
+                const flatCycleArr = productCycleArr.reduce((prev, cur) => [...prev, ...cur])
+                const sumCycle = flatCycleArr.reduce((a, b) => a + b);
+                return sumCycle;
+            }
+
             setProductPart(product) {
                 if (!product) return 0;
                 this.orderProductPart = product.part; // set to global variable
@@ -352,6 +398,14 @@
                 if (!sku) return 0;
                 this.productSKU = sku; // set to global variable
                 return sku;
+            }
+
+            setProductInventory(inventoryCode) {
+                if (inventoryCode) {
+                    this.inventoryCode = inventoryCode
+                } else {
+                    this.inventoryCode = ""
+                }
             }
 
             // CONVERT TIME TO STRING

@@ -12,7 +12,6 @@
 <link rel="import" href="style/flat-input.html">
 <link rel="import" href="style/flat-checkbox.html">
 <link rel="import" href="style/flat-button.html">
-<link rel="import" href="view-app.html">
 
 <dom-module id="view-login">
   <template>
@@ -34,7 +33,8 @@
       }
 
       article {
-        padding: 0 100px;
+        width: 35%;
+        margin: 0 auto;
       }
 
       .container {
@@ -193,13 +193,22 @@
         }
         .logo {
           display: block;
-          margin: 20px auto;
+          margin: 12px auto;
+        }
+        .form-title>h2 {
+          margin-bottom: 5px;
         }
         article {
-          padding: 0 30px;
+          width: 90%;
         }
         button {
           font-size: 0.95rem;
+        }
+        flat-input {
+          margin: 0;
+        }
+        p {
+          margin: 5px 0;
         }
       }
     </style>
@@ -209,19 +218,19 @@
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <iron-ajax id="requestSampleData" url="/data/sample.json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <section class="container">
-      <figure class="flex-item left-half">
+      <!-- <figure class="flex-item left-half">
         <article>
           <h1 title="IMES" class="main-title white">IMES</h1>
           <div title="Smart Industry Helper" class="main-describe white">Your Smart Industry Helper</div>
         </article>
-      </figure>
+      </figure> -->
       <div class="flex-item right-half">
         <article>
           <img class="logo" src="/images/logo/logo.svg" title="Logo" alt="app logo">
           <h1 title="IMES" class="main-title mobile-title">IMES</h1>
           <form hidden$="[[!login]]" autocomplete="on" class="login-form" on-submit="_login">
             <div class="form-title">
-              <h2>Log in with IMES account</h2>
+              <h2>Log in</h2>
             </div>
             <flat-input>
               <input type="email" id="accountEmail" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" autofocus
@@ -257,7 +266,7 @@
 
           <form hidden$="[[!register]]" autocomplete="on" class="register-form" on-submit="_register">
             <div class="form-title">
-              <h2>IMES is a new way to plan and<br> manage your factory services.</h2>
+              <h2>Register</h2>
             </div>
             <flat-input>
               <input type="email" id="register_email" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" required
@@ -456,7 +465,7 @@
       _resetPassword() {
         let resetPassword = this.$.resetPassword.value
         if (resetPassword) {
-          this.$.userAuth.sendPasswordresetPassword(resetPassword)
+          this.$.userAuth.sendPasswordResetEmail(resetPassword)
             .then((response) => {
               this.showSuccessToast('Reset password link has been send to your email.')
             })

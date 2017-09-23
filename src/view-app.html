@@ -207,7 +207,7 @@
         return [
           '_routePageChanged(pageData.page)',
           '_handleUser(user)',
-          '_showVerifyAlert(user.emailVerified)',
+          '_verifyEmailAlert(user.emailVerified, signedIn)',
           '_signedInChanged(signedIn)'
         ]
       }
@@ -269,7 +269,7 @@
 
       _handleUser(user) {
         if (user) {
-          console.info(user)
+          //console.info(user)
         }
       }
 
@@ -343,8 +343,8 @@
                 })
               } else {
                 // Browser not support service worker
-                console.warn('%cService Worker is not support by your browser. 😖' + err, crimsonColor)
-                alert('Service Worker is not support by your browser. Please upgrade your browser')
+                console.warn('%cService Worker is not support by your browser.' + err, crimsonColor)
+                alert('Service Worker is not support by your browser. Please upgrade your browser or use Chrome 60+')
               }
               this._networkChanged()
               this.loadComplete = true
@@ -416,8 +416,8 @@
         }
       }
 
-      _showVerifyAlert(verified) {
-        if (!verified) {
+      _verifyEmailAlert(verified, signedIn) {
+        if (!verified && signedIn) {
           this.showAlertToast(
             'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
           )

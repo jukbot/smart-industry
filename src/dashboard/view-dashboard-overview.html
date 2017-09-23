@@ -162,12 +162,12 @@
 
       getNextInterval(last_timestamp, interval) {
         if (!last_timestamp || !interval) return 0;
-        let current = Math.floor(Date.now() / 1000);
-        let diff = current - last_timestamp;
-        let range = interval * 24 * 60 * 60;
+        const current = Math.floor(Date.now() / 1000);
+        const diff = current - last_timestamp;
+        const range = interval * 24 * 60 * 60;
         if (diff <= range) {
-          let nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 * 1000);
-          let nextIntervalDate = new Date(nextIntervalStamp);
+          const nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 * 1000);
+          const nextIntervalDate = new Date(nextIntervalStamp);
           let dd = nextIntervalDate.getDate();
           let mm = nextIntervalDate.getMonth() + 1; //January is 0!
           let yyyy = nextIntervalDate.getFullYear();
@@ -186,13 +186,13 @@
 
       getRemainOpTime(end, start) {
         if (!end || !start) return 0;
-        let date = new Date();
-        let current_hour = date.getHours();
-        let current_minute = date.getMinutes();
-        let current = current_hour + "." + current_minute;
-        let endtime = end.replace(/\:/g, '.');
-        let starttime = start.replace(/\:/g, '.');
-        let timeleft = endtime - parseFloat(current);
+        const date = new Date();
+        const current_hour = date.getHours();
+        const current_minute = date.getMinutes();
+        const current = current_hour + "." + current_minute;
+        const endtime = end.replace(/\:/g, '.');
+        const starttime = start.replace(/\:/g, '.');
+        const timeleft = endtime - parseFloat(current);
         if (parseFloat(current) < starttime || parseFloat(current) > endtime) {
           return "Operation Ended";
         } else {
@@ -203,7 +203,7 @@
       getWaitOrder(orderData) {
         if (!orderData) return 0;
         if (orderData.length > 0) {
-          let query = this.$.orderQuery.ref;
+          const query = this.$.orderQuery.ref;
           query.orderByChild("order_status").equalTo("waiting").on("value", (snapshot) => {
             this.set('waitOrderCount', snapshot.numChildren());
             console.log(snapshot.val())
@@ -216,7 +216,7 @@
       getDoneOrder(orderData) {
         if (!orderData) return 0;
         if (orderData.length > 0) {
-          let query = this.$.orderQuery.ref;
+          const query = this.$.orderQuery.ref;
           query.orderByChild("order_status").equalTo("done").on("child_added", (snapshot) => { this.set('doneOrderCount', snapshot.numChildren()); console.log(snapshot.val()) });
         } else {
           this.set('doneOrderCount', 0);
