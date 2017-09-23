@@ -163,27 +163,35 @@
                                     </template>
                                 </div>
                                 <div class="flex-item">
-                                    <h3>Part SKU</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.sku]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
                                     <h3>Part Process</h3>
                                     <template is="dom-repeat" items="[[item.part]]" as="productPart">
                                         <p>[[getProductProcess(productPart.process)]]</p>
                                     </template>
                                 </div>
                                 <div class="flex-item">
-                                    <h3>Setup time</h3>
+                                    <h3>Setup time (mins)</h3>
                                     <template is="dom-repeat" items="[[item.part]]" as="productPart">
                                         <p>[[productPart.setup]]</p>
                                     </template>
                                 </div>
                                 <div class="flex-item">
-                                    <h3>Cycle time</h3>
+                                    <h3>Cycle time (mins)</h3>
                                     <template is="dom-repeat" items="[[item.part]]" as="productPart">
                                         <p>[[productPart.cycle]]</p>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="details">
+                                <div class="flex-item">
+                                    <h3>Process Number</h3>
+                                    <template is="dom-repeat" items="[[item.process]]" as="productProcess">
+                                        <p>[[getProcessNumber(productProcess.number)]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>Part Required</h3>
+                                    <template is="dom-repeat" items="[[item.process]]" as="productProcess">
+                                        <p>[[productProcess.required]]</p>
                                     </template>
                                 </div>
                             </div>
@@ -230,15 +238,16 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Process</div>
+                                <div class="cell">Part SKU</div>
                             </template>
                             <template>
                                 <div class="cell">
                                     <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[getProductProcess(productPart.process)]]</p>
+                                        <p>[[productPart.sku]]</p>
                                     </template>
                                 </div>
                             </template>
+
                         </vaadin-grid-column>
 
                         <vaadin-grid-column flex="1">
@@ -313,10 +322,13 @@
             }
 
             getProductProcess(process) {
-                if (!process) {
-                    return 0;
-                }
+                if (!process) return
                 return process.split(',').join(' → ');
+            }
+
+            getProcessNumber(processNumber) {
+                if (!processNumber) return 1
+                return processNumber + 1;
             }
 
             _openAddProductCard() {

@@ -175,10 +175,10 @@
                     </paper-item>
                 </template>
             </vaadin-combo-box>
-
-            <flat-button class="fixed-btn" on-tap="_openMachineMainCard"><button>{{localize('dismiss')}}</button></flat-button>
-            <flat-button class="fixed-btn shamrock" on-tap="_saveMachine"><button>{{localize('save')}}</button></flat-button>
-        </div>
+            <div class="center">
+                <flat-button class="fixed-btn" on-tap="_openMachineMainCard"><button>{{localize('dismiss')}}</button></flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_saveMachine"><button>{{localize('save')}}</button></flat-button>
+            </div>
         </div>
         <!-- Machine Management -->
         <div class="card main-card" hidden="[[showListMachine]]">

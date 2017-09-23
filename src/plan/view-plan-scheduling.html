@@ -164,7 +164,7 @@
                     <div class="order-schedule-info">
                         <p>Next Reschedule: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
                         <p>Production Model: [[factoryProfile.model]]</p>
-                        <p>Station Concurrency: [[factoryProfile.concurrency]]</p>
+                        <p id="concurrency">Station Concurrency: [[factoryProfile.concurrency]]</p>
                     </div>
                     <vaadin-grid id="material" items="[[orderItems]]" size="100">
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
@@ -428,7 +428,7 @@
         </ul>
     </template>
     <script>
-        class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.FirebaseDatabaseBehavior, Polymer.AppLocalizeBehavior],
+        class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {
                 return 'view-plan-scheduling'
@@ -451,6 +451,13 @@
                     chartProperties: Object
                 }
             }
+
+            static get observers() {
+                return [
+                    'isParallelModel(factoryProfile.model)'
+                ]
+            }
+
             ready() {
                 super.ready()
             }
@@ -460,6 +467,15 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
                 //this.parallelSchedule();
 
+            }
+
+            isParallelModel(production_model) {
+                if (production_model === 'parallel' || production_model === 'multi') {
+                    this.$.concurrency.hidden = false
+                }
+                else {
+                    this.$.concurrency.hidden = true
+                }
             }
 
             getNextInterval(last_timestamp, interval) {
