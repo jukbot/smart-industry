@@ -207,6 +207,7 @@
         return [
           '_routePageChanged(pageData.page)',
           '_handleUser(user)',
+          '_showVerifyAlert(user.emailVerified)',
           '_signedInChanged(signedIn)'
         ]
       }
@@ -268,7 +269,7 @@
 
       _handleUser(user) {
         if (user) {
-          //console.info(user)
+          console.info(user)
         }
       }
 
@@ -286,8 +287,7 @@
             this._pageLoaded(Boolean(oldPage))
             // other routes are lazy loaded
           } else {
-            // When a load failed, it triggered a 404 which means we need to
-            // eagerly load the 404 page definition
+            // When a load failed, it triggered a 404 which means we need to eagerly load the 404 page definition
             let callback = this._pageLoaded.bind(this, Boolean(oldPage))
             let resolvedPageUrl = this.resolveUrl('view-' + page + '.html')
             Polymer.importHref(
@@ -314,7 +314,6 @@
         // load lazy resources after render and set `loadComplete` when done.
         if (!this.loadComplete) {
           Polymer.RenderStatus.afterNextRender(this, () => {
-
             // trigger lazy import event
             this.importLazyGroup('lazy').then((results) => {
               this.dispatchEvent(new CustomEvent('import-loaded', results));
@@ -358,7 +357,6 @@
       }
 
       _signedInChanged(e) {
-
         Polymer.RenderStatus.beforeNextRender(this, function () {
           Polymer.Async.timeOut.run(() => {
             if (this.signedIn && this.route.path == '/login') {
@@ -371,11 +369,6 @@
             // }
           }, 1)
         })
-        if (this.signedIn && !this.user.emailVerified) {
-          this.showAlertToast(
-            'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
-          )
-        }
       }
 
       _networkChanged() {
@@ -420,6 +413,14 @@
               console.error('Authenticate Failed: ' + error.code)
               this.page = 'error'
             })
+        }
+      }
+
+      _showVerifyAlert(verified) {
+        if (!verified) {
+          this.showAlertToast(
+            'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
+          )
         }
       }
 
