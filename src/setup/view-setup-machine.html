@@ -126,8 +126,7 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" order-by-child="number"
-            data="{{machineItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="editMachineQuery" path="/data/[[k.key]]/factoryData/machine/[[editKey]]" data="{{editMachineItems}}"></firebase-document>
         <app-indexeddb-mirror key="machine-data" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
@@ -152,7 +151,7 @@
             </vaadin-combo-box>
             <div class="center">
                 <flat-button class="fixed-btn" on-tap="_openMachineMainCard"><button>{{localize('dismiss')}}</button></flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_addMachine"><button disabled$="[[disabled]]">{{localize('add')}}</button></flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_addMachine"><button disabled="[[disabled]]">{{localize('add')}}</button></flat-button>
             </div>
         </div>
         <!-- Edit Station Card -->
@@ -296,7 +295,7 @@
             _installListeners() {
                 this.$.machineNumber.addEventListener('input', this._validateInput.bind(this))
                 this.$.machineName.addEventListener('input', this._validateInput.bind(this))
-                this.$.machineType.addEventListener('input', this._validateInput.bind(this))
+                this.$.machineType.addEventListener('value-changed', this._validateInput.bind(this))
                 this.$.machineCapacity.addEventListener('input', this._validateInput.bind(this))
             }
 
@@ -305,7 +304,7 @@
                 const name = this.$.machineName.value;
                 const type = this.$.machineType.value;
                 const capacity = this.$.machineCapacity.value;
-                if (number && name && type && capacity > 0 && capacity <= 100) {
+                if (number && name && type && capacity >= 0 && capacity <= 9999) {
                     this.disabled = false
                 } else {
                     this.disabled = true
@@ -372,6 +371,7 @@
                     });
                     this.clearField();
                     this.$.toastAddMachine.open();
+                    this._openMachineMainCard()
                 } else {
                     this.$.toastEmptyAddMachine.open();
                 }

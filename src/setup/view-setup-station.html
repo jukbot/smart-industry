@@ -155,7 +155,7 @@
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" data="{{stationItems}}"
             order-by-child="st_number"></firebase-query>
         <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" data="{{machineItems}}"
-            order-by-child="number"></firebase-query>
+            order-by-child="name"></firebase-query>
         <firebase-document app-name="smart-mes" id="editStationQuery" path="/data/[[k.key]]/factoryData/station/[[editKey]]" data="{{editStationItems}}"></firebase-document>
         <app-indexeddb-mirror key="machine-data" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
         <app-indexeddb-mirror key="station-data" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
