@@ -164,7 +164,7 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>Cost</p>
                             <div class="sidebar-menu-line" role="separator" id="optimizeTitleSeparate"></div>
-                            <p id="optimizeTitle">Optimal quantity / week</p>
+                            <p id="optimizeTitle">Minimum quantity / week</p>
                         </div>
                         <div class="flex-item right-group">
                             <p><span>[[orderNumber]]</span>&nbsp;</p>
@@ -295,7 +295,9 @@
                             },
                             "ints": { "product": 1 }
                         }
-                        this.optimalQuantity = solver.Solve(model).result;
+                        this.optimalQuantity = solver.Solve(model).product;
+                        console.log(cycleTimePerItem)
+                        console.log(this.weekOptime)
                         console.log(solver.Solve(model));
                     }
                 }
@@ -385,7 +387,7 @@
                 productCycleArr = part.map(part => part.cycle);
                 const flatCycleArr = productCycleArr.reduce((prev, cur) => [...prev, ...cur])
                 const sumCycle = flatCycleArr.reduce((a, b) => a + b);
-                return sumCycle;
+                return sumCycle / 60;
             }
 
             setProductPart(product) {
