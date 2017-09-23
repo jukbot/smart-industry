@@ -15,7 +15,6 @@
 <!-- paper modules -used for component style -->
 <link rel="import" href="/bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="/bower_components/paper-progress/paper-progress.html">
 <link rel="import" href="/bower_components/paper-tooltip/paper-tooltip.html">
 <!-- 3rd party modules -->
 <link rel="import" href="/bower_components/polymerfire/polymerfire.html">
@@ -46,17 +45,16 @@
     </style>
     <!-- <app-analytics key="UA-51514677-9"></app-analytics> ENABLE WHEN DEPLOY PRODUCTION -->
     <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
+    <app-route route="{{route}}" pattern="/:page" data="{{pageData}}" tail="{{subRoute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-change="_signedInChanged"
-      on-error="_handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
 
     <app-drawer-layout id="layout" fullbleed>
-      <app-drawer id="drawer" slot="drawer" tabindex="-1" hidden="[[!user]]">
+      <app-drawer id="drawer" slot="drawer" tabindex="-1">
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-logo-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -82,7 +80,7 @@
         <div class="flex-center">
           <flat-button on-tap="_logout" title="Logout">
             <button type="button">{{localize('logout-button')}}
-              </button>
+                  </button>
           </flat-button>
           <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="User image" alt="user image">
           <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-config="{{tooltipAnimation}}"
@@ -97,50 +95,50 @@
         </div>
       </app-drawer>
 
-      <app-header-layout has-scrolling-region id="mainHeader">
-        <app-header class="main-header" id="header" slot="header" role="banner" hidden="[[!user]]">
-          <paper-progress id="pageLoader" class="progress-loader" indeterminate top-item></paper-progress>
-          <app-toolbar>
-            <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
-            <h2 class="page-title" main-title>{{localize(routeData.page)}}</h2>
-          </app-toolbar>
-        </app-header>
-        <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
-          role="main">
-          <view-dashboard name="dashboard" route="[[subroute]]" hidden$="[[!user]]">
+      <app-header-layout>
+        <template is="dom-if" if="[[user]]">
+          <app-header class="main-header" id="header" slot="header" role="banner">
+            <app-toolbar>
+              <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
+              <h2 class="page-title" main-title>{{localize(pageData.page)}}</h2>
+            </app-toolbar>
+          </app-header>
+        </template>
+        <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+          <view-dashboard name="dashboard" route="[[subRoute]]" hidden$="[[!user]]">
             <div class="container">
               <div class="flex-group">
                 <paper-spinner-lite active></paper-spinner-lite>
               </div>
             </div>
           </view-dashboard>
-          <view-setup name="setup" route="[[subroute]]" hidden$="[[!user]]">
+          <view-setup name="setup" route="[[subRoute]]" hidden$="[[!user]]">
             <div class="container">
               <div class="flex-group">
                 <paper-spinner-lite active></paper-spinner-lite>
               </div>
             </div>
           </view-setup>
-          <view-plan name="plan" route="[[subroute]]" hidden$="[[!user]]">
+          <view-plan name="plan" route="[[subRoute]]" hidden$="[[!user]]">
             <div class="container">
               <div class="flex-group">
                 <paper-spinner-lite active></paper-spinner-lite>
               </div>
             </div>
           </view-plan>
-          <view-track name="track" route="[[subroute]]" hidden$="[[!user]]">
+          <view-track name="track" route="[[subRoute]]" hidden$="[[!user]]">
             <div class="container">
               <div class="flex-group">
                 <paper-spinner-lite active></paper-spinner-lite>
               </div>
             </div>
           </view-track>
-          <view-help name="help" route="[[subroute]]" hidden$="[[!user]]"></view-help>
-          <view-settings name="settings" route="[[subroute]]" hidden$="[[!user]]"></view-settings>
-          <view-404 name="404" route="[[subroute]]" hidden$="[[!user]]"></view-404>
-          <view-offline name="offline" route="[[subroute]]" hidden$="[[!user]]"></view-offline>
-          <view-error name="error" route="[[subroute]]" hidden$="[[!user]]"></view-error>
-          <view-login name="login" route="[[subroute]]" hidden$="[[user]]" style="z-index:999999999"></view-login>
+          <view-help name="help" route="[[subRoute]]" hidden$="[[!user]]"></view-help>
+          <view-settings name="settings" route="[[subRoute]]" hidden$="[[!user]]"></view-settings>
+          <view-404 name="404" route="[[subRoute]]" hidden$="[[!user]]"></view-404>
+          <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
+          <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
+          <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
@@ -194,8 +192,7 @@
             notify: true
           },
           signedIn: {
-            type: Boolean,
-            value: false
+            type: Boolean
           },
           loadComplete: {
             type: Boolean,
@@ -208,7 +205,7 @@
 
       static get observers() {
         return [
-          '_routePageChanged(routeData.page)',
+          '_routePageChanged(pageData.page)',
           '_handleUser(user)',
           '_signedInChanged(signedIn)'
         ]
@@ -260,7 +257,6 @@
 
       _installListeners() {
         // listen for custom events
-        window.addEventListener('auth-changed', this._onAuthChanged.bind(this))
         window.addEventListener('show-invalid-url-warning', this._showPage404.bind(this))
         window.addEventListener('on-error', this._handleError.bind(this))
         // listen for online/offline
@@ -268,21 +264,6 @@
           window.addEventListener('online', (e) => this._networkChanged(e))
           window.addEventListener('offline', (e) => this._networkChanged(e))
         })
-      }
-
-      _onAuthChanged(data) {
-        var user = data.detail.user
-        if (!!user) { // cast from obj to boolean
-          Polymer.Utils.importHref(
-            this.resolveUrl('view-app.html'), () => {
-              this.$.drawer.hidden = false
-              this.$.header.hidden = false
-              this.$.header.resizeHeader()
-            })
-        } else {
-          this.$.drawer.hidden = true
-          this.$.header.hidden = true
-        }
       }
 
       _handleUser(user) {
@@ -324,7 +305,6 @@
           // The size of the header depends on the page (e.g. on some pages the tabs
           // do not appear), so reset the header's layout only when switching pages.
           Polymer.Async.timeOut.run(() => {
-            this.$.header.resetLayout()
             this.$.drawer.resetLayout()
           }, 1)
         }
@@ -368,7 +348,6 @@
               }
               this._networkChanged()
               this.loadComplete = true
-              this.$.pageLoader.removeAttribute('indeterminate')
             })
           })
         }
@@ -379,17 +358,16 @@
       }
 
       _signedInChanged(e) {
+
         Polymer.RenderStatus.beforeNextRender(this, function () {
           Polymer.Async.timeOut.run(() => {
             if (this.signedIn && this.route.path == '/login') {
               this.page = 'dashboard'
               this.set('route.path', '/dashboard')
-            } else if (this.signedIn && this.route.path == '/') {
-              this.page = 'dashboard'
-              this.set('route.path', '/dashboard')
-            } //else if (!this.signedIn) {
-            //this.page = 'login'
-            //this.set('route.path', '/login')
+            }
+            // else if (!this.signedIn) {
+            //   this.page = 'login'
+            //   this.set('route.path', '/login')
             // }
           }, 1)
         })
@@ -408,7 +386,6 @@
           this.notificationText = this.offline ? 'notification-offline' : 'notification-online'
           this.$.toastNotification.open()
           if (!this.offline && oldOffline === true) {
-            this.$.pageLoader.setAttribute('indeterminate', '')
             this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(5000), () => {
               this._refreshNetworkStatus()
             })
@@ -420,7 +397,6 @@
         this.$.userIndexDB.refreshNetworkStatus()
         this.$.userAuth.refreshNetworkStatus()
         this.$.userData.refreshNetworkStatus()
-        this.$.pageLoader.removeAttribute('indeterminate')
       }
 
       _logout() {
@@ -437,7 +413,6 @@
                 this.$.mainHeader.resetLayout()
                 this.$.header.resetLayout()
                 // redirect to login page
-                this.page = 'login'
                 this.set('route.path', '/login')
               }, 1)
             })

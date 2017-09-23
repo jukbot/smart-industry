@@ -395,12 +395,11 @@
                     <h1 class="title">Job Scheduling Gantt Chart</h1>
                     <vaadin-columnrange-chart id="column-range-resource-usage">
                         <chart inverted="true"></chart>
-                        <chart-title>Resource usage</chart-title>
+                        <chart-title>Daily Job Scheduling</chart-title>
                         <x-axis>
-                            <categories>test
-                                <!-- <template is="dom-repeat" items="[[stationItems]]" as="stationItem">[[stationItem.st_number]],</template> -->
+                            <categories>
+                                <template is="dom-repeat" items="[[stationItems]]" as="stationItem">[[stationItem.st_number]]</template>
                             </categories>
-                            <categories>apple</categories>
                         </x-axis>
                         <y-axis type="datetime">
                             <chart-title>Time</chart-title>

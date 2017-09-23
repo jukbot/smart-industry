@@ -273,13 +273,12 @@
                 const opday = op_day.split(',').length
                 const weekOptime = this.weekOptime = optime * opday; // set to global variable
                 console.log(weekOptime)
-                console.log(this.weekOptime)
                 return weekOptime;
             }
 
             getOrderNumber(order) {
-                //let orderNo = Math.max(order.map(item => item.order_no));
-                //console.log(orderNo)
+                //  let orderNo = Math.max(order.map(item => item.order_no));
+                //  console.log(orderNo)
                 if (!order) {
                     this.orderNumber = 1;
                     return this.orderNumber

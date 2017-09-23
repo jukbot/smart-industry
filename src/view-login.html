@@ -12,6 +12,8 @@
 <link rel="import" href="style/flat-input.html">
 <link rel="import" href="style/flat-checkbox.html">
 <link rel="import" href="style/flat-button.html">
+<link rel="import" href="view-app.html">
+
 <dom-module id="view-login">
   <template>
     <style include="flat-button flat-input flat-checkbox">
@@ -373,7 +375,6 @@
         if (this.$.accountEmail.value && this.$.accountPassword.value) {
           this.$.userAuth.signInWithEmailAndPassword(this.$.accountEmail.value, this.$.accountPassword.value)
             .then((response) => {
-              this.page = '/dashboard'
               this.set('route.path', '/dashboard')
             })
             .catch((error) => {
