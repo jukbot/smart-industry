@@ -82,13 +82,14 @@
             <li>
                 <div class="card" hidden="[[showAddCustomer]]">
                     <h1 class="title">{{localize('add-customer')}}</h1>
-                    <paper-input label="First name" id="customerFirstName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
+                    <paper-input label="{{localize('first-name')}}" id="customerFirstName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
                         error-message="text only" always-float-label></paper-input>
-                    <paper-input label="Last name" id="customerLastName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
+                    <paper-input label="{{localize('last-name')}}" id="customerLastName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
                         error-message="text only" always-float-label></paper-input>
-                    <paper-input label="E-mail" id="customerEmail" max-length="40" type="email" auto-validate error-message="invalid input" always-float-label>
+                    <paper-input label="{{localize('email')}}" id="customerEmail" max-length="40" type="email" auto-validate error-message="invalid input"
+                        always-float-label>
                     </paper-input>
-                    <paper-input label="Mobile" id="customerMobile" max-length="15" type="tel" auto-validate allowed-pattern="^(0|[1-9]\d*)$"
+                    <paper-input label="{{localize('mobile')}}" id="customerMobile" max-length="15" type="tel" auto-validate allowed-pattern="^(0|[1-9]\d*)$"
                         error-message="number only" always-float-label></paper-input>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openCustomerTable"><button>{{localize('dismiss')}}</button></flat-button>
@@ -120,7 +121,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Name</div>
+                                <div class="cell">{{localize('first-name')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.name]]</div>
@@ -129,7 +130,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">E-mail</div>
+                                <div class="cell">{{localize('email')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.email]]</div>
@@ -138,7 +139,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell last">Mobile</div>
+                                <div class="cell last">{{localize('mobile')}}</div>
                             </template>
                             <template>
                                 <div class="cell numeric last">[[item.mobile]]</div>
@@ -147,7 +148,18 @@
 
                         <vaadin-grid-column flex="0">
                             <template class="header">
-                                <div class="cell center last">Delete</div>
+                                <div class="cell center last">{{localize('edit')}}</div>
+                            </template>
+                            <template>
+                                <div class="cell center last">
+                                    <paper-icon-button on-tap="_editCustomer" customer="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                </div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="0">
+                            <template class="header">
+                                <div class="cell center last">{{localize('delete')}}</div>
                             </template>
                             <template>
                                 <div class="cell center last">

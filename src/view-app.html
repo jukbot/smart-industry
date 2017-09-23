@@ -54,7 +54,7 @@
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
 
     <app-drawer-layout id="layout" fullbleed>
-      <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open>
+      <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open hidden="[[!signedIn]]">
         <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
         <h1 title="IMES" class="main-logo-title">IMES</h1>
         <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -404,7 +404,6 @@
                 this.$.userIndexDB.destroy()
                 this.$.drawer.resetLayout()
                 this.$.layout.resetLayout()
-                this.$.mainHeader.resetLayout()
                 this.$.header.resetLayout()
                 // redirect to login page
                 this.set('route.path', '/login')

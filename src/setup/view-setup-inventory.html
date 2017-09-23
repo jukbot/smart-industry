@@ -84,13 +84,13 @@
         <ul class="app-grid">
             <li>
                 <div class="card" hidden="[[showAddInventory]]">
-                    <h1 class="title">Add Inventory</h1>
-                    <paper-input label="Name" id="inventoryName" type="text" maxlength="40" auto-validate always-float-label></paper-input>
-                    <paper-input label="Code" id="inventoryCode" type="text" maxlength="20" auto-validate always-float-label></paper-input>
-                    <paper-input label="Cost" id="inventoryCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only"
-                        min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
-                    <paper-input label="Quantity" id="inventoryQuantity" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)$" error-message="number only"
-                        min="1" max$="[[maxInput]]" step="1" auto-validate always-float-label>
+                    <h1 class="title">{{localize('add-inventory')}}</h1>
+                    <paper-input label="{{localize('name')}}" id="inventoryName" type="text" maxlength="40" auto-validate always-float-label></paper-input>
+                    <paper-input label="{{localize('code')}}" id="inventoryCode" type="text" maxlength="20" auto-validate always-float-label></paper-input>
+                    <paper-input label="{{localize('cost')}}" id="inventoryCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
+                        error-message="number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
+                    <paper-input label="{{localize('quantity')}}" id="inventoryQuantity" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)$"
+                        error-message="number only" min="1" max$="[[maxInput]]" step="1" auto-validate always-float-label>
                     </paper-input>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openInventoryTable"><button>{{localize('dismiss')}}</button></flat-button>
@@ -100,7 +100,7 @@
             </li>
             <li>
                 <div class="card" hidden="[[!showAddInventory]]">
-                    <h1 class="title">Inventory Management</h1>
+                    <h1 class="title">{{localize('inventory-management')}}</h1>
                     <!-- <vaadin-combo-box label="Search inventory" aria-label="Search inventory" items="" value=""></vaadin-combo-box> -->
                     <vaadin-grid id="inventoryTable" aria-label="inventory Management" items="[[persistedInventoryData]]">
                         <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
@@ -123,7 +123,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div>Name</div>
+                                <div class="cell">{{localize('name')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.name]]</div>
@@ -132,7 +132,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Code</div>
+                                <div class="cell">{{localize('code')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.code]]</div>
@@ -141,7 +141,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Cost</div>
+                                <div class="cell">{{localize('cost')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.cost]]</div>
@@ -150,7 +150,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Quantity</div>
+                                <div class="cell">{{localize('quantity')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.quantity]] items</div>
@@ -159,7 +159,18 @@
 
                         <vaadin-grid-column flex="0">
                             <template class="header">
-                                <div class="cell center last">Delete</div>
+                                <div class="cell center last">{{localize('edit')}}</div>
+                            </template>
+                            <template>
+                                <div class="cell center last">
+                                    <paper-icon-button on-tap="_editInventory" customer="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                </div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="0">
+                            <template class="header">
+                                <div class="cell center last">{{localize('delete')}}</div>
                             </template>
                             <template>
                                 <div class="cell center last">
@@ -169,7 +180,7 @@
                         </vaadin-grid-column>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openAddInventoryCard"><button>Add Inventory</button></flat-button>
+                        <flat-button class="btn" on-tap="_openAddInventoryCard"><button>{{localize('add-inventory')}}</button></flat-button>
                     </div>
                 </div>
             </li>
