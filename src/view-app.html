@@ -25,16 +25,16 @@
 <link rel="import" href="style/flat-icons.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
-<link rel="import" href="view-dashboard.html">
+<link rel="import" href="view-offline.html">
+<link rel="import" href="view-error.html">
+<link rel="import" href="view-404.html">
 <!-- import lazy page router -->
+<link rel="import" href="view-dashboard.html">
 <link rel="lazy-import" href="view-setup.html">
 <link rel="lazy-import" href="view-plan.html">
 <link rel="lazy-import" href="view-track.html">
 <link rel="lazy-import" href="view-settings.html">
 <link rel="lazy-import" href="view-help.html">
-<link rel="lazy-import" href="view-offline.html">
-<link rel="lazy-import" href="view-error.html">
-<link rel="lazy-import" href="view-404.html">
 
 <dom-module id="view-app">
   <template>
@@ -51,7 +51,7 @@
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
-    <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
+    <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
 
     <app-drawer-layout id="layout" fullbleed>
       <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open hidden="[[!signedIn]]">
@@ -133,8 +133,20 @@
               </div>
             </div>
           </view-track>
-          <view-help name="help" route="[[subRoute]]" hidden$="[[!user]]"></view-help>
-          <view-settings name="settings" route="[[subRoute]]" hidden$="[[!user]]"></view-settings>
+          <view-help name="help" route="[[subRoute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
+            </div>
+          </view-help>
+          <view-settings name="settings" route="[[subRoute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
+            </div>
+          </view-settings>
           <view-404 name="404" route="[[subRoute]]" hidden$="[[!user]]"></view-404>
           <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
           <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
@@ -257,9 +269,9 @@
       }
 
       _installListeners() {
-        // listen for custom events
-        window.addEventListener('show-invalid-url-warning', this._showPage404.bind(this))
-        window.addEventListener('on-error', this._handleError.bind(this))
+        // listen for custom events on main page
+        this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e))
+        this.addEventListener('on-error', (e) => this._handleError(e))
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, () => {
           window.addEventListener('online', (e) => this._networkChanged(e))
@@ -354,7 +366,7 @@
         }
       }
 
-      _showPage404() {
+      _onFallbackSelectionTriggered() {
         this.page = '404'
       }
 
