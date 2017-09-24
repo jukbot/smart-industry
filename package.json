@@ -15,6 +15,7 @@
     "countdown": "github:mckamey/countdownjs",
     "intl": "^1.2.5",
     "javascript-lp-solver": "^0.4.5",
+    "moment": "^2.18.1",
     "redux": "^3.7.2",
     "requirejs": "^2.3.5",
     "sugar": "^2.0.4",
@@ -36,10 +37,12 @@
   },
   "scripts": {
     "babel-version": "babel --version",
-    "lint": "npm run lint:javascript",
-    "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
-    "test": "polymer test",
-    "test:integration": "polymer build"
+    "lint": "eslint . --ext js,html --ignore-path .gitignore",
+    "test": "npm run lint && polymer test",
+    "test:integration": "polymer build",
+    "serve:dev": "polymer serve",
+    "serve:prod": "polymer build && firebase serve --only functions,hosting",
+    "deploy": "polymer build && firebase deploy"
   },
   "standard": {
     "parser": "babel-eslint",

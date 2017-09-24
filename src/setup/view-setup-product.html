@@ -62,7 +62,7 @@
             }
 
             vaadin-grid#productTable {
-                height: 500px;
+                height: 750px;
 
                 --vaadin-grid-cell: {
                     padding: 0;
@@ -169,20 +169,6 @@
                                     </template>
                                 </div>
                                 <div class="flex-item">
-                                    <h3>Setup time (mins)</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.setup]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
-                                    <h3>Cycle time (mins)</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.cycle]]</p>
-                                    </template>
-                                </div>
-                            </div>
-                            <div class="details">
-                                <div class="flex-item">
                                     <h3>Process Number</h3>
                                     <template is="dom-repeat" items="[[item.process]]" as="productProcess">
                                         <p>[[getProcessNumber(productProcess.number)]]</p>
@@ -192,6 +178,33 @@
                                     <h3>Part Required</h3>
                                     <template is="dom-repeat" items="[[item.process]]" as="productProcess">
                                         <p>[[productProcess.required]]</p>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="details">
+                                <div class="flex-item">
+                                    <h3>Setup time (mins)</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.setup]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>Total Setup time (mins)</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[getSumSetupTime(productPart.setup)]]</p>
+                                    </template>
+                                </div>
+
+                                <div class="flex-item">
+                                    <h3>Cycle time (mins)</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.cycle]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>Total Cycle time (mins)</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[getSumCycleTime(productPart.cycle)]]</p>
                                     </template>
                                 </div>
                             </div>
@@ -247,7 +260,28 @@
                                     </template>
                                 </div>
                             </template>
+                        </vaadin-grid-column>
 
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">Inventory Code</div>
+                            </template>
+                            <template>
+                                <div class="cell">
+                                    <p>[[item.inventory_code]]</p>
+                                </div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
+                                <div class="cell">Inventory Require</div>
+                            </template>
+                            <template>
+                                <div class="cell">
+                                    <p>[[item.inventory_use]]</p>
+                                </div>
+                            </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column flex="1">
@@ -329,6 +363,18 @@
             getProcessNumber(processNumber) {
                 if (!processNumber) return 1
                 return processNumber + 1;
+            }
+
+            getSumSetupTime(setup) {
+                if (!setup) return 0;
+                let sumSetupTime = setup.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
+                return sumSetupTime.toFixed(1);
+            }
+
+            getSumCycleTime(cycle) {
+                if (!cycle) return 0;
+                let sumCycleTime = cycle.reduce((a, b) => a + b); // apply sum function to all arr items to get sumCycle
+                return sumCycleTime.toFixed(1);
             }
 
             _openAddProductCard() {

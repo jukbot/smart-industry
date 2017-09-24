@@ -1,6 +1,12 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
+<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">\=
+<link rel="import" href="/bower_components/paper-input/paper-input.html">=
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
+<link rel="import" href="/bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../view-track.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -9,45 +15,227 @@
     <template>
         <style include="shared-styles app-grid-style flat-button">
              :host {
-                margin: 10px;
                 display: block;
-                --app-grid-columns: 1;
+                margin: 10px;
                 --app-grid-item-height: 50%;
             }
 
-            h1.title {
-                text-align: center;
-                margin: 20px 0 30px 0;
-                font-size: 1.75rem;
-            }
-
-            .clear-btn {
-                margin: 20px 0 4px 0;
-            }
-
             @media (min-width: 360px) and (max-width: 768px) {
-                h1.title {
-                    font-size: 1.5rem;
+                 :host {
+                    --app-grid-columns: 1;
                 }
-
-                .clear-btn {
+                .fixed-btn {
                     width: 100%;
                 }
             }
+
+            @media (min-width: 769px) and (max-width: 1024px) {
+                 :host {
+                    --app-grid-columns: 1;
+                }
+            }
+
+            @media (min-width: 1025px) and (max-width: 1200px) {
+                 :host {
+                    --app-grid-columns: 2;
+                }
+            }
+
+            @media (min-width: 1201px) and (max-width: 2560px) {
+                 :host {
+                    --app-grid-columns: 4;
+                }
+            }
+
+            .fixed-btn {
+                margin: 20px 10px 10px 10px;
+                width: 300px;
+            }
+
+            .machine {
+                margin: 10px;
+                padding: 20px;
+                border: 1px solid rgba(0, 0, 0, .10);
+                border-radius: 2px;
+            }
+
+            .machine p {
+                margin: 10px 0;
+            }
+
+            .machine h1 {
+                text-align: center;
+            }
+
+            .machine-info-group {
+                margin-bottom: auto;
+            }
+
+            .flex-container {
+                padding: 0;
+                margin: 0;
+                list-style: none;
+                -ms-box-orient: horizontal;
+                display: -webkit-box;
+                display: -moz-box;
+                display: -ms-flexbox;
+                display: -moz-flex;
+                display: -webkit-flex;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+
+            .flex-item {
+                background: #202020;
+                width: 200px;
+                height: 75px;
+                margin: 10px;
+                line-height: 75px;
+                color: white;
+                font-size: 1.25em;
+                text-align: center;
+                flex: auto;
+            }
+
+            .big-btn button {
+                width: 400px;
+                height: 100px;
+                font-size: 2rem;
+                display: block;
+                font-size: 1.75rem;
+                font-weight: 300;
+            }
+
+            .big-btn {
+                margin: 10px 0 20px 0;
+            }
+
+            .main-card {
+                margin-top: 26px;
+            }
+
+            p.machine-title {
+                font-weight: 500;
+            }
         </style>
 
-        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-        <ul class="app-grid">
-            <li>
-                <div class="card">
-                    <h1 class="title">Production Monitoring System</h1>
-                    <p>Migrate in process</p>
+        <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+        <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+        <!-- ORDER -->
+        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="name" data="{{orderItems}}"></firebase-query>
+        <!-- JOB IN STATION -->
+        <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(selectedStation)]]"
+            order-by-child="name" data="{{scheduleItems}}"></firebase-query>
+        <!-- STATION -->
+        <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" data="{{stationItems}}"></firebase-query>
+        <!-- DEVICE -->
+        <firebase-query app-name="smart-mes" id="sensorQuery" path="/data/[[k.key]]/factoryData/device" data="{{deviceItems}}"></firebase-query>
 
-                    <flat-button class="clear-btn" on-tap="_refreshStatus"><button>Refresh</button></flat-button>
-                    <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
-                </div>
-            </li>
-        </ul>
+        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
+        <!-- Add Machine Card -->
+        <!-- <div class="card main-card" hidden="[[showAddMachine]]">
+            <h1 class="title">{{localize('add-machine')}}</h1>
+            <paper-input type="number" id="machineNumber" label="{{localize('machine-number')}}" value="[[getMachineNumber(machineItems.length)]]"
+                min="1" max="999" readonly required always-float-label></paper-input>
+            <paper-input type="text" id="machineName" label="Machine Name" required error-message="Invalid Input" always-float-label></paper-input>
+            <paper-input type="number" id="machineCapacity" label="{{localize('machine-max-capacity')}}" min="1" max="9999" step="1"
+                allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
+            <vaadin-combo-box id="machineType" label="{{localize('machine-type')}}" items="[[machineType]]" item-value-path="name" item-label-path="name"
+                loading="[[!machineType]]" required always-float-label>
+                <template>
+                    <paper-item>
+                        <paper-item-body two-line style="min-height: 0">
+                            <div style="text-transform: capitalize">[[item.name]]</div>
+                            <div secondary>Code: [[item.code]]</div>
+                        </paper-item-body>
+                    </paper-item>
+                </template>
+            </vaadin-combo-box>
+            <div class="center">
+                <flat-button class="fixed-btn" on-tap="_openMachineMainCard"><button>{{localize('dismiss')}}</button></flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_addMachine"><button disabled="[[disabled]]">{{localize('add')}}</button></flat-button>
+            </div>
+        </div>-->
+        <!-- Edit Station Card -->
+        <!-- <div class="card main-card" hidden="[[showEditMachine]]">
+            <h1 class="title">{{localize('edit-machine')}}</h1>
+            <paper-input type="number" id="edit_machineNumber" label="{{localize('machine-number')}}" value="[[editMachineItems.number]]"
+                min="1" max="999" readonly required always-float-label></paper-input>
+            <paper-input type="text" id="edit_machineName" label="Machine Name" value="[[editMachineItems.name]]" required error-message="Invalid Input"
+                always-float-label></paper-input>
+            <paper-input type="number" id="edit_machineCapacity" label="{{localize('machine-max-capacity')}}" min="1" max="9999" step="1"
+                value="[[editMachineItems.capacity]]" required always-float-label></paper-input>
+            <vaadin-combo-box id="edit_machineType" label="{{localize('machine-type')}}" value="[[editMachineItems.type]]" items="[[machineType]]"
+                item-value-path="name" item-label-path="name" loading="[[!machineType]]" required always-float-label>
+                <template>
+                    <paper-item>
+                        <paper-item-body two-line style="min-height: 0">
+                            <div style="text-transform: capitalize">[[item.name]]</div>
+                            <div secondary>Code: [[item.code]]</div>
+                        </paper-item-body>
+                    </paper-item>
+                </template>
+            </vaadin-combo-box>
+            <div class="center">
+                <flat-button class="fixed-btn" on-tap="_openMachineMainCard"><button>{{localize('dismiss')}}</button></flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_saveMachine"><button>{{localize('save')}}</button></flat-button>
+            </div>
+        </div> -->
+        <!-- Machine Management -->
+        <div class="card main-card" hidden="[[showListMachine]]">
+            <h1 class="title">Order Tracking System</h1>
+            <ul class="app-grid">
+                <template is="dom-repeat" items="{{scheduleItems}}" as="item">
+                    <li>
+                        <div class="machine">
+                            <div class="machine-info-group">
+                                <h2 class="title">Part [[item.job_part]]</h2>
+                                <p>Quantity: [[item.job_quantity]]</p>
+                                <p>Product Part: [[item.order_product]]</p>
+                                <p>Order no: [[item.order_no]]</p>
+                                <p>Workload: [[item.job_workload]]</p>
+                                <p>Start: [[timestampToTime(item.start)]]</p>
+                                <p>Status: [[item.job_status]]</p>
+                            </div>
+                            <flat-button class="btn" on-tap="_finishJob" job="[[machineItem]]"><button>Finish</button></flat-button>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+            <div class="center">
+                <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
+                    <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
+                        <flat-button class="fix-btn" name="[[stationItem.st_number]]"><button>Station [[stationItem.st_number]]</button></flat-button>
+                    </template>
+                </iron-selector>
+            </div>
+        </div>
+        <div class="card main-card" hidden="[[showListMachine]]">
+            <h1 class="title">Tracking Device Management</h1>
+            <ul class="app-grid">
+                <template is="dom-repeat" items="{{deviceItems}}" as="device">
+                    <li>
+                        <div class="machine">
+                            <div class="machine-info-group">
+                                <h2 class="title">[[device.name]]</h2>
+                                <p>Type: [[device.type]]</p>
+                                <p>Machine no.: [[device.machine]]</p>
+                                <p>Count: [[device.count]]</p>
+                                <p>Order no: [[device.order_no]]</p>
+                                <p>Updated: [[device.update]]</p>
+                            </div>
+                            <paper-toggle-button class="switch" checked="{{device.enable}}" id="deviceControlSwitch" noink> Enabled</paper-toggle-button>
+                            <flat-button class="btn" on-tap="_openEditMachineCard" machine="[[machineItem]]"><button>{{localize('edit')}}</button></flat-button>
+                            <flat-button class="thunderbird btn" on-tap="_removeMachine" machine="[[machineItem]]"><button>{{localize('remove')}}</button></flat-button>
+                        </div>
+                    </li>
+                </template>
+            </ul>
+            <div class="center">
+                <flat-button class="big-btn" on-tap="_openAddMachineCard"><button>Add Device</button></flat-button>
+            </div>
+        </div>
     </template>
     <script>
         class ViewTrackProduction extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
@@ -59,13 +247,42 @@
             static get properties() {
                 return {
                     language: String,
-                    orderHistoryData: Object
+                    orderHistoryData: Object,
+                    showAddMachine: {
+                        type: Boolean,
+                        value: true
+                    },
+                    showEditMachine: {
+                        type: Boolean,
+                        value: true
+                    },
+                    showListMachine: {
+                        type: Boolean,
+                        value: false
+                    },
                 }
             }
             connectedCallback() {
                 super.connectedCallback();
                 this.loadResources(this.resolveUrl('../../data/locales.json'));
             }
+
+
+            getStationIndex(selectedStation) {
+                return selectedStation - 1
+            }
+
+            timestampToTime(timestamp) {
+                let date = new Date((timestamp - 25200) * 1000);
+                let hours = date.getHours();
+                let minutes = "0" + date.getMinutes();
+                let seconds = "0" + date.getSeconds();
+                let formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                return formattedTime;
+            }
+
+
+
         }
         customElements.define(ViewTrackProduction.is, ViewTrackProduction);
     </script>

@@ -1,3 +1,5 @@
+## !! WARNING !! THIS PROJECT IS IN DEVELOPING, SOME FEATURES IS IN DRAFT AND NOT STABLE DUE TO THIS PROJECT IS MIGRATING .
+
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
 [![Build Status](https://semaphoreci.com/api/v1/jukbot/smart-industry/branches/master/shields_badge.svg)](https://semaphoreci.com/jukbot/smart-industry)
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
