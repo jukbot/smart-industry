@@ -306,6 +306,7 @@
           // do not appear), so reset the header's layout only when switching pages.
           Polymer.Async.timeOut.run(() => {
             this.$.drawer.resetLayout()
+            this.$.layout.resetLayout()
           }, 1)
         }
       }
@@ -402,9 +403,6 @@
               Polymer.Async.timeOut.run(() => {
                 this._closeToastAlert()
                 this.$.userIndexDB.destroy()
-                this.$.drawer.resetLayout()
-                this.$.layout.resetLayout()
-                this.$.header.resetLayout()
                 // redirect to login page
                 this.set('route.path', '/login')
               }, 1)
