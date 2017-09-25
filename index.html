@@ -4,10 +4,10 @@
 <head>
   <base href="/">
   <meta charset="utf-8">
-  <title>IMES</title>
-  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
   <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry">
   <meta name="author" content="KMUTT">
+  <title>IMES</title>
   <link rel="shortcut icon" href="/images/favicon.png">
   <link rel="manifest" href="/manifest.json">
   <link rel="canonical" href="/">
@@ -24,22 +24,122 @@
   <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
   <link rel="apple-touch-icon" sizes="256x256" href="/images/manifest/icon-256x256.png">
   <link rel="apple-touch-icon" sizes="512x512" href="/images/manifest/icon-512x512.png">
-  <meta name="msapplication-TileImage" content="/images/manifest/icon-192x192.png">
+  <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
   <meta name="msapplication-TileColor" content="#202020">
   <meta name="msapplication-tap-highlight" content="no">
-  <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
-  <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <style>
+    * {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      -webkit-font-smoothing: antialiased;
+      font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Noto", sans-serif;
+      letter-spacing: .016em;
+      line-height: 1.25;
+      background-color: #f2f2f2;
+      color: #202020;
+      min-height: 100vh;
+    }
+
+    view-app[unresolved] {
+      background-color: #ffffff;
+      display: block;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    img.loader-logo,
+    h1.loader-title {
+      -webkit-animation-play-state: linear;
+      animation-play-state: linear;
+      -webkit-animation-duration: 0.75s;
+      animation-duration: 0.75s;
+      -webkit-animation-fill-mode: both;
+      animation-fill-mode: both;
+      -webkit-animation-iteration-count: infinite;
+      animation-iteration-count: infinite;
+      -webkit-transform-origin: center;
+      -ms-transform-origin: center;
+      transform-origin: center;
+      -webkit-animation-name: fadeOut;
+      animation-name: fadeOut;
+      -webkit-animation-timing-function: ease-in-out;
+      animation-timing-function: ease-in-out;
+    }
+
+    div.container {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      align-items: center;
+      -ms-flex-line-pack: center;
+      align-content: center;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      text-align: center;
+      height: 100vh;
+    }
+
+    div.flex-grpup {
+      margin: auto;
+    }
+
+    div.container h1 {
+      margin: 10px;
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: #202020;
+    }
+
+    img.loader-logo {
+      width: 120px;
+      height: 120px;
+    }
+
+    @-webkit-keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeOut {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+      }
+    }
+
+    vaadin-license-box {
+      display: none !important;
+      /* REMOVE WHEN USE IN PRODUCTION */
+    }
+  </style>
   <script>
     window.Polymer = {
       lazyRegister: true,
       serverRendered: true
     }
   </script>
-  <link async rel="import" href="/src/view-app.html">
 </head>
 
 <body>
-  <view-app unresolved hidden$=[[!user]]>
+  <view-app unresolved role="main">
     <div class="container">
       <div class="flex-group">
         <img class="loader-logo" src="data:image/svg+xml;utf8, 
@@ -58,6 +158,9 @@
       </div>
     </div>
   </view-app>
+  <link rel="import" href="/src/view-app.html">
+  <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+  <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
   <noscript>
     Please enable JavaScript to view this application.
   </noscript>
