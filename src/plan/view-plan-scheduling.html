@@ -34,16 +34,7 @@
             .order-schedule-info>p {
                 margin: 10px 0;
             }
-            /* gantt chart */
 
-            #chartdiv {
-                width: 100%;
-                height: 500px;
-            }
-
-            .amcharts-category-axis>text {
-                cursor: pointer;
-            }
 
             @media (min-width: 360px) and (max-width: 768px) {
                 .btn {
@@ -163,9 +154,7 @@
         <!-- JOB SCHEDULING TABLE SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="schedulingQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(selectedStation)]]"
             order-by-child="job_workload" data="{{scheduleItems}}"></firebase-query>
-        <!-- JOB SCHEDULING GANTT CHART SELECTED BY STATION NUMBER -->
-        <firebase-query app-name="smart-mes" id="ganttQuery" path="/data/[[k.key]]/ganttChartData/[[getStationIndex(selectedStation)]]"
-            data="{{ganttChartItems}}"></firebase-query>
+
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             equal-to="{{selectedStation}}" data="{{selectedStationData}}"></firebase-query>
@@ -298,7 +287,7 @@
                             </template>
                             <template>
                                 <div class="cell numeric last">
-                                    <paper-icon-button on-tap="_deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.order_status)]]"></paper-icon-button>
+                                    <paper-icon-button on-tap="deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.order_status)]]"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -432,16 +421,16 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <!-- <vaadin-grid-column width="100px" flex="0">
+                        <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
                                 <div class="cell numeric last">Cancel</div>
                             </template>
                             <template>
                                 <div class="cell numeric last">
-                                    <paper-icon-button on-tap="_deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.order_status)]]"></paper-icon-button>
+                                    <paper-icon-button on-tap="deleteJob" job="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.job_status)]]"></paper-icon-button>
                                 </div>
                             </template>
-                        </vaadin-grid-column> -->
+                        </vaadin-grid-column>
 
                     </vaadin-grid>
                     <div class="center">
@@ -509,8 +498,7 @@
                     factoryPerformance: Object,
                     factoryOperation: Object,
                     factoryProfile: Object,
-                    scheduleItems: Object,
-                    ganttChartItems: Object,
+                    scheduleItems: Object
                 }
             }
 
@@ -715,26 +703,11 @@
                 }
             }
 
-            isDeletable(order_status) {
-                switch (order_status) {
-                    case 'waiting':
-                        return false
-                        break;
-                    case 'wip':
-                        return true
-                        break;
-                    case 'done':
-                        return false
-                        break;
-                    case 'lated':
-                        return false
-                        break;
-                    case 'cancel':
-                        return false
-                        break;
-                    default:
-                        return false
+            isDeletable(status) {
+                if (status === 'wip') {
+                    return true;
                 }
+                return false;
             }
 
             // CONVERT TIME TO STRING
@@ -753,11 +726,19 @@
                 return ((number < 10 && number >= 0) ? '0' : '') + number;
             }
 
-            _deleteOrder(e) {
+            deleteOrder(e) {
                 if (confirm("Delete this order ?") == true) {
                     let key = e.currentTarget.order.$key;
                     this.$.orderQuery.ref.child(key).remove();
                     alert("Delete order successfully");
+                }
+            }
+
+            deleteJob(e) {
+                if (confirm("Delete this job ?") == true) {
+                    let key = e.currentTarget.order.$key;
+                    this.$.jobQuery.ref.child(key).remove();
+                    alert("Delete job successfully");
                 }
             }
 

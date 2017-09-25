@@ -195,15 +195,16 @@
                                 <p>Product Part: [[item.order_product]]</p>
                                 <p>Order no: [[item.order_no]]</p>
                                 <p>Workload: [[item.job_workload]]</p>
-                                <p>Plan Start: [[timestampToTime(item.start)]]</p>
-                                <p>Plan End: [[timestampToTime(item.end)]]</p>
+                                <p>Plan Start: [[timestampUTCToTime(item.start)]]</p>
+                                <p>Plan End: [[timestampUTCToTime(item.end)]]</p>
                                 <p>Actual Start: [[timestampToTime(item.actual_start)]]</p>
-                                <p>Actual End: </p>
+                                <p>Actual End: [[timestampToTime(item.actual_end)]]</p>
+                                <p>Duration: [[getActualDuration(item.actual_start,item.actual_end)]]</p>
                                 <p>Status: [[item.job_status]]</p>
                                 <p>Completed: 0 / [[item.job_quantity]]</p>
                             </div>
                             <flat-button class="btn" on-tap="receiveJob" job="[[item]]"><button>Receive</button></flat-button>
-                            <flat-button class="btn" on-tap="_finishJob" job="[[item]]"><button>Finish</button></flat-button>
+                            <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]"><button disabled="[[isDone(item.job_status)]]">Finish</button></flat-button>
                         </div>
                     </li>
                 </template>
@@ -273,32 +274,71 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'));
             }
 
-
             getStationIndex(selectedStation) {
                 return selectedStation - 1
             }
 
+            getActualDuration(start, end) {
+                if (start && end) {
+                    const diff = end - start;
+                    return this.secondsToHms(diff);
+                }
+                return 0
+            }
+
+            secondsToHms(sec) {
+                sec = Number(sec);
+                const h = Math.floor(sec / 3600);
+                const m = Math.floor(sec % 3600 / 60);
+                const s = Math.floor(sec % 3600 % 60);
+                return ('0' + h).slice(-2) + ":" + ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
+            }
+
+            timestampUTCToTime(timestamp) {
+                const date = new Date((timestamp - 25200) * 1000);
+                const hours = date.getHours();
+                const minutes = "0" + date.getMinutes();
+                const seconds = "0" + date.getSeconds();
+                const formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                return formattedTime;
+            }
+
             timestampToTime(timestamp) {
-                let date = new Date((timestamp - 25200) * 1000);
-                let hours = date.getHours();
-                let minutes = "0" + date.getMinutes();
-                let seconds = "0" + date.getSeconds();
-                let formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                const date = new Date((timestamp) * 1000);
+                const hours = date.getHours();
+                const minutes = "0" + date.getMinutes();
+                const seconds = "0" + date.getSeconds();
+                const formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
                 return formattedTime;
             }
 
             resetCounter(e) {
-                let key = e.currentTarget.device.$key;
+                const key = e.currentTarget.device.$key;
                 this.$.deviceQuery.ref.child(key).update({
                     counter: 0
                 })
             }
 
             receiveJob(e) {
-                let key = e.currentTarget.job.$key;
+                const key = e.currentTarget.job.$key;
                 this.$.scheduleQuery.ref.child(key).update({
                     actual_start: Math.round(new Date().getTime() / 1000.0)
                 })
+            }
+
+            finishJob(e) {
+                const key = e.currentTarget.job.$key;
+                this.$.scheduleQuery.ref.child(key).update({
+                    actual_end: Math.round(new Date().getTime() / 1000.0),
+                    job_status: 'done'
+                })
+            }
+
+            isDone(status) {
+                if (status === 'done') {
+                    return true;
+                }
+                return false;
             }
         }
         customElements.define(ViewTrackProduction.is, ViewTrackProduction);

@@ -280,9 +280,7 @@
       }
 
       _handleUser(user) {
-        if (user) {
-          //console.info(user)
-        }
+
       }
 
       _routePageChanged(page) {
@@ -343,16 +341,16 @@
                 navigator.serviceWorker.register('/service-worker.js', {
                   scope: '/'
                 }).then((registration) => {
-                  console.info('%cService Worker Registered in ' + registration.scope, greenColor)
+                  console.info('%cService Worker Registered to ' + registration.scope, purpleColor)
                 }).catch((err) => {
                   console.error('%cService Worker Register Failed 😖: ' + err, crimsonColor)
                 })
                 // Check state of service worker
                 navigator.serviceWorker.ready.then((registration) => {
-                  console.info('%cService Worker Ready 😃', greenColor)
+                  //console.info('%cService Worker Ready 😃', greenColor)
                   return registration.navigationPreload.getState()
                 }).then(state => {
-                  console.info('%cService Worker state:' + JSON.stringify(state), purpleColor) // state
+                  //console.info('%cService Worker state:' + JSON.stringify(state), purpleColor) 
                 })
               } else {
                 // Browser not support service worker
