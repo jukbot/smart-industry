@@ -42,9 +42,19 @@
     "device": {
       "-KjXc5Hfk8-vUE6NN3Fb": {
         "count": 0,
-        "enable": 1,
-        "machine": "A1",
-        "name": "Sensor 1"
+        "enable": true,
+        "machine": "1",
+        "name": "Sensor 1",
+        "type": "IR",
+        "update": "N/A"
+      },
+      "-KjXc5Hfkevoava32sv": {
+        "count": 0,
+        "enable": true,
+        "machine": 1,
+        "name": "Sensor 2",
+        "type": "IR",
+        "update": "N/A"
       }
     },
     "inventory": {
@@ -83,17 +93,17 @@
         "capacity": "10",
         "code": "glue",
         "install": 1493573284,
-        "name": "Glueing Machine 2",
+        "name": "Gluing Machine 2",
         "number": 11,
-        "type": "Glueing"
+        "type": "Gluing"
       },
       "-KiztxY3ON0DK-QBf9-F": {
         "capacity": "10",
         "code": "glue",
         "install": 1493573294,
-        "name": "Glueing Machine 3",
+        "name": "Gluing Machine 3",
         "number": 12,
-        "type": "Glueing"
+        "type": "Gluing"
       },
       "-Kiztyuja5Ab699NtXx9": {
         "capacity": "200",
@@ -139,9 +149,9 @@
         "capacity": "10",
         "code": "glue",
         "install": 1493573362,
-        "name": "Glueing Machine 1",
+        "name": "Gluing Machine 1",
         "number": 10,
-        "type": "Glueing"
+        "type": "Gluing"
       },
       "-KizuFLlQXwhkRbMokaQ": {
         "capacity": "400",
@@ -166,6 +176,46 @@
         "name": "Slotting Machine 1",
         "number": 7,
         "type": "Slotting"
+      },
+      "-KukfTIZqpRcDEEnISAz": {
+        "capacity": "100",
+        "code": "cut",
+        "install": 1506202741,
+        "name": "Cutting Machine 4",
+        "number": 13,
+        "type": "Cutting"
+      },
+      "-KukfyNvblR6NMtvqMpF": {
+        "capacity": "200",
+        "code": "fold",
+        "install": 1506202872,
+        "name": "Folding Machine 4",
+        "number": 14,
+        "type": "Folding"
+      },
+      "-Kukg21CZWqvaUmn_yKh": {
+        "capacity": "20",
+        "code": "glue",
+        "install": 1506202891,
+        "name": "Gluing Machine 4",
+        "number": 15,
+        "type": "Gluing"
+      },
+      "-Kukg5u-dd2ccynGEmjK": {
+        "capacity": "200",
+        "code": "slot",
+        "install": 1506202907,
+        "name": "Slotting Machine 4",
+        "number": 16,
+        "type": "Slotting"
+      },
+      "-KupNyIJ4PoxJvNquRMb": {
+        "capacity": "20",
+        "code": "glue",
+        "install": 1506281776,
+        "name": "Gluing Machine 5",
+        "number": 17,
+        "type": "Gluing"
       }
     },
     "operation": {
@@ -188,6 +238,8 @@
         "cost": 140,
         "id": 1,
         "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Ftemp.png?alt=media&token=8613f2a0-02c9-485b-b650-1bb267b31413",
+        "inventory_code": "CB-A001",
+        "inventory_use": 5,
         "name": "A",
         "part": [
           {
@@ -242,6 +294,24 @@
             "sku": 1003
           }
         ],
+        "process": [
+          {
+            "number": 0,
+            "required": "none"
+          },
+          {
+            "number": 1,
+            "required": "none"
+          },
+          {
+            "number": 2,
+            "required": "none"
+          },
+          {
+            "number": 3,
+            "required": "A1,A2,A3"
+          }
+        ],
         "sku": 1000
       },
       "esjhgvsdluighst": {
@@ -249,6 +319,8 @@
         "cost": 120,
         "id": 2,
         "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Ftemp.png?alt=media&token=8613f2a0-02c9-485b-b650-1bb267b31413",
+        "inventory_code": "CB-B002",
+        "inventory_use": 3,
         "name": "B",
         "part": [
           {
@@ -303,6 +375,24 @@
             "sku": 2003
           }
         ],
+        "process": [
+          {
+            "number": 0,
+            "required": "none"
+          },
+          {
+            "number": 1,
+            "required": "none"
+          },
+          {
+            "number": 2,
+            "required": "none"
+          },
+          {
+            "number": 3,
+            "required": "B1,B2,B3"
+          }
+        ],
         "sku": 1600
       },
       "rtugv8wirnhsifbsds": {
@@ -310,6 +400,8 @@
         "cost": 160,
         "id": 1,
         "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/product%2Ftemp.png?alt=media&token=8613f2a0-02c9-485b-b650-1bb267b31413",
+        "inventory_code": "CB-C003",
+        "inventory_use": 4,
         "name": "C",
         "part": [
           {
@@ -364,18 +456,37 @@
             "sku": 1503
           }
         ],
+        "process": [
+          {
+            "number": 0,
+            "required": "none"
+          },
+          {
+            "number": 1,
+            "required": "none"
+          },
+          {
+            "number": 2,
+            "required": "none"
+          },
+          {
+            "number": 3,
+            "required": "C1,C2,C3"
+          }
+        ],
         "sku": 3000
       }
     },
     "profile": {
       "concurrency": 2,
-      "model": "parallel",
-      "name": "Sample Factory",
+      "model": "multi",
+      "name": "Demo Factory",
       "size": "m",
       "time_unit": "hr",
       "type": "jobshop"
     },
     "schedule": {
+      "delay": 10,
       "interval": 7,
       "priority": "EDD",
       "start_interval": 1493588631
@@ -406,6 +517,15 @@
             "name": "Cutting Machine 3",
             "queue": 0,
             "status": "Stopped"
+          },
+          {
+            "capacity": "100",
+            "code": "cut",
+            "install": 1506202741,
+            "mid": "-KukfTIZqpRcDEEnISAz",
+            "name": "Cutting Machine 4",
+            "number": 13,
+            "type": "Cutting"
           }
         ],
         "st_name": "Cutting Station",
@@ -436,6 +556,15 @@
             "name": "Folding Machine 3",
             "queue": 0,
             "status": "Stopped"
+          },
+          {
+            "capacity": "200",
+            "code": "fold",
+            "install": 1506202872,
+            "mid": "-KukfyNvblR6NMtvqMpF",
+            "name": "Folding Machine 4",
+            "number": 14,
+            "type": "Folding"
           }
         ],
         "st_name": "Folding Station",
@@ -466,6 +595,15 @@
             "name": "Slotting Machine 3",
             "queue": 0,
             "status": "Stopped"
+          },
+          {
+            "capacity": "200",
+            "code": "slot",
+            "install": 1506202907,
+            "mid": "-Kukg5u-dd2ccynGEmjK",
+            "name": "Slotting Machine 4",
+            "number": 16,
+            "type": "Slotting"
           }
         ],
         "st_name": "Slotting Station",
@@ -488,14 +626,6 @@
             "name": "Gluing Machine 2",
             "queue": 0,
             "status": "Stopped"
-          },
-          {
-            "code": "glue",
-            "effi": 100,
-            "mid": "-KiztxY3ON0DK-QBf9-F",
-            "name": "Gluing Machine 3",
-            "queue": 0,
-            "status": "Stopped"
           }
         ],
         "st_name": "Gluing Station",
@@ -503,6 +633,28 @@
       }
     }
   },
+  "ganttChartData": [
+    [
+      {
+        "order_color": "#91524f",
+        "order_no": 1,
+        "order_part": "A1",
+        "utc": "[Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,8,38,0)]"
+      },
+      {
+        "order_color": "#91524f",
+        "order_no": 1,
+        "order_part": "A2",
+        "utc": "[Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,9,25,0)]"
+      },
+      {
+        "order_color": "#56e431",
+        "order_no": 2,
+        "order_part": "B1",
+        "utc": " [Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,8,38,0)], [Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,9,25,0)]"
+      }
+    ]
+  ],
   "historyData": {
     "order": {
       "-KtxR8fHvd0pwPvgso5B": {
@@ -600,68 +752,287 @@
         "order_no": 5,
         "order_product": "A",
         "order_quantity": 2
+      },
+      "-Kuivh_o4Ej5uakPvnv_": {
+        "order_customer": "Marisa Dumlukin",
+        "order_date": 1506173443,
+        "order_delivery": 1506470400,
+        "order_no": 6,
+        "order_product": "C",
+        "order_quantity": 6
+      },
+      "-KuivpeK5GSbp2-q2Hya": {
+        "order_customer": "Thomson Mirak",
+        "order_date": 1506173476,
+        "order_delivery": 1506556800,
+        "order_no": 2,
+        "order_product": "B",
+        "order_quantity": 8
+      },
+      "-Kuivv4AnBOVIuNXx2xv": {
+        "order_customer": "Kim Alexa",
+        "order_date": 1506173498,
+        "order_delivery": 1506384000,
+        "order_no": 3,
+        "order_product": "A",
+        "order_quantity": 4
+      },
+      "-KuixqNsfmxF9QGV4wTP": {
+        "order_customer": "Thomson Mirak",
+        "order_date": 1506174003,
+        "order_delivery": 1506384000,
+        "order_no": 1,
+        "order_product": "A",
+        "order_quantity": 6
+      },
+      "-KuiykWrfp5LtX4vc_pw": {
+        "order_customer": "Marisa Dumlukin",
+        "order_date": 1506174242,
+        "order_delivery": 1506470400,
+        "order_no": 2,
+        "order_product": "B",
+        "order_quantity": 7
+      },
+      "-Kuiyn_xv3MwKn0wi7t5": {
+        "order_customer": "Phill Jackson",
+        "order_date": 1506174254,
+        "order_delivery": 1506556800,
+        "order_no": 3,
+        "order_product": "C",
+        "order_quantity": 10
+      },
+      "-Kuo5ONZyXyshZdGatL8": {
+        "order_customer": "David Lee",
+        "order_date": 1506260130,
+        "order_delivery": 1506729600,
+        "order_no": 4,
+        "order_product": "A",
+        "order_quantity": 6
+      },
+      "-KupzMTZEhPzsACTkaRg": {
+        "order_customer": "Mark Janova",
+        "order_date": 1506291842,
+        "order_delivery": 1506816000,
+        "order_no": 5,
+        "order_product": "A",
+        "order_quantity": 6
+      },
+      "-KupzR0TWpn19rIC9TMk": {
+        "order_customer": "Kim Alexa",
+        "order_date": 1506291860,
+        "order_delivery": 1506816000,
+        "order_no": 5,
+        "order_product": "A",
+        "order_quantity": 2
       }
     }
   },
   "notificationData": {
-    "-KjXc5Hfk8-ajfnaFkmO3": {
-      "created": 1504712773,
+    "-KuixqNurt_4YLMXsOrd": {
+      "created": 1506174003,
       "detail": "Created order no.1",
       "type": "normal"
     },
-    "-KjXc5Hfk8-vUE6NN3Fb": {
-      "created": 1504716773,
+    "-KuiykWu_2ovdReIAIG9": {
+      "created": 1506174242,
       "detail": "Created order no.2",
       "type": "normal"
     },
-    "-Ku-VC3phbQGIwJEV-OA": {
-      "created": 1505394480,
-      "detail": "Created order no.5",
-      "type": "nornal"
-    },
-    "-Ku0aQAxY6IPgjx55PXt": {
-      "created": 1505412888,
+    "-Kuiyn_yfZVCy4dWiFO-": {
+      "created": 1506174254,
       "detail": "Created order no.3",
-      "type": "nornal"
+      "type": "normal"
     },
-    "-Ku0rJ2uTWf-rovMe-Tj": {
-      "created": 1505417315,
+    "-Kuo5ON_0GbbMYcTLT9n": {
+      "created": 1506260130,
       "detail": "Created order no.4",
-      "type": "nornal"
+      "type": "normal"
     },
-    "-Ku0rURCstfs0_Bs4VZV": {
-      "created": 1505417361,
+    "-KupzMTaE48cA9CdCbYv": {
+      "created": 1506291842,
       "detail": "Created order no.5",
-      "type": "nornal"
+      "type": "normal"
     },
-    "-Ku0ruIA3Jo3AIpin6L5": {
-      "created": 1505417471,
-      "detail": "Created order no.3",
-      "type": "nornal"
-    },
-    "-Ku0s8R2l7Kjn6Hcr1c1": {
-      "created": 1505417533,
-      "detail": "Created order no.3",
-      "type": "nornal"
-    },
-    "-Ku2PzRuqH07XWf1yHYS": {
-      "created": 1505443445,
-      "detail": "Created order no.4",
-      "type": "nornal"
-    },
-    "-KuY_OKdVedStPDb6BDT": {
-      "created": 1505983043,
+    "-KupzR0XxMguDF-ILsGH": {
+      "created": 1506291860,
       "detail": "Created order no.5",
-      "type": "nornal"
+      "type": "normal"
     }
   },
   "orderData": {
-    "-Ku0aQAll5YVSyiNQaKg": {
-      "order_customer": "Kim Alexa",
-      "order_date": 1505412888,
-      "order_delivery": 1506124800,
-      "order_duration": 349.80000000000007,
+    "-KuixqNm4NMZdm4bRamQ": {
+      "order_color": "#91524f",
+      "order_customer": "Thomson Mirak",
+      "order_date": 1506174003,
+      "order_delivery": 1506384000,
+      "order_duration": 365.5,
       "order_no": 1,
+      "order_product_name": "A",
+      "order_product_part": [
+        {
+          "cycle": [
+            0.8,
+            3.8,
+            0.4,
+            6.4
+          ],
+          "name": "A1",
+          "process": "1,2,3,4",
+          "setup": [
+            20,
+            5,
+            0,
+            0
+          ],
+          "sku": 1001
+        },
+        {
+          "cycle": [
+            0,
+            0.8,
+            0.7,
+            6.4
+          ],
+          "name": "A2",
+          "process": "2,3,4",
+          "setup": [
+            0,
+            40,
+            10,
+            40
+          ],
+          "sku": 1002
+        },
+        {
+          "cycle": [
+            2.75,
+            0.8,
+            0,
+            6.4
+          ],
+          "name": "A3",
+          "process": "1,2,4",
+          "setup": [
+            25,
+            10,
+            40,
+            0
+          ],
+          "sku": 1003
+        }
+      ],
+      "order_product_process": [
+        {
+          "number": 0,
+          "required": "none"
+        },
+        {
+          "number": 1,
+          "required": "none"
+        },
+        {
+          "number": 2,
+          "required": "none"
+        },
+        {
+          "number": 3,
+          "required": "A1,A2,A3"
+        }
+      ],
+      "order_product_sku": 1000,
+      "order_quantity": 6,
+      "order_status": "waiting"
+    },
+    "-KuiykWiU2v28Q7HljLv": {
+      "order_color": "#56e431",
+      "order_customer": "Marisa Dumlukin",
+      "order_date": 1506174242,
+      "order_delivery": 1506470400,
+      "order_duration": 314,
+      "order_no": 2,
+      "order_product_name": "B",
+      "order_product_part": [
+        {
+          "cycle": [
+            0.3,
+            0.5,
+            0,
+            0.1
+          ],
+          "name": "B1",
+          "process": "1,2,4",
+          "setup": [
+            50,
+            0,
+            0,
+            50
+          ],
+          "sku": 2001
+        },
+        {
+          "cycle": [
+            0,
+            0.5,
+            0.05,
+            0.1
+          ],
+          "name": "B2",
+          "process": "2,3,4",
+          "setup": [
+            0,
+            50,
+            0,
+            0
+          ],
+          "sku": 2002
+        },
+        {
+          "cycle": [
+            0.3,
+            0,
+            0.05,
+            0.1
+          ],
+          "name": "B3",
+          "process": "1,3,4",
+          "setup": [
+            50,
+            25,
+            25,
+            50
+          ],
+          "sku": 2003
+        }
+      ],
+      "order_product_process": [
+        {
+          "number": 0,
+          "required": "none"
+        },
+        {
+          "number": 1,
+          "required": "none"
+        },
+        {
+          "number": 2,
+          "required": "none"
+        },
+        {
+          "number": 3,
+          "required": "B1,B2,B3"
+        }
+      ],
+      "order_product_sku": 1600,
+      "order_quantity": 7,
+      "order_status": "waiting"
+    },
+    "-Kuiyn_qN5WqBDz1zs4H": {
+      "order_color": "#baf865",
+      "order_customer": "Phill Jackson",
+      "order_date": 1506174254,
+      "order_delivery": 1506556800,
+      "order_duration": 603,
+      "order_no": 3,
       "order_product_name": "C",
       "order_product_part": [
         {
@@ -716,15 +1087,34 @@
           "sku": 1503
         }
       ],
+      "order_product_process": [
+        {
+          "number": 0,
+          "required": "none"
+        },
+        {
+          "number": 1,
+          "required": "none"
+        },
+        {
+          "number": 2,
+          "required": "none"
+        },
+        {
+          "number": 3,
+          "required": "C1,C2,C3"
+        }
+      ],
       "order_product_sku": 3000,
-      "order_quantity": 11,
+      "order_quantity": 10,
       "order_status": "waiting"
     },
-    "-Ku0rJ2bStIYO_mjNXCZ": {
-      "order_customer": "Marisa Dumlukin",
-      "order_date": 1505417315,
-      "order_delivery": 1505865600,
-      "order_duration": 511.75,
+    "-Kuo5ONQK-CzZevRjKJQ": {
+      "order_color": "#7f2bdf",
+      "order_customer": "David Lee",
+      "order_date": 1506260130,
+      "order_delivery": 1506729600,
+      "order_duration": 365.5,
       "order_no": 4,
       "order_product_name": "A",
       "order_product_part": [
@@ -780,143 +1170,33 @@
           "sku": 1003
         }
       ],
+      "order_product_process": [
+        {
+          "number": 0,
+          "required": "none"
+        },
+        {
+          "number": 1,
+          "required": "none"
+        },
+        {
+          "number": 2,
+          "required": "none"
+        },
+        {
+          "number": 3,
+          "required": "A1,A2,A3"
+        }
+      ],
       "order_product_sku": 1000,
-      "order_quantity": 11,
-      "order_status": "late"
+      "order_quantity": 6,
+      "order_status": "waiting"
     },
-    "-Ku0s8Qp4sV1BtR08ICn": {
-      "order_customer": "David Lee",
-      "order_date": 1505417533,
-      "order_delivery": 1505952000,
-      "order_duration": 336.8,
-      "order_no": 3,
-      "order_product_name": "B",
-      "order_product_part": [
-        {
-          "cycle": [
-            0.3,
-            0.5,
-            0,
-            0.1
-          ],
-          "name": "B1",
-          "process": "1,2,4",
-          "setup": [
-            50,
-            0,
-            0,
-            50
-          ],
-          "sku": 2001
-        },
-        {
-          "cycle": [
-            0.3,
-            0.5,
-            0.05,
-            0.1
-          ],
-          "name": "B2",
-          "process": "2,3,4",
-          "setup": [
-            0,
-            50,
-            0,
-            0
-          ],
-          "sku": 2002
-        },
-        {
-          "cycle": [
-            0.3,
-            0,
-            0.05,
-            0.1
-          ],
-          "name": "B3",
-          "process": "1,3,4",
-          "setup": [
-            50,
-            25,
-            25,
-            50
-          ],
-          "sku": 2003
-        }
-      ],
-      "order_product_sku": 1600,
-      "order_quantity": 16,
-      "order_status": "late"
-    },
-    "-Ku2PzRefde_cGPYWseB": {
-      "order_customer": "Thomson Mirak",
-      "order_date": 1505443445,
-      "order_delivery": 1505865600,
-      "order_duration": 323,
-      "order_no": 5,
-      "order_product_name": "B",
-      "order_product_part": [
-        {
-          "cycle": [
-            0.3,
-            0.5,
-            0,
-            0.1
-          ],
-          "name": "B1",
-          "process": "1,2,4",
-          "setup": [
-            50,
-            0,
-            0,
-            50
-          ],
-          "sku": 2001
-        },
-        {
-          "cycle": [
-            0,
-            0.5,
-            0.05,
-            0.1
-          ],
-          "name": "B2",
-          "process": "2,3,4",
-          "setup": [
-            0,
-            50,
-            0,
-            0
-          ],
-          "sku": 2002
-        },
-        {
-          "cycle": [
-            0.3,
-            0,
-            0.05,
-            0.1
-          ],
-          "name": "B3",
-          "process": "1,3,4",
-          "setup": [
-            50,
-            25,
-            25,
-            50
-          ],
-          "sku": 2003
-        }
-      ],
-      "order_product_sku": 1600,
-      "order_quantity": 10,
-      "order_status": "late"
-    },
-    "-KuY_OKOoCVCmPNUwdZX": {
-      "order_color": "#85a637",
-      "order_customer": "Phill Jackson",
-      "order_date": 1505983043,
-      "order_delivery": 1506038400,
+    "-KupzQxUyFfFwShWf7IZ": {
+      "order_color": "#90e2ce",
+      "order_customer": "Kim Alexa",
+      "order_date": 1506291860,
+      "order_delivery": 1506816000,
       "order_duration": 248.5,
       "order_no": 5,
       "order_product_name": "A",
@@ -971,6 +1251,24 @@
             0
           ],
           "sku": 1003
+        }
+      ],
+      "order_product_process": [
+        {
+          "number": 0,
+          "required": "none"
+        },
+        {
+          "number": 1,
+          "required": "none"
+        },
+        {
+          "number": 2,
+          "required": "none"
+        },
+        {
+          "number": 3,
+          "required": "A1,A2,A3"
         }
       ],
       "order_product_sku": 1000,
@@ -1124,58 +1422,127 @@
   "scheduleData": [
     [
       {
-        "job_machine": 2,
+        "end": 1506240480,
+        "job_machine": 1,
         "job_part": "A1",
-        "job_quantity": 11,
+        "job_quantity": 6,
         "job_status": "wip",
         "job_workload": 8.8,
-        "order_no": 4,
-        "order_product": "A"
+        "order_color": "#91524f",
+        "order_no": 1,
+        "order_product": "A",
+        "start": 1506328200
       },
       {
+        "end": 1506242905,
         "job_machine": 1,
         "job_part": "A3",
-        "job_quantity": 11,
+        "job_quantity": 6,
         "job_status": "wip",
         "job_workload": 30.25,
-        "order_no": 4,
-        "order_product": "A"
+        "order_color": "#91524f",
+        "order_no": 1,
+        "order_product": "A",
+        "start": 1506328200
       },
       {
+        "end": 1506240180,
         "job_machine": 1,
         "job_part": "B1",
-        "job_quantity": 10,
+        "job_quantity": 7,
         "job_status": "wip",
         "job_workload": 3,
-        "order_no": 5,
-        "order_product": "B"
+        "order_color": "#56e431",
+        "order_no": 2,
+        "order_product": "B",
+        "start": 1506328200
       },
       {
+        "end": 1506240248,
         "job_machine": 1,
-        "job_part": "B1",
-        "job_quantity": 16,
+        "job_part": "B3",
+        "job_quantity": 7,
         "job_status": "wip",
         "job_workload": 4.8,
-        "order_no": 3,
-        "order_product": "B"
+        "order_color": "#56e431",
+        "order_no": 2,
+        "order_product": "B",
+        "start": 1506328200
       }
     ],
     [
       {
+        "end": 1506328728,
         "job_machine": 2,
         "job_part": "A2",
-        "job_quantity": 11,
+        "job_quantity": 6,
+        "job_status": "wip",
         "job_workload": 8.8,
-        "order_no": 4,
-        "order_product": "A"
+        "order_color": "#91524f",
+        "order_no": 1,
+        "order_product": "A",
+        "start": 1506328200
+      },
+      {
+        "end": 1506328500,
+        "job_machine": 2,
+        "job_part": "B2",
+        "job_quantity": 7,
+        "job_status": "wip",
+        "job_workload": 5,
+        "order_color": "#56e431",
+        "order_no": 2,
+        "order_product": "B",
+        "start": 1506328200
+      }
+    ],
+    [
+      {
+        "end": 1506328200,
+        "job_machine": 2,
+        "job_part": "A2",
+        "job_quantity": 6,
+        "job_status": "waiting",
+        "job_workload": 4.2,
+        "order_color": "#91524f",
+        "order_no": 1,
+        "order_product": "A",
+        "start": 1506330015
       },
       {
         "job_machine": 1,
         "job_part": "B2",
-        "job_quantity": 10,
-        "job_workload": 5,
-        "order_no": 5,
-        "order_product": "B"
+        "job_quantity": 7,
+        "job_status": "waiting",
+        "job_workload": 0.35,
+        "order_color": "#56e431",
+        "order_no": 2,
+        "order_product": "B",
+        "start": 1506330015
+      },
+      {
+        "job_machine": 1,
+        "job_part": "B3",
+        "job_quantity": 7,
+        "job_status": "waiting",
+        "job_workload": 0.35,
+        "order_color": "#56e413",
+        "order_no": 2,
+        "order_product": "B",
+        "start": 1506330015
+      }
+    ],
+    [
+      {
+        "end": 1506328200,
+        "job_part": "A2",
+        "job_quantity": 6,
+        "job_status": "waiting",
+        "job_workload": 4.2,
+        "order_color": "#91524f",
+        "order_no": 1,
+        "order_product": "A",
+        "start": 1506328200
       }
     ]
   ]
