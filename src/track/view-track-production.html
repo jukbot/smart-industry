@@ -130,7 +130,7 @@
         <!-- STATION -->
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" data="{{stationItems}}"></firebase-query>
         <!-- DEVICE -->
-        <firebase-query app-name="smart-mes" id="sensorQuery" path="/data/[[k.key]]/factoryData/device" data="{{deviceItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="deviceQuery" path="/data/[[k.key]]/factoryData/device" data="{{deviceItems}}"></firebase-query>
 
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <!-- Add Machine Card -->
@@ -197,7 +197,9 @@
                                 <p>Workload: [[item.job_workload]]</p>
                                 <p>Start: [[timestampToTime(item.start)]]</p>
                                 <p>Status: [[item.job_status]]</p>
+                                <p>Completed: 0 / [[item.job_quantity]]</p>
                             </div>
+                            <flat-button class="btn" on-tap="_receiveJob" job="[[machineItem]]"><button>Receive</button></flat-button>
                             <flat-button class="btn" on-tap="_finishJob" job="[[machineItem]]"><button>Finish</button></flat-button>
                         </div>
                     </li>
@@ -220,14 +222,15 @@
                             <div class="machine-info-group">
                                 <h2 class="title">[[device.name]]</h2>
                                 <p>Type: [[device.type]]</p>
-                                <p>Machine no.: [[device.machine]]</p>
-                                <p>Count: [[device.count]]</p>
+                                <p>Machine no: [[device.machine]]</p>
+                                <p>Count: [[device.counter]]</p>
                                 <p>Order no: [[device.order_no]]</p>
-                                <p>Updated: [[device.update]]</p>
+                                <p>Updated: [[timestampToTime(device.update)]]</p>
                             </div>
                             <paper-toggle-button class="switch" checked="{{device.enable}}" id="deviceControlSwitch" noink> Enabled</paper-toggle-button>
-                            <flat-button class="btn" on-tap="_openEditMachineCard" machine="[[machineItem]]"><button>{{localize('edit')}}</button></flat-button>
-                            <flat-button class="thunderbird btn" on-tap="_removeMachine" machine="[[machineItem]]"><button>{{localize('remove')}}</button></flat-button>
+                            <flat-button class="btn" on-tap="resetCounter" device="[[device]]"><button>Reset Counter</button></flat-button>
+                            <flat-button class="btn" on-tap="_openEditMachineCard" device="[[device]]"><button>{{localize('edit')}}</button></flat-button>
+                            <flat-button class="thunderbird btn" on-tap="_removeMachine" device="[[device]]"><button>{{localize('remove')}}</button></flat-button>
                         </div>
                     </li>
                 </template>
@@ -281,8 +284,12 @@
                 return formattedTime;
             }
 
-
-
+            resetCounter(e) {
+                let key = e.currentTarget.device.$key;
+                this.$.deviceQuery.ref.child(key).update({
+                    counter: 0
+                })
+            }
         }
         customElements.define(ViewTrackProduction.is, ViewTrackProduction);
     </script>

@@ -136,8 +136,8 @@
             <paper-input type="number" id="machineNumber" label="{{localize('machine-number')}}" value="[[getMachineNumber(machineItems.length)]]"
                 min="1" max="999" readonly required always-float-label></paper-input>
             <paper-input type="text" id="machineName" label="Machine Name" required error-message="Invalid Input" always-float-label></paper-input>
-            <paper-input type="number" id="machineCapacity" label="{{localize('machine-max-capacity')}}" min="1" max="9999" step="1"
-                allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
+            <paper-input type="number" id="machineCapacity" label="{{localize('machine-max-capacity')}} (items/hour)" min="1" max="9999"
+                step="1" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
             <vaadin-combo-box id="machineType" label="{{localize('machine-type')}}" items="[[machineType]]" item-value-path="name" item-label-path="name"
                 loading="[[!machineType]]" required always-float-label>
                 <template>
@@ -161,8 +161,8 @@
                 min="1" max="999" readonly required always-float-label></paper-input>
             <paper-input type="text" id="edit_machineName" label="Machine Name" value="[[editMachineItems.name]]" required error-message="Invalid Input"
                 always-float-label></paper-input>
-            <paper-input type="number" id="edit_machineCapacity" label="{{localize('machine-max-capacity')}}" min="1" max="9999" step="1"
-                value="[[editMachineItems.capacity]]" required always-float-label></paper-input>
+            <paper-input type="number" id="edit_machineCapacity" label="{{localize('machine-max-capacity')}} (items/hour)" min="1" max="9999"
+                step="1" value="[[editMachineItems.capacity]]" required always-float-label></paper-input>
             <vaadin-combo-box id="edit_machineType" label="{{localize('machine-type')}}" value="[[editMachineItems.type]]" items="[[machineType]]"
                 item-value-path="name" item-label-path="name" loading="[[!machineType]]" required always-float-label>
                 <template>
@@ -190,7 +190,7 @@
                                 <h2 class="title">[[machineItem.name]]</h2>
                                 <p>{{localize('machine-number')}}: [[machineItem.number]]</p>
                                 <p>{{localize('machine-type')}}: [[machineItem.type]]</p>
-                                <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] items/day</p>
+                                <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] items/ hours</p>
                                 <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
                                 <p style="color:#e53935">Machine Key: [[machineItem.$key]]</p>
                             </div>
