@@ -479,7 +479,6 @@
                             <data-series name$="[[item.job_part]]">
                                 <color>[[item.order_color]]</color>
                                 <data>
-                                    <!-- [[item.utc]] -->
                                     <!-- machine  [[[getTimestampToUTC(item.start, item.end)]]] -->
                                     [Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,8,38,0)], [Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,9,25,0)], [Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,8,33,0)],
                                     [Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,8,34,0)]
@@ -487,31 +486,6 @@
                             </data-series>
                         </template>
                     </vaadin-columnrange-chart>
-
-                    <vaadin-bar-chart id="stacked-bar">
-                        <chart-title>Stacked bar chart</chart-title>
-                        <x-axis>
-                            <categories> Machines 1, Machines 2, Machines 3, Machines 4</categories>
-                        </x-axis>
-                        <y-axis type="datetime">
-                            <chart-title>Operation Time</chart-title>
-                        </y-axis>
-                        <legend reversed="true"></legend>
-                        <tooltip point-format="{series.name}: {point.y}. Total: {point.stackTotal}"></tooltip>
-                        <plot-options>
-                            <series stacking="normal">
-                            </series>
-                        </plot-options>
-                        <data-series name="John">
-                            <data>5, 3, 4, 7</data>
-                        </data-series>
-                        <data-series name="Jane">
-                            <data>2, 2, 3, 2</data>
-                        </data-series>
-                        <data-series name="Joe">
-                            <data>3, 4, 4, 2</data>
-                        </data-series>
-                    </vaadin-bar-chart>
                 </div>
             </li>
         </ul>
@@ -709,22 +683,28 @@
             _parallelSchedule() {
                 let order = this.orderItems;
                 if (order) {
-
-                    let concurrent = this.factoryProfile.concurrencys;
-                    let order_part_wip = []
+                    let concurrent = this.factoryProfile.concurrency;
+                    let wip_order = []; // work in process order array
+                    let wip_order_part = []
                     let order_quantity_wip = []
-                    order_part_wip = order
-                        .filter(order => order.order_status === 'waiting')
-                        .map(order => order.order_product_part)
 
-                    order_quantity_wip = order
-                        .filter(order => order.order_status === 'waiting')
-                        .map(order => order.order_quantity)
-                    console.log(order_part_wip)
+                    for (let i = 0; i < concurrent; i++) {
+                        wip_order.push(order.shift()); // shift original order arr of concurrent and push to work in process order arr
+                    }
+                    console.log("wip orders: ")
+                    console.log(wip_order)
 
-                    let jobCycle = order_part_wip[0][0].cycle;
+                    wip_order_part = wip_order
+                        .filter(o => o.order_status === 'waiting')
+                        .map(o => o.order_product_part)
 
+                    order_quantity_wip = wip_order
+                        .filter(o => o.order_status === 'waiting')
+                        .map(o => o.order_quantity)
+
+                    let jobCycle = wip_order_part[0][0].cycle;
                     console.log(jobCycle);
+
                     let jobWorkload = jobCycle.map((x) => x * order_quantity_wip[0])
                     console.log(jobWorkload);
 
@@ -732,7 +712,6 @@
 
                     // this.$.schedulingQuery.ref.push({
                     // })
-                    console.log(this.selectedStationData)
                 }
             }
 

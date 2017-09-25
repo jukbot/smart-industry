@@ -195,12 +195,15 @@
                                 <p>Product Part: [[item.order_product]]</p>
                                 <p>Order no: [[item.order_no]]</p>
                                 <p>Workload: [[item.job_workload]]</p>
-                                <p>Start: [[timestampToTime(item.start)]]</p>
+                                <p>Plan Start: [[timestampToTime(item.start)]]</p>
+                                <p>Plan End: [[timestampToTime(item.end)]]</p>
+                                <p>Actual Start: [[timestampToTime(item.actual_start)]]</p>
+                                <p>Actual End: </p>
                                 <p>Status: [[item.job_status]]</p>
                                 <p>Completed: 0 / [[item.job_quantity]]</p>
                             </div>
-                            <flat-button class="btn" on-tap="_receiveJob" job="[[machineItem]]"><button>Receive</button></flat-button>
-                            <flat-button class="btn" on-tap="_finishJob" job="[[machineItem]]"><button>Finish</button></flat-button>
+                            <flat-button class="btn" on-tap="receiveJob" job="[[item]]"><button>Receive</button></flat-button>
+                            <flat-button class="btn" on-tap="_finishJob" job="[[item]]"><button>Finish</button></flat-button>
                         </div>
                     </li>
                 </template>
@@ -288,6 +291,13 @@
                 let key = e.currentTarget.device.$key;
                 this.$.deviceQuery.ref.child(key).update({
                     counter: 0
+                })
+            }
+
+            receiveJob(e) {
+                let key = e.currentTarget.job.$key;
+                this.$.scheduleQuery.ref.child(key).update({
+                    actual_start: Math.round(new Date().getTime() / 1000.0)
                 })
             }
         }
