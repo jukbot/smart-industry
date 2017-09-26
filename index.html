@@ -29,30 +29,29 @@
   <meta name="msapplication-tap-highlight" content="no">
   <style>
     * {
-      -webkit-box-sizing: border-box;
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+      -webkit-box-sizing: border-box;
     }
 
     body {
-      -webkit-font-smoothing: antialiased;
+      background-color: #f2f2f2;
       font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Noto", sans-serif;
       letter-spacing: .016em;
       line-height: 1.25;
-      background-color: #f2f2f2;
       color: #202020;
       min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
     }
 
     view-app[unresolved] {
       background-color: #ffffff;
-      display: block;
       height: 100vh;
       overflow: hidden;
+      display: block;
     }
 
-    img.loader-logo,
     h1.loader-title {
       -webkit-animation-play-state: linear;
       animation-play-state: linear;
@@ -91,20 +90,9 @@
       height: 100vh;
     }
 
-    div.flex-grpup {
-      margin: auto;
-    }
-
     div.container h1 {
       margin: 10px;
-      font-size: 1.25rem;
       font-weight: 400;
-      color: #202020;
-    }
-
-    img.loader-logo {
-      width: 120px;
-      height: 120px;
     }
 
     @-webkit-keyframes fadeOut {
@@ -136,31 +124,44 @@
       serverRendered: true
     }
   </script>
+  <link rel="import" href="/src/view-app.html">
 </head>
 
 <body>
   <view-app unresolved role="main">
     <div class="container">
-      <div class="flex-group">
-        <img class="loader-logo" src="data:image/svg+xml;utf8, 
-        <svg enable-background='new 0 0 512 512' version='1.1' viewBox='0 0 512 512' xml:space='preserve' xmlns='http://www.w3.org/2000/svg'>
-        <g fill='#1D1D1B'>
-          <rect x='56' y='384.16' width='160' height='15.664'/>
-          <rect x='248.17' y='384' width='15.664' height='48'/>
-          <rect x='296.17' y='384' width='15.664' height='48'/>
-          <rect x='344.17' y='384' width='15.664' height='48'/>
-          <rect x='392.16' y='384' width='15.664' height='48'/>
-          <rect x='440.17' y='384' width='15.664' height='48'/>
-          <path d='m503.83 480.17v-236.84l-112.67 56.337-15.75-283.5h-78.767l-16.177 258.84-49.516 24.758-15.675-211.6h-78.455l-16.242 186.79-112.41 56.204v149.01h-8.167v15.664h512v-15.664l-8.168 1e-3zm-192.47-448.34h49.233l0.907 16.336h-51.161l1.021-16.336zm-2 32.001h53.01l0.908 16.336h-54.939l1.021-16.336zm-2 31.999h56.789l11.748 211.46-32.062 16.031v-80l-47.167 23.583 10.692-171.08zm-156.18 8h49.547l1.21 16.336h-52.177l1.42-16.336zm-2.783 32h54.699l1.21 16.336h-57.33l1.421-16.336zm-2.783 32h59.853l10.334 139.51-31.969 15.985v-80l-46.817 23.409 8.599-98.904zm-89.447 312.34h-32.335v-16.336h32.336v16.336zm144 0h-128.34v-56.336h128.34v56.336zm288 0h-272.34v-16.336h272.34v16.336zm0-32.001h-272.34v-40h-159.66v40h-32.335v-107.33l144.34-72.168v80l160-80v80l160-80v179.49z'/>
-        </g>
-        </svg>" alt="app-logo"></img>
-        <h1 class="loader-title">Initializing your data</h1>
-      </div>
+      <h1 class="loader-title">Initializing...</h1>
     </div>
   </view-app>
-  <link rel="import" href="/src/view-app.html">
   <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
   <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <script>
+    const greenColor = 'color: green'
+    const crimsonColor = 'color: crimson'
+    const purpleColor = 'color: purple'
+    // Load and register pre-caching Service Worker for offline usage
+    if ('serviceWorker' in navigator) {
+      // Register service worker
+      navigator.serviceWorker.register('/service-worker.js', {
+        scope: '/'
+      }).then((registration) => {
+        console.info('%cService Worker Registered to ' + registration.scope, purpleColor)
+      }).catch((err) => {
+        console.error('%cService Worker Register Failed 😖: ' + err, crimsonColor)
+      })
+      // Check state of service worker
+      navigator.serviceWorker.ready.then((registration) => {
+        console.info('%cService Worker Ready 😃', greenColor)
+        return registration.navigationPreload.getState()
+      }).then(state => {
+        //console.info('%cService Worker state:' + JSON.stringify(state), purpleColor) 
+      })
+    } else {
+      // Browser not support service worker
+      console.warn('%cService Worker is not support by your browser.' + err, crimsonColor)
+      alert('Service Worker is not support by your browser. Please upgrade your browser or use Chrome 60+')
+    }
+  </script>
   <noscript>
     Please enable JavaScript to view this application.
   </noscript>
