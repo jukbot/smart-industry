@@ -104,55 +104,55 @@
             </app-toolbar>
           </app-header>
         </template>
-        <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
-          <view-dashboard name="dashboard" route="[[subRoute]]" hidden$="[[!user]]">
-            <div class="container">
-              <div class="flex-group">
-                <paper-spinner-lite active></paper-spinner-lite>
-              </div>
-            </div>
-          </view-dashboard>
-          <view-setup name="setup" route="[[subRoute]]" hidden$="[[!user]]">
-            <div class="container">
-              <div class="flex-group">
-                <paper-spinner-lite active></paper-spinner-lite>
-              </div>
-            </div>
-          </view-setup>
-          <view-plan name="plan" route="[[subRoute]]" hidden$="[[!user]]">
-            <div class="container">
-              <div class="flex-group">
-                <paper-spinner-lite active></paper-spinner-lite>
-              </div>
-            </div>
-          </view-plan>
-          <view-track name="track" route="[[subRoute]]" hidden$="[[!user]]">
-            <div class="container">
-              <div class="flex-group">
-                <paper-spinner-lite active></paper-spinner-lite>
-              </div>
-            </div>
-          </view-track>
-          <view-help name="help" route="[[subRoute]]" hidden$="[[!user]]">
-            <div class="container">
-              <div class="flex-group">
-                <paper-spinner-lite active></paper-spinner-lite>
-              </div>
-            </div>
-          </view-help>
-          <view-settings name="settings" route="[[subRoute]]" hidden$="[[!user]]">
-            <div class="container">
-              <div class="flex-group">
-                <paper-spinner-lite active></paper-spinner-lite>
-              </div>
-            </div>
-          </view-settings>
-          <view-404 name="404" route="[[subRoute]]" hidden$="[[!user]]"></view-404>
-          <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
-          <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
-          <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
-        </iron-pages>
       </app-header-layout>
+      <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+        <view-dashboard name="dashboard" route="[[subRoute]]" hidden$="[[!user]]">
+          <div class="container">
+            <div class="flex-group">
+              <paper-spinner-lite active></paper-spinner-lite>
+            </div>
+          </div>
+        </view-dashboard>
+        <view-setup name="setup" route="[[subRoute]]" hidden$="[[!user]]">
+          <div class="container">
+            <div class="flex-group">
+              <paper-spinner-lite active></paper-spinner-lite>
+            </div>
+          </div>
+        </view-setup>
+        <view-plan name="plan" route="[[subRoute]]" hidden$="[[!user]]">
+          <div class="container">
+            <div class="flex-group">
+              <paper-spinner-lite active></paper-spinner-lite>
+            </div>
+          </div>
+        </view-plan>
+        <view-track name="track" route="[[subRoute]]" hidden$="[[!user]]">
+          <div class="container">
+            <div class="flex-group">
+              <paper-spinner-lite active></paper-spinner-lite>
+            </div>
+          </div>
+        </view-track>
+        <view-help name="help" route="[[subRoute]]" hidden$="[[!user]]">
+          <div class="container">
+            <div class="flex-group">
+              <paper-spinner-lite active></paper-spinner-lite>
+            </div>
+          </div>
+        </view-help>
+        <view-settings name="settings" route="[[subRoute]]" hidden$="[[!user]]">
+          <div class="container">
+            <div class="flex-group">
+              <paper-spinner-lite active></paper-spinner-lite>
+            </div>
+          </div>
+        </view-settings>
+        <view-404 name="404" route="[[subRoute]]" hidden$="[[!user]]"></view-404>
+        <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
+        <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
+        <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
+      </iron-pages>
     </app-drawer-layout>
     <paper-toast id="toastNotification" always-on-top horizontal-align="right" text="{{localize(notificationText)}}"></paper-toast>
     <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">

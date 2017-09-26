@@ -1,4 +1,7 @@
 {
+  "functions": {
+    "source": "dist/server"
+  },
   "database": {
     "rules": "database.rules.json"
   },
@@ -12,6 +15,26 @@
       {
         "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
         "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "/service-worker.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "/images/logo/log.svg",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
       }
     ]
   }
