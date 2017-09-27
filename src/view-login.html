@@ -47,20 +47,6 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
-      }
-
-      .left-half {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.65)), url("/images/cover/welcome.jpg");
-        background-repeat: no-repeat;
-        background-position: center top;
-        background-size: cover;
-        background-color: #202020;
-        flex: 1;
-        padding: 1rem;
-        margin: 0;
-      }
-
-      .right-half {
         background-color: #ffffff;
         flex: 1;
         padding: 1rem;
@@ -68,7 +54,6 @@
 
       .main-title {
         font-size: 3.5rem;
-        font-weight: 400;
         text-align: center;
       }
 
@@ -85,10 +70,6 @@
       .form-title>h2 {
         font-size: 1.5rem;
         margin-bottom: 20px;
-      }
-
-      .white {
-        color: #ffffff;
       }
 
       .login-btn,
@@ -141,17 +122,16 @@
         margin-left: 10px;
       }
 
+
       #toastAlert {
         --paper-toast-background-color: #e53935;
-        --paper-toast-color: #FFFFFF;
-        opacity: 1;
-        font-size: 1rem;
-        width: 100%;
-        padding: 16px;
       }
 
       #toastSuccess {
         --paper-toast-background-color: #43A047;
+      }
+
+      .toast {
         --paper-toast-color: #FFFFFF;
         opacity: 1;
         font-size: 1rem;
@@ -183,7 +163,6 @@
 
       .close-toast-button {
         text-transform: none;
-        color: #FFFFFF;
         float: right;
       }
 
@@ -218,13 +197,7 @@
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <iron-ajax id="requestSampleData" url="/data/sample.json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <section class="container">
-      <!-- <figure class="flex-item left-half">
-        <article>
-          <h1 title="IMES" class="main-title white">IMES</h1>
-          <div title="Smart Industry Helper" class="main-describe white">Your Smart Industry Helper</div>
-        </article>
-      </figure> -->
-      <div class="flex-item right-half">
+      <div class="flex-item">
         <article>
           <img class="logo" src="/images/logo/logo.svg" title="Logo" alt="app logo">
           <h1 title="IMES" class="main-title mobile-title">IMES</h1>
@@ -322,7 +295,7 @@
           </form>
         </article>
         </div>
-        <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000">
+        <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
           <div class="toast-flex-container">
             <div class="toast-flex-item">
               <p>[[successMessage]]</p>
@@ -332,7 +305,7 @@
             </div>
           </div>
         </paper-toast>
-        <paper-toast id="toastAlert" role="alert" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000">
+        <paper-toast id="toastAlert" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
           <div class="toast-flex-container">
             <div class="toast-flex-item">
               <p>[[alertMessage]]</p>
@@ -459,7 +432,7 @@
 
       sendEmailVeirify() {
         this.user.sendEmailVerification()
-        this.showSuccessToast("Register successful. We've send verification link to your email")
+        this.showSuccessToast("Register successful. We've sent a confirmation link to your email you must follow in order to activate your account.")
       }
 
       _resetPassword() {
