@@ -7,10 +7,9 @@
 [![Polymer 2 supported](https://img.shields.io/badge/Polymer2-supported-f50057.svg)](https://github.com/jukbot/smart-industry/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+<img src="https://cdn.rawgit.com/jukbot/smart-industry/5734f00e/imes_splash.png" alt="logo"/>
+
 # About IMES Project
-
-<img src="https://cdn.rawgit.com/jukbot/rescuehub/fcb6b82e/imes_splash.png" alt="logo"/>
-
 
 A manufacturing execution system (MES) involves using computers to track and record the entire manufacturing process from extracting raw materials to producing finished products. They mainly function as stand-alone systems that primarily collect data about the workplace. A MES can be used in a wide variety of industries including packing goods, metal or plastic production, and automation.  The main purpose for using a MES is to improve production, minimize delays, and make delivery of goods easier.
 
