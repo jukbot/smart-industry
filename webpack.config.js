@@ -5,7 +5,7 @@ const path = require("path");
 
 const workboxPlugin = require("workbox-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+
 const DIST_DIR = "/build/default";
 
 module.exports = {

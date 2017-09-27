@@ -48,5 +48,6 @@ module.exports = {
       }
     }
   ],
-  navigateFallback: "index.html"
+  navigateFallback: "index.html",
+  navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/]
 };

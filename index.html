@@ -135,33 +135,6 @@
   </view-app>
   <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
   <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-  <script>
-    const greenColor = 'color: green'
-    const crimsonColor = 'color: crimson'
-    const purpleColor = 'color: purple'
-    // Load and register pre-caching Service Worker for offline usage
-    if ('serviceWorker' in navigator) {
-      // Register service worker
-      navigator.serviceWorker.register('/service-worker.js', {
-        scope: '/'
-      }).then((registration) => {
-        console.info('%cService Worker Registered to ' + registration.scope, purpleColor)
-      }).catch((err) => {
-        console.error('%cService Worker Register Failed 😖: ' + err, crimsonColor)
-      })
-      // Check state of service worker
-      navigator.serviceWorker.ready.then((registration) => {
-        console.info('%cService Worker Ready 😃', greenColor)
-        return registration.navigationPreload.getState()
-      }).then(state => {
-        //console.info('%cService Worker state:' + JSON.stringify(state), purpleColor) 
-      })
-    } else {
-      // Browser not support service worker
-      console.warn('%cService Worker is not support by your browser.' + err, crimsonColor)
-      alert('Service Worker is not support by your browser. Please upgrade your browser or use Chrome 60+')
-    }
-  </script>
   <noscript>
     Please enable JavaScript to view this application.
   </noscript>

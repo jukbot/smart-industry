@@ -14,7 +14,7 @@
     </style>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-header id="subheader" slot="header" fixed shadow>
-      <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect>
+      <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
         <template is="dom-repeat" items="{{submenus}}">
           <paper-tab name$="{{item.view}}">
             <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>

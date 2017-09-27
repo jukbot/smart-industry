@@ -332,11 +332,39 @@
 
             // import lazy reousrce file
             Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
-
+              this._registerServiceWorker()
               this._networkChanged()
               this.loadComplete = true
             })
           })
+        }
+      }
+
+      _registerServiceWorker() {
+        const greenColor = 'color: green'
+        const crimsonColor = 'color: crimson'
+        const purpleColor = 'color: purple'
+        // Load and register pre-caching Service Worker for offline usage
+        if ('serviceWorker' in navigator) {
+          // Register service worker
+          navigator.serviceWorker.register('/service-worker.js', {
+            scope: '/'
+          }).then((registration) => {
+            console.info('%cService Worker Registered to ' + registration.scope, purpleColor)
+          }).catch((err) => {
+            console.error('%cService Worker Register Failed 😖: ' + err, crimsonColor)
+          })
+          // Check state of service worker
+          navigator.serviceWorker.ready.then((registration) => {
+            console.info('%cService Worker Ready 😃', greenColor)
+            return registration.navigationPreload.getState()
+          }).then(state => {
+            //console.info('%cService Worker state:' + JSON.stringify(state), purpleColor) 
+          })
+        } else {
+          // Browser not support service worker
+          console.warn('%cService Worker is not support by your browser.' + err, crimsonColor)
+          alert('Service Worker is not support by your browser. Please upgrade your browser or use Chrome 60+')
         }
       }
 
@@ -389,6 +417,7 @@
               Polymer.Async.timeOut.run(() => {
                 this._closeToastAlert()
                 this.$.userIndexDB.destroy()
+                this.$.appLang.destroy()
                 // redirect to login page
                 this.set('route.path', '/login')
               }, 1)
@@ -401,11 +430,12 @@
       }
 
       _verifyEmailAlert(verified, signedIn) {
-        if (!verified && signedIn) {
-          this.showAlertToast(
-            'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
-          )
-        }
+        // Enable when deploy production
+        // if (!verified && signedIn) {
+        //   this.showAlertToast(
+        //     'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
+        //   )
+        // }
       }
 
       _closeToastAlert() {
