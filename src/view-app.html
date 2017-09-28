@@ -3,26 +3,26 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="/bower_components/polymer/lib/utils/async.html">
 <link rel="import" href="/bower_components/lazy-imports/lazy-imports-mixin.html">
+<link rel="import" href="/bower_components/app-layout/app-layout.html">
 <link rel="import" href="/bower_components/app-route/app-location.html">
 <link rel="import" href="/bower_components/app-route/app-route.html">
-<link rel="import" href="/bower_components/app-layout/app-layout.html">
 <link rel="import" href="/bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="/bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="/bower_components/app-localize-behavior/app-localize-behavior.html">
-<!-- iron modules -used for component functions -->
-<link rel="import" href="/bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="/bower_components/iron-pages/iron-pages.html">
-<!-- paper modules -used for component style -->
-<link rel="import" href="/bower_components/paper-spinner/paper-spinner-lite.html">
-<link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="/bower_components/paper-tooltip/paper-tooltip.html">
-<!-- 3rd party modules -->
-<link rel="import" href="/bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
 <!-- import style component -->
 <link rel="import" href="style/shared-styles.html">
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/flat-icons.html">
+<!-- paper modules -used for component style -->
+<link rel="import" href="/bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="/bower_components/paper-tooltip/paper-tooltip.html">
+<!-- iron modules -used for component functions -->
+<link rel="import" href="/bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="/bower_components/iron-pages/iron-pages.html">
+<!-- 3rd party modules -->
+<link rel="import" href="/bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-offline.html">
@@ -30,9 +30,9 @@
 <link rel="import" href="view-404.html">
 <!-- import lazy page router -->
 <link rel="import" href="view-dashboard.html">
-<link rel="lazy-import" href="view-setup.html">
-<link rel="lazy-import" href="view-plan.html">
-<link rel="lazy-import" href="view-track.html">
+<link rel="import" href="view-setup.html">
+<link rel="import" href="view-plan.html">
+<link rel="import" href="view-track.html">
 <link rel="lazy-import" href="view-settings.html">
 <link rel="lazy-import" href="view-help.html">
 
@@ -430,12 +430,11 @@
       }
 
       _verifyEmailAlert(verified, signedIn) {
-        // Enable when deploy production
-        // if (!verified && signedIn) {
-        //   this.showAlertToast(
-        //     'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
-        //   )
-        // }
+        if (!verified && signedIn) {
+          this.showAlertToast(
+            'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
+          )
+        }
       }
 
       _closeToastAlert() {
