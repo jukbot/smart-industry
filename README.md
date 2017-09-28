@@ -1,4 +1,4 @@
-<img src="https://cdn.rawgit.com/jukbot/smart-industry/5734f00e/imes_splash.png" alt="logo"/>
+<img src="https://cdn.rawgit.com/jukbot/smart-industry/e6721339/imes_splash.png" alt="logo"/>
 
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
