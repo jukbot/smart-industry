@@ -23,6 +23,7 @@
 <!-- 3rd party modules -->
 <link rel="import" href="/bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="/lib/lozad.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-offline.html">
@@ -30,9 +31,9 @@
 <link rel="import" href="view-404.html">
 <!-- import lazy page router -->
 <link rel="import" href="view-dashboard.html">
-<link rel="import" href="view-setup.html">
-<link rel="import" href="view-plan.html">
-<link rel="import" href="view-track.html">
+<link rel="lazy-import" href="view-setup.html">
+<link rel="lazy-import" href="view-plan.html">
+<link rel="lazy-import" href="view-track.html">
 <link rel="lazy-import" href="view-settings.html">
 <link rel="lazy-import" href="view-help.html">
 
@@ -82,7 +83,7 @@
             <button type="button">{{localize('logout-button')}}
                   </button>
           </flat-button>
-          <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="User image" alt="user image">
+          <img id="profile" class="lozad profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="User image" alt="user image">
           <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-config="{{tooltipAnimation}}"
             animation-delay="0">
             <p>{{localize('email')}}: [[persistedUserData.email]]</p>
@@ -332,6 +333,8 @@
 
             // import lazy reousrce file
             Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
+              const observer = lozad(); // lazy loads elements with default selector as '.lozad'
+              observer.observe();
               this._registerServiceWorker()
               this._networkChanged()
               this.loadComplete = true
