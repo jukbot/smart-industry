@@ -382,10 +382,10 @@
               this.page = 'dashboard'
               this.set('route.path', '/dashboard')
             }
-            // else if (!this.signedIn) {
-            //   this.page = 'login'
-            //   this.set('route.path', '/login')
-            // }
+            else if (!this.signedIn) {
+              this.page = 'login'
+              this.set('route.path', '/login')
+            }
           }, 1)
         })
       }

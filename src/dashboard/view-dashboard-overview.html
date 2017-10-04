@@ -85,7 +85,7 @@
         <li>
           <div class="frame">
             <h1 class="title">Order Done</h1>
-            <h1 class="number">[[getDoneOrder(orderData)]] [[doneOrderCount]]</h1>
+            <h1 class="number">[[doneOrderCount]]</h1>
           </div>
         </li>
 
@@ -151,7 +151,8 @@
 
       static get observers() {
         return [
-          'getWaitOrder(orderData)'
+          'getWaitOrder(orderData)',
+          'getDoneOrder(orderData)'
         ]
       }
 
@@ -206,7 +207,6 @@
           const query = this.$.orderQuery.ref;
           query.orderByChild("order_status").equalTo("waiting").on("value", (snapshot) => {
             this.set('waitOrderCount', snapshot.numChildren());
-            console.log(snapshot.val())
           });
         } else {
           this.set('waitOrderCount', 0);
