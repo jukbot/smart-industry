@@ -225,7 +225,7 @@
               </flat-checkbox>
               <label for="setKeepSession">Keep me signed in</label>
             </div>
-            <flat-button class="login-btn" on-tap="login">
+            <flat-button class="login-btn" on-tap="_login">
               <button type="button">Log in</button>
             </flat-button>
             <div class="link">
@@ -271,7 +271,7 @@
               </span>
             </flat-input>
             <p>By signing up you agree to IMES’s Terms of Service</p>
-            <flat-button class="register-btn" on-tap="register">
+            <flat-button class="register-btn" on-tap="_register">
               <button type="button">Register and Login</button>
             </flat-button>
             <div class="link">
@@ -359,7 +359,7 @@
         }
       }
 
-      login() {
+      _login() {
         if (this.$.accountEmail.value && this.$.accountPassword.value) {
           this.$.userAuth.signInWithEmailAndPassword(this.$.accountEmail.value, this.$.accountPassword.value)
             .then((response) => {
@@ -373,7 +373,7 @@
         }
       }
 
-      register() {
+      _register() {
         const email = this.$.register_email.value
         const organize = this.$.register_organization.value
         const phone = this.$.register_phone.value
