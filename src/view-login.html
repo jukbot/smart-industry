@@ -16,7 +16,7 @@
 <dom-module id="view-login">
   <template>
     <style include="flat-button flat-input flat-checkbox">
-       :host {
+      :host {
         display: block;
       }
 
@@ -209,7 +209,7 @@
               </span>
             </flat-input>
             <flat-input>
-              <input type="password" id="accountPassword" name="Password" placeholder="Passwrod" maxlength="30" auto-complete="current-password"
+              <input type="password" id="accountPassword" name="Password" placeholder="Password" maxlength="30" auto-complete="current-password"
                 autofocus required aria-labelledby="accountPasswordLabel">
               <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="accountPasswordLabel">Password</label>
@@ -220,14 +220,19 @@
             <div class="keep-session-checkbox">
               <flat-checkbox tabindex="0">
                 <input type="checkbox" id="setKeepSession" name="setKeepSession" checked$="[[remember]]" on-change="_toggleKeepSession">
-                <span class="flat-md-decorator"></flat-md-decorator aria-hidden="true">
+                <span class="flat-md-decorator">
+                  </flat-md-decorator aria-hidden="true">
               </flat-checkbox>
               <label for="setKeepSession">Keep me signed in</label>
             </div>
-            <flat-button class="login-btn" on-tap="login"><button type="button">Log in</button></flat-button>
-            <div class="link"><a href="javascript:void(0);" on-click="_showReset" class="login-forget">Forgot?</a></div>
-            <div class="link"><a href="javascript:void(0);" on-click="_showRegister" class="login-register">Don’t have an account? Sign
-              up now.</a>
+            <flat-button class="login-btn" on-tap="login">
+              <button type="button">Log in</button>
+            </flat-button>
+            <div class="link">
+              <a href="javascript:void(0);" on-click="_showReset" class="login-forget">Forgot?</a>
+            </div>
+            <div class="link">
+              <a href="javascript:void(0);" on-click="_showRegister" class="login-register">Don’t have an account? Sign up now.</a>
             </div>
           </form>
 
@@ -241,35 +246,37 @@
               <span class="flat-md-decorator" error-message="Invalid Email" aria-hidden="true">
                 <label id="registerEmailLabel">Email address</label>
                 <span class="flat-underline"></span>
-                </span>
-                </flat-input>
-                <flat-input>
-                  <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="30" required aria-labelledby="registerPasswordLabel">
-                  <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
+              </span>
+            </flat-input>
+            <flat-input>
+              <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="30" required aria-labelledby="registerPasswordLabel">
+              <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="registerPasswordLabel">New password</label>
                 <span class="flat-underline"></span>
-                  </span>
-                </flat-input>
-                <flat-input>
-                  <input type="text" id="register_organization" name="Organization" placeholder="Organization" maxlength="30" required aria-labelledby="registerOrganizationLabel">
-                  <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
+              </span>
+            </flat-input>
+            <flat-input>
+              <input type="text" id="register_organization" name="Organization" placeholder="Organization" maxlength="30" required aria-labelledby="registerOrganizationLabel">
+              <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="registerOrganizationLabel">Organization</label>
                 <span class="flat-underline"></span>
-                  </span>
-                </flat-input>
-                <flat-input>
-                  <input type="tel" id="register_phone" name="Phone" placeholder="Phone" maxlength="10" required aria-labelledby="registerPhoneLabel"
-                    pattern="\d{10}" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
-                  <span class="flat-md-decorator" error-message="Invalid Phone Number" aria-hidden="true">
+              </span>
+            </flat-input>
+            <flat-input>
+              <input type="tel" id="register_phone" name="Phone" placeholder="Phone" maxlength="10" required aria-labelledby="registerPhoneLabel"
+                pattern="\d{10}" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+              <span class="flat-md-decorator" error-message="Invalid Phone Number" aria-hidden="true">
                 <label id="registerPhoneLabel">Phone</label>
                 <span class="flat-underline"></span>
-                  </span>
-                </flat-input>
-                <p>By signing up you agree to IMES’s Terms of Service</p>
-                <flat-button class="register-btn" on-tap="register">
-                  <button type="button">Register and Login</button>
-                </flat-button>
-                <div class="link"><a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Log in</a></div>
+              </span>
+            </flat-input>
+            <p>By signing up you agree to IMES’s Terms of Service</p>
+            <flat-button class="register-btn" on-tap="register">
+              <button type="button">Register and Login</button>
+            </flat-button>
+            <div class="link">
+              <a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Log in</a>
+            </div>
           </form>
 
           <form hidden$="[[!reset]]" class="reset-form">
@@ -285,32 +292,36 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <flat-button class="reset-btn" on-tap="_resetPassword"><button type="button">Reset Password</button></flat-button>
-            <div class="link"><a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Return to login</a></div>
+            <flat-button class="reset-btn" on-tap="_resetPassword">
+              <button type="button">Reset Password</button>
+            </flat-button>
+            <div class="link">
+              <a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Return to login</a>
+            </div>
           </form>
         </article>
+      </div>
+      <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
+        <div class="toast-flex-container">
+          <div class="toast-flex-item">
+            <p>[[successMessage]]</p>
+          </div>
+          <div class="toast-flex-item">
+            <paper-icon-button on-tap="_closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1"></paper-icon-button>
+          </div>
         </div>
-        <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
-          <div class="toast-flex-container">
-            <div class="toast-flex-item">
-              <p>[[successMessage]]</p>
-            </div>
-            <div class="toast-flex-item">
-              <paper-icon-button on-tap="_closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1"></paper-icon-button>
-            </div>
+      </paper-toast>
+      <paper-toast id="toastAlert" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
+        <div class="toast-flex-container">
+          <div class="toast-flex-item">
+            <p>[[alertMessage]]</p>
           </div>
-        </paper-toast>
-        <paper-toast id="toastAlert" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
-          <div class="toast-flex-container">
-            <div class="toast-flex-item">
-              <p>[[alertMessage]]</p>
-            </div>
-            <div class="toast-flex-item">
-              <paper-icon-button on-tap="_closeToastAlert" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
-            </div>
+          <div class="toast-flex-item">
+            <paper-icon-button on-tap="_closeToastAlert" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
           </div>
-        </paper-toast>
-        <iron-a11y-keys id="a11y" target="[[loginTarget]]" keys="enter" on-keys-pressed="login"></iron-a11y-keys>
+        </div>
+      </paper-toast>
+      <iron-a11y-keys id="a11y" target="[[loginTarget]]" keys="enter" on-keys-pressed="login"></iron-a11y-keys>
     </section>
   </template>
   <script>
