@@ -686,20 +686,20 @@
                     }
                     console.log("wip orders: ")
                     console.log(wip_order)
-
+                    for (let i in wip_order) {
+                        console.log(wip_order[i].order_product_process)
+                    }
                     wip_order_part = wip_order
-                        .filter(o => o.order_status === 'waiting')
+                        .filter(o => o.order_status === 'late') // change this to waiting
                         .map(o => o.order_product_part)
+                    console.log(wip_order_part)
 
-                    order_quantity_wip = wip_order
-                        .filter(o => o.order_status === 'waiting')
-                        .map(o => o.order_quantity)
+                    // for (let i in wip_order) {
+                    //     let jobWorkload = wip_order.map((x) => x * order_quantity[i])
+                    // }
 
-                    let jobCycle = wip_order_part[0][0].cycle;
-                    console.log(jobCycle);
 
-                    let jobWorkload = jobCycle.map((x) => x * order_quantity_wip[0])
-                    console.log(jobWorkload);
+                    // console.log(jobWorkload);
 
                     let station_quantity = this.stationItems.length
 

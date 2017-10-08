@@ -31,16 +31,16 @@
 <link rel="import" href="view-404.html">
 <!-- import lazy page router -->
 <link rel="import" href="view-dashboard.html">
-<link rel="lazy-import" href="view-setup.html">
-<link rel="lazy-import" href="view-plan.html">
-<link rel="lazy-import" href="view-track.html">
+<link rel="import" href="view-setup.html">
+<link rel="import" href="view-plan.html">
+<link rel="import" href="view-track.html">
 <link rel="lazy-import" href="view-settings.html">
 <link rel="lazy-import" href="view-help.html">
 
 <dom-module id="view-app">
   <template>
     <style include="flat-button shared-styles">
-       :host {
+      :host {
         display: block
       }
     </style>
@@ -81,13 +81,15 @@
         <div class="flex-center">
           <flat-button on-tap="_logout" title="Logout">
             <button type="button">{{localize('logout-button')}}
-                  </button>
+            </button>
           </flat-button>
           <img id="profile" class="lozad profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="User image" alt="user image">
           <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-config="{{tooltipAnimation}}"
             animation-delay="0">
             <p>{{localize('email')}}: [[persistedUserData.email]]</p>
-            <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span></p>
+            <p>{{localize('verify-status')}}:
+              <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span>
+            </p>
             <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
           </paper-tooltip>
           <p>[[persistedUserData.displayname]]</p>
