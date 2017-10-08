@@ -225,10 +225,10 @@
               <button type="button">Log in</button>
             </flat-button>
             <div class="link">
-              <a href="javascript:void(0);" on-click="_showReset" class="login-forget">Forgot?</a>
+              <a href="javascript:void(0);" on-click="_showReset">Forgot?</a>
             </div>
             <div class="link">
-              <a href="javascript:void(0);" on-click="_showRegister" class="login-register">Don’t have an account? Sign up now.</a>
+              <a href="javascript:void(0);" on-click="_showRegister">Don’t have an account? Sign up now.</a>
             </div>
           </form>
 
@@ -267,12 +267,14 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <p>By signing up you agree to IMES’s Terms of Service</p>
+            <p>By signing up you agree to IMES’s
+              <a href="term.html" target="_blank" rel="noopener" class="link">Terms of Service</a>
+            </p>
             <flat-button class="register-btn" on-tap="_register">
               <button type="button">Register and Login</button>
             </flat-button>
             <div class="link">
-              <a href="javascript:void(0);" on-click="_hideRegister" class="login-register">Already have account? Log in</a>
+              <a href="javascript:void(0);" on-click="_hideRegister">Already have account? Log in</a>
             </div>
           </form>
 
@@ -293,10 +295,11 @@
               <button type="button">Reset Password</button>
             </flat-button>
             <div class="link">
-              <a href="javascript:void(0);" rel="noopenner" on-click="_hideReset" class="login-forget">Return to login</a>
+              <a href="javascript:void(0);" rel="noopenner" on-click="_hideReset">Return to login</a>
             </div>
-          </form>
-        </article>
+      </div>
+      </form>
+      </article>
       </div>
       <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
         <div class="toast-flex-container">
