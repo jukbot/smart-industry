@@ -4,6 +4,7 @@
 <link rel="import" href="/bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="/bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/iron-a11y-keys/iron-a11y-keys.html">
@@ -218,12 +219,7 @@
             </flat-input>
 
             <div class="keep-session-checkbox">
-              <flat-checkbox tabindex="0">
-                <input type="checkbox" id="setKeepSession" name="setKeepSession" checked$="[[remember]]" on-change="_toggleKeepSession">
-                <span class="flat-md-decorator">
-                  </flat-md-decorator aria-hidden="true">
-              </flat-checkbox>
-              <label for="setKeepSession">Keep me signed in</label>
+              <paper-checkbox id="setKeepSession" checked$="[[remember]]" on-change="_toggleKeepSession">Keep me signed in</paper-checkbox>
             </div>
             <flat-button class="login-btn" on-tap="_login">
               <button type="button">Log in</button>

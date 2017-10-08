@@ -15,7 +15,7 @@
 <dom-module id="view-plan-scheduling">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -143,6 +143,11 @@
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
+
+        <!-- STATION QUERY SELECTED BY STATION NUMBER -->
+        <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
+            equal-to="{{selectedStation}}" data="{{selectedStationData}}"></firebase-query>
+
         <!-- STATION -->
         <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>
         <!-- MACHINE -->
@@ -152,12 +157,8 @@
         <!-- ORDER SCHEDULE TABLE -->
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
         <!-- JOB SCHEDULING TABLE SELECTED BY STATION NUMBER -->
-        <firebase-query app-name="smart-mes" id="schedulingQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(selectedStation)]]"
+        <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(selectedStation)]]"
             order-by-child="job_workload" data="{{scheduleItems}}"></firebase-query>
-
-        <!-- STATION QUERY SELECTED BY STATION NUMBER -->
-        <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
-            equal-to="{{selectedStation}}" data="{{selectedStationData}}"></firebase-query>
 
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
@@ -294,8 +295,12 @@
 
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_clearSchedule"><button>CLEAR SCHEDULE</button></flat-button>
-                        <flat-button class="btn thunderbird" on-tap="_parallelSchedule"><button>Reschedule</button></flat-button>
+                        <flat-button class="btn" on-tap="_clearSchedule">
+                            <button>CLEAR SCHEDULE</button>
+                        </flat-button>
+                        <flat-button class="btn thunderbird" on-tap="_parallelSchedule">
+                            <button>Reschedule</button>
+                        </flat-button>
                     </div>
                 </div>
             </li>
@@ -329,7 +334,7 @@
                                 <div class="cell">Order No.</div>
                             </template>
                             <template>
-                                <div class="cell" style$="color:[[getOrderColor(item.order_no)]]">[[item.order_no]]</div>
+                                <div class="cell">[[item.order_no]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -436,7 +441,9 @@
                     <div class="center">
                         <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
                             <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                                <flat-button class="btn" name="[[stationItem.st_number]]"><button>Station [[stationItem.st_number]]</button></flat-button>
+                                <flat-button class="btn" name="[[stationItem.st_number]]">
+                                    <button>Station [[stationItem.st_number]]</button>
+                                </flat-button>
                             </template>
                         </iron-selector>
                     </div>
@@ -557,9 +564,6 @@
                 return this._minutesToStr(order_duration)
             }
 
-            getOrderColor(order_key) {
-
-            }
 
             getStationIndex(selectedStation) {
                 return selectedStation - 1
@@ -661,6 +665,7 @@
 
             _clearSchedule() {
                 if (window.confirm("Clear all schedule ? The order that are working in process will not be deleted.") == true) {
+                    orderQuery.ref.remove();
                 }
             }
 
@@ -698,7 +703,7 @@
 
                     let station_quantity = this.stationItems.length
 
-                    // this.$.schedulingQuery.ref.push({
+                    // this.$.scheduleQuery.ref.push({
                     // })
                 }
             }

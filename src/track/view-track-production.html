@@ -14,14 +14,14 @@
 <dom-module id="view-track-production">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 display: block;
                 margin: 10px;
                 --app-grid-item-height: 50%;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                 :host {
+                :host {
                     --app-grid-columns: 1;
                 }
                 .fixed-btn {
@@ -30,19 +30,19 @@
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                 :host {
+                :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                 :host {
+                :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) and (max-width: 2560px) {
-                 :host {
+                :host {
                     --app-grid-columns: 4;
                 }
             }
@@ -203,8 +203,15 @@
                                 <p>Status: [[item.job_status]]</p>
                                 <p>Completed: 0 / [[item.job_quantity]]</p>
                             </div>
-                            <flat-button class="btn" on-tap="receiveJob" job="[[item]]"><button>Receive</button></flat-button>
-                            <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]"><button disabled="[[isDone(item.job_status)]]">Finish</button></flat-button>
+                            <flat-button class="btn" on-tap="receiveJob" job="[[item]]">
+                                <button>Receive</button>
+                            </flat-button>
+                            <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]">
+                                <button disabled="[[isDone(item.job_status)]]">Finish</button>
+                            </flat-button>
+                            <flat-button class="thunderbird btn" on-tap="_removeJob" job="[[item]]">
+                                <button>{{localize('remove')}}</button>
+                            </flat-button>
                         </div>
                     </li>
                 </template>
@@ -212,7 +219,9 @@
             <div class="center">
                 <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
                     <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                        <flat-button class="fix-btn" name="[[stationItem.st_number]]"><button>Station [[stationItem.st_number]]</button></flat-button>
+                        <flat-button class="fix-btn" name="[[stationItem.st_number]]">
+                            <button>Station [[stationItem.st_number]]</button>
+                        </flat-button>
                     </template>
                 </iron-selector>
             </div>
@@ -232,15 +241,23 @@
                                 <p>Updated: [[timestampToTime(device.update)]]</p>
                             </div>
                             <paper-toggle-button class="switch" checked="{{device.enable}}" id="deviceControlSwitch" noink> Enabled</paper-toggle-button>
-                            <flat-button class="btn" on-tap="resetCounter" device="[[device]]"><button>Reset Counter</button></flat-button>
-                            <flat-button class="btn" on-tap="_openEditMachineCard" device="[[device]]"><button>{{localize('edit')}}</button></flat-button>
-                            <flat-button class="thunderbird btn" on-tap="_removeMachine" device="[[device]]"><button>{{localize('remove')}}</button></flat-button>
+                            <flat-button class="btn" on-tap="resetCounter" device="[[device]]">
+                                <button>Reset Counter</button>
+                            </flat-button>
+                            <flat-button class="btn" on-tap="_openEditMachineCard" device="[[device]]">
+                                <button>{{localize('edit')}}</button>
+                            </flat-button>
+                            <flat-button class="thunderbird btn" on-tap="_removeMachine" device="[[device]]">
+                                <button>{{localize('remove')}}</button>
+                            </flat-button>
                         </div>
                     </li>
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-tap="_openAddMachineCard"><button>Add Device</button></flat-button>
+                <flat-button class="big-btn" on-tap="_openAddMachineCard">
+                    <button>Add Device</button>
+                </flat-button>
             </div>
         </div>
     </template>
