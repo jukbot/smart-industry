@@ -122,7 +122,7 @@
         margin-left: 10px;
       }
 
-      #toastAlert {
+      #toastError {
         --paper-toast-background-color: #e53935;
       }
 
@@ -197,7 +197,7 @@
         <article>
           <img class="logo" src="/images/logo/logo.svg" title="Logo" alt="app logo">
           <h1 title="IMES" class="main-title mobile-title">IMES</h1>
-          <form hidden$="[[!login]]" autocomplete="on" class="login-form">
+          <form hidden$="[[!login]]" class="login-form">
             <div class="form-title">
               <h2>Log in</h2>
             </div>
@@ -211,7 +211,7 @@
             </flat-input>
             <flat-input>
               <input type="password" id="accountPassword" name="Password" placeholder="Password" maxlength="30" auto-complete="current-password"
-                autofocus required aria-labelledby="accountPasswordLabel">
+                autofocus required aria-labelledby="accountPasswordLabel" autocomplete="off">
               <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="accountPasswordLabel">Password</label>
                 <span class="flat-underline"></span>
@@ -232,7 +232,7 @@
             </div>
           </form>
 
-          <form hidden$="[[!register]]" autocomplete="on" class="register-form">
+          <form hidden$="[[!register]]" class="register-form">
             <div class="form-title">
               <h2>Register</h2>
             </div>
@@ -245,7 +245,8 @@
               </span>
             </flat-input>
             <flat-input>
-              <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="30" required aria-labelledby="registerPasswordLabel">
+              <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="30" required aria-labelledby="registerPasswordLabel"
+                autocomplete="off">
               <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="registerPasswordLabel">New password</label>
                 <span class="flat-underline"></span>
@@ -307,13 +308,13 @@
           </div>
         </div>
       </paper-toast>
-      <paper-toast id="toastAlert" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
+      <paper-toast id="toastError" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
         <div class="toast-flex-container">
           <div class="toast-flex-item">
-            <p>[[alertMessage]]</p>
+            <p>[[errorMessage]]</p>
           </div>
           <div class="toast-flex-item">
-            <paper-icon-button on-tap="_closeToastAlert" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
+            <paper-icon-button on-tap="_closetoastError" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
           </div>
         </div>
       </paper-toast>
@@ -350,7 +351,7 @@
           signedIn: Boolean,
           user: Object,
           sampleData: Object,
-          alertMessage: String,
+          errorMessage: String,
           successMessage: String
         }
       }
@@ -362,10 +363,10 @@
               this.set('route.path', '/dashboard')
             })
             .catch((error) => {
-              this._showAlertToast(error.code)
+              this._showErrorToast(error.code)
             })
         } else {
-          this._showAlertToast('Email or Password cannot leave blank')
+          this._showErrorToast('Email or Password cannot leave blank')
         }
       }
 
@@ -395,24 +396,25 @@
                   this.user.updateProfile({
                     displayName: username
                   })
-                  this._sendVeirifyEmail()
+                  this.user.sendEmailVerification()
+                  this._showSuccessToast("Register successful. We've sent a confirmation link to your email you must follow in order to activate your account.")
                   const keyid = this.$.factoryData.ref.push().key
                   this._addProfileInfo(username, email, organize, phone, keyid)
                   this.$.factoryData.ref.child(keyid).set(this.sampleData).catch(error => {
                     console.log(error)
-                    this._showAlertToast(error.code)
+                    this._showErrorToast(error.code)
                   })
                 }).catch((error) => {
                   console.log(error)
-                  this._showAlertToast(error.code)
+                  this._showErrorToast(error.code)
                 })
             })
             .catch((error) => {
               console.log(error)
-              this._showAlertToast(error.code)
+              this._showErrorToast(error.code)
             })
         } else {
-          this._showAlertToast('Please fill in the form completely.')
+          this._showErrorToast('Please fill in the form completely.')
         }
       }
 
@@ -428,13 +430,8 @@
           key: keyid
         })
           .catch(error => {
-            this._showAlertToast(error.code)
+            this._showErrorToast(error.code)
           })
-      }
-
-      _sendVeirifyEmail() {
-        this.user.sendEmailVerification()
-        this._showSuccessToast("Register successful. We've sent a confirmation link to your email you must follow in order to activate your account.")
       }
 
       _resetPassword() {
@@ -445,10 +442,10 @@
               this._showSuccessToast('Reset password link has been send to your email.')
             })
             .catch((error) => {
-              this._showAlertToast(error.code)
+              this._showErrorToast(error.code)
             })
         } else {
-          this._showAlertToast('Email cannot leave blank')
+          this._showErrorToast('Email cannot leave blank')
         }
       }
 
@@ -476,9 +473,9 @@
         this.login = true
       }
 
-      _showAlertToast(text) {
-        this.alertMessage = text
-        this.$.toastAlert.open()
+      _showErrorToast(text) {
+        this.errorMessage = text
+        this.$.toastError.open()
       }
 
       _showSuccessToast(text) {
@@ -486,8 +483,8 @@
         this.$.toastSuccess.open()
       }
 
-      _closeToastAlert() {
-        this.$.toastAlert.close()
+      _closetoastError() {
+        this.$.toastError.close()
       }
 
       _closeToastSuccess() {
