@@ -31,11 +31,11 @@
 <link rel="import" href="view-404.html">
 <!-- import lazy page router -->
 <link rel="import" href="view-dashboard.html">
-<link rel="import" href="view-setup.html">
-<link rel="import" href="view-plan.html">
-<link rel="import" href="view-track.html">
-<link rel="lazy-import" href="view-settings.html">
-<link rel="lazy-import" href="view-help.html">
+<link rel="lazy-import" group="lazy" href="view-setup.html">
+<link rel="lazy-import" group="lazy" href="view-plan.html">
+<link rel="lazy-import" group="lazy" href="view-track.html">
+<link rel="lazy-import" group="lazy" href="view-settings.html">
+<link rel="lazy-import" group="lazy" href="view-help.html">
 
 <dom-module id="view-app">
   <template>
@@ -47,6 +47,7 @@
     <!-- <app-analytics key="UA-51514677-9"></app-analytics> ENABLE WHEN DEPLOY PRODUCTION -->
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{pageData}}" tail="{{subRoute}}"></app-route>
+    <app-route route="{{subRoute}}" pattern="/:page" data="{{subPageData}}" tail="{{subPageRoute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
@@ -54,109 +55,110 @@
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
 
-    <app-drawer-layout id="layout" fullbleed>
-      <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open hidden="[[!signedIn]]">
-        <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
-        <h1 title="IMES" class="main-logo-title">IMES</h1>
-        <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
-        <nav role="navigation">
-          <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
-            <a name="dashboard" role="link" href="/dashboard" rel="dashboard" title="Dashboard">
-              <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
-            <a name="setup" role="link" href="/setup" rel="setup" title="Setup">
-              <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-            <a name="plan" role="link" href="/plan" rel="plan" title="Plan">
-              <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-            <a name="track" role="link " href="/track" rel="track" title="Track">
-              <paper-icon-button icon="vaadin:progressbar"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
-            <a name="help" role="link" href="/help" rel="help" title="Help">
-              <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
-            </a>
-            <a name="settings" role="link" href="/settings" rel="settings" title="Settings">
-              <paper-icon-button icon="vaadin:tools"></paper-icon-button> {{localize('settings')}}
-            </a>
-          </iron-selector>
-        </nav>
-        <div class="sidebar-menu-line" role="separator"></div>
-        <div class="flex-center">
-          <flat-button on-tap="_logout" title="Logout">
-            <button type="button">{{localize('logout-button')}}
-            </button>
-          </flat-button>
-          <img id="profile" class="lozad profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="User image" alt="user image">
-          <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-config="{{tooltipAnimation}}"
-            animation-delay="0">
-            <p>{{localize('email')}}: [[persistedUserData.email]]</p>
-            <p>{{localize('verify-status')}}:
-              <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span>
-            </p>
-            <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
-          </paper-tooltip>
-          <p>[[persistedUserData.displayname]]</p>
-          <p class="online">[[getOnlineStatus(online)]]</p>
-          <p>{{localize('version')}} 1.0.6</p>
-        </div>
-      </app-drawer>
-
-      <app-header-layout>
-        <template is="dom-if" if="[[user]]">
-          <app-header class="main-header" id="header" slot="header" role="banner">
-            <app-toolbar>
-              <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
-              <h2 class="page-title" main-title>{{localize(pageData.page)}}</h2>
-            </app-toolbar>
-          </app-header>
-        </template>
-      </app-header-layout>
-      <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
-        <view-dashboard name="dashboard" route="[[subRoute]]" hidden$="[[!user]]">
-          <div class="container">
-            <div class="flex-group">
-              <paper-spinner-lite active></paper-spinner-lite>
-            </div>
+    <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+      <view-404 name="404" route="[[subRoute]]" hidden$="[[!user]]"></view-404>
+      <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
+      <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
+      <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
+      <app-drawer-layout id="layout" fullbleed name="app">
+        <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open hidden="[[!signedIn]]">
+          <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
+          <h1 title="IMES" class="main-logo-title">IMES</h1>
+          <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
+          <nav role="navigation">
+            <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
+              <a name="dashboard" role="link" href="/app/dashboard" rel="dashboard" title="Dashboard">
+                <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
+              <a name="setup" role="link" href="/app/setup" rel="setup" title="Setup">
+                <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
+              <a name="plan" role="link" href="/app/plan" rel="plan" title="Plan">
+                <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
+              <a name="track" role="link " href="/app/track" rel="track" title="Track">
+                <paper-icon-button icon="vaadin:progressbar"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
+              <a name="help" role="link" href="/app/help" rel="help" title="Help">
+                <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
+              </a>
+              <a name="settings" role="link" href="/app/settings" rel="settings" title="Settings">
+                <paper-icon-button icon="vaadin:tools"></paper-icon-button> {{localize('settings')}}
+              </a>
+            </iron-selector>
+          </nav>
+          <div class="sidebar-menu-line" role="separator"></div>
+          <div class="flex-center">
+            <flat-button on-tap="_logout" title="Logout">
+              <button type="button">{{localize('logout-button')}}
+                    </button>
+            </flat-button>
+            <img id="profile" class="lozad profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="User image" alt="user image">
+            <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-config="{{tooltipAnimation}}"
+              animation-delay="0">
+              <p>{{localize('email')}}: [[persistedUserData.email]]</p>
+              <p>{{localize('verify-status')}}: <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span></p>
+              <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
+            </paper-tooltip>
+            <p>[[persistedUserData.displayname]]</p>
+            <p class="online">[[getOnlineStatus(online)]]</p>
+            <p>{{localize('version')}} 1.0.6</p>
           </div>
-        </view-dashboard>
-        <view-setup name="setup" route="[[subRoute]]" hidden$="[[!user]]">
-          <div class="container">
-            <div class="flex-group">
-              <paper-spinner-lite active></paper-spinner-lite>
+        </app-drawer>
+  
+        <app-header-layout>
+          <template is="dom-if" if="[[user]]">
+            <app-header class="main-header" id="header" slot="header" role="banner">
+              <app-toolbar>
+                <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
+                <h2 class="page-title" main-title>{{localize(subPageData.page)}}</h2>
+              </app-toolbar>
+            </app-header>
+          </template>
+        </app-header-layout>
+        <iron-pages selected="[[subPageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+          <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
             </div>
-          </div>
-        </view-setup>
-        <view-plan name="plan" route="[[subRoute]]" hidden$="[[!user]]">
-          <div class="container">
-            <div class="flex-group">
-              <paper-spinner-lite active></paper-spinner-lite>
+          </view-dashboard>
+          <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
             </div>
-          </div>
-        </view-plan>
-        <view-track name="track" route="[[subRoute]]" hidden$="[[!user]]">
-          <div class="container">
-            <div class="flex-group">
-              <paper-spinner-lite active></paper-spinner-lite>
+          </view-setup>
+          <view-plan name="plan" route="[[subPageRoute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
             </div>
-          </div>
-        </view-track>
-        <view-help name="help" route="[[subRoute]]" hidden$="[[!user]]">
-          <div class="container">
-            <div class="flex-group">
-              <paper-spinner-lite active></paper-spinner-lite>
+          </view-plan>
+          <view-track name="track" route="[[subPageRoute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
             </div>
-          </div>
-        </view-help>
-        <view-settings name="settings" route="[[subRoute]]" hidden$="[[!user]]">
-          <div class="container">
-            <div class="flex-group">
-              <paper-spinner-lite active></paper-spinner-lite>
+          </view-track>
+          <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
             </div>
-          </div>
-        </view-settings>
-        <view-404 name="404" route="[[subRoute]]" hidden$="[[!user]]"></view-404>
-        <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
-        <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
-        <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
-      </iron-pages>
-    </app-drawer-layout>
+          </view-help>
+          <view-settings name="settings" route="[[subPageRoute]]" hidden$="[[!user]]">
+            <div class="container">
+              <div class="flex-group">
+                <paper-spinner-lite active></paper-spinner-lite>
+              </div>
+            </div>
+          </view-settings>
+        </iron-pages>
+      </app-drawer-layout>
+    </iron-pages>
+    
     <paper-toast id="toastNotification" always-on-top horizontal-align="right" text="{{localize(notificationText)}}"></paper-toast>
     <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
       <div class="toast-flex-container">
@@ -220,7 +222,7 @@
 
       static get observers() {
         return [
-          '_routePageChanged(pageData.page)',
+          '_routePageChanged(subPageData.page)',
           '_handleUser(user)',
           '_verifyEmailAlert(user.emailVerified, signedIn)',
           '_signedInChanged(signedIn)'
@@ -382,7 +384,7 @@
           Polymer.Async.timeOut.run(() => {
             if (this.signedIn && this.route.path == '/login') {
               this.page = 'dashboard'
-              this.set('route.path', '/dashboard')
+              this.set('route.path', '/app/dashboard')
             }
             else if (!this.signedIn) {
               this.page = 'login'
