@@ -679,6 +679,7 @@
                     let concurrent = this.factoryProfile.concurrency;
                     let wip_order = []; // work in process order array
                     let wip_order_part = []
+                    let wip_order_process = []
                     let order_quantity_wip = []
 
                     for (let i = 0; i < concurrent; i++) {
@@ -693,6 +694,10 @@
                         .filter(o => o.order_status === 'late') // change this to waiting
                         .map(o => o.order_product_part)
                     console.log(wip_order_part)
+
+                    wip_order_process = wip_order
+                        .filter(o => o.order_status === 'late') // change this to waiting
+                        .map(o => o.order_product_process)
 
                     // for (let i in wip_order) {
                     //     let jobWorkload = wip_order.map((x) => x * order_quantity[i])
