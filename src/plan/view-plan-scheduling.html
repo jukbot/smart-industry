@@ -665,7 +665,7 @@
 
             _clearSchedule() {
                 if (window.confirm("Clear all schedule ? The order that are working in process will not be deleted.") == true) {
-                    orderQuery.ref.remove();
+                    this.$.orderQuery.ref.remove();
                 }
             }
 

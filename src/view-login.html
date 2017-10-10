@@ -11,12 +11,11 @@
 <!-- import style component -->
 <link rel="import" href="style/flat-icons.html">
 <link rel="import" href="style/flat-input.html">
-<link rel="import" href="style/flat-checkbox.html">
 <link rel="import" href="style/flat-button.html">
 
 <dom-module id="view-login">
   <template>
-    <style include="flat-button flat-input flat-checkbox">
+    <style include="flat-button flat-input">
       :host {
         display: block;
       }
@@ -33,7 +32,7 @@
       }
 
       article {
-        width: 35%;
+        width: 500px;
         margin: 0 auto;
       }
 
@@ -50,17 +49,6 @@
         background-color: #ffffff;
         flex: 1;
         padding: 1rem;
-      }
-
-      .main-title {
-        font-size: 3.5rem;
-        text-align: center;
-      }
-
-      .main-describe {
-        font-size: 1.5rem;
-        font-weight: 300;
-        text-align: center;
       }
 
       .form-title {
@@ -108,18 +96,10 @@
         height: 150px;
       }
 
-      .mobile-title {
-        display: none;
-      }
-
       .keep-session-checkbox {
         margin: 10px 0;
         height: 20px;
         @apply --layout-horizontal;
-      }
-
-      .keep-session-checkbox>label {
-        margin-left: 10px;
       }
 
       #toastError {
@@ -132,7 +112,6 @@
 
       .toast {
         --paper-toast-color: #FFFFFF;
-        opacity: 1;
         font-size: 1rem;
         width: 100%;
         padding: 16px;
@@ -165,7 +144,7 @@
         float: right;
       }
 
-      @media (min-width: 320px) and (max-width: 1024px) {
+      @media (min-width: 320px) and (max-width: 767px) {
         .logo {
           display: block;
           margin: 12px auto;
@@ -189,15 +168,14 @@
     </style>
     <iron-ajax id="requestSampleData" url="/data/sample.json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" signed-in="[[signedIn]]"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="[[k]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]"></firebase-document>
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <section class="flex-container">
       <div class="flex-item">
         <article>
           <img class="logo" src="/images/logo/logo.svg" title="Logo" alt="app logo">
-          <h1 title="IMES" class="main-title mobile-title">IMES</h1>
-          <form hidden$="[[!login]]" class="login-form">
+          <div hidden$="[[!login]]" class="login-form">
             <div class="form-title">
               <h2>Log in</h2>
             </div>
@@ -230,9 +208,9 @@
             <div class="link">
               <a href="javascript:void(0);" on-click="_showRegister">Don’t have an account? Sign up now.</a>
             </div>
-          </form>
+          </div>
 
-          <form hidden$="[[!register]]" class="register-form">
+          <div hidden$="[[!register]]" class="register-form">
             <div class="form-title">
               <h2>Register</h2>
             </div>
@@ -276,9 +254,9 @@
             <div class="link">
               <a href="javascript:void(0);" on-click="_hideRegister">Already have account? Log in</a>
             </div>
-          </form>
+          </div>
 
-          <form hidden$="[[!reset]]" class="reset-form">
+          <div hidden$="[[!reset]]" class="reset-form">
             <div class="form-title">
               <h2>Reset your password</h2>
               <p>Enter the email you used to signup with and we'll send you a link to reset your password.</p>
@@ -297,9 +275,8 @@
             <div class="link">
               <a href="javascript:void(0);" rel="noopenner" on-click="_hideReset">Return to login</a>
             </div>
-      </div>
-      </form>
-      </article>
+          </div>
+        </article>
       </div>
       <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
         <div class="toast-flex-container">
@@ -321,7 +298,6 @@
           </div>
         </div>
       </paper-toast>
-      <iron-a11y-keys id="a11y" target="[[loginTarget]]" keys="enter" on-keys-pressed="login"></iron-a11y-keys>
     </section>
   </template>
   <script>
@@ -344,12 +320,6 @@
             type: Boolean,
             value: false
           },
-          loginTarget: {
-            type: Object,
-            value: () => {
-              return this.accountPassword
-            }
-          },
           remember: Boolean,
           signedIn: Boolean,
           user: Object,
@@ -357,6 +327,31 @@
           errorMessage: String,
           successMessage: String
         }
+      }
+
+      constructor() {
+        super()
+      }
+
+      connectedCallback() {
+        super.connectedCallback()
+        requestAnimationFrame(this._installListeners.bind(this))
+      }
+
+      _installListeners() {
+        this.$.accountPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 0))
+        this.$.resetPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 1))
+      }
+
+      _onEnterTrigger(e, type) {
+        if (e.key !== "Enter") return;
+        if (type === 0) {
+          this._login();
+        } else if (type === 1) {
+          this._resetPassword();
+        }
+        event.preventDefault(); // No need to `return false;`.
+
       }
 
       _login() {
@@ -404,16 +399,16 @@
                   const keyid = this.$.factoryData.ref.push().key
                   this._addProfileInfo(username, email, organize, phone, keyid)
                   this.$.factoryData.ref.child(keyid).set(this.sampleData).catch(error => {
-                    console.log(error)
+                    console.error(error)
                     this._showErrorToast(error.code)
                   })
                 }).catch((error) => {
-                  console.log(error)
+                  console.error(error)
                   this._showErrorToast(error.code)
                 })
             })
             .catch((error) => {
-              console.log(error)
+              console.error(error)
               this._showErrorToast(error.code)
             })
         } else {
@@ -443,6 +438,7 @@
           this.$.userAuth.sendPasswordResetEmail(resetPassword)
             .then((response) => {
               this._showSuccessToast('Reset password link has been send to your email.')
+              this.$.resetPassword.value = "";
             })
             .catch((error) => {
               this._showErrorToast(error.code)
@@ -494,6 +490,6 @@
         this.$.toastSuccess.close()
       }
     }
-    window.customElements.define(ViewLogin.is, ViewLogin)
+    customElements.define(ViewLogin.is, ViewLogin)
   </script>
 </dom-module>

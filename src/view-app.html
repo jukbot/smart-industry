@@ -53,6 +53,7 @@
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
 
@@ -201,7 +202,6 @@
       connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
-        // listen for custom events
         requestAnimationFrame(this._installListeners.bind(this))
       }
 
@@ -420,7 +420,6 @@
               Polymer.Async.timeOut.run(() => {
                 this.closeToastAlert()
                 this.$.userIndexDB.destroy()
-                this.$.appLang.destroy()
                 // redirect to login page
                 this.set('route.path', '/login')
               }, 1)
