@@ -8,6 +8,8 @@
 <link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/bower_components/google-chart/google-chart.html">
+<link rel="import" href="/bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -451,43 +453,16 @@
             </li>
 
             <li>
-                <div class="card">
+                <div class="card" id="chartContainer">
                     <h1 class="title">Job Gantt Chart of Station [[selectedStation]]</h1>
-                    <vaadin-columnrange-chart id="column-range-resource-usage">
-                        <chart inverted="true"></chart>
-                        <chart-title>Daily Jobs Scheduling</chart-title>
-                        <x-axis>
-                            <categories>
-                                Machines 1, Machines 2, Machines 3, Machines 4,
-                            </categories>
-                        </x-axis>
-                        <y-axis type="datetime">
-                            <chart-title>Operation Time</chart-title>
-                        </y-axis>
-                        <tooltip formatter="function () {return this.series.name +': '+ Highcharts.dateFormat('%H:%M', this.point.low) + ' - ' + Highcharts.dateFormat('%H:%M', this.point.high)}"></tooltip>
-                        <plot-options>
-                            <columnrange grouping="false">
-                                <data-labels enabled="true" inside="true" color="white" formatter="function () {return this.y == this.point.low ? '' : this.series.name;}"></data-labels>
-                            </columnrange>
-                        </plot-options>
-
-                        <template is="dom-repeat" items="[[scheduleItems]]" as="item">
-                            <data-series name$="[[item.job_part]]">
-                                <color>[[item.order_color]]</color>
-                                <data>
-                                    <!-- machine  [[[getTimestampToUTC(item.start, item.end)]]] -->
-                                    [Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,8,38,0)], [Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,9,25,0)], [Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,8,33,0)],
-                                    [Date.UTC(2017,9,23,8,30,0),Date.UTC(2017,9,23,8,34,0)]
-                                </data>
-                            </data-series>
-                        </template>
-                    </vaadin-columnrange-chart>
+                    <google-chart id="timeline" type="timeline" data="[[timelineData]]" options="[[timelineOptions]]" style="height: 100%;"></google-chart>
                 </div>
             </li>
         </ul>
+
     </template>
     <script>
-        class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+        class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
             Polymer.Element) {
             static get is() {
                 return 'view-plan-scheduling'
@@ -505,7 +480,10 @@
                     factoryPerformance: Object,
                     factoryOperation: Object,
                     factoryProfile: Object,
-                    scheduleItems: Object
+                    scheduleItems: Object,
+                    timelineData: Array,
+                    width: Number,
+                    height: Number
                 }
             }
 
@@ -515,15 +493,48 @@
                 ]
             }
 
-            ready() {
-                super.ready()
-            }
-
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
-                //this.parallelSchedule();
+                console.log('container', this.shadowRoot.querySelector("#timeline"))
+                requestAnimationFrame(this._installListeners.bind(this))
+                this._initialGanttChart();
+            }
 
+            _installListeners() {
+                // listen for custom events on main page
+                this.addEventListener('iron-resize', (e) => this._onSizeChange(e))
+            }
+
+            _onSizeChange() {
+                this.width = this.$.chartContainer.offsetWidth;
+                this.height = this.$.chartContainer.offsetHeight;
+                if (this.width > 0) {
+                    this.timelineOptions = {
+                        width: this.width - 40,
+                        height: this.height,
+                        timeline: { showRowLabels: true },
+                        avoidOverlappingGridLines: false
+                    }
+                }
+            }
+
+            _initialGanttChart() {
+                var chart = this.$.timeline;
+                document.createElement('google-chart-loader').dataTable([
+                    ['Station', 'Order No.', 'Start', 'End'],
+                    ['1', 'Order 1', new Date(0, 0, 0, 12, 0, 0), new Date(0, 0, 0, 13, 30, 0)],
+                    ['1', 'Order 2', new Date(0, 0, 0, 14, 0, 0), new Date(0, 0, 0, 15, 30, 0)],
+                    ['1', 'Order 3', new Date(0, 0, 0, 16, 0, 0), new Date(0, 0, 0, 17, 30, 0)],
+                    ['1', 'Order 4', new Date(0, 0, 0, 12, 30, 0), new Date(0, 0, 0, 14, 0, 0)],
+                    ['1', 'Order 5', new Date(0, 0, 0, 14, 30, 0), new Date(0, 0, 0, 16, 0, 0)],
+                    ['1', 'Order 6', new Date(0, 0, 0, 16, 30, 0), new Date(0, 0, 0, 18, 0, 0)]
+                ]).then(function (dataTable) {
+                    chart.data = dataTable;
+                });
+                // this.timelineData = [
+
+                // ]
             }
 
             isParallelModel(production_model) {
