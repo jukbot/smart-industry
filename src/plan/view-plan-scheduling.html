@@ -455,7 +455,7 @@
             <li>
                 <div class="card" id="chartContainer">
                     <h1 class="title">Job Gantt Chart of Station [[selectedStation]]</h1>
-                    <google-chart id="timeline" type="timeline" data="[[timelineData]]" options="[[timelineOptions]]" style="height: 100%;"></google-chart>
+                    <google-chart id="timeline" type="timeline" options="[[timelineOptions]]" style="height: 100%;"></google-chart>
                 </div>
             </li>
         </ul>
@@ -481,7 +481,7 @@
                     factoryOperation: Object,
                     factoryProfile: Object,
                     scheduleItems: Object,
-                    timelineData: Array,
+                    timelineOptions: Object,
                     width: Number,
                     height: Number
                 }
@@ -513,7 +513,11 @@
                     this.timelineOptions = {
                         width: this.width - 40,
                         height: this.height,
-                        timeline: { showRowLabels: true },
+                        timeline: {
+                            showRowLabels: true,
+                            rowLabelStyle: { fontSize: 16 },
+                            barLabelStyle: { fontSize: 16 }
+                        },
                         avoidOverlappingGridLines: false
                     }
                 }
@@ -523,12 +527,12 @@
                 var chart = this.$.timeline;
                 document.createElement('google-chart-loader').dataTable([
                     ['Station', 'Order No.', 'Start', 'End'],
-                    ['1', 'Order 1', new Date(0, 0, 0, 12, 0, 0), new Date(0, 0, 0, 13, 30, 0)],
-                    ['1', 'Order 2', new Date(0, 0, 0, 14, 0, 0), new Date(0, 0, 0, 15, 30, 0)],
-                    ['1', 'Order 3', new Date(0, 0, 0, 16, 0, 0), new Date(0, 0, 0, 17, 30, 0)],
+                    ['1', 'Order 1', new Date(0, 0, 0, 8, 0, 0), new Date(0, 0, 0, 9, 30, 0)],
+                    ['1', 'Order 2', new Date(0, 0, 0, 10, 0, 0), new Date(0, 0, 0, 15, 30, 0)],
+                    ['1', 'Order 3', new Date(0, 0, 0, 16, 0, 0), new Date(0, 0, 0, 17, 0, 0)],
                     ['1', 'Order 4', new Date(0, 0, 0, 12, 30, 0), new Date(0, 0, 0, 14, 0, 0)],
                     ['1', 'Order 5', new Date(0, 0, 0, 14, 30, 0), new Date(0, 0, 0, 16, 0, 0)],
-                    ['1', 'Order 6', new Date(0, 0, 0, 16, 30, 0), new Date(0, 0, 0, 18, 0, 0)]
+                    ['1', 'Order 6', new Date(0, 0, 0, 16, 30, 0), new Date(0, 0, 0, 17, 0, 0)]
                 ]).then(function (dataTable) {
                     chart.data = dataTable;
                 });
