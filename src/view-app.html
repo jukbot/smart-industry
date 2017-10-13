@@ -31,14 +31,13 @@
 <link rel="import" href="view-setup.html">
 <link rel="import" href="view-plan.html">
 <link rel="import" href="view-track.html">
-<dom-module id="view-app">
-  <!-- import lazy page router -->
-  <link rel="lazy-import" group="lazy" href="view-offline.html">
-  <link rel="lazy-import" group="lazy" href="view-error.html">
-  <link rel="lazy-import" group="lazy" href="view-404.html">
-  <link rel="lazy-import" group="lazy" href="view-settings.html">
-  <link rel="lazy-import" group="lazy" href="view-help.html">
+<link rel="import" href="view-offline.html">
+<link rel="import" href="view-error.html">
+<link rel="import" href="view-404.html">
+<link rel="import" href="view-settings.html">
+<link rel="import" href="view-help.html">
 
+<dom-module id="view-app">
   <template>
     <style include="flat-button shared-styles">
       :host {
@@ -58,10 +57,10 @@
     <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
 
     <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+      <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
       <view-404 name="404" route="[[subRoute]]" hidden$="[[!user]]"></view-404>
       <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
       <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
-      <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
       <app-drawer-layout id="layout" fullbleed name="app">
         <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open hidden="[[!signedIn]]">
           <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
@@ -146,7 +145,7 @@
   </template>
 
   <script>
-    class ViewApp extends Polymer.LazyImportsMixin(Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element)) {
+    class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
         return 'view-app'
       }
@@ -332,11 +331,6 @@
         // load lazy resources after render and set `loadComplete` when done.
         if (!this.loadComplete) {
           Polymer.RenderStatus.afterNextRender(this, () => {
-            // trigger lazy import event
-            this.importLazyGroup('lazy').then((results) => {
-              this.dispatchEvent(new CustomEvent('import-loaded', results));
-            });
-
             // import lazy reousrce file
             Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
               this._registerServiceWorker()

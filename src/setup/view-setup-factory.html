@@ -11,32 +11,32 @@
 <dom-module id="view-setup-factory">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 margin: 10px;
                 display: block;
                 --app-grid-item-height: 50%;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                 :host {
+                :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                 :host {
+                :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                 :host {
+                :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) and (max-width: 2560px) {
-                 :host {
+                :host {
                     --app-grid-columns: 2;
                 }
             }
@@ -164,8 +164,12 @@
                             type="number" min="1" max="30" step="1" auto-validate error-message="Input out of range" required
                             always-float-label></paper-input>
 
-                        <flat-button on-tap="restoreDefault" class="btn" title="Restore Default"><button>{{localize('restore')}}</button></flat-button>
-                        <flat-button on-tap="saveValue" class="shamrock btn" title="Save settings"><button>{{localize('save-settings')}}</button></flat-button>
+                        <flat-button on-tap="restoreDefault" class="btn" title="Restore Default">
+                            <button>{{localize('restore')}}</button>
+                        </flat-button>
+                        <flat-button on-tap="saveValue" class="shamrock btn" title="Save settings">
+                            <button>{{localize('save-settings')}}</button>
+                        </flat-button>
 
                     </div>
                 </div>
@@ -194,23 +198,32 @@
                             <p>{{localize('operation-day')}}</p>
                         </div>
                         <div class="flex-item">
-                            <p><span>[[persistedFactoryProfile.name]]</span>&nbsp;</p>
+                            <p>
+                                <span>[[persistedFactoryProfile.name]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getFactoryType(persistedFactoryProfile.type)]]</span>&nbsp;</p>
+                            <p>
+                                <span>[[getFactoryType(persistedFactoryProfile.type)]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getProductionModel(persistedFactoryProfile.model)]]</span>&nbsp;</p>
+                            <p>
+                                <span>[[getProductionModel(persistedFactoryProfile.model)]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p id="concurrencyData"><span>[[persistedFactoryProfile.concurrency]]</span>&nbsp;</p>
+                            <p id="concurrencyData">
+                                <span>[[persistedFactoryProfile.concurrency]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator" id="concurrencyDataSeparate"></div>
-                            <p><span>[[persistedFactoryOperation.op_start]] </span>&nbsp;</p>
+                            <p>
+                                <span>[[persistedFactoryOperation.op_start]] </span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[persistedFactoryOperation.op_end]]</span>&nbsp;</p>
+                            <p>
+                                <span>[[persistedFactoryOperation.op_end]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[persistedFactoryOperation.ot_start]]</span>&nbsp;</p>
+                            <p>
+                                <span>[[persistedFactoryOperation.ot_start]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[persistedFactoryOperation.ot_end]]</span>&nbsp;</p>
+                            <p>
+                                <span>[[persistedFactoryOperation.ot_end]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getOperationDay(persistedFactoryOperation.op_day)]]</span>&nbsp;</p>
+                            <p>
+                                <span>[[getOperationDay(persistedFactoryOperation.op_day)]]</span>&nbsp;</p>
                         </div>
                     </div>
                 </div>
@@ -233,19 +246,26 @@
                             <p>{{localize('next-reschedule')}}</p>
                         </div>
                         <div class="info-group flex-item">
-                            <p><span>{{localize(persistedFactoryPerformance.optimize)}}</span>&nbsp;</p>
+                            <p>
+                                <span>{{localize(persistedFactoryPerformance.optimize)}}</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[persistedFactoryPerformance.au]] &#37;</span>&nbsp;</p>
+                            <p>
+                                <span>[[persistedFactoryPerformance.au]] &#37;</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[persistedFactoryPerformance.meff]] &#37;</span>&nbsp;</p>
+                            <p>
+                                <span>[[persistedFactoryPerformance.meff]] &#37;</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[persistedFactoryPerformance.aw]]</span>&nbsp;</p>
+                            <p>
+                                <span>[[persistedFactoryPerformance.aw]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[persistedFactorySchedule.interval]] {{localize('day')}}</span>&nbsp;</p>
+                            <p>
+                                <span>[[persistedFactorySchedule.interval]] {{localize('day')}}</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getLastInterval(persistedFactorySchedule.start_interval)]]</span>&nbsp;</p>
+                            <p>
+                                <span>[[getLastInterval(persistedFactorySchedule.start_interval)]]</span>&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p><span>[[getNextInterval(persistedFactorySchedule.start_interval, persistedFactorySchedule.interval)]]</span>&nbsp;</p>
+                            <p>
+                                <span>[[getNextInterval(persistedFactorySchedule.start_interval, persistedFactorySchedule.interval)]]</span>&nbsp;</p>
                         </div>
                     </div>
                 </div>
@@ -292,10 +312,6 @@
                                 "name": "Increase Profit",
                                 "value": "increase-profit"
                             },
-                            // {
-                            //     "name": "Reduce Cost",
-                            //     "value": "reduce-cost"
-                            // },
                             {
                                 "name": "Disabled",
                                 "value": "disabled"
