@@ -63,9 +63,10 @@
         left: 0;
         -webkit-transform: scale3d(0, 1, 1);
         transform: scale3d(0, 1, 1);
-        transition: -webkit-transform 0.2s ease-in;
-        transition: transform 0.2s ease-in;
+        transition: -webkit-transform 0.15s ease-in;
+        transition: transform 0.15s ease-in;
       }
+
       /* input label */
 
       flat-input>span.flat-md-decorator>label {
@@ -85,6 +86,7 @@
         -webkit-transform: translate3d(0px, -1.9em, 0px);
         transform: translate3d(0px, -1.9em, 0px);
       }
+
       /* Error message */
 
       flat-input>span.flat-md-decorator::after {
@@ -103,9 +105,10 @@
       flat-input>input:focus+span.flat-md-decorator>span.flat-underline {
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
-        transition: -webkit-transform 0.2s ease-out;
-        transition: transform 0.2s ease-out;
+        transition: -webkit-transform 0.15s ease-out;
+        transition: transform 0.15s ease-out;
       }
+
       /* Label: valid state */
 
       flat-input>input:focus+span.flat-md-decorator>label {
@@ -132,31 +135,33 @@
         transform: translate3d(0px, -3.4em, 0px) scale(0.8, 0.8);
         opacity: 1;
       }
+
       /* Underline */
 
       flat-input>input:not(:focus):not(:placeholder-shown):invalid+span.flat-md-decorator>span.flat-underline {
         background-color: #e53935;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
-        transition: -webkit-transform 0.2s ease-out;
-        transition: transform 0.2s ease-out;
+        transition: -webkit-transform 0.15s ease-out;
+        transition: transform 0.15s ease-out;
       }
 
       flat-input>input:not(:focus):-moz-ui-invalid:invalid+span.flat-md-decorator>span.flat-underline {
         background-color: #e53935;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
-        transition: -webkit-transform 0.2s ease-out;
-        transition: transform 0.2s ease-out;
+        transition: -webkit-transform 0.15s ease-out;
+        transition: transform 0.15s ease-out;
       }
 
       flat-input>input[aria-invalid='true']:not(:valid)+span.flat-md-decorator>span.flat-underline {
         background-color: #e53935;
         -webkit-transform: scale3d(1, 1, 1);
         transform: scale3d(1, 1, 1);
-        transition: -webkit-transform 0.2s ease-out;
-        transition: transform 0.2s ease-out;
+        transition: -webkit-transform 0.15s ease-out;
+        transition: transform 0.15s ease-out;
       }
+
       /* Error message */
 
       flat-input>input:not(:focus):not(:placeholder-shown):invalid+span.flat-md-decorator::after {
@@ -170,6 +175,7 @@
       flat-input>input[aria-invalid='true']:not(:valid)+span.flat-md-decorator::after {
         display: block;
       }
+
       /* Error label */
 
       flat-input>input:not(:focus):not(:placeholder-shown):invalid+span.flat-md-decorator>label {
@@ -192,6 +198,7 @@
         opacity: 1;
         color: #e53935;
       }
+
       /* Valid label */
 
       flat-input>input:not(:focus):required:valid+span.flat-md-decorator>label {

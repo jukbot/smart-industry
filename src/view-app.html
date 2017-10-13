@@ -27,6 +27,7 @@
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-dashboard.html">
+<link rel="import" href="view-term.html">
 <!-- import lazy page router -->
 <link rel="import" href="view-setup.html">
 <link rel="import" href="view-plan.html">
@@ -58,9 +59,10 @@
 
     <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
       <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
-      <view-404 name="404" route="[[subRoute]]" hidden$="[[!user]]"></view-404>
+      <view-term name="term" route="[[subRoute]]" hidden$="[[user]]"></view-term>
       <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
       <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
+      <view-404 name="404" route="[[subRoute]]"></view-404>
       <app-drawer-layout id="layout" fullbleed name="app">
         <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open hidden="[[!signedIn]]">
           <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
@@ -376,7 +378,7 @@
               this.page = 'dashboard'
               this.set('route.path', '/app/dashboard')
             }
-            else if (!this.signedIn) {
+            else if (!this.signedIn && this.route.path != '/term') {
               this.page = 'login'
               this.set('route.path', '/login')
             }

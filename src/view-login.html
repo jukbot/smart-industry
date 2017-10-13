@@ -246,7 +246,7 @@
               </span>
             </flat-input>
             <p>By signing up you agree to IMES’s
-              <a href="term.html" target="_blank" rel="noopener" class="link">Terms of Service</a>
+              <a href="/term" target="_blank" rel="noopener" class="link" id="termOfService">Terms of Service</a>
             </p>
             <flat-button class="register-btn" on-tap="_register">
               <button type="button">Register and Login</button>
@@ -340,6 +340,7 @@
       _installListeners() {
         this.$.accountPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 0))
         this.$.resetPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 1))
+        this.$.termOfService.addEventListener('click', (e) => this._goToTermOfService(e))
       }
 
       _onEnterTrigger(e, type) {
@@ -350,6 +351,10 @@
           this._resetPassword();
         }
         event.preventDefault(); // No need to `return false;`.
+      }
+
+      _goToTermOfService(e) {
+        this.set('route.path', '/term')
       }
 
       _login() {
