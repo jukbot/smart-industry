@@ -138,6 +138,11 @@
             vaadin-grid#material vaadin-grid-sorter[direction=desc] iron-icon {
                 transform: scale(0.8) rotate(180deg);
             }
+
+            google-chart {
+                height: 100%;
+                width: 100%;
+            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -145,20 +150,18 @@
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
-
-        <!-- STATION QUERY SELECTED BY STATION NUMBER -->
-        <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
-            equal-to="{{selectedStation}}" data="{{selectedStationData}}"></firebase-query>
-
-        <!-- STATION -->
-        <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>
-        <!-- MACHINE -->
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             data="{{stationItems}}"></firebase-query>
 
         <!-- ORDER SCHEDULE TABLE -->
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
-        <!-- JOB SCHEDULING TABLE SELECTED BY STATION NUMBER -->
+        <!-- GANTT CHART DATA -->
+        <firebase-query app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
+
+        <!-- STATION QUERY SELECTED BY STATION NUMBER -->
+        <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
+            equal-to="{{selectedStation}}" data="{{selectedStationData}}"></firebase-query>
+        <!-- JOB SCHEDULE TABLE SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(selectedStation)]]"
             order-by-child="job_workload" data="{{scheduleItems}}"></firebase-query>
 
@@ -454,12 +457,11 @@
 
             <li>
                 <div class="card" id="chartContainer">
-                    <h1 class="title">Job Gantt Chart of Station [[selectedStation]]</h1>
-                    <google-chart id="timeline" type="timeline" options="[[timelineOptions]]" style="height: 100%;"></google-chart>
+                    <h1 class="title">Job Gantt Chart</h1>
+                    <google-chart id="timeline" type="timeline" options="[[timelineOptions]]"></google-chart>
                 </div>
             </li>
         </ul>
-
     </template>
     <script>
         class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
@@ -489,65 +491,88 @@
 
             static get observers() {
                 return [
-                    'isParallelModel(factoryProfile.model)'
+                    '_isSerialModel(factoryProfile.model)'
                 ]
             }
 
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
-                console.log('container', this.shadowRoot.querySelector("#timeline"))
+                // console.log('container', this.shadowRoot.querySelector("#timeline"))
                 requestAnimationFrame(this._installListeners.bind(this))
-                this._initialGanttChart();
+            }
+
+            _isSerialModel(production_model) {
+                if (production_model === 'serial') {
+                    this.$.concurrency.hidden = true
+                }
+                else {
+                    this.$.concurrency.hidden = false
+                }
             }
 
             _installListeners() {
                 // listen for custom events on main page
-                this.addEventListener('iron-resize', (e) => this._onSizeChange(e))
+                this.addEventListener('iron-resize', (e) => this._setChartSize(e))
+                this.$.timeline.addEventListener('google-chart-ready', (e) => console.log("Load chart success :D"))
             }
 
-            _onSizeChange() {
+            _setChartSize() {
                 this.width = this.$.chartContainer.offsetWidth;
                 this.height = this.$.chartContainer.offsetHeight;
                 if (this.width > 0) {
                     this.timelineOptions = {
+                        title: "Distribution of days in 2001Q1",
                         width: this.width - 40,
-                        height: this.height,
+                        height: this.height + 100,
                         timeline: {
                             showRowLabels: true,
                             rowLabelStyle: { fontSize: 16 },
-                            barLabelStyle: { fontSize: 16 }
+                            barLabelStyle: { fontSize: 16 },
                         },
                         avoidOverlappingGridLines: false
                     }
+                    this._initialChart()
+                    this.$.timeline.redraw()
                 }
             }
 
-            _initialGanttChart() {
-                var chart = this.$.timeline;
-                document.createElement('google-chart-loader').dataTable([
-                    ['Station', 'Order No.', 'Start', 'End'],
+            _initialChart() {
+                let chart = this.$.timeline;
+                let dataTable = new google.visualization.DataTable();
+                dataTable.addColumn({ type: 'string', id: 'Station' });
+                dataTable.addColumn({ type: 'string', id: 'Order no.' });
+                dataTable.addColumn({ type: 'date', id: 'Start' });
+                dataTable.addColumn({ type: 'date', id: 'End' });
+                dataTable.addRows([
                     ['1', 'Order 1', new Date(0, 0, 0, 8, 0, 0), new Date(0, 0, 0, 9, 30, 0)],
-                    ['1', 'Order 2', new Date(0, 0, 0, 10, 0, 0), new Date(0, 0, 0, 15, 30, 0)],
+                    ['1', 'Order 2', new Date(0, 0, 0, 9, 30, 0), new Date(0, 0, 0, 15, 30, 0)],
                     ['1', 'Order 3', new Date(0, 0, 0, 16, 0, 0), new Date(0, 0, 0, 17, 0, 0)],
                     ['1', 'Order 4', new Date(0, 0, 0, 12, 30, 0), new Date(0, 0, 0, 14, 0, 0)],
                     ['1', 'Order 5', new Date(0, 0, 0, 14, 30, 0), new Date(0, 0, 0, 16, 0, 0)],
-                    ['1', 'Order 6', new Date(0, 0, 0, 16, 30, 0), new Date(0, 0, 0, 17, 0, 0)]
-                ]).then(function (dataTable) {
-                    chart.data = dataTable;
+                    ['1', 'Order 6', new Date(0, 0, 0, 16, 30, 0), new Date(0, 0, 0, 17, 0, 0)],
+                    ['2', 'Order 1', new Date(0, 0, 0, 8, 0, 0), new Date(0, 0, 0, 9, 30, 0)],
+                    ['2', 'Order 2', new Date(0, 0, 0, 10, 0, 0), new Date(0, 0, 0, 15, 30, 0)],
+                    ['2', 'Order 3', new Date(0, 0, 0, 16, 0, 0), new Date(0, 0, 0, 17, 0, 0)],
+                    ['2', 'Order 4', new Date(0, 0, 0, 12, 30, 0), new Date(0, 0, 0, 14, 0, 0)],
+                    ['2', 'Order 5', new Date(0, 0, 0, 14, 30, 0), new Date(0, 0, 0, 16, 0, 0)],
+                    ['2', 'Order 6', new Date(0, 0, 0, 16, 30, 0), new Date(0, 0, 0, 17, 0, 0)],
+                    ['3', 'Order 1', new Date(0, 0, 0, 8, 0, 0), new Date(0, 0, 0, 9, 30, 0)],
+                    ['3', 'Order 2', new Date(0, 0, 0, 10, 0, 0), new Date(0, 0, 0, 15, 30, 0)],
+                    ['3', 'Order 3', new Date(0, 0, 0, 16, 0, 0), new Date(0, 0, 0, 17, 0, 0)],
+                    ['3', 'Order 4', new Date(0, 0, 0, 12, 30, 0), new Date(0, 0, 0, 14, 0, 0)],
+                    ['3', 'Order 5', new Date(0, 0, 0, 14, 30, 0), new Date(0, 0, 0, 16, 0, 0)],
+                    ['3', 'Order 6', new Date(0, 0, 0, 16, 30, 0), new Date(0, 0, 0, 17, 0, 0)]
+                ])
+                let timelineChart = document.createElement('google-chart-loader').dataTable(dataTable)
+                console.log(dataTable)
+                timelineChart.then((data) => {
+                    chart.data = data;
                 });
-                // this.timelineData = [
-
-                // ]
             }
 
-            isParallelModel(production_model) {
-                if (production_model === 'parallel' || production_model === 'multi') {
-                    this.$.concurrency.hidden = false
-                }
-                else {
-                    this.$.concurrency.hidden = true
-                }
+            _updateGanttChart() {
+
             }
 
             getNextInterval(last_timestamp, interval) {

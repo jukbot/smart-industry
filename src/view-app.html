@@ -50,7 +50,7 @@
     <app-route route="{{route}}" pattern="/:page" data="{{pageData}}" tail="{{subRoute}}"></app-route>
     <app-route route="{{subRoute}}" pattern="/:page" data="{{subPageData}}" tail="{{subPageRoute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
-      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445"></firebase-app>
+      storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445" project-id="smart-mes"></firebase-app>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
