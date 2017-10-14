@@ -189,7 +189,7 @@
 
       static get observers() {
         return [
-          '_routePageChanged(subPageData.page)',
+          '_routePageChanged(subPageData.page, visible)',
           '_handleUser(user)',
           '_verifyEmailAlert(user.emailVerified, signedIn)',
           '_signedInChanged(signedIn)'
@@ -287,8 +287,9 @@
         this.page = 'error'
       }
 
-      _routePageChanged(page) {
+      _routePageChanged(page, visible) {
         this.page = page || 'dashboard'
+        if (!visible) return;
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();

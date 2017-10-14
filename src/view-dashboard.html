@@ -8,7 +8,7 @@
 <dom-module id="view-dashboard">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
       }
     </style>
@@ -17,7 +17,8 @@
       <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
         <template is="dom-repeat" items="{{submenus}}">
           <paper-tab name$="{{item.view}}">
-            <paper-icon-button icon="{{item.icon}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>
+            <paper-icon-button icon="{{item.icon}}"></paper-icon-button>
+            <span class="tab-title">{{localize(item.title)}}</span>
           </paper-tab>
         </template>
       </paper-tabs>
