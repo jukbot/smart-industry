@@ -23,7 +23,7 @@
         </template>
       </paper-tabs>
     </app-header>
-    <iron-pages selected="[[tabs]]" attr-for-selected="name" fallback-selection="404">
+    <iron-pages selected="[[tabs]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
       <view-dashboard-overview name="overview"></view-dashboard-overview>
       <view-dashboard-notification name="notification"></view-dashboard-notification>
       <view-dashboard-statistic name="statistic"></view-dashboard-statistic>
@@ -43,7 +43,6 @@
           tabs: {
             type: String,
             reflectToAttribute: true,
-            observer: '_tabsChanged',
             value: 'overview'
           },
           submenus: {
@@ -67,14 +66,17 @@
               ]
             }
           }
-
-        };
-      }
-      _tabsChanged(tabs) {
-        if (this.signedIn) {
-          let resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html');
-          Polymer.importHref(resolvedTabsUrl, null, null, true);
         }
+      }
+
+      static get observers() {
+        '_tabsChanged(tabs, visible)'
+      }
+
+      _tabsChanged(tabs, visible) {
+        if (!visible) return;
+        const resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html');
+        Polymer.importHref(resolvedTabsUrl, null, null, true);
       }
       connectedCallback() {
         super.connectedCallback();

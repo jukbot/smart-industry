@@ -17,14 +17,14 @@
 <dom-module id="view-setup-station">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 display: block;
                 margin: 10px;
                 --app-grid-item-height: 50%;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                 :host {
+                :host {
                     --app-grid-columns: 1;
                 }
                 .fixed-btn {
@@ -33,19 +33,19 @@
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                 :host {
+                :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                 :host {
+                :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) and (max-width: 2560px) {
-                 :host {
+                :host {
                     --app-grid-columns: 4;
                 }
             }
@@ -170,7 +170,9 @@
             <vaadin-combo-box label="Machine" id="machineSelector" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
                 item-value-path="name" loading="[[!persistedMachineData]]" required always-float-label></vaadin-combo-box>
             <p class="machine-counter">You added [[stationMachineCount]] / [[stationMaxMachine]] machines</p>
-            <flat-button class="add-btn" on-tap="_addMachine"><button>{{localize('add-machine')}}</button></flat-button>
+            <flat-button class="add-btn" on-tap="_addMachine">
+                <button>{{localize('add-machine')}}</button>
+            </flat-button>
             <div class="frame">
                 <ul class="flex-container wrap">
                     <template is="dom-repeat" items="{{machines}}" as="machineItem">
@@ -180,8 +182,12 @@
                 </ul>
             </div>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="_openStationMainCard"><button>{{localize('dismiss')}}</button></flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_addStation"><button>{{localize('add')}}</button></flat-button>
+                <flat-button class="fixed-btn" on-tap="_openStationMainCard">
+                    <button>{{localize('dismiss')}}</button>
+                </flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_addStation">
+                    <button>{{localize('add')}}</button>
+                </flat-button>
             </div>
         </div>
         <!-- Edit Station Card -->
@@ -194,7 +200,9 @@
             <vaadin-combo-box label="Machine" id="edit_machineSelector" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
                 item-value-path="name" loading="[[!persistedMachineData]]" required always-float-label></vaadin-combo-box>
             <p class="machine-counter">You added [[stationEditMachineCount]] / [[stationMaxMachine]] machines</p>
-            <flat-button class="add-btn" on-tap="_edit_addMachine"><button>{{localize('add-machine')}}</button></flat-button>
+            <flat-button class="add-btn" on-tap="_edit_addMachine">
+                <button>{{localize('add-machine')}}</button>
+            </flat-button>
             <div class="frame">
                 <ul class="flex-container wrap">
                     <template is="dom-repeat" items="{{editMachines}}" as="machineItem">
@@ -204,8 +212,12 @@
                 </ul>
             </div>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="_dismissEditStation"><button>{{localize('dismiss')}}</button></flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_saveStation"><button>{{localize('save')}}</button></flat-button>
+                <flat-button class="fixed-btn" on-tap="_dismissEditStation">
+                    <button>{{localize('dismiss')}}</button>
+                </flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_saveStation">
+                    <button>{{localize('save')}}</button>
+                </flat-button>
             </div>
         </div>
         <!-- Station Manangement -->
@@ -235,14 +247,20 @@
                                     </div>
                                 </div>
                             </div>
-                            <flat-button class="btn" on-tap="_openEditStationCard" station="[[stationItem]]"><button>{{localize('edit')}}</button></flat-button>
-                            <flat-button class="thunderbird btn" on-tap="_removeStation" station="[[stationItem]]"><button>{{localize('remove')}}</button></flat-button>
+                            <flat-button class="btn" on-tap="_openEditStationCard" station="[[stationItem]]">
+                                <button>{{localize('edit')}}</button>
+                            </flat-button>
+                            <flat-button class="thunderbird btn" on-tap="_removeStation" station="[[stationItem]]">
+                                <button>{{localize('remove')}}</button>
+                            </flat-button>
                         </div>
                     </li>
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-tap="_openAddStationCard"><button> {{localize('add-station')}}</button></flat-button>
+                <flat-button class="big-btn" on-tap="_openAddStationCard">
+                    <button> {{localize('add-station')}}</button>
+                </flat-button>
             </div>
         </div>
         <paper-toast id="toastAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
@@ -494,9 +512,11 @@
                         st_name: sname,
                         st_machine: smachine
                     });
+                    this.$.toastSaveStation.open()
+                    this._openStationMainCard()
+                } else {
+                    this.$.toastEmptyAddStation.open();
                 }
-                this.$.toastSaveStation.open()
-                this._openStationMainCard()
             }
 
             clearField() {

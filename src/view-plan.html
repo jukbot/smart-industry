@@ -7,7 +7,7 @@
 <dom-module id="view-plan">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
       }
     </style>
@@ -16,12 +16,13 @@
       <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
         <template is="dom-repeat" items="{{submenus}}">
           <paper-tab role="tab" name$="{{item.view}}">
-            <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>
+            <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button>
+            <span class="tab-title">{{localize(item.title)}}</span>
           </paper-tab>
         </template>
       </paper-tabs>
     </app-header>
-    <iron-pages selected="[[tabs]]" attr-for-selected="name" fallback-selection="404">
+    <iron-pages selected="[[tabs]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
       <view-plan-order name="order"></view-plan-order>
       <view-plan-scheduling name="scheduling"></view-plan-scheduling>
       <view-plan-production name="production"></view-plan-production>
@@ -66,15 +67,19 @@
               ]
             }
           }
-
-        };
-      }
-      _tabsChanged(tabs) {
-        if (this.signedIn) {
-          let resolvedTabsUrl = this.resolveUrl('plan/view-plan-' + tabs + '.html');
-          Polymer.importHref(resolvedTabsUrl, null, null, true);
         }
       }
+
+      static get observers() {
+        '_tabsChanged(tabs, visible)'
+      }
+
+      _tabsChanged(tabs, visible) {
+        if (!visible) return;
+        const resolvedTabsUrl = this.resolveUrl('plan/view-plan-' + tabs + '.html');
+        Polymer.importHref(resolvedTabsUrl, null, null, true);
+      }
+
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../data/locales.json'));

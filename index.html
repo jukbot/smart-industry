@@ -84,12 +84,12 @@
 
     #load {
       width: 150px;
-      animation: loading 3s linear infinite;
+      animation: loading 1s linear infinite;
     }
 
     #load #loading-inner {
       stroke-dashoffset: 0;
-      stroke-dasharray: 300;
+      stroke-dasharray: 100;
       stroke-width: 10;
       stroke-miterlimit: 10;
       stroke-linecap: round;
@@ -120,13 +120,6 @@
       /* REMOVE WHEN USE IN PRODUCTION */
     }
   </style>
-  <script>
-    window.Polymer = {
-      lazyRegister: true,
-      serverRendered: true
-    }
-  </script>
-  <link async rel="import" href="/src/view-app.html">
 </head>
 
 <body>
@@ -142,7 +135,7 @@
               </stop>
               <stop offset="50%" stop-color="#23A6D5">
               </stop>
-              <stop offset="100%" stop-color="#23D5AB" stop-opacity="0.5">
+              <stop offset="100%" stop-color="#23D5AB">
               </stop>
             </linearGradient>
           </defs>
@@ -153,6 +146,7 @@
   </view-app>
   <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
   <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <link async rel="import" href="/src/view-app.html">
   <noscript>
     Please enable JavaScript to view this application.
   </noscript>

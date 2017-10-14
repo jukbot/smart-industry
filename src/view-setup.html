@@ -11,7 +11,7 @@
 <dom-module id="view-setup">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
       }
     </style>
@@ -20,12 +20,13 @@
       <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
         <template is="dom-repeat" items="{{submenus}}">
           <paper-tab name$="{{item.view}}">
-            <paper-icon-button icon="{{item.icon}}"></paper-icon-button><span class="tab-title">{{localize(item.title)}}</span>
+            <paper-icon-button icon="{{item.icon}}"></paper-icon-button>
+            <span class="tab-title">{{localize(item.title)}}</span>
           </paper-tab>
         </template>
       </paper-tabs>
     </app-header>
-    <iron-pages selected="[[tabs]]" attr-for-selected="name" fallback-selection="404">
+    <iron-pages selected="[[tabs]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
       <view-setup-factory name="factory"></view-setup-factory>
       <view-setup-station name="station"></view-setup-station>
       <view-setup-machine name="machine"></view-setup-machine>
@@ -48,7 +49,6 @@
           tabs: {
             type: String,
             reflectToAttribute: true,
-            observer: '_tabsChanged',
             value: 'factory'
           },
           submenus: {
@@ -87,15 +87,19 @@
               ]
             }
           }
-
-        };
-      }
-      _tabsChanged(tabs) {
-        if (this.signedIn) {
-          let resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
-          Polymer.importHref(resolvedTabsUrl, null, null, true);
         }
       }
+
+      static get observers() {
+        '_tabsChanged(tabs, visible)'
+      }
+
+      _tabsChanged(tabs, visible) {
+        if (!visible) return;
+        const resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
+        Polymer.importHref(resolvedTabsUrl, null, null, true);
+      }
+
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../data/locales.json'));

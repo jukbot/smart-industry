@@ -14,7 +14,7 @@
 <dom-module id="view-setup-inventory">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -79,27 +79,57 @@
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="inventoryQuery" path="/data/[[k.key]]/factoryData/inventory" order-by-child="fname"
             data="{{inventoryData}}"></firebase-query>
+        <firebase-document app-name="smart-mes" id="editInventoryQuery" path="/data/[[k.key]]/factoryData/inventory/[[editKey]]"
+            data="{{editInventoryItems}}"></firebase-document>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <app-indexeddb-mirror id="inventoryIndexDB" key="inventory-data" data="{{inventoryData}}" persisted-data="{{persistedInventoryData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
-                <div class="card" hidden="[[showAddInventory]]">
+                <div class="card" hidden="[[!showAddInventory]]">
                     <h1 class="title">{{localize('add-inventory')}}</h1>
                     <paper-input label="{{localize('name')}}" id="inventoryName" type="text" maxlength="40" auto-validate always-float-label></paper-input>
                     <paper-input label="{{localize('code')}}" id="inventoryCode" type="text" maxlength="20" auto-validate always-float-label></paper-input>
-                    <paper-input label="{{localize('cost')}}" id="inventoryCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
+                    <paper-input label="{{localize('cost')}}" id="inventoryCost" type="number" maxlength="9" allowed-pattern="^[0-9]+(\.\d{2})?$"
                         error-message="number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
                     <paper-input label="{{localize('quantity')}}" id="inventoryQuantity" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)$"
                         error-message="number only" min="1" max$="[[maxInput]]" step="1" auto-validate always-float-label>
                     </paper-input>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openInventoryTable"><button>{{localize('dismiss')}}</button></flat-button>
-                        <flat-button class="btn shamrock" on-tap="_addInventory"><button disabled$="[[disabled]]">{{localize('add')}}</button></flat-button>
+                        <flat-button class="btn" on-tap="_openInventoryTable">
+                            <button>{{localize('dismiss')}}</button>
+                        </flat-button>
+                        <flat-button class="btn shamrock" on-tap="addInventory">
+                            <button disabled$="[[disabled]]">{{localize('add')}}</button>
+                        </flat-button>
                     </div>
                 </div>
             </li>
             <li>
-                <div class="card" hidden="[[!showAddInventory]]">
+                <div class="card" hidden="[[!showEditInventory]]">
+                    <h1 class="title">{{localize('edit-inventory')}}</h1>
+                    <paper-input label="{{localize('name')}}" id="edit_inventoryName" type="text" value="[[editInventoryItems.name]]" maxlength="40"
+                        auto-validate always-float-label></paper-input>
+                    <paper-input label="{{localize('code')}}" id="edit_inventoryCode" type="text" value="[[editInventoryItems.code]]" maxlength="20"
+                        auto-validate always-float-label></paper-input>
+                    <paper-input label="{{localize('cost')}}" id="edit_inventoryCost" type="number" value="[[editInventoryItems.cost]]" maxlength="9"
+                        allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only" min="0" max="[[maxInput]]" step="0.01"
+                        auto-validate always-float-label></paper-input>
+                    <paper-input label="{{localize('quantity')}}" id="edit_inventoryQuantity" type="number" value="[[editInventoryItems.quantity]]"
+                        maxlength="9" allowed-pattern="^(0|[1-9]\d*)$" error-message="number only" min="1" max$="[[maxInput]]"
+                        step="1" auto-validate always-float-label>
+                    </paper-input>
+                    <div class="center">
+                        <flat-button class="btn" on-tap="_openInventoryTable">
+                            <button>{{localize('dismiss')}}</button>
+                        </flat-button>
+                        <flat-button class="btn shamrock" on-tap="saveInventory">
+                            <button disabled$="[[disabled]]">{{localize('save')}}</button>
+                        </flat-button>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="card" hidden="[[!showListInventory]]">
                     <h1 class="title">{{localize('inventory-management')}}</h1>
                     <!-- <vaadin-combo-box label="Search inventory" aria-label="Search inventory" items="" value=""></vaadin-combo-box> -->
                     <vaadin-grid id="inventoryTable" aria-label="inventory Management" items="[[persistedInventoryData]]">
@@ -163,7 +193,7 @@
                             </template>
                             <template>
                                 <div class="cell center last">
-                                    <paper-icon-button on-tap="_editInventory" customer="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                    <paper-icon-button on-tap="_openEditInventoryCard" inventory="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -174,18 +204,20 @@
                             </template>
                             <template>
                                 <div class="cell center last">
-                                    <paper-icon-button on-tap="_deleteInventory" inventory="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-tap="deleteInventory" inventory="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openAddInventoryCard"><button>{{localize('add-inventory')}}</button></flat-button>
+                        <flat-button class="btn" on-tap="_openAddInventoryCard">
+                            <button>{{localize('add-inventory')}}</button>
+                        </flat-button>
                     </div>
                 </div>
             </li>
         </ul>
-        <paper-toast id="toastSetupinventory" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
+        <paper-toast id="toastSetupInventory" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
         class ViewSetupInventory extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
@@ -197,7 +229,9 @@
             static get properties() {
                 return {
                     language: String,
+                    editKey: String,
                     inventoryData: Object,
+                    editInventoryItems: Object,
                     selectAll: Boolean,
                     toastText: String,
                     maxInput: {
@@ -210,8 +244,16 @@
                     },
                     showAddInventory: {
                         type: Boolean,
+                        value: false
+                    },
+                    showEditInventory: {
+                        type: Boolean,
+                        value: false
+                    },
+                    showListInventory: {
+                        type: Boolean,
                         value: true
-                    }
+                    },
                 }
             }
 
@@ -230,8 +272,10 @@
                 this.$.inventoryCode.addEventListener('input', this._validateInput.bind(this))
                 this.$.inventoryCost.addEventListener('input', this._validateInput.bind(this))
                 this.$.inventoryQuantity.addEventListener('input', this._validateInput.bind(this))
-                this.$.inventoryCost.addEventListener('keypress', (e) => this._validateNumber(e))
-                this.$.inventoryQuantity.addEventListener('keypress', (e) => this._validateNumber(e))
+                this.$.edit_inventoryName.addEventListener('input', this._validateEditInput.bind(this))
+                this.$.edit_inventoryCode.addEventListener('input', this._validateEditInput.bind(this))
+                this.$.edit_inventoryCost.addEventListener('input', this._validateEditInput.bind(this))
+                this.$.edit_inventoryQuantity.addEventListener('input', this._validateEditInput.bind(this))
             }
 
             _validateInput() {
@@ -248,22 +292,40 @@
                 }
             }
 
-            _validateNumber(e) {
-                // alow only 0-9
-                if (e.which != 8 && e.which != 0 && e.which < 48 || e.which > 57) {
-                    e.preventDefault();
+            _validateEditInput() {
+                const name = this.$.edit_inventoryName.value
+                const code = this.$.edit_inventoryCode.value
+                const cost = this.$.edit_inventoryCost.value
+                const quantity = this.$.edit_inventoryQuantity.value
+                const decimal = /^(0|[1-9]\d*)(\.\d+)?$/ // alow decimal 2 points
+                const integer = /^(0|[1-9]\d*)$/ // alow only positive interger
+                if (name && code && cost && quantity && cost.match(decimal) && cost <= this.maxInput && quantity.match(integer) && quantity > 0 && quantity <= this.maxInput) {
+                    this.disabled = false
+                } else {
+                    this.disabled = true
                 }
             }
 
+            _openEditInventoryCard(e) {
+                this.showEditInventory = true;
+                this.showListInventory = false;
+                const key = e.currentTarget.inventory.$key;
+                this.editKey = key;
+            }
+
             _openAddInventoryCard() {
-                this.showAddInventory = false
+                this.showAddInventory = true;
+                this.showListInventory = false;
             }
 
             _openInventoryTable() {
-                this.showAddInventory = true
+                this.showListInventory = true;
+                this.showAddInventory = false;
+                this.showEditInventory = false;
+                this._clearField();
             }
 
-            _addInventory() {
+            addInventory() {
                 const name = this.$.inventoryName.value
                 const code = this.$.inventoryCode.value
                 const cost = this.$.inventoryCost.value
@@ -276,28 +338,55 @@
                         code: code,
                         cost: cost,
                         quantity: quantity,
-                        add: timestamp
+                        add: timestamp,
+                        update: timestamp
                     })
                     this.clearField()
                     this.toastText = 'notification-add-success'
-                    this.$.toastSetupinventory.open()
+                    this.$.toastSetupInventory.open()
+                    this._openInventoryTable()
                 } else {
                     this.toastText = 'notification-error-incomplete-input'
-                    this.$.toastSetupinventory.open()
+                    this.$.toastSetupInventory.open()
                 }
-                this._openInventoryTable()
             }
 
-            _deleteInventory(e) {
+            deleteInventory(e) {
                 if (window.confirm("Delete this inventory item ?") == true) {
                     let key = e.currentTarget.inventory.$key
                     this.$.inventoryQuery.ref.child(key).remove()
                     this.toastText = 'notification-delete-success'
-                    this.$.toastSetupinventory.open()
+                    this.$.toastSetupInventory.open()
                 }
             }
 
-            clearField() {
+            saveInventory() {
+                const name = this.$.edit_inventoryName.value
+                const code = this.$.edit_inventoryCode.value
+                const cost = this.$.edit_inventoryCost.value
+                const quantity = this.$.edit_inventoryQuantity.value
+                const dateTime = Date.now()
+                const timestamp = Math.floor(dateTime / 1000)
+
+                if (name && code && cost && quantity) {
+                    this.$.editInventoryQuery.ref.update({
+                        name: name,
+                        code: code,
+                        cost: cost,
+                        quantity: quantity,
+                        update: timestamp
+                    });
+                    this.toastText = 'notification-save-success'
+                    this.$.toastSetupInventory.open()
+                    this._openInventoryTable()
+                } else {
+                    this.toastText = 'notification-error-incomplete-input';
+                    this.$.toastSetupInventory.open();
+                }
+            }
+
+
+            _clearField() {
                 this.$.inventoryName.value = ""
                 this.$.inventoryCode.value = ""
                 this.$.inventoryCost.value = ""

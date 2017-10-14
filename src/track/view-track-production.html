@@ -209,7 +209,7 @@
                             <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]">
                                 <button disabled="[[isDone(item.job_status)]]">Finish</button>
                             </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="_removeJob" job="[[item]]">
+                            <flat-button class="thunderbird btn" on-tap="removeJob" job="[[item]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -247,7 +247,7 @@
                             <flat-button class="btn" on-tap="_openEditMachineCard" device="[[device]]">
                                 <button>{{localize('edit')}}</button>
                             </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="_removeMachine" device="[[device]]">
+                            <flat-button class="thunderbird btn" on-tap="removeDevice" device="[[device]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -336,11 +336,25 @@
                 })
             }
 
+            removeDevice(e) {
+                if (window.confirm("Remove this device?") == true) {
+                    const key = e.currentTarget.device.$key;
+                    this.$.deviceQuery.ref.child(key).remove();
+                }
+            }
+
             receiveJob(e) {
                 const key = e.currentTarget.job.$key;
                 this.$.scheduleQuery.ref.child(key).update({
                     actual_start: Math.round(new Date().getTime() / 1000.0)
                 })
+            }
+
+            removeJob(e) {
+                if (window.confirm("Remove this job?") == true) {
+                    const key = e.currentTarget.job.$key;
+                    this.$.deviceQuery.ref.child(key).remove();
+                }
             }
 
             finishJob(e) {

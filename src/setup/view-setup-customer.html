@@ -12,7 +12,7 @@
 <dom-module id="view-setup-customer">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -76,11 +76,12 @@
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerData}}"></firebase-query>
+        <firebase-document app-name="smart-mes" id="editCustomerQuery" path="/data/[[k.key]]/customerData/[[editKey]]" data="{{editCustomerItems}}"></firebase-document>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <app-indexeddb-mirror id="customerIndexDB" key="customer-data" data="{{customerData}}" persisted-data="{{persistedCustomerData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
-                <div class="card" hidden="[[showAddCustomer]]">
+                <div class="card" hidden="[[!showAddCustomer]]">
                     <h1 class="title">{{localize('add-customer')}}</h1>
                     <paper-input label="{{localize('first-name')}}" id="customerFirstName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
                         error-message="text only" always-float-label></paper-input>
@@ -91,14 +92,44 @@
                     </paper-input>
                     <paper-input label="{{localize('mobile')}}" id="customerMobile" max-length="15" type="tel" auto-validate allowed-pattern="^(0|[1-9]\d*)$"
                         error-message="number only" always-float-label></paper-input>
+                    <paper-input label="{{localize('address')}}" id="customerAddress" max-length="200" type="text" auto-validate error-message="text only"
+                        always-float-label></paper-input>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openCustomerTable"><button>{{localize('dismiss')}}</button></flat-button>
-                        <flat-button class="btn shamrock" on-tap="_addCustomer"><button disabled$="[[disabled]]">{{localize('add')}}</button></flat-button>
+                        <flat-button class="btn" on-tap="_openCustomerTable">
+                            <button>{{localize('dismiss')}}</button>
+                        </flat-button>
+                        <flat-button class="btn shamrock" on-tap="addCustomer">
+                            <button disabled$="[[disabled]]">{{localize('add')}}</button>
+                        </flat-button>
                     </div>
                 </div>
             </li>
             <li>
-                <div class="card" hidden="[[!showAddCustomer]]">
+                <div class="card" hidden="[[!showEditCustomer]]">
+                    <h1 class="title">{{localize('edit-customer')}}</h1>
+                    <paper-input label="{{localize('first-name')}}" id="edit_customerFirstName" max-length="40" type="text" value="[[getNamePosition(editCustomerItems.name, 0)]]"
+                        auto-validate allowed-pattern="[a-zA-Z]" error-message="text only" always-float-label></paper-input>
+                    <paper-input label="{{localize('last-name')}}" id="edit_customerLastName" max-length="40" type="text" value="[[getNamePosition(editCustomerItems.name, 1)]]"
+                        auto-validate allowed-pattern="[a-zA-Z]" error-message="text only" always-float-label></paper-input>
+                    <paper-input label="{{localize('email')}}" id="edit_customerEmail" max-length="40" type="email" value="[[editCustomerItems.email]]"
+                        auto-validate error-message="invalid input" always-float-label>
+                    </paper-input>
+                    <paper-input label="{{localize('mobile')}}" id="edit_customerMobile" max-length="15" type="tel" value="[[editCustomerItems.mobile]]"
+                        auto-validate allowed-pattern="^(0|[1-9]\d*)$" error-message="number only" always-float-label></paper-input>
+                    <paper-input label="{{localize('address')}}" id="edit_customerAddress" max-length="200" type="text" value="[[editCustomerItems.address]]"
+                        auto-validate error-message="text only" always-float-label></paper-input>
+                    <div class="center">
+                        <flat-button class="btn" on-tap="_openCustomerTable">
+                            <button>{{localize('dismiss')}}</button>
+                        </flat-button>
+                        <flat-button class="btn shamrock" on-tap="saveCustomer">
+                            <button disabled$="[[disabled]]">{{localize('save')}}</button>
+                        </flat-button>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="card" hidden="[[!showListCustomer]]">
                     <h1 class="title">{{localize('customer-management')}}</h1>[[selectItem]]
                     <vaadin-grid id="customerTable" aria-label="Customer Management" items="[[persistedCustomerData]]" selected-items="{{selectItem}}">
                         <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
@@ -139,6 +170,15 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
+                                <div class="cell last">{{localize('address')}}</div>
+                            </template>
+                            <template>
+                                <div class="cell">[[item.address]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column flex="1">
+                            <template class="header">
                                 <div class="cell last">{{localize('mobile')}}</div>
                             </template>
                             <template>
@@ -152,7 +192,7 @@
                             </template>
                             <template>
                                 <div class="cell center last">
-                                    <paper-icon-button on-tap="_editCustomer" customer="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                    <paper-icon-button on-tap="_openEditCustomerCard" customer="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -163,13 +203,15 @@
                             </template>
                             <template>
                                 <div class="cell center last">
-                                    <paper-icon-button on-tap="_deleteCustomer" customer="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-tap="deleteCustomer" customer="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openAddCustomerCard"><button>{{localize('add-customer')}}</button></flat-button>
+                        <flat-button class="btn" on-tap="_openAddCustomerCard">
+                            <button>{{localize('add-customer')}}</button>
+                        </flat-button>
                     </div>
                 </div>
             </li>
@@ -186,7 +228,9 @@
             static get properties() {
                 return {
                     language: String,
+                    editKey: String,
                     customerData: Object,
+                    editCustomerItems: Object,
                     selectAll: Boolean,
                     toastText: String,
                     disabled: {
@@ -195,8 +239,16 @@
                     },
                     showAddCustomer: {
                         type: Boolean,
+                        value: false
+                    },
+                    showEditCustomer: {
+                        type: Boolean,
+                        value: false
+                    },
+                    showListCustomer: {
+                        type: Boolean,
                         value: true
-                    }
+                    },
                 }
             }
 
@@ -215,6 +267,12 @@
                 this.$.customerLastName.addEventListener('input', this._validateInput.bind(this))
                 this.$.customerEmail.addEventListener('input', this._validateInput.bind(this))
                 this.$.customerMobile.addEventListener('input', this._validateInput.bind(this))
+                this.$.customerAddress.addEventListener('input', this._validateInput.bind(this))
+                this.$.edit_customerFirstName.addEventListener('input', this._validateEditInput.bind(this))
+                this.$.edit_customerLastName.addEventListener('input', this._validateEditInput.bind(this))
+                this.$.edit_customerEmail.addEventListener('input', this._validateEditInput.bind(this))
+                this.$.edit_customerMobile.addEventListener('input', this._validateEditInput.bind(this))
+                this.$.edit_customerAddress.addEventListener('input', this._validateEditInput.bind(this))
             }
 
             _validateInput() {
@@ -222,48 +280,72 @@
                 const lname = this.$.customerLastName.value;
                 const email = this.$.customerEmail.value;
                 const mobile = this.$.customerMobile.value;
-                if (fname && lname && email && mobile && this.$.customerEmail.validate()) {
+                const address = this.$.customerAddress.value;
+                if (fname && lname && email && mobile && this.$.customerEmail.validate() && address) {
                     this.disabled = false
                 } else {
                     this.disabled = true
                 }
             }
 
+            _validateEditInput() {
+                const fname = this.$.edit_customerFirstName.value;
+                const lname = this.$.edit_customerLastName.value;
+                const email = this.$.edit_customerEmail.value;
+                const mobile = this.$.edit_customerMobile.value;
+                const address = this.$.edit_customerAddress.value;
+                if (fname && lname && email && mobile && this.$.customerEmail.validate() && address) {
+                    this.disabled = false
+                } else {
+                    this.disabled = true
+                }
+            }
+
+            _openEditCustomerCard(e) {
+                this.showEditCustomer = true;
+                this.showListCustomer = false;
+                const key = e.currentTarget.customer.$key;
+                this.editKey = key;
+            }
+
             _openAddCustomerCard() {
-                this.showAddCustomer = false;
+                this.showAddCustomer = true;
+                this.showListCustomer = false;
             }
 
             _openCustomerTable() {
-                this.showAddCustomer = true;
+                this.showListCustomer = true;
+                this.showAddCustomer = false;
+                this.showEditCustomer = false;
+                this._clearField();
             }
 
-            _addCustomer() {
+            addCustomer() {
                 const fname = this.$.customerFirstName.value;
                 const lname = this.$.customerLastName.value;
                 const fullname = fname + ' ' + lname;
                 const email = this.$.customerEmail.value;
                 const mobile = this.$.customerMobile.value;
+                const address = this.$.customerAddress.value;
                 const mobileHyphens = mobile.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
-                if (fullname && email && mobile) {
+                if (fullname && email && mobile && address) {
                     this.$.customerQuery.ref.push({
                         name: fullname,
                         email: email,
-                        address: 'no address',
+                        address: address,
                         mobile: mobileHyphens
                     });
-                    this.clearField();
+                    this._clearField();
                     this.toastText = 'notification-add-success'
                     this.$.toastSetupCustomer.open();
+                    this._openCustomerTable()
                 } else {
                     this.toastText = 'notification-error-incomplete-input';
                     this.$.toastSetupCustomer.open();
                 }
-                this._openCustomerTable()
             }
 
-            _deleteCustomer(e) {
-                console.log(e)
-                console.log(e.currentTarget)
+            deleteCustomer(e) {
                 if (window.confirm("Delete this customer ?") == true) {
                     let key = e.currentTarget.customer.$key;
                     this.$.customerQuery.ref.child(key).remove();
@@ -272,11 +354,41 @@
                 }
             }
 
-            clearField() {
+            saveCustomer() {
+                const fname = this.$.edit_customerFirstName.value;
+                const lname = this.$.edit_customerLastName.value;
+                const fullname = fname + ' ' + lname;
+                const email = this.$.edit_customerEmail.value;
+                const mobile = this.$.edit_customerMobile.value;
+                const address = this.$.edit_customerAddress.value;
+                const mobileHyphens = mobile.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
+
+                if (fullname && email && mobile && address) {
+                    this.$.editCustomerQuery.ref.update({
+                        name: fullname,
+                        email: email,
+                        address: address,
+                        mobile: mobileHyphens
+                    });
+                    this.toastText = 'notification-save-success'
+                    this.$.toastSetupCustomer.open()
+                    this._openCustomerTable()
+                } else {
+                    this.toastText = 'notification-error-incomplete-input';
+                    this.$.toastSetupCustomer.open();
+                }
+            }
+
+            _clearField() {
                 this.$.customerFirstName.value = "";
                 this.$.customerLastName.value = "";
                 this.$.customerEmail.value = "";
                 this.$.customerMobile.value = "";
+            }
+
+            getNamePosition(name, index) {
+                if (!name) return;
+                return name.split(' ')[index]
             }
         }
         customElements.define(ViewSetupCustomer.is, ViewSetupCustomer)

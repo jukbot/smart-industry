@@ -12,7 +12,7 @@
 <dom-module id="view-setup-product">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -120,7 +120,7 @@
         <ul class="app-grid">
             <li>
                 <div class="card" hidden="[[showAddProduct]]">
-                    <h1 class="title">Add Product</h1>
+                    <h1 class="title">{{localize('add-product')}}</h1>
                     <paper-input label="Name" id="productName" type="text" required always-float-label></paper-input>
                     <paper-input label="SKU" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
                     <paper-input label="Quantity" id="productQuantity" type="number" min="0" max="5000" allowed-pattern="^(0|[1-9]\d*)$" required
@@ -132,8 +132,11 @@
                     <div>
                         <p>Upload Profile Image</p>
                         <input type="file" accept="image/*" name="file" id="uploadImageFile" accept="[[accept]]" on-change="_verifyUploadFile" class="inputfile"
-                        /></div>
-                    <flat-button class="add-btn" on-tap="_addMachine"><button>Add Part</button></flat-button>
+                        />
+                    </div>
+                    <flat-button class="add-btn" on-tap="addProductPart">
+                        <button>Add Part</button>
+                    </flat-button>
                     <div class="frame">
                         <ul class="flex-container wrap">
                             <template is="dom-repeat" items="{{part}}" as="machineItem">
@@ -143,12 +146,15 @@
                         </ul>
                     </div>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openProductList"><button>{{localize('dismiss')}}</button></flat-button>
-                        <flat-button class="btn shamrock" on-tap="_addproduct"><button>{{localize('add')}}</button></flat-button>
+                        <flat-button class="btn" on-tap="_openProductList">
+                            <button>{{localize('dismiss')}}</button>
+                        </flat-button>
+                        <flat-button class="btn shamrock" on-tap="_addproduct">
+                            <button>{{localize('add')}}</button>
+                        </flat-button>
                     </div>
                 </div>
             </li>
-
             <li>
                 <div class="card" hidden="[[!showAddProduct]]">
                     <h1 class="title">Product Management</h1>
@@ -214,7 +220,9 @@
                                 <div class="cell center">Image</div>
                             </template>
                             <template>
-                                <div class="cell center"><img class="product-image" src="[[item.image]]" alt="product image"></div>
+                                <div class="cell center">
+                                    <img class="product-image" src="[[item.image]]" alt="product image">
+                                </div>
                             </template>
                         </vaadin-grid-column>
 
@@ -325,7 +333,9 @@
                         </vaadin-grid-column>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openAddProductCard"><button>Add product</button></flat-button>
+                        <flat-button class="btn" on-tap="_openAddProductCard">
+                            <button>Add product</button>
+                        </flat-button>
                     </div>
                 </div>
             </li>

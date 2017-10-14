@@ -1,6 +1,6 @@
 <!-- POLYMER 2 -->
 <!-- app modules - used for core functions -->
-<link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/polymer/polymer.html">
 <link rel="import" href="/bower_components/polymer/lib/utils/async.html">
 <link rel="import" href="/bower_components/lazy-imports/lazy-imports-mixin.html">
 <link rel="import" href="/bower_components/app-layout/app-layout.html">
@@ -13,11 +13,12 @@
 <link rel="import" href="style/shared-styles.html">
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/flat-icons.html">
-<!-- paper modules -used for component style -->
+<!-- paper modules used for component style -->
 <link rel="import" href="/bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="/bower_components/paper-tooltip/paper-tooltip.html">
-<!-- iron modules -used for component functions -->
+<!-- iron modules used for component functions -->
+<link rel="import" href="/bower_components/iron-image/iron-image.html">
 <link rel="import" href="/bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="/bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="/bower_components/iron-lazy-pages/iron-lazy-pages.html">
@@ -26,17 +27,17 @@
 <link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
-<link rel="import" href="view-dashboard.html">
 <link rel="import" href="view-term.html">
-<!-- import lazy page router -->
-<link rel="import" href="view-setup.html">
-<link rel="import" href="view-plan.html">
-<link rel="import" href="view-track.html">
 <link rel="import" href="view-offline.html">
 <link rel="import" href="view-error.html">
 <link rel="import" href="view-404.html">
-<link rel="import" href="view-settings.html">
+<!-- import lazy page router -->
+<link rel="import" href="view-dashboard.html">
+<link rel="import" href="view-setup.html">
+<link rel="import" href="view-plan.html">
+<link rel="import" href="view-track.html">
 <link rel="import" href="view-help.html">
+<link rel="import" href="view-settings.html">
 
 <dom-module id="view-app">
   <template>
@@ -63,8 +64,8 @@
       <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
       <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
       <view-404 name="404" route="[[subRoute]]"></view-404>
-      <app-drawer-layout id="layout" fullbleed name="app">
-        <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open hidden="[[!signedIn]]">
+      <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}" name="app">
+        <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open="[[narrow]]" hidden="[[!signedIn]]">
           <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
           <h1 title="IMES" class="main-logo-title">IMES</h1>
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -92,7 +93,8 @@
               <button type="button">{{localize('logout-button')}}
               </button>
             </flat-button>
-            <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="User image" alt="user image">
+            <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" placeholder="Loading" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
+            <!-- <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="User image" alt="user image"> -->
             <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="0">
               <p>{{localize('email')}}: [[persistedUserData.email]]</p>
               <p>{{localize('verify-status')}}:
@@ -156,8 +158,7 @@
         return {
           page: {
             type: String,
-            reflectToAttribute: true,
-            observer: '_pageChanged'
+            reflectToAttribute: true
           },
           language: {
             type: String,
@@ -189,6 +190,7 @@
 
       static get observers() {
         return [
+          '_pageChanged(page, oldPage)',
           '_routePageChanged(subPageData.page, visible)',
           '_handleUser(user)',
           '_verifyEmailAlert(user.emailVerified, signedIn)',
@@ -379,7 +381,7 @@
               this.page = 'dashboard'
               this.set('route.path', '/app/dashboard')
             }
-            else if (!this.signedIn && this.route.path != '/term') {
+            else if (!this.signedIn && this.route.path !== '/term') {
               this.page = 'login'
               this.set('route.path', '/login')
             }

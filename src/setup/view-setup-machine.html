@@ -13,14 +13,14 @@
 <dom-module id="view-setup-machine">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 display: block;
                 margin: 10px;
                 --app-grid-item-height: 50%;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                 :host {
+                :host {
                     --app-grid-columns: 1;
                 }
                 .fixed-btn {
@@ -29,19 +29,19 @@
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                 :host {
+                :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                 :host {
+                :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) and (max-width: 2560px) {
-                 :host {
+                :host {
                     --app-grid-columns: 4;
                 }
             }
@@ -150,8 +150,12 @@
                 </template>
             </vaadin-combo-box>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="_openMachineMainCard"><button>{{localize('dismiss')}}</button></flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_addMachine"><button disabled="[[disabled]]">{{localize('add')}}</button></flat-button>
+                <flat-button class="fixed-btn" on-tap="_openMachineListCard">
+                    <button>{{localize('dismiss')}}</button>
+                </flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_addMachine">
+                    <button disabled="[[disabled]]">{{localize('add')}}</button>
+                </flat-button>
             </div>
         </div>
         <!-- Edit Station Card -->
@@ -175,8 +179,12 @@
                 </template>
             </vaadin-combo-box>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="_openMachineMainCard"><button>{{localize('dismiss')}}</button></flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_saveMachine"><button>{{localize('save')}}</button></flat-button>
+                <flat-button class="fixed-btn" on-tap="_openMachineListCard">
+                    <button>{{localize('dismiss')}}</button>
+                </flat-button>
+                <flat-button class="fixed-btn shamrock" on-tap="_saveMachine">
+                    <button>{{localize('save')}}</button>
+                </flat-button>
             </div>
         </div>
         <!-- Machine Management -->
@@ -194,14 +202,20 @@
                                 <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
                                 <p style="color:#e53935">Machine Key: [[machineItem.$key]]</p>
                             </div>
-                            <flat-button class="btn" on-tap="_openEditMachineCard" machine="[[machineItem]]"><button>{{localize('edit')}}</button></flat-button>
-                            <flat-button class="thunderbird btn" on-tap="_removeMachine" machine="[[machineItem]]"><button>{{localize('remove')}}</button></flat-button>
+                            <flat-button class="btn" on-tap="_openEditMachineCard" machine="[[machineItem]]">
+                                <button>{{localize('edit')}}</button>
+                            </flat-button>
+                            <flat-button class="thunderbird btn" on-tap="_removeMachine" machine="[[machineItem]]">
+                                <button>{{localize('remove')}}</button>
+                            </flat-button>
                         </div>
                     </li>
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-tap="_openAddMachineCard"><button> {{localize('add-machine')}}</button></flat-button>
+                <flat-button class="big-btn" on-tap="_openAddMachineCard">
+                    <button> {{localize('add-machine')}}</button>
+                </flat-button>
             </div>
         </div>
         <paper-toast id="toastAddMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-machine')}}"></paper-toast>
@@ -346,7 +360,7 @@
                 this.editKey = key;
             }
 
-            _openMachineMainCard() {
+            _openMachineListCard() {
                 this.showEditMachine = true;
                 this.showAddMachine = true;
                 this.showListMachine = false;
@@ -371,7 +385,7 @@
                     });
                     this.clearField();
                     this.$.toastAddMachine.open();
-                    this._openMachineMainCard()
+                    this._openMachineListCard()
                 } else {
                     this.$.toastEmptyAddMachine.open();
                 }
@@ -386,7 +400,6 @@
             }
 
             _saveMachine() {
-                //let key = e.currentTarget.machine.$key;
                 const name = this.$.edit_machineName.value;
                 const capacity = this.$.edit_machineCapacity.value;
                 const type = this.$.edit_machineType.value;
@@ -400,8 +413,10 @@
                         code: code,
                     });
                     this.$.toastSaveMachine.open()
+                    this._openMachineListCard()
+                } else {
+                    this.$.toastEmptyAddMachine.open();
                 }
-                this._openMachineMainCard()
             }
 
             clearField() {

@@ -144,7 +144,7 @@
                                 <paper-checkbox class="checkbox" tabindex="0" id="saturday" value="sat" noink>Sat</paper-checkbox>
                             </div>
                         </div>
-                        <vaadin-combo-box label="{{localize('productivity-optimization')}}" id="optimizationType" value="[[persistedFactoryPerformance.optimize]]"
+                        <vaadin-combo-box label="{{localize('productivity-optimization')}} (Beta)" id="optimizationType" value="[[persistedFactoryPerformance.optimize]]"
                             items="[[optimizationType]]" item-value-path="value" item-label-path="name" loading="[[!optimizationType]]"
                             required always-float-label>
                             <template>
@@ -313,6 +313,10 @@
                                 "value": "increase-profit"
                             },
                             {
+                                "name": "Reduce Cost",
+                                "value": "reduce-cost"
+                            },
+                            {
                                 "name": "Disabled",
                                 "value": "disabled"
                             }
@@ -353,7 +357,7 @@
             static get observers() {
                 return [
                     'setOperationDay(persistedFactoryOperation.op_day)',
-                    'isParallelModel(selectProductionModel.value)'
+                    '_isSerialModel(selectProductionModel.value)'
                 ]
             }
 
@@ -528,8 +532,8 @@
                 }
             }
 
-            isParallelModel(production_model) {
-                if (production_model === 'parallel' || production_model === 'multi') {
+            _isSerialModel(production_model) {
+                if (production_model === 'serial') {
                     this.$.concurrency.hidden = false
                     this.$.concurrency.disabled = false
                     this.$.concurrencyData.hidden = false
