@@ -498,7 +498,6 @@
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
-                // console.log('container', this.shadowRoot.querySelector("#timeline"))
                 requestAnimationFrame(this._installListeners.bind(this))
             }
 
@@ -514,7 +513,6 @@
             _installListeners() {
                 // listen for custom events on main page
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
-                this.$.timeline.addEventListener('google-chart-ready', (e) => console.log("Load chart success :D"))
             }
 
             _setChartSize() {
@@ -522,7 +520,6 @@
                 this.height = this.$.chartContainer.offsetHeight;
                 if (this.width > 0) {
                     this.timelineOptions = {
-                        title: "Distribution of days in 2001Q1",
                         width: this.width - 40,
                         height: this.height + 100,
                         timeline: {
@@ -565,7 +562,6 @@
                     ['3', 'Order 6', new Date(0, 0, 0, 16, 30, 0), new Date(0, 0, 0, 17, 0, 0)]
                 ])
                 let timelineChart = document.createElement('google-chart-loader').dataTable(dataTable)
-                console.log(dataTable)
                 timelineChart.then((data) => {
                     chart.data = data;
                 });

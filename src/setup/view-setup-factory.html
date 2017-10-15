@@ -534,20 +534,20 @@
 
             _isSerialModel(production_model) {
                 if (production_model === 'serial') {
-                    this.$.concurrency.hidden = false
-                    this.$.concurrency.disabled = false
-                    this.$.concurrencyData.hidden = false
-                    this.$.concurrencyDataSeparate.hidden = false
-                    this.$.concurrencyTitle.hidden = false
-                    this.$.concurrencyTitleSeparate.hidden = false
-                }
-                else {
                     this.$.concurrency.hidden = true
                     this.$.concurrency.disabled = true
                     this.$.concurrencyData.hidden = true
                     this.$.concurrencyDataSeparate.hidden = true
                     this.$.concurrencyTitle.hidden = true
                     this.$.concurrencyTitleSeparate.hidden = true
+                }
+                else {
+                    this.$.concurrency.hidden = false
+                    this.$.concurrency.disabled = false
+                    this.$.concurrencyData.hidden = false
+                    this.$.concurrencyDataSeparate.hidden = false
+                    this.$.concurrencyTitle.hidden = false
+                    this.$.concurrencyTitleSeparate.hidden = false
                 }
             }
         }

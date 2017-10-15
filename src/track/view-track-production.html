@@ -122,14 +122,9 @@
 
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <!-- ORDER -->
-        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="name" data="{{orderItems}}"></firebase-query>
-        <!-- JOB IN STATION -->
         <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(selectedStation)]]"
             order-by-child="name" data="{{scheduleItems}}"></firebase-query>
-        <!-- STATION -->
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" data="{{stationItems}}"></firebase-query>
-        <!-- DEVICE -->
         <firebase-query app-name="smart-mes" id="deviceQuery" path="/data/[[k.key]]/factoryData/device" data="{{deviceItems}}"></firebase-query>
 
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
@@ -215,6 +210,9 @@
                         </div>
                     </li>
                 </template>
+                <li hidden$="[[isEmptyJobs(scheduleItems.length)]]">
+                    <h1>No job in station found</h1>
+                </li>
             </ul>
             <div class="center">
                 <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
@@ -286,6 +284,7 @@
                     },
                 }
             }
+
             connectedCallback() {
                 super.connectedCallback();
                 this.loadResources(this.resolveUrl('../../data/locales.json'));
@@ -301,6 +300,14 @@
                     return this.secondsToHms(diff);
                 }
                 return 0
+            }
+
+            isEmptyJobs(length) {
+                if (length === 0) {
+                    return false;
+                } else {
+                    return true;
+                }
             }
 
             secondsToHms(sec) {
@@ -353,7 +360,7 @@
             removeJob(e) {
                 if (window.confirm("Remove this job?") == true) {
                     const key = e.currentTarget.job.$key;
-                    this.$.deviceQuery.ref.child(key).remove();
+                    this.$.scheduleQuery.ref.child(key).remove();
                 }
             }
 
