@@ -135,7 +135,7 @@
                     </vaadin-combo-box>
                     <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
                         step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
-                    <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2020-01-01" name="delivery" id="deliverySelector"
+                    <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2030-01-01" name="delivery" id="deliverySelector"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
                     <flat-button on-tap="saveOrder" class="btn" title="Save to archive">
                         <button>Save Order</button>
@@ -168,7 +168,7 @@
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>Cost</p>
                             <div class="sidebar-menu-line" role="separator" id="optimizeTitleSeparate"></div>
-                            <p id="optimizeTitle">Minimum quantity / week</p>
+                            <p id="optimizeTitle">Optimal quantity / week</p>
                         </div>
                         <div class="flex-item right-group">
                             <p>
@@ -303,11 +303,11 @@
                             "optimize": "profit",
                             "opType": "max",
                             "constraints": {
-                                "paper": { "max": maxMaterial },
+                                "material": { "max": maxMaterial },
                                 "time": { "max": this.weekOptime }
                             },
                             "variables": {
-                                "product": { "paper": this.selectProduct.inventory_use, "time": cycleTimePerItem, "profit": this.selectProduct.cost, "product": 1 }
+                                "product": { "material": this.selectProduct.inventory_use, "time": cycleTimePerItem, "profit": this.selectProduct.cost, "product": 1 }
                             },
                             "ints": { "product": 1 }
                         }
@@ -517,7 +517,7 @@
                 const orderColor = this.getRandomColor();
 
                 if (orderNo !== "" && orderCustomerName !== "" && orderProductName !== "" && orderProductPart !== "" &&
-                    orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery))) {
+                    orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery)) && this.$.deliverySelector.validate()) {
 
                     this.$.orderQuery.ref.push({
                         order_date: orderDate,

@@ -139,7 +139,7 @@
             <paper-input type="number" id="machineCapacity" label="{{localize('machine-max-capacity')}} (items/hour)" min="1" max="9999"
                 step="1" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
             <vaadin-combo-box id="machineType" label="{{localize('machine-type')}}" items="[[machineType]]" item-value-path="name" item-label-path="name"
-                loading="[[!machineType]]" required always-float-label>
+                loading="[[!machineType]]" always-float-label="true" required>
                 <template>
                     <paper-item>
                         <paper-item-body two-line style="min-height: 0">

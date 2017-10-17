@@ -1,8 +1,7 @@
 <!-- POLYMER 2 -->
 <!-- app modules - used for core functions -->
-<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="/bower_components/polymer/lib/utils/async.html">
-<link rel="import" href="/bower_components/lazy-imports/lazy-imports-mixin.html">
 <link rel="import" href="/bower_components/app-layout/app-layout.html">
 <link rel="import" href="/bower_components/app-route/app-location.html">
 <link rel="import" href="/bower_components/app-route/app-route.html">
@@ -17,6 +16,7 @@
 <link rel="import" href="/bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="/bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <!-- iron modules used for component functions -->
 <link rel="import" href="/bower_components/iron-image/iron-image.html">
 <link rel="import" href="/bower_components/iron-selector/iron-selector.html">
@@ -58,7 +58,7 @@
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
 
-    <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible" role="main">
+    <iron-pages selected="[[pageData.page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404" role="main">
       <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
       <view-term name="term" route="[[subRoute]]" hidden$="[[user]]"></view-term>
       <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
@@ -117,21 +117,17 @@
               </app-toolbar>
             </app-header>
           </template>
+
+          <iron-lazy-pages selected="[[subPageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
+            role="main" loading="{{loading}}">
+            <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]"></view-dashboard>
+            <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]"></view-setup>
+            <view-plan name="plan" route="[[subPageRoute]]" hidden$="[[!user]]"></view-plan>
+            <view-track name="track" route="[[subPageRoute]]" hidden$="[[!user]]"></view-track>
+            <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]"></view-help>
+            <view-settings name="settings" route="[[subPageRoute]]" hidden$="[[!user]]"></view-settings>
+          </iron-lazy-pages>
         </app-header-layout>
-        <iron-lazy-pages selected="[[subPageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
-          role="main" loading="{{loading}}">
-          <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]"></view-dashboard>
-          <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]"></view-setup>
-          <view-plan name="plan" route="[[subPageRoute]]" hidden$="[[!user]]"></view-plan>
-          <view-track name="track" route="[[subPageRoute]]" hidden$="[[!user]]"></view-track>
-          <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]"></view-help>
-          <view-settings name="settings" route="[[subPageRoute]]" hidden$="[[!user]]"></view-settings>
-        </iron-lazy-pages>
-        <div class="container" hidden="[[!loading]]">
-          <div class="flex-group">
-            <paper-spinner-lite active="[[loading]]"></paper-spinner-lite>
-          </div>
-        </div>
       </app-drawer-layout>
     </iron-pages>
 
@@ -158,7 +154,8 @@
         return {
           page: {
             type: String,
-            reflectToAttribute: true
+            reflectToAttribute: true,
+            observer: '_pageChanged'
           },
           language: {
             type: String,
@@ -190,7 +187,6 @@
 
       static get observers() {
         return [
-          '_pageChanged(page, oldPage)',
           '_routePageChanged(subPageData.page, visible)',
           '_handleUser(user)',
           '_verifyEmailAlert(user.emailVerified, signedIn)',

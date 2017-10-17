@@ -5,10 +5,10 @@
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 
-<dom-module id="view-track-energy">
+<dom-module id="view-track-warehouse">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -40,20 +40,22 @@
         <ul class="app-grid">
             <li>
                 <div class="card">
-                    <h1 class="title">Energy Usage Tracking</h1>
+                    <h1 class="title">Warehouse Usage Tracking</h1>
                     <p>Migrate in process</p>
 
-                    <flat-button class="clear-btn" on-tap="_refreshStatus"><button>Refresh</button></flat-button>
+                    <flat-button class="clear-btn" on-tap="_refreshStatus">
+                        <button>Refresh</button>
+                    </flat-button>
                     <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
                 </div>
             </li>
         </ul>
     </template>
     <script>
-        class ViewTrackEnergy extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+        class ViewTrackWarehouse extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {
-                return 'view-track-energy';
+                return 'view-track-warehouse';
             }
 
             static get properties() {
@@ -67,6 +69,6 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'));
             }
         }
-        customElements.define(ViewTrackEnergy.is, ViewTrackEnergy);
+        customElements.define(ViewTrackWarehouse.is, ViewTrackWarehouse);
     </script>
 </dom-module>

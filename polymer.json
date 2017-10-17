@@ -1,6 +1,36 @@
 {
+  "builds": [
+    {
+      "addPushManifest": true,
+      "addServiceWorker": true,
+      "basePath": true,
+      "browserCapabilities": [
+        "es2015",
+        "push"
+      ],
+      "bundle": false,
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "insertPrefetchLinks:": true,
+      "js": {
+        "compile": false,
+        "minify": false
+      },
+      "name": "default",
+      "swPrecacheConfig": "sw-precache-config.js"
+    }
+  ],
   "entrypoint": "index.html",
-  "shell": "src/view-app.html",
+  "extraDependencies": [
+    "bower_components/webcomponentsjs/*.js",
+    "app.yaml",
+    "manifest.json",
+    "firebase-messaging-sw.js"
+  ],
   "fragments": [
     "src/view-dashboard.html",
     "src/view-setup.html",
@@ -14,51 +44,22 @@
     "src/view-offline.html",
     "src/lazy-resources.html"
   ],
-  "sources": [
-    "src/**/*",
-    "data/**/*",
-    "images/**/*",
-    "lib/*"
-  ],
-  "extraDependencies": [
-    "app.yaml",
-    "manifest.json",
-    "bower_components/webcomponentsjs/*.js"
-  ],
   "lint": {
-    "rules": [
-      "polymer-2"
-    ],
     "ignoreWarnings": [
       "undefined-elements",
       "set-unknown-attribute",
       "databinding-calls-must-be-functions",
       "databind-with-unknown-property"
+    ],
+    "rules": [
+      "polymer-2"
     ]
   },
-  "builds": [
-    {
-      "name": "default",
-      "browserCapabilities": [
-        "es2015",
-        "push"
-      ],
-      "js": {
-        "minify": false,
-        "compile": false
-      },
-      "css": {
-        "minify": true
-      },
-      "html": {
-        "minify": true
-      },
-      "basePath": true,
-      "bundle": false,
-      "addServiceWorker": true,
-      "addPushManifest": true,
-      "insertPrefetchLinks:": true,
-      "swPrecacheConfig": "sw-precache-config.js"
-    }
+  "shell": "src/view-app.html",
+  "sources": [
+    "src/**/*",
+    "data/**/*",
+    "images/**/*",
+    "lib/*"
   ]
 }

@@ -5,6 +5,9 @@
 <link rel="import" href="/bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="/bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/iron-a11y-keys/iron-a11y-keys.html">
@@ -34,6 +37,10 @@
       article {
         width: 500px;
         margin: 0 auto;
+      }
+
+      paper-dropdown-menu {
+        width: 100%;
       }
 
       .flex-container {
@@ -195,7 +202,6 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-
             <div class="keep-session-checkbox">
               <paper-checkbox id="setKeepSession" checked$="[[remember]]" on-change="_toggleKeepSession">Keep me signed in</paper-checkbox>
             </div>
@@ -245,8 +251,17 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <p>By signing up you agree to IMES’s
-              <a href="/term" target="_self" class="link" id="termOfService">Terms of Service</a>
+            <paper-dropdown-menu label="Production Model" error-message="Invalid input" noink required>
+              <paper-listbox slot="dropdown-content" selected="0">
+                <paper-item>Parallel</paper-item>
+                <paper-item>Serial</paper-item>
+                <paper-item>Multi-Component</paper-item>
+              </paper-listbox>
+            </paper-dropdown-menu>
+            <div class="link">
+              <p>By signing up you agree to IMES’s
+                <a href="/term" target="_self" id="termOfService">Terms of Service</a>
+            </div>
             </p>
             <flat-button class="register-btn" on-tap="_register">
               <button type="button">Register and Login</button>

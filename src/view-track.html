@@ -1,7 +1,7 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="track/view-track-production.html">
 <link rel="import" href="track/view-track-performance.html">
-<link rel="import" href="track/view-track-energy.html">
+<link rel="import" href="track/view-track-warehouse.html">
 <link rel="import" href="view-app.html">
 <link rel="import" href="style/shared-styles.html">
 
@@ -26,7 +26,7 @@
     <iron-pages selected="[[tabs]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
       <view-track-production name="production"></view-track-production>
       <view-track-performance name="performance"></view-track-performance>
-      <view-track-energy name="energy"></view-track-energy>
+      <view-track-warehouse name="warehouse"></view-track-warehouse>
     </iron-pages>
   </template>
 
@@ -54,14 +54,14 @@
                 "icon": "vaadin:progressbar"
               },
               {
+                "title": "warehouse",
+                "view": "warehouse",
+                "icon": "vaadin:stock"
+              },
+              {
                 "title": "performance",
                 "view": "performance",
                 "icon": "vaadin:stopwatch"
-              },
-              {
-                "title": "energy",
-                "view": "energy",
-                "icon": "vaadin:bolt"
               }
               ]
             }

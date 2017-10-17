@@ -153,13 +153,15 @@
           <p>Organization: [[k.organization]]</p>
           <p>Data keychain: [[k.key]]</p>
           <p>Role: [[k.role]]</p>
-          <flat-button class="btn">
+          <flat-button on-tap="manageKey" class="btn">
             <button>Manage Keychain</button>
           </flat-button>
-          <flat-button class="btn">
+          <flat-button on-tap="manageUser" class="btn">
             <button>Manage User</button>
           </flat-button>
-
+          <flat-button on-tap="resetFactory" class="btn thunderbird" title="{{localize('delete-account')}}">
+            <button>Reset Factory Data</button>
+          </flat-button>
         </div>
       </li>
     </ul>
