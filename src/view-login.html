@@ -54,6 +54,10 @@
         padding: 1rem;
       }
 
+      .model-btn {
+        display: inline-flex;
+      }
+
       .form-title {
         text-align: center;
       }
@@ -247,19 +251,20 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <iron-selector selected="[[model]]" attr-for-selected="name">
-              <paper-buttons-group>
-                <flat-button name="parallel">
-                  Parallel
+            <p>Select Your Production Model</p>
+            <div class="flex-container">
+              <iron-selector selected="{{model}}" attr-for-selected="name" fallback-selection="1" role="navigation">
+                <flat-button name="parallel" class="model-btn">
+                  <button>Parallel</button>
                 </flat-button>
-                <flat-button name="serial">
-                  Serial
+                <flat-button name="serial" class="model-btn">
+                  <button>Serial</button>
                 </flat-button>
-                <flat-button name="multi">
-                  Multi
+                <flat-button name="multi" class="model-btn">
+                  <button>Multi</button>
                 </flat-button>
-              </paper-buttons-group>
-            </iron-selector>
+              </iron-selector>
+            </div>
             <div class="link">
               <p>By signing up you agree to IMES’s
                 <a href="/term" target="_self" id="termOfService">Terms of Service</a>

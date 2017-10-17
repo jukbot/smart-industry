@@ -14,7 +14,6 @@
                 background-color: transparent;
                 font-size: 1rem;
                 font-weight: 500;
-                color: var(--app-primary-color);
                 margin: 0;
                 padding: 1rem 3rem;
                 text-align: center;
@@ -26,7 +25,7 @@
             }
 
             flat-button>*:focus {
-                color: var(--app-accent-color);
+                color: #202020;
             }
 
             flat-button>*:active {
@@ -38,6 +37,11 @@
                 background-color: #202020;
                 color: #FFFFFF;
                 cursor: pointer;
+            }
+
+            flat-button.iron-selected>button {
+                background-color: #202020;
+                color: #FFFFFF;
             }
 
             flat-button>*:disabled {
