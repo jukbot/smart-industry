@@ -124,9 +124,11 @@
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(selectedStation)]]"
             order-by-child="name" data="{{scheduleItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_no" equal-to="{{selectedOrder}}"
+            data="{{orderItems}}"></firebase-query>
+
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" data="{{stationItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="deviceQuery" path="/data/[[k.key]]/factoryData/device" data="{{deviceItems}}"></firebase-query>
-
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <!-- Add Machine Card -->
         <!-- <div class="card main-card" hidden="[[showAddMachine]]">
@@ -352,6 +354,7 @@
 
             receiveJob(e) {
                 const key = e.currentTarget.job.$key;
+                console.log(this.$.scheduleQuery.ref.child(key).order_no);
                 this.$.scheduleQuery.ref.child(key).update({
                     actual_start: Math.round(new Date().getTime() / 1000.0)
                 })

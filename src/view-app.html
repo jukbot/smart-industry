@@ -418,7 +418,7 @@
             .then(() => {
               Polymer.Async.timeOut.run(() => {
                 this.closeToastAlert()
-                this.$.userIndexDB.destroy()
+                //this.$.userIndexDB.destroy()
                 // redirect to login page
                 this.set('route.path', '/login')
               }, 1)
