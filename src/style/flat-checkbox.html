@@ -25,6 +25,7 @@
             flat-checkbox>flat-md-decorator {
                 pointer-events: none;
             }
+
             /* Checked state overlay */
 
             flat-checkbox>flat-md-decorator::after {
@@ -43,6 +44,7 @@
             flat-checkbox>input[type=checkbox]:checked+flat-md-decorator::after {
                 opacity: 1;
             }
+
             /* Focused state */
 
             flat-checkbox>flat-md-decorator::before {
@@ -66,11 +68,19 @@
         <slot></slot>
     </template>
     <script>
+        /**
+         * `flat-checkbox` Description
+         *
+         * @summary Checkbox of FlatElements
+         * @FlatCheckBox
+         * @polymer
+         * @extends Polymer.Element
+         */
         class FlatCheckbox extends Polymer.Element {
             static get is() {
                 return 'flat-checkbox';
             }
         }
-        customElements.define(FlatCheckbox.is, FlatCheckbox);
+        window.customElements.define(FlatCheckbox.is, FlatCheckbox);
     </script>
 </dom-module>

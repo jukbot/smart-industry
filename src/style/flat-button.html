@@ -57,11 +57,19 @@
         <slot></slot>
     </template>
     <script>
+        /**
+          * `flat-button` Description
+          *
+          * @summary Button of FlatElements
+          * @FlatButtons
+          * @polymer
+          * @extends Polymer.Element
+          */
         class FlatButton extends Polymer.Element {
             static get is() {
                 return 'flat-button';
             }
         }
-        customElements.define(FlatButton.is, FlatButton);
+        window.customElements.define(FlatButton.is, FlatButton);
     </script>
 </dom-module>

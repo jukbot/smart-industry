@@ -112,16 +112,18 @@
                         <paper-input label="{{localize('factory-name')}}" id="factoryName" value="[[persistedFactoryProfile.name]]" type="text" required
                             always-float-label></paper-input>
                         <vaadin-combo-box label="{{localize('factory-type')}}" id="factoryType" value="[[persistedFactoryProfile.type]]" items="[[factoryType]]"
-                            item-label-path="name" item-value-path="value" loading="[[!factoryType]]" required always-float-label></vaadin-combo-box>
+                            item-label-path="name" item-value-path="value" loading="[[!factoryType]]" error-message="Invalid Input"
+                            required always-float-label></vaadin-combo-box>
                         <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[persistedFactoryProfile.model]]"
                             items="[[productionModel]]" item-value-path="value" item-label-path="name" loading="[[!productionModel]]"
-                            selected-item="{{selectProductionModel}}" required always-float-label>
+                            error-message="Invalid Input" selected-item="{{selectProductionModel}}" required always-float-label>
                             <template>
                                 <div readonly>[[item.name]]</div>
                             </template>
                         </vaadin-combo-box>
                         <vaadin-combo-box label="Station Concurrency" id="concurrency" value="[[persistedFactoryProfile.concurrency]]" items="[[concurrencyItems]]"
-                            item-value-path="value" item-label-path="value" loading="[[!concurrencyItems]]" required always-float-label>
+                            item-value-path="value" item-label-path="value" error-message="Invalid Input" loading="[[!concurrencyItems]]"
+                            required always-float-label>
                         </vaadin-combo-box>
                         <paper-input label="{{localize('operation-start')}}" id="opStart" value="[[persistedFactoryOperation.op_start]]" type="time"
                             required pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
@@ -198,32 +200,23 @@
                             <p>{{localize('operation-day')}}</p>
                         </div>
                         <div class="flex-item">
-                            <p>
-                                <span>[[persistedFactoryProfile.name]]</span>&nbsp;</p>
+                            <p>[[persistedFactoryProfile.name]]&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[getFactoryType(persistedFactoryProfile.type)]]</span>&nbsp;</p>
+                            <p>[[getFactoryType(persistedFactoryProfile.type)]]&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[getProductionModel(persistedFactoryProfile.model)]]</span>&nbsp;</p>
+                            <p>[[getProductionModel(persistedFactoryProfile.model)]]&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p id="concurrencyData">
-                                <span>[[persistedFactoryProfile.concurrency]]</span>&nbsp;</p>
+                            <p id="concurrencyData">[[persistedFactoryProfile.concurrency]]&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator" id="concurrencyDataSeparate"></div>
-                            <p>
-                                <span>[[persistedFactoryOperation.op_start]] </span>&nbsp;</p>
+                            <p>[[persistedFactoryOperation.op_start]] &nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[persistedFactoryOperation.op_end]]</span>&nbsp;</p>
+                            <p>[[persistedFactoryOperation.op_end]]&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[persistedFactoryOperation.ot_start]]</span>&nbsp;</p>
+                            <p>[[persistedFactoryOperation.ot_start]]&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[persistedFactoryOperation.ot_end]]</span>&nbsp;</p>
+                            <p>[[persistedFactoryOperation.ot_end]]&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[getOperationDay(persistedFactoryOperation.op_day)]]</span>&nbsp;</p>
+                            <p>[[getOperationDay(persistedFactoryOperation.op_day)]]&nbsp;</p>
                         </div>
                     </div>
                 </div>
@@ -246,26 +239,19 @@
                             <p>{{localize('next-reschedule')}}</p>
                         </div>
                         <div class="info-group flex-item">
-                            <p>
-                                <span>{{localize(persistedFactoryPerformance.optimize)}}</span>&nbsp;</p>
+                            <p>{{localize(persistedFactoryPerformance.optimize)}}&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[persistedFactoryPerformance.au]] &#37;</span>&nbsp;</p>
+                            <p>[[persistedFactoryPerformance.au]] &#37;&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[persistedFactoryPerformance.meff]] &#37;</span>&nbsp;</p>
+                            <p>[[persistedFactoryPerformance.meff]] &#37;&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[persistedFactoryPerformance.aw]]</span>&nbsp;</p>
+                            <p>[[persistedFactoryPerformance.aw]]&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[persistedFactorySchedule.interval]] {{localize('day')}}</span>&nbsp;</p>
+                            <p>[[persistedFactorySchedule.interval]] {{localize('day')}}&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[getLastInterval(persistedFactorySchedule.start_interval)]]</span>&nbsp;</p>
+                            <p>[[getLastInterval(persistedFactorySchedule.start_interval)]]&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
-                            <p>
-                                <span>[[getNextInterval(persistedFactorySchedule.start_interval, persistedFactorySchedule.interval)]]</span>&nbsp;</p>
+                            <p>[[getNextInterval(persistedFactorySchedule.start_interval, persistedFactorySchedule.interval)]]&nbsp;</p>
                         </div>
                     </div>
                 </div>
@@ -347,6 +333,14 @@
                             return [{
                                 "name": "Job Shop",
                                 "value": "jobshop"
+                            },
+                            {
+                                "name": "Flow Shop",
+                                "value": "flowshop"
+                            },
+                            {
+                                "name": "Open Shop",
+                                "value": "openshop"
                             }
                             ]
                         }

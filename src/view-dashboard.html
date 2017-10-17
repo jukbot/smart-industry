@@ -43,7 +43,8 @@
           tabs: {
             type: String,
             reflectToAttribute: true,
-            value: 'overview'
+            value: 'overview',
+            obersver: '_tabsChanged'
           },
           submenus: {
             type: Array,
@@ -67,10 +68,6 @@
             }
           }
         }
-      }
-
-      static get observers() {
-        '_tabsChanged(tabs, visible)'
       }
 
       _tabsChanged(tabs, visible) {

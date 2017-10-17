@@ -5,12 +5,12 @@
 <link rel="import" href="/bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="/bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="/bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="/bower_components/paper-item/paper-item.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="/bower_components/paper-buttons-group/paper-buttons-group.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="/bower_components/iron-selector/iron-selector.html">
 <!-- import style component -->
 <link rel="import" href="style/flat-icons.html">
 <link rel="import" href="style/flat-input.html">
@@ -37,10 +37,6 @@
       article {
         width: 500px;
         margin: 0 auto;
-      }
-
-      paper-dropdown-menu {
-        width: 100%;
       }
 
       .flex-container {
@@ -173,7 +169,7 @@
         }
       }
     </style>
-    <iron-ajax id="requestSampleData" url="/data/sample.json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="/data/sample/[[model]].json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" signed-in="[[signedIn]]"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]"></firebase-document>
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
@@ -184,34 +180,34 @@
           <img class="logo" src="/images/logo/logo.svg" title="Logo" alt="app logo">
           <div hidden$="[[!login]]" class="login-form">
             <div class="form-title">
-              <h2>Log in</h2>
+              <h2 hidden$="[[!login]]">Log in</h2>
             </div>
-            <flat-input>
-              <input type="email" id="accountEmail" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" autofocus
+            <flat-input hidden$="[[!login]]">
+              <input type="email" id="loginEmail" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" autofocus
                 required aria-labelledby="accountEmailLabel">
               <span class="flat-md-decorator" error-message="Invalid Email" aria-hidden="true">
                 <label id="accountEmailLabel">Email address</label>
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <flat-input>
-              <input type="password" id="accountPassword" name="Password" placeholder="Password" maxlength="30" auto-complete="current-password"
+            <flat-input hidden$="[[!login]]">
+              <input type="password" id="loginPassword" name="Password" placeholder="Password" maxlength="30" auto-complete="current-password"
                 autofocus required aria-labelledby="accountPasswordLabel" autocomplete="off">
               <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="accountPasswordLabel">Password</label>
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <div class="keep-session-checkbox">
+            <div hidden$="[[!login]]" class="keep-session-checkbox">
               <paper-checkbox id="setKeepSession" checked$="[[remember]]" on-change="_toggleKeepSession">Keep me signed in</paper-checkbox>
             </div>
-            <flat-button class="login-btn" on-tap="_login">
+            <flat-button hidden$="[[!login]]" class="login-btn" on-tap="_login">
               <button type="button">Log in</button>
             </flat-button>
-            <div class="link">
+            <div hidden$="[[!login]]" class="link">
               <a href="javascript:void(0);" on-click="_showReset">Forgot?</a>
             </div>
-            <div class="link">
+            <div hidden$="[[!login]]" class="link">
               <a href="javascript:void(0);" on-click="_showRegister">Don’t have an account? Sign up now.</a>
             </div>
           </div>
@@ -251,13 +247,19 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <paper-dropdown-menu label="Production Model" error-message="Invalid input" noink required>
-              <paper-listbox slot="dropdown-content" selected="0">
-                <paper-item>Parallel</paper-item>
-                <paper-item>Serial</paper-item>
-                <paper-item>Multi-Component</paper-item>
-              </paper-listbox>
-            </paper-dropdown-menu>
+            <iron-selector selected="[[model]]" attr-for-selected="name">
+              <paper-buttons-group>
+                <flat-button name="parallel">
+                  Parallel
+                </flat-button>
+                <flat-button name="serial">
+                  Serial
+                </flat-button>
+                <flat-button name="multi">
+                  Multi
+                </flat-button>
+              </paper-buttons-group>
+            </iron-selector>
             <div class="link">
               <p>By signing up you agree to IMES’s
                 <a href="/term" target="_self" id="termOfService">Terms of Service</a>
@@ -335,6 +337,10 @@
             type: Boolean,
             value: false
           },
+          model: {
+            type: String,
+            value: 'parallel'
+          },
           remember: Boolean,
           signedIn: Boolean,
           sampleData: Object,
@@ -353,7 +359,7 @@
       }
 
       _installListeners() {
-        this.$.accountPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 0))
+        this.$.loginPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 0))
         this.$.resetPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 1))
         this.$.termOfService.addEventListener('click', (e) => this._goToTermOfService(e))
       }
@@ -373,8 +379,8 @@
       }
 
       _login() {
-        if (this.$.accountEmail.value && this.$.accountPassword.value) {
-          this.$.userAuth.signInWithEmailAndPassword(this.$.accountEmail.value, this.$.accountPassword.value)
+        if (this.$.loginEmail.value && this.$.loginPassword.value) {
+          this.$.userAuth.signInWithEmailAndPassword(this.$.loginEmail.value, this.$.loginPassword.value)
             .then((response) => {
               this.set('route.path', '/dashboard')
             })
