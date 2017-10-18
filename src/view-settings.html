@@ -1,7 +1,9 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="/bower_components/vaadin-material-theme/vaadin-text-field.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/bower_components/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="/bower_components/vaadin-dialog/vaadin-dialog.html">
 <link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
@@ -162,7 +164,7 @@
       </li>
     </ul>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
-    <paper-dialog id="manageKeyDialog" class="dialog" auto-fit-on-attach>
+    <!-- <paper-dialog id="manageKeyDialog" class="dialog" auto-fit-on-attach>
       <h1 class="center">Manage Keychain</h1>
       <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
       <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
@@ -174,7 +176,24 @@
           {{localize('save')}}
         </paper-button>
       </div>
-    </paper-dialog>
+    </paper-dialog> -->
+    <vaadin-dialog id="manageKeyDialog">
+      <template>
+        <h1 class="center">Manage Keychain</h1>
+        <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE
+          <br> BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
+        <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
+        <div class="buttons">
+          <paper-button dialog-dismiss>
+            {{localize('dismiss')}}
+          </paper-button>
+          <paper-button dialog-confirm autofocus on-tap="changeKey">
+            {{localize('save')}}
+          </paper-button>
+          <vaadin-button on-click="closeDialog">Ok</vaadin-button>
+          <vaadin-button on-click="closeDialog">Cancel</vaadin-button>
+      </template>
+    </vaadin-dialog>
   </template>
 
   <script>
@@ -221,7 +240,7 @@
       }
 
       openManageKey() {
-        this.$.manageKeyDialog.open();
+        this.$.manageKeyDialog.opened = true;
       }
 
       changeKey() {
