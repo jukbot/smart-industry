@@ -10,7 +10,6 @@
 <link rel="import" href="/bower_components/vaadin-material-theme/vaadin-date-picker.html">
 <link rel="import" href="/lib/sugar.html">
 <link rel="import" href="/lib/jsLPSolver.html">
-<!-- <link rel="import" href="/lib/require.html"> -->
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -135,7 +134,7 @@
                     </vaadin-combo-box>
                     <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
                         step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
-                    <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2030-01-01" name="delivery" id="deliverySelector"
+                    <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2020-01-01" name="delivery" id="deliverySelector"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
                     <flat-button on-tap="saveOrder" class="btn" title="Save to archive">
                         <button>save for later</button>
@@ -517,7 +516,7 @@
                 const orderColor = this.getRandomColor();
 
                 if (orderNo !== "" && orderCustomerName !== "" && orderProductName !== "" && orderProductPart !== "" &&
-                    orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery)) && this.$.deliverySelector.validate()) {
+                    orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery))) {
 
                     this.$.orderQuery.ref.push({
                         order_date: orderDate,

@@ -79,10 +79,10 @@
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="changeLanguage" error-message="Invalid input"
             loading="[[!languageItems]]" required always-float-label></vaadin-combo-box>
           <p>Sensor Devices</p>
-          <flat-button on-tap="_scanDevice" class="btn" title="Search sensor">
+          <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
             <button>Search Sensor</button>
           </flat-button>
-          <flat-button on-tap="_showDevice" class="btn" title="Show sensor">
+          <flat-button on-tap="showDevice" class="btn" title="Show sensor">
             <button>Show Sensor</button>
           </flat-button>
         </div>
@@ -132,14 +132,14 @@
           <flat-button on-tap="_import-data" class="btn" title="{{localize('import-data')}}">
             <button>{{localize('import-data')}}</button>
           </flat-button>
-          <paper-toggle-button class="switch" value="[[autobackup]]" on-change="_changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
+          <paper-toggle-button class="switch" value="[[autobackup]]" on-change="changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1 class="title">{{localize('notification-settings')}}</h1>
           <p>Web Notification</p>
-          <paper-toggle-button class="switch" value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" checked="[[token]]"
+          <paper-toggle-button class="switch" value="[[notification]]" on-change="changeNotification" id="webNotificationSwitch" checked="[[token]]"
             noink> {{localize('notification')}}</paper-toggle-button>
           <p>E-mail Notification</p>
           <paper-toggle-button class="switch" value="[[emailalert]]" on-change="changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
@@ -164,7 +164,7 @@
       </li>
     </ul>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
-    <!-- <paper-dialog id="manageKeyDialog" class="dialog" auto-fit-on-attach>
+    <paper-dialog id="manageKeyDialog" class="dialog" auto-fit-on-attach>
       <h1 class="center">Manage Keychain</h1>
       <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
       <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
@@ -176,8 +176,8 @@
           {{localize('save')}}
         </paper-button>
       </div>
-    </paper-dialog> -->
-    <vaadin-dialog id="manageKeyDialog">
+    </paper-dialog>
+    <!-- <vaadin-dialog id="manageKeyDialog">
       <template>
         <h1 class="center">Manage Keychain</h1>
         <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE
@@ -193,7 +193,7 @@
           <vaadin-button on-click="closeDialog">Ok</vaadin-button>
           <vaadin-button on-click="closeDialog">Cancel</vaadin-button>
       </template>
-    </vaadin-dialog>
+    </vaadin-dialog> -->
   </template>
 
   <script>
@@ -240,7 +240,8 @@
       }
 
       openManageKey() {
-        this.$.manageKeyDialog.opened = true;
+        this.$.manageKeyDialog.open();
+        // this.$.manageKeyDialog.opened = true;
       }
 
       changeKey() {
@@ -363,7 +364,7 @@
         }
       }
 
-      _changeAutoBackup() {
+      changeAutoBackup() {
         this.autobackup = this.$.autobackupSwitch.checked
         if (this.$.autobackupSwitch.checked) {
           this.toastText = 'autobackup-notification-alert-on'
@@ -374,7 +375,7 @@
         }
       }
 
-      _changeNotification() {
+      changeNotification() {
         // this.notification = this.$.webNotificationSwitch.checked
         // if (this.$.webNotificationSwitch.checked) {
         //   // Requesting notification permission
@@ -459,7 +460,7 @@
           })
       }
 
-      _scanDevice() {
+      scanDevice() {
         if ('usb' in navigator) {
           let device
           device = navigator.usb.requestDevice({
@@ -485,7 +486,7 @@
         }
       }
 
-      _showDevice() {
+      showDevice() {
         if ('usb' in navigator) {
           navigator.usb.getDevices().then(devices => {
             devices.map(device => {
