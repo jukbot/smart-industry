@@ -350,7 +350,7 @@
 
             static get observers() {
                 return [
-                    'setOperationDay(persistedFactoryOperation.op_day)',
+                    '_setOperationDay(persistedFactoryOperation.op_day)',
                     '_isSerialModel(selectProductionModel.value)'
                 ]
             }
@@ -434,7 +434,7 @@
                 this.$.sunday.checked = false
             }
 
-            setOperationDay(op_day) {
+            _setOperationDay(op_day) {
                 if (op_day) {
                     let opDayArr = op_day.split(',')
                     this.$.monday.checked = opDayArr.includes('mon')
