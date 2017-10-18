@@ -6,8 +6,6 @@
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="/bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="/bower_components/paper-buttons-group/paper-buttons-group.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="/bower_components/iron-selector/iron-selector.html">
@@ -43,6 +41,9 @@
         display: flex;
         justify-content: center;
         align-content: center;
+        flex-flow: row nowrap;
+        flex: 1;
+        min-width: 0;
       }
 
       .flex-item {
@@ -55,7 +56,11 @@
       }
 
       .model-btn {
-        display: inline-flex;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+        flex: 1;
+        min-width: 0;
       }
 
       .form-title {
@@ -182,11 +187,11 @@
       <div class="flex-item">
         <article>
           <img class="logo" src="/images/logo/logo.svg" title="Logo" alt="app logo">
-          <div hidden$="[[!login]]" class="login-form">
+          <div hidden$="[[!loginForm]]" class="login-form">
             <div class="form-title">
-              <h2 hidden$="[[!login]]">Log in</h2>
+              <h2>Log in</h2>
             </div>
-            <flat-input hidden$="[[!login]]">
+            <flat-input>
               <input type="email" id="loginEmail" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" autofocus
                 required aria-labelledby="accountEmailLabel">
               <span class="flat-md-decorator" error-message="Invalid Email" aria-hidden="true">
@@ -194,7 +199,7 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <flat-input hidden$="[[!login]]">
+            <flat-input>
               <input type="password" id="loginPassword" name="Password" placeholder="Password" maxlength="30" auto-complete="current-password"
                 autofocus required aria-labelledby="accountPasswordLabel" autocomplete="off">
               <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
@@ -202,21 +207,21 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <div hidden$="[[!login]]" class="keep-session-checkbox">
-              <paper-checkbox id="setKeepSession" checked$="[[remember]]" on-change="_toggleKeepSession">Keep me signed in</paper-checkbox>
+            <div class="keep-session-checkbox">
+              <paper-checkbox id="setKeepSession" checked$="[[remember]]" on-change="toggleKeepSession">Keep me signed in</paper-checkbox>
             </div>
-            <flat-button hidden$="[[!login]]" class="login-btn" on-tap="_login">
+            <flat-button class="login-btn" on-tap="_login">
               <button type="button">Log in</button>
             </flat-button>
-            <div hidden$="[[!login]]" class="link">
-              <a href="javascript:void(0);" on-click="_showReset">Forgot?</a>
+            <div class="link">
+              <a href="javascript:void(0);" on-click="showReset">Forgot?</a>
             </div>
-            <div hidden$="[[!login]]" class="link">
-              <a href="javascript:void(0);" on-click="_showRegister">Don’t have an account? Sign up now.</a>
+            <div class="link">
+              <a href="javascript:void(0);" on-click="showRegister">Don’t have an account? Sign up now.</a>
             </div>
           </div>
 
-          <div hidden$="[[!register]]" class="register-form">
+          <div hidden$="[[!registerForm]]" class="register-form">
             <div class="form-title">
               <h2>Register</h2>
             </div>
@@ -274,11 +279,11 @@
               <button type="button">Register and Login</button>
             </flat-button>
             <div class="link">
-              <a href="javascript:void(0);" on-click="_hideRegister">Already have account? Log in</a>
+              <a href="javascript:void(0);" on-click="hideRegister">Already have account? Log in</a>
             </div>
           </div>
 
-          <div hidden$="[[!reset]]" class="reset-form">
+          <div hidden$="[[!resetForm]]" class="reset-form">
             <div class="form-title">
               <h2>Reset your password</h2>
               <p>Enter the email you used to signup with and we'll send you a link to reset your password.</p>
@@ -291,11 +296,11 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <flat-button class="reset-btn" on-tap="_resetPassword">
+            <flat-button class="reset-btn" on-tap="resetPassword">
               <button type="button">Reset Password</button>
             </flat-button>
             <div class="link">
-              <a href="javascript:void(0);" rel="noopenner" on-click="_hideReset">Return to login</a>
+              <a href="javascript:void(0);" rel="noopenner" on-click="hideReset">Return to login</a>
             </div>
           </div>
         </article>
@@ -330,15 +335,15 @@
 
       static get properties() {
         return {
-          login: {
+          loginForm: {
             type: Boolean,
             value: true
           },
-          reset: {
+          resetForm: {
             type: Boolean,
             value: false
           },
-          register: {
+          registerForm: {
             type: Boolean,
             value: false
           },
@@ -374,7 +379,7 @@
         if (type === 0) {
           this._login();
         } else if (type === 1) {
-          this._resetPassword();
+          this.resetPassword();
         }
         event.preventDefault(); // No need to `return false;`.
       }
@@ -461,7 +466,7 @@
           })
       }
 
-      _resetPassword() {
+      resetPassword() {
         let resetPassword = this.$.resetPassword.value
         if (resetPassword) {
           this.$.userAuth.sendPasswordResetEmail(resetPassword)
@@ -477,28 +482,28 @@
         }
       }
 
-      _toggleKeepSession() {
+      toggleKeepSession() {
         this.remember = !!this.$.setKeepSession.checked
       }
 
-      _showReset() {
-        this.reset = true
-        this.login = false
+      showReset() {
+        this.resetForm = true
+        this.loginForm = false
       }
 
-      _hideReset() {
-        this.reset = false
-        this.login = true
+      hideReset() {
+        this.resetForm = false
+        this.loginForm = true
       }
 
-      _showRegister() {
-        this.register = true
-        this.login = false
+      showRegister() {
+        this.registerForm = true
+        this.loginForm = false
       }
 
-      _hideRegister() {
-        this.register = false
-        this.login = true
+      hideRegister() {
+        this.registerForm = false
+        this.loginForm = true
       }
 
       _showErrorToast(text) {

@@ -5,6 +5,8 @@
 <link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
 <!-- import style component -->
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/shared-styles.html">
@@ -21,6 +23,15 @@
 
       .card {
         min-height: 440px;
+      }
+
+      .upload-bar {
+        width: 100%;
+        height: 10px;
+      }
+
+      .switch {
+        padding: 10px 0;
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
@@ -46,30 +57,15 @@
           --app-grid-columns: 3;
         }
       }
-
-      h1.title {
-        text-align: center;
-        margin: 15px 0 25px 0;
-        font-size: 1.75rem;
-      }
-
-      .upload-bar {
-        width: 100%;
-        height: 10px;
-      }
-
-      .switch {
-        padding: 10px 0;
-      }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <!-- <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
       on-message="handleMessage" token="{{token}}"></firebase-messaging> -->
-    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{usr}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.uid]]/token" data="[[token]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[k.key]]/appData/notification" data="[[notification]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[k.key]]/appData/email_alert" data="[[emailalert]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[k.key]]/appData/auto_backup" data="[[autobackup]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[usr.key]]/appData/notification" data="[[notification]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[usr.key]]/appData/email_alert" data="[[emailalert]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[usr.key]]/appData/auto_backup" data="[[autobackup]]"></firebase-document>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
     <iron-ajax url="../data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
@@ -78,7 +74,7 @@
         <div class="card">
           <h1 class="title">{{localize('general-settings')}}</h1>
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageItems]]" name="language selector"
-            item-label-path="name" item-value-path="value" value="[[language]]" on-change="_changeLanguage" error-message="Invalid input"
+            item-label-path="name" item-value-path="value" value="[[language]]" on-change="changeLanguage" error-message="Invalid input"
             loading="[[!languageItems]]" required always-float-label></vaadin-combo-box>
           <p>Sensor Devices</p>
           <flat-button on-tap="_scanDevice" class="btn" title="Search sensor">
@@ -92,7 +88,7 @@
       <li>
         <div class="card">
           <h1 class="title">{{localize('account-settings')}}</h1>
-          <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text"></paper-input>
+          <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text" always-float-label></paper-input>
           <p>Upload Profile Image</p>
           <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress>
           <!-- <vaadin-upload class="inputfile" id="uploadImageFile" no-auto max-files="[[maxFiles]]" accept="[[accept]]" max-file-size="[[maxFileSize]]">
@@ -102,10 +98,10 @@
           <flat-button on-tap="_deleteProfileImage" class="btn thunderbird" title="{{localize('remove-profile-image')}}">
             <button>{{localize('remove-profile-image')}}</button>
           </flat-button>
-          <flat-button on-tap="_verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]">
+          <flat-button on-tap="verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]">
             <button disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button>
           </flat-button>
-          <flat-button on-tap="_saveSettings" class="btn shamrock" title="{{localize('save-settings')}}">
+          <flat-button on-tap="saveSettings" class="btn shamrock" title="{{localize('save-settings')}}">
             <button>{{localize('save-settings')}}</button>
           </flat-button>
         </div>
@@ -113,13 +109,13 @@
       <li>
         <div class="card">
           <h1 class="title">{{localize('authentication-settings')}}</h1>
-          <paper-input label="{{localize('email')}}" id="userEmail" type="email" readonly value="[[user.email]]"></paper-input>
-          <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password"></paper-input>
-          <paper-input label="{{localize('new-password')}}" id="newPassword" type="password"></paper-input>
-          <flat-button on-tap="_changeAuthen" class="btn" title="{{localize('change-password')}}">
+          <paper-input label="{{localize('email')}}" id="userEmail" type="email" readonly value="[[user.email]]" always-float-label></paper-input>
+          <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password" always-float-label></paper-input>
+          <paper-input label="{{localize('new-password')}}" id="newPassword" type="password" always-float-label></paper-input>
+          <flat-button on-tap="changeAuthen" class="btn" title="{{localize('change-password')}}">
             <button>{{localize('change-password')}}</button>
           </flat-button>
-          <flat-button on-tap="_deleteAcount" class="btn thunderbird" title="{{localize('delete-account')}}">
+          <flat-button on-tap="deleteAcount" class="btn thunderbird" title="{{localize('delete-account')}}">
             <button>{{localize('delete-account')}}</button>
           </flat-button>
         </div>
@@ -144,19 +140,19 @@
           <paper-toggle-button class="switch" value="[[notification]]" on-change="_changeNotification" id="webNotificationSwitch" checked="[[token]]"
             noink> {{localize('notification')}}</paper-toggle-button>
           <p>E-mail Notification</p>
-          <paper-toggle-button class="switch" value="[[emailalert]]" on-change="_changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
+          <paper-toggle-button class="switch" value="[[emailalert]]" on-change="changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1 class="title">{{localize('organization-settings')}}</h1>
-          <p>Organization: [[k.organization]]</p>
-          <p>Data keychain: [[k.key]]</p>
-          <p>Role: [[k.role]]</p>
-          <flat-button on-tap="manageKey" class="btn">
+          <p>Organization: [[usr.organization]]</p>
+          <p>Data keychain: [[usr.key]]</p>
+          <p>Role: [[usr.role]]</p>
+          <flat-button on-tap="openManageKey" class="btn">
             <button>Manage Keychain</button>
           </flat-button>
-          <flat-button on-tap="manageUser" class="btn">
+          <flat-button on-tap="openManageUser" class="btn">
             <button>Manage User</button>
           </flat-button>
           <flat-button on-tap="resetFactory" class="btn thunderbird" title="{{localize('delete-account')}}">
@@ -166,6 +162,19 @@
       </li>
     </ul>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
+    <paper-dialog id="manageKeyDialog" class="dialog" auto-fit-on-attach>
+      <h1 class="center">Manage Keychain</h1>
+      <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
+      <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
+      <div class="buttons">
+        <paper-button dialog-dismiss>
+          {{localize('dismiss')}}
+        </paper-button>
+        <paper-button dialog-confirm autofocus on-tap="changeKey">
+          {{localize('save')}}
+        </paper-button>
+      </div>
+    </paper-dialog>
   </template>
 
   <script>
@@ -211,8 +220,15 @@
         this.loadResources(this.resolveUrl('../data/locales.json'))
       }
 
-      ready() {
-        super.ready()
+      openManageKey() {
+        this.$.manageKeyDialog.open();
+      }
+
+      changeKey() {
+        let newKey = this.$.keyData.value;
+        this.$.userData.ref.update({
+          key: newKey
+        });
       }
 
       _verifyUploadFile() {
@@ -226,7 +242,7 @@
         }
       }
 
-      _saveSettings() {
+      saveSettings() {
         let displayNameInput = this.$.displayName.value
         if (displayNameInput !== '' && displayNameInput !== this.user.displayName) {
           this.user.updateProfile({
@@ -316,7 +332,7 @@
         }
       }
 
-      _changeLanguage() {
+      changeLanguage() {
         let selectedLang = this.$.languageSelector.value
         if (selectedLang) {
           if (selectedLang === "en" || selectedLang === "th" || selectedLang === "jp" || selectedLang === "ch" ||
@@ -358,7 +374,7 @@
         // }
       }
 
-      _changeEmailAlert() {
+      changeEmailAlert() {
         this.emailAlert = this.$.emailAlertSwitch.checked
         if (this.$.emailAlertSwitch.checked) {
           this.toastText = 'email-notification-alert-on'
@@ -369,7 +385,7 @@
         }
       }
 
-      _changeAuthen() {
+      changeAuthen() {
         let currentpassword = this.$.currentPassword.value
         let newPassword = this.$.newPassword.value
         let newemail = this.$.userDataEmail.value
@@ -398,7 +414,7 @@
         }
       }
 
-      _deleteAcount() {
+      deleteAcount() {
         this.$.auth.delete().then(function () {
           window.alert("Delete successful, you'll now logout")
           this.logout()
@@ -467,7 +483,7 @@
         }
       }
 
-      _verifyAccount() {
+      verifyAccount() {
         if (!this.user.emailVerified) {
           this.user.sendEmailVerification()
             .then(() => {

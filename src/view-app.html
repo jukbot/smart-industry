@@ -53,9 +53,9 @@
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445" project-id="smart-mes"></firebase-app>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[k.key]]/appData/language" data="[[language]]"></firebase-document>
-    <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{k}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{usr}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[usr.key]]/appData/language" data="[[language]]"></firebase-document>
+    <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{usr}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
 
     <iron-pages selected="[[pageData.page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404" role="main">
@@ -94,7 +94,6 @@
               </button>
             </flat-button>
             <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" placeholder="Loading" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
-            <!-- <img id="profile" class="profile-image" src$="[[getUserImage(persistedUserData.photoURL)]]" title="User image" alt="user image"> -->
             <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="0">
               <p>{{localize('email')}}: [[persistedUserData.email]]</p>
               <p>{{localize('verify-status')}}:
@@ -180,6 +179,7 @@
             type: Boolean,
             value: false
           },
+          persistedUserData: Object,
           toastText: String,
           notificationText: String
         }

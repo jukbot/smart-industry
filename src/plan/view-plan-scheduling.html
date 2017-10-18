@@ -144,6 +144,15 @@
                 height: 100%;
                 width: 100%;
             }
+
+            .google-visualization-tooltip-item {
+                white-space: nowrap;
+            }
+
+            .google-visualization-tooltip {
+                width: 300px;
+                background-color: red;
+            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -540,6 +549,8 @@
                             rowLabelStyle: { fontSize: 16 },
                             barLabelStyle: { fontSize: 16 },
                         },
+                        legend: { position: 'none' },
+                        tooltip: { isHtml: true },
                         avoidOverlappingGridLines: false
                     }
                     this._initialChart()
@@ -552,27 +563,28 @@
                 let dataTable = new google.visualization.DataTable();
                 dataTable.addColumn({ type: 'string', id: 'Station' });
                 dataTable.addColumn({ type: 'string', id: 'Order no.' });
+                dataTable.addColumn({ type: 'string', role: 'style' });
                 dataTable.addColumn({ type: 'date', id: 'Start' });
                 dataTable.addColumn({ type: 'date', id: 'End' });
                 dataTable.addRows([
-                    ['1', 'Order 1', new Date(2017, 9, 15, 8, 0, 0), new Date(2017, 9, 15, 9, 30, 0)],
-                    ['1', 'Order 2', new Date(2017, 9, 15, 9, 30, 0), new Date(2017, 9, 15, 15, 30, 0)],
-                    ['1', 'Order 3', new Date(2017, 9, 15, 16, 0, 0), new Date(2017, 9, 15, 17, 0, 0)],
-                    ['1', 'Order 4', new Date(2017, 9, 15, 12, 30, 0), new Date(2017, 9, 15, 14, 0, 0)],
-                    ['1', 'Order 5', new Date(2017, 9, 15, 14, 30, 0), new Date(2017, 9, 15, 16, 0, 0)],
-                    ['1', 'Order 6', new Date(2017, 9, 15, 16, 30, 0), new Date(2017, 9, 15, 17, 0, 0)],
-                    ['2', 'Order 1', new Date(2017, 9, 15, 8, 0, 0), new Date(2017, 9, 15, 9, 30, 0)],
-                    ['2', 'Order 2', new Date(2017, 9, 15, 10, 0, 0), new Date(2017, 9, 15, 15, 30, 0)],
-                    ['2', 'Order 3', new Date(2017, 9, 15, 16, 0, 0), new Date(2017, 9, 15, 17, 0, 0)],
-                    ['2', 'Order 4', new Date(2017, 9, 15, 12, 30, 0), new Date(2017, 9, 15, 14, 0, 0)],
-                    ['2', 'Order 5', new Date(2017, 9, 15, 14, 30, 0), new Date(2017, 9, 15, 16, 0, 0)],
-                    ['2', 'Order 6', new Date(2017, 9, 15, 16, 30, 0), new Date(2017, 9, 15, 17, 0, 0)],
-                    ['3', 'Order 1', new Date(2017, 9, 15, 8, 0, 0), new Date(2017, 9, 15, 9, 30, 0)],
-                    ['3', 'Order 2', new Date(2017, 9, 15, 10, 0, 0), new Date(2017, 9, 15, 15, 30, 0)],
-                    ['3', 'Order 3', new Date(2017, 9, 15, 16, 0, 0), new Date(2017, 9, 15, 17, 0, 0)],
-                    ['3', 'Order 4', new Date(2017, 9, 15, 12, 30, 0), new Date(2017, 9, 15, 14, 0, 0)],
-                    ['3', 'Order 5', new Date(2017, 9, 15, 14, 30, 0), new Date(2017, 9, 15, 16, 0, 0)],
-                    ['3', 'Order 6', new Date(2017, 9, 15, 16, 30, 0), new Date(2017, 9, 15, 17, 0, 0)]
+                    ['1', 'Order 1', '#b87333', new Date(2017, 9, 15, 8, 0, 0), new Date(2017, 9, 15, 9, 30, 0)],
+                    ['1', 'Order 2', 'gold', new Date(2017, 9, 15, 9, 30, 0), new Date(2017, 9, 15, 15, 30, 0)],
+                    ['1', 'Order 3', 'gold', new Date(2017, 9, 15, 16, 0, 0), new Date(2017, 9, 15, 17, 0, 0)],
+                    ['1', 'Order 4', 'gold', new Date(2017, 9, 15, 12, 30, 0), new Date(2017, 9, 15, 14, 0, 0)],
+                    ['1', 'Order 5', 'gold', new Date(2017, 9, 15, 14, 30, 0), new Date(2017, 9, 15, 16, 0, 0)],
+                    ['1', 'Order 6', 'gold', new Date(2017, 9, 15, 16, 30, 0), new Date(2017, 9, 15, 17, 0, 0)],
+                    ['2', 'Order 1', 'gold', new Date(2017, 9, 15, 8, 0, 0), new Date(2017, 9, 15, 9, 30, 0)],
+                    ['2', 'Order 2', 'gold', new Date(2017, 9, 15, 10, 0, 0), new Date(2017, 9, 15, 15, 30, 0)],
+                    ['2', 'Order 3', 'gold', new Date(2017, 9, 15, 16, 0, 0), new Date(2017, 9, 15, 17, 0, 0)],
+                    ['2', 'Order 4', 'gold', new Date(2017, 9, 15, 12, 30, 0), new Date(2017, 9, 15, 14, 0, 0)],
+                    ['2', 'Order 5', 'gold', new Date(2017, 9, 15, 14, 30, 0), new Date(2017, 9, 15, 16, 0, 0)],
+                    ['2', 'Order 6', 'gold', new Date(2017, 9, 15, 16, 30, 0), new Date(2017, 9, 15, 17, 0, 0)],
+                    ['3', 'Order 1', 'gold', new Date(2017, 9, 15, 8, 0, 0), new Date(2017, 9, 15, 9, 30, 0)],
+                    ['3', 'Order 2', 'gold', new Date(2017, 9, 15, 10, 0, 0), new Date(2017, 9, 15, 15, 30, 0)],
+                    ['3', 'Order 3', 'gold', new Date(2017, 9, 15, 16, 0, 0), new Date(2017, 9, 15, 17, 0, 0)],
+                    ['3', 'Order 4', 'gold', new Date(2017, 9, 15, 12, 30, 0), new Date(2017, 9, 15, 14, 0, 0)],
+                    ['3', 'Order 5', 'gold', new Date(2017, 9, 15, 14, 30, 0), new Date(2017, 9, 15, 16, 0, 0)],
+                    ['3', 'Order 6', 'gold', new Date(2017, 9, 15, 16, 30, 0), new Date(2017, 9, 15, 17, 0, 0)]
                 ])
                 let timelineChart = document.createElement('google-chart-loader').dataTable(dataTable)
                 timelineChart.then((data) => {

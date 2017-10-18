@@ -79,6 +79,10 @@
         height: 75px;
       }
 
+      paper-dialog {
+        max-width: 500px;
+      }
+
       paper-tooltip.profile-tooltip {
         --paper-tooltip-opacity: 1;
         --paper-tooltip-background: #FFFFFF;
@@ -90,6 +94,17 @@
         font-size: 1rem;
         padding: 2px 0;
       }
+
+      paper-toast.toast-verify {
+        --paper-toast-background-color: #e53935;
+        --paper-toast-color: #FFFFFF;
+        opacity: 1;
+        font-size: 1rem;
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+      }
+
 
       input[type=search] {
         width: 0%;
@@ -117,20 +132,9 @@
         font-weight: 400;
       }
 
-      paper-toast.toast-verify {
-        --paper-toast-background-color: #e53935;
-        --paper-toast-color: #FFFFFF;
-        opacity: 1;
-        font-size: 1rem;
-        width: 100%;
-        padding: 10px;
-        margin: 0;
-      }
-
       [hidden] {
         display: none !important;
       }
-
 
       div.container {
         display: -webkit-box;
@@ -175,6 +179,10 @@
 
       .center {
         text-align: center;
+      }
+
+      .dialog>h1 {
+        margin: 30px 0;
       }
 
       .frame {
@@ -337,17 +345,17 @@
 
       .shamrock:hover button {
         background-color: #43A047;
-        border: 2px solid #43A047;
+        border: 1px solid #43A047;
       }
 
       .thunderbird:hover button {
         background-color: #e53935;
-        border: 2px solid #e53935;
+        border: 1px solid #e53935;
       }
 
       .deep-orange:hover button {
         background-color: #F4511E;
-        border: 2px solid #F4511E;
+        border: 1px solid #F4511E;
       }
 
       vaadin-combo-box {
