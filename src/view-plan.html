@@ -30,6 +30,12 @@
   </template>
 
   <script>
+    /**
+      * @ViewPlan
+      * @polymer 
+      * @extends {Polymer.Element}
+      * @appliesMixin Polymer.AppLocalizeBehavior
+      */
     class ViewPlan extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
@@ -38,6 +44,10 @@
 
       static get properties() {
         return {
+          route: {
+            type: Object,
+            notify: true
+          },
           language: String,
           tabs: {
             type: String,

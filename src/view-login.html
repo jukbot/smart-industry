@@ -328,6 +328,11 @@
     </section>
   </template>
   <script>
+    /**
+      * @ViewLogins
+      * @polymer 
+      * @extends {Polymer.Element}
+      */
     class ViewLogin extends Polymer.Element {
       static get is() {
         return 'view-login'
@@ -335,6 +340,10 @@
 
       static get properties() {
         return {
+          route: {
+            type: Object,
+            notify: true
+          },
           loginForm: {
             type: Boolean,
             value: true

@@ -4,7 +4,7 @@
 <dom-module id="view-help">
   <template>
     <style include="shared-styles app-grid-style">
-       :host {
+      :host {
         display: block;
         margin: 10px;
         --app-grid-columns: 1;
@@ -122,6 +122,12 @@
   </template>
 
   <script>
+    /**
+      * @ViewHelp
+      * @polymer 
+      * @extends {Polymer.Element}
+      * @appliesMixin Polymer.AppLocalizeBehavior
+      */
     class ViewHelp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
         return 'view-help';
@@ -129,6 +135,10 @@
 
       static get properties() {
         return {
+          route: {
+            type: Object,
+            notify: true
+          },
           language: String
         }
       }

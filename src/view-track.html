@@ -31,6 +31,12 @@
   </template>
 
   <script>
+    /**
+      * @ViewTrack
+      * @polymer 
+      * @extends {Polymer.Element}
+      * @appliesMixin Polymer.AppLocalizeBehavior
+      */
     class ViewTrack extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
@@ -39,6 +45,10 @@
 
       static get properties() {
         return {
+          route: {
+            type: Object,
+            notify: true
+          },
           language: String,
           tabs: {
             type: String,

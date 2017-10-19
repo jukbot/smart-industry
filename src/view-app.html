@@ -59,8 +59,8 @@
     <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
 
     <iron-pages selected="[[pageData.page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404" role="main">
-      <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
       <view-term name="term" route="[[subRoute]]" hidden$="[[user]]"></view-term>
+      <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
       <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
       <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
       <view-404 name="404" route="[[subRoute]]"></view-404>
@@ -144,6 +144,12 @@
   </template>
 
   <script>
+    /**
+    * @ViewApp
+    * @polymer 
+    * @extends {Polymer.Element}
+    * @appliesMixin Polymer.AppLocalizeBehavior
+    */
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
         return 'view-app'
@@ -181,7 +187,8 @@
           },
           persistedUserData: Object,
           toastText: String,
-          notificationText: String
+          notificationText: String,
+          loading: Boolean
         }
       }
 
@@ -206,9 +213,8 @@
 
       ready() {
         super.ready()
+        this.removeAttribute('unresolved')
         Polymer.RenderStatus.afterNextRender(this, () => {
-          // Custom elements polyfill safe way to indicate an element has been upgraded.
-          this.removeAttribute('unresolved')
           // listen for navigation preload activate
           self.addEventListener('activate', (e) => {
             e.waitUntil(async function () {

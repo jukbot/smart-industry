@@ -1,4 +1,5 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/flat-icons.html">
 
@@ -58,9 +59,23 @@
     </div>
   </template>
   <script>
+    /**
+      * @View404
+      * @polymer 
+      * @extends {Polymer.Element}
+      */
     class View404 extends Polymer.Element {
       static get is() {
         return 'view-404'
+      }
+
+      static get properties() {
+        return {
+          route: {
+            type: Object,
+            notify: true
+          }
+        }
       }
     }
     customElements.define(View404.is, View404)

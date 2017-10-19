@@ -134,8 +134,8 @@
                     </vaadin-combo-box>
                     <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
                         step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
-                    <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2020-01-01" name="delivery" id="deliverySelector"
-                        value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
+                    <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2030-01-01" name="delivery" id="deliverySelector"
+                        initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
                     <flat-button on-tap="saveOrder" class="btn" title="Save to archive">
                         <button>save for later</button>
                     </flat-button>

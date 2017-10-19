@@ -1,11 +1,12 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/flat-icons.html">
 
 <dom-module id="view-error">
   <template>
     <style include="flat-button">
-       :host {
+      :host {
         display: block;
         overflow: hidden;
       }
@@ -52,18 +53,32 @@
         <iron-icon class="icon" icon="icons:error"></iron-icon>
         <h1>Sorry, Something went wrong</h1>
         <flat-button>
-          <button on-tap="_goBack">Go back</button>
+          <button on-tap="goBack">Go back</button>
         </flat-button>
       </div>
     </div>
   </template>
   <script>
+    /**
+      * @ViewError
+      * @polymer 
+      * @extends {Polymer.Element}
+      */
     class ViewError extends Polymer.Element {
       static get is() {
         return 'view-error'
       }
 
-      _goBack() {
+      static get properties() {
+        return {
+          route: {
+            type: Object,
+            notify: true
+          }
+        }
+      }
+
+      goBack() {
         window.history.back()
       }
     }

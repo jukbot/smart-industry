@@ -8,6 +8,7 @@
 <link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="/bower_components/google-chart/google-chart.html">
 <link rel="import" href="/bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../view-setup.html">
@@ -44,7 +45,6 @@
                     width: 100%;
                 }
             }
-
 
             vaadin-grid#material {
 
@@ -85,10 +85,6 @@
                     font-weight: bold;
                 }
                 ;
-            }
-
-            vaadin-columnrange-chart#column-range-resource-usage {
-                height: 500px;
             }
 
             vaadin-grid#material .cell {
@@ -331,10 +327,10 @@
                     <vaadin-grid id="material" items="[[scheduleItems]]" size="100">
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
-                                <div class="cell">Station</div>
+                                <div class="cell center">Station</div>
                             </template>
                             <template>
-                                <div class="cell">[[selectedStation]]</div>
+                                <div class="cell center">[[selectedStation]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -563,24 +559,14 @@
                 dataTable.addColumn({ type: 'date', id: 'Start' });
                 dataTable.addColumn({ type: 'date', id: 'End' });
                 dataTable.addRows([
-                    ['1', 'Order 1', '#b87333', new Date(2017, 9, 15, 8, 0, 0), new Date(2017, 9, 15, 9, 30, 0)],
-                    ['1', 'Order 2', 'gold', new Date(2017, 9, 15, 9, 30, 0), new Date(2017, 9, 15, 15, 30, 0)],
-                    ['1', 'Order 3', 'gold', new Date(2017, 9, 15, 16, 0, 0), new Date(2017, 9, 15, 17, 0, 0)],
-                    ['1', 'Order 4', 'gold', new Date(2017, 9, 15, 12, 30, 0), new Date(2017, 9, 15, 14, 0, 0)],
-                    ['1', 'Order 5', 'gold', new Date(2017, 9, 15, 14, 30, 0), new Date(2017, 9, 15, 16, 0, 0)],
-                    ['1', 'Order 6', 'gold', new Date(2017, 9, 15, 16, 30, 0), new Date(2017, 9, 15, 17, 0, 0)],
-                    ['2', 'Order 1', 'gold', new Date(2017, 9, 15, 8, 0, 0), new Date(2017, 9, 15, 9, 30, 0)],
-                    ['2', 'Order 2', 'gold', new Date(2017, 9, 15, 10, 0, 0), new Date(2017, 9, 15, 15, 30, 0)],
-                    ['2', 'Order 3', 'gold', new Date(2017, 9, 15, 16, 0, 0), new Date(2017, 9, 15, 17, 0, 0)],
-                    ['2', 'Order 4', 'gold', new Date(2017, 9, 15, 12, 30, 0), new Date(2017, 9, 15, 14, 0, 0)],
-                    ['2', 'Order 5', 'gold', new Date(2017, 9, 15, 14, 30, 0), new Date(2017, 9, 15, 16, 0, 0)],
-                    ['2', 'Order 6', 'gold', new Date(2017, 9, 15, 16, 30, 0), new Date(2017, 9, 15, 17, 0, 0)],
-                    ['3', 'Order 1', 'gold', new Date(2017, 9, 15, 8, 0, 0), new Date(2017, 9, 15, 9, 30, 0)],
-                    ['3', 'Order 2', 'gold', new Date(2017, 9, 15, 10, 0, 0), new Date(2017, 9, 15, 15, 30, 0)],
-                    ['3', 'Order 3', 'gold', new Date(2017, 9, 15, 16, 0, 0), new Date(2017, 9, 15, 17, 0, 0)],
-                    ['3', 'Order 4', 'gold', new Date(2017, 9, 15, 12, 30, 0), new Date(2017, 9, 15, 14, 0, 0)],
-                    ['3', 'Order 5', 'gold', new Date(2017, 9, 15, 14, 30, 0), new Date(2017, 9, 15, 16, 0, 0)],
-                    ['3', 'Order 6', 'gold', new Date(2017, 9, 15, 16, 30, 0), new Date(2017, 9, 15, 17, 0, 0)]
+                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8, 33, 0)],
+                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8, 38, 0)],
+                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0), new Date(2017, 10, 19, 8, 45, 0)],
+                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0), new Date(2017, 10, 19, 8, 50, 0)],
+                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0), new Date(2017, 10, 19, 9, 0, 36)],
+                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0), new Date(2017, 10, 19, 9, 14, 27)],
+                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36), new Date(2017, 10, 19, 9, 30, 12)],
+                    ['4', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27), new Date(2017, 10, 19, 10, 20, 12)],
                 ])
                 let timelineChart = document.createElement('google-chart-loader').dataTable(dataTable)
                 timelineChart.then((data) => {
@@ -851,9 +837,6 @@
             _multiSchedule() {
                 let order = this.sortedOrder;
                 if (order.length > 0) {
-
-                    // this.$.scheduleQuery.ref.push({
-                    // })
                 } else {
                     alert("No order to reschedule")
                 }

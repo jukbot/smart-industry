@@ -1,11 +1,12 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/flat-icons.html">
 
 <dom-module id="view-offline">
   <template>
     <style include="flat-button">
-       :host {
+      :host {
         display: block;
         overflow: hidden;
       }
@@ -52,19 +53,33 @@
         <iron-icon class="icon" icon="icons:perm-scan-wifi"></iron-icon>
         <h1>No internet connection</h1>
         <p>Check if your device is connected to a mobile network or WiFi.</p>
-        <flat-button on-tap="_tryReconnect">
+        <flat-button on-tap="tryReconnect">
           <button>Try Again</button>
         </flat-button>
       </div>
     </div>
   </template>
   <script>
+    /**
+      * @ViewOffline
+      * @polymer 
+      * @extends {Polymer.Element}
+      */
     class ViewOffline extends Polymer.Element {
       static get is() {
         return 'view-offline'
       }
 
-      _tryReconnect() {
+      static get properties() {
+        return {
+          route: {
+            type: Object,
+            notify: true
+          }
+        }
+      }
+
+      tryReconnect() {
         this.dispatchEvent(new CustomEvent('try-reconnect', {
           composed: true
         }))
@@ -72,5 +87,4 @@
     }
     customElements.define(ViewOffline.is, ViewOffline)
   </script>
-
 </dom-module>

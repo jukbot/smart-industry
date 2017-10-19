@@ -179,10 +179,26 @@
     </template>
 
     <script>
+        /**
+          * @ViewTarm
+          * @polymer 
+          * @extends {Polymer.Element}
+          */
         class ViewTerm extends Polymer.Element {
+
             static get is() {
                 return 'view-term';
             }
+
+            static get properties() {
+                return {
+                    route: {
+                        type: Object,
+                        notify: true
+                    }
+                }
+            }
+
         }
         customElements.define(ViewTerm.is, ViewTerm);
     </script>

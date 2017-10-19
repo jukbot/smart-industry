@@ -197,6 +197,12 @@
   </template>
 
   <script>
+    /**
+      * @ViewSettings
+      * @polymer 
+      * @extends {Polymer.Element}
+      * @appliesMixin Polymer.AppLocalizeBehavior
+      */
     class ViewSettings extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
@@ -204,11 +210,9 @@
       }
       static get properties() {
         return {
-          language: {
-            type: String
-          },
-          notification: {
-            type: Boolean
+          route: {
+            type: Object,
+            notify: true
           },
           accept: {
             type: String,
@@ -222,6 +226,8 @@
             type: Number,
             value: 1000000
           },
+          language: String,
+          notification: Boolean,
           languageItems: Array,
           user: Object,
           emailalert: Object,
