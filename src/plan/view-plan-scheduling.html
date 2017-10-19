@@ -160,7 +160,7 @@
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
 
         <!-- GANTT CHART DATA -->
-        <firebase-query app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" order-by-child="order_delivery" data="{{chartItems}}"></firebase-query>
 
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
@@ -180,7 +180,7 @@
                         <p id="concurrency">Station Concurrency: [[factoryProfile.concurrency]] orders / station</p>
                         <p>Delayed between station: [[factorySchedule.delay]] minutes</p>
                     </div>
-                    <vaadin-grid id="material" items="[[sortedOrder]]" size="100">
+                    <vaadin-grid id="material" items="[[sortOrderList(orderItems)]]" size="100">
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
@@ -482,7 +482,10 @@
                     },
                     language: String,
                     status: String,
-                    orderItems: Object,
+                    orderItems: {
+                        type: Object,
+                        notify: true
+                    },
                     sortedOrder: Object,
                     factoryPerformance: Object,
                     factoryOperation: Object,
@@ -496,8 +499,7 @@
 
             static get observers() {
                 return [
-                    '_isSerialModel(factoryProfile.model)',
-                    '_setSortOrderList(orderItems)'
+                    '_isSerialModel(factoryProfile.model)'
                 ]
             }
 
@@ -519,13 +521,16 @@
             _installListeners() {
                 // listen for custom events on main page
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
+                this.addEventListener('data-changed', (e) => this.sortOrderList(this.orderItems))
             }
 
-            _setSortOrderList(order) {
+            sortOrderList(order) {
+                console.log('test')
                 // SORT BY EDD THEN BY SPT
-                const s = firstBy(function (v1, v2) { return v1.order_delivery - v2.order_delivery; })
+                let s = firstBy(function (v1, v2) { return v1.order_delivery - v2.order_delivery; })
                     .thenBy(function (v1, v2) { return v1.order_duration - v2.order_duration; });
                 this.sortedOrder = order.sort(s);
+                return order.sort(s);
             }
 
             _setChartSize() {
@@ -881,6 +886,7 @@
                 if (confirm("Delete this order ?") == true) {
                     let key = e.currentTarget.order.$key;
                     this.$.orderQuery.ref.child(key).remove();
+                    this.sortOrderList(this.orderItems)
                     alert("Delete order successfully");
                 }
             }
