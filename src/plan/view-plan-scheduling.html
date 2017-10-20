@@ -521,7 +521,6 @@
             }
 
             sortOrderList(order) {
-                console.log('test')
                 // SORT BY EDD THEN BY SPT
                 let s = firstBy(function (v1, v2) { return v1.order_delivery - v2.order_delivery; })
                     .thenBy(function (v1, v2) { return v1.order_duration - v2.order_duration; });

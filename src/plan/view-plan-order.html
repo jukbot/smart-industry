@@ -248,14 +248,15 @@
                     actualQuantity: Number,
                     optimalQuantity: Object,
                     selectProduct: Object,
-                    selectCustomer: Object
+                    selectCustomer: Object,
+                    operationTime: Number
                 }
             }
 
             static get observers() {
                 return [
                     'getOrderNumber(orderItems.length)',
-                    'getOpTime(factoryOperation.op_end, factoryOperation.op_start, factoryOperation.op_day)',
+                    'getOperationTime(factoryOperation.op_end, factoryOperation.op_start, factoryOperation.op_day)',
                     'isOptimizeModeEnabled(factoryPerformance.optimize)',
                     'setProductInventory(selectProduct.inventory_code)'
                 ]
@@ -263,7 +264,7 @@
 
             ready() {
                 super.ready();
-                this.setDatePicker();
+                this.initialDatePicker();
                 this.setMinOrderDate();
             }
 
@@ -319,13 +320,14 @@
                 return this.optimalQuantity || 0
             }
 
-            getOpTime(end, start, opday) {
+            getOperationTime(end, start, opday) {
                 if (!end || !start || !opday) return 0;
                 const endtime = end.replace(/\:/g, '.');
                 const starttime = start.replace(/\:/g, '.');
-                const optime = endtime - starttime;
-                const opday_length = opday.split(',').length
-                const weekOptime = this.weekOptime = optime * opday_length; // set to global variable
+                const opTime = endtime - starttime;
+                const opDay = opday.split(',').length
+                this.operationTime = opTime * 60;
+                const weekOptime = this.weekOptime = opTime * opDay; // set to global variable
                 return weekOptime;
             }
 
@@ -361,6 +363,7 @@
                 const sumSetup = flatSetupArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
                 const sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
                 this.orderDuration = sumDuration;
+                this._limitOperationTime(sumDuration);
                 return this._minutesToStr(sumDuration); // convert to hr and min
             }
 
@@ -452,7 +455,7 @@
             }
 
             // SETUP CALENDAR DATE PICKER FORMAT
-            setDatePicker() {
+            initialDatePicker() {
                 Sugar.Date.setLocale('en-GB'); // USE SUGAR LIBRARY TO REF FROM LOCALE DATE FORMAT
                 let deliverypicker = this.$.deliverySelector;
                 deliverypicker.addEventListener('value-changed', function () {
@@ -493,6 +496,14 @@
                 this.$.productSelector.value = "";
                 this.$.orderQuantity.value = 1;
                 this.$.deliverySelector.value = "";
+            }
+
+            _limitOperationTime(duration) {
+                console.log(this.operationTime)
+                console.log(duration)
+                if (duration > this.operationTime) {
+                    alert("OVERLOAD WARNING: Order duration time is longer than normal operation time.")
+                }
             }
 
             // SAVE ORDER
@@ -551,6 +562,7 @@
                     window.alert("Input field cannot be blank, please fill in completely.");
                 }
             }
+
         }
         customElements.define(ViewPlanOrder.is, ViewPlanOrder)
     </script>
