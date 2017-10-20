@@ -219,6 +219,11 @@
         <paper-toast id="toastSetupCustomer" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
+        /**
+       * @ViewSetupCustomer
+       * @polymer 
+       * @extends {Polymer.Element}
+       */
         class ViewSetupCustomer extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {

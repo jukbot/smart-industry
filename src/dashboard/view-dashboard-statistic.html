@@ -9,7 +9,7 @@
 <dom-module id="view-dashboard-statistic">
   <template>
     <style include="shared-styles app-grid-style flat-button">
-       :host {
+      :host {
         margin: 10px;
         display: block;
         --app-grid-columns: 1;
@@ -72,44 +72,26 @@
             </data-series>
           </vaadin-column-chart>
 
-          <flat-button class="clear-btn" on-tap="_clearStatistic"><button>Reset Statistic</button></flat-button>
+          <flat-button class="clear-btn" on-tap="_clearStatistic">
+            <button>Reset Statistic</button>
+          </flat-button>
           <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
         </div>
       </li>
       <li>
         <div class="card">
           <h1 class="title">Monthly Order Statistic</h1>
-          <div id="flex-column">
-            <div id="flex-row">
-              <div class="flex-item-chart">
-                <vaadin-column-chart class="flex-item-chart" id="column-with-negative-values">
-                  <title>ERROR</title>
-                  <x-axis>
-                    <categories>
-                      <template is="dom-repeat" items="[[orderHistoryData]]">
-                        Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec
-                      </template>
-                    </categories>
-                  </x-axis>
-                  <y-axis>
-                    <chart-title>Orders</chart-title>
-                  </y-axis>
-                  <tooltip point-format="{series.name}: {point.y} Orders"></tooltip>
-                  <data-series name="Revenue" data="[[revenueSeries]]"></data-series>
-                  <data-series name="Expenses" data="[[expensesSeries]]"></data-series>
-                  <data-series name="Net income" data="[[netSeries]]"></data-series>
-                </vaadin-column-chart>
 
-                <flat-button class="clear-btn" on-tap="_clearStatistic"><button>Reset Statistic</button></flat-button>
-                <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
-              </div>
-            </div>
-          </div>
         </div>
       </li>
     </ul>
   </template>
   <script>
+    /**
+      * @ViewDashboardStatistic
+      * @polymer 
+      * @extends {Polymer.Element}
+      */
     class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {

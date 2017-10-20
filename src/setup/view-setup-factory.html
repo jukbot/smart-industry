@@ -261,6 +261,11 @@
         <paper-toast id="toastSaveFactoryInfoSuccess" always-on-top horizontal-align="right" text="{{localize('notification-save-factory-information-successful')}}"></paper-toast>
     </template>
     <script>
+        /**
+          * @ViewSetupFactory
+          * @polymer 
+          * @extends {Polymer.Element}
+          */
         class ViewSetupFactory extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {

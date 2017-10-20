@@ -4,9 +4,7 @@
     'use strict';
 
     var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
     function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
     function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
     var initial = {
@@ -21,12 +19,9 @@
         if (!state) return initial;
         switch (action.type) {
             case 'ADD_MACHINE':
-                // If state machine is undefined just initial it
                 if (!state.machines) {
                     state.machines = initial.machines;
                 }
-                console.log('addMachine', action.machines, state.machines);
-
                 var _action$machines = action.machines,
                     $key = _action$machines.$key,
                     newMachines = _objectWithoutProperties(_action$machines, ['$key']);
@@ -36,7 +31,6 @@
                     machines: [].concat(_toConsumableArray(state.machines), [newerMachines])
                 });
             case 'REMOVE_MACHINE':
-                // console.log('removeMachine', action.index, state.machines)
                 if (state.machines) {
                     return _extends({}, state, {
                         machines: [].concat(_toConsumableArray(state.machines.slice(0, action.index)), _toConsumableArray(state.machines.slice(action.index + 1)))

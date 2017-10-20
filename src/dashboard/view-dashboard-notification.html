@@ -9,7 +9,7 @@
 <dom-module id="view-dashboard-notification">
   <template>
     <style include="shared-styles app-grid-style flat-button">
-       :host {
+      :host {
         margin: 10px;
         display: block;
         --app-grid-columns: 1;
@@ -89,13 +89,13 @@
             <vaadin-grid-column>
               <template class="header">
                 <span>
-                Type
-              </span>
+                  Type
+                </span>
               </template>
               <template>
                 <span>
-                [[item.type]]
-              </span>
+                  [[item.type]]
+                </span>
               </template>
             </vaadin-grid-column>
 
@@ -111,13 +111,20 @@
               </template>
             </vaadin-grid-column>
           </vaadin-grid>
-          <flat-button class="clear-btn" on-tap="clearNotification"><button>Clear All Notification</button></flat-button>
+          <flat-button class="clear-btn" on-tap="clearNotification">
+            <button>Clear All Notification</button>
+          </flat-button>
           <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
         </div>
       </li>
     </ul>
   </template>
   <script>
+    /**
+      * @ViewDashboardNotification
+      * @polymer 
+      * @extends {Polymer.Element}
+      */
     class ViewDashboardNotification extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {

@@ -224,6 +224,11 @@
         <paper-toast id="toastEmptyAddMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-empty-add-machine')}}"></paper-toast>
     </template>
     <script>
+        /**
+        * @ViewSetupMachine
+        * @polymer 
+        * @extends {Polymer.Element}
+        */
         class ViewSetupMachine extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
             static get is() {
                 return 'view-setup-machine'
