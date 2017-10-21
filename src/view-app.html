@@ -131,7 +131,8 @@
     </iron-pages>
 
     <paper-toast id="toastNotification" always-on-top horizontal-align="right" text="{{localize(notificationText)}}"></paper-toast>
-    <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0">
+    <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0"
+      hidden="true">
       <div class="toast-flex-container">
         <div class="toast-flex-item">
           <p>[[toastText]]</p>
@@ -443,10 +444,12 @@
 
       closeToastAlert() {
         this.$.toastVerify.close()
+        this.$.toastVerify.hidden = true;
       }
 
       showAlertToast(text) {
         this.toastText = text
+        this.$.toastVerify.hidden = false;
         this.$.toastVerify.open()
       }
     }

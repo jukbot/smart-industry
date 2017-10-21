@@ -196,7 +196,7 @@
     </style>
     <iron-ajax id="requestSampleData" url="/data/sample/[[model]].json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" signed-in="[[signedIn]]"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{usr}}"></firebase-document>
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <section class="flex-container">
@@ -322,7 +322,7 @@
             <p>[[successMessage]]</p>
           </div>
           <div class="toast-flex-item">
-            <paper-icon-button on-tap="_closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1"></paper-icon-button>
+            <paper-icon-button on-tap="_closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
           </div>
         </div>
       </paper-toast>

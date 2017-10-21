@@ -123,6 +123,9 @@
 </head>
 
 <body>
+  <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href="/src/view-app.html">
   <view-app unresolved role="main">
     <div class="container">
       <div class="loading-bro">
@@ -144,9 +147,6 @@
       </div>
     </div>
   </view-app>
-  <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
-  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-  <link rel="import" href="/src/view-app.html">
   <noscript>
     Please enable JavaScript to view this application.
   </noscript>
