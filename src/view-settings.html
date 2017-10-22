@@ -177,23 +177,6 @@
         </paper-button>
       </div>
     </paper-dialog>
-    <!-- <vaadin-dialog id="manageKeyDialog">
-      <template>
-        <h1 class="center">Manage Keychain</h1>
-        <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE
-          <br> BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
-        <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
-        <div class="buttons">
-          <paper-button dialog-dismiss>
-            {{localize('dismiss')}}
-          </paper-button>
-          <paper-button dialog-confirm autofocus on-tap="changeKey">
-            {{localize('save')}}
-          </paper-button>
-          <vaadin-button on-click="closeDialog">Ok</vaadin-button>
-          <vaadin-button on-click="closeDialog">Cancel</vaadin-button>
-      </template>
-    </vaadin-dialog> -->
   </template>
 
   <script>
@@ -539,6 +522,6 @@
       }
     }
 
-    customElements.define(ViewSettings.is, ViewSettings)
+    window.customElements.define(ViewSettings.is, ViewSettings)
   </script>
 </dom-module>
