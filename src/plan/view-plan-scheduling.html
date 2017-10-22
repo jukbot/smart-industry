@@ -155,7 +155,8 @@
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
 
         <!-- GANTT CHART DATA -->
-        <firebase-query app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" order-by-child="order_delivery" data="{{chartItems}}"></firebase-query>
+        <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/ganttChartData" order-by-child="order_delivery"
+            data="{{chartItems}}"></firebase-document>
 
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
@@ -304,6 +305,9 @@
                         </flat-button>
                         <flat-button class="btn thunderbird" on-tap="reSchedule">
                             <button>Reschedule</button>
+                        </flat-button>
+                        <flat-button class="btn" on-tap="refreshChart">
+                            <button>Refresh Chart</button>
                         </flat-button>
                     </div>
                 </div>
@@ -561,16 +565,7 @@
                 dataTable.addColumn({ type: 'string', role: 'style' });
                 dataTable.addColumn({ type: 'date', id: 'Start' });
                 dataTable.addColumn({ type: 'date', id: 'End' });
-                dataTable.addRows([
-                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8, 33, 0)],
-                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8, 38, 0)],
-                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0), new Date(2017, 10, 19, 8, 45, 0)],
-                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0), new Date(2017, 10, 19, 8, 50, 0)],
-                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0), new Date(2017, 10, 19, 9, 0, 36)],
-                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0), new Date(2017, 10, 19, 9, 14, 27)],
-                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36), new Date(2017, 10, 19, 9, 30, 12)],
-                    ['4', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27), new Date(2017, 10, 19, 10, 20, 12)],
-                ])
+                dataTable.addRows(this.chartItems.today);
                 let timelineChart = document.createElement('google-chart-loader').dataTable(dataTable)
                 timelineChart.then((data) => {
                     chart.data = data;
@@ -724,6 +719,24 @@
                     default:
                         alert("Invalid production model")
                 }
+            }
+
+            refreshChart() {
+                let data = [
+                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8, 33, 0)],
+                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8, 38, 0)],
+                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0), new Date(2017, 10, 19, 8, 45, 0)],
+                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0), new Date(2017, 10, 19, 8, 50, 0)],
+                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0), new Date(2017, 10, 19, 9, 0, 36)],
+                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0), new Date(2017, 10, 19, 9, 14, 27)],
+                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36), new Date(2017, 10, 19, 9, 30, 12)],
+                    ['4', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27), new Date(2017, 10, 19, 10, 20, 12)],
+                ];
+
+                this.$.chartQuery.ref.update({
+                    today: data
+                })
+
             }
 
             _serialSchedule() {
