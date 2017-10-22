@@ -130,8 +130,7 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_status" equal-to="done"
-            data="{{doneItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_status" data="{{doneItems}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>

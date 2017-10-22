@@ -11,6 +11,7 @@
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/lib/sugar.html">
 <link rel="import" href="/lib/jsLPSolver.html">
+<link rel="import" href="/lib/printjs.html">
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -137,7 +138,7 @@
                         step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
                     <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2030-01-01" name="delivery" id="deliverySelector"
                         initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
-                    <flat-button on-tap="saveOrder" class="btn" title="Print and Add order">
+                    <flat-button on-tap="printOrder" class="btn" title="Print and Add order">
                         <button>Print and Add to schedule</button>
                     </flat-button>
                     <flat-button on-tap="createOrder" class="shamrock btn" title="Add order">
@@ -512,8 +513,8 @@
 
             // PRINT ORDER
             printOrder() {
-                window.alert('No library found');
-                _clearField();
+                printJS('docs/printjs.pdf');
+                this._clearField();
             }
 
             // CREATE ORDER
