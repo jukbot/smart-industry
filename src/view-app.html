@@ -273,6 +273,11 @@
         }
       }
 
+      closeToastAlert() {
+        this.$.toastVerify.close()
+        this.$.toastVerify.hidden = true;
+      }
+
       _installListeners() {
         // listen for custom events on main page
         this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e))
@@ -436,18 +441,13 @@
 
       _verifyEmailAlert(verified, signedIn) {
         if (!verified && signedIn) {
-          this.showAlertToast(
+          this._showAlertToast(
             'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
           )
         }
       }
 
-      closeToastAlert() {
-        this.$.toastVerify.close()
-        this.$.toastVerify.hidden = true;
-      }
-
-      showAlertToast(text) {
+      _showAlertToast(text) {
         this.toastText = text
         this.$.toastVerify.hidden = false;
         this.$.toastVerify.open()
