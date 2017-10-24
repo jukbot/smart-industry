@@ -44,7 +44,7 @@
   <template>
     <style include="flat-button shared-styles">
        :host {
-        display: block
+        display: block;
       }
     </style>
     <app-analytics key="UA-51514677-9"></app-analytics>
@@ -349,8 +349,9 @@
         const greenColor = 'color: green'
         const crimsonColor = 'color: crimson'
         const purpleColor = 'color: purple'
+        const palevioletredColor = 'color: palevioletred'
         // Load and register pre-caching Service Worker for offline usage
-        if ('serviceWorker' in navigator && 'PushManager' in window) {
+        if ('serviceWorker' in navigator) {
           // Register service worker
           navigator.serviceWorker.register('/service-worker.js', {
             scope: '/'
@@ -365,7 +366,7 @@
             console.info('%cService Worker Ready 😃', greenColor)
             return registration.navigationPreload.getState()
           }).then(state => {
-            //console.info('%cService Worker state:' + JSON.stringify(state), purpleColor) 
+            console.info('%cService Worker State:' + JSON.stringify(state), palevioletredColor)
           })
         } else {
           // Browser not support service worker
@@ -407,7 +408,6 @@
           window.alert('Fetch is not support by your browser. Please upgrade your browser.')
         }
       }
-
 
       __activatePushNotification() {
         if (('PushManager' in window) && Notification.permission !== 'denied') {
@@ -469,7 +469,7 @@
       }
 
       __handleUser(user) {
-        console.info('User ' + user)
+        console.info('DEBUG User ' + user)
       }
 
       __handleError(e) {
