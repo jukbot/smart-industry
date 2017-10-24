@@ -1,8 +1,3 @@
-<!-- import lazy components -->
-<link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
-<link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
-<link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-selection-column.html">
-<link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-filter.html">
 <!-- paper modules - used for user interface -->
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
@@ -10,8 +5,12 @@
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/neon-animation/web-animations.html">
 <!-- 3rd party libraries modules -->
-<link rel="import" href="/lib/app-analytics.html">
-<link rel="import" href="/lib/turbo.html">
-<!-- Pollyfills for web animation api and localization -->
-<link rel="import" href="/bower_components/web-animations-js/web-animations.min.html">
-<link rel="import" href="/lib/intl.html">
+<link rel="preload" as="script" href="/node_modules/turbojs/turbo.js">
+<!-- Pollyfills for localization -->
+<link rel="preload" as="script" href="/node_modules/intl/dist/Intl.min.js">
+<link rel="preload" as="script" href="/node_modules/intl/locale-data/jsonp/en.js">
+<link rel="preload" as="script" href="/node_modules/intl/locale-data/jsonp/th.js">
+<link rel="preload" as="script" href="/node_modules/intl/locale-data/jsonp/ja.js">
+<link rel="preload" as="script" href="/node_modules/intl/locale-data/jsonp/ru.js">
+<!-- Pollyfills for web animation -->
+<link rel="preload" as="script" href="/bower_components/web-animations-js/web-animations.min.js">

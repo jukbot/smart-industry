@@ -30,10 +30,15 @@
                 color: #FFFFFF;
             }
 
+
             flat-button>*:hover {
                 background-color: #202020;
                 color: #FFFFFF;
                 cursor: pointer;
+            }
+
+            flat-button>*:visited {
+                color: #202020;
             }
 
             flat-button.iron-selected>button {
@@ -59,13 +64,13 @@
     </template>
     <script>
         /**
-          * `flat-button` Description
-          *
-          * @summary Button of FlatElements
-          * @FlatButtons
-          * @polymer
-          * @extends Polymer.Element
-          */
+         * `flat-button` Description
+         *
+         * @summary Button of FlatElements
+         * @FlatButtons
+         * @polymer
+         * @extends Polymer.Element
+         */
         class FlatButton extends Polymer.Element {
             static get is() {
                 return 'flat-button';

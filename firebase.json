@@ -4,8 +4,7 @@
   },
   "hosting": {
     "public": "build/default",
-    "rewrites": [
-      {
+    "rewrites": [{
         "source": "!/__/**",
         "destination": "/index.html"
       },
@@ -14,24 +13,19 @@
         "destination": "/index.html"
       }
     ],
-    "headers": [
-      {
+    "headers": [{
         "source": "/service-worker.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache"
-          }
-        ]
+        "headers": [{
+          "key": "Cache-Control",
+          "value": "no-cache"
+        }]
       },
       {
-        "source": "/images/logo/log.svg",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=31536000"
-          }
-        ]
+        "source": "/images/logo/logo.svg",
+        "headers": [{
+          "key": "Cache-Control",
+          "value": "max-age=31536000"
+        }]
       }
     ]
   }

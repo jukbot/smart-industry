@@ -8,7 +8,7 @@
 <dom-module id="view-dashboard">
   <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
       }
     </style>
@@ -32,11 +32,11 @@
 
   <script>
     /**
-    * @ViewDashboard
-    * @polymer 
-    * @extends {Polymer.Element}
-    * @appliesMixin Polymer.AppLocalizeBehavior
-    */
+     * @ViewDashboard
+     * @polymer 
+     * @extends {Polymer.Element}
+     * @appliesMixin Polymer.AppLocalizeBehavior
+     */
     class ViewDashboard extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
@@ -46,6 +46,10 @@
       static get properties() {
         return {
           language: String,
+          route: {
+            type: Object,
+            notify: true
+          },
           tabs: {
             type: String,
             reflectToAttribute: true,
@@ -56,20 +60,20 @@
             type: Array,
             value: () => {
               return [{
-                "title": "overview",
-                "view": "overview",
-                "icon": "vaadin:cubes"
-              },
-              {
-                "title": "notification",
-                "view": "notification",
-                "icon": "vaadin:bell"
-              },
-              {
-                "title": "statistics",
-                "view": "statistic",
-                "icon": "vaadin:bar-chart"
-              }
+                  "title": "overview",
+                  "view": "overview",
+                  "icon": "vaadin:cubes"
+                },
+                {
+                  "title": "notification",
+                  "view": "notification",
+                  "icon": "vaadin:bell"
+                },
+                {
+                  "title": "statistics",
+                  "view": "statistic",
+                  "icon": "vaadin:bar-chart"
+                }
               ]
             }
           }

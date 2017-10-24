@@ -8,8 +8,9 @@
 <link rel="import" href="/bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="/bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="/bower_components/app-localize-behavior/app-localize-behavior.html">
-<!-- import style component -->
+<!-- import shared style component -->
 <link rel="import" href="style/shared-styles.html">
+<!-- import custom elements -->
 <link rel="import" href="style/flat-button.html">
 <link rel="import" href="style/flat-icons.html">
 <!-- paper modules used for component style -->
@@ -31,28 +32,28 @@
 <link rel="import" href="view-offline.html">
 <link rel="import" href="view-error.html">
 <link rel="import" href="view-404.html">
-<!-- import lazy page router -->
 <link rel="import" href="view-dashboard.html">
 <link rel="import" href="view-setup.html">
 <link rel="import" href="view-plan.html">
 <link rel="import" href="view-track.html">
 <link rel="import" href="view-help.html">
 <link rel="import" href="view-settings.html">
-
+<!-- import google api -->
+<link rel="import" href="/lib/app-analytics.html">
 <dom-module id="view-app">
   <template>
     <style include="flat-button shared-styles">
-      :host {
+       :host {
         display: block
       }
     </style>
-    <!-- <app-analytics key="UA-51514677-9"></app-analytics> ENABLE WHEN DEPLOY PRODUCTION -->
+    <app-analytics key="UA-51514677-9"></app-analytics>
     <app-location route="{{route}}"></app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{pageData}}" tail="{{subRoute}}"></app-route>
     <app-route route="{{subRoute}}" pattern="/:page" data="{{subPageData}}" tail="{{subPageRoute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445" project-id="smart-mes"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="__handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{usr}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[usr.key]]/appData/language" data="[[language]]"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{usr}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
@@ -71,25 +72,25 @@
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
           <nav role="navigation">
             <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
-              <a name="dashboard" role="link" href="/app/dashboard" rel="dashboard" title="Dashboard">
+              <a name="dashboard" role="link" href="[[rootPath]]app/dashboard" rel="dashboard" title="Dashboard">
                 <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
-              <a name="setup" role="link" href="/app/setup" rel="setup" title="Setup">
+              <a name="setup" role="link" href="[[rootPath]]app/setup" rel="setup" title="Setup">
                 <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-              <a name="plan" role="link" href="/app/plan" rel="plan" title="Plan">
+              <a name="plan" role="link" href="[[rootPath]]app/plan" rel="plan" title="Plan">
                 <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-              <a name="track" role="link " href="/app/track" rel="track" title="Track">
+              <a name="track" role="link " href="[[rootPath]]app/track" rel="track" title="Track">
                 <paper-icon-button icon="vaadin:progressbar"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
-              <a name="help" role="link" href="/app/help" rel="help" title="Help">
+              <a name="help" role="link" href="[[rootPath]]app/help" rel="help" title="Help">
                 <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
               </a>
-              <a name="settings" role="link" href="/app/settings" rel="settings" title="Settings">
+              <a name="settings" role="link" href="[[rootPath]]app/settings" rel="settings" title="Settings">
                 <paper-icon-button icon="vaadin:tools"></paper-icon-button> {{localize('settings')}}
               </a>
             </iron-selector>
           </nav>
           <div class="sidebar-menu-line" role="separator"></div>
           <div class="flex-center">
-            <flat-button on-tap="_logout" title="Logout">
+            <flat-button on-tap="logout" title="Logout">
               <button type="button">{{localize('logout-button')}}
               </button>
             </flat-button>
@@ -146,11 +147,11 @@
 
   <script>
     /**
-    * @ViewApp
-    * @polymer 
-    * @extends {Polymer.Element}
-    * @appliesMixin Polymer.AppLocalizeBehavior
-    */
+     * @ViewApp
+     * @polymer 
+     * @extends {Polymer.Element}
+     * @appliesMixin Polymer.AppLocalizeBehavior
+     */
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
         return 'view-app'
@@ -161,7 +162,7 @@
           page: {
             type: String,
             reflectToAttribute: true,
-            observer: '_pageChanged'
+            observer: '__pageChanged'
           },
           language: {
             type: String,
@@ -187,6 +188,7 @@
             type: Boolean,
             value: false
           },
+          rootPath: String,
           persistedUserData: Object,
           toastText: String,
           notificationText: String,
@@ -196,10 +198,10 @@
 
       static get observers() {
         return [
-          '_routePageChanged(subPageData.page, visible)',
-          '_handleUser(user)',
-          '_verifyEmailAlert(user.emailVerified, signedIn)',
-          '_signedInChanged(signedIn)'
+          '__routePageChanged(subPageData.page, visible)',
+          '__handleUser(user)',
+          '__verifyEmailAlert(user.emailVerified, signedIn)',
+          '__signedInChanged(signedIn)'
         ]
       }
 
@@ -210,39 +212,36 @@
       connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
-        requestAnimationFrame(this._installListeners.bind(this))
+        requestAnimationFrame(this.__installListeners.bind(this))
       }
 
       ready() {
         super.ready()
         this.removeAttribute('unresolved')
         Polymer.RenderStatus.afterNextRender(this, () => {
-          // listen for navigation preload activate
-          self.addEventListener('activate', (e) => {
-            e.waitUntil(async function () {
-              // Feature-detect
-              if (!self.registration.navigationPreload) {
-                return
-              }
-              // Enable navigation preloads
-              await self.registration.navigationPreload.enable()
-            }())
-          })
-          // listen for navigation preload fetch
-          self.addEventListener('fetch', (e) => {
-            console.info(e.request.url)
-            e.respondWith(async function () {
-              // Respond from the cache if we can
-              const cachedResponse = await caches.match(e.request)
-              if (cachedResponse) return cachedResponse
-              // Else, try to use preloaded response
-              const response = await e.preloadResponse
-              if (response) return response
-              // Else try the network.
-              return fetch(e.request)
-            }())
-          })
+          this.__activateFetch();
+          this.__activatePushNotification();
         });
+      }
+
+      logout() {
+        if (!this.online) {
+          this.page = 'offline'
+        } else {
+          this.$.userAuth.signOut()
+            .then(() => {
+              Polymer.Async.timeOut.run(() => {
+                this.closeToastAlert()
+                this.$.userIndexDB.destroy()
+                this.page = 'login'
+                this.set('route.path', '/login')
+              }, 1)
+            })
+            .catch((error) => {
+              console.error('Authenticate Failed: ' + error.code)
+              this.page = 'error'
+            })
+        }
       }
 
       getOnlineStatus(status) {
@@ -269,7 +268,7 @@
         if (url) {
           return url
         } else {
-          return 'images/profile/default.svg'
+          return this.rootPath + 'images/profile/default.svg'
         }
       }
 
@@ -278,27 +277,18 @@
         this.$.toastVerify.hidden = true;
       }
 
-      _installListeners() {
+      __installListeners() {
         // listen for custom events on main page
-        this.addEventListener('show-invalid-url-warning', (e) => this._onFallbackSelectionTriggered(e))
+        this.addEventListener('show-invalid-url-warning', (e) => this.__onFallbackSelectionTriggered(e))
         this.addEventListener('on-error', (e) => this.handleError(e))
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, () => {
-          window.addEventListener('online', (e) => this._networkChanged(e))
-          window.addEventListener('offline', (e) => this._networkChanged(e))
+          window.addEventListener('online', (e) => this.__networkChanged(e))
+          window.addEventListener('offline', (e) => this.__networkChanged(e))
         })
       }
 
-      _handleUser(user) {
-
-      }
-
-      _handleError(e) {
-        console.error('Error: ' + e.message)
-        this.page = 'error'
-      }
-
-      _routePageChanged(page, visible) {
+      __routePageChanged(page, visible) {
         this.page = page || 'dashboard'
         if (!visible) return;
         // Close a non-persistent drawer when the page & route are changed.
@@ -307,14 +297,14 @@
         }
       }
 
-      _pageChanged(page, oldPage) {
+      __pageChanged(page, oldPage) {
         if (page != null) {
           if (page == 'dashboard') {
-            this._pageLoaded(Boolean(oldPage))
+            this.__pageLoaded(Boolean(oldPage))
             // other routes are lazy loaded
           } else {
             // When a load failed, it triggered a 404 which means we need to eagerly load the 404 page definition
-            let callback = this._pageLoaded.bind(this, Boolean(oldPage))
+            let callback = this.__pageLoaded.bind(this, Boolean(oldPage))
             let resolvedPageUrl = this.resolveUrl('view-' + page + '.html')
             Polymer.importHref(
               resolvedPageUrl,
@@ -325,12 +315,12 @@
         }
       }
 
-      _onFallbackSelectionTriggered() {
+      __onFallbackSelectionTriggered() {
         this.page = '404'
       }
 
-      _pageLoaded(shouldResetLayout) {
-        this._ensureLazyLoaded()
+      __pageLoaded(shouldResetLayout) {
+        this.__ensureLazyLoaded()
         if (shouldResetLayout) {
           // The size of the header depends on the page (e.g. on some pages the tabs
           // do not appear), so reset the header's layout only when switching pages.
@@ -341,31 +331,32 @@
         }
       }
 
-      _ensureLazyLoaded() {
+      __ensureLazyLoaded() {
         // load lazy resources after render and set `loadComplete` when done.
         if (!this.loadComplete) {
           Polymer.RenderStatus.afterNextRender(this, () => {
             // import lazy reousrce file
             Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
-              this._registerServiceWorker()
-              this._networkChanged()
+              this.__registerServiceWorker()
+              this.__networkChanged()
               this.loadComplete = true
             })
           })
         }
       }
 
-      _registerServiceWorker() {
+      __registerServiceWorker() {
         const greenColor = 'color: green'
         const crimsonColor = 'color: crimson'
         const purpleColor = 'color: purple'
         // Load and register pre-caching Service Worker for offline usage
-        if ('serviceWorker' in navigator) {
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
           // Register service worker
           navigator.serviceWorker.register('/service-worker.js', {
             scope: '/'
           }).then((registration) => {
             console.info('%cService Worker Registered to ' + registration.scope, purpleColor)
+            Polymer.swRegistration = registration;
           }).catch((err) => {
             console.error('%cService Worker Register Failed 😖: ' + err, crimsonColor)
           })
@@ -379,18 +370,62 @@
         } else {
           // Browser not support service worker
           console.warn('%cService Worker is not support by your browser.' + err, crimsonColor)
-          alert('Service Worker is not support by your browser. Please upgrade your browser or use Chrome 60+')
+          window.alert('Service Worker is not support by your browser. Please upgrade your browser.')
         }
       }
 
-      _signedInChanged(e) {
+      __activateFetch() {
+        if ('fetch' in window) {
+          // listen for navigation preload activate
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(async function () {
+              // Feature-detect
+              if (!self.registration.navigationPreload) {
+                return
+              }
+              // Enable navigation preloads
+              await self.registration.navigationPreload.enable()
+            }())
+          })
+          // listen for navigation preload fetch
+          self.addEventListener('fetch', (e) => {
+            console.info(e.request.url)
+            e.respondWith(async function () {
+              // Respond from the cache if we can
+              const cachedResponse = await caches.match(e.request)
+              if (cachedResponse) return cachedResponse
+              // Else, try to use preloaded response
+              const response = await e.preloadResponse
+              if (response) return response
+              // Else try the network.
+              return fetch(e.request)
+            }())
+          })
+        } else {
+          // Browser not support fetch
+          console.warn('%cFetch is not support by your browser.' + err, 'color: crimson')
+          window.alert('Fetch is not support by your browser. Please upgrade your browser.')
+        }
+      }
+
+
+      __activatePushNotification() {
+        if (('PushManager' in window) && Notification.permission !== 'denied') {
+          document.body.classList.add('push-enabled');
+        } else {
+          // Browser not support push notification
+          console.warn('%cPush notification is not support by your browser.' + err, 'color: crimson')
+          window.alert('Push notification is not support by your browser. Please upgrade your browser.')
+        }
+      }
+
+      __signedInChanged(e) {
         Polymer.RenderStatus.beforeNextRender(this, function () {
           Polymer.Async.timeOut.run(() => {
-            if (this.signedIn && this.route.path == '/login') {
+            if (this.signedIn && this.route.path == '/login') { // window.location.pathname.match('^/login')
               this.page = 'dashboard'
               this.set('route.path', '/app/dashboard')
-            }
-            else if (!this.signedIn && this.route.path !== '/term') {
+            } else if (!this.signedIn && this.route.path !== '/term') {
               this.page = 'login'
               this.set('route.path', '/login')
             }
@@ -398,7 +433,7 @@
         })
       }
 
-      _networkChanged() {
+      __networkChanged() {
         let oldOffline = this.offline
         this.offline = !navigator.onLine
         // Show the snackbar if the user is offline when starting a new session or if the network status changed.
@@ -407,50 +442,39 @@
           this.$.toastNotification.open()
           if (!this.offline && oldOffline === true) {
             this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(5000), () => {
-              this._refreshNetworkStatus()
+              this.__refreshNetworkStatus()
             })
           }
         }
       }
 
-      _refreshNetworkStatus() {
+      __refreshNetworkStatus() {
         this.$.userIndexDB.refreshNetworkStatus()
         this.$.userAuth.refreshNetworkStatus()
         this.$.userData.refreshNetworkStatus()
       }
 
-      _logout() {
-        if (!this.online) {
-          this.page = 'offline'
-        } else {
-          this.$.userAuth.signOut()
-            .then(() => {
-              Polymer.Async.timeOut.run(() => {
-                this.closeToastAlert()
-                //this.$.userIndexDB.destroy()
-                // redirect to login page
-                this.set('route.path', '/login')
-              }, 1)
-            })
-            .catch((error) => {
-              console.error('Authenticate Failed: ' + error.code)
-              this.page = 'error'
-            })
-        }
-      }
-
-      _verifyEmailAlert(verified, signedIn) {
+      __verifyEmailAlert(verified, signedIn) {
         if (!verified && signedIn) {
-          this._showAlertToast(
+          this.__showAlertToast(
             'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
           )
         }
       }
 
-      _showAlertToast(text) {
+      __showAlertToast(text) {
         this.toastText = text
         this.$.toastVerify.hidden = false;
         this.$.toastVerify.open()
+      }
+
+      __handleUser(user) {
+        console.info('User ' + user)
+      }
+
+      __handleError(e) {
+        console.error('Error: ' + e.message)
+        this.page = 'error'
       }
     }
     window.customElements.define(ViewApp.is, ViewApp)
