@@ -1,29 +1,17 @@
 {
   "builds": [{
-      "addPushManifest": true,
-      "addServiceWorker": true,
       "basePath": true,
-      "browserCapabilities": [
-        "es2015",
-        "push"
-      ],
-      "bundle": false,
-      "css": {
-        "minify": true
-      },
-      "html": {
-        "minify": true
-      },
-      "insertPrefetchLinks:": true,
       "js": {
         "compile": false,
         "minify": false
       },
+      "swPrecacheConfig": "sw-precache-config.js",
       "name": "default",
-      "swPrecacheConfig": "sw-precache-config.js"
+      "preset": "es6-unbundled"
     },
     {
-      "name": "fallback"
+      "name": "fallback",
+      "preset": "es5-bundled"
     }
   ],
   "entrypoint": "index.html",

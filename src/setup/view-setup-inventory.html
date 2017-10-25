@@ -7,14 +7,14 @@
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
-<link rel="import" href="../view-setup.html">
+<link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 
 <dom-module id="view-setup-inventory">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-            :host {
+             :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -221,10 +221,11 @@
     </template>
     <script>
         /**
-        * @ViewSetupInventory
-        * @polymer 
-        * @extends {Polymer.Element}
-        */
+         * @ViewSetupInventory
+         * @polymer 
+         * @extends {Polymer.Element}
+         * @appliesMixin Polymer.AppLocalizeBehavior
+         */
         class ViewSetupInventory extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {
@@ -290,7 +291,8 @@
                 const quantity = this.$.inventoryQuantity.value
                 const decimal = /^(0|[1-9]\d*)(\.\d+)?$/ // alow decimal 2 points
                 const integer = /^(0|[1-9]\d*)$/ // alow only positive interger
-                if (name && code && cost && quantity && cost.match(decimal) && cost <= this.maxInput && quantity.match(integer) && quantity > 0 && quantity <= this.maxInput) {
+                if (name && code && cost && quantity && cost.match(decimal) && cost <= this.maxInput &&
+                    quantity.match(integer) && quantity > 0 && quantity <= this.maxInput) {
                     this.disabled = false
                 } else {
                     this.disabled = true
@@ -304,7 +306,8 @@
                 const quantity = this.$.edit_inventoryQuantity.value
                 const decimal = /^(0|[1-9]\d*)(\.\d+)?$/ // alow decimal 2 points
                 const integer = /^(0|[1-9]\d*)$/ // alow only positive interger
-                if (name && code && cost && quantity && cost.match(decimal) && cost <= this.maxInput && quantity.match(integer) && quantity > 0 && quantity <= this.maxInput) {
+                if (name && code && cost && quantity && cost.match(decimal) && cost <= this.maxInput &&
+                    quantity.match(integer) && quantity > 0 && quantity <= this.maxInput) {
                     this.disabled = false
                 } else {
                     this.disabled = true

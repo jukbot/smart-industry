@@ -4,14 +4,14 @@
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../view-track.html">
+<link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 
 <dom-module id="view-track-warehouse">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-            :host {
+             :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -283,10 +283,11 @@
     </template>
     <script>
         /**
-          * @ViewTrackWarehouse
-          * @polymer 
-          * @extends {Polymer.Element}
-          */
+         * @ViewTrackWarehouse
+         * @polymer 
+         * @extends {Polymer.Element}
+         * @appliesMixin Polymer.AppLocalizeBehavior
+         */
         class ViewTrackWarehouse extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {

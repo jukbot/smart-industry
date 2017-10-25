@@ -1,12 +1,12 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="../view-dashboard.html">
+<link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 
 <dom-module id="view-dashboard-overview">
   <template>
     <style include="shared-styles app-grid-style flat-button">
-      :host {
+       :host {
         margin: 10px;
         display: block;
         --app-grid-columns: 3;
@@ -36,25 +36,25 @@
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
-        :host {
+         :host {
           --app-grid-columns: 1;
         }
       }
 
       @media (min-width: 769px) and (max-width: 1024px) {
-        :host {
+         :host {
           --app-grid-columns: 2;
         }
       }
 
       @media (min-width: 1025px) and (max-width: 1200px) {
-        :host {
+         :host {
           --app-grid-columns: 2;
         }
       }
 
       @media (min-width: 1201px) and (max-width: 2560px) {
-        :host {
+         :host {
           --app-grid-columns: 3;
         }
       }
@@ -128,12 +128,13 @@
       </ul>
     </div>
   </template>
-  <script>    
+  <script>
     /**
-      * @ViewDashboardOverview
-      * @polymer 
-      * @extends {Polymer.Element}
-      */
+     * @ViewDashboardOverview
+     * @polymer 
+     * @extends {Polymer.Element}
+     * @appliesMixin Polymer.AppLocalizeBehavior
+     */
     class ViewDashboardOverview extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
@@ -253,7 +254,10 @@
         if (!orderData) return 0;
         if (orderData.length > 0) {
           const query = this.$.orderQuery.ref;
-          query.orderByChild("order_status").equalTo("done").on("child_added", (snapshot) => { this.set('doneOrderCount', snapshot.numChildren()); console.log(snapshot.val()) });
+          query.orderByChild("order_status").equalTo("done").on("child_added", (snapshot) => {
+            this.set('doneOrderCount', snapshot.numChildren());
+            console.log(snapshot.val())
+          });
         } else {
           this.set('doneOrderCount', 0);
         }

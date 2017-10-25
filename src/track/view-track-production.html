@@ -7,21 +7,21 @@
 <link rel="import" href="/bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="/bower_components/paper-item/paper-item.html">
 <link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
-<link rel="import" href="../view-track.html">
+<link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 
 <dom-module id="view-track-production">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-            :host {
+             :host {
                 display: block;
                 margin: 10px;
                 --app-grid-item-height: 50%;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
                 .fixed-btn {
@@ -30,19 +30,19 @@
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                :host {
+                 :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) and (max-width: 2560px) {
-                :host {
+                 :host {
                     --app-grid-columns: 4;
                 }
             }
@@ -124,9 +124,7 @@
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(selectedStation)]]"
             order-by-child="name" data="{{scheduleItems}}"></firebase-query>
-        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_no" equal-to="{{selectedOrder}}"
-            data="{{orderItems}}"></firebase-query>
-
+        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_no" data="{{orderItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" data="{{stationItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="deviceQuery" path="/data/[[k.key]]/factoryData/device" data="{{deviceItems}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
@@ -263,10 +261,11 @@
     </template>
     <script>
         /**
-          * @ViewTrackProduction
-          * @polymer 
-          * @extends {Polymer.Element}
-          */
+         * @ViewTrackProduction
+         * @polymer 
+         * @extends {Polymer.Element}
+         * @appliesMixin Polymer.AppLocalizeBehavior
+         */
         class ViewTrackProduction extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {
@@ -277,18 +276,7 @@
                 return {
                     language: String,
                     orderHistoryData: Object,
-                    showAddMachine: {
-                        type: Boolean,
-                        value: true
-                    },
-                    showEditMachine: {
-                        type: Boolean,
-                        value: true
-                    },
-                    showListMachine: {
-                        type: Boolean,
-                        value: false
-                    },
+                    orderItems: Object
                 }
             }
 

@@ -8,7 +8,7 @@
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
-<link rel="import" href="../view-setup.html">
+<link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 <link rel="import" href="../style/flat-icons.html">
@@ -17,14 +17,14 @@
 <dom-module id="view-setup-station">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-            :host {
+             :host {
                 display: block;
                 margin: 10px;
                 --app-grid-item-height: 50%;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
                 .fixed-btn {
@@ -33,19 +33,19 @@
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                :host {
+                 :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) and (max-width: 2560px) {
-                :host {
+                 :host {
                     --app-grid-columns: 4;
                 }
             }
@@ -272,6 +272,7 @@
          * @ViewSetupStation
          * @polymer 
          * @extends {Polymer.Element}
+         * @appliesMixin Polymer.AppLocalizeBehavior
          */
         class ViewSetupStation extends ReduxMixin(Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element)) {
             static get is() {
@@ -422,7 +423,8 @@
                 let selector = this.$.machineSelector
                 if (selector.value) {
                     // if found duplicate it will return index > -1
-                    let isDuplicated = this.machines.map(item => item.number).indexOf(selector.selectedItem.number) > -1
+                    let isDuplicated = this.machines.map(item => item.number).indexOf(selector.selectedItem.number) >
+                        -1
                     if (this.machines.length < this.stationMaxMachine) {
                         if (isDuplicated) {
                             window.alert("You already added this machine")
@@ -454,7 +456,8 @@
                     if (!this.editMachines) {
                         this.editMachines = [];
                     }
-                    let isDuplicated = this.editMachines.map(item => item.number).indexOf(selector.selectedItem.number) > -1
+                    let isDuplicated = this.editMachines.map(item => item.number).indexOf(selector.selectedItem
+                        .number) > -1
 
                     if (this.editMachines.length < this.stationMaxMachine) {
                         if (isDuplicated) {

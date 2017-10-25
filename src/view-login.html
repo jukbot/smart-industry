@@ -196,7 +196,7 @@
     </style>
     <iron-ajax id="requestSampleData" url="/data/sample/sample-[[model]].json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" signed-in="[[signedIn]]"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{usr}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]"></firebase-document>
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <section class="flex-container">
@@ -340,10 +340,10 @@
   </template>
   <script>
     /**
-      * @ViewLogins
-      * @polymer 
-      * @extends {Polymer.Element}
-      */
+     * @ViewLogins
+     * @polymer 
+     * @extends {Polymer.Element}
+     */
     class ViewLogin extends Polymer.Element {
       static get is() {
         return 'view-login'
@@ -449,7 +449,9 @@
                     displayName: username
                   })
                   this.user.sendEmailVerification()
-                  this._showSuccessToast("Register successful. We've sent a confirmation link to your email you must follow in order to activate your account.")
+                  this._showSuccessToast(
+                    "Register successful. We've sent a confirmation link to your email you must follow in order to activate your account."
+                  )
                   const keyid = this.$.factoryData.ref.push().key
                   this._addProfileInfo(username, email, organize, phone, keyid)
                   this.$.factoryData.ref.child(keyid).set(this.sampleData).catch(error => {
@@ -472,15 +474,15 @@
 
       _addProfileInfo(username, email, organize, phone, keyid) {
         this.$.userData.ref.set({
-          displayname: username,
-          email: email,
-          photoURL: null,
-          phone: phone,
-          organization: organize,
-          role: 'admin',
-          description: 'No description for this user',
-          key: keyid
-        })
+            displayname: username,
+            email: email,
+            photoURL: null,
+            phone: phone,
+            organization: organize,
+            role: 'admin',
+            description: 'No description for this user',
+            key: keyid
+          })
           .catch(error => {
             this._showErrorToast(error.code)
           })

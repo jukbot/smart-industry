@@ -3,40 +3,39 @@
 <link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
-<link rel="import" href="/bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="../view-setup.html">
+<link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 
 <dom-module id="view-setup-factory">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-            :host {
+             :host {
                 margin: 10px;
                 display: block;
                 --app-grid-item-height: 50%;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                :host {
+                 :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                :host {
+                 :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) and (max-width: 2560px) {
-                :host {
+                 :host {
                     --app-grid-columns: 2;
                 }
             }
@@ -262,10 +261,11 @@
     </template>
     <script>
         /**
-          * @ViewSetupFactory
-          * @polymer 
-          * @extends {Polymer.Element}
-          */
+         * @ViewSetupFactory
+         * @polymer 
+         * @extends {Polymer.Element}
+         * @appliesMixin Polymer.AppLocalizeBehavior
+         */
         class ViewSetupFactory extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {
@@ -275,6 +275,7 @@
             static get properties() {
                 return {
                     language: String,
+                    selectProductionModel: String,
                     factorySchedule: Object,
                     factoryOperation: Object,
                     factoryPerformance: Object,
@@ -282,17 +283,17 @@
                         type: Array,
                         value: () => {
                             return [{
-                                "value": 2
-                            },
-                            {
-                                "value": 3
-                            },
-                            {
-                                "value": 4
-                            },
-                            {
-                                "value": 5
-                            }
+                                    "value": 2
+                                },
+                                {
+                                    "value": 3
+                                },
+                                {
+                                    "value": 4
+                                },
+                                {
+                                    "value": 5
+                                }
                             ]
                         }
                     },
@@ -300,26 +301,26 @@
                         type: Array,
                         value: () => {
                             return [{
-                                "value": 1
-                            },
-                            {
-                                "value": 2
-                            },
-                            {
-                                "value": 3
-                            },
-                            {
-                                "value": 4
-                            },
-                            {
-                                "value": 5
-                            },
-                            {
-                                "value": 6
-                            },
-                            {
-                                "value": 7
-                            }
+                                    "value": 1
+                                },
+                                {
+                                    "value": 2
+                                },
+                                {
+                                    "value": 3
+                                },
+                                {
+                                    "value": 4
+                                },
+                                {
+                                    "value": 5
+                                },
+                                {
+                                    "value": 6
+                                },
+                                {
+                                    "value": 7
+                                }
                             ]
                         }
                     },
@@ -327,17 +328,17 @@
                         type: Array,
                         value: () => {
                             return [{
-                                "name": "Increase Profit",
-                                "value": "increase-profit"
-                            },
-                            {
-                                "name": "Reduce Cost",
-                                "value": "reduce-cost"
-                            },
-                            {
-                                "name": "Disabled",
-                                "value": "disabled"
-                            }
+                                    "name": "Increase Profit",
+                                    "value": "increase-profit"
+                                },
+                                {
+                                    "name": "Reduce Cost",
+                                    "value": "reduce-cost"
+                                },
+                                {
+                                    "name": "Disabled",
+                                    "value": "disabled"
+                                }
                             ]
                         }
                     },
@@ -345,17 +346,17 @@
                         type: Array,
                         value: () => {
                             return [{
-                                "name": "Serial Production",
-                                "value": "serial"
-                            },
-                            {
-                                "name": "Parallel Production",
-                                "value": "parallel"
-                            },
-                            {
-                                "name": "Multi-Component Production",
-                                "value": "multi"
-                            }
+                                    "name": "Serial Production",
+                                    "value": "serial"
+                                },
+                                {
+                                    "name": "Parallel Production",
+                                    "value": "parallel"
+                                },
+                                {
+                                    "name": "Multi-Component Production",
+                                    "value": "multi"
+                                }
                             ]
                         }
                     },
@@ -363,17 +364,17 @@
                         type: Array,
                         value: () => {
                             return [{
-                                "name": "Job Shop",
-                                "value": "jobshop"
-                            },
-                            {
-                                "name": "Flow Shop",
-                                "value": "flowshop"
-                            },
-                            {
-                                "name": "Open Shop",
-                                "value": "openshop"
-                            }
+                                    "name": "Job Shop",
+                                    "value": "jobshop"
+                                },
+                                {
+                                    "name": "Flow Shop",
+                                    "value": "flowshop"
+                                },
+                                {
+                                    "name": "Open Shop",
+                                    "value": "openshop"
+                                }
                             ]
                         }
                     }
@@ -418,7 +419,8 @@
 
                 if (fn && ft && mod && opt && aw && au && inte && meff && op_start &&
                     op_end && op_day && ot_start && ot_end &&
-                    this.$.workerUtilize.validate() && this.$.machineStandardEffi.validate() && this.$.acceptWaste.validate() && this.$.scheduleInterval.validate()) {
+                    this.$.workerUtilize.validate() && this.$.machineStandardEffi.validate() && this.$.acceptWaste
+                    .validate() && this.$.scheduleInterval.validate()) {
                     this.set('persistedFactoryProfile.name', fn)
                     this.set('persistedFactoryProfile.type', ft)
                     this.set('persistedFactoryProfile.model', mod)
@@ -566,8 +568,7 @@
                     this.$.concurrencyDataSeparate.hidden = true
                     this.$.concurrencyTitle.hidden = true
                     this.$.concurrencyTitleSeparate.hidden = true
-                }
-                else {
+                } else {
                     this.$.concurrency.hidden = false
                     this.$.concurrency.disabled = false
                     this.$.concurrencyData.hidden = false

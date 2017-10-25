@@ -5,7 +5,7 @@
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="/bower_components/paper-item/paper-item.html">
-<link rel="import" href="../view-setup.html">
+<link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 <link rel="import" href="../style/flat-icons.html">
@@ -13,14 +13,14 @@
 <dom-module id="view-setup-machine">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-            :host {
+             :host {
                 display: block;
                 margin: 10px;
                 --app-grid-item-height: 50%;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
                 .fixed-btn {
@@ -29,19 +29,19 @@
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                :host {
+                 :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) and (max-width: 2560px) {
-                :host {
+                 :host {
                     --app-grid-columns: 4;
                 }
             }
@@ -225,10 +225,11 @@
     </template>
     <script>
         /**
-        * @ViewSetupMachine
-        * @polymer 
-        * @extends {Polymer.Element}
-        */
+         * @ViewSetupMachine
+         * @polymer 
+         * @extends {Polymer.Element}
+         * @appliesMixin Polymer.AppLocalizeBehavior
+         */
         class ViewSetupMachine extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
             static get is() {
                 return 'view-setup-machine'
@@ -260,41 +261,41 @@
                         type: Array,
                         value: function () {
                             return [{
-                                "name": "Cutting",
-                                "code": "cut"
-                            },
-                            {
-                                "name": "Folding",
-                                "code": "fold"
-                            },
-                            {
-                                "name": "Slotting",
-                                "code": "slot"
-                            },
-                            {
-                                "name": "Gluing",
-                                "code": "glue"
-                            },
-                            {
-                                "name": "Drilling",
-                                "code": "drill"
-                            },
-                            {
-                                "name": "Drilling",
-                                "code": "drill"
-                            },
-                            {
-                                "name": "Stitching",
-                                "code": "stich"
-                            },
-                            {
-                                "name": "Printing",
-                                "code": "print"
-                            },
-                            {
-                                "name": "Packing",
-                                "code": "pack"
-                            }
+                                    "name": "Cutting",
+                                    "code": "cut"
+                                },
+                                {
+                                    "name": "Folding",
+                                    "code": "fold"
+                                },
+                                {
+                                    "name": "Slotting",
+                                    "code": "slot"
+                                },
+                                {
+                                    "name": "Gluing",
+                                    "code": "glue"
+                                },
+                                {
+                                    "name": "Drilling",
+                                    "code": "drill"
+                                },
+                                {
+                                    "name": "Drilling",
+                                    "code": "drill"
+                                },
+                                {
+                                    "name": "Stitching",
+                                    "code": "stich"
+                                },
+                                {
+                                    "name": "Printing",
+                                    "code": "print"
+                                },
+                                {
+                                    "name": "Packing",
+                                    "code": "pack"
+                                }
                             ]
                         }
                     }
