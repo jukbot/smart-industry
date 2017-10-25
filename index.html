@@ -10,7 +10,6 @@
   <title>IMES</title>
   <link rel="shortcut icon" href="/images/favicon.png">
   <link rel="manifest" href="/manifest.json">
-  <link rel="canonical" href="/">
   <meta name="theme-color" content="#202020">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="application-name" content="IMES">
@@ -26,6 +25,13 @@
   <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
   <meta name="msapplication-TileColor" content="#202020">
   <meta name="msapplication-tap-highlight" content="no">
+  <script>
+    window.Polymer = {
+      rootPath: '/'
+    };
+  </script>
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href="/src/view-app.html">
   <style>
     * {
       box-sizing: border-box;
@@ -37,10 +43,9 @@
       font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Noto", sans-serif;
       letter-spacing: .016em;
       line-height: 1.25;
-      color: #202020;
       min-height: 100vh;
+      color: #202020;
       margin: 0;
-      padding: 0;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -123,9 +128,6 @@
 </head>
 
 <body>
-  <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
-  <script async src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-  <link rel="import" href="/src/view-app.html">
   <view-app unresolved role="main">
     <div class="container">
       <div class="loading-bro">

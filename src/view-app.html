@@ -1,8 +1,15 @@
 <!-- POLYMER 2 -->
 <!-- app modules - used for core functions -->
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/polymer/lib/utils/render-status.html">
 <link rel="import" href="/bower_components/polymer/lib/utils/async.html">
-<link rel="import" href="/bower_components/app-layout/app-layout.html">
+<link rel="import" href="/bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="/bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="/bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="/bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="/bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="/bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="/bower_components/app-route/app-location.html">
 <link rel="import" href="/bower_components/app-route/app-route.html">
 <link rel="import" href="/bower_components/app-storage/app-localstorage/app-localstorage-document.html">
@@ -10,9 +17,6 @@
 <link rel="import" href="/bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- import shared style component -->
 <link rel="import" href="style/shared-styles.html">
-<!-- import custom elements -->
-<link rel="import" href="style/flat-button.html">
-<link rel="import" href="style/flat-icons.html">
 <!-- paper modules used for component style -->
 <link rel="import" href="/bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
@@ -28,16 +32,16 @@
 <link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
-<link rel="import" href="view-term.html">
-<link rel="import" href="view-offline.html">
-<link rel="import" href="view-error.html">
-<link rel="import" href="view-404.html">
 <link rel="import" href="view-dashboard.html">
 <link rel="import" href="view-setup.html">
 <link rel="import" href="view-plan.html">
 <link rel="import" href="view-track.html">
 <link rel="import" href="view-help.html">
 <link rel="import" href="view-settings.html">
+<link rel="import" href="view-term.html">
+<link rel="import" href="view-offline.html">
+<link rel="import" href="view-error.html">
+<link rel="import" href="view-404.html">
 <!-- import google api -->
 <link rel="import" href="/lib/app-analytics.html">
 <dom-module id="view-app">
@@ -47,20 +51,18 @@
         display: block;
       }
     </style>
-    <app-analytics key="UA-51514677-9"></app-analytics>
-    <app-location route="{{route}}"></app-location>
-    <app-route route="{{route}}" pattern="/:page" data="{{pageData}}" tail="{{subRoute}}"></app-route>
+    <!-- <app-analytics key="UA-51514677-9"></app-analytics> -->
+    <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
+    <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{pageData}}" tail="{{subRoute}}"></app-route>
     <app-route route="{{subRoute}}" pattern="/:page" data="{{subPageData}}" tail="{{subPageRoute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445" project-id="smart-mes"></firebase-app>
-    <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="__handleError"></firebase-auth>
+    <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{usr}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[usr.key]]/appData/language" data="[[language]]"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{usr}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
-
-    <iron-pages selected="[[pageData.page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="login"
-      role="main">
+    <iron-pages selected="[[pageData.page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404" role="main">
       <view-term name="term" route="[[subRoute]]" hidden$="[[user]]"></view-term>
       <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
       <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
@@ -73,18 +75,18 @@
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
           <nav role="navigation">
             <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
-              <a name="dashboard" role="link" href="/app/dashboard" rel="dashboard" title="Dashboard">
+              <a name="dashboard" role="link" href="[[rootPath]]app/dashboard" rel="dashboard" title="Dashboard">
                 <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
-              <a name="setup" role="link" href="/app/setup" rel="setup" title="Setup">
+              <a name="setup" role="link" href="[[rootPath]]app/setup" rel="setup" title="Setup">
                 <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-              <a name="plan" role="link" href="/app/plan" rel="plan" title="Plan">
+              <a name="plan" role="link" href="[[rootPath]]app/plan" rel="plan" title="Plan">
                 <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-              <a name="track" role="link " href="/app/track" rel="track" title="Track">
+              <a name="track" role="link " href="[[rootPath]]app/track" rel="track" title="Track">
                 <paper-icon-button icon="vaadin:progressbar"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
-              <a name="help" role="link" href="/app/help" rel="help" title="Help">
+              <a name="help" role="link" href="[[rootPath]]app/help" rel="help" title="Help">
                 <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
               </a>
-              <a name="settings" role="link" href="/app/settings" rel="settings" title="Settings">
+              <a name="settings" role="link" href="[[rootPath]]app/settings" rel="settings" title="Settings">
                 <paper-icon-button icon="vaadin:tools"></paper-icon-button> {{localize('settings')}}
               </a>
             </iron-selector>
@@ -108,7 +110,6 @@
             <p>{{localize('version')}} 1.0.6</p>
           </div>
         </app-drawer>
-
         <app-header-layout>
           <template is="dom-if" if="[[user]]">
             <app-header class="main-header" id="header" slot="header" role="banner">
@@ -118,7 +119,6 @@
               </app-toolbar>
             </app-header>
           </template>
-
           <iron-lazy-pages selected="[[subPageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
             role="main" loading="{{loading}}">
             <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]"></view-dashboard>
@@ -131,8 +131,6 @@
         </app-header-layout>
       </app-drawer-layout>
     </iron-pages>
-
-    <paper-toast id="toastNotification" always-on-top horizontal-align="right" text="{{localize(notificationText)}}"></paper-toast>
     <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0"
       hidden="true">
       <div class="toast-flex-container">
@@ -145,7 +143,6 @@
       </div>
     </paper-toast>
   </template>
-
   <script>
     /**
      * @ViewApp
@@ -157,20 +154,19 @@
       static get is() {
         return 'view-app'
       }
-
       static get properties() {
         return {
           page: {
             type: String,
             reflectToAttribute: true,
-            observer: '__pageChanged'
+            observer: '_pageChanged'
           },
           language: {
             type: String,
             value: () => {
               if (localStorage.getItem('app-lang') != null) {
                 return localStorage.getItem('app-lang')
-              } else if (localStorage.getItem('app-lang') == null || localStorage.getItem('app-lang') == {}) {
+              } else if (localStorage.getItem('app-lang') == {}) {
                 return 'en'
               } else {
                 return language
@@ -189,45 +185,39 @@
             type: Boolean,
             value: false
           },
+          subPageData: Object,
           persistedUserData: Object,
           toastText: String,
           notificationText: String,
-          loading: Boolean
+          loading: Boolean,
+          subPageRoute: String,
+          subRoute: String,
+          rootPath: String
         }
       }
-
       static get observers() {
         return [
-          '__routePageChanged(subPageData.page, visible)',
-          '__handleUser(user)',
-          '__verifyEmailAlert(user.emailVerified, signedIn)',
-          '__signedInChanged(signedIn)'
+          '_routePageChanged(subPageData.page, visible)',
+          '_handleUser(user)',
+          '_verifyEmailAlert(user.emailVerified, signedIn)',
+          '_signedInChanged(signedIn)'
         ]
       }
-
-      constructor() {
-        super()
-      }
-
       connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
-        requestAnimationFrame(this.__installListeners.bind(this))
+        requestAnimationFrame(this._installListeners.bind(this))
       }
-
       ready() {
         super.ready()
         this.removeAttribute('unresolved')
         Polymer.RenderStatus.afterNextRender(this, () => {
-          this.__activateFetch();
-          this.__activatePushNotification();
+          this._activateFetch();
+          this._activatePushNotification();
         });
       }
-
       logout() {
         if (!this.online) {
-          this.page = 'offline'
-        } else {
           this.$.userAuth.signOut()
             .then(() => {
               Polymer.Async.timeOut.run(() => {
@@ -241,29 +231,32 @@
               console.error('Authenticate Failed: ' + error.code)
               this.page = 'error'
             })
+        } else {
+          this.page = 'offline'
         }
       }
-
+      closeToastAlert() {
+        this.$.toastVerify.close()
+        this.$.toastVerify.hidden = true;
+      }
       getOnlineStatus(status) {
         if (status) {
-          this.$$('.online').style.color = 'green'
+          this._setColorStatus(0, '.online')
           return 'Online'
         } else {
-          this.$$('.online').style.color = 'red'
+          this._setColorStatus(1, '.online')
           return 'Offline'
         }
       }
-
       getVerifyStatus(status) {
         if (status) {
-          this.$$('.verify').style.color = 'green'
+          this._setColorStatus(0, '.verify')
           return 'Verified'
         } else {
-          this.$$('.verify').style.color = 'red'
+          this._setColorStatus(1, '.verify')
           return 'Not verify'
         }
       }
-
       getUserImage(url) {
         if (url) {
           return url
@@ -271,56 +264,50 @@
           return this.rootPath + 'images/profile/default.svg'
         }
       }
-
-      closeToastAlert() {
-        this.$.toastVerify.close()
-        this.$.toastVerify.hidden = true;
+      _setColorStatus(status, target) {
+        if (status) {
+          this.$$(target).style.color = 'green'
+        } else {
+          this.$$(target).style.color = 'red'
+        }
       }
-
-      __installListeners() {
+      _installListeners() {
         // listen for custom events on main page
-        this.addEventListener('show-invalid-url-warning', (e) => this.__onFallbackSelectionTriggered(e))
+        this.addEventListener('show-invalid-url-warning', (e) => this._showPage404(e))
         this.addEventListener('on-error', (e) => this.handleError(e))
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, () => {
-          window.addEventListener('online', (e) => this.__networkChanged(e))
-          window.addEventListener('offline', (e) => this.__networkChanged(e))
+          window.addEventListener('online', (e) => this._networkChanged(e))
+          window.addEventListener('offline', (e) => this._networkChanged(e))
         })
       }
-
-      __routePageChanged(page, visible) {
-        this.page = page || 'dashboard'
+      _routePageChanged(page, visible) {
         if (!visible) return;
+        this.page = page || 'dashboard', this.$.drawer.persistent || this.$.drawer.close()
         // Close a non-persistent drawer when the page & route are changed.
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
       }
-
-      __pageChanged(page, oldPage) {
+      _pageChanged(page, oldPage) {
         if (page != null) {
           if (page == 'dashboard') {
-            this.__pageLoaded(Boolean(oldPage))
+            this._pageLoaded(Boolean(oldPage))
             // other routes are lazy loaded
           } else {
             // When a load failed, it triggered a 404 which means we need to eagerly load the 404 page definition
-            let callback = this.__pageLoaded.bind(this, Boolean(oldPage))
-            let resolvedPageUrl = this.resolveUrl('view-' + page + '.html')
+            const callback = this._pageLoaded.bind(this, Boolean(oldPage))
+            const resolvedPageUrl = this.resolveUrl('view-' + page + '.html')
             Polymer.importHref(
               resolvedPageUrl,
               callback,
-              callback,
+              this._showPage404.bind(this), // callback
               true)
           }
         }
       }
-
-      __onFallbackSelectionTriggered() {
+      _showPage404() {
         this.page = '404'
       }
-
-      __pageLoaded(shouldResetLayout) {
-        this.__ensureLazyLoaded()
+      _pageLoaded(shouldResetLayout) {
+        this._ensureLazyLoaded()
         if (shouldResetLayout) {
           // The size of the header depends on the page (e.g. on some pages the tabs
           // do not appear), so reset the header's layout only when switching pages.
@@ -330,22 +317,29 @@
           }, 1)
         }
       }
-
-      __ensureLazyLoaded() {
-        // load lazy resources after render and set `loadComplete` when done.
-        if (!this.loadComplete) {
-          Polymer.RenderStatus.afterNextRender(this, () => {
-            // import lazy reousrce file
-            Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
-              this.__registerServiceWorker()
-              this.__networkChanged()
-              this.loadComplete = true
-            })
+      _ensureLazyLoaded() {
+        this.loadComplete || (this.loadComplete = true, Polymer.RenderStatus.afterNextRender(this, () => {
+          // import lazy reousrce file
+          Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
+            this._registerServiceWorker()
+            this._networkChanged()
+            this.loadComplete = true
           })
-        }
-      }
+        }))
 
-      __registerServiceWorker() {
+        // load lazy resources after render and set `loadComplete` when done.
+        // if (!this.loadComplete) {
+        //   Polymer.RenderStatus.afterNextRender(this, () => {
+        //     // import lazy reousrce file
+        //     Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
+        //       this._registerServiceWorker()
+        //       this._networkChanged()
+        //       this.loadComplete = true
+        //     })
+        //   })
+        // }
+      }
+      _registerServiceWorker() {
         const greenColor = 'color: green'
         const crimsonColor = 'color: crimson'
         const purpleColor = 'color: purple'
@@ -354,7 +348,7 @@
         if ('serviceWorker' in navigator) {
           // Register service worker
           navigator.serviceWorker.register('/service-worker.js', {
-            scope: '/'
+            scope: Polymer.rootPath
           }).then((registration) => {
             console.info('%cService Worker Registered to ' + registration.scope, purpleColor)
             Polymer.swRegistration = registration;
@@ -374,8 +368,7 @@
           window.alert('Service Worker is not support by your browser. Please upgrade your browser.')
         }
       }
-
-      __activateFetch() {
+      _activateFetch() {
         if ('fetch' in window) {
           // listen for navigation preload activate
           self.addEventListener('activate', (e) => {
@@ -409,8 +402,8 @@
         }
       }
 
-      __activatePushNotification() {
-        if (('PushManager' in window) && Notification.permission !== 'denied') {
+      _activatePushNotification() {
+        if ('PushManager' in window) {
           document.body.classList.add('push-enabled');
         } else {
           // Browser not support push notification
@@ -418,8 +411,7 @@
           window.alert('Push notification is not support by your browser. Please upgrade your browser.')
         }
       }
-
-      __signedInChanged(e) {
+      _signedInChanged(e) {
         Polymer.RenderStatus.beforeNextRender(this, function () {
           Polymer.Async.timeOut.run(() => {
             if (this.signedIn && this.route.path == '/login') { // window.location.pathname.match('^/login')
@@ -432,47 +424,49 @@
           }, 1)
         })
       }
-
-      __networkChanged() {
+      _networkChanged() {
         let oldOffline = this.offline
         this.offline = !navigator.onLine
         // Show the snackbar if the user is offline when starting a new session or if the network status changed.
         if (this.offline || (!this.offline && oldOffline === true)) {
-          this.notificationText = this.offline ? 'notification-offline' : 'notification-online'
-          this.$.toastNotification.open()
+          if (!this._networkSnackbar) {
+            this._networkSnackbar = document.createElement('flat-toast');
+            this.root.appendChild(this._networkSnackbar);
+          }
+          this._networkSnackbar.innerHTML = this.offline ?
+            this.localize('notification-offline') : this.localize('notification-online')
+          this._networkSnackbar.setAttribute('duration', 5000);
+          this.closeToastAlert();
+          this._networkSnackbar.open();
+          // Refresh network if internet go online
           if (!this.offline && oldOffline === true) {
-            this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(5000), () => {
-              this.__refreshNetworkStatus()
+            this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(100), () => {
+              this._refreshNetworkStatus()
             })
           }
         }
       }
-
-      __refreshNetworkStatus() {
+      _refreshNetworkStatus() {
         this.$.userIndexDB.refreshNetworkStatus()
         this.$.userAuth.refreshNetworkStatus()
         this.$.userData.refreshNetworkStatus()
       }
-
-      __verifyEmailAlert(verified, signedIn) {
+      _verifyEmailAlert(verified, signedIn) {
         if (!verified && signedIn) {
-          this.__showAlertToast(
+          this._showAlertToast(
             'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
           )
         }
       }
-
-      __showAlertToast(text) {
+      _showAlertToast(text) {
         this.toastText = text
         this.$.toastVerify.hidden = false;
         this.$.toastVerify.open()
       }
-
-      __handleUser(user) {
-        console.info('DEBUG User ' + user)
+      _handleUser(user) {
+        console.info(`DEBUG User ${user}`)
       }
-
-      __handleError(e) {
+      _handleError(e) {
         console.error('Error: ' + e.message)
         this.page = 'error'
       }

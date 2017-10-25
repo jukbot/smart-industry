@@ -47,7 +47,7 @@
       .flex-container {
         display: flex;
         align-content: center;
-        justify-content: center;
+        justify-content: space-between;
         flex-flow: row nowrap;
       }
 
@@ -60,7 +60,8 @@
       }
 
       .model-btn {
-        flex: 1;
+        margin: 0;
+        width: 160px;
       }
 
       .form-title {
@@ -85,7 +86,6 @@
       paper-button {
         font-size: 1rem;
         font-weight: 500;
-        width: 100%;
         height: 50px;
         color: #202020;
         border: 1px solid #202020;
@@ -126,7 +126,6 @@
 
       .keep-session-checkbox {
         margin: 10px 0;
-        height: 20px;
         @apply --layout-horizontal;
       }
 
@@ -194,7 +193,7 @@
         }
       }
     </style>
-    <iron-ajax id="requestSampleData" url="/data/sample/sample-[[model]].json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="/data/sample/sample-[[model]].json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" signed-in="[[signedIn]]"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]"></firebase-document>
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
@@ -226,7 +225,7 @@
             <div class="keep-session-checkbox">
               <paper-checkbox id="setKeepSession" checked$="[[remember]]" on-change="toggleKeepSession" noink>Keep me signed in</paper-checkbox>
             </div>
-            <paper-button class="login-btn" on-tap="_login" noink>Log in</paper-button>
+            <paper-button class="login-btn" on-tap="login" noink>Log in</paper-button>
 
             <div class="link">
               <a href="javascript:void(0);" on-click="showReset">Forgot?</a>
@@ -274,7 +273,7 @@
             <p>Select Your Production Model</p>
 
             <iron-selector selected="{{model}}" attr-for-selected="name" fallback-selection="1" class="flex-container" role="navigation">
-              <flat-button name="parallel" class="model-btn">
+              <!-- <flat-button name="parallel" class="model-btn">
                 <button>Parallel</button>
               </flat-button>
               <flat-button name="serial" class="model-btn">
@@ -282,15 +281,26 @@
               </flat-button>
               <flat-button name="multi" class="model-btn">
                 <button>Multi</button>
-              </flat-button>
+              </flat-button> -->
+              <paper-button name="parallel" class="model-btn">
+                Parallel
+              </paper-button>
+              <paper-button name="serial" class="model-btn">
+                Serial
+              </paper-button>
+              <paper-button name="multi" class="model-btn">
+                Multi
+              </paper-button>
             </iron-selector>
+
+
 
             <div class="link">
               <p>By signing up you agree to IMES’s
                 <a href="/term" target="_self" id="termOfService">Terms of Service</a>
             </div>
             </p>
-            <paper-button class="register-btn" on-tap="_register" noink>Register and Login</paper-button>
+            <paper-button class="register-btn" on-tap="register" noink>Register and Login</paper-button>
             <div class="link">
               <a href="javascript:void(0);" on-click="hideRegister">Already have account? Log in</a>
             </div>
@@ -371,7 +381,10 @@
             type: String,
             value: 'parallel'
           },
-          remember: Boolean,
+          remember: {
+            type: Boolean,
+            value: true
+          },
           signedIn: Boolean,
           sampleData: Object,
           errorMessage: String,
@@ -397,7 +410,7 @@
       _onEnterTrigger(e, type) {
         if (e.key !== "Enter") return;
         if (type === 0) {
-          this._login();
+          this.login();
         } else if (type === 1) {
           this.resetPassword();
         }
@@ -408,7 +421,7 @@
         this.set('route.path', '/term')
       }
 
-      _login() {
+      login() {
         if (this.$.loginEmail.value && this.$.loginPassword.value) {
           this.$.userAuth.signInWithEmailAndPassword(this.$.loginEmail.value, this.$.loginPassword.value)
             .then((response) => {
@@ -422,7 +435,7 @@
         }
       }
 
-      _register() {
+      register() {
         const email = this.$.register_email.value
         const organize = this.$.register_organization.value
         const phone = this.$.register_phone.value
