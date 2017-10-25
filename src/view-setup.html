@@ -11,7 +11,7 @@
 <dom-module id="view-setup">
   <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
       }
     </style>
@@ -38,11 +38,13 @@
 
   <script>
     /**
-      * @ViewSetup
-      * @polymer 
-      * @extends {Polymer.Element}
-      * @appliesMixin Polymer.AppLocalizeBehavior
-      */
+     * # Setup
+     * `<view-setup>` show the setup pages of factory.
+     * @ViewSetup
+     * @polymer 
+     * @extends {Polymer.Element}
+     * @appliesMixin Polymer.AppLocalizeBehavior
+     */
     class ViewSetup extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
@@ -66,35 +68,35 @@
             type: Array,
             value: () => {
               return [{
-                "title": "factory",
-                "view": "factory",
-                "icon": "vaadin:factory"
-              },
-              {
-                "title": "station",
-                "view": "station",
-                "icon": "vaadin:viewport"
-              },
-              {
-                "title": "machine",
-                "view": "machine",
-                "icon": "vaadin:automation"
-              },
-              {
-                "title": "product",
-                "view": "product",
-                "icon": "vaadin:barcode"
-              },
-              {
-                "title": "customer",
-                "view": "customer",
-                "icon": "vaadin:clipboard-user"
-              },
-              {
-                "title": "inventory",
-                "view": "inventory",
-                "icon": "vaadin:stock"
-              }
+                  "title": "factory",
+                  "view": "factory",
+                  "icon": "vaadin:factory"
+                },
+                {
+                  "title": "station",
+                  "view": "station",
+                  "icon": "vaadin:viewport"
+                },
+                {
+                  "title": "machine",
+                  "view": "machine",
+                  "icon": "vaadin:automation"
+                },
+                {
+                  "title": "product",
+                  "view": "product",
+                  "icon": "vaadin:barcode"
+                },
+                {
+                  "title": "customer",
+                  "view": "customer",
+                  "icon": "vaadin:clipboard-user"
+                },
+                {
+                  "title": "inventory",
+                  "view": "inventory",
+                  "icon": "vaadin:stock"
+                }
               ]
             }
           }

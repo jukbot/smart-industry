@@ -73,18 +73,18 @@
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
           <nav role="navigation">
             <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
-              <a name="dashboard" role="link" href="[[rootPath]]app/dashboard" rel="dashboard" title="Dashboard">
+              <a name="dashboard" role="link" href="/app/dashboard" rel="dashboard" title="Dashboard">
                 <paper-icon-button icon="vaadin:dashboard"></paper-icon-button> {{localize('view-index-menu-dashboard')}}</a>
-              <a name="setup" role="link" href="[[rootPath]]app/setup" rel="setup" title="Setup">
+              <a name="setup" role="link" href="/app/setup" rel="setup" title="Setup">
                 <paper-icon-button icon="vaadin:cogs"></paper-icon-button> {{localize('view-index-menu-setup')}}</a>
-              <a name="plan" role="link" href="[[rootPath]]app/plan" rel="plan" title="Plan">
+              <a name="plan" role="link" href="/app/plan" rel="plan" title="Plan">
                 <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
-              <a name="track" role="link " href="[[rootPath]]app/track" rel="track" title="Track">
+              <a name="track" role="link " href="/app/track" rel="track" title="Track">
                 <paper-icon-button icon="vaadin:progressbar"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
-              <a name="help" role="link" href="[[rootPath]]app/help" rel="help" title="Help">
+              <a name="help" role="link" href="/app/help" rel="help" title="Help">
                 <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
               </a>
-              <a name="settings" role="link" href="[[rootPath]]app/settings" rel="settings" title="Settings">
+              <a name="settings" role="link" href="/app/settings" rel="settings" title="Settings">
                 <paper-icon-button icon="vaadin:tools"></paper-icon-button> {{localize('settings')}}
               </a>
             </iron-selector>
@@ -189,7 +189,6 @@
             type: Boolean,
             value: false
           },
-          rootPath: String,
           persistedUserData: Object,
           toastText: String,
           notificationText: String,

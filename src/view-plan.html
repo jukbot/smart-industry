@@ -7,7 +7,7 @@
 <dom-module id="view-plan">
   <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
       }
     </style>
@@ -31,11 +31,13 @@
 
   <script>
     /**
-      * @ViewPlan
-      * @polymer 
-      * @extends {Polymer.Element}
-      * @appliesMixin Polymer.AppLocalizeBehavior
-      */
+     * # Plan
+     * `<view-plan>` show the plan of your factory.
+     * @ViewPlan
+     * @polymer 
+     * @extends {Polymer.Element}
+     * @appliesMixin Polymer.AppLocalizeBehavior
+     */
     class ViewPlan extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
@@ -58,8 +60,7 @@
           submenus: {
             type: Array,
             value: () => {
-              return [
-                {
+              return [{
                   "title": "order",
                   "view": "order",
                   "icon": "vaadin:list-ol"

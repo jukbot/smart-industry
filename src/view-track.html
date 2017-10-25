@@ -8,7 +8,7 @@
 <dom-module id="view-track">
   <template>
     <style include="shared-styles">
-      :host {
+       :host {
         display: block;
       }
     </style>
@@ -32,11 +32,13 @@
 
   <script>
     /**
-      * @ViewTrack
-      * @polymer 
-      * @extends {Polymer.Element}
-      * @appliesMixin Polymer.AppLocalizeBehavior
-      */
+     * # Track
+     * `<view-track>` show the tracking progress of your factory.
+     * @ViewTrack
+     * @polymer 
+     * @extends {Polymer.Element}
+     * @appliesMixin Polymer.AppLocalizeBehavior
+     */
     class ViewTrack extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
@@ -60,20 +62,20 @@
             type: Array,
             value: () => {
               return [{
-                "title": "production",
-                "view": "production",
-                "icon": "vaadin:progressbar"
-              },
-              {
-                "title": "warehouse",
-                "view": "warehouse",
-                "icon": "vaadin:stock"
-              },
-              {
-                "title": "performance",
-                "view": "performance",
-                "icon": "vaadin:stopwatch"
-              }
+                  "title": "production",
+                  "view": "production",
+                  "icon": "vaadin:progressbar"
+                },
+                {
+                  "title": "warehouse",
+                  "view": "warehouse",
+                  "icon": "vaadin:stock"
+                },
+                {
+                  "title": "performance",
+                  "view": "performance",
+                  "icon": "vaadin:stopwatch"
+                }
               ]
             }
           }
