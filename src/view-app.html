@@ -287,7 +287,6 @@
       _routePageChanged(page, visible) {
         if (!visible) return this.page = page;
         this.page = page || 'dashboard', this.$.drawer.persistent || this.$.drawer.close()
-        this.currentPage = page;
         // Close a non-persistent drawer when the page & route are changed.
       }
       _showPage404() {
@@ -409,11 +408,6 @@
             this.page = 'dashboard'
             this.set('route.path', '/app/dashboard')
           }
-          // // If signed in but at other page
-          // else if (this.signedIn && this.route.path !== '/login') { // window.location.pathname.match('^/login')
-          //   this.page = this.currentPage
-          //   this.set('route.path', '/app/' + this.currentPage)
-          // }
           // // If not sign in but not at term page
           // else if (!this.signedIn && this.route.path !== '/term') {
           //   this.page = 'login'
