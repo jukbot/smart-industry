@@ -194,7 +194,7 @@
         </custom-style>
         <h1 class="center">Manage Keychain</h1>
         <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
-        <paper-input label="Data key" id="keyData" value="[[setKeyValue(usr.key)]]" type="text" always-float-label></paper-input>
+        <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
         <div class="btn-group">
           <paper-button dialog-dismiss on-tap="closeKeyDialog">
             {{localize('dismiss')}}
@@ -250,6 +250,11 @@
           toastText: String
         }
       }
+      static get observers() {
+        return [
+          'setKeyValue(usr.key)'
+        ]
+      }
 
       connectedCallback() {
         super.connectedCallback()
@@ -270,7 +275,6 @@
 
       setKeyValue(key) {
         this.newKey = key;
-        return key
       }
 
       updateKey() {
@@ -285,7 +289,7 @@
             console.error(err.message);
           })
         } else {
-          this.toastText = 'Key data cannot leave empty'
+          this.toastText = 'Key data cannot be empty.'
           this.$.toastAlert.open()
         }
       }
@@ -385,6 +389,8 @@
               })
               .catch(error => {
                 console.error('Error delete file:', error)
+                this.toastText = `Error delete image file ${error} Please try again.`
+                this.$.toastAlert.open()
               })
           }
         } else {
@@ -461,7 +467,8 @@
                 console.error('Error: ' + err.message)
               })
           } else {
-            window.alert('Wrong password')
+            this.toastText = 'Wrong password'
+            this.$.toastAlert.open()
           }
         }
 
@@ -487,7 +494,7 @@
               window.alert("Delete successful, you'll now logout")
               this.logout()
             }, function (error) {
-              console.log(error)
+              console.error(error)
             })
           }
         }
@@ -505,7 +512,8 @@
           })
           .catch((error) => {
             console.error('%cAuthenticate Failed: ' + error.code, 'color: crimson;')
-            window.alert('Authenticate Failed: ' + error.message + ' Please try again.')
+            this.toastText = `Authenticate Failed: ${error.message} Please try again.`
+            this.$.toastAlert.open()
           })
       }
 
@@ -556,10 +564,11 @@
         if (!this.user.emailVerified) {
           this.user.sendEmailVerification()
             .then(() => {
-              window.alert('Verification link has been sent to your email')
+              this.toastText = 'Verification link has been sent to your email'
+              this.$.toastAlert.open()
             })
             .catch(err => {
-              window.alert('Error: ' + err.message)
+              console.error('Error: ' + err.message)
             })
         }
       }

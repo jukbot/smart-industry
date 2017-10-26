@@ -161,15 +161,9 @@
             <li>
                 <div class="card" hidden="[[!showAddProduct]]">
                     <h1 class="title">Product Management</h1>
-
                     <paper-input type="text" value="{{filterVal}}"></paper-input>
-                    <vaadin-grid-sorter path="name">Name</vaadin-grid-sorter>
-                    <vaadin-grid-filter path="name" value="[[filterVal]]">
-                    </vaadin-grid-filter>
-
+                    <vaadin-grid-filter path="name" value="[[filterVal]]"></vaadin-grid-filter>
                     <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]" size="10">
-
-
                         <!-- <vaadin-grid-column>
                             <template class="header">
                                 <vaadin-grid-filter aria-label="First Name" path="name.first" value="[[_filterFirstName]]">
@@ -187,8 +181,6 @@
                             </template>
                             <template>[[item.name.last]]</template>
                         </vaadin-grid-column> -->
-
-
                         <vaadin-grid-column flex="1">
                             <template class="header">
                                 <div class="cell center">Image</div>
