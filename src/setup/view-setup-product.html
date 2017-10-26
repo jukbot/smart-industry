@@ -161,26 +161,8 @@
             <li>
                 <div class="card" hidden="[[!showAddProduct]]">
                     <h1 class="title">Product Management</h1>
-                    <paper-input type="text" value="{{filterVal}}"></paper-input>
-                    <vaadin-grid-filter path="name" value="[[filterVal]]"></vaadin-grid-filter>
+                    <!-- <paper-input label="search" type="text" value="{{searchProduct(keyword)}}"></paper-input> -->
                     <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]" size="10">
-                        <!-- <vaadin-grid-column>
-                            <template class="header">
-                                <vaadin-grid-filter aria-label="First Name" path="name.first" value="[[_filterFirstName]]">
-                                    <input placeholder="First Name" value="{{_filterFirstName::input}}" focus-target>
-                                </vaadin-grid-filter>
-                            </template>
-                            <template>[[item.name.first]]</template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <vaadin-grid-filter aria-label="Last Name" path="name.last" value="[[_filterLastName]]">
-                                    <input slot="filter" placeholder="Last Name" value="{{_filterLastName::input}}" focus-target>
-                                </vaadin-grid-filter>
-                            </template>
-                            <template>[[item.name.last]]</template>
-                        </vaadin-grid-column> -->
                         <vaadin-grid-column flex="1">
                             <template class="header">
                                 <div class="cell center">Image</div>
