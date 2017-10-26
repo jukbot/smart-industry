@@ -1,9 +1,9 @@
 <!-- POLYMER 2 -->
 <!-- app modules - used for core functions -->
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="/bower_components/polymer/lib/utils/render-status.html">
 <link rel="import" href="/bower_components/polymer/lib/utils/async.html">
+<link rel="import" href="/bower_components/polymer/lib/utils/debounce.html">
 <link rel="import" href="/bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="/bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="/bower_components/app-layout/app-header/app-header.html">
@@ -19,10 +19,9 @@
 <!-- import shared style component -->
 <link rel="import" href="style/shared-styles.html">
 <!-- paper modules used for component style -->
-<link rel="import" href="/bower_components/paper-spinner/paper-spinner-lite.html">
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="/bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/bower_components/paper-tooltip/paper-tooltip.html">
 <!-- iron modules used for component functions -->
 <link rel="import" href="/bower_components/iron-image/iron-image.html">
 <link rel="import" href="/bower_components/iron-selector/iron-selector.html">
@@ -183,6 +182,10 @@
             type: Boolean,
             notify: true
           },
+          route: {
+            type: String,
+            notify: true,
+          },
           loadComplete: {
             type: Boolean,
             value: false
@@ -211,12 +214,20 @@
         requestAnimationFrame(this._installListeners.bind(this))
       }
       ready() {
-        super.ready()
-        this.removeAttribute('unresolved')
+        super.ready();
+        this.removeAttribute('unresolved');
         Polymer.RenderStatus.afterNextRender(this, () => {
           this._activateFetch();
           this._activatePushNotification();
         });
+      }
+      _installListeners() {
+        this.addEventListener('show-invalid-url-warning', (e) => this._showPage404(e))
+        this.addEventListener('on-error', (e) => this.handleError(e))
+        Polymer.RenderStatus.afterNextRender(this, () => {
+          window.addEventListener('online', (e) => this._networkChanged(e))
+          window.addEventListener('offline', (e) => this._networkChanged(e))
+        })
       }
       logout() {
         if (this.online) {
@@ -273,20 +284,14 @@
           this.$$(target).style.color = 'red'
         }
       }
-      _installListeners() {
-        // listen for custom events on main page
-        this.addEventListener('show-invalid-url-warning', (e) => this._showPage404(e))
-        this.addEventListener('on-error', (e) => this.handleError(e))
-        // listen for online/offline
-        Polymer.RenderStatus.afterNextRender(this, () => {
-          window.addEventListener('online', (e) => this._networkChanged(e))
-          window.addEventListener('offline', (e) => this._networkChanged(e))
-        })
-      }
       _routePageChanged(page, visible) {
         if (!visible) return this.page = page;
         this.page = page || 'dashboard', this.$.drawer.persistent || this.$.drawer.close()
+        this.currentPage = page;
         // Close a non-persistent drawer when the page & route are changed.
+      }
+      _showPage404() {
+        this.page = '404'
       }
       _pageChanged(page, oldPage) {
         if (page != null) {
@@ -304,9 +309,6 @@
               true)
           }
         }
-      }
-      _showPage404() {
-        this.page = '404'
       }
       _pageLoaded(shouldResetLayout) {
         this._ensureLazyLoaded()
@@ -401,17 +403,23 @@
         }
       }
       _signedInChanged(e) {
-        // Polymer.RenderStatus.beforeNextRender(this, function () {
-        //   Polymer.Async.timeOut.run(() => {
-        //     if (this.signedIn && this.route.path == '/login') { // window.location.pathname.match('^/login')
-        //       this.page = 'dashboard'
-        //       this.set('route.path', '/app/dashboard')
-        //     } else if (!this.signedIn && this.route.path !== '/term') {
-        //       this.page = 'login'
-        //       this.set('route.path', '/login')
-        //     }
-        //   }, 1)
-        // })
+        Polymer.RenderStatus.afterNextRender(this, function () {
+          // If singed in but at login page
+          if (e && this.route.path === '/login') { // window.location.pathname.match('^/login')
+            this.page = 'dashboard'
+            this.set('route.path', '/app/dashboard')
+          }
+          // // If signed in but at other page
+          // else if (this.signedIn && this.route.path !== '/login') { // window.location.pathname.match('^/login')
+          //   this.page = this.currentPage
+          //   this.set('route.path', '/app/' + this.currentPage)
+          // }
+          // // If not sign in but not at term page
+          // else if (!this.signedIn && this.route.path !== '/term') {
+          //   this.page = 'login'
+          //   this.set('route.path', '/login')
+          // }
+        })
       }
       _networkChanged() {
         let oldOffline = this.offline
@@ -422,8 +430,8 @@
             this._networkSnackbar = document.createElement('flat-toast');
             this.root.appendChild(this._networkSnackbar);
           }
-          this._networkSnackbar.innerHTML = this.offline ?
-            this.localize('notification-offline') : this.localize('notification-online')
+          this._networkSnackbar.innerHTML = this.offline ? this.localize('notification-offline') : this.localize(
+            'notification-online')
           this._networkSnackbar.setAttribute('duration', 5000);
           this.closeToastAlert();
           this._networkSnackbar.open();
@@ -453,7 +461,9 @@
         this.$.toastVerify.open()
       }
       _handleUser(user) {
-        console.info(`DEBUG User ${user}`)
+        if (user) {
+          console.info(`DEBUG User ${user}`)
+        }
       }
       _handleError(e) {
         console.error('Error: ' + e.message)

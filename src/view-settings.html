@@ -19,7 +19,7 @@
     <style include="shared-styles app-grid-style flat-button">
        :host {
         display: block;
-        margin: 10px;
+        padding: 10px;
         --app-grid-columns: 3;
         --app-grid-item-height: 50%;
       }
@@ -165,34 +165,36 @@
         </div>
       </li>
     </ul>
-    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
+    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{toastText}}"></paper-toast>
     <vaadin-dialog id="manageKeyDialog" class="dialog">
       <template>
-        <style is="custom-style" include="shared-style">
-           :host {
-            width: 50%;
-          }
+        <custom-style>
+          <style is="custom-style">
+             :host {
+              width: 50%;
+            }
 
-          [part="content"] {
-            padding: 20px 30px;
-          }
+            [part="content"] {
+              padding: 20px 30px;
+            }
 
-          h1 {
-            margin: 10px 0 20px 0;
-          }
+            h1 {
+              margin: 10px 0 20px 0;
+            }
 
-          .center {
-            text-align: center;
-          }
+            .center {
+              text-align: center;
+            }
 
-          .btn-group {
-            float: right;
-            margin: 10px 0;
-          }
-        </style>
+            .btn-group {
+              float: right;
+              margin: 10px 0;
+            }
+          </style>
+        </custom-style>
         <h1 class="center">Manage Keychain</h1>
         <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
-        <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
+        <paper-input label="Data key" id="keyData" value="[[setKeyValue(usr.key)]]" type="text" always-float-label></paper-input>
         <div class="btn-group">
           <paper-button dialog-dismiss on-tap="closeKeyDialog">
             {{localize('dismiss')}}
@@ -258,26 +260,45 @@
         this.$.manageKeyDialog.opened = true;
       }
 
+      openManageUser() {
+
+      }
+
       closeKeyDialog() {
         this.$.manageKeyDialog.opened = false;
       }
 
+      setKeyValue(key) {
+        this.newKey = key;
+        return key
+      }
+
       updateKey() {
-        let newKey = this.$.shadowRoot.querySelector('#keyData').value;
-        // document.querySelector('#keyData').value;
-        //.root.querySelector('app-drawer')
-        this.$.userData.ref.update({
-          key: newKey
-        });
+        if (this.newKey) {
+          this.$.userData.ref.update({
+            key: this.newKey
+          }).then(() => {
+            this.toastText = 'Updated key successful'
+            this.$.toastAlert.open()
+            this.closeKeyDialog();
+          }).catch(err => {
+            console.error(err.message);
+          })
+        } else {
+          this.toastText = 'Key data cannot leave empty'
+          this.$.toastAlert.open()
+        }
       }
 
       _verifyUploadFile() {
         let file = this.$.uploadImageFile.files[0]
         if (!file.type.match(/image.*/)) {
-          window.alert('Error: Invalid file format')
+          this.toastText = 'Invalid file format'
+          this.$.toastAlert.open()
           this.$.uploadImageFile.value = null
         } else if (file.size > this.maxFileSize) {
-          window.alert('Error: File size maximum is 1 MB')
+          this.toastText = 'File size maximum is 1 MB'
+          this.$.toastAlert.open()
           this.$.uploadImageFile.value = null
         }
       }
@@ -388,10 +409,10 @@
         this.autobackup = this.$.autobackupSwitch.checked
         if (this.$.autobackupSwitch.checked) {
           this.toastText = 'autobackup-notification-alert-on'
-          //this.$.toastAlert.open()
+          this.$.toastAlert.open()
         } else {
           this.toastText = 'autobackup-notification-alert-off'
-          //this.$.toastAlert.open()
+          this.$.toastAlert.open()
         }
       }
 
@@ -433,7 +454,8 @@
           if (this._reauthenAccount(currentpassword)) {
             this.user.updatePassword(newPassword)
               .then(() => {
-                window.alert('Update your password successful, you will need to relogin')
+                this.toastText = 'Updated your password successful, you will need to relogin'
+                this.$.toastAlert.open()
               })
               .catch(err => {
                 console.error('Error: ' + err.message)
@@ -446,7 +468,8 @@
         if (newemail !== '') {
           this.user.updateEmail(newemail)
             .then(() => {
-              window.alert('Update your email successful, you will need to relogin')
+              this.toastText = 'Updated your email successful, you will need to relogin'
+              this.$.toastAlert.open()
             })
             .catch(err => {
               console.error('Error: ' + err.message)
@@ -478,8 +501,7 @@
             this.async(function () {
               this.set('route.path', 'login')
               this.page = 'login'
-            }, 1000)
-            console.info('Logout successful')
+            }, 500)
           })
           .catch((error) => {
             console.error('%cAuthenticate Failed: ' + error.code, 'color: crimson;')
@@ -502,7 +524,7 @@
               console.log(device.manufacturerName) // "Arduino LLC"
             })
             .catch(error => {
-              console.log(error)
+              console.error(error)
             })
 
           if (device !== undefined) {
@@ -523,7 +545,7 @@
               })
             })
             .catch(error => {
-              console.log(error)
+              console.error(error)
             })
         } else {
           window.alert('Your web browser is not support physical device detection. Please use Google Chrome')
@@ -549,7 +571,7 @@
             return true
           })
           .catch(err => {
-            console.log('Error: ' + err.message)
+            console.error('Error: ' + err.message)
             return false
           })
       }

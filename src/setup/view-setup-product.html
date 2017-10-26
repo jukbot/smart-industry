@@ -5,6 +5,9 @@
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
+<link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -158,63 +161,34 @@
             <li>
                 <div class="card" hidden="[[!showAddProduct]]">
                     <h1 class="title">Product Management</h1>
+
+                    <paper-input type="text" value="{{filterVal}}"></paper-input>
+                    <vaadin-grid-sorter path="name">Name</vaadin-grid-sorter>
+                    <vaadin-grid-filter path="name" value="[[filterVal]]">
+                    </vaadin-grid-filter>
+
                     <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]" size="10">
 
-                        <template class="row-details">
-                            <div class="details">
-                                <div class="flex-item">
-                                    <h3>Part name</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.name]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
-                                    <h3>Part Process</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[getProductProcess(productPart.process)]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
-                                    <h3>Process Number</h3>
-                                    <template is="dom-repeat" items="[[item.process]]" as="productProcess">
-                                        <p>[[getProcessNumber(productProcess.number)]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
-                                    <h3>Part Dependency</h3>
-                                    <template is="dom-repeat" items="[[item.process]]" as="productProcess">
-                                        <p>[[productProcess.required]]</p>
-                                    </template>
-                                </div>
-                            </div>
-                            <div class="details">
-                                <div class="flex-item">
-                                    <h3>Setup time (mins)</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.setup]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
-                                    <h3>Total Setup time (mins)</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[getSumSetupTime(productPart.setup)]]</p>
-                                    </template>
-                                </div>
 
-                                <div class="flex-item">
-                                    <h3>Cycle time (mins)</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.cycle]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
-                                    <h3>Total Cycle time (mins)</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[getSumCycleTime(productPart.cycle)]]</p>
-                                    </template>
-                                </div>
-                            </div>
-                        </template>
+                        <!-- <vaadin-grid-column>
+                            <template class="header">
+                                <vaadin-grid-filter aria-label="First Name" path="name.first" value="[[_filterFirstName]]">
+                                    <input placeholder="First Name" value="{{_filterFirstName::input}}" focus-target>
+                                </vaadin-grid-filter>
+                            </template>
+                            <template>[[item.name.first]]</template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column>
+                            <template class="header">
+                                <vaadin-grid-filter aria-label="Last Name" path="name.last" value="[[_filterLastName]]">
+                                    <input slot="filter" placeholder="Last Name" value="{{_filterLastName::input}}" focus-target>
+                                </vaadin-grid-filter>
+                            </template>
+                            <template>[[item.name.last]]</template>
+                        </vaadin-grid-column> -->
+
+
                         <vaadin-grid-column flex="1">
                             <template class="header">
                                 <div class="cell center">Image</div>
@@ -331,6 +305,63 @@
                                 </div>
                             </template>
                         </vaadin-grid-column>
+
+                        <!-- Row detail -->
+                        <template class="row-details">
+                            <div class="details">
+                                <div class="flex-item">
+                                    <h3>Part name</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.name]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>Part Process</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[getProductProcess(productPart.process)]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>Process Number</h3>
+                                    <template is="dom-repeat" items="[[item.process]]" as="productProcess">
+                                        <p>[[getProcessNumber(productProcess.number)]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>Part Dependency</h3>
+                                    <template is="dom-repeat" items="[[item.process]]" as="productProcess">
+                                        <p>[[productProcess.required]]</p>
+                                    </template>
+                                </div>
+                            </div>
+                            <div class="details">
+                                <div class="flex-item">
+                                    <h3>Setup time (mins)</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.setup]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>Total Setup time (mins)</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[getSumSetupTime(productPart.setup)]]</p>
+                                    </template>
+                                </div>
+
+                                <div class="flex-item">
+                                    <h3>Cycle time (mins)</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[productPart.cycle]]</p>
+                                    </template>
+                                </div>
+                                <div class="flex-item">
+                                    <h3>Total Cycle time (mins)</h3>
+                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                        <p>[[getSumCycleTime(productPart.cycle)]]</p>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
                     </vaadin-grid>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openAddProductCard">

@@ -1,18 +1,19 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">\=
-<link rel="import" href="/bower_components/paper-input/paper-input.html">=
+<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="/bower_components/paper-item/paper-item.html">
+<link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 <link rel="import" href="../style/flat-icons.html">
+<link rel="import" href="../style/flat-input.html">
 
 <dom-module id="view-setup-machine">
     <template>
-        <style include="shared-styles app-grid-style flat-button">
+        <style include="shared-styles app-grid-style flat-button flat-input">
              :host {
                 display: block;
                 margin: 10px;
@@ -123,6 +124,10 @@
                 text-align: center;
                 padding: 40px 0;
             }
+
+            .search-input {
+                margin: 0 10px;
+            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -190,8 +195,10 @@
         <!-- Machine Management -->
         <div class="card main-card" hidden="[[showListMachine]]">
             <h1 class="title">Machine Management</h1>
+            <paper-input class="search-input" label="Search machine name" id="searchMachineInput" value="{{searchString::input}}" type="text"
+                always-float-label></paper-input>
             <ul class="app-grid">
-                <template is="dom-repeat" items="{{persistedMachineData}}" as="machineItem">
+                <template is="dom-repeat" filter="{{searchMachine(searchString)}}" observe="name" items="{{persistedMachineData}}" as="machineItem">
                     <li>
                         <div class="machine">
                             <div class="machine-info-group">
@@ -310,6 +317,20 @@
             ready() {
                 super.ready()
                 requestAnimationFrame(this._installListeners.bind(this))
+            }
+
+            searchMachine(keyword) {
+                if (!keyword) {
+                    // set filter to null to disable filtering
+                    return null;
+                } else {
+                    // return a filter function for the current search keyword
+                    keyword = keyword.toLowerCase();
+                    return ((machine) => {
+                        let name = machine.name.toLowerCase();
+                        return (name.indexOf(keyword) != -1);
+                    });
+                }
             }
 
             _installListeners() {
