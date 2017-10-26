@@ -1,6 +1,7 @@
 <!-- POLYMER 2 -->
 <!-- app modules - used for core functions -->
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/polymer/lib/elements/dom-if.html">
 <link rel="import" href="/bower_components/polymer/lib/utils/render-status.html">
 <link rel="import" href="/bower_components/polymer/lib/utils/async.html">
 <link rel="import" href="/bower_components/app-layout/app-drawer/app-drawer.html">
@@ -65,8 +66,6 @@
     <iron-pages selected="[[pageData.page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404" role="main">
       <view-term name="term" route="[[subRoute]]" hidden$="[[user]]"></view-term>
       <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
-      <view-offline name="offline" route="[[subRoute]]" hidden$="[[!user]]"></view-offline>
-      <view-error name="error" route="[[subRoute]]" hidden$="[[!user]]"></view-error>
       <view-404 name="404" route="[[subRoute]]"></view-404>
       <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}" name="app">
         <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open="[[narrow]]" hidden="[[!user]]">
@@ -127,6 +126,9 @@
             <view-track name="track" route="[[subPageRoute]]" hidden$="[[!user]]"></view-track>
             <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]"></view-help>
             <view-settings name="settings" route="[[subPageRoute]]" hidden$="[[!user]]"></view-settings>
+            <view-404 name="404" route="[[subPageRoute]]" hidden$="[[!user]]"></view-404>
+            <view-offline name="offline" route="[[subPageRoute]]" hidden$="[[!user]]"></view-offline>
+            <view-error name="error" route="[[subPageRoute]]" hidden$="[[!user]]"></view-error>
           </iron-lazy-pages>
         </app-header-layout>
       </app-drawer-layout>
@@ -217,7 +219,7 @@
         });
       }
       logout() {
-        if (!this.online) {
+        if (this.online) {
           this.$.userAuth.signOut()
             .then(() => {
               Polymer.Async.timeOut.run(() => {
@@ -241,19 +243,19 @@
       }
       getOnlineStatus(status) {
         if (status) {
-          this._setColorStatus(0, '.online')
+          this._setColorStatus(1, '.online')
           return 'Online'
         } else {
-          this._setColorStatus(1, '.online')
+          this._setColorStatus(0, '.online')
           return 'Offline'
         }
       }
       getVerifyStatus(status) {
         if (status) {
-          this._setColorStatus(0, '.verify')
+          this._setColorStatus(1, '.verify')
           return 'Verified'
         } else {
-          this._setColorStatus(1, '.verify')
+          this._setColorStatus(0, '.verify')
           return 'Not verify'
         }
       }
@@ -282,7 +284,7 @@
         })
       }
       _routePageChanged(page, visible) {
-        if (!visible) return;
+        if (!visible) return this.page = page;
         this.page = page || 'dashboard', this.$.drawer.persistent || this.$.drawer.close()
         // Close a non-persistent drawer when the page & route are changed.
       }
@@ -319,25 +321,13 @@
       }
       _ensureLazyLoaded() {
         this.loadComplete || (this.loadComplete = true, Polymer.RenderStatus.afterNextRender(this, () => {
-          // import lazy reousrce file
+          // import lazy resource file
           Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
             this._registerServiceWorker()
             this._networkChanged()
             this.loadComplete = true
           })
         }))
-
-        // load lazy resources after render and set `loadComplete` when done.
-        // if (!this.loadComplete) {
-        //   Polymer.RenderStatus.afterNextRender(this, () => {
-        //     // import lazy reousrce file
-        //     Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
-        //       this._registerServiceWorker()
-        //       this._networkChanged()
-        //       this.loadComplete = true
-        //     })
-        //   })
-        // }
       }
       _registerServiceWorker() {
         const greenColor = 'color: green'
@@ -401,7 +391,6 @@
           window.alert('Fetch is not support by your browser. Please upgrade your browser.')
         }
       }
-
       _activatePushNotification() {
         if ('PushManager' in window) {
           document.body.classList.add('push-enabled');
@@ -412,17 +401,17 @@
         }
       }
       _signedInChanged(e) {
-        Polymer.RenderStatus.beforeNextRender(this, function () {
-          Polymer.Async.timeOut.run(() => {
-            if (this.signedIn && this.route.path == '/login') { // window.location.pathname.match('^/login')
-              this.page = 'dashboard'
-              this.set('route.path', '/app/dashboard')
-            } else if (!this.signedIn && this.route.path !== '/term') {
-              this.page = 'login'
-              this.set('route.path', '/login')
-            }
-          }, 1)
-        })
+        // Polymer.RenderStatus.beforeNextRender(this, function () {
+        //   Polymer.Async.timeOut.run(() => {
+        //     if (this.signedIn && this.route.path == '/login') { // window.location.pathname.match('^/login')
+        //       this.page = 'dashboard'
+        //       this.set('route.path', '/app/dashboard')
+        //     } else if (!this.signedIn && this.route.path !== '/term') {
+        //       this.page = 'login'
+        //       this.set('route.path', '/login')
+        //     }
+        //   }, 1)
+        // })
       }
       _networkChanged() {
         let oldOffline = this.offline

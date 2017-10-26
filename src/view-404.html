@@ -6,7 +6,7 @@
 <dom-module id="view-404">
   <template>
     <style include="flat-button">
-      :host {
+       :host {
         display: block;
         overflow: hidden;
       }
@@ -14,6 +14,10 @@
       iron-icon {
         width: 50px;
         height: 50px;
+      }
+
+      flat-button>* {
+        width: 200px;
       }
 
       h1,
@@ -51,7 +55,8 @@
     <div class="container">
       <div class="flex-group">
         <iron-icon class="icon" icon="icons:error"></iron-icon>
-        <h1>Sorry, we couldn't find that page</h1>
+        <h1>Sorry, this page isn't available.</h1>
+        <p>The link you followed may be broken, or the page may have been removed.</p>
         <flat-button>
           <a href="/app/dashboard" title="Back to home">Go to the home page</a>
         </flat-button>
@@ -60,10 +65,10 @@
   </template>
   <script>
     /**
-      * @View404
-      * @polymer 
-      * @extends {Polymer.Element}
-      */
+     * @View404
+     * @polymer 
+     * @extends {Polymer.Element}
+     */
     class View404 extends Polymer.Element {
       static get is() {
         return 'view-404'
