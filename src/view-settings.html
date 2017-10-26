@@ -1,4 +1,5 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
+<link rel="import" href="/bower_components/polymer/lib/elements/dom-bind.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/vaadin-material-theme/vaadin-text-field.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
@@ -166,12 +167,33 @@
     </ul>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     <vaadin-dialog id="manageKeyDialog" class="dialog">
-      <template id="test">
-        <style include="shared-styles"></style>
+      <template>
+        <style is="custom-style" include="shared-style">
+           :host {
+            width: 50%;
+          }
+
+          [part="content"] {
+            padding: 20px 30px;
+          }
+
+          h1 {
+            margin: 10px 0 20px 0;
+          }
+
+          .center {
+            text-align: center;
+          }
+
+          .btn-group {
+            float: right;
+            margin: 10px 0;
+          }
+        </style>
         <h1 class="center">Manage Keychain</h1>
         <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
         <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
-        <div class="buttons">
+        <div class="btn-group">
           <paper-button dialog-dismiss on-tap="closeKeyDialog">
             {{localize('dismiss')}}
           </paper-button>
@@ -241,7 +263,8 @@
       }
 
       updateKey() {
-        let newKey = this.root.querySelector('#keyData').value;
+        let newKey = this.$.shadowRoot.querySelector('#keyData').value;
+        // document.querySelector('#keyData').value;
         //.root.querySelector('app-drawer')
         this.$.userData.ref.update({
           key: newKey
