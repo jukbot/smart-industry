@@ -6,7 +6,7 @@
 <dom-module id="view-error">
   <template>
     <style include="flat-button">
-      :host {
+       :host {
         display: block;
         overflow: hidden;
       }
@@ -14,6 +14,10 @@
       iron-icon {
         width: 50px;
         height: 50px;
+      }
+
+      flat-button>* {
+        width: 200px;
       }
 
       h1,
@@ -60,10 +64,10 @@
   </template>
   <script>
     /**
-      * @ViewError
-      * @polymer 
-      * @extends {Polymer.Element}
-      */
+     * @ViewError
+     * @polymer 
+     * @extends {Polymer.Element}
+     */
     class ViewError extends Polymer.Element {
       static get is() {
         return 'view-error'
