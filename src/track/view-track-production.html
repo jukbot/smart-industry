@@ -329,7 +329,7 @@
 
             receiveJob(e) {
                 const key = e.currentTarget.job.$key;
-                console.log(this.$.scheduleQuery.ref.child(key).order_no);
+                console.log(e.currentTarget.job.order_no);
                 this.$.scheduleQuery.ref.child(key).update({
                     actual_start: Math.round(new Date().getTime() / 1000.0)
                 })
