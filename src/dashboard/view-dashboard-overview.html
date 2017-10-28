@@ -67,6 +67,7 @@
     <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="productionPerformance" path="/data/[[k.key]]/performanceData" data="{{productionPerformance}}"></firebase-document>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <div class="card main-card">
       <ul class="app-grid">
@@ -78,8 +79,8 @@
         </li>
         <li>
           <div class="frame">
-            <h1 class="title">Order In queue</h1>
-            <h1 class="number">[[orderData.length]]</h1>
+            <h1 class="title">WIP Order</h1>
+            <h1 class="number">[[wipOrderCount]]</h1>
           </div>
         </li>
         <li>
@@ -92,7 +93,7 @@
         <li>
           <div class="frame">
             <h1 class="title">Average OEE</h1>
-            <h1 class="number">N/A</h1>
+            <h1 class="number">[[productionPerformance.oee]] %</h1>
           </div>
         </li>
         <li>
@@ -150,15 +151,18 @@
           factorySchedule: Object,
           factoryOperation: Object,
           factoryPerformance: Object,
+          productionPerformance: Object,
           waitOrderCount: Number,
-          doneOrderCount: Number
+          doneOrderCount: Number,
+          wipOrderCount: Number
         }
       }
 
       static get observers() {
         return [
           'getWaitOrder(orderData)',
-          'getDoneOrder(orderData)'
+          'getDoneOrder(orderData)',
+          'getWIPOrder(orderData)'
         ]
       }
 
@@ -254,12 +258,24 @@
         if (!orderData) return 0;
         if (orderData.length > 0) {
           const query = this.$.orderQuery.ref;
-          query.orderByChild("order_status").equalTo("done").on("child_added", (snapshot) => {
+          query.orderByChild("order_status").equalTo("done").on("value", (snapshot) => {
             this.set('doneOrderCount', snapshot.numChildren());
-            console.log(snapshot.val())
           });
         } else {
           this.set('doneOrderCount', 0);
+        }
+      }
+
+      getWIPOrder(orderData) {
+        if (!orderData) return 0;
+        if (orderData.length > 0) {
+          const query = this.$.orderQuery.ref;
+          query.orderByChild("order_status").equalTo("wip").on("value", (snapshot) => {
+            this.set('wipOrderCount', snapshot.numChildren());
+            //console.log(snapshot.val())
+          });
+        } else {
+          this.set('wipOrderCount', 0);
         }
       }
 

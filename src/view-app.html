@@ -81,9 +81,9 @@
                 <paper-icon-button icon="vaadin:calendar-clock"></paper-icon-button> {{localize('view-index-menu-plan')}}</a>
               <a name="track" role="link " href="[[rootPath]]app/track" rel="track" title="Track">
                 <paper-icon-button icon="vaadin:progressbar"></paper-icon-button> {{localize('view-index-menu-track')}}</a>
-              <a name="help" role="link" href="[[rootPath]]app/help" rel="help" title="Help">
+              <!-- <a name="help" role="link" href="[[rootPath]]app/help" rel="help" title="Help">
                 <paper-icon-button icon="vaadin:question-circle"></paper-icon-button> {{localize('help')}}
-              </a>
+              </a> -->
               <a name="settings" role="link" href="[[rootPath]]app/settings" rel="settings" title="Settings">
                 <paper-icon-button icon="vaadin:tools"></paper-icon-button> {{localize('settings')}}
               </a>
@@ -95,17 +95,18 @@
               <button type="button">{{localize('logout-button')}}
               </button>
             </flat-button>
-            <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" placeholder="Loading" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
-            <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="0">
-              <p>{{localize('email')}}: [[persistedUserData.email]]</p>
-              <p>{{localize('verify-status')}}:
-                <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span>
-              </p>
-              <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
-            </paper-tooltip>
-            <p>[[persistedUserData.displayname]]</p>
-            <p class="online">[[getOnlineStatus(online)]]</p>
-            <p>{{localize('version')}} 1.0.6</p>
+            <div class="user-info">
+              <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" placeholder="Loading" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
+              <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="0">
+                <p>{{localize('email')}}: [[persistedUserData.email]]</p>
+                <p>{{localize('verify-status')}}:
+                  <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span>
+                </p>
+                <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
+              </paper-tooltip>
+              <p>[[persistedUserData.displayname]]</p>
+              <p>{{localize('version')}} 1.0.6</p>
+            </div>
           </div>
         </app-drawer>
         <app-header-layout>
@@ -123,7 +124,7 @@
             <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]"></view-setup>
             <view-plan name="plan" route="[[subPageRoute]]" hidden$="[[!user]]"></view-plan>
             <view-track name="track" route="[[subPageRoute]]" hidden$="[[!user]]"></view-track>
-            <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]"></view-help>
+            <!-- <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]"></view-help> -->
             <view-settings name="settings" route="[[subPageRoute]]" hidden$="[[!user]]"></view-settings>
             <view-404 name="404" route="[[subPageRoute]]" hidden$="[[!user]]"></view-404>
             <view-offline name="offline" route="[[subPageRoute]]" hidden$="[[!user]]"></view-offline>
@@ -167,7 +168,7 @@
             value: () => {
               if (localStorage.getItem('app-lang') != null) {
                 return localStorage.getItem('app-lang')
-              } else if (localStorage.getItem('app-lang') == {}) {
+              } else if (localStorage.getItem('app-lang') == {} || !localStorage.getItem('app-lang')) {
                 return 'en'
               } else {
                 return language
@@ -252,15 +253,6 @@
         this.$.toastVerify.close()
         this.$.toastVerify.hidden = true;
       }
-      getOnlineStatus(status) {
-        if (status) {
-          this._setColorStatus(1, '.online')
-          return 'Online'
-        } else {
-          this._setColorStatus(0, '.online')
-          return 'Offline'
-        }
-      }
       getVerifyStatus(status) {
         if (status) {
           this._setColorStatus(1, '.verify')
@@ -293,20 +285,16 @@
         this.page = '404'
       }
       _pageChanged(page, oldPage) {
-        if (page != null) {
-          if (page == 'dashboard') {
-            this._pageLoaded(Boolean(oldPage))
-            // other routes are lazy loaded
-          } else {
-            // When a load failed, it triggered a 404 which means we need to eagerly load the 404 page definition
-            const callback = this._pageLoaded.bind(this, Boolean(oldPage))
-            const resolvedPageUrl = this.resolveUrl('view-' + page + '.html')
-            Polymer.importHref(
-              resolvedPageUrl,
-              callback,
-              this._showPage404.bind(this), // callback
-              true)
-          }
+        if (page == 'dashboard') {
+          this._pageLoaded(Boolean(oldPage))
+          // other routes are lazy loaded
+        } else {
+          // When a load failed, it triggered a 404 which means we need to eagerly load the 404 page definition
+          Polymer.importHref(
+            this.resolveUrl('view-' + page + '.html'),
+            this._pageLoaded.bind(this, Boolean(oldPage)),
+            this._showPage404.bind(this),
+            true)
         }
       }
       _pageLoaded(shouldResetLayout) {
@@ -323,11 +311,15 @@
       _ensureLazyLoaded() {
         this.loadComplete || (this.loadComplete = true, Polymer.RenderStatus.afterNextRender(this, () => {
           // import lazy resource file
-          Polymer.importHref(this.resolveUrl('lazy-resources.html'), () => {
-            this._registerServiceWorker()
-            this._networkChanged()
-            this.loadComplete = true
-          })
+          Polymer.importHref(
+            this.resolveUrl('lazy-resources.html'),
+            () => {
+              this._registerServiceWorker()
+              this._networkChanged()
+              this.loadComplete = true
+            },
+            this._showPage404.bind(this),
+            true)
         }))
       }
       _registerServiceWorker() {

@@ -47,9 +47,16 @@
                 }
             }
 
-            .fixed-btn {
-                margin: 20px 10px 10px 10px;
-                width: 300px;
+            .flex-container {
+                display: flex;
+                align-content: center;
+                justify-content: space-between;
+                flex-flow: row nowrap;
+            }
+
+            .station-btn {
+                margin: 5px;
+                width: 200px;
             }
 
             .machine {
@@ -69,33 +76,6 @@
 
             .machine-info-group {
                 margin-bottom: auto;
-            }
-
-            .flex-container {
-                padding: 0;
-                margin: 0;
-                list-style: none;
-                -ms-box-orient: horizontal;
-                display: -webkit-box;
-                display: -moz-box;
-                display: -ms-flexbox;
-                display: -moz-flex;
-                display: -webkit-flex;
-                display: flex;
-                align-items: center;
-                justify-content: flex-start;
-            }
-
-            .flex-item {
-                background: #202020;
-                width: 200px;
-                height: 75px;
-                margin: 10px;
-                line-height: 75px;
-                color: white;
-                font-size: 1.25em;
-                text-align: center;
-                flex: auto;
             }
 
             .big-btn button {
@@ -180,6 +160,15 @@
         <!-- Machine Management -->
         <div class="card main-card" hidden="[[showListMachine]]">
             <h1 class="title">Work In Progress Order Tracking</h1>
+            <div class="center">
+                <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
+                    <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
+                        <paper-button class="station-btn" name="[[stationItem.st_number]]">
+                            Station [[stationItem.st_number]]
+                        </paper-button>
+                    </template>
+                </iron-selector>
+            </div>
             <ul class="app-grid">
                 <template is="dom-repeat" items="{{scheduleItems}}" as="item">
                     <li>
@@ -195,7 +184,9 @@
                                 <p>Actual Start: [[timestampToTime(item.actual_start)]]</p>
                                 <p>Actual End: [[timestampToTime(item.actual_end)]]</p>
                                 <p>Duration: [[getActualDuration(item.actual_start,item.actual_end)]]</p>
-                                <p>Status: [[item.job_status]]</p>
+                                <p>Status:
+                                    <span class$="[[getTextStatus(item.job_status)]]" style$="color:[[getColorStatus(item.job_status)]]">[[item.job_status]]</span>
+                                </p>
                                 <p>Completed: 0 / [[item.job_quantity]]</p>
                             </div>
                             <flat-button class="btn" on-tap="receiveJob" job="[[item]]">
@@ -214,15 +205,6 @@
                     <h1>No job in station found</h1>
                 </li>
             </ul>
-            <div class="center">
-                <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
-                    <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                        <flat-button class="fix-btn" name="[[stationItem.st_number]]">
-                            <button>Station [[stationItem.st_number]]</button>
-                        </flat-button>
-                    </template>
-                </iron-selector>
-            </div>
         </div>
         <div class="card main-card" hidden="[[showListMachine]]">
             <h1 class="title">Tracking Device Management</h1>
@@ -373,6 +355,50 @@
                     return true;
                 }
                 return false;
+            }
+
+            getColorStatus(job_status) {
+                switch (job_status) {
+                    case 'waiting':
+                        return '#FFB300'
+                        break;
+                    case 'wip':
+                        return '#5E35B1'
+                        break;
+                    case 'done':
+                        return '#7CB342'
+                        break;
+                    case 'late':
+                        return '#E53935'
+                        break;
+                    case 'cancel':
+                        return '#E53935'
+                        break;
+                    default:
+                        return '#202020'
+                }
+            }
+
+            getTextStatus(job_status) {
+                switch (job_status) {
+                    case 'waiting':
+                        return 'normal'
+                        break;
+                    case 'wip':
+                        return 'blink'
+                        break;
+                    case 'done':
+                        return 'normal'
+                        break;
+                    case 'late':
+                        return 'normal'
+                        break;
+                    case 'cancel':
+                        return 'normal'
+                        break;
+                    default:
+                        return 'normal'
+                }
             }
         }
         customElements.define(ViewTrackProduction.is, ViewTrackProduction);

@@ -487,11 +487,13 @@
                 const sname = this.$.stationName.value;
                 const snumber = this.$.stationNumber.value;
                 const smachine = this.machines;
+                const timestamp = Math.round(Date.now() / 1000.0);
                 if (sname && snumber && smachine.length > 0) {
                     this.$.stationQuery.ref.push({
                         st_name: sname,
                         st_number: snumber,
-                        st_machine: smachine
+                        st_machine: smachine,
+                        st_install: timestamp
                     });
                     this.clearField();
                     this.dispatch('clear');

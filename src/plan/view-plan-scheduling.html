@@ -18,7 +18,7 @@
 <dom-module id="view-plan-scheduling">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-            :host {
+             :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -38,6 +38,21 @@
                 margin: 10px 0;
             }
 
+            .flex-container {
+                display: flex;
+                align-content: center;
+                justify-content: space-between;
+                flex-flow: row nowrap;
+            }
+
+            .station-btn {
+                margin: 5px;
+                width: 200px;
+            }
+
+            .btn-group {
+                margin-top: 20px;
+            }
 
             @media (min-width: 360px) and (max-width: 768px) {
                 .btn {
@@ -155,8 +170,7 @@
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
 
         <!-- GANTT CHART DATA -->
-        <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/ganttChartData" order-by-child="order_delivery"
-            data="{{chartItems}}"></firebase-document>
+        <firebase-query app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/ganttChartData" data="{{chartItems}}"></firebase-query>
 
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
@@ -307,7 +321,7 @@
                             <button>Reschedule</button>
                         </flat-button>
                         <flat-button class="btn" on-tap="refreshChart">
-                            <button>Refresh Chart</button>
+                            <button>Update Chart</button>
                         </flat-button>
                     </div>
                 </div>
@@ -446,12 +460,12 @@
                         </vaadin-grid-column>
 
                     </vaadin-grid>
-                    <div class="center">
+                    <div class="center btn-group">
                         <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
                             <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                                <flat-button class="btn" name="[[stationItem.st_number]]">
-                                    <button>Station [[stationItem.st_number]]</button>
-                                </flat-button>
+                                <paper-button class="station-btn" name="[[stationItem.st_number]]">
+                                    Station [[stationItem.st_number]]
+                                </paper-button>
                             </template>
                         </iron-selector>
                     </div>
@@ -468,10 +482,10 @@
     </template>
     <script>
         /**
-        * @ViewPlanScheduling
-        * @polymer 
-        * @extends {Polymer.Element}
-        */
+         * @ViewPlanScheduling
+         * @polymer 
+         * @extends {Polymer.Element}
+         */
         class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
             Polymer.Element) {
             static get is() {
@@ -496,6 +510,7 @@
                     factoryProfile: Object,
                     scheduleItems: Object,
                     timelineOptions: Object,
+                    chartItems: Object,
                     width: Number,
                     height: Number
                 }
@@ -513,25 +528,28 @@
                 requestAnimationFrame(this._installListeners.bind(this))
             }
 
-            _isSerialModel(production_model) {
-                if (production_model === 'serial') {
-                    this.$.concurrency.hidden = true
-                }
-                else {
-                    this.$.concurrency.hidden = false
-                }
-            }
-
             _installListeners() {
                 // listen for custom events on main page
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
                 this.addEventListener('data-changed', (e) => this.sortOrderList(this.orderItems))
             }
 
+            _isSerialModel(production_model) {
+                if (production_model === 'serial') {
+                    this.$.concurrency.hidden = true
+                } else {
+                    this.$.concurrency.hidden = false
+                }
+            }
+
             sortOrderList(order) {
                 // SORT BY EDD THEN BY SPT
-                let s = firstBy(function (v1, v2) { return v1.order_delivery - v2.order_delivery; })
-                    .thenBy(function (v1, v2) { return v1.order_duration - v2.order_duration; });
+                let s = firstBy(function (v1, v2) {
+                        return v1.order_delivery - v2.order_delivery;
+                    })
+                    .thenBy(function (v1, v2) {
+                        return v1.order_duration - v2.order_duration;
+                    });
                 this.sortedOrder = order.sort(s);
                 return order.sort(s);
             }
@@ -545,11 +563,19 @@
                         height: this.height + 200,
                         timeline: {
                             showRowLabels: true,
-                            rowLabelStyle: { fontSize: 16 },
-                            barLabelStyle: { fontSize: 16 },
+                            rowLabelStyle: {
+                                fontSize: 16
+                            },
+                            barLabelStyle: {
+                                fontSize: 16
+                            },
                         },
-                        legend: { position: 'none' },
-                        tooltip: { isHtml: true },
+                        legend: {
+                            position: 'none'
+                        },
+                        tooltip: {
+                            isHtml: true
+                        },
                         avoidOverlappingGridLines: false
                     }
                     this._initialChart()
@@ -560,12 +586,33 @@
             _initialChart() {
                 let chart = this.$.timeline;
                 let dataTable = new google.visualization.DataTable();
-                dataTable.addColumn({ type: 'string', id: 'Station' });
-                dataTable.addColumn({ type: 'string', id: 'Order no.' });
-                dataTable.addColumn({ type: 'string', role: 'style' });
-                dataTable.addColumn({ type: 'date', id: 'Start' });
-                dataTable.addColumn({ type: 'date', id: 'End' });
-                dataTable.addRows(this.chartItems.today);
+                dataTable.addColumn({
+                    type: 'string',
+                    id: 'Station'
+                });
+                dataTable.addColumn({
+                    type: 'string',
+                    id: 'Order no.'
+                });
+                dataTable.addColumn({
+                    type: 'string',
+                    role: 'style'
+                });
+                dataTable.addColumn({
+                    type: 'date',
+                    id: 'Start'
+                });
+                dataTable.addColumn({
+                    type: 'date',
+                    id: 'End'
+                });
+                let todayChart = this.chartItems.filter(d => {
+                    let chartDate = new Date(d.date * 1000)
+                    let currentDate = new Date()
+                    return chartDate.toDateString() === currentDate.toDateString()
+                })
+                console.log(todayChart)
+                dataTable.addRows(todayChart);
                 let timelineChart = document.createElement('google-chart-loader').dataTable(dataTable)
                 timelineChart.then((data) => {
                     chart.data = data;
@@ -610,14 +657,18 @@
                 const current_date = Math.round(new Date().getTime() / 1000.0);
                 const remain = Math.round((delivery_date - current_date) / 86400);
 
-                if (remain < 0) {
-                    this.$.orderQuery.ref.child(key).update({
-                        order_status: 'late'
-                    });
+                if (remain < 0 && status !== 'done' && status !== 'wip') {
+                    this.setLateOrder(key);
                     return 0;
                 } else {
                     return remain;
                 }
+            }
+
+            setLateOrder(key) {
+                this.$.orderQuery.ref.child(key).update({
+                    order_status: 'late'
+                });
             }
 
             getDeliveryDate(timestamp) {
@@ -699,7 +750,9 @@
             }
 
             clearSchedule() {
-                if (window.confirm("Clear all schedule ? The order that are working in process will not be deleted.") == true) {
+                if (window.confirm(
+                        "Clear all schedule ? The order that are working in process will not be deleted.") ==
+                    true) {
                     this.$.orderQuery.ref.remove();
                 }
             }
@@ -723,20 +776,25 @@
 
             refreshChart() {
                 let data = [
-                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8, 33, 0)],
-                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8, 38, 0)],
-                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0), new Date(2017, 10, 19, 8, 45, 0)],
-                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0), new Date(2017, 10, 19, 8, 50, 0)],
-                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0), new Date(2017, 10, 19, 9, 0, 36)],
-                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0), new Date(2017, 10, 19, 9, 14, 27)],
-                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36), new Date(2017, 10, 19, 9, 30, 12)],
-                    ['4', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27), new Date(2017, 10, 19, 10, 20, 12)],
+                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8,
+                        33, 0)],
+                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8,
+                        38, 0)],
+                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0), new Date(2017, 10, 19, 8,
+                        45, 0)],
+                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0), new Date(2017, 10, 19, 8,
+                        50, 0)],
+                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0), new Date(2017, 10, 19, 9,
+                        0, 36)],
+                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0), new Date(2017, 10, 19, 9,
+                        14, 27)],
+                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36), new Date(2017, 10, 19, 9,
+                        30, 12)],
+                    ['4', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27), new Date(2017, 10, 19,
+                        10, 20, 12)],
                 ];
 
-                this.$.chartQuery.ref.update({
-                    today: data
-                })
-
+                this.$.chartQuery.ref.push(data)
             }
 
             _serialSchedule() {
@@ -852,8 +910,7 @@
 
             _multiSchedule() {
                 let order = this.sortedOrder;
-                if (order.length > 0) {
-                } else {
+                if (order.length > 0) {} else {
                     alert("No order to reschedule")
                 }
             }

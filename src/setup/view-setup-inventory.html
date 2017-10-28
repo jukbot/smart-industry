@@ -339,7 +339,7 @@
                 const cost = this.$.inventoryCost.value
                 const quantity = this.$.inventoryQuantity.value
                 const dateTime = Date.now()
-                const timestamp = Math.floor(dateTime / 1000)
+                const timestamp = Math.round(Date.now() / 1000)
                 if (name && code && cost && quantity) {
                     this.$.inventoryQuery.ref.push({
                         name: name,
@@ -374,7 +374,7 @@
                 const cost = this.$.edit_inventoryCost.value
                 const quantity = this.$.edit_inventoryQuantity.value
                 const dateTime = Date.now()
-                const timestamp = Math.floor(dateTime / 1000)
+                const timestamp = Math.round(Date.now() / 1000)
 
                 if (name && code && cost && quantity) {
                     this.$.editInventoryQuery.ref.update({

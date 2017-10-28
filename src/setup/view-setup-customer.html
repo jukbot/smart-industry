@@ -334,12 +334,14 @@
                 const mobile = this.$.customerMobile.value;
                 const address = this.$.customerAddress.value;
                 const mobileHyphens = mobile.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
+                const timestamp = Math.round(Date.now() / 1000.0);
                 if (fullname && email && mobile && address) {
                     this.$.customerQuery.ref.push({
                         name: fullname,
                         email: email,
                         address: address,
-                        mobile: mobileHyphens
+                        mobile: mobileHyphens,
+                        created: timestamp
                     });
                     this._clearField();
                     this.toastText = 'notification-add-success'

@@ -2,6 +2,7 @@
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -26,12 +27,21 @@
         margin: 20px 0 4px 0;
       }
 
+      google-chart {
+        height: 100%;
+        width: 100%;
+      }
+
       @media (min-width: 360px) and (max-width: 768px) {
         h1.title {
           font-size: 1.5rem;
         }
 
         .clear-btn {
+          width: 100%;
+        }
+
+        #column {
           width: 100%;
         }
       }
@@ -42,40 +52,18 @@
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
-        <div class="card">
+        <div class="card" id="chartContainer">
+
           <h1 class="title">Productivity Statistic</h1>
+          <google-chart id="column" type="column" options="[[columnOptions]]" cols='[{"label": "Data", "type": "string"},{"label": "Value", "type": "number"}]'
+            rows='[ ["Col1", 2.0],["Col2", 9.0],["Col3",
+          5.0] ]'></google-chart>
 
-          <vaadin-column-chart class="chart">
-            <title>Product Order Cumulative</title>
-            <x-axis type="category"></x-axis>
-            <y-axis>
-              <title>Total orders</title>
-            </y-axis>
-            <legend enabled="false"></legend>
-            <plot-options>
-              <series>
-                <data-labels enabled="true" format="{point.y} Orders">
-                </data-labels>
-              </series>
-            </plot-options>
-            <data-series>
-              <name>Product</name>
-              <color-by-point>true</color-by-point>
-              <data>
-                <template is="dom-repeat" items="[[orderHistoryData]]">
-                  <point>
-                    <name>Product [[item.order_product]]</name>
-                    <y>[[item.order_quantity]]</y>
-                  </point>
-                </template>
-              </data>
-            </data-series>
-          </vaadin-column-chart>
-
-          <flat-button class="clear-btn" on-tap="_clearStatistic">
+          <flat-button class="clear-btn" on-tap="clearStatistic">
             <button>Reset Statistic</button>
           </flat-button>
           <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
+
         </div>
       </li>
       <li>
@@ -85,6 +73,7 @@
         </div>
       </li>
     </ul>
+    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
   </template>
   <script>
     /**
@@ -102,12 +91,53 @@
       static get properties() {
         return {
           language: String,
-          orderHistoryData: Object
+          orderHistoryData: Object,
+          columnOptions: Object,
+          width: Number,
+          height: Number
         }
       }
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../../data/locales.json'));
+        requestAnimationFrame(this._installListeners.bind(this))
+      }
+
+      _installListeners() {
+        // listen for custom events on main page
+        this.addEventListener('iron-resize', (e) => this._setChartSize(e))
+      }
+
+      _setChartSize() {
+        this.width = this.$.chartContainer.offsetWidth;
+        this.height = this.$.chartContainer.offsetHeight;
+        if (this.width > 0) {
+          this.columnOptions = {
+            width: this.width - 40,
+            height: this.height,
+            chart: {
+              title: 'Company Performance',
+              subtitle: 'Sales, Expenses, and Profit: 2014-2017',
+            },
+            vAxis: {
+              "minValue": 0,
+              "maxValue": 10
+            },
+            tooltip: {
+              isHtml: true
+            }
+          }
+          this._initialChart()
+          this.$.column.redraw()
+        }
+      }
+
+      clearStatistic() {
+        if (confirm("Are you sure do you want to clear product order history ?") == true) {
+          this.$.orderHistoryQuery.ref.remove();
+          this.alertText = "notification-delete-successful";
+          this.$.toastAlert.open();
+        }
       }
     }
     customElements.define(ViewDashboardStatistic.is, ViewDashboardStatistic);

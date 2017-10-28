@@ -1,7 +1,9 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
 <link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/bower_components/vaadin-material-theme/vaadin-grid.html">
+<link rel="import" href="/lib/sugar.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -60,6 +62,15 @@
         padding: 0;
       }
 
+      vaadin-combo-box#notificationFilter,
+      vaadin-date-picker#notificationDateSelector {
+        width: 250px;
+      }
+
+      .filter-bar {
+        margin-top: 10px;
+      }
+
       @media (min-width: 360px) and (max-width: 768px) {
         h1.title {
           font-size: 1.5rem;
@@ -79,8 +90,17 @@
       <li>
         <div class="card">
           <h1 class="title">{{localize('notification-center')}}</h1>
-          <vaadin-grid id="notificationTable" aria-label="Notification Center" items="[[notificationData]]">
-
+          <div class="filter-bar">
+            <vaadin-combo-box label="{{localize('notification-type')}}" id="notificationFilter" value="{{type}}" items="[[filterItems]]"
+              item-value-path="value" item-label-path="name" error-message="Invalid Input" required always-float-label>
+              <template>
+                <div>{{localize(item.value)}}</div>
+              </template>
+            </vaadin-combo-box>
+            <vaadin-date-picker label="Notification Date" max="2030-01-01" name="notification date" id="notificationDateSelector" initial-position="[[todayDate]]"
+              value="{{date}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
+          </div>
+          <vaadin-grid id="notificationTable" aria-label="Notification Center" items="[[filterNotification(notificationData, date, type)]]">
             <vaadin-grid-column width="50px" flex-grow="0">
               <template class="header">#</template>
               <template>[[index]]</template>
@@ -88,31 +108,35 @@
 
             <vaadin-grid-column>
               <template class="header">
-                <span>
-                  Type
-                </span>
+                <vaadin-grid-sorter path="type">
+                  <div class="cell">
+                    {{localize('type')}}
+                  </div>
+                </vaadin-grid-sorter>
               </template>
               <template>
-                <span>
-                  [[item.type]]
-                </span>
+                <div class="cell" style$="color:[[getColorType(item.type)]]">
+                  {{localize(item.type)}}
+                </div>
               </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column>
-              <template class="header">Detail</template>
-              <template>[[item.detail]]</template>
+              <template class="header">{{localize('detail')}}</template>
+              <template>
+                <div class="cell">[[item.detail]]</div>
+              </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column width="150px">
-              <template class="header">Datetime</template>
+              <template class="header">{{localize('datetime')}}</template>
               <template>
-                <p>[[getDate(item.created)]]</p>
+                <div class="cell">[[getDate(item.created)]]</div>
               </template>
             </vaadin-grid-column>
           </vaadin-grid>
           <flat-button class="clear-btn" on-tap="clearNotification">
-            <button>Clear All Notification</button>
+            <button>{{localize('clear-all-notifications')}}</button>
           </flat-button>
           <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
         </div>
@@ -133,9 +157,36 @@
       }
       static get properties() {
         return {
+          todayDate: String,
           alertText: String,
           language: String,
-          notificationData: Object
+          notificationData: Object,
+          type: {
+            type: String,
+            value: "none"
+          },
+          filterItems: {
+            type: Array,
+            value: () => {
+              return [{
+                  "name": "None",
+                  "value": "none"
+                },
+                {
+                  "name": "Normal",
+                  "value": "normal"
+                },
+                {
+                  "name": "Warning",
+                  "value": "warn"
+                },
+                {
+                  "name": "Critical",
+                  "value": "critical"
+                }
+              ]
+            }
+          }
         }
       }
 
@@ -144,26 +195,98 @@
         this.loadResources(this.resolveUrl('../../data/locales.json'));
       }
 
-      clearNotification() {
-        if (confirm("Are you sure do you want to clear all notifacation ?") == true) {
-          this.$.notificationQuery.ref.remove();
-          this.alertText = "Deleted all notification successful";
-          this.$.toastAlert.open();
+      ready() {
+        super.ready();
+        this.setNotificationDatePosition();
+      }
+
+      filterNotification(data, date, type) {
+        const selectTimestamp = new Date(date);
+        switch (type) {
+          case "none":
+            return data
+            break;
+          case "normal":
+            return data.filter(d => d.type === "normal" && new Date(d.created * 1000).toDateString() ===
+              selectTimestamp.toDateString())
+            break;
+          case "warn":
+            return data.filter(d => d.type === "warn" && new Date(d.created * 1000).toDateString() ===
+              selectTimestamp.toDateString())
+            break;
+          case "critical":
+            return data.filter(d => d.type === "critical" && new Date(d.created * 1000).toDateString() ===
+              selectTimestamp.toDateString())
+            break;
+          default:
+            return data
         }
       }
 
-      getDate(timestamp) {
-        let today = new Date(timestamp * 1000);
-        let dd = today.getDate();
-        let mm = today.getMonth() + 1; //January is 0!
-        let yyyy = today.getFullYear();
+      setNotificationDatePosition() {
+        const today = new Date();
+        let dd = today.getDate()
+        let mm = today.getMonth() + 1
+        let yyyy = today.getFullYear()
         if (dd < 10) {
           dd = '0' + dd
         }
         if (mm < 10) {
           mm = '0' + mm
         }
-        let date = dd + '/' + mm + '/' + yyyy;
+        this.todayDate = yyyy + '-' + mm + '-' + dd
+        this.$.notificationDateSelector.value = yyyy + '-' + mm + '-' + dd
+      }
+
+      clearNotification() {
+        if (confirm("Are you sure do you want to clear all notifacation ?") == true) {
+          this.$.notificationQuery.ref.remove();
+          this.alertText = "notification-delete-successful";
+          this.$.toastAlert.open();
+        }
+      }
+
+      getColorType(type) {
+        switch (type) {
+          case 'normal':
+            return '#7CB342'
+            break;
+          case 'warn':
+            return '#FFB300'
+            break;
+          case 'critical':
+            return '#E53935'
+            break;
+          default:
+            return '#202020'
+        }
+      }
+
+      getDate(timestamp) {
+        let today = new Date(timestamp * 1000);
+        let dd = today.getDate();
+        let m = today.getMonth() + 1; //January is 0!
+        let yyyy = today.getFullYear();
+        let hh = today.getHours();
+        let mm = today.getMinutes();
+        let ss = today.getSeconds();
+
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (m < 10) {
+          m = '0' + m
+        }
+        if (hh < 10) {
+          hh = '0' + hh
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        if (ss < 10) {
+          ss = '0' + ss
+        }
+        let date = dd + '/' + m + '/' + yyyy + ' | ' + hh + ':' + mm + ':' + ss;
         return date;
       }
     }

@@ -1,6 +1,6 @@
 {
   "name": "imes",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Intelligent Manufacturing Execution System",
   "author": "KMUTT",
   "license": "Apache-2.0",
@@ -28,6 +28,7 @@
     "web-animations-js": "^2.3.1"
   },
   "devDependencies": {
+    "bower": "latest",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.1",
@@ -41,17 +42,18 @@
     "flow-bin": "^0.57.3",
     "html-webpack-plugin": "^2.30.1",
     "polymer-webpack-loader": "^2.0.0",
-    "workbox-webpack-plugin": "^2.1.0"
+    "workbox-webpack-plugin": "^2.1.0",
+    "browser-sync": "^2.18.13"
   },
   "scripts": {
-    "babel-version": "babel --version",
-    "lint": "npm run lint:javascript && polymer lint",
-    "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
+    "lint": "npm run lint:javascript && polymer lint --input src/**/*.html",
+    "dev": "polymer serve -p 8080 & npm run watch",
     "test": "polymer test",
-    "test:integration": "polymer build",
+    "build": "polymer build",
     "serve:dev": "polymer serve",
     "serve:prod": "polymer build && firebase serve --only functions,hosting",
-    "deploy": "polymer build && firebase deploy"
+    "deploy": "polymer build && firebase deploy",
+    "watch": "browser-sync start --proxy localhost:8080 --files 'src/**/*, src/*.js, data/*.json, images/*' "
   },
   "standard": {
     "parser": "babel-eslint",

@@ -400,7 +400,7 @@
                 const capacity = this.$.machineCapacity.value;
                 const type = this.$.machineType.value;
                 const code = this.$.machineType.selectedItem.code;
-                const install = Math.round(new Date().getTime() / 1000.0);
+                const timestamp = Math.round(Date.now() / 1000.0);
                 if (number && name && capacity && type && code && install) {
                     this.$.machineQuery.ref.push({
                         number: number,
@@ -408,7 +408,7 @@
                         capacity: capacity,
                         type: type,
                         code: code,
-                        install: install
+                        install: timestamp
                     });
                     this.clearField();
                     this.$.toastAddMachine.open();

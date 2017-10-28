@@ -8,6 +8,17 @@
 [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/imes-project/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
 
+## Demo
+
+Sorry. We have do disable the demo for temporary, due to re-structure the database to improve the performance and flexibility. 
+
+<!-- [Login here](https://smart-mes.firebaseapp.com/) -->
+
+<!-- | E-mail | Password | 
+|---------|---------------|
+| demo@imes.in.th | demouser | -->
+
+
 # Contribution
 
 Please know that this project is still in development with a lot of bugs, if you want to contribute us (help me) working on this project please read [About Project document](https://github.com/jukbot/smart-industry/blob/master/About%20Project.pdf) for an overview and scope of this project phase I and for the technical information please read [Technical document](https://goo.gl/JNmrPE) to understand how this application will work.
@@ -55,15 +66,6 @@ Original quantity is the quantity of an order that includes the backup order ite
 
 ``Scheduling Algorithms``
 Scheduling optimization involves selecting the appropriate scheduling method by considering the resources and time available. By implementing the decision making model which analyzes the current job in the system, it rearranges the job priorities to meet the condition and get the best outcome. There are two production scheduling algorithms that will be used in this project. The first is EDD which takes into account the due date of the product and sorts the earliest items first. The second algorithm is SPT which considers the time to process the product. The products with the fastest processing time will take priority. 
-
-
-## Demo
-
-[Login here](https://smart-mes.firebaseapp.com/)
-
-| E-mail | Password | 
-|---------|---------------|
-| demo@imes.in.th | demouser |
 
 
 ## Browser Supported

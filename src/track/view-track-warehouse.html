@@ -130,12 +130,12 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_status" data="{{doneItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/warehouseData" data="{{doneItems}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
                 <div class="card">
-                    <h1 class="title">Done Order Warehouse</h1>
+                    <h1 class="title">Done Product Warehouse</h1>
 
                     <vaadin-grid id="material" items="[[doneItems]]" size="100">
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
@@ -169,7 +169,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="2">
+                        <vaadin-grid-column flex="1">
                             <template class="header">
                                 <div class="cell">Customer</div>
                             </template>
@@ -178,7 +178,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column>
+                        <vaadin-grid-column flex="1">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_product_name">
                                     <div class="cell">
@@ -191,7 +191,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column>
+                        <vaadin-grid-column flex="1">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_quantity">
                                     <div class="cell">
@@ -204,38 +204,38 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column>
+                        <vaadin-grid-column flex="1">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_quantity">
                                     <div class="cell">
-                                        <span>Waste</span>
+                                        <span>Defect</span>
                                     </div>
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[item.order_waste]]</div>
+                                <div class="cell">[[item.order_defect]]</div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column flex="2">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_duration">
                                     <div class="cell">Plan Duration (hr)</div>
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[getOrderDuration(item.order_duration)]]</div>
+                                <div class="cell">[[getOrderDuration(item.plan_duration)]]</div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column flex="2">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_delivery">
-                                    <div class="cell">Actual Duration</div>
+                                    <div class="cell">Actual Duration (hr)</div>
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[getOrderDuration(item.order_duration)]]</div>
+                                <div class="cell">[[getOrderDuration(item.actual_duration)]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -263,20 +263,20 @@
 
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
-                                <div class="cell numeric last">Cancel</div>
+                                <div class="cell numeric last">Delete</div>
                             </template>
                             <template>
                                 <div class="cell numeric last">
-                                    <paper-icon-button on-tap="deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-tap="deleteItem" order="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
 
                     </vaadin-grid>
-                    <flat-button class="clear-btn" on-tap="_refreshStatus">
+                    <flat-button class="clear-btn" on-tap="_refreshWarehouse">
                         <button>Refresh</button>
                     </flat-button>
-                    <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
+                    <paper-toast id="toast" always-on-top horizontal-align="right"></paper-toast>
                 </div>
             </li>
         </ul>

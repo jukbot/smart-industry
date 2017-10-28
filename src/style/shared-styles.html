@@ -5,6 +5,8 @@
     <style>
        :host {
         display: block;
+        --material-primary-color: #202020;
+        --material-body-text-color: #202020;
         --app-primary-color: #202020;
         --app-secondary-color: #FFFFFF;
         --app-accent-color: #172C50;
@@ -23,6 +25,10 @@
         --paper-spinner-color: var( --app-primary-color);
         color: var(--app-font-color);
         background-color: var(--app-background-color);
+      }
+
+      [unresolved] {
+        opacity: 0;
       }
 
       h1,
@@ -70,26 +76,23 @@
         color: var(--app-secondary-color);
       }
 
-      paper-progress {
-        width: 100%;
-      }
-
-      paper-spinner-lite {
-        width: 75px;
-        height: 75px;
-      }
-
       paper-dialog {
         max-width: 500px;
       }
 
       paper-button {
+        font-size: 1rem;
+        font-weight: 500;
         width: 100%;
         height: 50px;
+        color: #202020;
+        border: 1px solid #202020;
       }
 
-      vaadin-combo-box {
-        width: 100%;
+      paper-button:hover,
+      paper-button.iron-selected {
+        color: #ffffff;
+        background-color: #202020;
       }
 
       paper-tooltip.profile-tooltip {
@@ -114,23 +117,8 @@
         margin: 0;
       }
 
-      input[type=search] {
-        width: 0%;
-        height: 100%;
-        font-size: 20px;
-        -webkit-transition: width 0.2s ease-in-out;
-        transition: width 0.2s ease-in-out;
-        padding: 0 12px;
-        border: none;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        background: transparent;
-        color: #FFFFFF;
-      }
-
-      input[type=search]:focus {
+      vaadin-combo-box {
         width: 100%;
-        height: 100%;
       }
 
       h1.title,
@@ -142,30 +130,6 @@
 
       [hidden] {
         display: none !important;
-      }
-
-      div.container {
-        display: -webkit-box;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-box-pack: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-        -ms-flex-line-pack: center;
-        align-content: center;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        text-align: center;
-        height: 100vh;
-      }
-
-      div.flex-grpup {
-        margin: auto;
       }
 
       .main-logo-title {
@@ -243,7 +207,7 @@
         border: 1px solid rgba(0, 0, 0, .10);
         background-size: contain;
         border-radius: 50%;
-        margin: 12px auto;
+        margin: 10px auto;
       }
 
       .wrap {
@@ -296,7 +260,7 @@
         -ms-flex-pack: center;
         justify-content: center;
         text-align: center;
-        margin: 16px 0;
+        margin: 10px 0;
         -webkit-box-orient: vertical;
         -webkit-box-direction: normal;
         -ms-flex-direction: column;
@@ -310,13 +274,6 @@
       .sidebar-menu-line {
         border-bottom: 1px solid rgba(0, 0, 0, .10);
         text-align: center;
-      }
-
-      .progress-loader {
-        --paper-progress-active-color: #FFC107;
-        --paper-progress-container-color: rgba(0, 0, 0, 0);
-        --paper-progress-height: 2px;
-        --paper-progress-indeterminate-cycle-duration: 2s;
       }
 
       .card {
@@ -335,18 +292,6 @@
         width: 100%;
       }
 
-      .circle {
-        display: inline-block;
-        width: 64px;
-        height: 64px;
-        text-align: center;
-        color: #202020;
-        border-radius: 50%;
-        background: #EEEEEE;
-        font-size: 30px;
-        line-height: 64px;
-      }
-
       .shamrock:hover button {
         background-color: #43A047;
         border: 1px solid #43A047;
@@ -357,9 +302,14 @@
         border: 1px solid #e53935;
       }
 
-      .deep-orange:hover button {
-        background-color: #F4511E;
-        border: 1px solid #F4511E;
+      .blink {
+        animation: blinker 1s linear infinite;
+      }
+
+      @keyframes blinker {
+        50% {
+          opacity: 0;
+        }
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
@@ -367,18 +317,18 @@
           display: none;
         }
 
-        .drawer-list>a {
-          padding: 8px 40px;
+        .user-info {
+          display: none;
+        }
+
+        .tab-title {
+          display: none;
         }
 
         .page-title {
           display: inline-block;
           font-size: 1rem;
           margin-left: 5px;
-        }
-
-        .tab-title {
-          display: none;
         }
 
         h1.main-title,

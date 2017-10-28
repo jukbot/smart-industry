@@ -85,7 +85,8 @@
         border: 1px solid #202020;
       }
 
-      paper-button:hover {
+      paper-button:hover,
+      paper-button.iron-selected {
         color: #ffffff;
         background-color: #202020;
       }
@@ -423,6 +424,7 @@
         const phone = this.$.register_phone.value
         const password = this.$.register_passwd.value
         const username = 'Untitled'
+        const timestamp = Math.round(Date.now() / 1000.0);
         if (!this.sampleData) {
           const request = this.$.requestSampleData.generateRequest()
           request.completes.then((req) => {
@@ -435,7 +437,7 @@
           })
         }
 
-        if (email && organize && phone && password && username && this.sampleData) {
+        if (email && organize && phone && password && username && timestamp && this.sampleData) {
           this.$.userAuth.createUserWithEmailAndPassword(email, password)
             .then((response) => {
               this.$.userAuth.signInWithEmailAndPassword(email, password)
@@ -448,7 +450,7 @@
                     "Register successful. We've sent a confirmation link to your email you must follow in order to activate your account."
                   )
                   const keyid = this.$.factoryData.ref.push().key
-                  this._addProfileInfo(username, email, organize, phone, keyid)
+                  this._addProfileInfo(username, email, organize, phone, keyid, timestamp)
                   this.$.factoryData.ref.child(keyid).set(this.sampleData).catch(error => {
                     console.error(error)
                     this._showErrorToast(error.code)
@@ -467,7 +469,7 @@
         }
       }
 
-      _addProfileInfo(username, email, organize, phone, keyid) {
+      _addProfileInfo(username, email, organize, phone, keyid, timestamp) {
         this.$.userData.ref.set({
             displayname: username,
             email: email,
@@ -476,7 +478,8 @@
             organization: organize,
             role: 'admin',
             description: 'No description for this user',
-            key: keyid
+            key: keyid,
+            created: timestamp
           })
           .catch(error => {
             this._showErrorToast(error.code)

@@ -6,7 +6,6 @@
 <link rel="import" href="/bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="/bower_components/paper-item/paper-item.html">
 <link rel="import" href="/bower_components/vaadin-material-theme/vaadin-date-picker.html">
-<link rel="import" href="/bower_components/vaadin-material-theme/vaadin-text-field.html">
 <link rel="import" href="/bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/lib/sugar.html">
@@ -19,32 +18,32 @@
 <dom-module id="view-plan-order">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-            :host {
+             :host {
                 margin: 10px;
                 display: block;
                 --app-grid-item-height: 50%;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                :host {
+                 :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) and (max-width: 2560px) {
-                :host {
+                 :host {
                     --app-grid-columns: 2;
                 }
             }
@@ -229,10 +228,10 @@
     </template>
     <script>
         /**
-          * @ViewPlanOrder
-          * @polymer 
-          * @extends {Polymer.Element}
-          */
+         * @ViewPlanOrder
+         * @polymer 
+         * @extends {Polymer.Element}
+         */
         class ViewPlanOrder extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
             static get is() {
@@ -272,7 +271,7 @@
             ready() {
                 super.ready();
                 this.initialDatePicker();
-                this.setMinOrderDate();
+                this.setOrderDatePosition();
             }
 
             connectedCallback() {
@@ -300,7 +299,8 @@
                 const selectInventory = this.factoryInventory
                 const cycleTimePerItem = this.getCycleTimePerItem(part)
                 if (selectInventory) {
-                    if (optimizeRule === 'increase-profit' && this.selectProduct.inventory_use && this.selectProduct.cost && cycleTimePerItem) {
+                    if (optimizeRule === 'increase-profit' && this.selectProduct.inventory_use && this.selectProduct
+                        .cost && cycleTimePerItem) {
                         let i = 0;
                         let maxMaterial = 0;
                         for (i in selectInventory) {
@@ -310,13 +310,24 @@
                             "optimize": "profit",
                             "opType": "max",
                             "constraints": {
-                                "material": { "max": maxMaterial },
-                                "time": { "max": this.weekOptime }
+                                "material": {
+                                    "max": maxMaterial
+                                },
+                                "time": {
+                                    "max": this.weekOptime
+                                }
                             },
                             "variables": {
-                                "product": { "material": this.selectProduct.inventory_use, "time": cycleTimePerItem, "profit": this.selectProduct.cost, "product": 1 }
+                                "product": {
+                                    "material": this.selectProduct.inventory_use,
+                                    "time": cycleTimePerItem,
+                                    "profit": this.selectProduct.cost,
+                                    "product": 1
+                                }
                             },
-                            "ints": { "product": 1 }
+                            "ints": {
+                                "product": 1
+                            }
                         }
                         this.optimalQuantity = solver.Solve(model).product;
                         console.log(cycleTimePerItem)
@@ -451,34 +462,39 @@
                 return ((number < 10 && number >= 0) ? '0' : '') + number;
             }
 
-            setMinOrderDate() {
+            setOrderDatePosition() {
                 const today = new Date();
                 let dd = today.getDate()
                 let mm = today.getMonth() + 1
                 let yyyy = today.getFullYear()
-                if (dd < 10) { dd = '0' + dd }
-                if (mm < 10) { mm = '0' + mm }
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
                 this.todayDate = yyyy + '-' + mm + '-' + dd
             }
 
             // SETUP CALENDAR DATE PICKER FORMAT
             initialDatePicker() {
                 Sugar.Date.setLocale('en-GB'); // USE SUGAR LIBRARY TO REF FROM LOCALE DATE FORMAT
-                let deliverypicker = this.$.deliverySelector;
-                deliverypicker.addEventListener('value-changed', function () {
-                    const deliveryTimeStamp = (new Date(deliverypicker.value).getTime() / 1000);
+                let datepicker = this.$.deliverySelector;
+                datepicker.addEventListener('value-changed', function () {
+                    const deliveryTimeStamp = (new Date(datepicker.value).getTime() / 1000);
                     this.orderDelivery = deliveryTimeStamp;
                 });
                 // INTERNATIONA LOCALIZATION
-                deliverypicker.i18n = {
+                datepicker.i18n = {
                     week: 'Week',
                     calendar: 'Calendar',
                     clear: 'Clear',
                     today: 'Today',
                     cancel: 'Cancel',
                     firstDayOfWeek: 1,
-                    monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'.split(
-                        '_'),
+                    monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'
+                        .split(
+                            '_'),
                     weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
                     weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
                     formatDate: function (date) {
@@ -488,7 +504,7 @@
                         return monthName + ' ' + fullYear;
                     },
                     parseDate: function (dateString) {
-                        let matches = deliverypicker.i18n.monthNames.filter(function (monthName) {
+                        let matches = datepicker.i18n.monthNames.filter(function (monthName) {
                             return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
                         });
                         dateString = matches.length === 1 ? matches[0] : dateString;
@@ -502,6 +518,7 @@
                 this.$.customerSelector.value = "";
                 this.$.productSelector.value = "";
                 this.$.orderQuantity.value = 1;
+                this.$.actualQuantity = 1;
                 this.$.deliverySelector.value = "";
             }
 
@@ -531,12 +548,14 @@
                 const orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
                 const orderColor = this.getRandomColor();
 
-                if (this.orderQuantity.value === 0) {
+                if (this.$.orderQuantity.value === 0) {
                     window.alert("Order product quantity cannot be 0")
                     return;
                 }
-                if (orderNo !== "" && orderCustomerName !== "" && orderProductName !== "" && orderProductPart !== "" &&
-                    orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(orderDelivery))) {
+                if (orderNo !== "" && orderCustomerName !== "" && orderProductName !== "" && orderProductPart !==
+                    "" &&
+                    orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(
+                        orderDelivery))) {
 
                     this.$.orderQuery.ref.push({
                         order_date: orderDate,
