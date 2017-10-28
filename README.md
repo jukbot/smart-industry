@@ -10,7 +10,7 @@
 
 ## Demo
 
-Sorry. We have do disable the demo for temporary, due to re-structure the database to improve the performance and flexibility. 
+Sorry. We have to disable the demo for temporary, due to re-structure the database to improve the performance and flexibility. 
 
 <!-- [Login here](https://smart-mes.firebaseapp.com/) -->
 
