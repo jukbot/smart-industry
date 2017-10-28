@@ -170,7 +170,7 @@
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
 
         <!-- GANTT CHART DATA -->
-        <firebase-query app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/ganttChartData" data="{{chartItems}}"></firebase-query>
+        <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/ganttChartData" data="{{chartItems}}"></firebase-document>
 
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
@@ -606,13 +606,8 @@
                     type: 'date',
                     id: 'End'
                 });
-                let todayChart = this.chartItems.filter(d => {
-                    let chartDate = new Date(d.date * 1000)
-                    let currentDate = new Date()
-                    return chartDate.toDateString() === currentDate.toDateString()
-                })
-                console.log(todayChart)
-                dataTable.addRows(todayChart);
+
+                dataTable.addRows(this.chartItems);
                 let timelineChart = document.createElement('google-chart-loader').dataTable(dataTable)
                 timelineChart.then((data) => {
                     chart.data = data;
@@ -792,9 +787,8 @@
                         30, 12)],
                     ['4', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27), new Date(2017, 10, 19,
                         10, 20, 12)],
-                ];
-
-                this.$.chartQuery.ref.push(data)
+                ]
+                this.$.chartQuery.ref.set(data)
             }
 
             _serialSchedule() {
@@ -844,23 +838,6 @@
 
                     let station_quantity = this.stationItems.length
 
-                    this.$.scheduleQuery.ref.child('1').set({
-
-                    })
-
-                    this.$.scheduleQuery.ref.child('2').set({
-
-                    })
-
-                    this.$.scheduleQuery.ref.child('3').set({
-
-                    })
-
-                    this.$.scheduleQuery.ref.child('4').set({
-
-                    })
-
-
                 } else {
                     alert("No order to reschedule")
                 }
@@ -891,10 +868,6 @@
                     wip_order_process = wip_order
                         .filter(o => o.order_status === 'late') // change this to waiting
                         .map(o => o.order_product_process)
-
-                    // for (let i in wip_order) {
-                    //     let jobWorkload = wip_order.map((x) => x * order_quantity[i])
-                    // }
 
 
                     // console.log(jobWorkload);

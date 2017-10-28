@@ -115,6 +115,8 @@
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="processQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
+            data="{{processItems}}"></firebase-query>
         <!-- <firebase-storage-ref app-name="smart-mes" path="data/[[k.key]]/product" metadata="{{metadata}}" storage-uri="gs://smart-mes.appspot.com/data/[[k.key]]/product"
             download-url="{{downloadUrl}}">
         </firebase-storage-ref> -->
@@ -161,7 +163,6 @@
             <li>
                 <div class="card" hidden="[[!showAddProduct]]">
                     <h1 class="title">Product Management</h1>
-                    <!-- <paper-input label="search" type="text" value="{{searchProduct(keyword)}}"></paper-input> -->
                     <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]" size="10">
                         <vaadin-grid-column flex="1">
                             <template class="header">
@@ -363,6 +364,7 @@
                 return {
                     language: String,
                     productData: Object,
+                    processItems: Object,
                     toastText: String,
                     showAddProduct: {
                         type: Boolean,

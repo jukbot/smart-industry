@@ -24,6 +24,14 @@
         --app-grid-item-height: 50%;
       }
 
+      .btn input[type=file] {
+        font-size: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+      }
+
       .card {
         min-height: 440px;
       }
@@ -62,11 +70,11 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
-    <!-- <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
-      on-message="handleMessage" token="{{token}}"></firebase-messaging> -->
+    <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
+      on-message="handleMessage" token="{{token}}"></firebase-messaging>
+    <firebase-document app-name="smart-mes" id="appData" path="/data/[[usr.key]]" data="{{appdata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{usr}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.uid]]/token" data="[[token]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appData" path="/data/[[usr.key]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[usr.key]]/appData/notification" data="[[notification]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[usr.key]]/appData/email_alert" data="[[emailalert]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[usr.key]]/appData/auto_backup" data="[[autobackup]]"></firebase-document>
@@ -80,12 +88,15 @@
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageItems]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="changeLanguage" error-message="Invalid input"
             loading="[[!languageItems]]" required always-float-label></vaadin-combo-box>
-          <p>Sensor Devices</p>
+
           <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
             <button>Search Sensor</button>
           </flat-button>
           <flat-button on-tap="showDevice" class="btn" title="Show sensor">
             <button>Show Sensor</button>
+          </flat-button>
+          <flat-button on-tap="editDashboard" class="btn" title="Edit Dashboard">
+            <button>Customize Dashboard</button>
           </flat-button>
         </div>
       </li>
@@ -93,13 +104,12 @@
         <div class="card">
           <h1 class="title">{{localize('account-settings')}}</h1>
           <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text" always-float-label></paper-input>
-          <p>Upload Profile Image</p>
-          <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress>
-          <!-- <vaadin-upload class="inputfile" id="uploadImageFile" no-auto max-files="[[maxFiles]]" accept="[[accept]]" max-file-size="[[maxFileSize]]">
-          </vaadin-upload> -->
-          <input type="file" accept="image/*" name="file" id="uploadImageFile" accept="[[accept]]" on-change="_verifyUploadFile" class="inputfile"
-          />
-          <flat-button on-tap="_deleteProfileImage" class="btn thunderbird" title="{{localize('remove-profile-image')}}">
+          <!-- <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress> -->
+          <flat-button on-tap="openBrowseImageFile" class="btn" title="{{localize('remove-profile-image')}}">
+            <button>Upload Profile Image</button>
+            <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
+          </flat-button>
+          <flat-button on-tap="deleteProfileImage" class="btn thunderbird" title="{{localize('remove-profile-image')}}">
             <button>{{localize('remove-profile-image')}}</button>
           </flat-button>
           <flat-button on-tap="verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]">
@@ -128,11 +138,12 @@
         <div class="card">
           <h1 class="title">{{localize('backup-settings')}}</h1>
           <p>Export or Import factory data to backup as a file.</p>
-          <flat-button on-tap="_export-data" class="btn" title="{{localize('export-data')}}">
+          <flat-button on-tap="exportData" class="btn" title="{{localize('export-data')}}">
             <button>{{localize('export-data')}}</button>
           </flat-button>
-          <flat-button on-tap="_import-data" class="btn" title="{{localize('import-data')}}">
+          <flat-button on-tap="importData" class="btn" title="{{localize('import-data')}}">
             <button>{{localize('import-data')}}</button>
+            <input type="file" accept="application/json,.json" name="import-file" id="importFile" />
           </flat-button>
           <paper-toggle-button class="switch" value="[[autobackup]]" on-change="changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
         </div>
@@ -172,6 +183,8 @@
           <style is="custom-style">
              :host {
               width: 50%;
+              --app-primary-color: #202020;
+              --paper-input-container-focus-color: var( --app-primary-color);
             }
 
             [part="content"] {
@@ -225,10 +238,6 @@
             type: Object,
             notify: true
           },
-          accept: {
-            type: String,
-            value: 'image/*'
-          },
           maxFiles: {
             type: Number,
             value: 1
@@ -241,6 +250,7 @@
           notification: Boolean,
           languageItems: Array,
           user: Object,
+          appdata: Object,
           emailalert: Object,
           autobackup: Object,
           statusKnown: Object,
@@ -259,6 +269,19 @@
       connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
+      }
+
+      exportData() {
+        const data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.appdata));
+        const a = document.createElement('a');
+        a.href = 'data:' + data;
+        a.download = 'export.json';
+        a.innerHTML = 'download JSON';
+        a.click();
+      }
+
+      importData() {
+        this.$.importFile.click();
       }
 
       openManageKey() {
@@ -320,42 +343,48 @@
         }
       }
 
+      openBrowseImageFile() {
+        this.$.uploadImageFile.click();
+      }
+
       uploadProfileImage() {
         let file = this.$.uploadImageFile.files[0]
-        if (file.type.match(/image.*/) && file.size < this.maxFileSize) {
-          let uid = this.user.uid
-          let name = this.user.displayName
-          let storageRef = this.$.auth.app.storage().ref()
-          let metadata = {
-            'contentType': file.type
-          }
-          let imagesRef = storageRef.child('user/' + uid + '/profile')
-          imagesRef.put(file, metadata)
-            .then(snapshot => {
-              let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-              this.$.uploadProgress.value = progress
-              this.$.uploadImageFile.files.uploading = true
-              this.$.uploadImageFile.files.status = snapshot.state
-              this.$.uploadImageFile.files.progress = progress
-              this.$.uploadImageFile.files.loaded = snapshot.bytesTransferred
-              this.$.uploadImageFile.files.size = snapshot.totalBytes
-              let url = snapshot.metadata.downloadURLs[0]
-              this.user.updateProfile({
-                photoURL: url
-              }).catch(function (error) {
-                this.$.uploadImageFile.files.error = error
-                this.$.uploadImageFile.value = null
-                console.error('Upload failed:', error)
+        if (file) {
+          if (file.type.match(/image.*/) && file.size < this.maxFileSize) {
+            let uid = this.user.uid
+            let name = this.user.displayName
+            let storageRef = this.$.auth.app.storage().ref()
+            let metadata = {
+              'contentType': file.type
+            }
+            let imagesRef = storageRef.child('user/' + uid + '/profile')
+            imagesRef.put(file, metadata)
+              .then(snapshot => {
+                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                //this.$.uploadProgress.value = progress
+                this.$.uploadImageFile.files.uploading = true
+                this.$.uploadImageFile.files.status = snapshot.state
+                this.$.uploadImageFile.files.progress = progress
+                this.$.uploadImageFile.files.loaded = snapshot.bytesTransferred
+                this.$.uploadImageFile.files.size = snapshot.totalBytes
+                let url = snapshot.metadata.downloadURLs[0]
+                this.user.updateProfile({
+                  photoURL: url
+                }).catch(function (error) {
+                  this.$.uploadImageFile.files.error = error
+                  this.$.uploadImageFile.value = null
+                  console.error('Upload failed:', error)
+                })
+                if (url) {
+                  this.$.uploadImageFile.files.complete = true
+                  this.updateProfileInfo(url, name)
+                }
               })
-              if (url) {
-                this.$.uploadImageFile.files.complete = true
-                this.updateProfileInfo(url, name)
-              }
-            })
-        } else {
-          this.toastText = 'Error: Invalid file format'
-          this.$.toastAlert.open()
-          this.$.uploadImageFile.value = null
+          } else {
+            this.toastText = 'Error: Invalid file format'
+            this.$.toastAlert.open()
+            this.$.uploadImageFile.value = null
+          }
         }
       }
 
@@ -374,7 +403,7 @@
           })
       }
 
-      _deleteProfileImage() {
+      deleteProfileImage() {
         if (this.user.photoURL) {
           if (window.confirm('Delete profile image ?') === true) {
             let storageRef = firebase.app('smart-mes').storage().ref('user/' + this.user.uid + '/profile')
@@ -423,22 +452,22 @@
       }
 
       changeNotification() {
-        // this.notification = this.$.webNotificationSwitch.checked
-        // if (this.$.webNotificationSwitch.checked) {
-        //   // Requesting notification permission
-        //   this.$.messaging.requestPermission()
-        //     .then(() => {
-        //       console.log("%cWeb notification permission granted", 'color:green');
-        //       this.toastText = 'notification-alert-on'
-        //       this.$.toastAlert.open()
-        //     })
-        //     .catch(err => {
-        //       console.error("Web notification permission denied", err);
-        //     });
-        // } else {
-        //   this.toastText = 'notification-alert-off'
-        //   this.$.toastAlert.open()
-        // }
+        this.notification = this.$.webNotificationSwitch.checked
+        if (this.$.webNotificationSwitch.checked) {
+          // Requesting notification permission
+          this.$.messaging.requestPermission()
+            .then(() => {
+              console.log("%cWeb notification permission granted", 'color:green');
+              this.toastText = 'notification-alert-on'
+              this.$.toastAlert.open()
+            })
+            .catch(err => {
+              console.error("Web notification permission denied", err);
+            });
+        } else {
+          this.toastText = 'notification-alert-off'
+          this.$.toastAlert.open()
+        }
       }
 
       changeEmailAlert() {

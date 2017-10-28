@@ -111,7 +111,7 @@
         </app-drawer>
         <app-header-layout>
           <template is="dom-if" if="[[user]]">
-            <app-header class="main-header" id="header" slot="header" role="banner">
+            <app-header class="main-header" id="header" slot="header">
               <app-toolbar>
                 <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
                 <h2 class="page-title" main-title>{{localize(subPageData.page)}}</h2>
@@ -124,7 +124,7 @@
             <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]"></view-setup>
             <view-plan name="plan" route="[[subPageRoute]]" hidden$="[[!user]]"></view-plan>
             <view-track name="track" route="[[subPageRoute]]" hidden$="[[!user]]"></view-track>
-            <!-- <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]"></view-help> -->
+            <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]"></view-help>
             <view-settings name="settings" route="[[subPageRoute]]" hidden$="[[!user]]"></view-settings>
             <view-404 name="404" route="[[subPageRoute]]" hidden$="[[!user]]"></view-404>
             <view-offline name="offline" route="[[subPageRoute]]" hidden$="[[!user]]"></view-offline>
@@ -133,7 +133,7 @@
         </app-header-layout>
       </app-drawer-layout>
     </iron-pages>
-    <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="0"
+    <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="3000"
       hidden="true">
       <div class="toast-flex-container">
         <div class="toast-flex-item">
