@@ -1,13 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
   <base href="/">
-  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1">
-  <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry">
-  <meta name="author" content="KMUTT">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>IMES</title>
+  <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry">
   <link rel="shortcut icon" href="/images/favicon.png">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#202020">
@@ -25,12 +25,12 @@
   <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
   <meta name="msapplication-TileColor" content="#202020">
   <meta name="msapplication-tap-highlight" content="no">
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
   <script>
     window.Polymer = {
       rootPath: '/'
     };
   </script>
-  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
   <link rel="import" href="/src/view-app.html">
   <style>
     * {
@@ -56,70 +56,6 @@
       display: block;
     }
 
-    .container {
-      display: -webkit-box;
-      display: -ms-flexbox;
-      display: flex;
-      -webkit-box-pack: center;
-      -ms-flex-pack: center;
-      justify-content: center;
-      -webkit-box-align: center;
-      -ms-flex-align: center;
-      align-items: center;
-      -ms-flex-line-pack: center;
-      align-content: center;
-      -webkit-box-orient: vertical;
-      -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-      flex-direction: column;
-      text-align: center;
-      height: 100vh;
-    }
-
-    .loading-bro {
-      margin: 50px auto;
-      width: 150px;
-    }
-
-    .loading-bro>h1 {
-      text-align: center;
-      margin-bottom: 1em;
-      font-weight: 300;
-    }
-
-    #load {
-      width: 150px;
-      animation: loading 3s linear infinite;
-    }
-
-    #load #loading-inner {
-      stroke-dashoffset: 0;
-      stroke-dasharray: 100;
-      stroke-width: 10;
-      stroke-miterlimit: 10;
-      stroke-linecap: round;
-      animation: loading-circle 3s linear infinite;
-      fill: transparent;
-    }
-
-    @keyframes loading {
-      0% {
-        transform: rotate(0);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    @keyframes loading-circle {
-      0% {
-        stroke-dashoffset: 0;
-      }
-      100% {
-        stroke-dashoffset: -600;
-      }
-    }
-
     vaadin-license-box {
       display: none !important;
       /* REMOVE WHEN USE IN PRODUCTION */
@@ -129,25 +65,6 @@
 
 <body>
   <view-app unresolved role="main">
-    <div class="container">
-      <div class="loading-bro">
-        <svg id="load" x="0px" y="0px" viewBox="0 0 150 150">
-          <defs>
-            <linearGradient id="logo-gradient" x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stop-color="#EE7752">
-              </stop>
-              <stop offset="25%" stop-color="#E73C7E">
-              </stop>
-              <stop offset="50%" stop-color="#23A6D5">
-              </stop>
-              <stop offset="100%" stop-color="#23D5AB">
-              </stop>
-            </linearGradient>
-          </defs>
-          <circle id="loading-inner" stroke="url('#logo-gradient')" cx="75" cy="75" r="60" />
-        </svg>
-      </div>
-    </div>
   </view-app>
   <noscript>
     Please enable JavaScript to view this application.

@@ -220,7 +220,7 @@
             <div class="keep-session-checkbox">
               <paper-checkbox id="setKeepSession" checked$="[[remember]]" on-change="toggleKeepSession" noink>Keep me signed in</paper-checkbox>
             </div>
-            <paper-button class="login-btn" on-tap="login" noink>Log in</paper-button>
+            <paper-button class="login-btn" on-tap="login" title="Login" noink>Log in</paper-button>
 
             <div class="link">
               <a href="javascript:void(0);" on-click="showReset">Forgot?</a>
@@ -284,7 +284,7 @@
                 <a href="/term" target="_self" id="termOfService">Terms of Service</a>
             </div>
             </p>
-            <paper-button class="register-btn" on-tap="register" noink>Register and Login</paper-button>
+            <paper-button class="register-btn" on-tap="register" title="Register and Login" noink>Register and Login</paper-button>
             <div class="link">
               <a href="javascript:void(0);" on-click="hideRegister">Already have account? Log in</a>
             </div>
@@ -303,7 +303,7 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <paper-button class="reset-btn" on-tap="resetPassword" noink>Reset Password</paper-button>
+            <paper-button class="reset-btn" on-tap="resetPassword" title="Reset password" noink>Reset Password</paper-button>
             <div class="link">
               <a href="javascript:void(0);" rel="noopenner" on-click="hideReset">Return to login</a>
             </div>
@@ -427,7 +427,7 @@
         if (!this.sampleData) {
           const request = this.$.requestSampleData.generateRequest()
           request.completes.then((req) => {
-            console.log(req.response);
+            //console.log(req.response);
             console.info('%cLoaded sample data status:' + req.status + " " + req.statusText, 'color:green;');
           }).catch((rejected) => {
             let req = rejected.request;
@@ -442,7 +442,8 @@
               this.$.userAuth.signInWithEmailAndPassword(email, password)
                 .then((response) => {
                   this.user.updateProfile({
-                    displayName: username
+                    displayName: username,
+                    phoneNumber: phone
                   })
                   this.user.sendEmailVerification()
                   this._showSuccessToast(

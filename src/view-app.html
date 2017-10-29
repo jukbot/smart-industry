@@ -22,6 +22,7 @@
 <link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="/bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
 <!-- iron modules used for component functions -->
 <link rel="import" href="/bower_components/iron-image/iron-image.html">
 <link rel="import" href="/bower_components/iron-selector/iron-selector.html">
@@ -91,13 +92,10 @@
           </nav>
           <div class="sidebar-menu-line" role="separator"></div>
           <div class="flex-center">
-            <flat-button on-tap="logout" title="Logout">
-              <button type="button">{{localize('logout-button')}}
-              </button>
-            </flat-button>
+            <paper-button class="logout-btn" on-tap="logout" title="Logout" noink>{{localize('logout-button')}}</paper-button>
             <div class="user-info">
               <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" placeholder="Loading" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
-              <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="0">
+              <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="10">
                 <p>{{localize('email')}}: [[persistedUserData.email]]</p>
                 <p>{{localize('verify-status')}}:
                   <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span>
@@ -447,6 +445,7 @@
         this.$.toastVerify.open()
       }
       _handleUser(user) {
+        user = JSON.stringify(user, null, '\t')
         if (user) {
           console.info(`DEBUG User ${user}`)
         }

@@ -125,7 +125,7 @@
           <paper-input label="{{localize('email')}}" id="userEmail" type="email" readonly value="[[user.email]]" always-float-label></paper-input>
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password" always-float-label></paper-input>
           <paper-input label="{{localize('new-password')}}" id="newPassword" type="password" always-float-label></paper-input>
-          <flat-button on-tap="changeAuthen" class="btn" title="{{localize('change-password')}}">
+          <flat-button on-tap="changePassword" class="btn" title="{{localize('change-password')}}">
             <button>{{localize('change-password')}}</button>
           </flat-button>
           <flat-button on-tap="deleteAccount" class="btn thunderbird" title="{{localize('delete-account')}}">
@@ -411,7 +411,7 @@
             storageRef.delete()
               .then(() => {
                 this.user.updateProfile({
-                  photoURL: null
+                  photoURL: ""
                 })
                 this.toastText = 'notification-delete-profile-image-successful'
                 this.$.toastAlert.open()
@@ -481,7 +481,7 @@
         }
       }
 
-      changeAuthen() {
+      changePassword() {
         let currentpassword = this.$.currentPassword.value
         let newPassword = this.$.newPassword.value
         let newemail = this.$.userDataEmail.value
@@ -519,12 +519,14 @@
           if (this._reauthenAccount(password)) {
             this.$.appData.ref.remove();
             this.$.userData.ref.remove();
-            this.$.auth.delete().then(function () {
+            this.$.auth.delete().then(() => {
               window.alert("Delete successful, you'll now logout")
               this.logout()
-            }, function (error) {
+            }).catch((error) => {
               console.error(error)
             })
+          } else {
+            console.error('Cannot delete account')
           }
         }
       }
@@ -603,7 +605,8 @@
       }
 
       _reauthenAccount(currentpassword) {
-        let credential = this.$.auth.EmailAuthProvider.credential(this.user.email, currentpassword)
+        const credential = firebase.auth.EmailAuthProvider.credential(this.user.email,
+          currentpassword)
         this.user.reauthenticateWithCredential(credential)
           .then(() => {
             return true
