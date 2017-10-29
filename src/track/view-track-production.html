@@ -63,7 +63,7 @@
                 margin: 10px;
                 padding: 20px;
                 border: 1px solid rgba(0, 0, 0, .10);
-                border-radius: 2px;
+                border-radius: 3px;
             }
 
             .machine p {
@@ -184,10 +184,11 @@
                                 <p>Actual Start: [[timestampToTime(item.actual_start)]]</p>
                                 <p>Actual End: [[timestampToTime(item.actual_end)]]</p>
                                 <p>Duration: [[getActualDuration(item.actual_start,item.actual_end)]]</p>
+                                <p>Productivity rate: 0 items / hour</p>
+                                <p>Completed: 0 / [[item.job_quantity]]</p>
                                 <p>Status:
                                     <span class$="[[getTextStatus(item.job_status)]]" style$="color:[[getColorStatus(item.job_status)]]">[[item.job_status]]</span>
                                 </p>
-                                <p>Completed: 0 / [[item.job_quantity]]</p>
                             </div>
                             <flat-button class="btn" on-tap="receiveJob" job="[[item]]">
                                 <button>Receive</button>
@@ -202,7 +203,7 @@
                     </li>
                 </template>
                 <li hidden$="[[isEmptyJobs(scheduleItems.length)]]">
-                    <h1>No job in station found</h1>
+                    <h1>Loading..</h1>
                 </li>
             </ul>
         </div>
