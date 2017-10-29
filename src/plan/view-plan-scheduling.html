@@ -13,7 +13,6 @@
 <link rel="import" href="../view-setup.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
-<link rel="import" href="/lib/thenby.html">
 
 <dom-module id="view-plan-scheduling">
     <template>
@@ -190,7 +189,7 @@
                         <p id="concurrency">Station Concurrency: [[factoryProfile.concurrency]] orders / station</p>
                         <p>Delayed between station: [[factorySchedule.delay]] minutes</p>
                     </div>
-                    <vaadin-grid id="material" items="[[sortOrderList(orderItems)]]" size="100">
+                    <vaadin-grid id="material" items="{{getSortedOrder(orderItems)}}" size="100">
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
@@ -500,10 +499,7 @@
                     },
                     language: String,
                     status: String,
-                    orderItems: {
-                        type: Object,
-                        notify: true
-                    },
+                    orderItems: Object,
                     sortedOrder: Object,
                     factoryPerformance: Object,
                     factoryOperation: Object,
@@ -531,7 +527,129 @@
             _installListeners() {
                 // listen for custom events on main page
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
-                this.addEventListener('data-changed', (e) => this.sortOrderList(this.orderItems))
+                this.$.orderQuery.addEventListener('data-changed', (e) => this.getSortedOrder(this.orderItems))
+            }
+
+            refreshChart() {
+                let data = [
+                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8,
+                        33, 0)],
+                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8,
+                        38, 0)],
+                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0), new Date(2017, 10, 19, 8,
+                        45, 0)],
+                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0), new Date(2017, 10, 19, 8,
+                        50, 0)],
+                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0), new Date(2017, 10, 19, 9,
+                        0, 36)],
+                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0), new Date(2017, 10, 19, 9,
+                        14, 27)],
+                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36), new Date(2017, 10, 19, 9,
+                        30, 12)],
+                    ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27), new Date(2017, 10, 19,
+                        10, 20, 12)]
+                ]
+                let result = data.map(x => ({ ...x,
+                    date: new Date(x.date)
+                }))
+                this.$.chartQuery.ref.set(result)
+            }
+
+            _serialSchedule() {
+                let order = this.sortedOrder;
+                if (order.length > 0) {
+                    let concurrent = order.length;
+                    let wip_order = []; // work in process order array
+                    let wip_order_part = []
+                    let wip_order_process = []
+                    let machine_in_station = [];
+
+                    for (let i = 0; i < concurrent; i++) {
+                        wip_order.push(order.shift()); // shift original order arr of concurrent and push to work in process order arr
+                    }
+                    console.log("wip orders: ")
+                    console.log(wip_order)
+
+                    wip_order_process = wip_order
+                        .filter(o => o.order_status === 'waiting') // change this to waiting
+                        .map(o => o.order_product_process)
+                    console.log(wip_order_process)
+
+                    wip_order_part = wip_order
+                        .filter(o => o.order_status === 'waiting') // change this to waiting
+                        .map(o => o.order_product_part)
+                    console.log(wip_order_part)
+                    let i;
+
+                    //console.log(wip_order_part[0][0].process)
+
+                    // Machine in each station
+                    machine_in_station = this.stationItems.map(o => o.st_machine.length);
+                    console.log(machine_in_station);
+
+                    // for (let i in wip_order) {
+                    //     let jobWorkload = wip_order.map((x) => x * order_quantity[i])
+                    // }
+
+                    // Group order by stations
+                    const result = wip_order_part.reduce(function (r, a) {
+                        r[a.process] = r[a.process] || [];
+                        r[a.process].push(a);
+                        return r;
+                    }, Object.create(null));
+
+                    console.log(result);
+
+                    let station_quantity = this.stationItems.length
+
+                } else {
+                    alert("No order to reschedule")
+                }
+            }
+
+            _parallelSchedule() {
+                let order = this.sortedOrder;
+                if (order.length > 0) {
+                    let concurrent = this.factoryProfile.concurrency;
+                    let wip_order = []; // work in process order array
+                    let wip_order_part = []
+                    let wip_order_process = []
+                    let order_quantity_wip = []
+
+                    for (let i = 0; i < concurrent; i++) {
+                        wip_order.push(order.shift()); // shift original order arr of concurrent and push to work in process order arr
+                    }
+                    console.log("wip orders: ")
+                    console.log(wip_order)
+                    for (let i in wip_order) {
+                        console.log(wip_order[i].order_product_process)
+                    }
+                    wip_order_part = wip_order
+                        .filter(o => o.order_status === 'late') // change this to waiting
+                        .map(o => o.order_product_part)
+                    console.log(wip_order_part)
+
+                    wip_order_process = wip_order
+                        .filter(o => o.order_status === 'late') // change this to waiting
+                        .map(o => o.order_product_process)
+
+
+                    // console.log(jobWorkload);
+
+                    let station_quantity = this.stationItems.length
+
+                    // this.$.scheduleQuery.ref.push({
+                    // })
+                } else {
+                    alert("No order to reschedule")
+                }
+            }
+
+            _multiSchedule() {
+                let order = this.sortedOrder;
+                if (order.length > 0) {} else {
+                    alert("No order to reschedule")
+                }
             }
 
             _isSerialModel(production_model) {
@@ -542,16 +660,14 @@
                 }
             }
 
-            sortOrderList(order) {
+            getSortedOrder(order) {
                 // SORT BY EDD THEN BY SPT
-                let s = firstBy(function (v1, v2) {
-                        return v1.order_delivery - v2.order_delivery;
-                    })
-                    .thenBy(function (v1, v2) {
-                        return v1.order_duration - v2.order_duration;
-                    });
-                this.sortedOrder = order.sort(s);
-                return order.sort(s);
+                let sort = order.sort(function (a, b) {
+                    return a["order_delivery"] - b["order_delivery"] || a["order_duration"] - b[
+                        "order_duration"];
+                });
+                this.sortedOrder = sort;
+                return sort;
             }
 
             _setChartSize() {
@@ -654,6 +770,8 @@
 
                 if (remain < 0 && status !== 'done' && status !== 'wip') {
                     this.setLateOrder(key);
+                    return 0;
+                } else if (remain < 0 && (status === 'done' || status === 'wip')) {
                     return 0;
                 } else {
                     return remain;
@@ -766,125 +884,6 @@
                         break;
                     default:
                         alert("Invalid production model")
-                }
-            }
-
-            refreshChart() {
-                let data = [
-                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8,
-                        33, 0)],
-                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8,
-                        38, 0)],
-                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0), new Date(2017, 10, 19, 8,
-                        45, 0)],
-                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0), new Date(2017, 10, 19, 8,
-                        50, 0)],
-                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0), new Date(2017, 10, 19, 9,
-                        0, 36)],
-                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0), new Date(2017, 10, 19, 9,
-                        14, 27)],
-                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36), new Date(2017, 10, 19, 9,
-                        30, 12)],
-                    ['4', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27), new Date(2017, 10, 19,
-                        10, 20, 12)],
-                ]
-                this.$.chartQuery.ref.set(data)
-            }
-
-            _serialSchedule() {
-                let order = this.sortedOrder;
-                if (order.length > 0) {
-                    let concurrent = order.length;
-                    let wip_order = []; // work in process order array
-                    let wip_order_part = []
-                    let wip_order_process = []
-                    let machine_in_station = [];
-
-                    for (let i = 0; i < concurrent; i++) {
-                        wip_order.push(order.shift()); // shift original order arr of concurrent and push to work in process order arr
-                    }
-                    console.log("wip orders: ")
-                    console.log(wip_order)
-
-                    wip_order_process = wip_order
-                        .filter(o => o.order_status === 'waiting') // change this to waiting
-                        .map(o => o.order_product_process)
-                    console.log(wip_order_process)
-
-                    wip_order_part = wip_order
-                        .filter(o => o.order_status === 'waiting') // change this to waiting
-                        .map(o => o.order_product_part)
-                    console.log(wip_order_part)
-                    let i;
-
-                    //console.log(wip_order_part[0][0].process)
-
-                    // Machine in each station
-                    machine_in_station = this.stationItems.map(o => o.st_machine.length);
-                    console.log(machine_in_station);
-
-                    // for (let i in wip_order) {
-                    //     let jobWorkload = wip_order.map((x) => x * order_quantity[i])
-                    // }
-
-                    // Group order by stations
-                    const result = wip_order_part.reduce(function (r, a) {
-                        r[a.process] = r[a.process] || [];
-                        r[a.process].push(a);
-                        return r;
-                    }, Object.create(null));
-
-                    console.log(result);
-
-                    let station_quantity = this.stationItems.length
-
-                } else {
-                    alert("No order to reschedule")
-                }
-            }
-
-            _parallelSchedule() {
-                let order = this.sortedOrder;
-                if (order.length > 0) {
-                    let concurrent = this.factoryProfile.concurrency;
-                    let wip_order = []; // work in process order array
-                    let wip_order_part = []
-                    let wip_order_process = []
-                    let order_quantity_wip = []
-
-                    for (let i = 0; i < concurrent; i++) {
-                        wip_order.push(order.shift()); // shift original order arr of concurrent and push to work in process order arr
-                    }
-                    console.log("wip orders: ")
-                    console.log(wip_order)
-                    for (let i in wip_order) {
-                        console.log(wip_order[i].order_product_process)
-                    }
-                    wip_order_part = wip_order
-                        .filter(o => o.order_status === 'late') // change this to waiting
-                        .map(o => o.order_product_part)
-                    console.log(wip_order_part)
-
-                    wip_order_process = wip_order
-                        .filter(o => o.order_status === 'late') // change this to waiting
-                        .map(o => o.order_product_process)
-
-
-                    // console.log(jobWorkload);
-
-                    let station_quantity = this.stationItems.length
-
-                    // this.$.scheduleQuery.ref.push({
-                    // })
-                } else {
-                    alert("No order to reschedule")
-                }
-            }
-
-            _multiSchedule() {
-                let order = this.sortedOrder;
-                if (order.length > 0) {} else {
-                    alert("No order to reschedule")
                 }
             }
 
