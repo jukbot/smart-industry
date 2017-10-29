@@ -34,10 +34,9 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-flow": "^6.23.0",
-    "bower": "latest",
-    "browser-sync": "^2.18.13",
     "eslint": "^4.10.0",
     "eslint-config-google": "^0.9.1",
+    "eslint-config-recommended": "^1.5.0",
     "eslint-plugin-polymer": "^0.1.0",
     "flow-bin": "^0.57.3",
     "html-webpack-plugin": "^2.30.1",
@@ -46,13 +45,12 @@
   },
   "scripts": {
     "lint": "npm run lint:javascript && polymer lint --input src/**/*.html",
-    "dev": "polymer serve -p 8080 & npm run watch",
+    "dev": "polymer serve -p 8080",
     "test": "polymer test",
     "build": "polymer build",
     "serve:dev": "polymer serve",
     "serve:prod": "polymer build && firebase serve --only functions,hosting",
-    "deploy": "polymer build && firebase deploy",
-    "watch": "browser-sync start --proxy localhost:8080 --files 'src/**/*, src/*.js, data/*.json, images/*' "
+    "deploy": "polymer build && firebase deploy"
   },
   "standard": {
     "parser": "babel-eslint",
