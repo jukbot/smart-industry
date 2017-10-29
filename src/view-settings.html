@@ -5,7 +5,6 @@
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/bower_components/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="/bower_components/vaadin-dialog/vaadin-dialog.html">
-<link rel="import" href="/bower_components/vaadin-dialog/vaadin-dialog.html">
 <link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
@@ -180,7 +179,7 @@
     <vaadin-dialog id="manageKeyDialog" class="dialog">
       <template>
         <custom-style>
-          <style is="custom-style">
+          <style is="custom-style" include="shared-styles">
              :host {
               width: 50%;
               --app-primary-color: #202020;
@@ -288,13 +287,14 @@
         this.$.manageKeyDialog.opened = true;
       }
 
+      closeKeyDialog() {
+        this.$.manageKeyDialog.opened = false;
+      }
+
       openManageUser() {
 
       }
 
-      closeKeyDialog() {
-        this.$.manageKeyDialog.opened = false;
-      }
 
       setKeyValue(key) {
         this.newKey = key;

@@ -3,7 +3,7 @@
 <link rel="import" href="/bower_components/paper-input/paper-input.html">=
 <link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
-<link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
+<link rel="import" href="/bower_components/vaadin-dialog/vaadin-dialog.html">
 <link rel="import" href="/bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="/bower_components/paper-item/paper-item.html">
 <link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
@@ -240,6 +240,47 @@
                 </flat-button>
             </div>
         </div>
+        <vaadin-dialog id="manageKeyDialog" class="dialog">
+            <template>
+                <custom-style>
+                    <style is="custom-style">
+                         :host {
+                            width: 500px;
+                            --app-primary-color: #202020;
+                            --paper-input-container-focus-color: var( --app-primary-color);
+                        }
+
+                        [part="content"] {
+                            padding: 20px 30px;
+                        }
+
+                        h1 {
+                            margin: 10px 0 20px 0;
+                        }
+
+                        .center {
+                            text-align: center;
+                        }
+
+                        .btn-group {
+                            float: right;
+                            margin: 10px 0;
+                        }
+                    </style>
+                </custom-style>
+                <h1 class="center">Done Report</h1>
+                <paper-input label="Defect" id="defectCount" type="number" always-float-label></paper-input>
+                <paper-input label="Good" id="goodCount" type="number" always-float-label></paper-input>
+                <div class="btn-group">
+                    <paper-button dialog-dismiss on-tap="closeFinishDialog">
+                        {{localize('dismiss')}}
+                    </paper-button>
+                    <paper-button dialog-confirm autofocus on-tap="updateFinish">
+                        Done
+                    </paper-button>
+                </div>
+            </template>
+        </vaadin-dialog>
     </template>
     <script>
         /**
@@ -266,6 +307,20 @@
                 super.connectedCallback();
                 this.loadResources(this.resolveUrl('../../data/locales.json'));
             }
+
+            openFinishDialog(e) {
+                this.$.manageKeyDialog.opened = true;
+                const key = e.currentTarget.job.$key;
+                this.$.scheduleQuery.ref.child(key).update({
+                    actual_end: Math.round(new Date().getTime() / 1000.0),
+                    job_status: 'done'
+                })
+            }
+
+            closeFinishDialog() {
+                this.$.manageKeyDialog.opened = false;
+            }
+
 
             getStationIndex(selectedStation) {
                 return selectedStation - 1
@@ -331,7 +386,8 @@
                 const key = e.currentTarget.job.$key;
                 console.log(e.currentTarget.job.order_no);
                 this.$.scheduleQuery.ref.child(key).update({
-                    actual_start: Math.round(new Date().getTime() / 1000.0)
+                    actual_start: Math.round(new Date().getTime() / 1000.0),
+                    job_status: 'wip'
                 })
             }
 
@@ -343,11 +399,7 @@
             }
 
             finishJob(e) {
-                const key = e.currentTarget.job.$key;
-                this.$.scheduleQuery.ref.child(key).update({
-                    actual_end: Math.round(new Date().getTime() / 1000.0),
-                    job_status: 'done'
-                })
+                this.openFinishDialog(e);
             }
 
             isDone(status) {

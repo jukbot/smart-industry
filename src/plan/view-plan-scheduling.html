@@ -150,7 +150,7 @@
             }
 
             google-chart {
-                max-height: 500px;
+                height: auto;
                 width: 100%;
             }
         </style>
@@ -532,31 +532,33 @@
 
             refreshChart() {
                 let data = [
-                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
+                    ['1', 'Order 1', '2', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
                         2017,
                         10, 19, 8,
                         33, 0).getTime() / 1000],
-                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
+                    ['1', 'Order 2', '2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
                         2017, 10, 19, 8,
                         38, 0).getTime() / 1000],
-                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(
+                    ['2', 'Order 1', '2', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(
                         2017, 10, 19, 8,
                         45, 0).getTime() / 1000],
-                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(
+                    ['2', 'Order 2', '2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(
                         2017, 10, 19, 8,
                         50, 0).getTime() / 1000],
-                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(
+                    ['3', 'Order 1', '2', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(
                         2017, 10, 19, 9,
                         0, 36).getTime() / 1000],
-                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(
+                    ['3', 'Order 2', '2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(
                         2017, 10, 19, 9,
                         14, 27).getTime() / 1000],
-                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(
+                    ['4', 'Order 1', '2', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(
                         2017, 10, 19, 9,
                         30, 12).getTime() / 1000],
-                    ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000, new Date(
-                        2017, 10, 19,
-                        10, 20, 12).getTime() / 1000]
+                    ['4', 'Order 1', '1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000,
+                        new Date(
+                            2017, 10, 19,
+                            10, 20, 12).getTime() / 1000
+                    ]
                 ]
                 // let result = data.map(x => ({ ...x,
                 //     date: new Date(x.date)
@@ -695,17 +697,15 @@
                             },
                             barLabelStyle: {
                                 fontSize: 16
-                            },
+                            }
                         },
+                        fontName: 'Roboto',
                         legend: {
                             position: 'none'
                         },
-                        tooltip: {
-                            isHtml: true
-                        },
                         avoidOverlappingGridLines: false
                     }
-                    this._initialChart()
+                    google.charts.setOnLoadCallback(this._initialChart())
                     this.$.timeline.redraw()
                 }
             }
@@ -723,6 +723,13 @@
                 });
                 dataTable.addColumn({
                     type: 'string',
+                    role: 'annotationText',
+                    p: {
+                        html: true
+                    }
+                });
+                dataTable.addColumn({
+                    type: 'string',
                     role: 'style'
                 });
                 dataTable.addColumn({
@@ -733,39 +740,22 @@
                     type: 'date',
                     id: 'End'
                 });
-
-                // convert time stamp to new date 
-                let result = this.chartItems.map((x) => {
-                    let today = new Date(x[3] * 1000);
-                    let dd = today.getDate();
-                    let mm = today.getMonth() + 1; //January is 0!
-                    let yyyy = today.getFullYear();
-                    let hh = today.getHours();
-                    let m = today.getMinutes();
-                    let ss = today.getSeconds();
-                    let today2 = new Date(x[4] * 1000);
-                    let dd2 = today2.getDate();
-                    let mm2 = today2.getMonth() + 1; //January is 0!
-                    let yyyy2 = today2.getFullYear();
-                    let hh2 = today2.getHours();
-                    let m2 = today2.getMinutes();
-                    let ss2 = today2.getSeconds();
-                    let data = [x[0], x[1], x[2],
-                        new Date(yyyy, mm, dd, hh, m, ss),
-                        new Date(yyyy2, mm2, dd2, hh2, m2, ss2)
-                    ]
-                    return data;
-                });
-
-                console.log(result)
-                if (result) {
+                if (this.chartItems.length > 0) {
+                    // convert time stamp to new date 
+                    const result = this.chartItems.map((x) => {
+                        return [x[0], x[1], x[2], x[3],
+                            new Date(x[4] * 1000),
+                            new Date(x[5] * 1000)
+                        ]
+                    });
                     dataTable.addRows(result);
                 } else {
-                    dataTable.addRows([]);
+                    dataTable.addRows([
+                        ['\0', '\0', 0, '#FFFFFF', new Date(1506470400), new Date(1506480400)]
+                    ]);
                 }
-                let timelineChart = document.createElement('google-chart-loader').dataTable(
-                    dataTable)
-                timelineChart.then((data) => {
+                document.createElement('google-chart-loader').dataTable(
+                    dataTable).then((data) => {
                     chart.data = data;
                 });
             }
