@@ -532,27 +532,38 @@
 
             refreshChart() {
                 let data = [
-                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8,
-                        33, 0)],
-                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0), new Date(2017, 10, 19, 8,
-                        38, 0)],
-                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0), new Date(2017, 10, 19, 8,
-                        45, 0)],
-                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0), new Date(2017, 10, 19, 8,
-                        50, 0)],
-                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0), new Date(2017, 10, 19, 9,
-                        0, 36)],
-                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0), new Date(2017, 10, 19, 9,
-                        14, 27)],
-                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36), new Date(2017, 10, 19, 9,
-                        30, 12)],
-                    ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27), new Date(2017, 10, 19,
-                        10, 20, 12)]
+                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
+                        2017,
+                        10, 19, 8,
+                        33, 0).getTime() / 1000],
+                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 8,
+                        38, 0).getTime() / 1000],
+                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 8,
+                        45, 0).getTime() / 1000],
+                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 8,
+                        50, 0).getTime() / 1000],
+                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 9,
+                        0, 36).getTime() / 1000],
+                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 9,
+                        14, 27).getTime() / 1000],
+                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(
+                        2017, 10, 19, 9,
+                        30, 12).getTime() / 1000],
+                    ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000, new Date(
+                        2017, 10, 19,
+                        10, 20, 12).getTime() / 1000]
                 ]
                 let result = data.map(x => ({ ...x,
                     date: new Date(x.date)
                 }))
-                this.$.chartQuery.ref.set(result)
+                console.log(data)
+                console.log(result);
+                this.$.chartQuery.ref.set(data)
             }
 
             _serialSchedule() {
@@ -723,8 +734,37 @@
                     id: 'End'
                 });
 
-                dataTable.addRows(this.chartItems);
-                let timelineChart = document.createElement('google-chart-loader').dataTable(dataTable)
+                // convert time stamp to new date 
+                let result = this.chartItems.map((x) => {
+                    let today = new Date(x[3] * 1000);
+                    let dd = today.getDate();
+                    let mm = today.getMonth() + 1; //January is 0!
+                    let yyyy = today.getFullYear();
+                    let hh = today.getHours();
+                    let m = today.getMinutes();
+                    let ss = today.getSeconds();
+                    let today2 = new Date(x[4] * 1000);
+                    let dd2 = today2.getDate();
+                    let mm2 = today2.getMonth() + 1; //January is 0!
+                    let yyyy2 = today2.getFullYear();
+                    let hh2 = today2.getHours();
+                    let m2 = today2.getMinutes();
+                    let ss2 = today2.getSeconds();
+                    let data = [x[0], x[1], x[2],
+                        new Date(yyyy, mm, dd, hh, m, ss),
+                        new Date(yyyy2, mm2, dd2, hh2, m2, ss2)
+                    ]
+                    return data;
+                });
+
+                console.log(result)
+                if (result) {
+                    dataTable.addRows(result);
+                } else {
+                    dataTable.addRows([]);
+                }
+                let timelineChart = document.createElement('google-chart-loader').dataTable(
+                    dataTable)
                 timelineChart.then((data) => {
                     chart.data = data;
                 });
@@ -736,7 +776,8 @@
                 let diff = current - last_timestamp
                 let range = interval * 24 * 60 * 60
                 if (diff <= range) {
-                    let nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 * 1000)
+                    let nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 *
+                        1000)
                     let nextIntervalDate = new Date(nextIntervalStamp)
                     let dd = nextIntervalDate.getDate()
                     let mm = nextIntervalDate.getMonth() + 1 // January is 0!
@@ -864,7 +905,8 @@
 
             clearSchedule() {
                 if (window.confirm(
-                        "Clear all schedule ? The order that are working in process will not be deleted.") ==
+                        "Clear all schedule ? The order that are working in process will not be deleted."
+                    ) ==
                     true) {
                     this.$.orderQuery.ref.remove();
                 }
