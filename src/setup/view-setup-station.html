@@ -312,11 +312,13 @@
                     },
                     stationMachineCount: {
                         type: Number,
-                        computed: 'computeMachineCount(machines)'
+                        computed: 'computeMachineCount(machines)',
+                        readOnly: true
                     },
                     stationEditMachineCount: {
                         type: Number,
-                        computed: 'computeMachineCount(editMachines)'
+                        computed: 'computeMachineCount(editMachines)',
+                        readOnly: true
                     }
                 }
             }
@@ -387,7 +389,7 @@
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
                 const state = this.getState();
-                console.log("Redux state: ", state)
+                console.info("Redux state: ", state)
             }
 
             setEditStationMachine(m) {

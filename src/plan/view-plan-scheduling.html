@@ -359,7 +359,6 @@
                             </template>
                         </vaadin-grid-column>
 
-
                         <vaadin-grid-column flex="1">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_status">
@@ -499,7 +498,10 @@
                     },
                     language: String,
                     status: String,
-                    orderItems: Object,
+                    orderItems: {
+                        type: Object,
+                        observer: 'getSortedOrder'
+                    },
                     sortedOrder: Object,
                     factoryPerformance: Object,
                     factoryOperation: Object,
@@ -527,44 +529,22 @@
             _installListeners() {
                 // listen for custom events on main page
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
-                this.$.orderQuery.addEventListener('data-changed', (e) => this.getSortedOrder(this.orderItems))
+                //this.addEventListener('data-changed', (e) => this.getSortedOrder(this.orderItems))
             }
 
             refreshChart() {
                 let data = [
-                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
-                        2017,
-                        10, 19, 8,
-                        33, 0).getTime() / 1000],
-                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 8,
-                        38, 0).getTime() / 1000],
-                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 8,
-                        45, 0).getTime() / 1000],
-                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 8,
-                        50, 0).getTime() / 1000],
-                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 9,
-                        0, 36).getTime() / 1000],
-                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 9,
-                        14, 27).getTime() / 1000],
-                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(
-                        2017, 10, 19, 9,
-                        30, 12).getTime() / 1000],
-                    ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000,
-                        new Date(
-                            2017, 10, 19,
-                            10, 20, 12).getTime() / 1000
+                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(2017,10, 19, 8, 33, 0).getTime() / 1000],
+                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000],
+                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(2017, 10, 19, 8,45, 0).getTime() / 1000],
+                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000],
+                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(2017, 10, 19, 9,0, 36).getTime() / 1000],
+                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(2017, 10, 19, 9,14, 27).getTime() / 1000],
+                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(2017, 10, 19, 9,30, 12).getTime() / 1000],
+                    ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000,new Date(2017, 10, 19,10, 20, 12).getTime() / 1000
                     ]
                 ]
-                // let result = data.map(x => ({ ...x,
-                //     date: new Date(x.date)
-                // }))
-                console.log(data)
-                //  console.log(result);
+                console.table(data)
                 this.$.chartQuery.ref.set(data)
             }
 
@@ -674,6 +654,7 @@
             }
 
             getSortedOrder(order) {
+                console.log('run sort order')
                 // SORT BY EDD THEN BY SPT
                 let sort = order.sort(function (a, b) {
                     return a["order_delivery"] - b["order_delivery"] || a["order_duration"] - b[
@@ -736,16 +717,15 @@
                 if (this.chartItems.length > 0) {
                     // convert time stamp to new date 
                     const result = this.chartItems.map((x) => {
-                        return [x[0], x[1], x[2], x[3],
-                            new Date(x[4] * 1000),
-                            new Date(x[5] * 1000)
+                        return [x[0], x[1], x[2], 
+                            new Date(x[3] * 1000),
+                            new Date(x[4] * 1000)
                         ]
                     });
-                    console.table(result)
                     dataTable.addRows(result);
                 } else {
                     dataTable.addRows([
-                        ['\0', '\0', 0, '#FFFFFF', new Date(1506470400), new Date(1506480400)]
+                        ['\0', '\0', '#FFFFFF', new Date(1506470400), new Date(1506480400)]
                     ]);
                 }
                 document.createElement('google-chart-loader').dataTable(
@@ -940,7 +920,6 @@
                 if (confirm("Delete this order ?") == true) {
                     let key = e.currentTarget.order.$key;
                     this.$.orderQuery.ref.child(key).remove();
-                    this.sortOrderList(this.orderItems)
                     alert("Delete order successfully");
                 }
             }

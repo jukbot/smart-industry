@@ -12,8 +12,6 @@
 
 // app.listen(8080);
 
-// IN TESTING OF PRPL SERVER NODE
-
 const critical = require("critical");
 const prpl = require("prpl-server");
 const express = require("express");
