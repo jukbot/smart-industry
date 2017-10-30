@@ -656,12 +656,16 @@
             getSortedOrder(order) {
                 console.log('run sort order')
                 // SORT BY EDD THEN BY SPT
-                let sort = order.sort(function (a, b) {
+                let sort = order.sort((a, b) => {
                     return a["order_delivery"] - b["order_delivery"] || a["order_duration"] - b[
                         "order_duration"];
                 });
                 this.sortedOrder = sort;
                 return sort;
+            }
+
+            gcd(a, b) {
+                return (b == 0) ? a : gcd (b, a%b);
             }
 
             _setChartSize() {

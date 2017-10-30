@@ -87,7 +87,7 @@
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageItems]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="changeLanguage" error-message="Invalid input"
             loading="[[!languageItems]]" required always-float-label></vaadin-combo-box>
-
+          <p>User ID: [[user.uid]]</p>
           <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
             <button>Search Sensor</button>
           </flat-button>
@@ -97,7 +97,6 @@
           <flat-button on-tap="editDashboard" class="btn" title="Edit Dashboard">
             <button>Customize Dashboard</button>
           </flat-button>
-          [[user.uid]]
         </div>
       </li>
       <li>
@@ -295,7 +294,6 @@
       openManageUser() {
 
       }
-
 
       setKeyValue(key) {
         this.newKey = key;
