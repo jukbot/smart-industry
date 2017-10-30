@@ -532,29 +532,29 @@
 
             refreshChart() {
                 let data = [
-                    ['1', 'Order 1', '2', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
+                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
                         2017,
                         10, 19, 8,
                         33, 0).getTime() / 1000],
-                    ['1', 'Order 2', '2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
+                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
                         2017, 10, 19, 8,
                         38, 0).getTime() / 1000],
-                    ['2', 'Order 1', '2', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(
+                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(
                         2017, 10, 19, 8,
                         45, 0).getTime() / 1000],
-                    ['2', 'Order 2', '2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(
+                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(
                         2017, 10, 19, 8,
                         50, 0).getTime() / 1000],
-                    ['3', 'Order 1', '2', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(
+                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(
                         2017, 10, 19, 9,
                         0, 36).getTime() / 1000],
-                    ['3', 'Order 2', '2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(
+                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(
                         2017, 10, 19, 9,
                         14, 27).getTime() / 1000],
-                    ['4', 'Order 1', '2', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(
+                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(
                         2017, 10, 19, 9,
                         30, 12).getTime() / 1000],
-                    ['4', 'Order 1', '1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000,
+                    ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000,
                         new Date(
                             2017, 10, 19,
                             10, 20, 12).getTime() / 1000
@@ -720,13 +720,6 @@
                 dataTable.addColumn({
                     type: 'string',
                     id: 'Order no.'
-                });
-                dataTable.addColumn({
-                    type: 'string',
-                    role: 'annotationText',
-                    p: {
-                        html: true
-                    }
                 });
                 dataTable.addColumn({
                     type: 'string',
