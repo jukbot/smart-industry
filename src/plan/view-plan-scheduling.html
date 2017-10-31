@@ -182,7 +182,7 @@
         <ul class="app-grid">
             <li>
                 <div class="card">
-                    <h1 class="title">Order Scheduling</h1>
+                    <h1 class="title">Order Table</h1>
                     <div class="order-schedule-info">
                         <p>Next Reschedule: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
                         <p>Production Model: [[factoryProfile.model]]</p>
@@ -338,7 +338,7 @@
             </li>
             <li>
                 <div class="card">
-                    <h1 class="title">Job Scheduling</h1>
+                    <h1 class="title">Scheduling Table</h1>
                     <p>Selected Station: [[selectedStation]]</p>
                     <p>Station Name:
                         <template is="dom-repeat" items="[[selectedStationData]]" as="stationItem">[[stationItem.st_name]]</template>
@@ -483,7 +483,7 @@
 
             <li>
                 <div class="card" id="chartContainer">
-                    <h1 class="title">Job Gantt Chart</h1>
+                    <h1 class="title">Scheduling Chart</h1>
                     <google-chart id="timeline" type="timeline" options="[[timelineOptions]]"></google-chart>
                 </div>
             </li>
