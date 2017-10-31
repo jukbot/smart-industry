@@ -300,7 +300,18 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="100px" flex="0">
+                        <vaadin-grid-column width="50px">
+                            <template class="header">
+                                <div class="cell last">Edit</div>
+                            </template>
+                            <template>
+                                <div class="cell last">
+                                    <paper-icon-button on-tap="editOrder" order="[[item]]" icon="vaadin:pencil" title="Edit" disabled="[[isDeletable(item.order_status)]]"></paper-icon-button>
+                                </div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column width="50px">
                             <template class="header">
                                 <div class="cell numeric last">Cancel</div>
                             </template>
@@ -320,7 +331,7 @@
                             <button>Reschedule</button>
                         </flat-button>
                         <flat-button class="btn" on-tap="refreshChart">
-                            <button>Update Chart</button>
+                            <button>(Test) Update the Chart</button>
                         </flat-button>
                     </div>
                 </div>
@@ -529,7 +540,7 @@
             _installListeners() {
                 // listen for custom events on main page
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
-                //this.addEventListener('data-changed', (e) => this.getSortedOrder(this.orderItems))
+                this.addEventListener('data-changed', (e) => this.getSortedOrder(this.orderItems))
             }
 
             refreshChart() {
@@ -793,6 +804,15 @@
                 });
             }
 
+            setNotification(detail,type) {
+                const timestamp = Math.round(Date.now() / 1000.0);
+                this.$.notificationQuery.ref.push({
+                        created: timestamp,
+                        detail: detail,
+                        type: type
+                });
+            }
+
             getDeliveryDate(timestamp) {
                 let today = new Date(timestamp * 1000);
                 let dd = today.getDate();
@@ -935,7 +955,6 @@
                     alert("Delete job successfully");
                 }
             }
-
         }
         customElements.define(ViewPlanScheduling.is, ViewPlanScheduling)
     </script>

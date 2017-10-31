@@ -241,7 +241,7 @@
                 </flat-button>
             </div>
         </div>
-        <vaadin-dialog id="manageKeyDialog" class="dialog">
+        <vaadin-dialog id="reportFinishDialog" class="dialog">
             <template>
                 <custom-style>
                     <style is="custom-style">
@@ -310,7 +310,7 @@
             }
 
             openFinishDialog(e) {
-                this.$.manageKeyDialog.opened = true;
+                this.$.reportFinishDialog.opened = true;
                 const key = e.currentTarget.job.$key;
                 this.$.scheduleQuery.ref.child(key).update({
                     actual_end: Math.round(new Date().getTime() / 1000.0),
@@ -318,8 +318,12 @@
                 })
             }
 
+            updateFinish() {
+                this.$.reportFinishDialog.opened = false;   
+            }
+
             closeFinishDialog() {
-                this.$.manageKeyDialog.opened = false;
+                this.$.reportFinishDialog.opened = false;
             }
 
 

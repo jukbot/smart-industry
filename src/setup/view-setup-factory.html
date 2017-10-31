@@ -163,8 +163,11 @@
                             always-float-label></paper-input>
                         <vaadin-combo-box label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[persistedFactorySchedule.interval]]"
                             items="[[intervalItems]]" item-value-path="value" item-label-path="value" error-message="Invalid Input"
-                            loading="[[!concurrencyItems]]" required always-float-label>
+                            required always-float-label>
                         </vaadin-combo-box>
+                        <paper-input label="Delay between station (minutes)" name="stationDelay" id="delayBetweenStation"
+                        value="[[persistedFactorySchedule.delay]]" type="number" min="0" max="180" step="1" auto-validate
+                        error-message="Input out of range" required always-float-label></paper-input>
                         <flat-button on-tap="restoreDefault" class="btn" title="Restore Default">
                             <button>{{localize('restore')}}</button>
                         </flat-button>
@@ -236,6 +239,8 @@
                             <p>{{localize('last-reschedule')}}</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>{{localize('next-reschedule')}}</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>Delay between station</p>
                         </div>
                         <div class="info-group flex-item">
                             <p>{{localize(persistedFactoryPerformance.optimize)}}&nbsp;</p>
@@ -251,6 +256,8 @@
                             <p>[[getLastInterval(persistedFactorySchedule.start_interval)]]&nbsp;</p>
                             <div class="sidebar-menu-line" role="separator"></div>
                             <p>[[getNextInterval(persistedFactorySchedule.start_interval, persistedFactorySchedule.interval)]]&nbsp;</p>
+                            <div class="sidebar-menu-line" role="separator"></div>
+                            <p>[[persistedFactorySchedule.delay]] minutes</p>
                         </div>
                     </div>
                 </div>
@@ -394,19 +401,20 @@
             }
 
             saveValue() {
-                let fn = this.$.factoryName.value
-                let ft = this.$.factoryType.value
-                let mod = this.$.productionModel.value
-                let con = this.$.concurrency.value
-                let aw = this.$.acceptWaste.value
-                let au = this.$.workerUtilize.value
-                let opt = this.$.optimizationType.value
-                let meff = this.$.machineStandardEffi.value
-                let inte = this.$.scheduleInterval.value
-                let op_start = this.$.opStart.value
-                let op_end = this.$.opEnd.value
-                let ot_start = this.$.otStart.value
-                let ot_end = this.$.otEnd.value
+                const fn = this.$.factoryName.value
+                const ft = this.$.factoryType.value
+                const mod = this.$.productionModel.value
+                const con = this.$.concurrency.value
+                const aw = this.$.acceptWaste.value
+                const au = this.$.workerUtilize.value
+                const opt = this.$.optimizationType.value
+                const meff = this.$.machineStandardEffi.value
+                const inte = this.$.scheduleInterval.value
+                const delay =  this.$.delayBetweenStation.value
+                const op_start = this.$.opStart.value
+                const op_end = this.$.opEnd.value
+                const ot_start = this.$.otStart.value
+                const ot_end = this.$.otEnd.value
                 this.operationDay = []
                 if (this.$.monday.checked) this.push('operationDay', 'mon')
                 if (this.$.tuesday.checked) this.push('operationDay', 'tue')
@@ -415,10 +423,10 @@
                 if (this.$.friday.checked) this.push('operationDay', 'fri')
                 if (this.$.saturday.checked) this.push('operationDay', 'sat')
                 if (this.$.sunday.checked) this.push('operationDay', 'sun')
-                let op_day = this.operationDay.toString()
+                const op_day = this.operationDay.toString()
 
                 if (fn && ft && mod && opt && aw && au && inte && meff && op_start &&
-                    op_end && op_day && ot_start && ot_end &&
+                    op_end && op_day && ot_start && ot_end && delay && 
                     this.$.workerUtilize.validate() && this.$.machineStandardEffi.validate() && this.$.acceptWaste
                     .validate() && this.$.scheduleInterval.validate()) {
                     this.set('persistedFactoryProfile.name', fn)
@@ -434,6 +442,7 @@
                     this.set('persistedFactoryPerformance.au', au)
                     this.set('persistedFactoryPerformance.meff', meff)
                     this.set('persistedFactorySchedule.interval', inte)
+                    this.set('persistedFactorySchedule.delay', delay)
                     this.set('persistedFactoryOperation.op_start', op_start)
                     this.set('persistedFactoryOperation.op_end', op_end)
                     this.set('persistedFactoryOperation.op_day', op_day)
@@ -455,6 +464,7 @@
                 this.$.workerUtilize.value = 85
                 this.$.machineStandardEffi.value = 75
                 this.$.scheduleInterval.value = 7
+                this.$.delayBetweenStation.value = 10
                 this.$.opStart.value = '08:00'
                 this.$.opEnd.value = '17:00'
                 this.$.otStart.value = '19:00'
