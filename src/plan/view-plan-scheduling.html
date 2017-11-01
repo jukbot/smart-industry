@@ -168,8 +168,8 @@
         <!-- ORDER SCHEDULE TABLE -->
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
 
-        <!-- GANTT CHART DATA -->
-        <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/ganttChartData" data="{{chartItems}}"></firebase-document>
+        <!-- CHART DATA -->
+        <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{chartItems}}"></firebase-document>
 
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
