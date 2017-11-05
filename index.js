@@ -12,25 +12,34 @@
 
 // app.listen(8080);
 
-const critical = require("critical");
-const prpl = require("prpl-server");
-const express = require("express");
-const app = express();
+// Include the server in your file
+const server = require('server');
+const { get, post } = server.router;
 
-critical.generate({
-  // เป็นการบอก critical ว่าหลังจากแกะ critical CSS ออกมาแล้ว
-  // ให้นำก้อน CSS ที่ได้ไปแปะลง <style>...</style>
-  // ในส่วน head หรือที่เราเรียกกันว่า inline style
-  inline: true,
-  src: "index.html",
-  css: ["main.css"],
-  // ต้องการให้ผลลัพธ์ที่ได้อยู่ในไฟล์ไหน
-  dest: "index-critical.html",
-  // Viewport หรือขนาดของบราวเซอร์ที่ใช้
-  width: 1600,
-  height: 900,
-  // ลดขนาดไฟล์ด้วยการทำ minify
-  minify: true,
-  // อย่างที่กล่าวข้างต้น font-face ไม่ควรเป็น critical CSS
-  ignore: ["font-face"]
-});
+// Handle requests to the url "/" ( http://localhost:3000/ )
+server([
+  get('/', ctx => 'Hello world!')
+]);
+
+// const critical = require("critical");
+// const prpl = require("prpl-server");
+// const express = require("express");
+// const app = express();
+
+// critical.generate({
+//   // เป็นการบอก critical ว่าหลังจากแกะ critical CSS ออกมาแล้ว
+//   // ให้นำก้อน CSS ที่ได้ไปแปะลง <style>...</style>
+//   // ในส่วน head หรือที่เราเรียกกันว่า inline style
+//   inline: true,
+//   src: "index.html",
+//   css: ["main.css"],
+//   // ต้องการให้ผลลัพธ์ที่ได้อยู่ในไฟล์ไหน
+//   dest: "index-critical.html",
+//   // Viewport หรือขนาดของบราวเซอร์ที่ใช้
+//   width: 1600,
+//   height: 900,
+//   // ลดขนาดไฟล์ด้วยการทำ minify
+//   minify: true,
+//   // อย่างที่กล่าวข้างต้น font-face ไม่ควรเป็น critical CSS
+//   ignore: ["font-face"]
+// });

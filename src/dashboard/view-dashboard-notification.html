@@ -92,13 +92,13 @@
           <h1 class="title">{{localize('notification-center')}}</h1>
           <div class="filter-bar">
             <vaadin-combo-box label="{{localize('notification-type')}}" id="notificationFilter" value="{{type}}" items="[[filterItems]]"
-              item-value-path="value" item-label-path="name" error-message="Invalid Input" required always-float-label>
+              item-value-path="value" item-label-path="name" error-message="Invalid Input" required always-float-label='true'>
               <template>
                 <div>{{localize(item.value)}}</div>
               </template>
             </vaadin-combo-box>
             <vaadin-date-picker label="Notification Date" max="2030-01-01" name="notification date" id="notificationDateSelector" initial-position="[[todayDate]]"
-              value="{{date}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
+              value="{{date}}" error-message="Invalid input" required always-float-label='true'></vaadin-date-picker>
           </div>
           <vaadin-grid id="notificationTable" aria-label="Notification Center" items="[[filterNotification(notificationData, date, type)]]">
             <vaadin-grid-column width="50px" flex-grow="0">

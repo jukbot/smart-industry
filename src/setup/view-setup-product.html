@@ -8,14 +8,16 @@
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="/bower_components/vaadin-dialog/vaadin-dialog.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
+<link rel="import" href="redux-mixin.html">
 
 <dom-module id="view-setup-product">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-            :host {
+             :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -23,41 +25,41 @@
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
-                }
-                .fixed-btn {
-                    width: 100%;
                 }
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                :host {
+                 :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                :host {
+                 :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) and (max-width: 2560px) {
-                :host {
-                    --app-grid-columns: 4;
+                 :host {
+                    --app-grid-columns: 3;
                 }
             }
 
-
             .btn {
-                margin: 20px 10px 0 0;
                 width: 250px;
             }
 
             .add-btn {
                 margin: 20px 0;
                 width: 250px;
+            }
+
+            .item {
+                border-bottom: 1px solid #eee;
+                padding: 10px;
             }
 
             .product-image {
@@ -71,10 +73,6 @@
                 flex-direction: column;
                 justify-content: center;
                 padding: 8px;
-            }
-
-            .frozen {
-                background: lightgray;
             }
 
             .numeric {
@@ -92,8 +90,31 @@
                 flex: 1;
             }
 
+            .part-list {
+                height: 200px;
+            }
+
+            .part {
+                margin: 10px;
+                padding: 20px;
+                border: 1px solid rgba(0, 0, 0, .10);
+                border-radius: 2px;
+            }
+
+            .part p {
+                margin: 10px 0;
+            }
+
+            .part h1 {
+                text-align: center;
+            }
+
+            .part-info-group {
+                margin-bottom: auto;
+            }
+
             vaadin-grid#productTable {
-                height: 750px;
+                height: 500px;
 
                 --vaadin-grid-cell: {
                     padding: 0;
@@ -135,14 +156,11 @@
                 h1.title {
                     font-size: 1.5rem;
                 }
-                .btn {
-                    width: 100%;
-                }
             }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="sku" data="{{productItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="name" data="{{productItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="processQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             data="{{processItems}}"></firebase-query>
         <!-- <firebase-storage-ref app-name="smart-mes" path="data/[[k.key]]/product" metadata="{{metadata}}" storage-uri="gs://smart-mes.appspot.com/data/[[k.key]]/product"
@@ -154,52 +172,80 @@
             <li>
                 <div class="card" hidden="[[showAddProduct]]">
                     <h1 class="title">{{localize('add-product')}}</h1>
-
-                    <paper-input label="Name" id="productName" type="text" required always-float-label></paper-input>
-                    <paper-input label="SKU" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
-                    <paper-input label="Quantity" id="productQuantity" type="number" min="0" max="5000" allowed-pattern="^(0|[1-9]\d*)$" required
-                        always-float-label>
-                    </paper-input>
+                    <paper-input label="Name*" id="productName" type="text" required always-float-label></paper-input>
+                    <paper-input label="SKU*" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
                     <paper-input label="Cost" id="productCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only"
-                        min="0" max="999999" step="0.01" auto-validate always-float-label></paper-input>
+                        min="0" max="99999" step="0.01" auto-validate always-float-label></paper-input>
                     <paper-input label="Inventory Code" id="inventoryCode" type="text" required always-float-label></paper-input>
-                    <paper-input label="Inventory Require" id="inventoryRequire" type="number" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
-                    <div>
-                        <p>Upload Profile Image</p>
-                        <input type="file" accept="image/*" name="file" id="uploadImageFile" accept="[[accept]]" on-change="_verifyUploadFile" class="inputfile"
-                        />
-                    </div>
-                    <flat-button class="add-btn" on-tap="addProductPart">
+                    <paper-input label="Inventory Require" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
+                    <flat-button on-tap="openBrowseImageFile" class="btn" title="{{localize('remove-profile-image')}}">
+                        <button>Browse Image</button>
+                        <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
+                    </flat-button>
+
+                    <flat-button class="add-btn" on-tap="openAddPartDialog">
                         <button>Add Part</button>
                     </flat-button>
                     <div class="frame">
                         <ul class="app-grid">
-                            <li>
-                                <div class="part">
-                                    <div class="part-adding-group">
-                                        <h2 class="title">Part 1</h2>
-                                        <paper-input label="Partname" id="partName" type="text" required always-float-label></paper-input>
-                                        <paper-input label="PartSKU" id="partSku" type="text" required always-float-label></paper-input>
+                            <template is="dom-repeat" items="[[productPart]]" as="part">
+                                <li>
+                                    <div class="part">
+                                        <div class="part-info-group">
+                                            <h2 class="title">[[part.name]]</h2>
+                                            <p>Part SKU Number: [[part.sku]]</p>
+                                            <div class="frame">
+                                                <div class="part-list">
+                                                    <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
+                                                        <template>
+                                                            <div tabindex$="[[tabIndex]]" class="item">
+                                                                <p>Process no. [[item]]</p>
+                                                                <p>Cycle [[item.cycle]] mins.</p>
+                                                                <p>Setup [[item.setup]] mins.</p>
+                                                            </div>
+                                                        </template>
+                                                    </iron-list>
+                                                </div>
+                                            </div>
+                                            <div class="frame">
+                                                <div class="part-list">
+                                                    <iron-list items="[[part.cycle]]" as="item">
+                                                        <template>
+                                                            <div tabindex$="[[tabIndex]]" class="item">
+                                                                <p>[[item]] mins.</p>
+                                                            </div>
+                                                        </template>
+                                                    </iron-list>
+                                                </div>
+                                            </div>
+                                            <div class="frame">
+                                                <div class="part-list">
+                                                    <iron-list items="[[part.setup]]" as="item">
+                                                        <template>
+                                                            <div tabindex$="[[tabIndex]]" class="item">
+                                                                <p>[[item]] mins.</p>
+                                                            </div>
+                                                        </template>
+                                                    </iron-list>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <flat-button class="btn" on-tap="openEditStationCard" part="[[part]]">
+                                            <button>{{localize('edit')}}</button>
+                                        </flat-button>
+                                        <flat-button class="thunderbird btn" on-tap="removePartFromProduct">
+                                            <button>{{localize('remove')}}</button>
+                                        </flat-button>
                                     </div>
-
-                                </div>
-                                <div class="center">
-                                    <flat-button class="btn" on-tap="_removePart">
-                                        <button>{{localize('remove')}}</button>
-                                    </flat-button>
-                                    <flat-button class="btn shamrock" on-tap="_addpart">
-                                        <button>{{localize('add')}}</button>
-                                    </flat-button>
-                                </div>
-                            </li>
+                                </li>
+                            </template>
                         </ul>
-
                     </div>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openProductList">
+                        <flat-button class="btn" on-tap="openProductList">
                             <button>{{localize('dismiss')}}</button>
                         </flat-button>
-                        <flat-button class="btn shamrock" on-tap="_addproduct">
+                        <flat-button class="btn shamrock" on-tap="addProduct">
                             <button>{{localize('add')}}</button>
                         </flat-button>
                     </div>
@@ -310,7 +356,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="_editProduct" product="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                    <paper-icon-button on-tap="editProduct" product="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -321,7 +367,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="_deleteProduct" product="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-tap="removeProduct" product="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -338,7 +384,7 @@
                                 <div class="flex-item">
                                     <h3>Part Process</h3>
                                     <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[getProductProcess(productPart.process)]]</p>
+                                        <p>[[getProductProcessSequence(productPart.process)]]</p>
                                     </template>
                                 </div>
                                 <div class="flex-item">
@@ -358,7 +404,7 @@
                                 <div class="flex-item">
                                     <h3>Setup time (mins)</h3>
                                     <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.setup]]</p>
+                                        <p>[[getProductProcessSequence(productPart.setup)]]</p>
                                     </template>
                                 </div>
                                 <div class="flex-item">
@@ -371,7 +417,7 @@
                                 <div class="flex-item">
                                     <h3>Cycle time (mins)</h3>
                                     <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.cycle]]</p>
+                                        <p>[[getProductProcessSequence(productPart.cycle)]]</p>
                                     </template>
                                 </div>
                                 <div class="flex-item">
@@ -384,13 +430,108 @@
                         </template>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openAddProductCard">
+                        <flat-button class="btn" on-tap="openAddProductCard">
                             <button>Add product</button>
                         </flat-button>
                     </div>
                 </div>
             </li>
         </ul>
+        <vaadin-dialog id="addPartDialog" class="dialog" no-close-on-outside-click>
+            <template id="addPartContent">
+                <custom-style>
+                    <style is="custom-style" include="view-setup-product">
+                         :host {
+                            height: 100vh;
+                            margin: 0 auto;
+                            --app-primary-color: #202020;
+                            --paper-input-container-focus-color: var( --app-primary-color);
+                        }
+
+                        [part="content"] {
+                            padding: 20px 30px;
+                        }
+
+                        .title {
+                            margin: 10px 0 20px 0;
+                        }
+
+                        .btn {
+                            width: 250px;
+                        }
+
+                        .block-group {
+                            margin: 10px 0;
+                        }
+
+                        .delete-btn {
+                            float: right;
+                        }
+
+                        .frame {
+                            min-height: 250px;
+                        }
+
+                        .process-list {
+                            height: 250px;
+                        }
+                    </style>
+                </custom-style>
+                <h1 class="title center">Add Product Part</h1>
+                <div class="block-group">
+                    <paper-input label="Part Name" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
+                    <paper-input label="Part SKU" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
+                </div>
+                <div class="block-group">
+                    <!-- Add Process -->
+                    <h3>Process of Part</h3>
+                    <p>([[partProcess.length]] / [[maxProcess]])</p>
+                    <vaadin-combo-box label="Process Number" id="processNumber" items="[[processItems]]" name="Process selector" item-label-path="st_number"
+                        item-value-path="st_number" value="{{selectedProcess}}" error-message="Invalid input" loading="[[!processItems]]"
+                        required always-float-label='true'>
+                        <template>
+                            <paper-item>
+                                <paper-item-body three-line style="min-height: 0">
+                                    <div style="text-transform: capitalize">Process Name: [[item.st_name]]</div>
+                                    <div secondary>Process Number: [[item.st_number]]</div>
+                                    <div secondary>[[item.st_machine.length]] Machines</div>
+                                </paper-item-body>
+                            </paper-item>
+                        </template>
+                    </vaadin-combo-box>
+                    <paper-input label="Process Cycle Time (mins)" id="processCycle" value="{{processCycle}}" type="number" maxlength="9" error-message="number only"
+                        min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
+                    <paper-input label="Process Setup Time (mins)" id="processSetup" value="{{processSetup}}" type="number" maxlength="9" error-message="number only"
+                        min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
+
+                    <flat-button class="add-btn" on-tap="addProcessToPart">
+                        <button>Add Process</button>
+                    </flat-button>
+                </div>
+                <div class="frame">
+                    <div class="process-list">
+                        <iron-list items="{{partProcess}}" as="item" grid>
+                            <template>
+                                <div tabindex$="[[tabIndex]]" item="[[item]]" title="Click here to remove this item" class="item" style="width: 100px; height: 100px;">
+                                    <div>
+                                        <p class="title">[[item]]</p>
+                                        <paper-icon-button class="delete-btn" on-tap="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+                                    </div>
+                                </div>
+                            </template>
+                        </iron-list>
+                    </div>
+                </div>
+                <div class="center">
+                    <paper-button class="btn" dialog-dismiss on-tap="closeAddPartDialog">
+                        {{localize('dismiss')}}
+                    </paper-button>
+                    <paper-button class="btn" dialog-confirm autofocus on-tap="addPartToProduct">
+                        Add Part
+                    </paper-button>
+                </div>
+            </template>
+        </vaadin-dialog>
     </template>
     <script>
         /**
@@ -399,8 +540,7 @@
          * @extends {Polymer.Element}
          * @appliesMixin Polymer.AppLocalizeBehavior
          */
-        class ViewSetupProduct extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
-            Polymer.Element) {
+        class ViewSetupProduct extends ReduxMixin(Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element)) {
             static get is() {
                 return 'view-setup-product'
             }
@@ -411,9 +551,96 @@
                     productData: Object,
                     processItems: Object,
                     toastText: String,
+                    maxProcess: {
+                        type: Number,
+                        value: 12
+                    },
                     showAddProduct: {
                         type: Boolean,
                         value: true
+                    },
+                    partProcess: {
+                        type: Array,
+                        value: function () {
+                            return [];
+                        }
+                    },
+                    partProcessCycle: {
+                        type: Array,
+                        value: function () {
+                            return [];
+                        }
+                    },
+                    partProcessSetup: {
+                        type: Array,
+                        value: function () {
+                            return [];
+                        }
+                    },
+                    productPart: {
+                        type: Array,
+                        value: () => {
+                            return []
+                        }
+                    },
+                    processDependency: {
+                        type: Array,
+                        value: () => {
+                            return [{
+                                "number": 0,
+                                "required": "none"
+                            }, {
+                                "number": 1,
+                                "required": "none"
+                            }, {
+                                "number": 2,
+                                "required": "none"
+                            }, {
+                                "number": 3,
+                                "required": "none"
+                            }]
+
+                        }
+                    }
+                }
+            }
+
+            static get actions() {
+                return {
+                    add(data) {
+                        return {
+                            type: 'ADD_PART',
+                            productPart: data
+                        }
+                    },
+                    remove(data) {
+                        return {
+                            type: 'REMOVE_PART',
+                            index: data
+                        }
+                    },
+                    editCreate(data) {
+                        return {
+                            type: 'EDIT_SET_PART',
+                            editPart: data
+                        }
+                    },
+                    editAdd(data) {
+                        return {
+                            type: 'EDIT_ADD_PART',
+                            editPart: data
+                        }
+                    },
+                    editRemove(data) {
+                        return {
+                            type: 'EDIT_REMOVE_PART',
+                            index: data
+                        }
+                    },
+                    clear() {
+                        return {
+                            type: 'CLEAR_PART'
+                        }
                     }
                 }
             }
@@ -423,9 +650,145 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
 
-            getProductProcess(process) {
-                if (!process) return
-                return process.split(',').join(' → ');
+            // Add Process to Part
+            addProcessToPart() {
+                if (this.selectedProcess && this.processCycle && this.processSetup) {
+                    // if found duplicate it will return index > -1
+                    let isDuplicated = this.partProcess.map(item => item).indexOf(this.selectedProcess) > -1
+                    if (this.partProcess.length < this.maxProcess) {
+                        if (isDuplicated) {
+                            window.alert("You already added this process")
+                            return
+                        }
+                        this.push('partProcess', this.selectedProcess)
+                        this.push('partProcessCycle', parseInt(this.processCycle))
+                        this.push('partProcessSetup', parseInt(this.processSetup))
+                        this.selectedProcess = null;
+                        this.processCycle = null;
+                        this.processSetup = null;
+                    } else {
+                        window.alert(`Can't add more than ${this.maxProcess} processes per station`);
+                    }
+                } else {
+                    window.alert("Please fill in process number, process cycle time and process setup time.");
+                }
+                console.log(this.partProcess)
+                console.log(this.partProcessCycle)
+                console.log(this.partProcessSetup)
+            }
+
+            removeProcessFromPart(e) {
+                let index = e.model.index;
+                console.log("Selected index is " + e.model.index);
+                console.log("Selected process is " + e.model.item);
+                console.log(this.partProcess.indexOf(e.model.item));
+                this.splice('partProcess', index, 1);
+                this.splice('partProcessCycle', index, 1);
+                this.splice('partProcessSetup', index, 1);
+                console.log(this.partProcess)
+                console.log(this.partProcessCycle)
+                console.log(this.partProcessSetup)
+            }
+
+            // Add Part to Product
+            addPartToProduct() {
+                this.push('productPart', {
+                    name: this.partName,
+                    sku: this.partSKU,
+                    process: this.partProcess,
+                    cycle: this.partProcessCycle,
+                    setup: this.partProcessSetup
+                })
+                console.log(this.productPart);
+                this.closeAddPartDialog();
+            }
+
+            removePartFromProduct(e) {
+                let index = e.model.index;
+                this.splice('productPart', index, 1);
+                console.log(this.productPart);
+            }
+
+            // Add Product
+            addProduct() {
+                const productName = this.$.productName.value;
+                const productSKU = this.$.productSKU.value;
+                const productPart = this.productPart;
+                const processDependency = this.processDependency;
+                let productCost = this.$.productCost.value;
+                let inventoryCode = this.$.inventoryCode.value;
+                let inventoryQuantity = this.$.inventoryQuantity.value;
+                const timestamp = Math.round(Date.now() / 1000.0);
+                if (!productCost) productCost = 0;
+                if (!inventoryCode) inventoryCode = "none";
+                if (!inventoryQuantity) inventoryQuantity = 0;
+
+                if (productName && productSKU && productPart && processDependency) {
+                    this.$.productQuery.ref.push({
+                        add: timestamp,
+                        cost: productCost,
+                        name: productName,
+                        sku: productSKU,
+                        image: null,
+                        inventory_code: inventoryCode,
+                        inventory_used: inventoryQuantity,
+                        part: [this.productPart],
+                        process: this.processDependency
+                    })
+                } else {
+                    window.alert("Please fill in the required field.");
+                }
+            }
+
+            removeProduct(e) {
+                if (window.confirm("Delete this product ?") == true) {
+                    const key = e.currentTarget.product.$key;
+                    this.$.productQuery.ref.child(key).remove();
+                }
+            }
+
+            openBrowseImageFile() {
+                this.$.uploadImageFile.click();
+            }
+
+            openAddPartDialog() {
+                this.$.addPartDialog.opened = true;
+            }
+
+            closeAddPartDialog() {
+                this.$.addPartDialog.opened = false;
+            }
+
+            openAddProductCard() {
+                this.showAddProduct = false;
+            }
+
+            openProductList() {
+                this.showAddProduct = true;
+            }
+
+            openEditProductCard(e) {
+                this.showAddProduct = false;
+                let key = e.currentTarget.product.$key;
+                this.editKey = key;
+            }
+
+            getPartBundle(processArr, cycleArr, setupArr) {
+                if (!processArr || !cycleArr || !setupArr) return 0;
+                const rows = [processArr, cycleArr, setupArr]
+                const columns = ["process", "cycle", "setup"];
+                // const result = processArr.map((row) => {
+                //     return row.reduce((result, field, index) => {
+                //         result[columns[index]] = field;
+                //         return result
+                //     }, {});
+                // });
+                console.log(rows);
+            }
+
+            getProductProcessSequence(arr) {
+                if (!arr) return 0;
+                return arr.join(' → ');
             }
 
             getProcessNumber(processNumber) {
@@ -443,14 +806,6 @@
                 if (!cycle) return 0;
                 let sumCycleTime = cycle.reduce((a, b) => a + b); // apply sum function to all arr items to get sumCycle
                 return sumCycleTime.toFixed(1);
-            }
-
-            _openAddProductCard() {
-                this.showAddProduct = false;
-            }
-
-            _openProductList() {
-                this.showAddProduct = true;
             }
 
             _onActiveItemChanged(e) {

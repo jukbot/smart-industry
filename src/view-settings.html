@@ -23,14 +23,6 @@
         --app-grid-item-height: 50%;
       }
 
-      .btn input[type=file] {
-        font-size: 100px;
-        position: absolute;
-        left: 0;
-        top: 0;
-        opacity: 0;
-      }
-
       .card {
         min-height: 440px;
       }
@@ -42,6 +34,11 @@
 
       .switch {
         padding: 10px 0;
+      }
+
+      iron-list {
+        flex: 1;
+        overflow: auto;
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
@@ -104,7 +101,7 @@
           <h1 class="title">{{localize('account-settings')}}</h1>
           <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text" always-float-label></paper-input>
           <!-- <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress> -->
-          <flat-button on-tap="openBrowseImageFile" class="btn" title="{{localize('remove-profile-image')}}">
+          <flat-button on-tap="openBrowseImageFile" class="btn" title="{{localize('upload-profile-image')}}">
             <button>Upload Profile Image</button>
             <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
           </flat-button>
@@ -177,11 +174,12 @@
     </ul>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{toastText}}"></paper-toast>
     <vaadin-dialog id="manageKeyDialog" class="dialog">
-      <template>
+      <template id="manageKeyContent">
         <custom-style>
-          <style is="custom-style" include="shared-styles">
+          <style is="custom-style" include="view-settings">
              :host {
               width: 50%;
+              margin-top: 100px;
               --app-primary-color: #202020;
               --paper-input-container-focus-color: var( --app-primary-color);
             }
@@ -199,8 +197,13 @@
             }
 
             .btn-group {
-              float: right;
-              margin: 10px 0;
+              margin: 10px 0 0 0;
+              display: flex;
+              text-align: center;
+            }
+
+            .btn {
+              margin: 0 10px 0px 10px;
             }
           </style>
         </custom-style>
@@ -208,10 +211,10 @@
         <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
         <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
         <div class="btn-group">
-          <paper-button dialog-dismiss on-tap="closeKeyDialog">
+          <paper-button class="btn" dialog-dismiss on-tap="closeKeyDialog">
             {{localize('dismiss')}}
           </paper-button>
-          <paper-button dialog-confirm autofocus on-tap="updateKey">
+          <paper-button class="btn shamrock" dialog-confirm autofocus on-tap="updateKey">
             {{localize('save')}}
           </paper-button>
         </div>

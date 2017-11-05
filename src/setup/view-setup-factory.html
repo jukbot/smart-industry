@@ -112,17 +112,17 @@
                             always-float-label></paper-input>
                         <vaadin-combo-box label="{{localize('factory-type')}}" id="factoryType" value="[[persistedFactoryProfile.type]]" items="[[factoryType]]"
                             item-label-path="name" item-value-path="value" loading="[[!factoryType]]" error-message="Invalid Input"
-                            required always-float-label></vaadin-combo-box>
+                            required always-float-label='true'></vaadin-combo-box>
                         <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[persistedFactoryProfile.model]]"
                             items="[[productionModel]]" item-value-path="value" item-label-path="name" loading="[[!productionModel]]"
-                            error-message="Invalid Input" selected-item="{{selectProductionModel}}" required always-float-label>
+                            error-message="Invalid Input" selected-item="{{selectProductionModel}}" required always-float-label='true'>
                             <template>
                                 <div readonly>[[item.name]]</div>
                             </template>
                         </vaadin-combo-box>
                         <vaadin-combo-box label="Station Concurrency" id="concurrency" value="[[persistedFactoryProfile.concurrency]]" items="[[concurrencyItems]]"
                             item-value-path="value" item-label-path="value" error-message="Invalid Input" loading="[[!concurrencyItems]]"
-                            required always-float-label>
+                            required always-float-label='true'>
                         </vaadin-combo-box>
                         <paper-input label="{{localize('operation-start')}}" id="opStart" value="[[persistedFactoryOperation.op_start]]" type="time"
                             required pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
@@ -165,9 +165,9 @@
                             items="[[intervalItems]]" item-value-path="value" item-label-path="value" error-message="Invalid Input"
                             required always-float-label>
                         </vaadin-combo-box>
-                        <paper-input label="Delay between station (minutes)" name="stationDelay" id="delayBetweenStation"
-                        value="[[persistedFactorySchedule.delay]]" type="number" min="0" max="180" step="1" auto-validate
-                        error-message="Input out of range" required always-float-label></paper-input>
+                        <paper-input label="Delay between station (minutes)" name="stationDelay" id="delayBetweenStation" value="[[persistedFactorySchedule.delay]]"
+                            type="number" min="0" max="180" step="1" auto-validate error-message="Input out of range" required
+                            always-float-label></paper-input>
                         <flat-button on-tap="restoreDefault" class="btn" title="Restore Default">
                             <button>{{localize('restore')}}</button>
                         </flat-button>
@@ -410,7 +410,7 @@
                 const opt = this.$.optimizationType.value
                 const meff = this.$.machineStandardEffi.value
                 const inte = this.$.scheduleInterval.value
-                const delay =  this.$.delayBetweenStation.value
+                const delay = this.$.delayBetweenStation.value
                 const op_start = this.$.opStart.value
                 const op_end = this.$.opEnd.value
                 const ot_start = this.$.otStart.value
@@ -426,7 +426,7 @@
                 const op_day = this.operationDay.toString()
 
                 if (fn && ft && mod && opt && aw && au && inte && meff && op_start &&
-                    op_end && op_day && ot_start && ot_end && delay && 
+                    op_end && op_day && ot_start && ot_end && delay &&
                     this.$.workerUtilize.validate() && this.$.machineStandardEffi.validate() && this.$.acceptWaste
                     .validate() && this.$.scheduleInterval.validate()) {
                     this.set('persistedFactoryProfile.name', fn)

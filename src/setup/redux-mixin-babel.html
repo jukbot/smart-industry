@@ -1,0 +1,75 @@
+<link rel="import" href="/node_modules/polymer-redux/dist/polymer-redux.html">
+<script src="/node_modules/redux/dist/redux.min.js"></script>
+<script>
+    'use strict';
+
+    var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+    function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+    function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
+
+    var initial = {
+        machines: [],
+        editMachines: []
+    };
+
+    var reducer = function reducer() {
+        var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initial;
+        var action = arguments[1];
+
+        if (!state) return initial;
+        switch (action.type) {
+            case 'ADD_MACHINE':
+                if (!state.machines) {
+                    state.machines = initial.machines;
+                }
+                var _action$machines = action.machines,
+                    $key = _action$machines.$key,
+                    newMachines = _objectWithoutProperties(_action$machines, ['$key']);
+
+                var newerMachines = _extends({}, newMachines, { mid: action.machines.$key });
+                return _extends({}, state, {
+                    machines: [].concat(_toConsumableArray(state.machines), [newerMachines])
+                });
+            case 'REMOVE_MACHINE':
+                if (state.machines) {
+                    return _extends({}, state, {
+                        machines: [].concat(_toConsumableArray(state.machines.slice(0, action.index)), _toConsumableArray(state.machines.slice(action.index + 1)))
+                    });
+                }
+                return state;
+            case 'EDIT_ADD_MACHINE':
+                // If state machine is undefined just initial it
+                if (!state.editMachines) {
+                    state.editMachines = initial.editMachines;
+                } else if (state.editMachines) {
+                    var _action$editMachines = action.editMachines,
+                        _$key = _action$editMachines.$key,
+                        newEditMachines = _objectWithoutProperties(_action$editMachines, ['$key']);
+
+                    var newerEditMachines = _extends({}, newEditMachines, { mid: action.editMachines.$key });
+                    return _extends({}, state, {
+                        editMachines: [].concat(_toConsumableArray(state.editMachines), [newerEditMachines])
+                    });
+                }
+                return state;
+            case 'EDIT_REMOVE_MACHINE':
+                if (state.editMachines) {
+                    return _extends({}, state, {
+                        editMachines: [].concat(_toConsumableArray(state.editMachines.slice(0, action.index)), _toConsumableArray(state.editMachines.slice(action.index + 1)))
+                    });
+                }
+                return state;
+            case 'EDIT_SET_MACHINE':
+                return _extends({}, state, {
+                    editMachines: action.editMachines
+                });
+            case 'CLEAR_MACHINE':
+                return [];
+            default:
+                return state;
+        }
+    };
+    var store = Redux.createStore(reducer);
+    var ReduxMixin = PolymerRedux(store);
+
+</script>

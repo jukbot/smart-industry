@@ -111,7 +111,7 @@
                     <h1 class="title">Create Order</h1>
                     <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerItems]]" item-label-path="name"
                         item-value-path="name" selected-item='{{selectCustomer}}' loading="[[!customerItems]]" required allow-custom-value
-                        prevent-invalid-input always-float-label>
+                        prevent-invalid-input always-float-label='true'>
                         <template>
                             <paper-item>
                                 <paper-item-body two-line style="min-height: 0">
@@ -122,7 +122,7 @@
                         </template>
                     </vaadin-combo-box>
                     <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="name"
-                        selected-item='{{selectProduct}}' loading="[[!productItems]]" required prevent-invalid-input always-float-label>
+                        selected-item='{{selectProduct}}' loading="[[!productItems]]" required prevent-invalid-input always-float-label='true'>
                         <template>
                             <paper-icon-item style="padding: 0">
                                 <img src="[[item.image]]" style="border-radius: 50%; width: 48px; height: 48px;" slot="item-icon">
@@ -136,7 +136,7 @@
                     <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
                         step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
                     <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2030-01-01" name="delivery" id="deliverySelector"
-                        initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
+                        initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input" required always-float-label='true'></vaadin-date-picker>
                     <flat-button on-tap="printOrder" class="btn" title="Print and Add order">
                         <button>Print and Add to schedule</button>
                     </flat-button>

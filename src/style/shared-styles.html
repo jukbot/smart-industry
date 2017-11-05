@@ -45,6 +45,14 @@
         list-style: none;
       }
 
+      nav {
+        margin-top: 10px;
+      }
+
+      iron-list {
+        flex: 1 1 auto;
+      }
+
       app-header {
         color: var(--app-secondary-color);
         background-color: var(--app-primary-color);
@@ -92,6 +100,18 @@
       paper-button.iron-selected {
         color: #ffffff;
         background-color: #202020;
+      }
+
+      paper-button.shamrock:hover,
+      .shamrock:hover button {
+        background-color: #43A047;
+        border: 1px solid #43A047;
+      }
+
+      paper-button.thunderbird:hover,
+      .thunderbird:hover button {
+        background-color: #e53935;
+        border: 1px solid #e53935;
       }
 
       paper-tooltip.profile-tooltip {
@@ -152,17 +172,22 @@
         text-align: center;
       }
 
+      .btn input[type=file] {
+        font-size: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        display: none;
+      }
+
       .frame {
         border: 1px solid rgba(0, 0, 0, .10);
         border-radius: 2px;
-        min-height: 350px;
+        min-height: 300px;
         overflow: auto;
         display: flex;
         flex-direction: column;
-      }
-
-      nav {
-        margin-top: 10px;
       }
 
       .drawer-list>a {
@@ -270,7 +295,7 @@
         text-align: center;
       }
 
-      .sidebar-menu-line {
+      .separator-line {
         border-bottom: 1px solid rgba(0, 0, 0, .10);
         text-align: center;
       }
@@ -287,22 +312,12 @@
       }
 
       .btn {
-        margin-top: 16px;
+        margin: 16px 0 0 0;
         width: 100%;
       }
 
       .logout-btn {
         width: 75%;
-      }
-
-      .shamrock:hover button {
-        background-color: #43A047;
-        border: 1px solid #43A047;
-      }
-
-      .thunderbird:hover button {
-        background-color: #e53935;
-        border: 1px solid #e53935;
       }
 
       .blink {
