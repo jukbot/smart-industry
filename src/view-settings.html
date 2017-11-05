@@ -172,7 +172,6 @@
         </div>
       </li>
     </ul>
-    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{toastText}}"></paper-toast>
     <vaadin-dialog id="manageKeyDialog" class="dialog">
       <template id="manageKeyContent">
         <custom-style>
@@ -220,6 +219,7 @@
         </div>
       </template>
     </vaadin-dialog>
+    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{toastText}}"></paper-toast>
   </template>
 
   <script>
@@ -372,15 +372,15 @@
                 let url = snapshot.metadata.downloadURLs[0]
                 this.user.updateProfile({
                   photoURL: url
-                }).catch(function (error) {
-                  this.$.uploadImageFile.files.error = error
-                  this.$.uploadImageFile.value = null
-                  console.error('Upload failed:', error)
                 })
                 if (url) {
                   this.$.uploadImageFile.files.complete = true
                   this.updateProfileInfo(url, name)
                 }
+              }).catch(function (error) {
+                this.$.uploadImageFile.files.error = error
+                this.$.uploadImageFile.value = null
+                console.error('Upload failed:', error)
               })
           } else {
             this.toastText = 'Error: Invalid file format'

@@ -207,28 +207,6 @@
                                                     </iron-list>
                                                 </div>
                                             </div>
-                                            <div class="frame">
-                                                <div class="part-list">
-                                                    <iron-list items="[[part.cycle]]" as="item">
-                                                        <template>
-                                                            <div tabindex$="[[tabIndex]]" class="item">
-                                                                <p>[[item]] mins.</p>
-                                                            </div>
-                                                        </template>
-                                                    </iron-list>
-                                                </div>
-                                            </div>
-                                            <div class="frame">
-                                                <div class="part-list">
-                                                    <iron-list items="[[part.setup]]" as="item">
-                                                        <template>
-                                                            <div tabindex$="[[tabIndex]]" class="item">
-                                                                <p>[[item]] mins.</p>
-                                                            </div>
-                                                        </template>
-                                                    </iron-list>
-                                                </div>
-                                            </div>
                                         </div>
                                         <flat-button class="btn" on-tap="openEditStationCard" part="[[part]]">
                                             <button>{{localize('edit')}}</button>
@@ -532,6 +510,7 @@
                 </div>
             </template>
         </vaadin-dialog>
+        <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{toastText}}"></paper-toast>
     </template>
     <script>
         /**
@@ -551,6 +530,14 @@
                     productData: Object,
                     processItems: Object,
                     toastText: String,
+                    maxFiles: {
+                        type: Number,
+                        value: 1
+                    },
+                    maxFileSize: {
+                        type: Number,
+                        value: 1000000
+                    },
                     maxProcess: {
                         type: Number,
                         value: 12
@@ -561,6 +548,7 @@
                     },
                     partProcess: {
                         type: Array,
+                        notify: true,
                         value: function () {
                             return [];
                         }
@@ -579,6 +567,7 @@
                     },
                     productPart: {
                         type: Array,
+                        notify: true,
                         value: () => {
                             return []
                         }
@@ -657,7 +646,8 @@
                     let isDuplicated = this.partProcess.map(item => item).indexOf(this.selectedProcess) > -1
                     if (this.partProcess.length < this.maxProcess) {
                         if (isDuplicated) {
-                            window.alert("You already added this process")
+                            this.toastText = 'You already added this process'
+                            this.$.toastAlert.open()
                             return
                         }
                         this.push('partProcess', this.selectedProcess)
@@ -667,14 +657,14 @@
                         this.processCycle = null;
                         this.processSetup = null;
                     } else {
-                        window.alert(`Can't add more than ${this.maxProcess} processes per station`);
+                        this.toastText = `Can't add more than ${this.maxProcess} processes per station`
+                        this.$.toastAlert.open()
                     }
                 } else {
-                    window.alert("Please fill in process number, process cycle time and process setup time.");
+                    this.toastText =
+                        'Please fill in process number, process cycle time and process setup time.'
+                    this.$.toastAlert.open()
                 }
-                console.log(this.partProcess)
-                console.log(this.partProcessCycle)
-                console.log(this.partProcessSetup)
             }
 
             removeProcessFromPart(e) {
@@ -685,43 +675,45 @@
                 this.splice('partProcess', index, 1);
                 this.splice('partProcessCycle', index, 1);
                 this.splice('partProcessSetup', index, 1);
-                console.log(this.partProcess)
-                console.log(this.partProcessCycle)
-                console.log(this.partProcessSetup)
             }
 
             // Add Part to Product
             addPartToProduct() {
-                this.push('productPart', {
+                const partObj = {
                     name: this.partName,
                     sku: this.partSKU,
                     process: this.partProcess,
                     cycle: this.partProcessCycle,
                     setup: this.partProcessSetup
-                })
-                console.log(this.productPart);
+                };
+                this.push('productPart', partObj)
                 this.closeAddPartDialog();
             }
 
             removePartFromProduct(e) {
                 let index = e.model.index;
                 this.splice('productPart', index, 1);
-                console.log(this.productPart);
             }
 
             // Add Product
             addProduct() {
+                if (this.$.uploadImageFile.files.length > 0) {
+                    this.uploadProductImage()
+                }
                 const productName = this.$.productName.value;
                 const productSKU = this.$.productSKU.value;
                 const productPart = this.productPart;
                 const processDependency = this.processDependency;
+                const imageURL = this.imageURL;
+                const timestamp = Math.round(Date.now() / 1000.0);
                 let productCost = this.$.productCost.value;
                 let inventoryCode = this.$.inventoryCode.value;
                 let inventoryQuantity = this.$.inventoryQuantity.value;
-                const timestamp = Math.round(Date.now() / 1000.0);
                 if (!productCost) productCost = 0;
                 if (!inventoryCode) inventoryCode = "none";
                 if (!inventoryQuantity) inventoryQuantity = 0;
+                if (!imageURL) imageURL = null;
+                const part = productPart.splice(-1);
 
                 if (productName && productSKU && productPart && processDependency) {
                     this.$.productQuery.ref.push({
@@ -729,14 +721,16 @@
                         cost: productCost,
                         name: productName,
                         sku: productSKU,
-                        image: null,
+                        image: imageURL,
                         inventory_code: inventoryCode,
-                        inventory_used: inventoryQuantity,
-                        part: [this.productPart],
+                        inventory_use: inventoryQuantity,
+                        part: part,
                         process: this.processDependency
                     })
+
                 } else {
-                    window.alert("Please fill in the required field.");
+                    this.toastText = 'Please fill in the required field.'
+                    this.$.toastAlert.open()
                 }
             }
 
@@ -744,6 +738,57 @@
                 if (window.confirm("Delete this product ?") == true) {
                     const key = e.currentTarget.product.$key;
                     this.$.productQuery.ref.child(key).remove();
+                }
+            }
+
+            _verifyUploadFile() {
+                let file = this.$.uploadImageFile.files[0]
+                if (!file.type.match(/image.*/)) {
+                    this.toastText = 'Invalid file format'
+                    this.$.toastAlert.open()
+                    this.$.uploadImageFile.value = null
+                } else if (file.size > this.maxFileSize) {
+                    this.toastText = 'File size maximum is 1 MB'
+                    this.$.toastAlert.open()
+                    this.$.uploadImageFile.value = null
+                }
+            }
+
+            uploadProductImage() {
+                let file = this.$.uploadImageFile.files[0]
+                if (file) {
+                    if (file.type.match(/image.*/) && file.size < this.maxFileSize) {
+                        let uid = this.user.uid
+                        let storageRef = this.$.auth.app.storage().ref()
+                        let metadata = {
+                            'contentType': file.type
+                        }
+                        let imagesRef = storageRef.child('user/' + uid + '/product')
+                        imagesRef.put(file, metadata)
+                            .then(snapshot => {
+                                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                                this.$.uploadImageFile.files.uploading = true
+                                this.$.uploadImageFile.files.status = snapshot.state
+                                this.$.uploadImageFile.files.progress = progress
+                                this.$.uploadImageFile.files.loaded = snapshot.bytesTransferred
+                                this.$.uploadImageFile.files.size = snapshot.totalBytes
+                                let url = snapshot.metadata.downloadURLs[0]
+                                this.imageURL = url;
+                            }).catch(function (error) {
+                                this.$.uploadImageFile.files.error = error
+                                this.$.uploadImageFile.value = null
+                                console.error('Upload failed:', error)
+                            })
+                        if (url) {
+                            this.$.uploadImageFile.files.complete = true
+                            this.$.uploadImageFile.files[0] = null
+                            this.$.uploadImageFile.value = null
+                        }
+                    }
+                } else {
+                    this.toastText = 'Error: Invalid file format'
+                    this.$.toastAlert.open()
+                    this.$.uploadImageFile.value = null
                 }
             }
 
