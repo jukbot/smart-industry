@@ -819,17 +819,34 @@
                 this.editKey = key;
             }
 
+            onSortFinish(e) {
+                const sortedItem = e.detail.target;
+                console.log(sortedItem);
+            }
+
             getPartBundle(processArr, cycleArr, setupArr) {
                 if (!processArr || !cycleArr || !setupArr) return 0;
                 const rows = [processArr, cycleArr, setupArr]
-                const columns = ["process", "cycle", "setup"];
-                // const result = processArr.map((row) => {
-                //     return row.reduce((result, field, index) => {
-                //         result[columns[index]] = field;
+                const keys = ["process", "cycle", "setup"];
+                const result2 = rows.map((item, index) => ({
+                    [keys[index]]: item
+                }))
+
+                const bundle = rows.map(arr => ({
+                    a: arr[0],
+                    b: arr[1],
+                    c: arr[2],
+                    d: arr[3]
+                }))
+                console.log(bundle)
+                // const result = processArr.map((rows) => {
+                //     return rows.reduce((result, field, index) => {
+                //         result[keys[index]] = field;
                 //         return result
                 //     }, {});
                 // });
-                console.log(rows);
+                //console.log(result);
+                console.log(result2);
             }
 
             getProductProcessSequence(arr) {

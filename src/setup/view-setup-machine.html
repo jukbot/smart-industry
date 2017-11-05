@@ -124,10 +124,10 @@
                 </template>
             </vaadin-combo-box>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="_openMachineListCard">
+                <flat-button class="fixed-btn" on-tap="openMachineListCard">
                     <button>{{localize('dismiss')}}</button>
                 </flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_addMachine">
+                <flat-button class="fixed-btn shamrock" on-tap="addMachine">
                     <button disabled="[[disabled]]">{{localize('add')}}</button>
                 </flat-button>
             </div>
@@ -153,10 +153,10 @@
                 </template>
             </vaadin-combo-box>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="_openMachineListCard">
+                <flat-button class="fixed-btn" on-tap="openMachineListCard">
                     <button>{{localize('dismiss')}}</button>
                 </flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="_saveMachine">
+                <flat-button class="fixed-btn shamrock" on-tap="saveMachine">
                     <button>{{localize('save')}}</button>
                 </flat-button>
             </div>
@@ -181,7 +181,7 @@
                             <flat-button class="btn" on-tap="_openEditMachineCard" machine="[[machineItem]]">
                                 <button>{{localize('edit')}}</button>
                             </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="_removeMachine" machine="[[machineItem]]">
+                            <flat-button class="thunderbird btn" on-tap="removeMachine" machine="[[machineItem]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -189,7 +189,7 @@
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-tap="_openAddMachineCard">
+                <flat-button class="big-btn" on-tap="openAddMachineCard">
                     <button> {{localize('add-machine')}}</button>
                 </flat-button>
             </div>
@@ -344,26 +344,26 @@
                 }
             }
 
-            _openAddMachineCard() {
+            openAddMachineCard() {
                 this.showAddMachine = false;
                 this.showListMachine = true;
             }
 
-            _openEditMachineCard(e) {
+            openEditMachineCard(e) {
                 this.showEditMachine = false;
                 this.showListMachine = true;
                 let key = e.currentTarget.machine.$key;
                 this.editKey = key;
             }
 
-            _openMachineListCard() {
+            openMachineListCard() {
                 this.showEditMachine = true;
                 this.showAddMachine = true;
                 this.showListMachine = false;
-                this.clearField();
+                this._clearField();
             }
 
-            _addMachine() {
+            addMachine() {
                 const number = this.$.machineNumber.value;
                 const name = this.$.machineName.value;
                 const capacity = this.$.machineCapacity.value;
@@ -379,15 +379,15 @@
                         code: code,
                         install: timestamp
                     });
-                    this.clearField();
+                    this._clearField();
                     this.$.toastAddMachine.open();
-                    this._openMachineListCard()
+                    this.openMachineListCard()
                 } else {
                     this.$.toastEmptyAddMachine.open();
                 }
             }
 
-            _removeMachine(e) {
+            removeMachine(e) {
                 if (window.confirm("Delete this machine ?") == true) {
                     let key = e.currentTarget.machine.$key;
                     this.$.machineQuery.ref.child(key).remove();
@@ -395,7 +395,7 @@
                 }
             }
 
-            _saveMachine() {
+            saveMachine() {
                 const name = this.$.edit_machineName.value;
                 const capacity = this.$.edit_machineCapacity.value;
                 const type = this.$.edit_machineType.value;
@@ -409,13 +409,13 @@
                         code: code,
                     });
                     this.$.toastSaveMachine.open()
-                    this._openMachineListCard()
+                    this.openMachineListCard()
                 } else {
                     this.$.toastEmptyAddMachine.open();
                 }
             }
 
-            clearField() {
+            _clearField() {
                 this.$.machineNumber.value = this.machineItems.length + 1;
                 this.$.machineCapacity.value = "";
                 this.$.machineName.value = "";

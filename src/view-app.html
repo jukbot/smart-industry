@@ -103,7 +103,7 @@
                 <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
               </paper-tooltip>
               <p>[[persistedUserData.displayname]]</p>
-              <p>{{localize('version')}} 1.0.6</p>
+              <p>{{localize('version')}} 1.0.7</p>
             </div>
           </div>
         </app-drawer>
@@ -185,18 +185,26 @@
             type: String,
             notify: true,
           },
+          subRoute: {
+            type: String,
+            notify: true,
+          },
+          subPageRoute: {
+            type: String,
+            notify: true,
+          },
           loadComplete: {
             type: Boolean,
             value: false
           },
-          subPageData: Object,
-          persistedUserData: Object,
+          persistedUserData: {
+            type: Object,
+            notify: true
+          },
           toastText: String,
-          notificationText: String,
           loading: Boolean,
-          subPageRoute: String,
-          subRoute: String,
-          rootPath: String
+          rootPath: String,
+          online: Boolean
         }
       }
       static get observers() {
@@ -213,12 +221,12 @@
         requestAnimationFrame(this._installListeners.bind(this))
       }
       ready() {
-        super.ready();
-        this.removeAttribute('unresolved');
+        super.ready()
+        this.removeAttribute('unresolved')
         Polymer.RenderStatus.afterNextRender(this, () => {
-          this._activateFetch();
-          this._activatePushNotification();
-        });
+          this._activateFetch()
+          this._activatePushNotification()
+        })
       }
       _installListeners() {
         this.addEventListener('show-invalid-url-warning', (e) => this._showPage404(e))
@@ -249,14 +257,14 @@
       }
       closeToastAlert() {
         this.$.toastVerify.close()
-        this.$.toastVerify.hidden = true;
+        this.$.toastVerify.hidden = true
       }
       getVerifyStatus(status) {
         if (status) {
-          this._setColorStatus(1, '.verify')
+          this.$$('.verify').style.color = 'green'
           return 'Verified'
         } else {
-          this._setColorStatus(0, '.verify')
+          this.$$('.verify').style.color = 'red'
           return 'Not verify'
         }
       }
@@ -267,15 +275,8 @@
           return this.rootPath + 'images/profile/default.svg'
         }
       }
-      _setColorStatus(status, target) {
-        if (status) {
-          this.$$(target).style.color = 'green'
-        } else {
-          this.$$(target).style.color = 'red'
-        }
-      }
       _routePageChanged(page, visible) {
-        if (!visible) return this.page = page;
+        if (!visible) return this.page = page
         this.page = page || 'dashboard', this.$.drawer.persistent || this.$.drawer.close()
         // Close a non-persistent drawer when the page & route are changed.
       }
@@ -285,7 +286,6 @@
       _pageChanged(page, oldPage) {
         if (page == 'dashboard') {
           this._pageLoaded(Boolean(oldPage))
-          // other routes are lazy loaded
         } else {
           // When a load failed, it triggered a 404 which means we need to eagerly load the 404 page definition
           Polymer.importHref(
@@ -384,7 +384,7 @@
       }
       _activatePushNotification() {
         if ('PushManager' in window) {
-          document.body.classList.add('push-enabled');
+          document.body.classList.add('push-enabled')
         } else {
           // Browser not support push notification
           console.warn('%cPush notification is not support by your browser.', 'color: crimson')
@@ -411,14 +411,14 @@
         // Show the snackbar if the user is offline when starting a new session or if the network status changed.
         if (this.offline || (!this.offline && oldOffline === true)) {
           if (!this._networkSnackbar) {
-            this._networkSnackbar = document.createElement('flat-toast');
-            this.root.appendChild(this._networkSnackbar);
+            this._networkSnackbar = document.createElement('flat-toast')
+            this.root.appendChild(this._networkSnackbar)
           }
           this._networkSnackbar.innerHTML = this.offline ? this.localize('notification-offline') : this.localize(
             'notification-online')
-          this._networkSnackbar.setAttribute('duration', 5000);
-          this.closeToastAlert();
-          this._networkSnackbar.open();
+          this._networkSnackbar.setAttribute('duration', 5000)
+          this.closeToastAlert()
+          this._networkSnackbar.open()
           // Refresh network if internet go online
           if (!this.offline && oldOffline === true) {
             this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(100), () => {

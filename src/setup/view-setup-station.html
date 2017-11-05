@@ -287,7 +287,7 @@
                     editStationItems: Object,
                     stationMaxMachine: {
                         type: Number,
-                        value: 20
+                        value: 10
                     },
                     showAddStation: {
                         type: Boolean,
@@ -303,10 +303,12 @@
                     },
                     machines: {
                         type: Array,
+                        notify: true,
                         statePath: 'machines',
                     },
                     editMachines: {
                         type: Array,
+                        notify: true,
                         statePath: 'editMachines'
                     },
                     stationMachineCount: {

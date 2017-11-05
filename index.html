@@ -4,26 +4,26 @@
 <head>
   <meta charset="utf-8">
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IMES</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry">
-  <link rel="shortcut icon" href="/images/favicon.png">
-  <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#202020">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="application-name" content="IMES">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="IMES">
+  <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
+  <meta name="msapplication-TileColor" content="#202020">
+  <meta name="msapplication-tap-highlight" content="no">
+  <link rel="shortcut icon" href="/images/favicon.png">
+  <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/images/manifest/icon-144x144.png">
   <link rel="apple-touch-icon" sizes="144x144" href="/images/manifest/icon-144x144.png">
   <link rel="apple-touch-icon" sizes="152x152" href="/images/manifest/icon-152x152.png">
   <link rel="apple-touch-icon" sizes="192x192" href="/images/manifest/icon-192x192.png">
   <link rel="apple-touch-icon" sizes="256x256" href="/images/manifest/icon-256x256.png">
   <link rel="apple-touch-icon" sizes="512x512" href="/images/manifest/icon-512x512.png">
-  <meta name="msapplication-TileImage" content="/images/manifest/icon-144x144.png">
-  <meta name="msapplication-TileColor" content="#202020">
-  <meta name="msapplication-tap-highlight" content="no">
   <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
   <script>
     window.Polymer = {
@@ -32,19 +32,255 @@
   </script>
   <link rel="import" href="/src/view-app.html">
   <style>
-    * {
-      box-sizing: border-box;
-      -webkit-box-sizing: border-box;
+    /*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */
+
+    html {
+      line-height: 1.15;
+      -ms-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%
     }
 
     body {
-      background-color: #fafafa;
-      font-family: -apple-system, BlinkMacSystemFont, "Roboto", "Noto", sans-serif;
-      letter-spacing: .016em;
-      line-height: 1.25;
+      margin: 0
+    }
+
+    article,
+    aside,
+    footer,
+    header,
+    nav,
+    section {
+      display: block
+    }
+
+    h1 {
+      font-size: 2em;
+      margin: .67em 0
+    }
+
+    figcaption,
+    figure,
+    main {
+      display: block
+    }
+
+    figure {
+      margin: 1em 40px
+    }
+
+    hr {
+      box-sizing: content-box;
+      height: 0;
+      overflow: visible
+    }
+
+    pre {
+      font-family: monospace, monospace;
+      font-size: 1em
+    }
+
+    a {
+      background-color: transparent;
+      -webkit-text-decoration-skip: objects
+    }
+
+    abbr[title] {
+      border-bottom: none;
+      text-decoration: underline;
+      text-decoration: underline dotted
+    }
+
+    b,
+    strong {
+      font-weight: inherit
+    }
+
+    b,
+    strong {
+      font-weight: bolder
+    }
+
+    code,
+    kbd,
+    samp {
+      font-family: monospace, monospace;
+      font-size: 1em
+    }
+
+    dfn {
+      font-style: italic
+    }
+
+    mark {
+      background-color: #ff0;
+      color: #000
+    }
+
+    small {
+      font-size: 80%
+    }
+
+    sub,
+    sup {
+      font-size: 75%;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline
+    }
+
+    sub {
+      bottom: -.25em
+    }
+
+    sup {
+      top: -.5em
+    }
+
+    audio,
+    video {
+      display: inline-block
+    }
+
+    audio:not([controls]) {
+      display: none;
+      height: 0
+    }
+
+    img {
+      border-style: none
+    }
+
+    svg:not(:root) {
+      overflow: hidden
+    }
+
+    button,
+    input,
+    optgroup,
+    select,
+    textarea {
+      font-family: sans-serif;
+      font-size: 100%;
+      line-height: 1.15;
+      margin: 0
+    }
+
+    button,
+    input {
+      overflow: visible
+    }
+
+    button,
+    select {
+      text-transform: none
+    }
+
+    [type=reset],
+    [type=submit],
+    button,
+    html [type=button] {
+      -webkit-appearance: button
+    }
+
+    [type=button]::-moz-focus-inner,
+    [type=reset]::-moz-focus-inner,
+    [type=submit]::-moz-focus-inner,
+    button::-moz-focus-inner {
+      border-style: none;
+      padding: 0
+    }
+
+    [type=button]:-moz-focusring,
+    [type=reset]:-moz-focusring,
+    [type=submit]:-moz-focusring,
+    button:-moz-focusring {
+      outline: 1px dotted ButtonText
+    }
+
+    fieldset {
+      padding: .35em .75em .625em
+    }
+
+    legend {
+      box-sizing: border-box;
+      color: inherit;
+      display: table;
+      max-width: 100%;
+      padding: 0;
+      white-space: normal
+    }
+
+    progress {
+      display: inline-block;
+      vertical-align: baseline
+    }
+
+    textarea {
+      overflow: auto
+    }
+
+    [type=checkbox],
+    [type=radio] {
+      box-sizing: border-box;
+      padding: 0
+    }
+
+    [type=number]::-webkit-inner-spin-button,
+    [type=number]::-webkit-outer-spin-button {
+      height: auto
+    }
+
+    [type=search] {
+      -webkit-appearance: textfield;
+      outline-offset: -2px
+    }
+
+    [type=search]::-webkit-search-cancel-button,
+    [type=search]::-webkit-search-decoration {
+      -webkit-appearance: none
+    }
+
+     ::-webkit-file-upload-button {
+      -webkit-appearance: button;
+      font: inherit
+    }
+
+    details,
+    menu {
+      display: block
+    }
+
+    summary {
+      display: list-item
+    }
+
+    canvas {
+      display: inline-block
+    }
+
+    template {
+      display: none
+    }
+
+    [hidden] {
+      display: none
+    }
+    /*# sourceMappingURL=normalize.min.css.map */
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", sans-serif;
       min-height: 100vh;
       color: #202020;
-      margin: 0;
+      font-size: 1rem;
+      overflow-x: hidden;
+      text-rendering: optimizeLegibility;
       -webkit-font-smoothing: antialiased;
     }
 
