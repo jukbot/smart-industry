@@ -208,12 +208,14 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <flat-button class="btn" on-tap="openEditStationCard" part="[[part]]">
-                                            <button>{{localize('edit')}}</button>
-                                        </flat-button>
-                                        <flat-button class="thunderbird btn" on-tap="removePartFromProduct">
-                                            <button>{{localize('remove')}}</button>
-                                        </flat-button>
+                                        <div class="center">
+                                            <flat-button class="btn" on-tap="openEditStationCard" part="[[part]]">
+                                                <button>{{localize('edit')}}</button>
+                                            </flat-button>
+                                            <flat-button class="thunderbird btn" on-tap="removePartFromProduct">
+                                                <button>{{localize('remove')}}</button>
+                                            </flat-button>
+                                        </div>
                                     </div>
                                 </li>
                             </template>
@@ -704,11 +706,11 @@
                 const productSKU = this.$.productSKU.value;
                 const productPart = this.productPart;
                 const processDependency = this.processDependency;
-                const imageURL = this.imageURL;
                 const timestamp = Math.round(Date.now() / 1000.0);
                 let productCost = this.$.productCost.value;
                 let inventoryCode = this.$.inventoryCode.value;
                 let inventoryQuantity = this.$.inventoryQuantity.value;
+                let imageURL = this.imageURL;
                 if (!productCost) productCost = 0;
                 if (!inventoryCode) inventoryCode = "none";
                 if (!inventoryQuantity) inventoryQuantity = 0;
@@ -774,16 +776,15 @@
                                 this.$.uploadImageFile.files.size = snapshot.totalBytes
                                 let url = snapshot.metadata.downloadURLs[0]
                                 this.imageURL = url;
+                                if (url) {
+                                    this.$.uploadImageFile.files.complete = true
+                                    this.$.uploadImageFile.value = null
+                                }
                             }).catch(function (error) {
                                 this.$.uploadImageFile.files.error = error
                                 this.$.uploadImageFile.value = null
                                 console.error('Upload failed:', error)
                             })
-                        if (url) {
-                            this.$.uploadImageFile.files.complete = true
-                            this.$.uploadImageFile.files[0] = null
-                            this.$.uploadImageFile.value = null
-                        }
                     }
                 } else {
                     this.toastText = 'Error: Invalid file format'
