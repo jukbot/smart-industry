@@ -10,7 +10,7 @@
 <link rel="import" href="/bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="/bower_components/google-chart/google-chart.html">
 <link rel="import" href="/bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="../view-setup.html">
+<link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 
@@ -184,9 +184,9 @@
                 <div class="card">
                     <h1 class="title">Order Table</h1>
                     <div class="order-schedule-info">
-                        <p>Next Reschedule: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
-                        <p>Production Model: [[factoryProfile.model]]</p>
-                        <p id="concurrency">Station Concurrency: [[factoryProfile.concurrency]] orders / station</p>
+                        <p>{{localize('next-reschedule')}}: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
+                        <p>{{localize('production-model')}}: [[factoryProfile.model]]</p>
+                        <p id="concurrency">{{localize('station-concurrency')}} : [[factoryProfile.concurrency]] {{localize('order')}} / {{localize('station')}}</p>
                         <p>Delayed between station: [[factorySchedule.delay]] minutes</p>
                     </div>
                     <vaadin-grid id="material" items="{{getSortedOrder(orderItems)}}" size="100">
@@ -330,9 +330,6 @@
                         <flat-button class="btn thunderbird" on-tap="reSchedule">
                             <button>Reschedule</button>
                         </flat-button>
-                        <flat-button class="btn" on-tap="refreshChart">
-                            <button>(Test) Update the Chart</button>
-                        </flat-button>
                     </div>
                 </div>
             </li>
@@ -470,9 +467,9 @@
 
                     </vaadin-grid>
                     <div class="center btn-group">
-                        <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
+                        <iron-selector selected="{{selectedStation}}" attr-for-selected="id" fallback-selection="1" role="navigation">
                             <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                                <paper-button class="station-btn" name="[[stationItem.st_number]]">
+                                <paper-button class="station-btn" id="[[stationItem.st_number]]">
                                     Station [[stationItem.st_number]]
                                 </paper-button>
                             </template>
@@ -494,6 +491,7 @@
          * @ViewPlanScheduling
          * @polymer 
          * @extends {Polymer.Element}
+         * @appliesMixin Polymer.AppLocalizeBehavior
          */
         class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
             Polymer.Element) {
@@ -543,17 +541,41 @@
                 this.addEventListener('data-changed', (e) => this.getSortedOrder(this.orderItems))
             }
 
+            _calculateWaitTime(machine, quantity) {
+                machine = 106;
+                quantity = 127;
+                let cycle = 8;
+                let setup = 10;
+                let process = setup + (quantity * cycle);
+                let temp = process; // temp = stores the initial workload and adds 1 cycle time IF there is not enough machines UNTIL there is enough
+                if (machine < quantity) {
+                    for (let i = 0; i < quantity; i += machine) {
+                        temp += cycle;
+                    }
+                }
+                let delay = temp - process;
+                console.log("The total process time is: " + temp);
+                console.log("The total delay is: " + delay);
+            }
+
             refreshChart() {
                 let data = [
-                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(2017,10, 19, 8, 33, 0).getTime() / 1000],
-                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000],
-                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(2017, 10, 19, 8,45, 0).getTime() / 1000],
-                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000],
-                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(2017, 10, 19, 9,0, 36).getTime() / 1000],
-                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(2017, 10, 19, 9,14, 27).getTime() / 1000],
-                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(2017, 10, 19, 9,30, 12).getTime() / 1000],
-                    ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000,new Date(2017, 10, 19,10, 20, 12).getTime() / 1000
-                    ]
+                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 8, 33, 0).getTime() / 1000],
+                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 8, 38, 0).getTime() / 1000],
+                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 8, 45, 0).getTime() / 1000],
+                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 8, 50, 0).getTime() / 1000],
+                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 9, 0, 36).getTime() / 1000],
+                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(
+                        2017, 10, 19, 9, 14, 27).getTime() / 1000],
+                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(
+                        2017, 10, 19, 9, 30, 12).getTime() / 1000],
+                    ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000, new Date(
+                        2017, 10, 19, 10, 20, 12).getTime() / 1000]
                 ]
                 console.table(data)
                 this.$.chartQuery.ref.set(data)
@@ -585,6 +607,7 @@
                     console.log(wip_order_part)
                     let i;
 
+                    _calculateWaitTime()
                     //console.log(wip_order_part[0][0].process)
 
                     // Machine in each station
@@ -615,6 +638,7 @@
                 let order = this.sortedOrder;
                 if (order.length > 0) {
                     let concurrent = this.factoryProfile.concurrency;
+                    console.log(this.factoryProfile.concurrency)
                     let wip_order = []; // work in process order array
                     let wip_order_part = []
                     let wip_order_process = []
@@ -642,8 +666,7 @@
 
                     let station_quantity = this.stationItems.length
 
-                    // this.$.scheduleQuery.ref.push({
-                    // })
+
                 } else {
                     alert("No order to reschedule")
                 }
@@ -664,6 +687,16 @@
                 }
             }
 
+            _addToSchedule() {
+                this.$.scheduleQuery.ref.push({
+                    actual_start: 1506343245,
+                    actual_end: 1508962421,
+                    start: 1508962421,
+                    end: 1508962421,
+
+                })
+            }
+
             getSortedOrder(order) {
                 console.log('run sort order')
                 // SORT BY EDD THEN BY SPT
@@ -676,7 +709,7 @@
             }
 
             gcd(a, b) {
-                return (b == 0) ? a : gcd (b, a%b);
+                return (b == 0) ? a : gcd(b, a % b);
             }
 
             _setChartSize() {
@@ -732,7 +765,7 @@
                 if (this.chartItems.length > 0) {
                     // convert time stamp to new date 
                     const result = this.chartItems.map((x) => {
-                        return [x[0], x[1], x[2], 
+                        return [x[0], x[1], x[2],
                             new Date(x[3] * 1000),
                             new Date(x[4] * 1000)
                         ]
@@ -804,12 +837,12 @@
                 });
             }
 
-            setNotification(detail,type) {
+            setNotification(detail, type) {
                 const timestamp = Math.round(Date.now() / 1000.0);
                 this.$.notificationQuery.ref.push({
-                        created: timestamp,
-                        detail: detail,
-                        type: type
+                    created: timestamp,
+                    detail: detail,
+                    type: type
                 });
             }
 
@@ -913,7 +946,7 @@
                         this._multiSchedule()
                         break;
                     default:
-                        alert("Invalid production model")
+                        window.alert("Invalid production model")
                 }
             }
 
@@ -934,27 +967,25 @@
             }
 
             isDeletable(status) {
-                if (status === 'wip') {
-                    return true;
-                }
-                return false;
+                return ((status === 'wip') ? true : false)
             }
 
             deleteOrder(e) {
-                if (confirm("Delete this order ?") == true) {
+                if (confirm("Delete this order ?")) {
                     let key = e.currentTarget.order.$key;
                     this.$.orderQuery.ref.child(key).remove();
-                    alert("Delete order successfully");
+                    window.alert("Delete order successfully");
                 }
             }
 
             deleteJob(e) {
-                if (confirm("Delete this job ?") == true) {
+                if (confirm("Delete this job ?")) {
                     let key = e.currentTarget.order.$key;
                     this.$.jobQuery.ref.child(key).remove();
-                    alert("Delete job successfully");
+                    window.alert("Delete job successfully");
                 }
             }
+
         }
         customElements.define(ViewPlanScheduling.is, ViewPlanScheduling)
     </script>

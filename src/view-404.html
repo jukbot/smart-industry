@@ -68,19 +68,27 @@
      * @View404
      * @polymer 
      * @extends {Polymer.Element}
+     * @appliesMixin Polymer.AppLocalizeBehavior
      */
-    class View404 extends Polymer.Element {
+
+    class View404 extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
         return 'view-404'
       }
 
       static get properties() {
         return {
+          language: String,
           route: {
             type: Object,
             notify: true
           }
         }
+      }
+
+      connectedCallback() {
+        super.connectedCallback()
+        this.loadResources(this.resolveUrl('../data/locales.json'))
       }
     }
     window.customElements.define(View404.is, View404)

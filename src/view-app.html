@@ -270,11 +270,7 @@
         }
       }
       getUserImage(url) {
-        if (url) {
-          return url
-        } else {
-          return this.rootPath + 'images/profile/default.svg'
-        }
+        return ((url) ? url : this.rootPath + 'images/profile/default.svg')
       }
       _routePageChanged(page, visible) {
         if (!visible) return this.page = page

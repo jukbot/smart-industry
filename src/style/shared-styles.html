@@ -355,6 +355,23 @@
           font-size: 1.5rem;
         }
       }
+
+      @media print {
+         :host {
+          margin: 0;
+          --app-background-color: transpalent;
+        }
+        app-header,
+        app-drawer,
+        paper-toast,
+        #toastVerify {
+          display: none;
+        }
+        .card {
+          box-shadow: none;
+          -webkit-box-shadow: none;
+        }
+      }
     </style>
   </template>
 </dom-module>

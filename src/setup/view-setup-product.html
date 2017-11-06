@@ -24,30 +24,6 @@
                 --app-grid-item-height: 50%;
             }
 
-            @media (min-width: 360px) and (max-width: 768px) {
-                 :host {
-                    --app-grid-columns: 1;
-                }
-            }
-
-            @media (min-width: 769px) and (max-width: 1024px) {
-                 :host {
-                    --app-grid-columns: 1;
-                }
-            }
-
-            @media (min-width: 1025px) and (max-width: 1200px) {
-                 :host {
-                    --app-grid-columns: 2;
-                }
-            }
-
-            @media (min-width: 1201px) and (max-width: 2560px) {
-                 :host {
-                    --app-grid-columns: 3;
-                }
-            }
-
             .btn {
                 width: 250px;
             }
@@ -113,6 +89,27 @@
                 margin-bottom: auto;
             }
 
+            .flex-container {
+                padding: 10px;
+                margin: 0;
+                list-style: none;
+                -ms-box-orient: horizontal;
+                display: -webkit-box;
+                display: -moz-box;
+                display: -ms-flexbox;
+                display: -moz-flex;
+                display: -webkit-flex;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+
+            .flex-item {
+                width: 500px;
+                text-align: center;
+                flex: 1;
+            }
+
             vaadin-grid#productTable {
                 height: 500px;
 
@@ -168,7 +165,7 @@
         </firebase-storage-ref> -->
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <app-indexeddb-mirror key="product-data" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
-        <ul>
+        <ul class="app-grid">
             <li>
                 <div class="card" hidden="[[showAddProduct]]">
                     <h1 class="title">{{localize('add-product')}}</h1>
@@ -179,17 +176,17 @@
                     <paper-input label="Inventory Code" id="inventoryCode" type="text" required always-float-label></paper-input>
                     <paper-input label="Inventory Require" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
                     <flat-button on-tap="openBrowseImageFile" class="btn" title="{{localize('remove-profile-image')}}">
-                        <button>Browse Image</button>
+                        <button>{{localize('browse-image')}}</button>
                         <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
                     </flat-button>
 
                     <flat-button class="add-btn" on-tap="openAddPartDialog">
-                        <button>Add Part</button>
+                        <button>{{localize('add-part')}}</button>
                     </flat-button>
                     <div class="frame">
-                        <ul class="app-grid">
+                        <ul class="flex-container wrap">
                             <template is="dom-repeat" items="[[productPart]]" as="part">
-                                <li>
+                                <li class="flex-item">
                                     <div class="part">
                                         <div class="part-info-group">
                                             <h2 class="title">[[part.name]]</h2>
@@ -235,14 +232,14 @@
             </li>
             <li>
                 <div class="card" hidden="[[!showAddProduct]]">
-                    <h1 class="title">Product Management</h1>
+                    <h1 class="title">{{localize('product-management')}}</h1>
                     <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]" size="10">
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center">Image</div>
+                                <div class="cell center">{{localize('image')}}</div>
                             </template>
                             <template>
-                                <div class="cell center">
+                                <div class="cell">
                                     <img class="product-image" src="[[item.image]]" alt="No Image">
                                 </div>
                             </template>
@@ -250,16 +247,16 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div>Name</div>
+                                <div class="cell center">{{localize('name')}}</div>
                             </template>
                             <template>
-                                <div class="cell">[[item.name]]</div>
+                                <div class="cell center">[[item.name]]</div>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">SKU</div>
+                                <div class="cell center">{{localize('sku-code')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.sku]]</div>
@@ -268,7 +265,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Part</div>
+                                <div class="cell center">{{localize('part')}}</div>
                             </template>
                             <template>
                                 <div class="cell">
@@ -281,7 +278,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Part SKU</div>
+                                <div class="cell center">Part SKU</div>
                             </template>
                             <template>
                                 <div class="cell">
@@ -294,7 +291,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Inventory Code</div>
+                                <div class="cell center">Inventory Code</div>
                             </template>
                             <template>
                                 <div class="cell">
@@ -305,7 +302,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Inventory Require</div>
+                                <div class="cell center">Inventory Require</div>
                             </template>
                             <template>
                                 <div class="cell">
@@ -316,7 +313,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Cost</div>
+                                <div class="cell center">{{localize('cost')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.cost]]</div>
@@ -325,7 +322,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Detail</div>
+                                <div class="cell center">{{localize('detail')}}</div>
                             </template>
                             <template>
                                 <paper-checkbox aria-label$="Show Details for [[item.name.first]]" checked="{{expanded}}"></paper-checkbox>
@@ -334,7 +331,7 @@
 
                         <vaadin-grid-column width="50px">
                             <template class="header">
-                                <div class="cell last">Edit</div>
+                                <div class="cell last">{{localize('edit')}}</div>
                             </template>
                             <template>
                                 <div class="cell last">
@@ -345,7 +342,7 @@
 
                         <vaadin-grid-column width="50px">
                             <template class="header">
-                                <div class="cell last">Delete</div>
+                                <div class="cell last">{{localize('delete')}}</div>
                             </template>
                             <template>
                                 <div class="cell last">
@@ -413,7 +410,7 @@
                     </vaadin-grid>
                     <div class="center">
                         <flat-button class="btn" on-tap="openAddProductCard">
-                            <button>Add product</button>
+                            <button>{{localize('product-product')}}</button>
                         </flat-button>
                     </div>
                 </div>
@@ -747,7 +744,8 @@
                                     inventoryCode, inventoryQuantity, productPart, imageURL)
                             });
                     } else {
-                        imageURL = null;
+                        imageURL =
+                            "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/default%2Fproduct%2Fstock-1.png?alt=media&token=6f83a0d2-5952-4e40-8a19-dbb51a8fbf37";
                         this._uploadProduct(timestamp, productCost, productName, productSKU, inventoryCode,
                             inventoryQuantity, productPart, imageURL)
                     }

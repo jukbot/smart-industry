@@ -10,8 +10,7 @@
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/lib/sugar.html">
 <link rel="import" href="/lib/jsLPSolver.html">
-<link rel="import" href="/lib/printjs.html">
-<link rel="import" href="../view-setup.html">
+<link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 
@@ -92,12 +91,19 @@
                 width: 33.333%;
                 margin: 10px;
             }
+
+            @media print {
+                #createOrderCard {
+                    display: none;
+                }
+            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" data="{{orderItems}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[k.key]]/factoryData/order" data="{{factoryOrderIndex}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="factoryInventory" path="/data/[[k.key]]/factoryData/inventory" order-by-child="code"
             equal-to="[[inventoryCode]]" data="{{factoryInventory}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData/order"></firebase-query>
@@ -107,11 +113,11 @@
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
-                <div class="card">
-                    <h1 class="title">Create Order</h1>
-                    <vaadin-combo-box label="Customer Name" name="customer-name" id="customerSelector" items="[[customerItems]]" item-label-path="name"
-                        item-value-path="name" selected-item='{{selectCustomer}}' loading="[[!customerItems]]" required allow-custom-value
-                        prevent-invalid-input always-float-label='true'>
+                <div class="card" id="createOrderCard">
+                    <h1 class="title">{{localize('create-order')}}</h1>
+                    <vaadin-combo-box label="{{localize('customer-name')}}" name="customer-name" id="customerSelector" items="[[customerItems]]"
+                        item-label-path="name" item-value-path="name" selected-item='{{selectCustomer}}' loading="[[!customerItems]]"
+                        required allow-custom-value prevent-invalid-input always-float-label='true'>
                         <template>
                             <paper-item>
                                 <paper-item-body two-line style="min-height: 0">
@@ -121,8 +127,9 @@
                             </paper-item>
                         </template>
                     </vaadin-combo-box>
-                    <vaadin-combo-box label="Product" name="product" items="[[productItems]]" id="productSelector" item-label-path="name" item-value-path="name"
-                        selected-item='{{selectProduct}}' loading="[[!productItems]]" required prevent-invalid-input always-float-label='true'>
+                    <vaadin-combo-box label="{{localize('product')}}" name="product" items="[[productItems]]" id="productSelector" item-label-path="name"
+                        item-value-path="name" selected-item='{{selectProduct}}' loading="[[!productItems]]" required prevent-invalid-input
+                        always-float-label='true'>
                         <template>
                             <paper-icon-item style="padding: 0">
                                 <img src="[[item.image]]" style="border-radius: 50%; width: 48px; height: 48px;" slot="item-icon">
@@ -133,75 +140,76 @@
                             </paper-icon-item>
                         </template>
                     </vaadin-combo-box>
-                    <paper-input label="Quantity" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1" max="1000"
-                        step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
-                    <vaadin-date-picker class="date-picker" label="Delivery Date" min="[[todayDate]]" max="2030-01-01" name="delivery" id="deliverySelector"
-                        initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input" required always-float-label='true'></vaadin-date-picker>
-                    <flat-button on-tap="printOrder" class="btn" title="Print and Add order">
-                        <button>Print and Add to schedule</button>
+                    <paper-input label="{{localize('quantity')}}" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1"
+                        max="1000" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
+                    <vaadin-date-picker class="date-picker" label="{{localize('delivery-date')}}" min="[[todayDate]]" max="2030-01-01" name="delivery"
+                        id="deliverySelector" initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input"
+                        required always-float-label='true'></vaadin-date-picker>
+                    <flat-button on-tap="printOrderReport" class="btn" title="Print and Add order">
+                        <button>{{localize('print-order-report')}}</button>
                     </flat-button>
                     <flat-button on-tap="createOrder" class="shamrock btn" title="Add order">
-                        <button>Add to schedule</button>
+                        <button>{{localize('add-to-schedule')}}</button>
                     </flat-button>
                 </div>
             </li>
             <li>
-                <div class="card">
-                    <h1 class="title">Order Detail</h1>
+                <div class="card" id="DetailOrderCard">
+                    <h1 class="title">{{localize('order-detail')}}</h1>
                     <div class="flex-container order-info">
                         <div class="flex-item left-group">
-                            <p>Order Number</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>Customer Name</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>Product Name</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>SKU Number</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>Product Part</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>Actual Quantity</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>Order Duration</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>Delivery Date</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>Cost</p>
-                            <div class="sidebar-menu-line" role="separator" id="optimizeTitleSeparate"></div>
-                            <p id="optimizeTitle">Optimal quantity / week</p>
+                            <p>{{localize('order-number')}}</p>
+                            <div class="separator-line" role="separator"></div>
+                            <p>{{localize('customer-name')}}</p>
+                            <div class="separator-line" role="separator"></div>
+                            <p>{{localize('product-name')}}</p>
+                            <div class="separator-line" role="separator"></div>
+                            <p>{{localize('sku-code')}}</p>
+                            <div class="separator-line" role="separator"></div>
+                            <p>{{localize('product-part')}}</p>
+                            <div class="separator-line" role="separator"></div>
+                            <p>{{localize('actual-quantity')}}</p>
+                            <div class="separator-line" role="separator"></div>
+                            <p>{{localize('order-duration')}}</p>
+                            <div class="separator-line" role="separator"></div>
+                            <p>{{localize('delivery-date')}}</p>
+                            <div class="separator-line" role="separator"></div>
+                            <p>{{localize('cost')}}</p>
+                            <div class="separator-line" role="separator" id="optimizeTitleSeparate"></div>
+                            <p id="optimizeTitle">{{localize('optimal-quantity')}} / {{localize('week')}}</p>
                         </div>
                         <div class="flex-item right-group">
                             <p>
                                 <span>[[orderNumber]]</span>&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>
                                 <span>[[selectCustomer.name]]</span>&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>
                                 <span>[[setProductPart(selectProduct)]]</span>&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>
                                 <span>[[setProductSKU(selectProduct.sku)]]</span>&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>
                                 <span>
                                     <template is="dom-repeat" items="[[selectProduct.part]]" as="productPart">
                                         [[productPart.name]]
                                     </template>
                                 </span>&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>
                                 <span>[[getActualQuantity(amount)]]</span>&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>
                                 <span>[[getSumProductTime(selectProduct.part,amount)]]</span>&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>
                                 <span>[[delivery]]</span>&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>
                                 <span>[[getProductCost(selectProduct.cost,amount)]]</span>&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator" id="optimizeDataSeparate"></div>
+                            <div class="separator-line" role="separator" id="optimizeDataSeparate"></div>
                             <p id="optimizeData">
                                 <span>[[getOptimalQuantity(selectProduct.cost, selectProduct.part)]]</span>&nbsp;</p>
                         </div>
@@ -209,28 +217,27 @@
                 </div>
             </li>
         </ul>
-
-        <div class="card">
-            <h1 class="title">Product Fragmentation</h1>
+        <div class="card" id="productFragmentCard">
+            <h1 class="title">{{localize('product-fragmentation')}}</h1>
             <div class="flex-container">
                 <template is="dom-repeat" items="{{selectProduct.part}}" as="part">
                     <div class="frame frame-small flex-item">
-                        <h2 class="title">Product Part [[part.name]]</h2>
-                        <p>Part SKU: [[part.sku]]</p>
-                        <p>Process Sequence: [[getProductProcessSequence(part.process)]]</p>
-                        <p>Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
-                        <p>Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
+                        <h2 class="title">{{localize('product-part')}} [[part.name]]</h2>
+                        <p>{{localize('sku-code')}}: [[part.sku]]</p>
+                        <p>{{localize('processs-sequence')}}: [[getProductProcessSequence(part.process)]]</p>
+                        <p>{{localize('setup-time')}}: [[getSumSetupTime(part.setup)]] minutes</p>
+                        <p>{{localize('cycle-time')}}: [[getSumCycleTime(part.cycle)]] minutes</p>
                     </div>
                 </template>
             </div>
         </div>
-
     </template>
     <script>
         /**
          * @ViewPlanOrder
          * @polymer 
          * @extends {Polymer.Element}
+         * @appliesMixin Polymer.AppLocalizeBehavior
          */
         class ViewPlanOrder extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {
@@ -249,6 +256,7 @@
                     factoryPerformance: Object,
                     factoryOperation: Object,
                     factoryInventory: Object,
+                    factoryOrderIndex: Object,
                     orderProductPart: Object,
                     productSKU: Number,
                     actualQuantity: Number,
@@ -261,7 +269,7 @@
 
             static get observers() {
                 return [
-                    'getOrderNumber(orderItems.length)',
+                    'getOrderNumber(factoryOrderIndex.order_count)',
                     'getOperationTime(factoryOperation.op_end, factoryOperation.op_start, factoryOperation.op_day)',
                     'isOptimizeModeEnabled(factoryPerformance.optimize)',
                     'setProductInventory(selectProduct.inventory_code)'
@@ -350,9 +358,7 @@
             }
 
             getOrderNumber(order) {
-                //  let orderNo = Math.max(order.map(item => item.order_no));
-                //  console.log(orderNo)
-                if (!order) {
+                if (order === 0) {
                     this.orderNumber = 1;
                     return this.orderNumber
                 } else {
@@ -412,6 +418,33 @@
             getRandomColor() {
                 const color = Math.floor(0x1000000 * Math.random()).toString(16);
                 return '#' + ('000000' + color).slice(-6);
+            }
+
+            getDateTime() {
+                const now = new Date();
+                let year = now.getFullYear();
+                let month = now.getMonth() + 1;
+                let day = now.getDate();
+                let hour = now.getHours();
+                let minute = now.getMinutes();
+                let second = now.getSeconds();
+                if (month.toString().length == 1) {
+                    month = '0' + month;
+                }
+                if (day.toString().length == 1) {
+                    day = '0' + day;
+                }
+                if (hour.toString().length == 1) {
+                    hour = '0' + hour;
+                }
+                if (minute.toString().length == 1) {
+                    minute = '0' + minute;
+                }
+                if (second.toString().length == 1) {
+                    second = '0' + second;
+                }
+                let dateTime = year + '-' + month + '-' + day + '_' + hour + '-' + minute + '-' + second;
+                return dateTime;
             }
 
             // SET VALUE
@@ -526,10 +559,11 @@
                 }
             }
 
-            // PRINT ORDER
-            printOrder() {
-                printJS('docs/printjs.pdf');
-                this._clearField();
+            // PRINT ORDER REPORT
+            printOrderReport() {
+                document.title = 'ORDER_' + this.getDateTime();
+                window.print()
+                return
             }
 
             // CREATE ORDER

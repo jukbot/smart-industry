@@ -178,7 +178,7 @@
                                 <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
                                 <p style="color:#e53935">Machine Key: [[machineItem.$key]]</p>
                             </div>
-                            <flat-button class="btn" on-tap="_openEditMachineCard" machine="[[machineItem]]">
+                            <flat-button class="btn" on-tap="openEditMachineCard" machine="[[machineItem]]">
                                 <button>{{localize('edit')}}</button>
                             </flat-button>
                             <flat-button class="thunderbird btn" on-tap="removeMachine" machine="[[machineItem]]">

@@ -120,9 +120,9 @@
                                 <div readonly>[[item.name]]</div>
                             </template>
                         </vaadin-combo-box>
-                        <vaadin-combo-box label="Station Concurrency" id="concurrency" value="[[persistedFactoryProfile.concurrency]]" items="[[concurrencyItems]]"
-                            item-value-path="value" item-label-path="value" error-message="Invalid Input" loading="[[!concurrencyItems]]"
-                            required always-float-label='true'>
+                        <vaadin-combo-box label="{{localize('station-concurrency')}}" id="concurrency" value="[[persistedFactoryProfile.concurrency]]"
+                            items="[[concurrencyItems]]" item-value-path="value" item-label-path="value" error-message="Invalid Input"
+                            loading="[[!concurrencyItems]]" required always-float-label='true'>
                         </vaadin-combo-box>
                         <paper-input label="{{localize('operation-start')}}" id="opStart" value="[[persistedFactoryOperation.op_start]]" type="time"
                             required pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
@@ -165,7 +165,7 @@
                             items="[[intervalItems]]" item-value-path="value" item-label-path="value" error-message="Invalid Input"
                             required always-float-label>
                         </vaadin-combo-box>
-                        <paper-input label="Delay between station (minutes)" name="stationDelay" id="delayBetweenStation" value="[[persistedFactorySchedule.delay]]"
+                        <paper-input label="{{localize('delay-between-station')}} (minutes)" name="stationDelay" id="delayBetweenStation" value="[[persistedFactorySchedule.delay]]"
                             type="number" min="0" max="180" step="1" auto-validate error-message="Input out of range" required
                             always-float-label></paper-input>
                         <flat-button on-tap="restoreDefault" class="btn" title="Restore Default">
@@ -184,40 +184,40 @@
                     <div class="flex-container">
                         <div class="flex-item">
                             <p>{{localize('factory-name')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('factory-type')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('production-model')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p id="concurrencyTitle">Station Concurrency</p>
-                            <div class="sidebar-menu-line" role="separator" id="concurrencyTitleSeparate"></div>
+                            <div class="separator-line" role="separator"></div>
+                            <p id="concurrencyTitle">{{localize('station-concurrency')}}</p>
+                            <div class="separator-line" role="separator" id="concurrencyTitleSeparate"></div>
                             <p>{{localize('operation-start')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('operation-end')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('over-time-start')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('over-time-end')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('operation-day')}}</p>
                         </div>
                         <div class="flex-item">
                             <p>[[persistedFactoryProfile.name]]&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[getFactoryType(persistedFactoryProfile.type)]]&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[getProductionModel(persistedFactoryProfile.model)]]&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p id="concurrencyData">[[persistedFactoryProfile.concurrency]]&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator" id="concurrencyDataSeparate"></div>
+                            <div class="separator-line" role="separator" id="concurrencyDataSeparate"></div>
                             <p>[[persistedFactoryOperation.op_start]] &nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[persistedFactoryOperation.op_end]]&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[persistedFactoryOperation.ot_start]]&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[persistedFactoryOperation.ot_end]]&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[getOperationDay(persistedFactoryOperation.op_day)]]&nbsp;</p>
                         </div>
                     </div>
@@ -227,36 +227,36 @@
                     <div class="flex-container">
                         <div class="info-group flex-item">
                             <p>{{localize('productivity-optimization')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('standard-acceptable-utilization')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('standard-machine-efficiency')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('acceptable-waste')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('reschedule-interval')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('last-reschedule')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('next-reschedule')}}</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
-                            <p>Delay between station</p>
+                            <div class="separator-line" role="separator"></div>
+                            <p>{{localize('delay-between-station')}}</p>
                         </div>
                         <div class="info-group flex-item">
                             <p>{{localize(persistedFactoryPerformance.optimize)}}&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[persistedFactoryPerformance.au]] &#37;&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[persistedFactoryPerformance.meff]] &#37;&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[persistedFactoryPerformance.aw]]&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[persistedFactorySchedule.interval]] {{localize('day')}}&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[getLastInterval(persistedFactorySchedule.start_interval)]]&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[getNextInterval(persistedFactorySchedule.start_interval, persistedFactorySchedule.interval)]]&nbsp;</p>
-                            <div class="sidebar-menu-line" role="separator"></div>
+                            <div class="separator-line" role="separator"></div>
                             <p>[[persistedFactorySchedule.delay]] minutes</p>
                         </div>
                     </div>
