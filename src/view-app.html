@@ -245,7 +245,7 @@
                 this.$.userIndexDB.destroy()
                 this.page = 'login'
                 this.set('route.path', '/login')
-              }, 1)
+              }, 500)
             })
             .catch((error) => {
               console.error('Authenticate Failed: ' + error.code)
@@ -421,7 +421,7 @@
           this._networkSnackbar.open()
           // Refresh network if internet go online
           if (!this.offline && oldOffline === true) {
-            this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(100), () => {
+            this._debouncer = Polymer.Debouncer.debounce(this._debouncer, Polymer.Async.timeOut.after(200), () => {
               this._refreshNetworkStatus()
             })
           }

@@ -307,15 +307,14 @@
           this.$.userData.ref.update({
             key: this.newKey
           }).then(() => {
+            this.closeKeyDialog();
             this.toastText = 'Updated key successful'
             this.$.toastAlert.open()
-            this.closeKeyDialog();
           }).catch(err => {
             console.error(err.message);
           })
         } else {
-          this.toastText = 'Key data cannot be empty.'
-          this.$.toastAlert.open()
+          window.alert('Key data cannot be empty.')
         }
       }
 
@@ -377,7 +376,7 @@
                   this.$.uploadImageFile.files.complete = true
                   this.updateProfileInfo(url, name)
                 }
-              }).catch(function (error) {
+              }).catch((error) => {
                 this.$.uploadImageFile.files.error = error
                 this.$.uploadImageFile.value = null
                 console.error('Upload failed:', error)

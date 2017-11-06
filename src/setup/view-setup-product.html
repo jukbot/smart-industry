@@ -199,7 +199,9 @@
                                                     <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
                                                         <template>
                                                             <div tabindex$="[[tabIndex]]" class="item">
-                                                                <p>Process no. [[item]]</p>
+                                                                <p>
+                                                                    <strong>Process no. [[item.process]]</strong>
+                                                                </p>
                                                                 <p>Cycle [[item.cycle]] mins.</p>
                                                                 <p>Setup [[item.setup]] mins.</p>
                                                             </div>
@@ -241,7 +243,7 @@
                             </template>
                             <template>
                                 <div class="cell center">
-                                    <img class="product-image" src="[[item.image]]" alt="product image">
+                                    <img class="product-image" src="[[item.image]]" alt="No Image">
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -455,6 +457,16 @@
                         .process-list {
                             height: 250px;
                         }
+
+                        .grid-item {
+                            border-bottom: 1px solid #eee;
+                            padding: 10px;
+                            height: 100px;
+                        }
+
+                        .grid-item:hover {
+                            background-color: #eee;
+                        }
                     </style>
                 </custom-style>
                 <h1 class="title center">Add Product Part</h1>
@@ -490,13 +502,15 @@
                 </div>
                 <div class="frame">
                     <div class="process-list">
-                        <iron-list items="{{partProcess}}" as="item" grid>
+                        <iron-list items="[[processBundle]]" as="item">
                             <template>
-                                <div tabindex$="[[tabIndex]]" item="[[item]]" title="Click here to remove this item" class="item" style="width: 100px; height: 100px;">
-                                    <div>
-                                        <p class="title">[[item]]</p>
-                                        <paper-icon-button class="delete-btn" on-tap="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
-                                    </div>
+                                <div tabindex$="[[tabIndex]]" class="grid-item">
+                                    <p>
+                                        <strong>Process no. [[item.process]]</strong>
+                                    </p>
+                                    <p>Cycle [[item.cycle]] mins.</p>
+                                    <p>Setup [[item.setup]] mins.</p>
+                                    <paper-icon-button class="delete-btn" on-tap="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </iron-list>
@@ -532,9 +546,11 @@
                     productData: Object,
                     processItems: Object,
                     toastText: String,
+                    productKey: String,
                     maxFiles: {
                         type: Number,
-                        value: 1
+                        value: 1,
+                        readOnly: true
                     },
                     maxFileSize: {
                         type: Number,
@@ -542,7 +558,8 @@
                     },
                     maxProcess: {
                         type: Number,
-                        value: 12
+                        value: 12,
+                        readOnly: true
                     },
                     showAddProduct: {
                         type: Boolean,
@@ -557,12 +574,14 @@
                     },
                     partProcessCycle: {
                         type: Array,
+                        notify: true,
                         value: function () {
                             return [];
                         }
                     },
                     partProcessSetup: {
                         type: Array,
+                        notify: true,
                         value: function () {
                             return [];
                         }
@@ -592,8 +611,16 @@
                             }]
 
                         }
+                    },
+                    processBundle: {
+                        type: Object,
+                        notify: true
                     }
                 }
+            }
+
+            static get observer() {
+                return ['getPartBundle(partProcess, partProcessCycle, partProcessSetup)']
             }
 
             static get actions() {
@@ -648,24 +675,21 @@
                     let isDuplicated = this.partProcess.map(item => item).indexOf(this.selectedProcess) > -1
                     if (this.partProcess.length < this.maxProcess) {
                         if (isDuplicated) {
-                            this.toastText = 'You already added this process'
-                            this.$.toastAlert.open()
+                            windows.alert('You already added this process')
                             return
                         }
                         this.push('partProcess', this.selectedProcess)
                         this.push('partProcessCycle', parseInt(this.processCycle))
                         this.push('partProcessSetup', parseInt(this.processSetup))
+                        this.getPartBundle(this.partProcess, this.partProcessCycle, this.partProcessSetup)
                         this.selectedProcess = null;
                         this.processCycle = null;
                         this.processSetup = null;
                     } else {
-                        this.toastText = `Can't add more than ${this.maxProcess} processes per station`
-                        this.$.toastAlert.open()
+                        windows.alert(`Can't add more than ${this.maxProcess} processes per station`)
                     }
                 } else {
-                    this.toastText =
-                        'Please fill in process number, process cycle time and process setup time.'
-                    this.$.toastAlert.open()
+                    windows.alert('Please fill in process number, process cycle time and process setup time.')
                 }
             }
 
@@ -673,10 +697,11 @@
                 let index = e.model.index;
                 console.log("Selected index is " + e.model.index);
                 console.log("Selected process is " + e.model.item);
-                console.log(this.partProcess.indexOf(e.model.item));
+                // console.log(this.partProcess.indexOf(e.model.item));
                 this.splice('partProcess', index, 1);
                 this.splice('partProcessCycle', index, 1);
                 this.splice('partProcessSetup', index, 1);
+                this.getPartBundle(this.partProcess, this.partProcessCycle, this.partProcessSetup)
             }
 
             // Add Part to Product
@@ -699,41 +724,60 @@
 
             // Add Product
             addProduct() {
-                if (this.$.uploadImageFile.files.length > 0) {
-                    this.uploadProductImage()
-                }
                 const productName = this.$.productName.value;
                 const productSKU = this.$.productSKU.value;
-                const productPart = this.productPart;
                 const processDependency = this.processDependency;
                 const timestamp = Math.round(Date.now() / 1000.0);
+                let productPart = this.productPart;
                 let productCost = this.$.productCost.value;
                 let inventoryCode = this.$.inventoryCode.value;
                 let inventoryQuantity = this.$.inventoryQuantity.value;
-                let imageURL = this.imageURL;
+                let imageURL = "";
                 if (!productCost) productCost = 0;
                 if (!inventoryCode) inventoryCode = "none";
                 if (!inventoryQuantity) inventoryQuantity = 0;
-                if (!imageURL) imageURL = null;
-                const part = productPart.splice(-1);
+                productPart = productPart.splice(-1);
 
                 if (productName && productSKU && productPart && processDependency) {
-                    this.$.productQuery.ref.push({
-                        add: timestamp,
-                        cost: productCost,
-                        name: productName,
-                        sku: productSKU,
-                        image: imageURL,
-                        inventory_code: inventoryCode,
-                        inventory_use: inventoryQuantity,
-                        part: part,
-                        process: this.processDependency
-                    })
-
+                    if (this.$.uploadImageFile.files.length > 0) {
+                        this._debouncer = Polymer.Debouncer.debounce(this._debouncer,
+                            Polymer.Async.timeOut.after(5000), () => {
+                                imageURL = this.imageURL;
+                                this._uploadProduct(timestamp, productCost, productName, productSKU,
+                                    inventoryCode, inventoryQuantity, productPart, imageURL)
+                            });
+                    } else {
+                        imageURL = null;
+                        this._uploadProduct(timestamp, productCost, productName, productSKU, inventoryCode,
+                            inventoryQuantity, productPart, imageURL)
+                    }
                 } else {
                     this.toastText = 'Please fill in the required field.'
                     this.$.toastAlert.open()
                 }
+            }
+
+            _uploadProduct(timestamp, productCost, productName, productSKU, inventoryCode, inventoryQuantity,
+                productPart, imageURL) {
+                this.$.productQuery.ref.child(this.productKey).set({
+                    add: timestamp,
+                    cost: productCost,
+                    name: productName,
+                    sku: productSKU,
+                    image: imageURL,
+                    inventory_code: inventoryCode,
+                    inventory_use: inventoryQuantity,
+                    part: productPart,
+                    process: this.processDependency
+                }).then(() => {
+                    this.openProductList();
+                    this.toastText = 'Add Product successfully.'
+                    this.$.toastAlert.open()
+                }).catch((error) => {
+                    this.toastText = 'Add Product failed.'
+                    this.$.toastAlert.open()
+                    console.error(error);
+                })
             }
 
             removeProduct(e) {
@@ -753,39 +797,41 @@
                     this.toastText = 'File size maximum is 1 MB'
                     this.$.toastAlert.open()
                     this.$.uploadImageFile.value = null
+                } else {
+                    this.uploadProductImage(this.productKey);
                 }
             }
 
-            uploadProductImage() {
+            uploadProductImage(filename) {
                 let file = this.$.uploadImageFile.files[0]
-                if (file) {
-                    if (file.type.match(/image.*/) && file.size < this.maxFileSize) {
-                        let uid = this.user.uid
-                        let storageRef = this.$.auth.app.storage().ref()
-                        let metadata = {
-                            'contentType': file.type
-                        }
-                        let imagesRef = storageRef.child('user/' + uid + '/product')
-                        imagesRef.put(file, metadata)
-                            .then(snapshot => {
-                                let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                                this.$.uploadImageFile.files.uploading = true
-                                this.$.uploadImageFile.files.status = snapshot.state
-                                this.$.uploadImageFile.files.progress = progress
-                                this.$.uploadImageFile.files.loaded = snapshot.bytesTransferred
-                                this.$.uploadImageFile.files.size = snapshot.totalBytes
-                                let url = snapshot.metadata.downloadURLs[0]
-                                this.imageURL = url;
-                                if (url) {
-                                    this.$.uploadImageFile.files.complete = true
-                                    this.$.uploadImageFile.value = null
-                                }
-                            }).catch(function (error) {
-                                this.$.uploadImageFile.files.error = error
-                                this.$.uploadImageFile.value = null
-                                console.error('Upload failed:', error)
-                            })
+
+                if (file.type.match(/image.*/) && file.size < this.maxFileSize) {
+                    let uid = this.user.uid
+                    let storageRef = this.$.auth.app.storage().ref()
+                    let metadata = {
+                        'contentType': file.type
                     }
+                    let imagesRef = storageRef.child('user/' + uid + '/product/' + filename)
+                    imagesRef.put(file, metadata)
+                        .then(snapshot => {
+                            let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                            this.$.uploadImageFile.files.uploading = true
+                            this.$.uploadImageFile.files.status = snapshot.state
+                            this.$.uploadImageFile.files.progress = progress
+                            this.$.uploadImageFile.files.loaded = snapshot.bytesTransferred
+                            this.$.uploadImageFile.files.size = snapshot.totalBytes
+                            let url = snapshot.metadata.downloadURLs[0]
+                            if (url) {
+                                this.imageURL = url;
+                                this.$.uploadImageFile.files.complete = true
+                                this.$.uploadImageFile.value = null
+                                window.alert("Upload Image Completed");
+                            }
+                        }).catch((error) => {
+                            this.$.uploadImageFile.files.error = error
+                            this.$.uploadImageFile.value = null
+                            console.error('Upload failed:', error)
+                        })
                 } else {
                     this.toastText = 'Error: Invalid file format'
                     this.$.toastAlert.open()
@@ -807,6 +853,7 @@
 
             openAddProductCard() {
                 this.showAddProduct = false;
+                this.productKey = this.$.productQuery.ref.push().key;
             }
 
             openProductList() {
@@ -826,27 +873,24 @@
 
             getPartBundle(processArr, cycleArr, setupArr) {
                 if (!processArr || !cycleArr || !setupArr) return 0;
-                const rows = [processArr, cycleArr, setupArr]
-                const keys = ["process", "cycle", "setup"];
-                const result2 = rows.map((item, index) => ({
-                    [keys[index]]: item
+                const processObj = processArr.map((s, index, arr) => ({
+                    process: arr[index]
                 }))
-
-                const bundle = rows.map(arr => ({
-                    a: arr[0],
-                    b: arr[1],
-                    c: arr[2],
-                    d: arr[3]
+                const cycleObj = cycleArr.map((s, index, arr) => ({
+                    cycle: arr[index]
                 }))
-                console.log(bundle)
-                // const result = processArr.map((rows) => {
-                //     return rows.reduce((result, field, index) => {
-                //         result[keys[index]] = field;
-                //         return result
-                //     }, {});
-                // });
-                //console.log(result);
-                console.log(result2);
+                const setupObj = setupArr.map((s, index, arr) => ({
+                    setup: arr[index]
+                }))
+                let mergeObj = [];
+                let i = 0;
+                while (i < processArr.length) {
+                    mergeObj.push(Object.assign(processObj[i], cycleObj[i], setupObj[i]))
+                    i++;
+                }
+                this.processBundle = mergeObj;
+                console.table(mergeObj)
+                return mergeObj
             }
 
             getProductProcessSequence(arr) {

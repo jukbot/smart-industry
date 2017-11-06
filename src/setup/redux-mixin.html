@@ -1,4 +1,4 @@
-<link rel="import" href="/node_modules/polymer-redux/dist/polymer-redux.html">
+<!-- <link rel="import" href="/node_modules/polymer-redux/dist/polymer-redux.html">
 <script src="/node_modules/redux/dist/redux.min.js"></script>
 <script>
     const initial = {
@@ -74,29 +74,6 @@
                 }
             case 'CLEAR_MACHINE':
                 return []
-            case 'ADD_PART':
-                console.log(action)
-                // If state machine is undefined just initial it
-                if (!state.process) {
-                    state.process = initial.process
-                }
-                console.log('addPart', action.process, state.process)
-                return {
-                    ...state,
-                    process: [...state.process, action.process]
-                }
-            case 'REMOVE_PART':
-                console.log('removePart', action.index, state.process)
-                if (state.process) {
-                    return {
-                        ...state,
-                        process: [
-                            ...state.process.slice(0, action.index),
-                            ...state.process.slice(action.index + 1)
-                        ]
-                    }
-                }
-                return state
             default:
                 return state
         }
@@ -108,4 +85,4 @@
             v => v)
     );
     const ReduxMixin = PolymerRedux(store);
-</script>
+</script> -->

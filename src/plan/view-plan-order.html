@@ -217,7 +217,7 @@
                     <div class="frame frame-small flex-item">
                         <h2 class="title">Product Part [[part.name]]</h2>
                         <p>Part SKU: [[part.sku]]</p>
-                        <p>Process Sequence: [[getProductProcess(part.process)]]</p>
+                        <p>Process Sequence: [[getProductProcessSequence(part.process)]]</p>
                         <p>Setup Time : [[getSumSetupTime(part.setup)]] minutes</p>
                         <p>Cycle Time : [[getSumCycleTime(part.cycle)]] minutes</p>
                     </div>
@@ -392,11 +392,9 @@
                 return total_cost;
             }
 
-            getProductProcess(process) {
-                if (!process) {
-                    return 0;
-                }
-                return process.split(',').join(' → ');
+            getProductProcessSequence(arr) {
+                if (!arr) return 0;
+                return arr.join(' → ');
             }
 
             getSumSetupTime(setup) {
