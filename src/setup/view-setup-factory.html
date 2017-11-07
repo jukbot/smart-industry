@@ -145,7 +145,7 @@
                                 <paper-checkbox class="checkbox" tabindex="0" id="saturday" value="sat" noink>Sat</paper-checkbox>
                             </div>
                         </div>
-                        <vaadin-combo-box label="{{localize('productivity-optimization')}} (Beta)" id="optimizationType" value="[[persistedFactoryPerformance.optimize]]"
+                        <vaadin-combo-box label="{{localize('productivity-optimization')}} (BETA)" id="optimizationType" value="[[persistedFactoryPerformance.optimize]]"
                             items="[[optimizationType]]" item-value-path="value" item-label-path="name" loading="[[!optimizationType]]"
                             required always-float-label>
                             <template>
@@ -165,9 +165,9 @@
                             items="[[intervalItems]]" item-value-path="value" item-label-path="value" error-message="Invalid Input"
                             required always-float-label>
                         </vaadin-combo-box>
-                        <paper-input label="{{localize('delay-between-station')}} (minutes)" name="stationDelay" id="delayBetweenStation" value="[[persistedFactorySchedule.delay]]"
-                            type="number" min="0" max="180" step="1" auto-validate error-message="Input out of range" required
-                            always-float-label></paper-input>
+                        <paper-input label="{{localize('delay-between-station')}} ({{localize('minute')}})" name="stationDelay" id="delayBetweenStation"
+                            value="[[persistedFactorySchedule.delay]]" type="number" min="0" max="180" step="1" auto-validate
+                            error-message="Input out of range" required always-float-label></paper-input>
                         <flat-button on-tap="restoreDefault" class="btn" title="Restore Default">
                             <button>{{localize('restore')}}</button>
                         </flat-button>
@@ -257,14 +257,13 @@
                             <div class="separator-line" role="separator"></div>
                             <p>[[getNextInterval(persistedFactorySchedule.start_interval, persistedFactorySchedule.interval)]]&nbsp;</p>
                             <div class="separator-line" role="separator"></div>
-                            <p>[[persistedFactorySchedule.delay]] minutes</p>
+                            <p>[[persistedFactorySchedule.delay]] {{localize('minute')}}</p>
                         </div>
                     </div>
                 </div>
             </li>
         </ul>
-        <paper-toast id="toastErrorIncompleteInput" always-on-top horizontal-align="right" text="{{localize('notification-error-incomplete-input')}}"></paper-toast>
-        <paper-toast id="toastSaveFactoryInfoSuccess" always-on-top horizontal-align="right" text="{{localize('notification-save-factory-information-successful')}}"></paper-toast>
+        <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
         /**
@@ -283,6 +282,7 @@
                 return {
                     language: String,
                     selectProductionModel: String,
+                    toastText: String,
                     factorySchedule: Object,
                     factoryOperation: Object,
                     factoryPerformance: Object,
@@ -448,9 +448,11 @@
                     this.set('persistedFactoryOperation.op_day', op_day)
                     this.set('persistedFactoryOperation.ot_start', ot_start)
                     this.set('persistedFactoryOperation.ot_end', ot_end)
-                    this.$.toastSaveFactoryInfoSuccess.open()
+                    this.toastText = 'notification-save-factory-information-successful'
+                    this.$.toastAlert.open()
                 } else {
-                    this.$.toastErrorIncompleteInput.open()
+                    this.toastText = 'notification-error-incomplete-input'
+                    this.$.toastAlert.open()
                 }
             }
 

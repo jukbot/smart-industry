@@ -216,7 +216,7 @@
                 </div>
             </li>
         </ul>
-        <paper-toast id="toastSetupCustomer" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
+        <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
         /**
@@ -345,11 +345,11 @@
                     });
                     this._clearField();
                     this.toastText = 'notification-add-success'
-                    this.$.toastSetupCustomer.open();
+                    this.$.toastAlert.open();
                     this._openCustomerTable()
                 } else {
                     this.toastText = 'notification-error-incomplete-input';
-                    this.$.toastSetupCustomer.open();
+                    this.$.toastAlert.open();
                 }
             }
 
@@ -358,7 +358,7 @@
                     let key = e.currentTarget.customer.$key;
                     this.$.customerQuery.ref.child(key).remove();
                     this.toastText = 'notification-delete-success'
-                    this.$.toastSetupCustomer.open();
+                    this.$.toastAlert.open();
                 }
             }
 
@@ -379,11 +379,11 @@
                         mobile: mobileHyphens
                     });
                     this.toastText = 'notification-save-success'
-                    this.$.toastSetupCustomer.open()
+                    this.$.toastAlert.open()
                     this._openCustomerTable()
                 } else {
                     this.toastText = 'notification-error-incomplete-input';
-                    this.$.toastSetupCustomer.open();
+                    this.$.toastAlert.open();
                 }
             }
 

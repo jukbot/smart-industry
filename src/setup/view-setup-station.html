@@ -222,7 +222,7 @@
         </div>
         <!-- Station Manangement -->
         <div class="card main-card" hidden="[[showListStation]]">
-            <h1 class="title">Station Management</h1>
+            <h1 class="title">{{localize('station-management')}}</h1>
             <h1 class="no-machine-title" hidden="[[machineItems]]">Please add machine before adding station.</h1>
             <ul class="app-grid">
                 <template is="dom-repeat" items="[[persistedStationData]]" as="stationItem">
@@ -230,7 +230,7 @@
                         <div class="station">
                             <div class="station-info-group">
                                 <h2 class="title">[[stationItem.st_name]]</h2>
-                                <p>Process number: [[stationItem.st_number]]</p>
+                                <p>{{localize('process-number')}}: [[stationItem.st_number]]</p>
                                 <p>{{localize('station-machine')}}: [[stationItem.st_machine.length]] / [[stationMaxMachine]]</p>
                                 <div class="frame">
                                     <div class="machine-list">
@@ -238,7 +238,7 @@
                                             <template>
                                                 <div tabindex$="[[tabIndex]]" class="item">
                                                     <p class="machine-title">[[machineItem.name]]</p>
-                                                    <p>Type: [[machineItem.code]]</p>
+                                                    <p>{{localize('type')}}: [[machineItem.code]]</p>
                                                 </div>
                                             </template>
                                         </iron-list>

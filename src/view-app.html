@@ -52,7 +52,6 @@
         display: block;
       }
     </style>
-    <!-- <app-analytics key="UA-51514677-9"></app-analytics> -->
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{pageData}}" tail="{{subRoute}}"></app-route>
     <app-route route="{{subRoute}}" pattern="/:page" data="{{subPageData}}" tail="{{subPageRoute}}"></app-route>
@@ -104,7 +103,6 @@
               </paper-tooltip>
               <p>[[persistedUserData.displayname]]</p>
               <p>{{localize('version')}} 1.0.7</p>
-              <p>Icon designed by Flaticon</p>
             </div>
           </div>
         </app-drawer>
@@ -136,13 +134,14 @@
       hidden="true">
       <div class="toast-flex-container">
         <div class="toast-flex-item">
-          <p>[[toastText]]</p>
+          <p>{{localize(toastText)}}</p>
         </div>
         <div class="toast-flex-item">
           <paper-icon-button on-tap="closeToastAlert" class="close-toast-button" icon="vaadin:close-big" noink></paper-icon-button>
         </div>
       </div>
     </paper-toast>
+    <app-analytics key="UA-51514677-9"></app-analytics>
   </template>
   <script>
     /**
@@ -432,7 +431,7 @@
       _verifyEmailAlert(verified, signedIn) {
         if (!verified && signedIn) {
           this._showAlertToast(
-            'We could not verify your account. To protect your account, we need to verify email that associated with your account before using this application.'
+            'we-could-not-verify-your-account'
           )
         }
       }

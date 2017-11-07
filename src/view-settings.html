@@ -85,15 +85,15 @@
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="changeLanguage" error-message="Invalid input"
             loading="[[!languageItems]]" required always-float-label></vaadin-combo-box>
           <p>User ID: [[user.uid]]</p>
-          <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
+          <!-- <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
             <button>Search Sensor</button>
           </flat-button>
           <flat-button on-tap="showDevice" class="btn" title="Show sensor">
             <button>Show Sensor</button>
           </flat-button>
-          <flat-button on-tap="editDashboard" class="btn" title="Edit Dashboard">
-            <button>Customize Dashboard</button>
-          </flat-button>
+          <flat-button on-tap="resetOrderCount" class="btn" title="Edit Dashboard">
+            <button>Reset order count</button>
+          </flat-button> -->
         </div>
       </li>
       <li>
@@ -150,7 +150,7 @@
           <p>Web Notification</p>
           <paper-toggle-button class="switch" value="[[notification]]" on-change="changeNotification" id="webNotificationSwitch" checked="[[token]]"
             noink> {{localize('notification')}}</paper-toggle-button>
-          <p>E-mail Notification</p>
+          <p>{{localize('email-notifcation')}}</p>
           <paper-toggle-button class="switch" value="[[emailalert]]" on-change="changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
         </div>
       </li>
@@ -166,7 +166,7 @@
           <flat-button on-tap="openManageUser" class="btn">
             <button>Manage User</button>
           </flat-button>
-          <flat-button on-tap="resetFactory" class="btn thunderbird" title="{{localize('delete-account')}}">
+          <flat-button on-tap="resetFactoryData" class="btn thunderbird" title="{{localize('delete-account')}}">
             <button>Reset Factory Data</button>
           </flat-button>
         </div>
@@ -547,6 +547,13 @@
             this.toastText = `Authenticate Failed: ${error.message} Please try again.`
             this.$.toastAlert.open()
           })
+      }
+
+      resetFactoryData() {
+        if (window.confirm('!! WARNNING !! This will restore default data ? Your data will permanently replace.') ===
+          true) {
+
+        }
       }
 
       scanDevice() {
