@@ -1,7 +1,4 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
@@ -23,24 +20,12 @@
         font-size: 1.75rem;
       }
 
-      .clear-btn {
-        margin: 20px 0 4px 0;
-      }
-
       google-chart {
         height: 100%;
         width: 100%;
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
-        h1.title {
-          font-size: 1.5rem;
-        }
-
-        .clear-btn {
-          width: 100%;
-        }
-
         #column {
           width: 100%;
         }
@@ -59,7 +44,7 @@
             rows='[ ["Col1", 2.0],["Col2", 9.0],["Col3",
           5.0] ]'></google-chart>
 
-          <flat-button class="clear-btn" on-tap="clearStatistic">
+          <flat-button class="btn" on-tap="clearStatistic">
             <button>Reset Statistic</button>
           </flat-button>
           <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
@@ -116,8 +101,7 @@
             width: this.width - 40,
             height: this.height,
             chart: {
-              title: 'Company Performance',
-              subtitle: 'Sales, Expenses, and Profit: 2014-2017',
+              title: 'Order Statistic'
             },
             vAxis: {
               "minValue": 0,
@@ -134,9 +118,9 @@
 
       clearStatistic() {
         if (confirm("Are you sure do you want to clear product order history ?") == true) {
-          this.$.orderHistoryQuery.ref.remove();
-          this.alertText = "notification-delete-successful";
-          this.$.toastAlert.open();
+          this.$.orderHistoryQuery.ref.remove()
+          this.alertText = "notification-delete-successfully"
+          this.$.toastAlert.open()
         }
       }
     }

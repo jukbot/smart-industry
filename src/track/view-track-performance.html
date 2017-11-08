@@ -1,6 +1,5 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="/bower_components/google-chart/google-chart.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -35,13 +34,18 @@
                 }
             }
         </style>
-
+        <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+        <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="productionPerformance" path="/data/[[k.key]]/performanceData" data="{{productionPerformance}}"></firebase-document>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
                 <div class="card">
                     <h1 class="title">Performance Tracking</h1>
-                    <h1>OEE</h1>
+                    <h3>Overall equipment effectiveness</h3>
+
+                    <google-chart type="gauge" data='[[getPerformanceValue(productionPerformance.oee)]]' options='[[gaugeOption]]'>
+                    </google-chart>
                     <flat-button class="clear-btn" on-tap="_refreshStatus">
                         <button>Referesh</button>
                     </flat-button>
@@ -66,12 +70,35 @@
             static get properties() {
                 return {
                     language: String,
-                    orderHistoryData: Object
+                    orderHistoryData: Object,
+                    performanceData: Object,
+                    gaugeOption: {
+                        type: Object,
+                        value: () => {
+                            return {
+                                "width": 500,
+                                "height": 300,
+                                "redFrom": 0,
+                                "redTo": 5,
+                                "yellowFrom": 5,
+                                "yellowTo": 15,
+                                "greenFrom": 75,
+                                "greenTo": 100,
+                                "minorTicks": 5
+                            }
+                        }
+                    }
                 }
             }
             connectedCallback() {
                 super.connectedCallback();
                 this.loadResources(this.resolveUrl('../../data/locales.json'));
+            }
+            getPerformanceValue(oee) {
+                return [
+                    ["Label", "Value"],
+                    ["OEE", oee]
+                ]
             }
         }
         customElements.define(ViewTrackPerformance.is, ViewTrackPerformance);

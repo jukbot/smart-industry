@@ -1,10 +1,5 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
-<link rel="import" href="/bower_components/vaadin-charts/vaadin-charts.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/bower_components/vaadin-material-theme/vaadin-grid.html">
@@ -164,32 +159,29 @@
         <!-- STATION -->
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             data="{{stationItems}}"></firebase-query>
-
-        <!-- ORDER SCHEDULE TABLE -->
+        <!-- ORDER TABLE -->
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
-
         <!-- CHART DATA -->
         <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{chartItems}}"></firebase-document>
-
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             equal-to="{{selectedStation}}" data="{{selectedStationData}}"></firebase-query>
         <!-- JOB SCHEDULE TABLE SELECTED BY STATION NUMBER -->
-        <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(selectedStation)]]"
-            order-by-child="job_workload" data="{{scheduleItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" equal-to="[[selectedStation]]"
+            order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
 
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
                 <div class="card">
-                    <h1 class="title">Order Table</h1>
+                    <h1 class="title">{{localize('order-table')}}:</h1>
                     <div class="order-schedule-info">
                         <p>{{localize('next-reschedule')}}: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
                         <p>{{localize('production-model')}}: [[factoryProfile.model]]</p>
                         <p id="concurrency">{{localize('station-concurrency')}} : [[factoryProfile.concurrency]] {{localize('order')}} / {{localize('station')}}</p>
                         <p>Delayed between station: [[factorySchedule.delay]] minutes</p>
                     </div>
-                    <vaadin-grid id="material" items="{{getSortedOrder(orderItems)}}" size="100">
+                    <vaadin-grid id="material" items="{{sortedOrder}}" size="100">
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
@@ -335,9 +327,9 @@
             </li>
             <li>
                 <div class="card">
-                    <h1 class="title">Scheduling Table</h1>
+                    <h1 class="title">{{localize('scheduling-table')}}:</h1>
                     <p>Selected Station: [[selectedStation]]</p>
-                    <p>Station Name:
+                    <p>{{localize('station-name')}}:
                         <template is="dom-repeat" items="[[selectedStationData]]" as="stationItem">[[stationItem.st_name]]</template>
                     </p>
                     <p>Station Machines:
@@ -348,7 +340,7 @@
                     <p>Machines quantity:
                         <template is="dom-repeat" items="[[selectedStationData]]" as="stationItem">[[stationItem.st_machine.length]]</template>
                     </p>
-                    <vaadin-grid id="material" items="[[scheduleItems]]" size="100">
+                    <vaadin-grid id="jobSchedulingTable" items="{{scheduleItems}}" size="100">
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
                                 <div class="cell center">Station</div>
@@ -467,10 +459,10 @@
 
                     </vaadin-grid>
                     <div class="center btn-group">
-                        <iron-selector selected="{{selectedStation}}" attr-for-selected="id" fallback-selection="1" role="navigation">
+                        <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
                             <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                                <paper-button class="station-btn" id="[[stationItem.st_number]]">
-                                    Station [[stationItem.st_number]]
+                                <paper-button class="station-btn" name="[[stationItem.st_number]]">
+                                    {{localize('station')}} [[stationItem.st_number]]
                                 </paper-button>
                             </template>
                         </iron-selector>
@@ -503,15 +495,16 @@
                 return {
                     selectedStation: {
                         type: String,
-                        reflectToAttribute: true
+                        reflectToAttribute: true,
+                        value: 1
+                    },
+                    sortedOrder: {
+                        type: Object,
+                        notify: true
                     },
                     language: String,
                     status: String,
-                    orderItems: {
-                        type: Object,
-                        observer: 'getSortedOrder'
-                    },
-                    sortedOrder: Object,
+                    orderItems: Object,
                     factoryPerformance: Object,
                     factoryOperation: Object,
                     factoryProfile: Object,
@@ -525,7 +518,8 @@
 
             static get observers() {
                 return [
-                    '_isSerialModel(factoryProfile.model)'
+                    '_isSerialModel(factoryProfile.model)',
+                    'getSortedOrder(orderItems)'
                 ]
             }
 
@@ -533,12 +527,12 @@
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
                 requestAnimationFrame(this._installListeners.bind(this))
+                this.getSortedOrder(this.orderItems)
             }
 
             _installListeners() {
                 // listen for custom events on main page
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
-                this.addEventListener('data-changed', (e) => this.getSortedOrder(this.orderItems))
             }
 
             _calculateWaitTime(machine, quantity) {
@@ -627,8 +621,6 @@
 
                     console.log(result);
 
-                    let station_quantity = this.stationItems.length
-
                 } else {
                     alert("No order to reschedule")
                 }
@@ -663,8 +655,6 @@
 
 
                     // console.log(jobWorkload);
-
-                    let station_quantity = this.stationItems.length
 
 
                 } else {
@@ -812,10 +802,6 @@
                 return this._minutesToStr(order_duration)
             }
 
-            getStationIndex(selectedStation) {
-                return selectedStation - 1
-            }
-
             getRemainDay(delivery_date, status, key) {
                 if (!delivery_date) return 0
                 const current_date = Math.round(new Date().getTime() / 1000.0);
@@ -824,7 +810,7 @@
                 if (remain < 0 && status !== 'done' && status !== 'wip') {
                     this.setLateOrder(key);
                     return 0;
-                } else if (remain < 0 && (status === 'done' || status === 'wip')) {
+                } else if (remain < 0 && (status === 'done' || status === 'wip' || status === 'late')) {
                     return 0;
                 } else {
                     return remain;

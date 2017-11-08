@@ -1,9 +1,6 @@
 <!-- POLYMER 2 -->
 <!-- app modules - used for core functions -->
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/polymer/lib/utils/render-status.html">
-<link rel="import" href="/bower_components/polymer/lib/utils/async.html">
-<link rel="import" href="/bower_components/polymer/lib/utils/debounce.html">
 <link rel="import" href="/bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="/bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="/bower_components/app-layout/app-header/app-header.html">
@@ -28,6 +25,7 @@
 <link rel="import" href="/bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="/bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="/bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <!-- 3rd party modules -->
 <link rel="import" href="/bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
@@ -167,7 +165,7 @@
               if (localStorage.getItem('app-lang') != null) {
                 return localStorage.getItem('app-lang')
               } else if (localStorage.getItem('app-lang') == {} || !localStorage.getItem('app-lang')) {
-                return 'en'
+                return 'us'
               } else {
                 return language
               }
@@ -374,8 +372,7 @@
           })
         } else {
           // Browser not support fetch
-          console.warn('%cFetch is not support by your browser.', 'color: crimson')
-          window.alert('Fetch is not support by your browser. Please upgrade your browser.')
+          console.warn('Fetch is not support by your browser.')
         }
       }
       _activatePushNotification() {
@@ -383,8 +380,7 @@
           document.body.classList.add('push-enabled')
         } else {
           // Browser not support push notification
-          console.warn('%cPush notification is not support by your browser.', 'color: crimson')
-          window.alert('Push notification is not support by your browser. Please upgrade your browser.')
+          console.warn('Push notification is not support by your browser.')
         }
       }
       _signedInChanged(e) {

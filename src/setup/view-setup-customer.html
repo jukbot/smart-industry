@@ -1,9 +1,8 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-selection-column.html">
+<link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-filter.html">
+<link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-sorter.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
@@ -16,7 +15,6 @@
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
-                --app-grid-item-height: 50%;
             }
 
             .btn {
@@ -24,53 +22,11 @@
                 width: 250px;
             }
 
-            vaadin-grid#customerTable {
-                height: 500px;
-
-                --vaadin-grid-cell: {
-                    padding: 0;
-                }
-
-                --vaadin-grid-header-cell: {
-                    height: 64px;
-                }
-
-                --vaadin-grid-body-cell: {
-                    height: 48px;
-                    font-size: 1rem;
-                }
-
-                --vaadin-grid-body-row-hover-cell: {
-                    background-color: #eeeeee;
-                }
-
-                --vaadin-grid-body-row-selected-cell: {
-                    background-color: #eeeeee;
-                }
-
-                --vaadin-grid-focused-cell: {
-                    font-weight: bold;
-                }
-            }
-
-            vaadin-grid#customerTable .cell {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                padding: 0;
-            }
-
-            vaadin-grid#customerTable paper-checkbox {
-                margin: 0 16px;
-            }
-
-            @media (min-width: 360px) and (max-width: 768px) {
-                h1.title {
-                    font-size: 1.5rem;
-                }
-
-                .btn {
-                    width: 100%;
-                }
+            .details {
+                padding: 20px;
+                display: flex;
+                justify-content: left;
+                align-items: center;
             }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
@@ -141,16 +97,7 @@
                             </template>
                         </vaadin-grid-selection-column>
 
-                        <vaadin-grid-column flex="0">
-                            <template class="header">
-                                <div class="cell">#</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[index]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column flex-grow="2" flex="1">
                             <template class="header">
                                 <div class="cell">{{localize('first-name')}}</div>
                             </template>
@@ -159,7 +106,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column flex-grow="2" flex="1">
                             <template class="header">
                                 <div class="cell">{{localize('email')}}</div>
                             </template>
@@ -168,45 +115,55 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column flex-grow="2" flex="1">
                             <template class="header">
-                                <div class="cell last">{{localize('address')}}</div>
+                                <div class="cell">{{localize('mobile')}}</div>
                             </template>
                             <template>
-                                <div class="cell">[[item.address]]</div>
+                                <div class="cell">[[item.mobile]]</div>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell last">{{localize('mobile')}}</div>
+                                <div class="cell">{{localize('detail')}}</div>
                             </template>
                             <template>
-                                <div class="cell numeric last">[[item.mobile]]</div>
+                                <paper-checkbox aria-label$="Show Details for [[item.name]]" checked="{{expanded}}"></paper-checkbox>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="0">
+                        <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center last">{{localize('edit')}}</div>
+                                <div class="cell last">{{localize('edit')}}</div>
                             </template>
                             <template>
-                                <div class="cell center last">
+                                <div class="cell last">
                                     <paper-icon-button on-tap="_openEditCustomerCard" customer="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="0">
+                        <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center last">{{localize('delete')}}</div>
+                                <div class="cell last">{{localize('delete')}}</div>
                             </template>
                             <template>
-                                <div class="cell center last">
+                                <div class="cell last">
                                     <paper-icon-button on-tap="deleteCustomer" customer="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
+
+                        <!-- Row detail -->
+                        <template class="row-details">
+                            <div class="details">
+                                <div flex="1">
+                                    <h4>{{localize('address')}}</h4>
+                                    <p>[[item.address]]</p>
+                                </div>
+                            </div>
+                        </template>
                     </vaadin-grid>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openAddCustomerCard">
@@ -282,11 +239,11 @@
             }
 
             _validateInput() {
-                const fname = this.$.customerFirstName.value;
-                const lname = this.$.customerLastName.value;
-                const email = this.$.customerEmail.value;
-                const mobile = this.$.customerMobile.value;
-                const address = this.$.customerAddress.value;
+                const fname = this.$.customerFirstName.value
+                const lname = this.$.customerLastName.value
+                const email = this.$.customerEmail.value
+                const mobile = this.$.customerMobile.value
+                const address = this.$.customerAddress.value
                 if (fname && lname && email && mobile && this.$.customerEmail.validate() && address) {
                     this.disabled = false
                 } else {
@@ -295,11 +252,11 @@
             }
 
             _validateEditInput() {
-                const fname = this.$.edit_customerFirstName.value;
-                const lname = this.$.edit_customerLastName.value;
-                const email = this.$.edit_customerEmail.value;
-                const mobile = this.$.edit_customerMobile.value;
-                const address = this.$.edit_customerAddress.value;
+                const fname = this.$.edit_customerFirstName.value
+                const lname = this.$.edit_customerLastName.value
+                const email = this.$.edit_customerEmail.value
+                const mobile = this.$.edit_customerMobile.value
+                const address = this.$.edit_customerAddress.value
                 if (fname && lname && email && mobile && this.$.customerEmail.validate() && address) {
                     this.disabled = false
                 } else {
@@ -308,33 +265,40 @@
             }
 
             _openEditCustomerCard(e) {
-                this.showEditCustomer = true;
-                this.showListCustomer = false;
-                const key = e.currentTarget.customer.$key;
-                this.editKey = key;
+                this.showEditCustomer = true
+                this.showListCustomer = false
+                const key = e.currentTarget.customer.$key
+                this.editKey = key
             }
 
             _openAddCustomerCard() {
-                this.showAddCustomer = true;
-                this.showListCustomer = false;
+                this.showAddCustomer = true
+                this.showListCustomer = false
             }
 
             _openCustomerTable() {
-                this.showListCustomer = true;
-                this.showAddCustomer = false;
-                this.showEditCustomer = false;
-                this._clearField();
+                this.showListCustomer = true
+                this.showAddCustomer = false
+                this.showEditCustomer = false
+                this._clearField()
+            }
+
+            _clearField() {
+                this.$.customerFirstName.value = ""
+                this.$.customerLastName.value = ""
+                this.$.customerEmail.value = ""
+                this.$.customerMobile.value = ""
             }
 
             addCustomer() {
-                const fname = this.$.customerFirstName.value;
-                const lname = this.$.customerLastName.value;
-                const fullname = fname + ' ' + lname;
-                const email = this.$.customerEmail.value;
-                const mobile = this.$.customerMobile.value;
-                const address = this.$.customerAddress.value;
+                const fname = this.$.customerFirstName.value
+                const lname = this.$.customerLastName.value
+                const fullname = fname + ' ' + lname
+                const email = this.$.customerEmail.value
+                const mobile = this.$.customerMobile.value
+                const address = this.$.customerAddress.value
                 const mobileHyphens = mobile.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
-                const timestamp = Math.round(Date.now() / 1000.0);
+                const timestamp = Math.round(Date.now() / 1000.0)
                 if (fullname && email && mobile && address) {
                     this.$.customerQuery.ref.push({
                         name: fullname,
@@ -344,31 +308,31 @@
                         created: timestamp
                     });
                     this._clearField();
-                    this.toastText = 'notification-add-success'
-                    this.$.toastAlert.open();
+                    this.toastText = 'notification-add-successfully'
+                    this.$.toastAlert.open()
                     this._openCustomerTable()
                 } else {
-                    this.toastText = 'notification-error-incomplete-input';
-                    this.$.toastAlert.open();
+                    this.toastText = 'notification-error-incomplete-input'
+                    this.$.toastAlert.open()
                 }
             }
 
             deleteCustomer(e) {
                 if (window.confirm("Delete this customer ?") == true) {
-                    let key = e.currentTarget.customer.$key;
-                    this.$.customerQuery.ref.child(key).remove();
-                    this.toastText = 'notification-delete-success'
+                    let key = e.currentTarget.customer.$key
+                    this.$.customerQuery.ref.child(key).remove()
+                    this.toastText = 'notification-delete-successfully'
                     this.$.toastAlert.open();
                 }
             }
 
             saveCustomer() {
-                const fname = this.$.edit_customerFirstName.value;
-                const lname = this.$.edit_customerLastName.value;
-                const fullname = fname + ' ' + lname;
-                const email = this.$.edit_customerEmail.value;
-                const mobile = this.$.edit_customerMobile.value;
-                const address = this.$.edit_customerAddress.value;
+                const fname = this.$.edit_customerFirstName.value
+                const lname = this.$.edit_customerLastName.value
+                const fullname = fname + ' ' + lname
+                const email = this.$.edit_customerEmail.value
+                const mobile = this.$.edit_customerMobile.value
+                const address = this.$.edit_customerAddress.value
                 const mobileHyphens = mobile.replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")
 
                 if (fullname && email && mobile && address) {
@@ -378,24 +342,17 @@
                         address: address,
                         mobile: mobileHyphens
                     });
-                    this.toastText = 'notification-save-success'
+                    this.toastText = 'notification-save-successfully'
                     this.$.toastAlert.open()
                     this._openCustomerTable()
                 } else {
-                    this.toastText = 'notification-error-incomplete-input';
-                    this.$.toastAlert.open();
+                    this.toastText = 'notification-error-incomplete-input'
+                    this.$.toastAlert.open()
                 }
             }
 
-            _clearField() {
-                this.$.customerFirstName.value = "";
-                this.$.customerLastName.value = "";
-                this.$.customerEmail.value = "";
-                this.$.customerMobile.value = "";
-            }
-
             getNamePosition(name, index) {
-                if (!name) return;
+                if (!name) return
                 return name.split(' ')[index]
             }
         }

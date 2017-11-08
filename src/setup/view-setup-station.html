@@ -1,17 +1,9 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
 <link rel="import" href="/bower_components/polymer-redux/polymer-redux.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="/bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
-<link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
-<link rel="import" href="../style/flat-icons.html">
 <link rel="import" href="redux-mixin-babel.html">
 
 <dom-module id="view-setup-station">
@@ -27,7 +19,7 @@
                  :host {
                     --app-grid-columns: 1;
                 }
-                .fixed-btn {
+                .btn {
                     width: 100%;
                 }
             }
@@ -50,9 +42,13 @@
                 }
             }
 
-            .fixed-btn {
-                margin: 20px 10px 10px 0;
+            .btn {
+                margin: 20px 10px 0 0;
                 width: 250px;
+            }
+
+            .btn-block {
+                width: 100%;
             }
 
             iron-list {
@@ -130,9 +126,7 @@
             }
 
             .big-btn button {
-                width: 400px;
-                height: 60px;
-                font-size: 2rem;
+                min-width: 350px;
                 display: block;
                 font-size: 1.75rem;
                 font-weight: 300;
@@ -169,7 +163,7 @@
                 always-float-label></paper-input>
             <vaadin-combo-box label="Machine" id="machineSelector" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
                 item-value-path="name" loading="[[!persistedMachineData]]" required always-float-label></vaadin-combo-box>
-            <p class="machine-counter">You added [[stationMachineCount]] / [[stationMaxMachine]] machines</p>
+            <p class="machine-counter">You added [[stationMachineCount]] / [[stationMaxMachine]] {{localize('machine')}}</p>
             <flat-button class="add-btn" on-tap="addMachine">
                 <button>{{localize('add-machine')}}</button>
             </flat-button>
@@ -182,10 +176,10 @@
                 </ul>
             </div>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="openStationMainCard">
+                <flat-button class="btn btn-block" on-tap="openStationMainCard">
                     <button>{{localize('dismiss')}}</button>
                 </flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="addStation">
+                <flat-button class="btn btn-block shamrock" on-tap="addStation">
                     <button>{{localize('add')}}</button>
                 </flat-button>
             </div>
@@ -199,23 +193,23 @@
                 required error-message="Invalid Input" always-float-label></paper-input>
             <vaadin-combo-box label="Machine" id="edit_machineSelector" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
                 item-value-path="name" loading="[[!persistedMachineData]]" required always-float-label></vaadin-combo-box>
-            <p class="machine-counter">You added [[stationEditMachineCount]] / [[stationMaxMachine]] machines</p>
-            <flat-button class="add-btn" on-tap="editaddMachine">
+            <p class="machine-counter">You added [[stationEditMachineCount]] / [[stationMaxMachine]] {{localize('machine')}}</p>
+            <flat-button class="add-btn" on-tap="editAddMachine">
                 <button>{{localize('add-machine')}}</button>
             </flat-button>
             <div class="frame">
                 <ul class="flex-container wrap">
                     <template is="dom-repeat" items="{{editMachines}}" as="machineItem">
-                        <li class="flex-item machine-item" on-tap="editremoveMachine" number="[[index]]" title="Click here to remove this item">[[machineItem.name]]
+                        <li class="flex-item machine-item" on-tap="editRemoveMachine" number="[[index]]" title="Click here to remove this item">[[machineItem.name]]
                         </li>
                     </template>
                 </ul>
             </div>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="dismissEditStation">
+                <flat-button class="btn" on-tap="dismissEditStation">
                     <button>{{localize('dismiss')}}</button>
                 </flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="saveStation">
+                <flat-button class="btn shamrock" on-tap="saveStation">
                     <button>{{localize('save')}}</button>
                 </flat-button>
             </div>
@@ -223,7 +217,7 @@
         <!-- Station Manangement -->
         <div class="card main-card" hidden="[[showListStation]]">
             <h1 class="title">{{localize('station-management')}}</h1>
-            <h1 class="no-machine-title" hidden="[[machineItems]]">Please add machine before adding station.</h1>
+            <h1 class="sub-title center" hidden="[[machineItems]]">{{localize('please-add-machine-before-adding-station')}}</h1>
             <ul class="app-grid">
                 <template is="dom-repeat" items="[[persistedStationData]]" as="stationItem">
                     <li>
@@ -245,10 +239,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <flat-button class="btn" on-tap="openEditStationCard" station="[[stationItem]]">
+                            <flat-button class="btn btn-block" on-tap="openEditStationCard" station="[[stationItem]]">
                                 <button>{{localize('edit')}}</button>
                             </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="removeStation" station="[[stationItem]]">
+                            <flat-button class="btn btn-block v" on-tap="removeStation" station="[[stationItem]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -261,10 +255,7 @@
                 </flat-button>
             </div>
         </div>
-        <paper-toast id="toastAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-station')}}"></paper-toast>
-        <paper-toast id="toastSaveStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-save-station')}}"></paper-toast>
-        <paper-toast id="toastDeleteStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-delete-station')}}"></paper-toast>
-        <paper-toast id="toastEmptyAddStation" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-empty-add-station')}}"></paper-toast>
+        <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
         /**
@@ -282,12 +273,13 @@
                 return {
                     language: String,
                     editKey: String,
+                    toastText: String,
                     stationItems: Object,
                     machineItems: Object,
                     editStationItems: Object,
                     stationMaxMachine: {
                         type: Number,
-                        value: 10
+                        value: 20
                     },
                     showAddStation: {
                         type: Boolean,
@@ -370,15 +362,15 @@
 
             getStationNumber(length) {
                 if (length > 0) {
-                    return length + 1;
+                    return length + 1
                 } else {
-                    return 1;
+                    return 1
                 }
             }
 
             computeMachineCount(m) {
                 if (m) {
-                    return m.length;
+                    return m.length
                 } else {
                     return 0
                 }
@@ -387,37 +379,12 @@
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
-                const state = this.getState();
-                console.info("Redux state: ", state)
+                const state = this.getState()
+                //console.info("Redux state: ", state)
             }
 
             setEditStationMachine(m) {
-                this.dispatch('editCreate', m);
-            }
-
-            openAddStationCard() {
-                this.showAddStation = false;
-                this.showListStation = true;
-            }
-
-            openEditStationCard(e) {
-                this.showEditStation = false;
-                this.showListStation = true;
-                let key = e.currentTarget.station.$key;
-                this.editKey = key;
-            }
-
-            openStationMainCard() {
-                this.showEditStation = true;
-                this.showAddStation = true;
-                this.showListStation = false;
-                this.clearField();
-            }
-
-            dismissEditStation() {
-                this.showEditStation = true;
-                this.showAddStation = true;
-                this.showListStation = false;
+                this.dispatch('editCreate', m)
             }
 
             addMachine() {
@@ -428,17 +395,19 @@
                         -1
                     if (this.machines.length < this.stationMaxMachine) {
                         if (isDuplicated) {
-                            window.alert("You already added this machine")
+                            this.toastText = 'notification-already-added-this-machine'
+                            this.$.toastAlert.open()
                             return
                         }
-                        this.dispatch('add', selector.selectedItem);
-                        selector.value = null;
-                        selector.focus();
+                        this.dispatch('add', selector.selectedItem)
+                        selector.value = null
+                        selector.focus()
                     } else {
-                        window.alert(`Can't add more than ${this.stationMaxMachine} machines per station`);
+                        window.alert(`Can't add more than ${this.stationMaxMachine} machines per station`)
                     }
                 } else {
-                    window.alert('Please select a machine to add')
+                    this.toastText = 'notification-please-select-machine-to-add'
+                    this.$.toastAlert.open()
                 }
             }
 
@@ -450,33 +419,35 @@
                 }
             }
 
-            editaddMachine() {
+            editAddMachine() {
                 let selector = this.$.edit_machineSelector
                 if (selector.value) {
                     // if found duplicate it will return index > -1
                     if (!this.editMachines) {
-                        this.editMachines = [];
+                        this.editMachines = []
                     }
                     let isDuplicated = this.editMachines.map(item => item.number).indexOf(selector.selectedItem
                         .number) > -1
 
                     if (this.editMachines.length < this.stationMaxMachine) {
                         if (isDuplicated) {
-                            window.alert("You already added this machine")
+                            this.toastText = 'notification-already-added-this-machine'
+                            this.$.toastAlert.open()
                             return
                         }
-                        this.dispatch('editAdd', selector.selectedItem);
-                        selector.value = null;
-                        selector.focus();
+                        this.dispatch('editAdd', selector.selectedItem)
+                        selector.value = null
+                        selector.focus()
                     } else {
-                        window.alert(`Can't add more than ${this.stationMaxMachine} machines per station`);
+                        window.alert(`Can't add more than ${this.stationMaxMachine} machines per station`)
                     }
                 } else {
-                    window.alert('Please select a machine to add')
+                    this.toastText = 'notification-please-select-machine-to-add'
+                    this.$.toastAlert.open()
                 }
             }
 
-            editremoveMachine(e) {
+            editRemoveMachine(e) {
                 if (this.editMachines.length > 0) {
                     if (window.confirm("Delete this machines ?") == true) {
                         this.dispatch('editRemove', e.currentTarget.number);
@@ -485,10 +456,10 @@
             }
 
             addStation() {
-                const sname = this.$.stationName.value;
-                const snumber = this.$.stationNumber.value;
-                const smachine = this.machines;
-                const timestamp = Math.round(Date.now() / 1000.0);
+                const sname = this.$.stationName.value
+                const snumber = this.$.stationNumber.value
+                const smachine = this.machines
+                const timestamp = Math.round(Date.now() / 1000.0)
                 if (sname && snumber && smachine.length > 0) {
                     this.$.stationQuery.ref.push({
                         st_name: sname,
@@ -496,47 +467,77 @@
                         st_machine: smachine,
                         st_install: timestamp
                     });
-                    this.clearField();
-                    this.dispatch('clear');
-                    this.machines = [];
-                    this.$.toastAddStation.open();
-                    this.openStationMainCard();
+                    this.clearField()
+                    this.dispatch('clear')
+                    this.machines = []
+                    this.toastText = 'notification-add-station-successfully'
+                    this.$.toastAlert.open()
+                    this.openStationMainCard()
                 } else {
-                    this.$.toastEmptyAddStation.open();
+                    this.toastText = 'notification-empty-add-station'
+                    this.$.toastAlert.open()
                 }
             }
 
             removeStation(e) {
                 if (window.confirm("Delete this station ?") == true) {
-                    const key = e.currentTarget.station.$key;
-                    this.$.stationQuery.ref.child(key).remove();
-                    this.$.toastDeleteStation.open();
+                    const key = e.currentTarget.station.$key
+                    this.$.stationQuery.ref.child(key).remove()
+                    this.toastText = 'notification-delete-station-successfully'
+                    this.$.toastAlert.open()
                 }
             }
 
             saveStation(e) {
                 const sname = this.$.edit_stationName.value;
-                const smachine = this.editMachines;
+                const smachine = this.editMachines
                 if (sname && smachine.length >= 0) {
                     this.$.editStationQuery.ref.update({
                         st_name: sname,
                         st_machine: smachine
                     });
-                    this.$.toastSaveStation.open()
+                    this.toastText = 'notification-save-station-successfully'
+                    this.$.toastAlert.open()
                     this.openStationMainCard()
                 } else {
-                    this.$.toastEmptyAddStation.open();
+                    this.toastText = 'notification-empty-add-station'
+                    this.$.toastAlert.open()
                 }
             }
 
             clearField() {
                 this.$.stationNumber.value = this.stationItems.length + 1;
-                this.$.stationName.value = "";
-                this.$.machineSelector.value = "";
+                this.$.stationName.value = ""
+                this.$.machineSelector.value = ""
                 if (this.machines) {
-                    this.dispatch('clear');
-                    this.machines = [];
+                    this.dispatch('clear')
+                    this.machines = []
                 }
+            }
+
+            openAddStationCard() {
+                this.showAddStation = false
+                this.showListStation = true
+            }
+
+            openEditStationCard(e) {
+                this.showEditStation = false
+                this.showListStation = true
+                const key = e.currentTarget.station.$key
+                this.editKey = key
+            }
+
+            openStationMainCard() {
+                this.showEditStation = true
+                this.showAddStation = true
+                this.showListStation = false
+                this.clearField()
+            }
+
+            dismissEditStation() {
+                this.showEditStation = true
+                this.showAddStation = true
+                this.showListStation = false
             }
         }
         customElements.define(ViewSetupStation.is, ViewSetupStation)

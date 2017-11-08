@@ -1,12 +1,6 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/bower_components/vaadin-dialog/vaadin-dialog.html">
-<link rel="import" href="/bower_components/paper-item/paper-item-body.html">
-<link rel="import" href="/bower_components/paper-item/paper-item.html">
-<link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -102,8 +96,8 @@
 
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData/[[getStationIndex(selectedStation)]]"
-            order-by-child="name" data="{{scheduleItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" equal-to="[[selectedStation]]"
+            order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_no" data="{{orderItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" data="{{stationItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="deviceQuery" path="/data/[[k.key]]/factoryData/device" data="{{deviceItems}}"></firebase-query>
@@ -158,13 +152,13 @@
             </div>
         </div> -->
         <!-- Machine Management -->
-        <div class="card main-card" hidden="[[showListMachine]]">
+        <div class="card main-card">
             <h1 class="title">Work In Progress Order Tracking</h1>
             <div class="center">
                 <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
                     <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
                         <paper-button class="station-btn" name="[[stationItem.st_number]]">
-                            Station [[stationItem.st_number]]
+                            {{localize('station')}} [[stationItem.st_number]]
                         </paper-button>
                     </template>
                 </iron-selector>
@@ -174,10 +168,10 @@
                     <li>
                         <div class="machine">
                             <div class="machine-info-group">
-                                <h2 class="title">Part [[item.job_part]]</h2>
-                                <p>Quantity: [[item.job_quantity]]</p>
-                                <p>Product Part: [[item.order_product]]</p>
-                                <p style$="color:[[item.order_color]]">Order no: [[item.order_no]]</p>
+                                <h2 class="title">{{localize('part')}} [[item.job_part]]</h2>
+                                <p>{{localize('quantity')}}: [[item.job_quantity]]</p>
+                                <p>{{localize('product-part')}}: [[item.order_product]]</p>
+                                <p style$="color:[[item.order_color]]">{{localize('order-number')}}: [[item.order_no]]</p>
                                 <p>Workload: [[item.job_workload]]</p>
                                 <p>Plan Start: [[timestampUTCToTime(item.start)]]</p>
                                 <p>Plan End: [[timestampUTCToTime(item.end)]]</p>
@@ -186,7 +180,7 @@
                                 <p>Duration: [[getActualDuration(item.actual_start,item.actual_end)]]</p>
                                 <p>Productivity rate: 0 items / hour</p>
                                 <p>Completed: 0 / [[item.job_quantity]]</p>
-                                <p>Status:
+                                <p>{{localize('status')}}:
                                     <span class$="[[getTextStatus(item.job_status)]]" style$="color:[[getColorStatus(item.job_status)]]">[[item.job_status]]</span>
                                 </p>
                             </div>
@@ -203,11 +197,11 @@
                     </li>
                 </template>
                 <li hidden$="[[isEmptyJobs(scheduleItems.length)]]">
-                    <h1>Loading..</h1>
+                    <h1 class="center">No job schedule found</h1>
                 </li>
             </ul>
         </div>
-        <div class="card main-card" hidden="[[showListMachine]]">
+        <div class="card main-card">
             <h1 class="title">Tracking Device Management</h1>
             <ul class="app-grid">
                 <template is="dom-repeat" items="{{deviceItems}}" as="device">
@@ -298,6 +292,11 @@
 
             static get properties() {
                 return {
+                    selectedStation: {
+                        type: String,
+                        reflectToAttribute: true,
+                        value: 1
+                    },
                     language: String,
                     orderHistoryData: Object,
                     orderItems: Object
@@ -319,16 +318,11 @@
             }
 
             updateFinish() {
-                this.$.reportFinishDialog.opened = false;   
+                this.$.reportFinishDialog.opened = false;
             }
 
             closeFinishDialog() {
                 this.$.reportFinishDialog.opened = false;
-            }
-
-
-            getStationIndex(selectedStation) {
-                return selectedStation - 1
             }
 
             getActualDuration(start, end) {

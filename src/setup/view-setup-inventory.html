@@ -1,9 +1,4 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
@@ -18,61 +13,11 @@
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
-                --app-grid-item-height: 50%;
             }
 
             .btn {
                 margin: 20px 10px 0 0;
                 width: 250px;
-            }
-
-            vaadin-grid#inventoryTable {
-                height: 500px;
-
-                --vaadin-grid-cell: {
-                    padding: 0;
-                }
-
-                --vaadin-grid-header-cell: {
-                    height: 64px;
-                }
-
-                --vaadin-grid-body-cell: {
-                    height: 48px;
-                    font-size: 1rem;
-                }
-
-                --vaadin-grid-body-row-hover-cell: {
-                    background-color: #eeeeee;
-                }
-
-                --vaadin-grid-body-row-selected-cell: {
-                    background-color: #eeeeee;
-                }
-
-                --vaadin-grid-focused-cell: {
-                    font-weight: bold;
-                }
-            }
-
-            vaadin-grid#inventoryTable .cell {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                padding: 0;
-            }
-
-            vaadin-grid#inventoryTable paper-checkbox {
-                margin: 0 16px;
-            }
-
-            @media (min-width: 360px) and (max-width: 768px) {
-                h1.title {
-                    font-size: 1.5rem;
-                }
-
-                .btn {
-                    width: 100%;
-                }
             }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
@@ -131,7 +76,6 @@
             <li>
                 <div class="card" hidden="[[!showListInventory]]">
                     <h1 class="title">{{localize('inventory-management')}}</h1>
-                    <!-- <vaadin-combo-box label="Search inventory" aria-label="Search inventory" items="" value=""></vaadin-combo-box> -->
                     <vaadin-grid id="inventoryTable" aria-label="inventory Management" items="[[persistedInventoryData]]">
                         <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
                             <template class="header">
@@ -142,16 +86,7 @@
                             </template>
                         </vaadin-grid-selection-column>
 
-                        <vaadin-grid-column flex="0">
-                            <template class="header">
-                                <div class="cell">#</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[index]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column flex-grow="2" flex="1">
                             <template class="header">
                                 <div class="cell">{{localize('name')}}</div>
                             </template>
@@ -187,23 +122,23 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="0">
+                        <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center last">{{localize('edit')}}</div>
+                                <div class="cell last">{{localize('edit')}}</div>
                             </template>
                             <template>
-                                <div class="cell center last">
+                                <div class="cell last">
                                     <paper-icon-button on-tap="_openEditInventoryCard" inventory="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="0">
+                        <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center last">{{localize('delete')}}</div>
+                                <div class="cell last">{{localize('delete')}}</div>
                             </template>
                             <template>
-                                <div class="cell center last">
+                                <div class="cell last">
                                     <paper-icon-button on-tap="deleteInventory" inventory="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
@@ -350,7 +285,7 @@
                         update: timestamp
                     })
                     this.clearField()
-                    this.toastText = 'notification-add-success'
+                    this.toastText = 'notification-add-successfully'
                     this.$.toastSetupInventory.open()
                     this._openInventoryTable()
                 } else {
@@ -363,7 +298,7 @@
                 if (window.confirm("Delete this inventory item ?") == true) {
                     let key = e.currentTarget.inventory.$key
                     this.$.inventoryQuery.ref.child(key).remove()
-                    this.toastText = 'notification-delete-success'
+                    this.toastText = 'notification-delete-successfully'
                     this.$.toastSetupInventory.open()
                 }
             }
@@ -384,7 +319,7 @@
                         quantity: quantity,
                         update: timestamp
                     });
-                    this.toastText = 'notification-save-success'
+                    this.toastText = 'notification-save-successfully'
                     this.$.toastSetupInventory.open()
                     this._openInventoryTable()
                 } else {

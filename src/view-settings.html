@@ -1,17 +1,14 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/polymer/lib/elements/dom-bind.html">
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="/bower_components/vaadin-material-theme/vaadin-text-field.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/bower_components/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="/bower_components/vaadin-dialog/vaadin-dialog.html">
-<link rel="import" href="/bower_components/paper-toggle-button/paper-toggle-button.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="/bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
 <link rel="import" href="view-app.html">
 <!-- import style component -->
-<link rel="import" href="style/flat-button.html">
+<link rel="import" href="style/flat-button.html">s
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-settings">
   <template>
@@ -34,11 +31,6 @@
 
       .switch {
         padding: 10px 0;
-      }
-
-      iron-list {
-        flex: 1;
-        overflow: auto;
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
@@ -83,7 +75,15 @@
           <h1 class="title">{{localize('general-settings')}}</h1>
           <vaadin-combo-box label="{{localize('display-language')}}" id="languageSelector" items="[[languageItems]]" name="language selector"
             item-label-path="name" item-value-path="value" value="[[language]]" on-change="changeLanguage" error-message="Invalid input"
-            loading="[[!languageItems]]" required always-float-label></vaadin-combo-box>
+            loading="[[!languageItems]]" required always-float-label>
+            <template>
+              <paper-item>
+                <paper-item-body style="min-height: 0">
+                  <div>[[item.name]]</div>
+                </paper-item-body>
+              </paper-item>
+            </template>
+          </vaadin-combo-box>
           <p>User ID: [[user.uid]]</p>
           <!-- <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
             <button>Search Sensor</button>
@@ -432,11 +432,11 @@
       changeLanguage() {
         let selectedLang = this.$.languageSelector.value
         if (selectedLang) {
-          if (selectedLang === "en" || selectedLang === "th" || selectedLang === "jp" || selectedLang === "ch" ||
-            selectedLang === "rs") {
+          if (selectedLang === "us" || selectedLang === "th" || selectedLang === "jp" || selectedLang === "ch" ||
+            selectedLang === "ru") {
             this.language = selectedLang
           } else {
-            this.language = "en"
+            this.language = "us"
           }
         }
       }

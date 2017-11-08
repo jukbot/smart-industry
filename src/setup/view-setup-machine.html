@@ -1,19 +1,12 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="/bower_components/paper-item/paper-item-body.html">
-<link rel="import" href="/bower_components/paper-item/paper-item.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
 <link rel="import" href="../style/flat-icons.html">
-<link rel="import" href="../style/flat-input.html">
-
 <dom-module id="view-setup-machine">
     <template>
-        <style include="shared-styles app-grid-style flat-button flat-input">
+        <style include="shared-styles app-grid-style flat-button">
              :host {
                 display: block;
                 margin: 10px;
@@ -24,7 +17,7 @@
                  :host {
                     --app-grid-columns: 1;
                 }
-                .fixed-btn {
+                .btn {
                     width: 100%;
                 }
             }
@@ -47,9 +40,13 @@
                 }
             }
 
-            .fixed-btn {
+            .btn {
                 margin: 20px 10px 10px 0;
                 width: 250px;
+            }
+
+            .btn-block {
+                width: 100%;
             }
 
             .machine {
@@ -68,9 +65,7 @@
             }
 
             .big-btn button {
-                width: 400px;
-                height: 100px;
-                font-size: 2rem;
+                min-width: 350px;
                 display: block;
                 font-size: 1.75rem;
                 font-weight: 300;
@@ -124,10 +119,10 @@
                 </template>
             </vaadin-combo-box>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="openMachineListCard">
+                <flat-button class="btn" on-tap="openMachineListCard">
                     <button>{{localize('dismiss')}}</button>
                 </flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="addMachine">
+                <flat-button class="btn shamrock" on-tap="addMachine">
                     <button disabled="[[disabled]]">{{localize('add')}}</button>
                 </flat-button>
             </div>
@@ -153,10 +148,10 @@
                 </template>
             </vaadin-combo-box>
             <div class="center">
-                <flat-button class="fixed-btn" on-tap="openMachineListCard">
+                <flat-button class="btn" on-tap="openMachineListCard">
                     <button>{{localize('dismiss')}}</button>
                 </flat-button>
-                <flat-button class="fixed-btn shamrock" on-tap="saveMachine">
+                <flat-button class="btn shamrock" on-tap="saveMachine">
                     <button>{{localize('save')}}</button>
                 </flat-button>
             </div>
@@ -166,6 +161,7 @@
             <h1 class="title">{{localize('machine-management')}}</h1>
             <paper-input class="search-input" label="Search machine name" id="searchMachineInput" value="{{searchString::input}}" type="text"
                 always-float-label></paper-input>
+            <h1 class="sub-title center" hidden="[[machineItems]]">{{localize('please-add-machine-before-adding-station')}}</h1>
             <ul class="app-grid">
                 <template is="dom-repeat" filter="{{searchMachine(searchString)}}" observe="name" items="{{persistedMachineData}}" as="machineItem">
                     <li>
@@ -176,12 +172,12 @@
                                 <p>{{localize('machine-type')}}: [[machineItem.type]]</p>
                                 <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] {{localize('items')}}/ {{localize('hour')}}</p>
                                 <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
-                                <p style="color:#e53935">Machine Key: [[machineItem.$key]]</p>
+                                <!-- <p style="color:#e53935">Machine Key: [[machineItem.$key]]</p> -->
                             </div>
-                            <flat-button class="btn" on-tap="openEditMachineCard" machine="[[machineItem]]">
+                            <flat-button class="btn btn-block" on-tap="openEditMachineCard" machine="[[machineItem]]">
                                 <button>{{localize('edit')}}</button>
                             </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="removeMachine" machine="[[machineItem]]">
+                            <flat-button class="btn btn-block thunderbird " on-tap="removeMachine" machine="[[machineItem]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -194,10 +190,7 @@
                 </flat-button>
             </div>
         </div>
-        <paper-toast id="toastAddMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-add-machine')}}"></paper-toast>
-        <paper-toast id="toastSaveMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-save-machine')}}"></paper-toast>
-        <paper-toast id="toastDeleteMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-delete-machine')}}"></paper-toast>
-        <paper-toast id="toastEmptyAddMachine" role="alert" always-on-top horizontal-align="right" text="{{localize('notification-empty-add-machine')}}"></paper-toast>
+        <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
         /**
@@ -214,6 +207,7 @@
             static get properties() {
                 return {
                     language: String,
+                    toastText: String,
                     editKey: String,
                     machineItems: Object,
                     editMachineItems: Object,
@@ -294,10 +288,10 @@
                     return null;
                 } else {
                     // return a filter function for the current search keyword
-                    keyword = keyword.toLowerCase();
+                    keyword = keyword.toLowerCase()
                     return ((machine) => {
-                        let name = machine.name.toLowerCase();
-                        return (name.indexOf(keyword) != -1);
+                        let name = machine.name.toLowerCase()
+                        return (name.indexOf(keyword) != -1)
                     });
                 }
             }
@@ -310,10 +304,10 @@
             }
 
             _validateInput() {
-                const number = this.$.machineNumber.value;
-                const name = this.$.machineName.value;
-                const type = this.$.machineType.value;
-                const capacity = this.$.machineCapacity.value;
+                const number = this.$.machineNumber.value
+                const name = this.$.machineName.value
+                const type = this.$.machineType.value
+                const capacity = this.$.machineCapacity.value
                 if (number && name && type && capacity >= 0 && capacity <= 9999) {
                     this.disabled = false
                 } else {
@@ -322,54 +316,54 @@
             }
 
             getInstallDate(timestamp) {
-                const today = new Date(timestamp * 1000);
-                let dd = today.getDate();
-                let mm = today.getMonth() + 1; //January is 0!
-                let yyyy = today.getFullYear();
+                const today = new Date(timestamp * 1000)
+                let dd = today.getDate()
+                let mm = today.getMonth() + 1 //January is 0!
+                let yyyy = today.getFullYear()
                 if (dd < 10) {
                     dd = '0' + dd
                 }
                 if (mm < 10) {
                     mm = '0' + mm
                 }
-                const deliveryDate = dd + '/' + mm + '/' + yyyy;
-                return deliveryDate;
+                const deliveryDate = dd + '/' + mm + '/' + yyyy
+                return deliveryDate
             }
 
             getMachineNumber(length) {
                 if (length > 0) {
-                    return length + 1;
+                    return length + 1
                 } else {
-                    return 1;
+                    return 1
                 }
             }
 
             openAddMachineCard() {
-                this.showAddMachine = false;
-                this.showListMachine = true;
+                this.showAddMachine = false
+                this.showListMachine = true
             }
 
             openEditMachineCard(e) {
-                this.showEditMachine = false;
-                this.showListMachine = true;
-                let key = e.currentTarget.machine.$key;
-                this.editKey = key;
+                this.showEditMachine = false
+                this.showListMachine = true
+                let key = e.currentTarget.machine.$key
+                this.editKey = key
             }
 
             openMachineListCard() {
-                this.showEditMachine = true;
-                this.showAddMachine = true;
-                this.showListMachine = false;
-                this._clearField();
+                this.showEditMachine = true
+                this.showAddMachine = true
+                this.showListMachine = false
+                this._clearField()
             }
 
             addMachine() {
-                const number = this.$.machineNumber.value;
-                const name = this.$.machineName.value;
-                const capacity = this.$.machineCapacity.value;
-                const type = this.$.machineType.value;
-                const code = this.$.machineType.selectedItem.code;
-                const timestamp = Math.round(Date.now() / 1000.0);
+                const number = this.$.machineNumber.value
+                const name = this.$.machineName.value
+                const capacity = this.$.machineCapacity.value
+                const type = this.$.machineType.value
+                const code = this.$.machineType.selectedItem.code
+                const timestamp = Math.round(Date.now() / 1000.0)
                 if (number && name && capacity && type && code && timestamp) {
                     this.$.machineQuery.ref.push({
                         number: number,
@@ -378,28 +372,31 @@
                         type: type,
                         code: code,
                         install: timestamp
-                    });
-                    this._clearField();
-                    this.$.toastAddMachine.open();
+                    })
+                    this._clearField()
+                    this.toastText = 'notification-add-machine-successfully'
+                    this.$.toastAlert.open()
                     this.openMachineListCard()
                 } else {
-                    this.$.toastEmptyAddMachine.open();
+                    this.toastText = 'notification-error-incomplete-input'
+                    this.$.toastAlert.open()
                 }
             }
 
             removeMachine(e) {
                 if (window.confirm("Delete this machine ?") == true) {
-                    let key = e.currentTarget.machine.$key;
-                    this.$.machineQuery.ref.child(key).remove();
-                    this.$.toastDeleteMachine.open();
+                    let key = e.currentTarget.machine.$key
+                    this.$.machineQuery.ref.child(key).remove()
+                    this.toastText = 'notification-delete-machine-successfully'
+                    this.$.toastAlert.open()
                 }
             }
 
             saveMachine() {
-                const name = this.$.edit_machineName.value;
-                const capacity = this.$.edit_machineCapacity.value;
-                const type = this.$.edit_machineType.value;
-                const code = this.$.edit_machineType.selectedItem.code;
+                const name = this.$.edit_machineName.value
+                const capacity = this.$.edit_machineCapacity.value
+                const type = this.$.edit_machineType.value
+                const code = this.$.edit_machineType.selectedItem.code
 
                 if (name && capacity && type && code) {
                     this.$.editMachineQuery.ref.update({
@@ -407,19 +404,21 @@
                         capacity: capacity,
                         type: type,
                         code: code,
-                    });
-                    this.$.toastSaveMachine.open()
+                    })
+                    this.toastText = 'notification-save-machine-successfully'
+                    this.$.toastAlert.open()
                     this.openMachineListCard()
                 } else {
-                    this.$.toastEmptyAddMachine.open();
+                    this.toastText = 'notification-empty-add-machine'
+                    this.$.toastAlert.open()
                 }
             }
 
             _clearField() {
-                this.$.machineNumber.value = this.machineItems.length + 1;
-                this.$.machineCapacity.value = "";
-                this.$.machineName.value = "";
-                this.$.machineType.value = "";
+                this.$.machineNumber.value = this.machineItems.length + 1
+                this.$.machineCapacity.value = ""
+                this.$.machineName.value = ""
+                this.$.machineType.value = ""
             }
         }
         customElements.define(ViewSetupMachine.is, ViewSetupMachine)

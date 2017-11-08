@@ -1,4 +1,19 @@
-// app.get("/api/launch", (req, res, next) => res.send("boom"));
+const express = require("express");
+const app = express();
+// const critical = require("critical");
+// const prpl = require("prpl-server");
+
+// Serve static files from the main build directory
+app.use(express.static(__dirname + "/build/default"));
+
+app.get("*", function(req, res) {
+  res.sendFile("index.html", { root: "." });
+});
+
+// Tell the app to listen for requests on port 3000
+app.listen(3000, function() {
+  console.info("Example app listening on port 3000!");
+});
 
 // app.get(
 //   "/*",
@@ -9,22 +24,6 @@
 //     ]
 //   })
 // );
-
-// app.listen(8080);
-
-// Include the server in your file
-const server = require('server');
-const { get, post } = server.router;
-
-// Handle requests to the url "/" ( http://localhost:3000/ )
-server([
-  get('/', ctx => 'Hello world!')
-]);
-
-// const critical = require("critical");
-// const prpl = require("prpl-server");
-// const express = require("express");
-// const app = express();
 
 // critical.generate({
 //   // เป็นการบอก critical ว่าหลังจากแกะ critical CSS ออกมาแล้ว

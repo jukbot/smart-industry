@@ -9,7 +9,7 @@
         --material-body-text-color: #202020;
         --app-primary-color: #202020;
         --app-secondary-color: #FFFFFF;
-        --app-accent-color: #172C50;
+        --app-accent-color: #eeeeee;
         --app-font-color: #202020;
         --app-font-size: 1rem;
         --app-background-color: #fafafa;
@@ -141,8 +141,94 @@
         width: 100%;
       }
 
-      h1.title,
-      h2.title {
+      vaadin-grid {
+        --divider-color: rgba(0, 0, 0, 0.10);
+        --vaadin-grid-cell: {
+          padding: 0;
+        }
+        ;
+
+        --vaadin-grid-header-cell: {
+          height: 64px;
+          color: var(--app-font-color);
+          font-size: 1rem;
+        }
+        ;
+
+        --vaadin-grid-body-cell: {
+          height: 48px;
+          color: var(--app-font-color);
+          font-size: 1rem;
+        }
+        ;
+
+        --vaadin-grid-body-row-hover-cell: {
+          background-color: var(--app-background-color);
+        }
+        ;
+
+        --vaadin-grid-body-row-selected-cell: {
+          background-color: var(--app-background-color);
+        }
+        ;
+
+        --vaadin-grid-focused-cell: {
+          box-shadow: none;
+          font-weight: bold;
+        }
+        ;
+      }
+
+      vaadin-grid .cell {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        padding: 0;
+      }
+
+      vaadin-grid .cell.last {
+        padding-right: 24px;
+      }
+
+      vaadin-grid .cell.numeric {
+        text-align: right;
+      }
+
+      vaadin-grid paper-checkbox {
+        --primary-color: var(--app-primary-color);
+        margin: 0 24px;
+      }
+
+      vaadin-grid vaadin-grid-sorter {
+        --vaadin-grid-sorter-arrow: {
+          display: none !important;
+        }
+        ;
+      }
+
+      vaadin-grid vaadin-grid-sorter .cell {
+        flex: 1;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      vaadin-grid vaadin-grid-sorter iron-icon {
+        transform: scale(0.8);
+      }
+
+      vaadin-grid vaadin-grid-sorter:not([direction]) iron-icon {
+        color: rgba(0, 0, 0, 0.10);
+      }
+
+      vaadin-grid vaadin-grid-sorter[direction] {
+        color: rgba(0, 0, 0, 0.10);
+      }
+
+      vaadin-grid vaadin-grid-sorter[direction=desc] iron-icon {
+        transform: scale(0.8) rotate(180deg);
+      }
+
+      .title {
         text-align: center;
         margin: 15px 0 25px 0;
         font-weight: 400;
@@ -184,7 +270,7 @@
 
       .frame {
         border: 1px solid rgba(0, 0, 0, .10);
-        border-radius: 2px;
+        border-radius: 3px;
         min-height: 300px;
         overflow: auto;
         display: flex;
@@ -304,7 +390,7 @@
       .card {
         margin: 10px;
         padding: 20px;
-        border-radius: 2px;
+        border-radius: 3px;
         background-color: #FFFFFF;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
@@ -313,7 +399,7 @@
       }
 
       .btn {
-        margin: 16px 0 0 0;
+        margin: 20px 0 0 0;
         width: 100%;
       }
 
@@ -332,6 +418,11 @@
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
+
+        .btn {
+          width: 100%;
+        }
+
         .main-describe {
           display: none;
         }
@@ -350,8 +441,8 @@
           margin-left: 5px;
         }
 
-        h1.main-title,
-        h1.title {
+        .main-title,
+        .title {
           font-size: 1.5rem;
         }
       }

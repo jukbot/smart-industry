@@ -1,18 +1,22 @@
 {
   "builds": [{
-      "js": {
-        "compile": false,
-        "minify": false
+      "browserCapabilities": [
+        "es2015",
+        "push"
+      ],
+      "css": {
+        "minify": true
       },
       "html": {
         "minify": true
       },
-      "css": {
-        "minify": true
+      "js": {
+        "compile": false,
+        "minify": false
       },
-      "swPrecacheConfig": "sw-precache-config.js",
       "name": "default",
-      "preset": "es6-unbundled"
+      "preset": "es6-unbundled",
+      "swPrecacheConfig": "sw-precache-config.js"
     },
     {
       "name": "fallback",
@@ -34,6 +38,7 @@
     "src/view-settings.html",
     "src/view-login.html",
     "src/view-404.html",
+    "src/view-help.html",
     "src/view-term.html",
     "src/view-error.html",
     "src/view-offline.html",

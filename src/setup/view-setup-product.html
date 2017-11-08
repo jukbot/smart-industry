@@ -1,9 +1,4 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="/bower_components/paper-button/paper-button.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="/bower_components/vaadin-grid/vaadin-grid-filter.html">
@@ -43,27 +38,11 @@
                 width: 120px;
             }
 
-            .cell {
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                padding: 8px;
-            }
-
-            .numeric {
-                text-align: right;
-            }
-
             .details {
                 padding: 10px;
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
-            }
-
-            .flex-item {
-                flex: 1;
             }
 
             .part-list {
@@ -111,47 +90,11 @@
             }
 
             vaadin-grid#productTable {
-                height: 500px;
-
-                --vaadin-grid-cell: {
-                    padding: 0;
-                }
-
-                --vaadin-grid-header-cell: {
-                    height: 64px;
-                }
+                height: 700px;
 
                 --vaadin-grid-body-cell: {
                     height: 150px;
                     font-size: 1rem;
-                }
-
-                --vaadin-grid-body-row-hover-cell: {
-                    background-color: #eeeeee;
-                }
-
-                --vaadin-grid-body-row-selected-cell: {
-                    background-color: #eeeeee;
-                }
-
-                --vaadin-grid-focused-cell: {
-                    font-weight: bold;
-                }
-            }
-
-            vaadin-grid#productTable .cell {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                padding: 0;
-            }
-
-            vaadin-grid#productTable paper-checkbox {
-                margin: 0 16px;
-            }
-
-            @media (min-width: 360px) and (max-width: 768px) {
-                h1.title {
-                    font-size: 1.5rem;
                 }
             }
         </style>
@@ -197,10 +140,10 @@
                                                         <template>
                                                             <div tabindex$="[[tabIndex]]" class="item">
                                                                 <p>
-                                                                    <strong>Process no. [[item.process]]</strong>
+                                                                    <strong>{{localize('process-number)}} [[item.process]]</strong>
                                                                 </p>
-                                                                <p>Cycle [[item.cycle]] mins.</p>
-                                                                <p>Setup [[item.setup]] mins.</p>
+                                                                <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('mins')}}.</p>
+                                                                <p>{{localize('setup-time')}} [[item.setup]] {{localize('mins')}}.</p>
                                                             </div>
                                                         </template>
                                                     </iron-list>
@@ -239,7 +182,7 @@
                                 <div class="cell center">{{localize('image')}}</div>
                             </template>
                             <template>
-                                <div class="cell">
+                                <div class="cell center">
                                     <img class="product-image" src="[[item.image]]" alt="No Image">
                                 </div>
                             </template>
@@ -247,16 +190,16 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center">{{localize('name')}}</div>
+                                <div class="cell">{{localize('name')}}</div>
                             </template>
                             <template>
-                                <div class="cell center">[[item.name]]</div>
+                                <div class="cell">[[item.name]]</div>
                             </template>
                         </vaadin-grid-column>
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center">{{localize('sku-code')}}</div>
+                                <div class="cell">{{localize('sku-code')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.sku]]</div>
@@ -265,7 +208,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center">{{localize('part')}}</div>
+                                <div class="cell">{{localize('part')}}</div>
                             </template>
                             <template>
                                 <div class="cell">
@@ -278,7 +221,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center">Part SKU</div>
+                                <div class="cell">Part SKU</div>
                             </template>
                             <template>
                                 <div class="cell">
@@ -291,7 +234,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center">Inventory Code</div>
+                                <div class="cell">Inventory Code</div>
                             </template>
                             <template>
                                 <div class="cell">
@@ -302,7 +245,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center">Inventory Require</div>
+                                <div class="cell">Inventory Require</div>
                             </template>
                             <template>
                                 <div class="cell">
@@ -313,23 +256,23 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell center">{{localize('cost')}}</div>
+                                <div class="cell">{{localize('cost')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.cost]]</div>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column flex="0">
                             <template class="header">
-                                <div class="cell center">{{localize('detail')}}</div>
+                                <div class="cell">{{localize('detail')}}</div>
                             </template>
                             <template>
-                                <paper-checkbox aria-label$="Show Details for [[item.name.first]]" checked="{{expanded}}"></paper-checkbox>
+                                <paper-checkbox aria-label$="Show Details for [[item.name]]" checked="{{expanded}}"></paper-checkbox>
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="50px">
+                        <vaadin-grid-column flex="0">
                             <template class="header">
                                 <div class="cell last">{{localize('edit')}}</div>
                             </template>
@@ -340,7 +283,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="50px">
+                        <vaadin-grid-column flex="0">
                             <template class="header">
                                 <div class="cell last">{{localize('delete')}}</div>
                             </template>
@@ -410,7 +353,7 @@
                     </vaadin-grid>
                     <div class="center">
                         <flat-button class="btn" on-tap="openAddProductCard">
-                            <button>{{localize('product-product')}}</button>
+                            <button>{{localize('add-product')}}</button>
                         </flat-button>
                     </div>
                 </div>
@@ -475,14 +418,14 @@
                     <!-- Add Process -->
                     <h3>Process of Part</h3>
                     <p>([[partProcess.length]] / [[maxProcess]])</p>
-                    <vaadin-combo-box label="Process Number" id="processNumber" items="[[processItems]]" name="Process selector" item-label-path="st_number"
-                        item-value-path="st_number" value="{{selectedProcess}}" error-message="Invalid input" loading="[[!processItems]]"
-                        required always-float-label='true'>
+                    <vaadin-combo-box label="{{localize('process-number')}}" id="processNumber" items="[[processItems]]" name="Process selector"
+                        item-label-path="st_number" item-value-path="st_number" value="{{selectedProcess}}" error-message="Invalid input"
+                        loading="[[!processItems]]" required always-float-label='true'>
                         <template>
                             <paper-item>
                                 <paper-item-body three-line style="min-height: 0">
-                                    <div style="text-transform: capitalize">Process Name: [[item.st_name]]</div>
-                                    <div secondary>Process Number: [[item.st_number]]</div>
+                                    <div style="text-transform: capitalize">{{localize('process-name')}}: [[item.st_name]]</div>
+                                    <div secondary>{{localize('process-number')}}: [[item.st_number]]</div>
                                     <div secondary>[[item.st_machine.length]] Machines</div>
                                 </paper-item-body>
                             </paper-item>
@@ -503,10 +446,10 @@
                             <template>
                                 <div tabindex$="[[tabIndex]]" class="grid-item">
                                     <p>
-                                        <strong>Process no. [[item.process]]</strong>
+                                        <strong>{{localize('process-number')}} [[item.process]]</strong>
                                     </p>
-                                    <p>Cycle [[item.cycle]] mins.</p>
-                                    <p>Setup [[item.setup]] mins.</p>
+                                    <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('mins')}}.</p>
+                                    <p>{{localize('setup-time')}} [[item.setup]] {{localize('mins')}}.</p>
                                     <paper-icon-button class="delete-btn" on-tap="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
@@ -518,7 +461,7 @@
                         {{localize('dismiss')}}
                     </paper-button>
                     <paper-button class="btn" dialog-confirm autofocus on-tap="addPartToProduct">
-                        Add Part
+                        {{localize('add-part')}}
                     </paper-button>
                 </div>
             </template>
@@ -679,9 +622,9 @@
                         this.push('partProcessCycle', parseInt(this.processCycle))
                         this.push('partProcessSetup', parseInt(this.processSetup))
                         this.getPartBundle(this.partProcess, this.partProcessCycle, this.partProcessSetup)
-                        this.selectedProcess = null;
-                        this.processCycle = null;
-                        this.processSetup = null;
+                        this.selectedProcess = null
+                        this.processCycle = null
+                        this.processSetup = null
                     } else {
                         windows.alert(`Can't add more than ${this.maxProcess} processes per station`)
                     }
@@ -716,19 +659,19 @@
 
             removePartFromProduct(e) {
                 let index = e.model.index;
-                this.splice('productPart', index, 1);
+                this.splice('productPart', index, 1)
             }
 
             // Add Product
             addProduct() {
-                const productName = this.$.productName.value;
-                const productSKU = this.$.productSKU.value;
-                const processDependency = this.processDependency;
-                const timestamp = Math.round(Date.now() / 1000.0);
-                let productPart = this.productPart;
-                let productCost = this.$.productCost.value;
-                let inventoryCode = this.$.inventoryCode.value;
-                let inventoryQuantity = this.$.inventoryQuantity.value;
+                const productName = this.$.productName.value
+                const productSKU = this.$.productSKU.value
+                const processDependency = this.processDependency
+                const timestamp = Math.round(Date.now() / 1000.0)
+                let productPart = this.productPart
+                let productCost = this.$.productCost.value
+                let inventoryCode = this.$.inventoryCode.value
+                let inventoryQuantity = this.$.inventoryQuantity.value
                 let imageURL = "";
                 if (!productCost) productCost = 0;
                 if (!inventoryCode) inventoryCode = "none";
@@ -774,14 +717,14 @@
                 }).catch((error) => {
                     this.toastText = 'Add Product failed.'
                     this.$.toastAlert.open()
-                    console.error(error);
+                    console.error(error)
                 })
             }
 
             removeProduct(e) {
                 if (window.confirm("Delete this product ?") == true) {
-                    const key = e.currentTarget.product.$key;
-                    this.$.productQuery.ref.child(key).remove();
+                    const key = e.currentTarget.product.$key
+                    this.$.productQuery.ref.child(key).remove()
                 }
             }
 
@@ -796,7 +739,7 @@
                     this.$.toastAlert.open()
                     this.$.uploadImageFile.value = null
                 } else {
-                    this.uploadProductImage(this.productKey);
+                    this.uploadProductImage(this.productKey)
                 }
             }
 
@@ -823,7 +766,7 @@
                                 this.imageURL = url;
                                 this.$.uploadImageFile.files.complete = true
                                 this.$.uploadImageFile.value = null
-                                window.alert("Upload Image Completed");
+                                window.alert("Upload Image Completed")
                             }
                         }).catch((error) => {
                             this.$.uploadImageFile.files.error = error
@@ -838,39 +781,34 @@
             }
 
             openBrowseImageFile() {
-                this.$.uploadImageFile.click();
+                this.$.uploadImageFile.click()
             }
 
             openAddPartDialog() {
-                this.$.addPartDialog.opened = true;
+                this.$.addPartDialog.opened = true
             }
 
             closeAddPartDialog() {
-                this.$.addPartDialog.opened = false;
+                this.$.addPartDialog.opened = false
             }
 
             openAddProductCard() {
-                this.showAddProduct = false;
-                this.productKey = this.$.productQuery.ref.push().key;
+                this.showAddProduct = false
+                this.productKey = this.$.productQuery.ref.push().key
             }
 
             openProductList() {
-                this.showAddProduct = true;
+                this.showAddProduct = true
             }
 
             openEditProductCard(e) {
-                this.showAddProduct = false;
-                let key = e.currentTarget.product.$key;
-                this.editKey = key;
-            }
-
-            onSortFinish(e) {
-                const sortedItem = e.detail.target;
-                console.log(sortedItem);
+                this.showAddProduct = false
+                let key = e.currentTarget.product.$key
+                this.editKey = key
             }
 
             getPartBundle(processArr, cycleArr, setupArr) {
-                if (!processArr || !cycleArr || !setupArr) return 0;
+                if (!processArr || !cycleArr || !setupArr) return
                 const processObj = processArr.map((s, index, arr) => ({
                     process: arr[index]
                 }))
@@ -880,11 +818,11 @@
                 const setupObj = setupArr.map((s, index, arr) => ({
                     setup: arr[index]
                 }))
-                let mergeObj = [];
-                let i = 0;
+                let mergeObj = []
+                let i = 0
                 while (i < processArr.length) {
                     mergeObj.push(Object.assign(processObj[i], cycleObj[i], setupObj[i]))
-                    i++;
+                    i++
                 }
                 this.processBundle = mergeObj;
                 console.table(mergeObj)
@@ -892,29 +830,29 @@
             }
 
             getProductProcessSequence(arr) {
-                if (!arr) return 0;
-                return arr.join(' → ');
+                if (!arr) return 'N/A'
+                return arr.join(' → ')
             }
 
             getProcessNumber(processNumber) {
                 if (!processNumber) return 1
-                return processNumber + 1;
+                return processNumber + 1
             }
 
             getSumSetupTime(setup) {
-                if (!setup) return 0;
+                if (!setup) return 0
                 let sumSetupTime = setup.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
-                return sumSetupTime.toFixed(1);
+                return sumSetupTime.toFixed(1)
             }
 
             getSumCycleTime(cycle) {
-                if (!cycle) return 0;
-                let sumCycleTime = cycle.reduce((a, b) => a + b); // apply sum function to all arr items to get sumCycle
-                return sumCycleTime.toFixed(1);
+                if (!cycle) return 0
+                let sumCycleTime = cycle.reduce((a, b) => a + b) // apply sum function to all arr items to get sumCycle
+                return sumCycleTime.toFixed(1)
             }
 
             _onActiveItemChanged(e) {
-                this.$.productTable.expandedItems = [e.detail.value];
+                this.$.productTable.expandedItems = [e.detail.value]
             }
         }
         customElements.define(ViewSetupProduct.is, ViewSetupProduct)

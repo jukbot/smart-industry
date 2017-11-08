@@ -1,8 +1,8 @@
 <link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="/bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="/bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="/bower_components/paper-item/paper-item.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -112,12 +112,24 @@
                             always-float-label></paper-input>
                         <vaadin-combo-box label="{{localize('factory-type')}}" id="factoryType" value="[[persistedFactoryProfile.type]]" items="[[factoryType]]"
                             item-label-path="name" item-value-path="value" loading="[[!factoryType]]" error-message="Invalid Input"
-                            required always-float-label='true'></vaadin-combo-box>
+                            required always-float-label='true'>
+                            <template>
+                                <paper-item>
+                                    <paper-item-body style="min-height: 0">
+                                        <div>[[item.name]]</div>
+                                    </paper-item-body>
+                                </paper-item>
+                            </template>
+                        </vaadin-combo-box>
                         <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[persistedFactoryProfile.model]]"
                             items="[[productionModel]]" item-value-path="value" item-label-path="name" loading="[[!productionModel]]"
                             error-message="Invalid Input" selected-item="{{selectProductionModel}}" required always-float-label='true'>
                             <template>
-                                <div readonly>[[item.name]]</div>
+                                <paper-item>
+                                    <paper-item-body style="min-height: 0">
+                                        <div readonly>[[item.name]]</div>
+                                    </paper-item-body>
+                                </paper-item>
                             </template>
                         </vaadin-combo-box>
                         <vaadin-combo-box label="{{localize('station-concurrency')}}" id="concurrency" value="[[persistedFactoryProfile.concurrency]]"
@@ -149,7 +161,11 @@
                             items="[[optimizationType]]" item-value-path="value" item-label-path="name" loading="[[!optimizationType]]"
                             required always-float-label>
                             <template>
-                                <div>{{localize(item.value)}}</div>
+                                <paper-item>
+                                    <paper-item-body style="min-height: 0">
+                                        <div readonly>{{localize(item.value)}}</div>
+                                    </paper-item-body>
+                                </paper-item>
                             </template>
                         </vaadin-combo-box>
                         <paper-input label="{{localize('standard-acceptable-utilization')}} (30-100%)" id="workerUtilize" value="[[persistedFactoryPerformance.au]]"
@@ -361,7 +377,7 @@
                                     "value": "parallel"
                                 },
                                 {
-                                    "name": "Multi-Component",
+                                    "name": "Multi-Component (Very Beta)",
                                     "value": "multi"
                                 }
                             ]
@@ -371,18 +387,9 @@
                         type: Array,
                         value: () => {
                             return [{
-                                    "name": "Job Shop",
-                                    "value": "jobshop"
-                                },
-                                {
-                                    "name": "Flow Shop",
-                                    "value": "flowshop"
-                                },
-                                {
-                                    "name": "Open Shop",
-                                    "value": "openshop"
-                                }
-                            ]
+                                "name": "Job Shop",
+                                "value": "jobshop"
+                            }]
                         }
                     }
                 }
