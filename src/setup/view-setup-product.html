@@ -20,12 +20,18 @@
             }
 
             .btn {
+                margin: 20px 10px 0;
                 width: 250px;
             }
 
             .add-btn {
-                margin: 20px 0;
+                margin: 10px 0 10px;
                 width: 250px;
+            }
+
+
+            .btn-block {
+                width: 100%;
             }
 
             .item {
@@ -118,14 +124,20 @@
                         min="0" max="99999" step="0.01" auto-validate always-float-label></paper-input>
                     <paper-input label="Inventory Code" id="inventoryCode" type="text" required always-float-label></paper-input>
                     <paper-input label="Inventory Require" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
-                    <flat-button on-tap="openBrowseImageFile" class="btn" title="{{localize('remove-profile-image')}}">
+
+                    <flat-button on-tap="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
                         <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
                     </flat-button>
 
-                    <flat-button class="add-btn" on-tap="openAddPartDialog">
+                    <flat-button class="btn" on-tap="openAddPartDialog">
                         <button>{{localize('add-part')}}</button>
                     </flat-button>
+
+                    <flat-button class="btn" on-tap="clearPartFromProduct">
+                        <button>{{localize('clear')}}</button>
+                    </flat-button>
+
                     <div class="frame">
                         <ul class="flex-container wrap">
                             <template is="dom-repeat" items="[[productPart]]" as="part">
@@ -140,7 +152,7 @@
                                                         <template>
                                                             <div tabindex$="[[tabIndex]]" class="item">
                                                                 <p>
-                                                                    <strong>{{localize('process-number)}} [[item.process]]</strong>
+                                                                    <strong>{{localize('process-number')}} [[item.process]]</strong>
                                                                 </p>
                                                                 <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('mins')}}.</p>
                                                                 <p>{{localize('setup-time')}} [[item.setup]] {{localize('mins')}}.</p>
@@ -426,7 +438,7 @@
                                 <paper-item-body three-line style="min-height: 0">
                                     <div style="text-transform: capitalize">{{localize('process-name')}}: [[item.st_name]]</div>
                                     <div secondary>{{localize('process-number')}}: [[item.st_number]]</div>
-                                    <div secondary>[[item.st_machine.length]] Machines</div>
+                                    <div secondary>[[item.st_machine.length]] {{localize('machine')}}</div>
                                 </paper-item-body>
                             </paper-item>
                         </template>
@@ -660,6 +672,10 @@
             removePartFromProduct(e) {
                 let index = e.model.index;
                 this.splice('productPart', index, 1)
+            }
+
+            clearPartFromProduct(e) {
+                this.splice('productPart', 0, this.productPart.length)
             }
 
             // Add Product

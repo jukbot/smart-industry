@@ -115,9 +115,12 @@
                             required always-float-label='true'>
                             <template>
                                 <paper-item>
-                                    <paper-item-body style="min-height: 0">
-                                        <div>[[item.name]]</div>
-                                    </paper-item-body>
+                                    <paper-icon-item style="padding: 0">
+                                        <iron-icon icon="vaadin:factory" slot="item-icon"></iron-icon>
+                                        <paper-item-body style="min-height: 0">
+                                            <div>[[item.name]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
                                 </paper-item>
                             </template>
                         </vaadin-combo-box>
@@ -126,9 +129,12 @@
                             error-message="Invalid Input" selected-item="{{selectProductionModel}}" required always-float-label='true'>
                             <template>
                                 <paper-item>
-                                    <paper-item-body style="min-height: 0">
-                                        <div readonly>[[item.name]]</div>
-                                    </paper-item-body>
+                                    <paper-icon-item style="padding: 0">
+                                        <iron-icon icon="vaadin:[[item.icon]]" slot="item-icon"></iron-icon>
+                                        <paper-item-body style="min-height: 0">
+                                            <div readonly>[[item.name]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
                                 </paper-item>
                             </template>
                         </vaadin-combo-box>
@@ -162,9 +168,12 @@
                             required always-float-label>
                             <template>
                                 <paper-item>
-                                    <paper-item-body style="min-height: 0">
-                                        <div readonly>{{localize(item.value)}}</div>
-                                    </paper-item-body>
+                                    <paper-icon-item style="padding: 0">
+                                        <iron-icon icon="vaadin:[[item.icon]]" slot="item-icon"></iron-icon>
+                                        <paper-item-body style="min-height: 0">
+                                            <div readonly>{{localize(item.value)}}</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
                                 </paper-item>
                             </template>
                         </vaadin-combo-box>
@@ -352,15 +361,18 @@
                         value: () => {
                             return [{
                                     "name": "Increase Profit",
-                                    "value": "increase-profit"
+                                    "value": "increase-profit",
+                                    "icon": "coin-piles"
                                 },
                                 {
                                     "name": "Reduce Cost",
-                                    "value": "reduce-cost"
+                                    "value": "reduce-cost",
+                                    "icon": "piggy-bank-coin"
                                 },
                                 {
                                     "name": "Disabled",
-                                    "value": "disabled"
+                                    "value": "disabled",
+                                    "icon": "close"
                                 }
                             ]
                         }
@@ -370,15 +382,18 @@
                         value: () => {
                             return [{
                                     "name": "Serial",
-                                    "value": "serial"
+                                    "value": "serial",
+                                    "icon": "file-tree-sub"
                                 },
                                 {
                                     "name": "Parallel",
-                                    "value": "parallel"
+                                    "value": "parallel",
+                                    "icon": "file-tree"
                                 },
                                 {
                                     "name": "Multi-Component (Very Beta)",
-                                    "value": "multi"
+                                    "value": "multi",
+                                    "icon": "tree-table"
                                 }
                             ]
                         }

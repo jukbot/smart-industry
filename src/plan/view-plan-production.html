@@ -2,15 +2,15 @@
 <link rel="import" href="/bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-<link rel="import" href="../style/flat-button.html">
 
 <dom-module id="view-plan-production">
     <template>
-        <style include="shared-styles app-grid-style flat-button">
+        <style include="shared-styles app-grid-style">
              :host {
                 margin: 10px;
                 display: block;
                 --app-grid-item-height: 50%;
+                --app-grid-columns: 1;
             }
 
             .btn {
@@ -38,13 +38,10 @@
 
                     </div>
                     <div class="center">
-                        <flat-button class="btn shamrock" on-tap="_triggerSimulator">
-                            <button>Start</button>
-                        </flat-button>
-                        <flat-button class="btn" on-tap="_editSimulator">
-                            <button>Edit Simulator</button>
-                        </flat-button>
-                        <paper-button toggles elevation="0">Toggle-able button</paper-button>
+                        <paper-button class="btn shamrock" on-tap="_triggerSimulator" toggles elevation="0" noink>Start
+                            <iron-icon icon="vaadin:play"></iron-icon>
+                        </paper-button>
+                        <paper-button class="btn" on-tap="_editSimulator" elevation="0" noink>Edit Simulator</paper-button>
                     </div>
                 </div>
             </li>

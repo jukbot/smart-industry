@@ -498,35 +498,46 @@
             _serialSchedule() {
                 let order = this.sortedOrder;
                 if (order.length > 0) {
-                    let concurrent = order.length;
-                    let wip_order = []; // work in process order array
+
+                } else {
+                    alert("No order to reschedule")
+                }
+            }
+
+            _parallelSchedule() {
+                let order = this.sortedOrder;
+                if (order.length > 0) {
+                    // 1) Get concurrent and inital value
+                    let concurrent = this.factoryProfile.concurrency;
+                    let wip_order; // work in process order array
                     let wip_order_part = []
                     let wip_order_process = []
-                    let machine_in_station = [];
+                    let order_quantity_wip = []
 
-                    for (let i = 0; i < concurrent; i++) {
-                        wip_order.push(order.shift()); // shift original order arr of concurrent and push to work in process order arr
+                    // 2) Copy first concurrent orders from sorted order table
+                    let selected_order = order.slice(0, concurrent).concat(order.slice(order.length));
+                    wip_order = selected_order // shift original order arr of concurrent and push to work in process order arr
+                    console.table(wip_order)
+
+                    // Print part dependency
+                    for (let i in wip_order) {
+                        console.table(wip_order[i].order_product_process)
                     }
-                    console.log("wip orders: ")
-                    console.log(wip_order)
+                    wip_order_part = wip_order
+                        .filter(o => o.order_status === 'waiting') // change this to waiting
+                        .map(o => o.order_product_part)
+                    console.table(wip_order_part)
 
                     wip_order_process = wip_order
                         .filter(o => o.order_status === 'waiting') // change this to waiting
                         .map(o => o.order_product_process)
-                    console.log(wip_order_process)
-
-                    wip_order_part = wip_order
-                        .filter(o => o.order_status === 'waiting') // change this to waiting
-                        .map(o => o.order_product_part)
-                    console.log(wip_order_part)
-                    let i;
-
-                    _calculateWaitTime()
-                    //console.log(wip_order_part[0][0].process)
 
                     // Machine in each station
-                    machine_in_station = this.stationItems.map(o => o.st_machine.length);
-                    console.log(machine_in_station);
+                    let machine_in_station = this.stationItems.map(o => o.st_machine.length);
+                    console.table(machine_in_station);
+
+                    // 3. Calculate workload of each part
+                    // 4. 
 
                     // for (let i in wip_order) {
                     //     let jobWorkload = wip_order.map((x) => x * order_quantity[i])
@@ -538,45 +549,10 @@
                         r[a.process].push(a);
                         return r;
                     }, Object.create(null));
+                    // console.log(result);
 
-                    console.log(result);
-
-                } else {
-                    alert("No order to reschedule")
-                }
-            }
-
-            _parallelSchedule() {
-                let order = this.sortedOrder;
-                if (order.length > 0) {
-                    let concurrent = this.factoryProfile.concurrency;
-                    console.log(this.factoryProfile.concurrency)
-                    let wip_order = []; // work in process order array
-                    let wip_order_part = []
-                    let wip_order_process = []
-                    let order_quantity_wip = []
-
-                    for (let i = 0; i < concurrent; i++) {
-                        wip_order.push(order.slice(1)); // shift original order arr of concurrent and push to work in process order arr
-                    }
-                    console.log("wip orders: ")
-                    console.log(wip_order)
-                    for (let i in wip_order) {
-                        console.log(wip_order[i].order_product_process)
-                    }
-                    wip_order_part = wip_order
-                        .filter(o => o.order_status === 'late') // change this to waiting
-                        .map(o => o.order_product_part)
-                    console.log(wip_order_part)
-
-                    wip_order_process = wip_order
-                        .filter(o => o.order_status === 'late') // change this to waiting
-                        .map(o => o.order_product_process)
-
-
-                    // console.log(jobWorkload);
-
-
+                    // thos._addToSchedule(orderDate, orderNo, orderProduct, orderColor, jobPart, jobQuantity, jobMachine,
+                    //jobStatus, jobStation, jobWorkload, startTime, endTime)
                 } else {
                     alert("No order to reschedule")
                 }
@@ -597,13 +573,20 @@
                 }
             }
 
-            _addToSchedule() {
+            _addToSchedule(orderDate, orderNo, orderProduct, orderColor, jobPart, jobQuantity, jobMachine,
+                jobStatus, jobStation, jobWorkload, startTime, endTime) {
                 this.$.scheduleQuery.ref.push({
-                    actual_start: 1506343245,
-                    actual_end: 1508962421,
+                    order_date: orderDate,
+                    order_no: orderNo,
+                    order_product: orderProduct,
+                    order_color: orderColor,
+                    job_part: jobPart,
+                    job_quantity: jobQuantity,
+                    job_machine: jobMachine,
+                    job_workload: jobWorkload,
+                    job_status: "waiting",
                     start: 1508962421,
                     end: 1508962421,
-
                 })
             }
 
