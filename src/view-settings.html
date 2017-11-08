@@ -69,6 +69,7 @@
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-localstorage-document key="notification" data="{{notification}}"></app-localstorage-document>
     <iron-ajax url="../data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="/data/sample/sample-parallel.json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -133,7 +134,7 @@
       <li>
         <div class="card">
           <h1 class="title">{{localize('backup-settings')}}</h1>
-          <p>Export or Import factory data to backup as a file.</p>
+          <p>{{localize('export-or-import-factory-data-to-backup-as-a-file')}}</p>
           <flat-button on-tap="exportData" class="btn" title="{{localize('export-data')}}">
             <button>{{localize('export-data')}}</button>
           </flat-button>
@@ -260,7 +261,8 @@
           pushSupported: Object,
           token: String,
           toastText: String,
-          factoryOrderIndex: Object
+          factoryOrderIndex: Object,
+          sampleData: Object
         }
       }
       static get observers() {
@@ -555,9 +557,21 @@
       }
 
       resetFactoryData() {
-        if (window.confirm('!! WARNNING !! This will restore default data ? Your data will permanently replace.') ===
-          true) {
-
+        if (window.confirm('!! WARNNING !! This will restore default data ? Your data will permanently replace.')) {
+          if (!this.sampleData) {
+            const request = this.$.requestSampleData.generateRequest()
+            request.completes.then((req) => {
+              //console.log(req.response);
+              console.info('%cLoaded sample data status:' + req.status + " " + req.statusText, 'color:green;');
+              this.$.factoryData.ref.child(this.usr.key).set(this.sampleData).catch(error => {
+                console.error(error)
+              })
+            }).catch((rejected) => {
+              let req = rejected.request;
+              let error = rejected.error;
+              console.error("Error requesting data: " + error + " of request " + req);
+            })
+          }
         }
       }
 

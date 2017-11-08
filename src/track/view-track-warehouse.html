@@ -49,7 +49,7 @@
                         <vaadin-grid-column flex="1">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_no">
-                                    <div class="cell">Order No.</div>
+                                    <div class="cell">{{localize('order-number')}}</div>
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
@@ -60,7 +60,7 @@
                         <vaadin-grid-column flex="1">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_status">
-                                    <div class="cell">Color</div>
+                                    <div class="cell">{{localize('color')}}</div>
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
@@ -70,7 +70,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">Customer</div>
+                                <div class="cell">{{localize('customer')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.order_customer]]</div>
@@ -81,7 +81,7 @@
                             <template class="header">
                                 <vaadin-grid-sorter path="order_product_name">
                                     <div class="cell">
-                                        <span>Product</span>
+                                        <span>{{localize('product')}}</span>
                                     </div>
                                 </vaadin-grid-sorter>
                             </template>
@@ -94,7 +94,7 @@
                             <template class="header">
                                 <vaadin-grid-sorter path="order_quantity">
                                     <div class="cell">
-                                        <span>Quantity</span>
+                                        <span>{{localize('quantity')}}</span>
                                     </div>
                                 </vaadin-grid-sorter>
                             </template>
@@ -107,7 +107,7 @@
                             <template class="header">
                                 <vaadin-grid-sorter path="order_quantity">
                                     <div class="cell">
-                                        <span>Defect</span>
+                                        <span>{{localize('defect')}}</span>
                                     </div>
                                 </vaadin-grid-sorter>
                             </template>
@@ -119,7 +119,7 @@
                         <vaadin-grid-column flex-grow="2" flex="1">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_duration">
-                                    <div class="cell">Plan Duration (hr)</div>
+                                    <div class="cell">Plan {{localize('duration')}} ({{localize('hrs')}})</div>
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
@@ -130,7 +130,7 @@
                         <vaadin-grid-column flex-grow="2" flex="1">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_delivery">
-                                    <div class="cell">Actual Duration (hr)</div>
+                                    <div class="cell">Actual {{localize('duration')}} ({{localize('hrs')}})</div>
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
@@ -141,7 +141,7 @@
                         <vaadin-grid-column flex="1">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_delivery">
-                                    <div class="cell">Delivery</div>
+                                    <div class="cell"> {{localize('delivery-date')}}</div>
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
@@ -152,7 +152,7 @@
                         <vaadin-grid-column flex="1">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_status">
-                                    <div class="cell">Status</div>
+                                    <div class="cell">{{localize('status')}}</div>
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
@@ -162,7 +162,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell numeric last">Delete</div>
+                                <div class="cell numeric last">{{localize('delete')}}</div>
                             </template>
                             <template>
                                 <div class="cell numeric last">
@@ -173,7 +173,7 @@
 
                     </vaadin-grid>
                     <flat-button class="btn" on-tap="_refreshWarehouse">
-                        <button>Refresh</button>
+                        <button>{{localize('refresh')}}</button>
                     </flat-button>
                     <paper-toast id="toast" always-on-top horizontal-align="right"></paper-toast>
                 </div>

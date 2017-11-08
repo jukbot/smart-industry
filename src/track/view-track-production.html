@@ -96,8 +96,6 @@
 
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <!-- <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" equal-to="[[selectedStation]]"
-            order-by-child="job_station" data="{{filterScheduleItems}}"></firebase-query> -->
         <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" order-by-child="job_station"
             data="{{scheduleItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_no" data="{{orderItems}}"></firebase-query>
@@ -174,15 +172,15 @@
                                 <p>{{localize('quantity')}}: [[item.job_quantity]]</p>
                                 <p>{{localize('product-part')}}: [[item.order_product]]</p>
                                 <p style$="color:[[item.order_color]]">{{localize('order-number')}}: [[item.order_no]]</p>
-                                <p>Workload: [[item.job_workload]]</p>
-                                <p>Station: [[item.job_station]]</p>
-                                <p>Plan Start: [[timestampUTCToTime(item.start)]]</p>
-                                <p>Plan End: [[timestampUTCToTime(item.end)]]</p>
-                                <p>Actual Start: [[timestampToTime(item.actual_start)]]</p>
-                                <p>Actual End: [[timestampToTime(item.actual_end)]]</p>
-                                <p>Duration: [[getActualDuration(item.actual_start,item.actual_end)]]</p>
-                                <p>Productivity rate: 0 items / hour</p>
-                                <p>Completed: 0 / [[item.job_quantity]]</p>
+                                <p>{{localize('workload')}}: [[item.job_workload]]</p>
+                                <p>{{localize('station')}}: [[item.job_station]]</p>
+                                <p>{{localize('est-start')}}: [[timestampUTCToTime(item.start)]]</p>
+                                <p>{{localize('est-end')}}: [[timestampUTCToTime(item.end)]]</p>
+                                <p>{{localize('actual-start')}}: [[timestampToTime(item.actual_start)]]</p>
+                                <p>{{localize('actual-end')}}: [[timestampToTime(item.actual_end)]]</p>
+                                <p>{{localize('duration')}}: [[getActualDuration(item.actual_start,item.actual_end)]]</p>
+                                <p>Productivity rate: 0 {{localize('item')}} / {{localize('hour')}}</p>
+                                <p>{{localize('done')}}: 0 / [[item.job_quantity]]</p>
                                 <p>{{localize('status')}}:
                                     <span class$="[[getTextStatus(item.job_status)]]" style$="color:[[getColorStatus(item.job_status)]]">[[item.job_status]]</span>
                                 </p>
@@ -210,10 +208,10 @@
                         <div class="machine">
                             <div class="machine-info-group">
                                 <h2 class="title">[[device.name]]</h2>
-                                <p>Type: [[device.type]]</p>
-                                <p>Machine no: [[device.machine]]</p>
+                                <p>{{localize('type')}}: [[device.type]]</p>
+                                <p>{{localize('machine-number')}}: [[device.machine]]</p>
                                 <p>Count: [[device.counter]]</p>
-                                <p>Order no: [[device.order_no]]</p>
+                                <p>{{localize('order-number')}}: [[device.order_no]]</p>
                                 <p>Updated: [[timestampToTime(device.update)]]</p>
                             </div>
                             <paper-toggle-button class="switch" checked="{{device.enable}}" id="deviceControlSwitch" noink> Enabled</paper-toggle-button>
@@ -231,7 +229,7 @@
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-tap="_openAddMachineCard">
+                <flat-button class="big-btn" on-tap="openAddDeviceCard">
                     <button>Add Device</button>
                 </flat-button>
             </div>
@@ -265,14 +263,14 @@
                     </style>
                 </custom-style>
                 <h1 class="center">Done Report</h1>
-                <paper-input label="Defect" id="defectCount" type="number" always-float-label></paper-input>
-                <paper-input label="Good" id="goodCount" type="number" always-float-label></paper-input>
+                <paper-input label="Defect" id="defectCount" value="{{defect}}" type="number" always-float-label></paper-input>
+                <paper-input label="Good" id="goodCount" value="{{good}}" type="number" always-float-label></paper-input>
                 <div class="btn-group">
                     <paper-button dialog-dismiss on-tap="closeFinishDialog">
                         {{localize('dismiss')}}
                     </paper-button>
                     <paper-button dialog-confirm autofocus on-tap="updateFinish">
-                        Done
+                        {{localize('save')}}
                     </paper-button>
                 </div>
             </template>
@@ -313,21 +311,46 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'));
             }
 
-            openFinishDialog(e) {
-                this.$.reportFinishDialog.opened = true;
-                const key = e.currentTarget.job.$key;
-                this.$.scheduleQuery.ref.child(key).update({
-                    actual_end: Math.round(new Date().getTime() / 1000.0),
-                    job_status: 'done'
-                })
+            // Manage job 
+            removeJob(e) {
+                if (window.confirm("Remove this job?") == true) {
+                    const key = e.currentTarget.job.$key;
+                    this.$.scheduleQuery.ref.child(key).remove();
+                }
             }
 
-            updateFinish() {
-                this.$.reportFinishDialog.opened = false;
+            finishJob(e) {
+                this.openFinishDialog(e);
+            }
+
+            // Finish dialog
+            openFinishDialog(e) {
+                this.$.reportFinishDialog.opened = true;
+                this.jobKey = e.currentTarget.job.$key;
             }
 
             closeFinishDialog() {
                 this.$.reportFinishDialog.opened = false;
+            }
+
+            receiveJob(e) {
+                const key = e.currentTarget.job.$key;
+                console.log(e.currentTarget.job.order_no);
+                this.$.scheduleQuery.ref.child(key).update({
+                    actual_start: Math.round(new Date().getTime() / 1000.0),
+                    job_status: 'wip'
+                })
+            }
+
+            updateFinish(e) {
+                this.$.scheduleQuery.ref.child(key).update({
+                    actual_end: Math.round(new Date().getTime() / 1000.0),
+                    job_status: 'done',
+                    job_defect: this.defect,
+                    job_complete: this.good
+                })
+                this.$.reportFinishDialog.opened = false;
+                this.jobKey = '';
             }
 
             getActualDuration(start, end) {
@@ -463,33 +486,6 @@
                 })
             }
 
-            removeDevice(e) {
-                if (window.confirm("Remove this device?") == true) {
-                    const key = e.currentTarget.device.$key;
-                    this.$.deviceQuery.ref.child(key).remove();
-                }
-            }
-
-            receiveJob(e) {
-                const key = e.currentTarget.job.$key;
-                console.log(e.currentTarget.job.order_no);
-                this.$.scheduleQuery.ref.child(key).update({
-                    actual_start: Math.round(new Date().getTime() / 1000.0),
-                    job_status: 'wip'
-                })
-            }
-
-            removeJob(e) {
-                if (window.confirm("Remove this job?") == true) {
-                    const key = e.currentTarget.job.$key;
-                    this.$.scheduleQuery.ref.child(key).remove();
-                }
-            }
-
-            finishJob(e) {
-                this.openFinishDialog(e);
-            }
-
             isDone(status) {
                 if (status === 'done') {
                     return true;
@@ -539,6 +535,19 @@
                     default:
                         return 'normal'
                 }
+            }
+
+
+            // Device management
+            removeDevice(e) {
+                if (window.confirm("Remove this device?") == true) {
+                    const key = e.currentTarget.device.$key;
+                    this.$.deviceQuery.ref.child(key).remove();
+                }
+            }
+
+            openAddDeviceCard() {
+
             }
         }
         customElements.define(ViewTrackProduction.is, ViewTrackProduction);
