@@ -54,96 +54,6 @@
                 }
             }
 
-            vaadin-grid#material {
-
-                font-family: Roboto, sans-serif;
-                --divider-color: rgba(0, 0, 0, var(--dark-divider-opacity));
-
-                --vaadin-grid-cell: {
-                    padding: 0;
-                }
-                ;
-
-                --vaadin-grid-header-cell: {
-                    height: 64px;
-                    color: rgba(0, 0, 0, var(--dark-secondary-opacity));
-                    font-size: 12px;
-                }
-                ;
-
-                --vaadin-grid-body-cell: {
-                    height: 48px;
-                    color: rgba(0, 0, 0, var(--dark-primary-opacity));
-                    font-size: 13px;
-                }
-                ;
-
-                --vaadin-grid-body-row-hover-cell: {
-                    background-color: var(--paper-grey-200);
-                }
-                ;
-
-                --vaadin-grid-body-row-selected-cell: {
-                    background-color: var(--paper-grey-100);
-                }
-                ;
-
-                --vaadin-grid-focused-cell: {
-                    box-shadow: none;
-                    font-weight: bold;
-                }
-                ;
-            }
-
-            vaadin-grid#material .cell {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                padding-right: 56px;
-            }
-
-            vaadin-grid#material .cell.last {
-                padding-right: 24px;
-            }
-
-            vaadin-grid#material .cell.numeric {
-                text-align: right;
-            }
-
-            vaadin-grid#material paper-checkbox {
-                --primary-color: var(--paper-indigo-500);
-                margin: 0 24px;
-            }
-
-            vaadin-grid#material vaadin-grid-sorter {
-                --vaadin-grid-sorter-arrow: {
-                    display: none !important;
-                }
-                ;
-            }
-
-            vaadin-grid#material vaadin-grid-sorter .cell {
-                flex: 1;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            vaadin-grid#material vaadin-grid-sorter iron-icon {
-                transform: scale(0.8);
-            }
-
-            vaadin-grid#material vaadin-grid-sorter:not([direction]) iron-icon {
-                color: rgba(0, 0, 0, var(--dark-disabled-opacity));
-            }
-
-            vaadin-grid#material vaadin-grid-sorter[direction] {
-                color: rgba(0, 0, 0, var(--dark-primary-opacity));
-            }
-
-            vaadin-grid#material vaadin-grid-sorter[direction=desc] iron-icon {
-                transform: scale(0.8) rotate(180deg);
-            }
-
             google-chart {
                 height: auto;
                 width: 100%;
@@ -174,14 +84,14 @@
         <ul class="app-grid">
             <li>
                 <div class="card">
-                    <h1 class="title">{{localize('order-table')}}:</h1>
+                    <h1 class="title">{{localize('order-table')}}</h1>
                     <div class="order-schedule-info">
                         <p>{{localize('next-reschedule')}}: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
                         <p>{{localize('production-model')}}: [[factoryProfile.model]]</p>
                         <p id="concurrency">{{localize('station-concurrency')}} : [[factoryProfile.concurrency]] {{localize('order')}} / {{localize('station')}}</p>
                         <p>Delayed between station: [[factorySchedule.delay]] minutes</p>
                     </div>
-                    <vaadin-grid id="material" items="{{sortedOrder}}" size="100">
+                    <vaadin-grid id="orderTable" items="{{getSortedOrder(orderItems)}}" page-size="20" interacting>
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
@@ -327,7 +237,7 @@
             </li>
             <li>
                 <div class="card">
-                    <h1 class="title">{{localize('scheduling-table')}}:</h1>
+                    <h1 class="title">{{localize('production-scheduling-table')}}</h1>
                     <p>Selected Station: [[selectedStation]]</p>
                     <p>{{localize('station-name')}}:
                         <template is="dom-repeat" items="[[selectedStationData]]" as="stationItem">[[stationItem.st_name]]</template>
@@ -340,7 +250,7 @@
                     <p>Machines quantity:
                         <template is="dom-repeat" items="[[selectedStationData]]" as="stationItem">[[stationItem.st_machine.length]]</template>
                     </p>
-                    <vaadin-grid id="jobSchedulingTable" items="{{scheduleItems}}" size="100">
+                    <vaadin-grid id="jobSchedulingTable" items="{{scheduleItems}}" page-size="20">
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
                                 <div class="cell center">Station</div>
@@ -502,9 +412,12 @@
                         type: Object,
                         notify: true
                     },
+                    orderItems: {
+                        type: Object,
+                        notify: true
+                    },
                     language: String,
                     status: String,
-                    orderItems: Object,
                     factoryPerformance: Object,
                     factoryOperation: Object,
                     factoryProfile: Object,
@@ -527,7 +440,6 @@
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
                 requestAnimationFrame(this._installListeners.bind(this))
-                this.getSortedOrder(this.orderItems)
             }
 
             _installListeners() {
@@ -688,6 +600,7 @@
             }
 
             getSortedOrder(order) {
+                this.$.orderTable.clearCache();
                 console.log('run sort order')
                 // SORT BY EDD THEN BY SPT
                 let sort = order.sort((a, b) => {
@@ -920,6 +833,7 @@
             }
 
             reSchedule() {
+                this.$.orderTable.clearCache();
                 //  window.alert('Note: Orders that are working in process will not able to reschedule.');
                 switch (this.factoryProfile.model) {
                     case "serial":
