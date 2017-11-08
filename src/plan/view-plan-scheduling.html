@@ -407,7 +407,7 @@
 
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
-                                <div class="cell numeric last">{{localize('cacnel')}}</div>
+                                <div class="cell numeric last">{{localize('cancel')}}</div>
                             </template>
                             <template>
                                 <div class="cell numeric last">
@@ -870,19 +870,19 @@
             getOrderStatus(order_status) {
                 switch (order_status) {
                     case 'waiting':
-                        return 'WAITING'
+                        return this.localize('waiting')
                         break;
                     case 'wip':
-                        return 'WIP'
+                        return this.localize('wip')
                         break;
                     case 'done':
-                        return 'DONE'
+                        return this.localize('done')
                         break;
                     case 'late':
-                        return 'LATED'
+                        return this.localize('late')
                         break;
                     case 'cancel':
-                        return 'CANCELED'
+                        return this.localize('cancel')
                         break;
                     default:
                         return 'N/A'
