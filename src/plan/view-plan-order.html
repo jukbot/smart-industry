@@ -159,7 +159,7 @@
                     <vaadin-date-picker class="date-picker" label="{{localize('delivery-date')}}" min="[[todayDate]]" max="2030-01-01" name="delivery"
                         id="deliverySelector" initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input"
                         required always-float-label='true'></vaadin-date-picker>
-                    <flat-button on-tap="printOrderReport" class="btn" title="Print and Add order">
+                    <flat-button on-tap="printOrderReport" class="btn" title="Print order report">
                         <button>{{localize('print-order-report')}}</button>
                     </flat-button>
                     <flat-button on-tap="createOrder" class="shamrock btn" title="Add order">
@@ -295,8 +295,8 @@
 
             ready() {
                 super.ready();
-                this.initialDatePicker();
-                this.setOrderDatePosition();
+                this._initialDatePicker();
+                this._setOrderDatePosition();
             }
 
             connectedCallback() {
@@ -510,7 +510,7 @@
                 return ((number < 10 && number >= 0) ? '0' : '') + number;
             }
 
-            setOrderDatePosition() {
+            _setOrderDatePosition() {
                 const today = new Date();
                 let dd = today.getDate()
                 let mm = today.getMonth() + 1
@@ -525,7 +525,7 @@
             }
 
             // SETUP CALENDAR DATE PICKER FORMAT
-            initialDatePicker() {
+            _initialDatePicker() {
                 Sugar.Date.setLocale('en-GB'); // USE SUGAR LIBRARY TO REF FROM LOCALE DATE FORMAT
                 let datepicker = this.$.deliverySelector;
                 datepicker.addEventListener('value-changed', function () {

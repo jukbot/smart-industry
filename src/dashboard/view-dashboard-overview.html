@@ -72,56 +72,56 @@
       <ul class="app-grid">
         <li>
           <div class="frame">
-            <h1 class="title">Waiting Order</h1>
+            <h1 class="title">{{localize('waiting-order')}}</h1>
             <h1 class="number">[[waitOrderCount]]</h1>
           </div>
         </li>
         <li>
           <div class="frame">
-            <h1 class="title">WIP Order</h1>
+            <h1 class="title">{{localize('wip-order')}}</h1>
             <h1 class="number">[[wipOrderCount]]</h1>
           </div>
         </li>
         <li>
           <div class="frame">
-            <h1 class="title">Order Done</h1>
+            <h1 class="title">{{localize('done-order')}}</h1>
             <h1 class="number">[[doneOrderCount]]</h1>
           </div>
         </li>
 
         <li>
           <div class="frame">
-            <h1 class="title">Average OEE</h1>
+            <h1 class="title">{{localize('average-oee')}}</h1>
             <h1 class="number">[[productionPerformance.oee]] %</h1>
           </div>
         </li>
         <li>
           <div class="frame">
-            <h1 class="title">Running Machines</h1>
+            <h1 class="title">{{localize('working-machines')}}</h1>
             <h1 class="number">[[machineData.length]]</h1>
           </div>
         </li>
         <li>
           <div class="frame">
-            <h1 class="title">Working Stations</h1>
+            <h1 class="title">{{localize('working-stations')}}</h1>
             <h1 class="number">[[stationData.length]]</h1>
           </div>
         </li>
         <li>
           <div class="frame">
-            <h1 class="title">Next Reschedule</h1>
+            <h1 class="title">{{localize('next-reschedule')}}</h1>
             <h1 class="number" style="font-size: 2.75rem;">[[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</h1>
           </div>
         </li>
         <li>
           <div class="frame">
-            <h1 class="title">Reschedule Interval</h1>
+            <h1 class="title">{{localize('reschedule-interval')}}</h1>
             <h1 class="number">[[factorySchedule.interval]]</h1>
           </div>
         </li>
         <li>
           <div class="frame">
-            <h1 class="title">Operation Time Left</h1>
+            <h1 class="title">{{localize('operation-time-left')}}</h1>
             <h1 class="number" style="font-size: 2.75rem;">[[getRemainOpTime(factoryOperation.op_end, factoryOperation.op_start, factoryOperation.op_day)]]</h1>
           </div>
         </li>

@@ -7,7 +7,6 @@
 <link rel="import" href="/bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="/bower_components/paper-item/paper-item.html">
 <link rel="import" href="view-app.html">
-<!-- import style component -->
 <link rel="import" href="style/flat-button.html">s
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-settings">
@@ -85,15 +84,15 @@
               </paper-item>
             </template>
           </vaadin-combo-box>
-          <p>User ID: [[user.uid]]</p>
+          <p>{{localize('user-id')}}: [[user.uid]]</p>
           <!-- <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
             <button>Search Sensor</button>
           </flat-button>
           <flat-button on-tap="showDevice" class="btn" title="Show sensor">
             <button>Show Sensor</button>
           </flat-button> -->
-          <flat-button on-tap="resetOrderCount" class="btn" title="Edit Dashboard">
-            <button>Reset order count</button>
+          <flat-button on-tap="resetOrderCount" class="btn" title="Reset Order Count">
+            <button>{{localize('reset-order-count')}}</button>
           </flat-button>
         </div>
       </li>
@@ -103,7 +102,7 @@
           <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text" always-float-label></paper-input>
           <!-- <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress> -->
           <flat-button on-tap="openBrowseImageFile" class="btn" title="{{localize('upload-profile-image')}}">
-            <button>Upload Profile Image</button>
+            <button>{{localize('change-profile-image')}}</button>
             <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
           </flat-button>
           <flat-button on-tap="deleteProfileImage" class="btn thunderbird" title="{{localize('remove-profile-image')}}">
@@ -148,7 +147,7 @@
       <li>
         <div class="card">
           <h1 class="title">{{localize('notification-settings')}}</h1>
-          <p>Web Notification</p>
+          <p>{{localize('web-notification')}}</p>
           <paper-toggle-button class="switch" value="[[notification]]" on-change="changeNotification" id="webNotificationSwitch" checked="[[token]]"
             noink> {{localize('notification')}}</paper-toggle-button>
           <p>{{localize('email-notifcation')}}</p>
@@ -158,17 +157,17 @@
       <li>
         <div class="card">
           <h1 class="title">{{localize('organization-settings')}}</h1>
-          <p>Organization: [[usr.organization]]</p>
-          <p>Data keychain: [[usr.key]]</p>
-          <p>Role: [[usr.role]]</p>
+          <p>{{localize('organization')}}: [[usr.organization]]</p>
+          <p>{{localize('data-keychain')}}: [[usr.key]]</p>
+          <p>{{localize('user-role')}}: [[usr.role]]</p>
           <flat-button on-tap="openManageKey" class="btn">
-            <button>Manage Keychain</button>
+            <button>{{localize('manage-keychain')}}</button>
           </flat-button>
           <flat-button on-tap="openManageUser" class="btn">
-            <button>Manage User</button>
+            <button>{{localize('manage-user')}}</button>
           </flat-button>
           <flat-button on-tap="resetFactoryData" class="btn thunderbird" title="{{localize('delete-account')}}">
-            <button>Reset Factory Data</button>
+            <button>{{localize('reset-factory-data')}}</button>
           </flat-button>
         </div>
       </li>
@@ -314,7 +313,7 @@
             key: this.newKey
           }).then(() => {
             this.closeKeyDialog();
-            this.toastText = 'Updated key successful'
+            this.toastText = 'notification-save-settings'
             this.$.toastAlert.open()
           }).catch(err => {
             console.error(err.message);
@@ -388,7 +387,7 @@
                 console.error('Upload failed:', error)
               })
           } else {
-            this.toastText = 'Error: Invalid file format'
+            this.toastText = 'notification-error-invalid-file-format'
             this.$.toastAlert.open()
             this.$.uploadImageFile.value = null
           }
@@ -430,7 +429,7 @@
               })
           }
         } else {
-          this.toastText = 'No image file to delete'
+          this.toastText = 'notification-no-image-to-delete'
           this.$.toastAlert.open()
         }
       }
@@ -496,7 +495,7 @@
           if (this._reauthenAccount(currentpassword)) {
             this.user.updatePassword(newPassword)
               .then(() => {
-                this.toastText = 'Updated your password successful, you will need to relogin'
+                this.toastText = 'notification-updated-your-password-successfully'
                 this.$.toastAlert.open()
               })
               .catch(err => {
@@ -511,7 +510,7 @@
         if (newemail !== '') {
           this.user.updateEmail(newemail)
             .then(() => {
-              this.toastText = 'Updated your email successful, you will need to relogin'
+              this.toastText = 'notification-updated-your-email-successfully'
               this.$.toastAlert.open()
             })
             .catch(err => {
@@ -609,7 +608,7 @@
         if (!this.user.emailVerified) {
           this.user.sendEmailVerification()
             .then(() => {
-              this.toastText = 'Verification link has been sent to your email'
+              this.toastText = 'notification-verification-link-has-been-sent-to-your-email'
               this.$.toastAlert.open()
             })
             .catch(err => {
