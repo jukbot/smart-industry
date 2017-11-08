@@ -20,16 +20,17 @@
                 font-size: 1.75rem;
             }
 
-            .clear-btn {
+            .btn {
+                width: 250px;
                 margin: 20px 0 4px 0;
             }
 
-            @media (min-width: 360px) and (max-width: 768px) {
-                h1.title {
-                    font-size: 1.5rem;
-                }
+            google-chart {
+                margin: 0 auto;
+            }
 
-                .clear-btn {
+            @media (min-width: 360px) and (max-width: 768px) {
+                .btn {
                     width: 100%;
                 }
             }
@@ -42,13 +43,11 @@
             <li>
                 <div class="card">
                     <h1 class="title">Performance Tracking</h1>
-                    <h3>Overall equipment effectiveness</h3>
-
-                    <google-chart type="gauge" data='[[getPerformanceValue(productionPerformance.oee)]]' options='[[gaugeOption]]'>
-                    </google-chart>
-                    <flat-button class="clear-btn" on-tap="_refreshStatus">
-                        <button>Referesh</button>
-                    </flat-button>
+                    <div class=>
+                        <h2 class="center">Overall equipment effectiveness</h2>
+                        <google-chart type="gauge" data='[[getPerformanceValue(productionPerformance.oee)]]' options='[[gaugeOption]]'>
+                        </google-chart>
+                    </div>
                     <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
                 </div>
             </li>

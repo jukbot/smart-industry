@@ -227,7 +227,7 @@
                     </vaadin-grid>
                     <div class="center">
                         <flat-button class="btn" on-tap="clearSchedule">
-                            <button>Clear Schedule</button>
+                            <button>Refresh (temp)</button>
                         </flat-button>
                         <flat-button class="btn thunderbird" on-tap="reSchedule">
                             <button>Reschedule</button>
@@ -414,7 +414,7 @@
                     },
                     orderItems: {
                         type: Object,
-                        notify: true
+                        observer: '_refreshOrderTable'
                     },
                     language: String,
                     status: String,
@@ -442,9 +442,17 @@
                 requestAnimationFrame(this._installListeners.bind(this))
             }
 
+            attributeChangedCallback() {
+                super.attributeChangedCallback()
+                this._refreshOrderTable()
+            }
+
             _installListeners() {
-                // listen for custom events on main page
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
+            }
+
+            _refreshOrderTable() {
+                this.$.orderTable.clearCache();
             }
 
             _calculateWaitTime(machine, quantity) {
@@ -549,7 +557,7 @@
                     let order_quantity_wip = []
 
                     for (let i = 0; i < concurrent; i++) {
-                        wip_order.push(order.shift()); // shift original order arr of concurrent and push to work in process order arr
+                        wip_order.push(order.slice(1)); // shift original order arr of concurrent and push to work in process order arr
                     }
                     console.log("wip orders: ")
                     console.log(wip_order)
@@ -824,16 +832,16 @@
             }
 
             clearSchedule() {
-                if (window.confirm(
-                        "Clear all schedule ? The order that are working in process will not be deleted."
-                    ) ==
-                    true) {
-                    this.$.orderQuery.ref.remove();
-                }
+                this.$.orderTable.clearCache();
+                // if (window.confirm(
+                //         "Clear all schedule ? The order that are working in process will not be deleted."
+                //     ) ==
+                //     true) {
+                //     this.$.orderQuery.ref.remove();
+                // }
             }
 
             reSchedule() {
-                this.$.orderTable.clearCache();
                 //  window.alert('Note: Orders that are working in process will not able to reschedule.');
                 switch (this.factoryProfile.model) {
                     case "serial":
@@ -874,7 +882,7 @@
                 if (confirm("Delete this order ?")) {
                     let key = e.currentTarget.order.$key;
                     this.$.orderQuery.ref.child(key).remove();
-                    window.alert("Delete order successfully");
+                    this.$.orderTable.clearCache();
                 }
             }
 

@@ -374,10 +374,10 @@
             getOrderNumber(order) {
                 if (order === 0) {
                     this.orderNumber = 1;
-                    return this.orderNumber
+                    return 1
                 } else {
-                    this.orderNumber = order + 1 // start index is 0 
-                    return this.orderNumber
+                    this.orderNumber = order // start index is 0 
+                    return order
                 }
             }
 
@@ -630,11 +630,20 @@
                         detail: 'Created order no.' + orderNo,
                         type: 'normal'
                     });
+
+                    this._updateOrderIndex(orderNo)
                     window.alert("Added to production schedule successfully");
                     this._clearField();
                 } else {
                     window.alert("Input field cannot be blank, please fill in completely.");
                 }
+            }
+
+            _updateOrderIndex(previous) {
+                this.$.factoryOrderIndex.ref.set({
+                    order_count: previous + 1
+                });
+                this.orderNumber = this.factoryOrderIndex.order_count;
             }
 
         }
