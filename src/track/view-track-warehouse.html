@@ -70,15 +70,6 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <div class="cell">{{localize('customer')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.order_customer]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column flex="1">
-                            <template class="header">
                                 <vaadin-grid-sorter path="order_product_name">
                                     <div class="cell">
                                         <span>{{localize('product')}}</span>
@@ -151,17 +142,6 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <vaadin-grid-sorter path="order_status">
-                                    <div class="cell">{{localize('status')}}</div>
-                                </vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                <div class="cell" style$="color:[[getColorStatus(item.order_status)]]">[[getOrderStatus(item.order_status)]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column flex="1">
-                            <template class="header">
                                 <div class="cell numeric last">{{localize('delete')}}</div>
                             </template>
                             <template>
@@ -223,50 +203,6 @@
                 }
                 let deliveryDate = dd + '/' + mm + '/' + yyyy;
                 return deliveryDate;
-            }
-
-            getOrderStatus(order_status) {
-                switch (order_status) {
-                    case 'waiting':
-                        return 'WAITING'
-                        break;
-                    case 'wip':
-                        return 'WIP'
-                        break;
-                    case 'done':
-                        return 'DONE'
-                        break;
-                    case 'late':
-                        return 'LATED'
-                        break;
-                    case 'cancel':
-                        return 'CANCELED'
-                        break;
-                    default:
-                        return 'N/A'
-                }
-            }
-
-            getColorStatus(order_status) {
-                switch (order_status) {
-                    case 'waiting':
-                        return '#FFB300'
-                        break;
-                    case 'wip':
-                        return '#5E35B1'
-                        break;
-                    case 'done':
-                        return '#7CB342'
-                        break;
-                    case 'late':
-                        return '#E53935'
-                        break;
-                    case 'cancel':
-                        return '#E53935'
-                        break;
-                    default:
-                        return '#202020'
-                }
             }
 
             // CONVERT TIME TO STRING
