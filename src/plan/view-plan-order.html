@@ -131,10 +131,13 @@
                         required allow-custom-value prevent-invalid-input always-float-label='true'>
                         <template>
                             <paper-item>
-                                <paper-item-body two-line style="min-height: 0">
-                                    <div>[[item.name]]</div>
-                                    <div secondary>[[item.email]]</div>
-                                </paper-item-body>
+                                <paper-icon-item style="padding: 0">
+                                    <iron-icon icon="vaadin:user-card" slot="item-icon"></iron-icon>
+                                    <paper-item-body two-line style="min-height: 0">
+                                        <div>[[item.name]]</div>
+                                        <div secondary>[[item.email]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
                             </paper-item>
                         </template>
                     </vaadin-combo-box>
