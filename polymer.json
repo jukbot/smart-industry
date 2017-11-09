@@ -1,9 +1,5 @@
 {
   "builds": [{
-    "browserCapabilities": [
-      "es2015",
-      "push"
-    ],
     "css": {
       "minify": true
     },
@@ -16,14 +12,14 @@
     },
     "name": "default",
     "preset": "es6-unbundled",
-    "swPrecacheConfig": "sw-precache-config.js"
+    "basePath": true
   }],
   "entrypoint": "index.html",
   "extraDependencies": [
     "bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js",
     "bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js",
     "bower_components/webcomponentsjs/*.js",
-    "app.yaml",
+    "server/app.yaml",
     "manifest.json",
     "firebase-messaging-sw.js"
   ],
@@ -55,6 +51,7 @@
     "src/**/*",
     "data/**/*",
     "images/**/*",
-    "lib/*"
+    "lib/**",
+    "bower.json"
   ]
 }
