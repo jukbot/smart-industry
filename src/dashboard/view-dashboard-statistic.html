@@ -64,7 +64,7 @@
      * @extends {Polymer.Element}
      * @appliesMixin Polymer.AppLocalizeBehavior
      */
-    class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
+    class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
       Polymer.Element) {
       static get is() {
         return 'view-dashboard-statistic';
@@ -95,7 +95,7 @@
         this.height = this.$.chartContainer.offsetHeight;
         if (this.width > 0) {
           this.columnOptions = {
-            width: this.width - 40,
+            width: this.width,
             height: this.height,
             chart: {
               title: 'Order Statistic'

@@ -195,7 +195,7 @@
       }
 
       getRemainOpTime(end, start, opday) {
-        if (!end || !start || !opday) return "No operation day";
+        if (!end || !start || !opday) return this.localize('no-operation-day');
         const opdayArr = opday.split(",");
         const date = new Date();
         let dateText;
@@ -232,12 +232,12 @@
         const timeleft = endtime - parseFloat(current);
         if (opday.includes(dateText)) {
           if (parseFloat(current) < starttime || parseFloat(current) > endtime) {
-            return "End of shift";
+            return this.localize('end-of-shift');
           } else {
-            return timeleft.toFixed(2) + " Hrs.";
+            return timeleft.toFixed(2) + " " + this.localize('hrs') + ".";
           }
         } else {
-          return "Day off"
+          return this.localize('day-off')
         }
       }
 

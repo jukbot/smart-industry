@@ -591,7 +591,7 @@
                 const orderProductPart = this.$.productSelector.selectedItem.part;
                 const orderProductProcess = this.$.productSelector.selectedItem.process;
                 const orderProductSKU = this.$.productSelector.selectedItem.sku;
-                const orderQuantity = this.actualQuantity;
+                const orderQuantity = this.getActualQuantity(this.$.orderQuantity.value);
                 const orderDuration = this.orderDuration;
                 const orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
                 const orderColor = this.getRandomColor();

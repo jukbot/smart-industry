@@ -271,7 +271,6 @@
                 this.loadResources(this.resolveUrl('../../data/locales.json'));
             }
 
-            // Manage job 
             removeJob(e) {
                 if (window.confirm("Remove this job?") == true) {
                     const key = e.currentTarget.job.$key;
@@ -283,7 +282,6 @@
                 this.openFinishDialog(e);
             }
 
-            // Finish dialog
             openFinishDialog(e) {
                 this.$.reportFinishDialog.opened = true;
                 this.selectedJob = e.currentTarget.job;
@@ -392,33 +390,30 @@
                     }
                     console.table(warehouse_order);
                     this.addToWarehouse(warehouse_order);
-                    var seen = new Map()
-                    warehouse_order = warehouse_order.filter((entry) => {
-                        let previous;
-                        // Have we seen this label before?
-                        if (seen.hasOwnProperty(entry.order_no)) {
-                            // Yes, grab it and add this data to it
-                            previous = seen[entry.order_no];
-                            previous.warehouse_order.push(entry.warehouse_order);
-                            // Don't keep this entry, we've merged it into the previous one
-                            return false;
-                        }
-                        // entry.data probably isn't an array; make it one for consistency
-                        if (!Array.isArray(entry.warehouse_order)) {
-                            entry.warehouse_order = [entry.warehouse_order];
-                        }
-                        // Remember that we've seen it
-                        seen[entry.order_no] = entry;
-                        // Keep this one, we'll merge any others that match into it
-                        return true;
-                    });
-                    console.table(warehouse_order);
+                    let groupOrder = this.groupByKey(warehouseItems, x => x.order_no);
+
+                    console.table(grouped.get("1"));
                     let doneOrderNo = warehouse_order.map(o => o.order_no);
-                    for (let j = 0; j < doneOrderNo.length; j++) {
-                        this.updateOrderTable(doneOrderNo[j]);
-                    }
+                    console.log(doneOrderNo)
+                    // for (let j = 0; j < doneOrderNo.length; j++) {
+                    //      this.updateOrderTable(doneOrderNo[j]);
+                    // }
 
                 }
+            }
+
+            groupByKey(list, keyGetter) {
+                const map = new Map();
+                list.forEach((item) => {
+                    const key = keyGetter(item);
+                    const collection = map.get(key);
+                    if (!collection) {
+                        map.set(key, [item]);
+                    } else {
+                        collection.push(item);
+                    }
+                });
+                return map;
             }
 
             updateOrderTable(orderNo) {
@@ -433,12 +428,6 @@
             }
 
             addToWarehouse(data) {
-                // const query = this.$.orderQuery.ref;
-                // query.orderByChild("order_number").equalTo("wip").on("value", (snapshot) => {
-                //     if (snapshot.val())
-                //         this.set('order_status', 'done');
-                //     console.log(snapshot.val())
-                // });
                 if (data) {
                     delete data.warehouse_order
                     console.log(data)
@@ -529,8 +518,6 @@
                         return 'normal'
                 }
             }
-
-
             // Device management
             removeDevice(e) {
                 if (window.confirm("Remove this device?") == true) {

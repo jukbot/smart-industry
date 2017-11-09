@@ -44,7 +44,7 @@
                 <div class="card">
                     <h1 class="title">Performance Tracking</h1>
                     <div class=>
-                        <h2 class="center">Overall equipment effectiveness</h2>
+                        <h2 class="center">{{localize('overall-equipment-effectiveness')}}</h2>
                         <google-chart type="gauge" data='[[getPerformanceValue(productionPerformance.oee)]]' options='[[gaugeOption]]'>
                         </google-chart>
                     </div>
@@ -86,7 +86,7 @@
                                 yellowTo: 15,
                                 greenFrom: 90,
                                 greenTo: 100,
-                                minorTicks: 1
+                                minorTicks: 5
                             }
                         }
                     }

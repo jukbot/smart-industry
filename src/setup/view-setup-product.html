@@ -95,6 +95,10 @@
                 flex: 1;
             }
 
+            .part-block {
+                margin: 20px 0 0 0;
+            }
+
             vaadin-grid#productTable {
                 height: 700px;
 
@@ -138,7 +142,7 @@
                         <button>{{localize('clear')}}</button>
                     </flat-button>
 
-                    <div class="frame">
+                    <div class="frame part-block">
                         <ul class="flex-container wrap">
                             <template is="dom-repeat" items="[[productPart]]" as="part">
                                 <li class="flex-item">
@@ -421,10 +425,10 @@
                         }
                     </style>
                 </custom-style>
-                <h1 class="title center">Add Product Part</h1>
+                <h1 class="title center">{{localize('add')}} {{localize('product-part')}}</h1>
                 <div class="block-group">
-                    <paper-input label="Part Name" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
-                    <paper-input label="Part SKU" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
+                    <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
+                    <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
                 </div>
                 <div class="block-group">
                     <!-- Add Process -->
@@ -695,7 +699,7 @@
                 productPart = productPart.splice(-1);
 
                 if (productName && productSKU && productPart && processDependency) {
-                    if (this.$.uploadImageFile.files.length > 0) {
+                    if (this.imageURL) {
                         this._debouncer = Polymer.Debouncer.debounce(this._debouncer,
                             Polymer.Async.timeOut.after(5000), () => {
                                 imageURL = this.imageURL;

@@ -254,7 +254,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="50px">
+                        <vaadin-grid-column flex="1">
                             <template class="header">
                                 <div class="cell last">{{localize('edit')}}</div>
                             </template>
@@ -265,7 +265,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="50px">
+                        <vaadin-grid-column flex="1">
                             <template class="header">
                                 <div class="cell numeric last">{{localize('cancel')}}</div>
                             </template>
@@ -616,7 +616,6 @@
                         type: 'normal'
                     });
                     this.dismissEditOrder()
-                    this._clearField()
                     this._refreshOrderTable()
                 } else {
                     window.alert("Input field cannot be blank, please fill in completely.");
@@ -709,7 +708,7 @@
                 if (order.length > 0) {
 
                 } else {
-                    alert("No order to reschedule")
+                    window.alert("No order to reschedule")
                 }
             }
 
@@ -718,31 +717,27 @@
                 if (order.length > 0) {
                     // 1) Get concurrent and initial value
                     let concurrent = this.factoryProfile.concurrency;
-                    let wip_order; // work in process order array
-                    let wip_order_part = []
-                    let wip_order_process = []
-                    let order_quantity_wip = []
+                    let wip_order_part = [];
+                    let wip_order_dependency = []
 
                     // 2) Copy first concurrent orders from sorted order table
                     let selected_order = order.slice(0, concurrent).concat(order.slice(order.length));
-                    wip_order = selected_order // shift original order arr of concurrent and push into work in process order arr
+                    let wip_order = selected_order // shift original order arr of concurrent and push into work in process order arr
                     console.table(wip_order)
 
-                    // Print part dependency
-                    for (let i in wip_order) {
-                        console.table(wip_order[i].order_product_process)
-                    }
                     wip_order_part = wip_order
-                        .filter(o => o.order_status === 'waiting') // change this to waiting
+                        .filter(o => o.order_status !== 'done') // change this to waiting
                         .map(o => o.order_product_part)
                     console.table(wip_order_part)
 
-                    wip_order_process = wip_order
-                        .filter(o => o.order_status === 'waiting') // change this to waiting
-                        .map(o => o.order_product_process)
+                    // wip_order_dependency = wip_order
+                    //     .filter(o => o.order_status !== 'done') // change this to waiting
+                    //     .map(o => o.order_product_dependency)
+                    // console.table(wip_order_dependency)
 
                     // Machine in each station
                     let machine_in_station = this.stationItems.map(o => o.st_machine.length);
+                    console.info("machine in each station")
                     console.table(machine_in_station);
 
                     // 3. Calculate workload of sum of each process and each part
@@ -751,6 +746,12 @@
 
                     // for (let i in wip_order) {
                     //     let jobWorkload = wip_order.map((x) => x * order_quantity[i])
+                    // }
+
+
+                    // Print part dependency
+                    // for (let i in wip_order) {
+                    //     console.table(wip_order[i].order_product_process)
                     // }
 
                     // Group order by stations
@@ -764,14 +765,14 @@
                     // thos._addToSchedule(orderDate, orderNo, orderProduct, orderColor, jobPart, jobQuantity, jobMachine,
                     //jobStatus, jobStation, jobWorkload, startTime, endTime)
                 } else {
-                    alert("No order to reschedule")
+                    window.alert("No order to reschedule")
                 }
             }
 
             _multiSchedule() {
                 let order = this.sortedOrder;
                 if (order.length > 0) {} else {
-                    alert("No order to reschedule")
+                    window.alert("No order to reschedule")
                 }
             }
 
@@ -921,28 +922,16 @@
                 const remain = Math.round((delivery_date - current_date) / 86400);
 
                 if (remain < 0 && status !== 'done' && status !== 'wip') {
-                    this.setLateOrder(key);
+                    this.setOrderStatus(key, 'late');
                     return 0;
                 } else if (remain < 0 && (status === 'done' || status === 'wip' || status === 'late')) {
                     return 0;
+                } else if (remain >= 0 && status === 'late') {
+                    this.setOrderStatus(key, 'waiting');
+                    return remain;
                 } else {
                     return remain;
                 }
-            }
-
-            setLateOrder(key) {
-                this.$.orderQuery.ref.child(key).update({
-                    order_status: 'late'
-                });
-            }
-
-            setNotification(detail, type) {
-                const timestamp = Math.round(Date.now() / 1000.0);
-                this.$.notificationQuery.ref.push({
-                    created: timestamp,
-                    detail: detail,
-                    type: type
-                });
             }
 
             getDeliveryDate(timestamp) {
@@ -1010,6 +999,21 @@
                 return this.timestampToTime(end_timestamp)
             }
 
+            setOrderStatus(key, status) {
+                this.$.orderQuery.ref.child(key).update({
+                    order_status: status
+                });
+            }
+
+            setNotification(detail, type) {
+                const timestamp = Math.round(Date.now() / 1000.0);
+                this.$.notificationQuery.ref.push({
+                    created: timestamp,
+                    detail: detail,
+                    type: type
+                });
+            }
+
             timestampToTime(timestamp) {
                 let date = new Date((timestamp - 25200) * 1000);
                 // Hours part from the timestamp
@@ -1024,13 +1028,12 @@
             }
 
             clearSchedule() {
-                this.$.orderTable.clearCache();
-                // if (window.confirm(
-                //         "Clear all schedule ? The order that are working in process will not be deleted."
-                //     ) ==
-                //     true) {
-                //     this.$.orderQuery.ref.remove();
-                // }
+                if (window.confirm(
+                        "Clear all schedule ? The order that are working in process will not be deleted."
+                    ) ==
+                    true) {
+                    this.$.orderQuery.ref.remove();
+                }
             }
 
             reSchedule() {
