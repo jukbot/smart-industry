@@ -7,18 +7,43 @@
     "data": {
       "$id": {
         "orderData": {
-          "$order_id:": {
+          "$key": {
             ".indexOn": [
               "order_status"
             ]
           }
+        },
+        "scheduleData": {
+          "$key": {
+            ".indexOn": [
+              "job_station"
+            ]
+          }
+        },
+        "factoryData": {
+          "product": {
+            "$key": {
+              ".indexOn": [
+                "sku"
+              ]
+            }
+          },
+          "station": {
+            "$key": {
+              ".indexOn": [
+                "st_number"
+              ]
+            }
+          },
+          "machine": {
+            "$key": {
+              ".indexOn": [
+                "number"
+              ]
+            }
+          }
         }
       }
-    },
-    "product": {
-      ".indexOn": [
-        "sku"
-      ]
     }
   }
 }

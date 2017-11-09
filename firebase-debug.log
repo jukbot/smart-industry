@@ -1,0 +1,97 @@
+[debug] [2017-11-09T21:41:02.559Z] ----------------------------------------------------------------------
+[debug] [2017-11-09T21:41:02.561Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2017-11-09T21:41:02.561Z] CLI Version:   3.14.0
+[debug] [2017-11-09T21:41:02.561Z] Platform:      darwin
+[debug] [2017-11-09T21:41:02.561Z] Node Version:  v8.7.0
+[debug] [2017-11-09T21:41:02.562Z] Time:          Fri Nov 10 2017 04:41:02 GMT+0700 (+07)
+[debug] [2017-11-09T21:41:02.562Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-11-09T21:41:02.585Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-11-09T21:41:02.585Z] > authorizing via signed-in user
+[debug] [2017-11-09T21:41:02.588Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/smart-mes  
+ Fri Nov 10 2017 04:41:02 GMT+0700 (+07)
+[debug] [2017-11-09T21:41:04.182Z] <<< HTTP RESPONSE 200
+[debug] [2017-11-09T21:41:04.183Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/smart-mes/tokens  
+ Fri Nov 10 2017 04:41:04 GMT+0700 (+07)
+[debug] [2017-11-09T21:41:05.526Z] <<< HTTP RESPONSE 200
+[info] 3
+[info] 
+[info] === Deploying to 'smart-mes'...
+[info] 
+[info] i  deploying database, functions, hosting
+[info] i  database: checking rules syntax...
+[debug] [2017-11-09T21:41:08.297Z] >>> HTTP REQUEST PUT https://smart-mes.firebaseio.com/.settings/rules.json?dryRun=true // These rules require authentication
+{
+  "rules": {
+    //".read" : true,
+    ".read": "auth != null  || root.child('user').child(auth.uid).child('role').val() == 'admin'",
+    ".write": "auth != null || root.child('user').child(auth.uid).child('role').val() == 'admin'",
+    "data": {
+      "$id": {
+        "orderData": {
+          "$key": {
+            ".indexOn": [
+              "order_status"
+            ]
+          }
+        },
+        "scheduleData": {
+          "$key": {
+            ".indexOn": [
+              "job_station"
+            ]
+          }
+        },
+        "factoryData": {
+          "product": {
+            "$key": {
+              ".indexOn": [
+                "sku"
+              ]
+            }
+          },
+          "station": {
+            "$key": {
+              ".indexOn": [
+                "st_number"
+              ]
+            }
+          },
+          "machine": {
+            "$key": {
+              ".indexOn": [
+                "number"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+} 
+ Fri Nov 10 2017 04:41:08 GMT+0700 (+07)
+[debug] [2017-11-09T21:41:09.826Z] <<< HTTP RESPONSE 200
+[info] ✔  database: rules syntax is valid
+[debug] [2017-11-09T21:41:09.830Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "dependencies": {
+    "firebase-admin": "~5.4.1",
+    "firebase-functions": "^0.7.0"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[info] i  runtimeconfig: ensuring necessary APIs are enabled...
+[debug] [2017-11-09T21:41:09.832Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/smart-mes?view=CONSUMER_VIEW  
+ Fri Nov 10 2017 04:41:09 GMT+0700 (+07)
+[debug] [2017-11-09T21:41:09.833Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/smart-mes?view=CONSUMER_VIEW  
+ Fri Nov 10 2017 04:41:09 GMT+0700 (+07)
+[debug] [2017-11-09T21:41:11.675Z] <<< HTTP RESPONSE 200
+[info] ✔  runtimeconfig: all necessary APIs are enabled
+[debug] [2017-11-09T21:41:11.677Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] [2017-11-09T21:41:11.678Z] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/smart-mes  
+ Fri Nov 10 2017 04:41:11 GMT+0700 (+07)
+[debug] [2017-11-09T21:41:11.679Z] >>> HTTP REQUEST GET https://apikeys.googleapis.com/v1/projects/smart-mes/apiKeys  
+ Fri Nov 10 2017 04:41:11 GMT+0700 (+07)
