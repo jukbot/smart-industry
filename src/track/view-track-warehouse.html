@@ -29,14 +29,14 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/warehouseData" data="{{doneItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="warehouseQuery" path="/data/[[k.key]]/warehouseData" data="{{warehouseItems}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
                 <div class="card">
                     <h1 class="title">Completed Product Warehouse</h1>
 
-                    <vaadin-grid id="material" items="[[doneItems]]" size="100">
+                    <vaadin-grid id="warehouseTable" items="[[warehouseItems]]" size="100">
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
@@ -152,13 +152,10 @@
                         </vaadin-grid-column>
 
                     </vaadin-grid>
-                    <flat-button class="btn" on-tap="_refreshWarehouse">
-                        <button>{{localize('refresh')}}</button>
-                    </flat-button>
-                    <paper-toast id="toast" always-on-top horizontal-align="right"></paper-toast>
                 </div>
             </li>
         </ul>
+        <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
         /**
@@ -177,7 +174,8 @@
                 return {
                     language: String,
                     orderHistoryData: Object,
-                    doneItems: Object
+                    warehouseItems: Object,
+                    toastText: String,
                 }
             }
             connectedCallback() {
@@ -221,8 +219,14 @@
                 return ((number < 10 && number >= 0) ? '0' : '') + number
             }
 
-            deleteWarehouseItem(e) {
-
+            deleteItem(e) {
+                if (confirm("Delete this item ?")) {
+                    let key = e.currentTarget.order.$key;
+                    this.$.warehouseQuery.ref.child(key).remove();
+                    this.$.warehouseTable.clearCache();
+                    this.toastText = 'notification-delete-successfully'
+                    this.$.toastAlert.open()
+                }
             }
         }
         customElements.define(ViewTrackWarehouse.is, ViewTrackWarehouse);
