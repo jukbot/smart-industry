@@ -1,28 +1,23 @@
 {
   "builds": [{
-      "browserCapabilities": [
-        "es2015",
-        "push"
-      ],
-      "css": {
-        "minify": true
-      },
-      "html": {
-        "minify": true
-      },
-      "js": {
-        "compile": false,
-        "minify": false
-      },
-      "name": "default",
-      "preset": "es6-unbundled",
-      "swPrecacheConfig": "sw-precache-config.js"
+    "browserCapabilities": [
+      "es2015",
+      "push"
+    ],
+    "css": {
+      "minify": true
     },
-    {
-      "name": "fallback",
-      "preset": "es5-bundled"
-    }
-  ],
+    "html": {
+      "minify": true
+    },
+    "js": {
+      "compile": false,
+      "minify": false
+    },
+    "name": "default",
+    "preset": "es6-unbundled",
+    "swPrecacheConfig": "sw-precache-config.js"
+  }],
   "entrypoint": "index.html",
   "extraDependencies": [
     "bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js",
