@@ -227,7 +227,6 @@
         this.removeAttribute('unresolved')
         Polymer.RenderStatus.afterNextRender(this, () => {
           this._activateFetch()
-          this._activatePushNotification()
         })
       }
       _installListeners() {
@@ -382,14 +381,6 @@
           console.warn('Fetch is not support by your browser.')
         }
       }
-      _activatePushNotification() {
-        if ('PushManager' in window) {
-          document.body.classList.add('push-enabled')
-        } else {
-          // Browser not support push notification
-          console.warn('Push notification is not support by your browser.')
-        }
-      }
       _signedInChanged(isSignedIn) {
         Polymer.RenderStatus.afterNextRender(this, function () {
           // If singed in but at login page
@@ -398,7 +389,7 @@
             this.set('route.path', '/app/dashboard')
           }
           // If not sign in but not at term page
-          else if (isSignedIn && this.route.path !== '/term') {
+          else if (!isSignedIn && this.route.path !== '/term') {
             this.page = 'login'
             this.set('route.path', '/login')
           }
