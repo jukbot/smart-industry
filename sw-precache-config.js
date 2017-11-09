@@ -14,7 +14,11 @@ module.exports = {
   staticFileGlobs: [
     "/index.html",
     "/manifest.json",
-    "/bower_components/webcomponentsjs/webcomponents-loader.js"
+    "/src/**/*",
+    "/images/**/*",
+    "/data/**/*",
+    "/bower_components/webcomponentsjs/*.js",
+    "/bower_components/app-storage/app-indexeddb-mirror/*.js"
   ],
   runtimeCaching: [
     {
@@ -47,6 +51,7 @@ module.exports = {
       }
     }
   ],
+  ignoreUrlParametersMatching: [/^https:\/\/smart-mes\.firebaseapp\.com/],
   navigateFallback: "/index.html",
   navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/]
 };
