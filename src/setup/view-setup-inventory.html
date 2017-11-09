@@ -27,7 +27,7 @@
         <firebase-document app-name="smart-mes" id="editInventoryQuery" path="/data/[[k.key]]/factoryData/inventory/[[editKey]]"
             data="{{editInventoryItems}}"></firebase-document>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-        <app-indexeddb-mirror id="inventoryIndexDB" key="inventory-data" data="{{inventoryData}}" persisted-data="{{persistedInventoryData}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror session="[[user.uid]]" id="inventoryIndexDB" key="inventory-data" data="{{inventoryData}}" persisted-data="{{persistedInventoryData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
                 <div class="card" hidden="[[!showAddInventory]]">

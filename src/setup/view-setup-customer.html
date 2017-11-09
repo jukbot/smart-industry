@@ -34,7 +34,7 @@
         <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerData}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="editCustomerQuery" path="/data/[[k.key]]/customerData/[[editKey]]" data="{{editCustomerItems}}"></firebase-document>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-        <app-indexeddb-mirror id="customerIndexDB" key="customer-data" data="{{customerData}}" persisted-data="{{persistedCustomerData}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror session="[[user.uid]]" id="customerIndexDB" key="customer-data" data="{{customerData}}" persisted-data="{{persistedCustomerData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
                 <div class="card" hidden="[[!showAddCustomer]]">

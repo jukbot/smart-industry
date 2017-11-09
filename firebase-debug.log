@@ -1,0 +1,81 @@
+[debug] [2017-11-09T17:54:02.569Z] ----------------------------------------------------------------------
+[debug] [2017-11-09T17:54:02.570Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2017-11-09T17:54:02.571Z] CLI Version:   3.14.0
+[debug] [2017-11-09T17:54:02.571Z] Platform:      darwin
+[debug] [2017-11-09T17:54:02.571Z] Node Version:  v8.7.0
+[debug] [2017-11-09T17:54:02.571Z] Time:          Fri Nov 10 2017 00:54:02 GMT+0700 (+07)
+[debug] [2017-11-09T17:54:02.571Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-11-09T17:54:02.583Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-11-09T17:54:02.583Z] > authorizing via signed-in user
+[debug] [2017-11-09T17:54:02.585Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/smart-mes  
+ Fri Nov 10 2017 00:54:02 GMT+0700 (+07)
+[debug] [2017-11-09T17:54:03.995Z] <<< HTTP RESPONSE 200
+[debug] [2017-11-09T17:54:03.996Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/smart-mes/tokens  
+ Fri Nov 10 2017 00:54:03 GMT+0700 (+07)
+[debug] [2017-11-09T17:54:05.372Z] <<< HTTP RESPONSE 200
+[info] 3
+[info] 
+[info] === Deploying to 'smart-mes'...
+[info] 
+[info] i  deploying database, functions, hosting
+[info] i  database: checking rules syntax...
+[debug] [2017-11-09T17:54:08.144Z] >>> HTTP REQUEST PUT https://smart-mes.firebaseio.com/.settings/rules.json?dryRun=true // These rules require authentication
+{
+  "rules": {
+    //".read" : true,
+    ".read": "auth != null  || root.child('user').child(auth.uid).child('role').val() == 'admin'",
+    ".write": "auth != null || root.child('user').child(auth.uid).child('role').val() == 'admin'",
+    "data": {
+      "$id": {
+        "orderData": {
+          "$order_id:": {
+            ".indexOn": [
+              "order_status"
+            ]
+          }
+        }
+      }
+    },
+    "product": {
+      ".indexOn": [
+        "sku"
+      ]
+    }
+  }
+} 
+ Fri Nov 10 2017 00:54:08 GMT+0700 (+07)
+[debug] [2017-11-09T17:54:09.365Z] <<< HTTP RESPONSE 200
+[info] ✔  database: rules syntax is valid
+[debug] [2017-11-09T17:54:09.369Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "dependencies": {
+    "firebase-admin": "~5.4.1",
+    "firebase-functions": "^0.7.0"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[info] i  runtimeconfig: ensuring necessary APIs are enabled...
+[debug] [2017-11-09T17:54:09.372Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/smart-mes?view=CONSUMER_VIEW  
+ Fri Nov 10 2017 00:54:09 GMT+0700 (+07)
+[debug] [2017-11-09T17:54:09.373Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/smart-mes?view=CONSUMER_VIEW  
+ Fri Nov 10 2017 00:54:09 GMT+0700 (+07)
+[debug] [2017-11-09T17:54:10.956Z] <<< HTTP RESPONSE 200
+[info] ✔  runtimeconfig: all necessary APIs are enabled
+[debug] [2017-11-09T17:54:10.962Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] [2017-11-09T17:54:10.964Z] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/smart-mes  
+ Fri Nov 10 2017 00:54:10 GMT+0700 (+07)
+[debug] [2017-11-09T17:54:10.965Z] >>> HTTP REQUEST GET https://apikeys.googleapis.com/v1/projects/smart-mes/apiKeys  
+ Fri Nov 10 2017 00:54:10 GMT+0700 (+07)
+[debug] [2017-11-09T17:54:12.349Z] <<< HTTP RESPONSE 200
+[debug] [2017-11-09T17:54:12.745Z] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] [2017-11-09T17:54:23.214Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/smart-mes/configs  
+ Fri Nov 10 2017 00:54:23 GMT+0700 (+07)
+[debug] [2017-11-09T17:54:23.716Z] <<< HTTP RESPONSE 200
+[info] i  hosting: preparing build/default directory for upload...
+[debug] [2017-11-09T17:54:24.323Z] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/smart-mes/uploads/-KyWujjBH7Z8ruVPh-Lp?fileCount=322&message=  
+ Fri Nov 10 2017 00:54:24 GMT+0700 (+07)

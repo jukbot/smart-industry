@@ -98,10 +98,14 @@
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
-        <app-indexeddb-mirror id="factoryProfileIndexDB" key="factory-profile-data" data="{{factoryProfile}}" persisted-data="{{persistedFactoryProfile}}"></app-indexeddb-mirror>
-        <app-indexeddb-mirror id="factoryOperationIndexDB" key="factory-operation-data" data="{{factoryOperation}}" persisted-data="{{persistedFactoryOperation}}"></app-indexeddb-mirror>
-        <app-indexeddb-mirror id="factoryPerformanceIndexDB" key="factory-performance-data" data="{{factoryPerformance}}" persisted-data="{{persistedFactoryPerformance}}"></app-indexeddb-mirror>
-        <app-indexeddb-mirror id="factoryScheduleIndexDB" key="factory-schedule-data" data="{{factorySchedule}}" persisted-data="{{persistedFactorySchedule}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror session="[[user.uid]]" id="factoryProfileIndexDB" key="factory-profile-data" data="{{factoryProfile}}"
+            persisted-data="{{persistedFactoryProfile}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror session="[[user.uid]]" id="factoryOperationIndexDB" key="factory-operation-data" data="{{factoryOperation}}"
+            persisted-data="{{persistedFactoryOperation}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror session="[[user.uid]]" id="factoryPerformanceIndexDB" key="factory-performance-data" data="{{factoryPerformance}}"
+            persisted-data="{{persistedFactoryPerformance}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror session="[[user.uid]]" id="factoryScheduleIndexDB" key="factory-schedule-data" data="{{factorySchedule}}"
+            persisted-data="{{persistedFactorySchedule}}"></app-indexeddb-mirror>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>

@@ -110,7 +110,7 @@
         <li>
           <div class="frame">
             <h1 class="title">{{localize('next-reschedule')}}</h1>
-            <h1 class="number" style="font-size: 2.75rem;">[[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</h1>
+            <h1 class="number" style="font-size: 2.75rem;">[[nextInterval]]</h1>
           </div>
         </li>
         <li>
@@ -122,7 +122,7 @@
         <li>
           <div class="frame">
             <h1 class="title">{{localize('operation-time-left')}}</h1>
-            <h1 class="number" style="font-size: 2.75rem;">[[getRemainOpTime(factoryOperation.op_end, factoryOperation.op_start, factoryOperation.op_day)]]</h1>
+            <h1 class="number" style="font-size: 2.75rem;">[[remainOpTime]]</h1>
           </div>
         </li>
       </ul>
@@ -153,7 +153,9 @@
           productionPerformance: Object,
           waitOrderCount: Number,
           doneOrderCount: Number,
-          wipOrderCount: Number
+          wipOrderCount: Number,
+          remainOpTime: String,
+          nextInterval: String
         }
       }
 
@@ -161,7 +163,9 @@
         return [
           'getWaitOrder(orderData)',
           'getDoneOrder(orderData)',
-          'getWIPOrder(orderData)'
+          'getWIPOrder(orderData)',
+          'getRemainOpTime(factoryOperation.op_end, factoryOperation.op_start, factoryOperation.op_day)',
+          'getNextInterval(factorySchedule.start_interval, factorySchedule.interval)'
         ]
       }
 
@@ -188,7 +192,7 @@
             mm = '0' + mm
           }
           let nextInterval = dd + '/' + mm + '/' + yyyy;
-          return nextInterval;
+          this.nextInterval = nextInterval;
         } else {
           this.set('factorySchedule.start_interval', current);
         }
@@ -232,12 +236,12 @@
         const timeleft = endtime - parseFloat(current);
         if (opday.includes(dateText)) {
           if (parseFloat(current) < starttime || parseFloat(current) > endtime) {
-            return this.localize('end-of-shift');
+            this.remainOpTime = this.localize('end-of-shift');
           } else {
-            return timeleft.toFixed(2) + " " + this.localize('hrs') + ".";
+            this.remainOpTime = timeleft.toFixed(2) + " " + this.localize('hrs') + ".";
           }
         } else {
-          return this.localize('day-off')
+          this.remainOpTime = this.localize('day-off')
         }
       }
 

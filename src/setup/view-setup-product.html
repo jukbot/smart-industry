@@ -117,7 +117,7 @@
             download-url="{{downloadUrl}}">
         </firebase-storage-ref> -->
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-        <app-indexeddb-mirror key="product-data" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
+        <app-indexeddb-mirror session="[[user.uid]]" key="product-data" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
                 <div class="card" hidden="[[showAddProduct]]">
