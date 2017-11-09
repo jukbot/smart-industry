@@ -1,7 +1,9 @@
-runtime: python27
-api_version: 1
+service: default
+runtime: go
+api_version: go1.8
 threadsafe: yes
-
+instance_class: F1
+  
 handlers:
 - url: /bower_components
   static_dir: build/default/bower_components
@@ -23,17 +25,37 @@ handlers:
   static_dir: build/default/src
   secure: always
 
+- url: /manifest.json
+  static_files: /build/default/manifest.json
+  upload: build/default/manifest.json
+  secure: always
+
 - url: /service-worker.js
   static_files: build/default/service-worker.js
   upload: build/default/service-worker.js
   secure: always
+  http_headers:
+    Cache-Control: "private, max-age=0, must-revalidate"
+    Service-Worker-Allowed: "/"
 
-- url: /manifest.json
-  static_files: build/default/manifest.json
-  upload: build/default/manifest.json
+- url: /build/default/
+  static_dir: /build/default/
+  application_readable: true
+  secure: always
+  http_headers:
+    Cache-Control: "public, max-age=31536000, immutable"
+
+- url: /build/
+  static_dir: /build/
+  application_readable: true
+  secure: always
+  http_headers:
+    Cache-Control: "public, max-age=31536000, immutable"
+
+- url: /build/default/index.html
+  script: _go_app
   secure: always
 
 - url: /.*
-  static_files: build/default/index.html
-  upload: build/default/index.html
+  script: _go_app
   secure: always
