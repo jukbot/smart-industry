@@ -12,9 +12,9 @@
 
 module.exports = {
   staticFileGlobs: [
-    "manifest.json",
-    "images/*",
-    "bower_components/webcomponentsjs/webcomponents-loader.js"
+    "/index.html",
+    "/manifest.json",
+    "/bower_components/webcomponentsjs/webcomponents-loader.js"
   ],
   runtimeCaching: [
     {
@@ -47,6 +47,6 @@ module.exports = {
       }
     }
   ],
-  navigateFallback: "index.html",
+  navigateFallback: "/index.html",
   navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/]
 };

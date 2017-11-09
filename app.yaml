@@ -9,6 +9,10 @@ handlers:
   static_dir: build/default/bower_components
   secure: always
 
+- url: /images
+  static_dir: build/default/images
+  secure: always
+
 - url: /data
   static_dir: build/default/data
   secure: always
@@ -17,16 +21,12 @@ handlers:
   static_dir: build/default/lib
   secure: always
 
-- url: /images
-  static_dir: build/default/images
-  secure: always
-
 - url: /src
   static_dir: build/default/src
   secure: always
 
 - url: /manifest.json
-  static_files: /build/default/manifest.json
+  static_files: build/default/manifest.json
   upload: build/default/manifest.json
   secure: always
 

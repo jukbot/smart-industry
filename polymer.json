@@ -8,7 +8,7 @@
         "minify": true
       },
       "html": {
-        "minify": true
+        "minify": false
       },
       "js": {
         "compile": false,
@@ -25,6 +25,8 @@
   ],
   "entrypoint": "index.html",
   "extraDependencies": [
+    "bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js",
+    "bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js",
     "bower_components/webcomponentsjs/*.js",
     "app.yaml",
     "manifest.json",

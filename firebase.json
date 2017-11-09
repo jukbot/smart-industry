@@ -6,23 +6,17 @@
     "public": "build/default",
     "ignore": [
       "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
+      "**/.*"
     ],
     "rewrites": [{
-        "source": "!/__/**",
-        "destination": "/index.html"
-      },
-      {
-        "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
-        "destination": "/index.html"
-      }
-    ],
+      "source": "**/!(*.*)",
+      "destination": "/index.html"
+    }],
     "headers": [{
-        "source": "/service-worker.js",
+        "source": "**/service-worker.js",
         "headers": [{
-          "key": "Cache-Control",
-          "value": "no-cache"
+          "key": "Service-Worker-Allowed",
+          "value": "/"
         }]
       },
       {

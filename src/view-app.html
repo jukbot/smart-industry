@@ -1,35 +1,35 @@
 <!-- POLYMER 2 -->
 <!-- app modules - used for core functions -->
-<link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/app-layout/app-drawer/app-drawer.html">
-<link rel="import" href="/bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="/bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="/bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="/bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="/bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="/bower_components/app-layout/app-grid/app-grid-style.html">
-<link rel="import" href="/bower_components/app-route/app-location.html">
-<link rel="import" href="/bower_components/app-route/app-route.html">
-<link rel="import" href="/bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="/bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-<link rel="import" href="/bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- import shared style component -->
 <link rel="import" href="style/shared-styles.html">
 <!-- paper modules used for component style -->
-<link rel="import" href="/bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="/bower_components/paper-tooltip/paper-tooltip.html">
-<link rel="import" href="/bower_components/paper-button/paper-button.html">
-<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <!-- iron modules used for component functions -->
-<link rel="import" href="/bower_components/iron-image/iron-image.html">
-<link rel="import" href="/bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="/bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="/bower_components/iron-lazy-pages/iron-lazy-pages.html">
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <!-- 3rd party modules -->
-<link rel="import" href="/bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="/bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-dashboard.html">
@@ -149,6 +149,9 @@
      * @extends {Polymer.Element}
      * @appliesMixin Polymer.AppLocalizeBehavior
      */
+    // Gesture events like tap and track generated from touch will not be
+    // preventable, allowing for better scrolling performance.
+    Polymer.setPassiveTouchGestures(true);
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
         return 'view-app'
@@ -272,8 +275,11 @@
       }
       _routePageChanged(page, visible) {
         if (!visible) return this.page = page
-        this.page = page || 'dashboard', this.$.drawer.persistent || this.$.drawer.close()
+        this.page = page || 'dashboard'
         // Close a non-persistent drawer when the page & route are changed.
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close()
+        }
       }
       _showPage404() {
         this.page = '404'
@@ -384,18 +390,18 @@
           console.warn('Push notification is not support by your browser.')
         }
       }
-      _signedInChanged(e) {
+      _signedInChanged(isSignedIn) {
         Polymer.RenderStatus.afterNextRender(this, function () {
           // If singed in but at login page
-          if (e && this.route.path === '/login') { // window.location.pathname.match('^/login')
+          if (isSignedIn && this.route.path === '/login') { // window.location.pathname.match('^/login')
             this.page = 'dashboard'
             this.set('route.path', '/app/dashboard')
           }
-          // // If not sign in but not at term page
-          // else if (!this.signedIn && this.route.path !== '/term') {
-          //   this.page = 'login'
-          //   this.set('route.path', '/login')
-          // }
+          // If not sign in but not at term page
+          else if (isSignedIn && this.route.path !== '/term') {
+            this.page = 'login'
+            this.set('route.path', '/login')
+          }
         })
       }
       _networkChanged() {

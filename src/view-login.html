@@ -1,15 +1,16 @@
-<link rel="import" href="/bower_components/polymer/polymer-element.html">
-<link rel="import" href="/bower_components/polymerfire/firebase-auth.html">
-<link rel="import" href="/bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="/bower_components/polymerfire/firebase-query.html">
-<link rel="import" href="/bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="/bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="/bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="/bower_components/paper-button/paper-button.html">
-<link rel="import" href="/bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="/bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="/bower_components/iron-a11y-keys/iron-a11y-keys.html">
-<link rel="import" href="/bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <!-- import style component -->
 <link rel="import" href="style/flat-icons.html">
 <link rel="import" href="style/flat-input.html">
@@ -193,6 +194,8 @@
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
     <iron-ajax id="requestSampleData" url="/data/sample/sample-[[model]].json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
+    <app-indexeddb-mirror key="sampleData" data="{{sampleData}}" persisted-data="{{persistedSampleData}}">
+    </app-indexeddb-mirror>
     <section class="flex-container">
       <div class="flex-item">
         <article>
@@ -370,6 +373,7 @@
             value: true
           },
           sampleData: Object,
+          persistedSampleData: Object,
           errorMessage: String,
           successMessage: String
         }
@@ -424,7 +428,7 @@
         const password = this.$.register_passwd.value
         const username = 'Untitled'
         const timestamp = Math.round(Date.now() / 1000.0);
-        if (!this.sampleData) {
+        if (!this.persistedSampleData) {
           const request = this.$.requestSampleData.generateRequest()
           request.completes.then((req) => {
             //console.log(req.response);
@@ -436,7 +440,7 @@
           })
         }
 
-        if (email && organize && phone && password && username && timestamp && this.sampleData) {
+        if (email && organize && phone && password && username && timestamp && this.persistedSampleData) {
           this.$.userAuth.createUserWithEmailAndPassword(email, password)
             .then((response) => {
               this.$.userAuth.signInWithEmailAndPassword(email, password)
