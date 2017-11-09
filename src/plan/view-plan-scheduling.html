@@ -66,6 +66,8 @@
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="editOrderQuery" path="/data/[[k.key]]/orderData/[[editKey]]" data="{{editOrderItems}}"></firebase-document>
+        <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
         <!-- CUSTOMER DATA -->
         <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerItems}}"></firebase-query>
         <!-- PRODUCT DATA -->
@@ -89,9 +91,9 @@
             <li>
                 <div class="card " hidden="[[showEditOrder]]">
                     <h1 class="title">{{localize('edit-order')}}</h1>
-                    <vaadin-combo-box label="{{localize('customer-name')}}" name="customer-name" id="customerSelector" items="[[customerItems]]"
-                        item-label-path="name" item-value-path="name" selected-item='{{selectCustomer}}' loading="[[!customerItems]]"
-                        required allow-custom-value prevent-invalid-input always-float-label='true'>
+                    <vaadin-combo-box label="{{localize('customer-name')}}" value="[[editOrderItems.order_customer]]" name="customer-name" id="editCustomerSelector"
+                        items="[[customerItems]]" item-label-path="name" item-value-path="name" selected-item='{{selectCustomer}}'
+                        loading="[[!customerItems]]" required allow-custom-value prevent-invalid-input always-float-label='true'>
                         <template>
                             <paper-item>
                                 <paper-icon-item style="padding: 0">
@@ -104,8 +106,9 @@
                             </paper-item>
                         </template>
                     </vaadin-combo-box>
-                    <vaadin-combo-box label="{{localize('product')}}" name="product" items="[[productItems]]" id="productSelector" item-label-path="name"
-                        item-value-path="name" loading="[[!productItems]]" required prevent-invalid-input always-float-label='true'>
+                    <vaadin-combo-box label="{{localize('product')}}" value="[[editOrderItems.order_product_name]]" name="product" items="[[productItems]]"
+                        id="editProductSelector" selected-item="{{selectedProduct}}" item-label-path="name" item-value-path="name"
+                        loading="[[!productItems]]" required prevent-invalid-input always-float-label='true'>
                         <template>
                             <paper-icon-item style="padding: 0">
                                 <img src$="[[item.image]]" class="thumbnail" slot="item-icon">
@@ -116,16 +119,16 @@
                             </paper-icon-item>
                         </template>
                     </vaadin-combo-box>
-                    <paper-input label="{{localize('quantity')}}" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1"
-                        max="1000" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
-                    <vaadin-date-picker class="date-picker" label="{{localize('delivery-date')}}" min="[[todayDate]]" max="2030-01-01" name="delivery"
-                        id="deliverySelector" initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input"
-                        required always-float-label='true'></vaadin-date-picker>
+                    <paper-input label="{{localize('quantity')}}" value="[[editOrderItems.order_quantity]]" name="order-quantity" value='{{amount}}'
+                        id="editOrderQuantity" type="number" min="1" max="1000" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
+                    <vaadin-date-picker class="date-picker" value="[[getTimestampToDate(editOrderItems.order_delivery)]]" label="{{localize('delivery-date')}}"
+                        min="[[todayDate]]" max="2030-01-01" name="delivery" id="editDeliverySelector" initial-position="[[todayDate]]"
+                        value="{{delivery}}" error-message="Invalid input" required always-float-label='true'></vaadin-date-picker>
                     <div class="center">
                         <flat-button class="btn" on-tap="dismissEditOrder">
                             <button>{{localize('dismiss')}}</button>
                         </flat-button>
-                        <flat-button class="btn shamrock" on-tap="saveOrder">
+                        <flat-button class="btn shamrock" on-tap="updateOrder">
                             <button>{{localize('save')}}</button>
                         </flat-button>
                     </div>
@@ -257,7 +260,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="openEditOrderCard" icon="vaadin:pencil" title="Edit" disabled="[[isDeletable(item.order_status)]]"></paper-icon-button>
+                                    <paper-icon-button on-tap="openEditOrderCard" order="[[item]]" icon="vaadin:pencil" title="Edit" disabled="[[isDeletable(item.order_status)]]"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -275,6 +278,9 @@
 
                     </vaadin-grid>
                     <div class="center">
+                        <flat-button class="btn" on-tap="_refreshOrderTable">
+                            <button>{{localize('refresh')}}</button>
+                        </flat-button>
                         <flat-button class="btn" on-tap="clearSchedule">
                             <button>{{localize('clear-schedule')}}</button>
                         </flat-button>
@@ -483,6 +489,7 @@
                     },
                     language: String,
                     status: String,
+                    editOrderItems: Object,
                     factoryPerformance: Object,
                     factoryOperation: Object,
                     factoryProfile: Object,
@@ -538,7 +545,7 @@
             // SETUP CALENDAR DATE PICKER FORMAT
             _initialDatePicker() {
                 Sugar.Date.setLocale('en-GB'); // USE SUGAR LIBRARY TO REF FROM LOCALE DATE FORMAT
-                let datepicker = this.$.deliverySelector;
+                let datepicker = this.$.editDeliverySelector;
                 datepicker.addEventListener('value-changed', function () {
                     const deliveryTimeStamp = (new Date(datepicker.value).getTime() / 1000);
                     this.orderDelivery = deliveryTimeStamp;
@@ -570,6 +577,92 @@
                         return Sugar.Date.create(dateString);
                     }
                 }
+            }
+
+            updateOrder() {
+                const timestamp = Math.round(new Date().getTime() / 1000.0);
+                const orderNo = this.editOrderItems.order_no;
+                const orderCustomerName = this.$.editCustomerSelector.value;
+                const orderProductName = this.$.editProductSelector.value;
+                const orderProductPart = this.$.editProductSelector.selectedItem.part;
+                const orderProductProcess = this.$.editProductSelector.selectedItem.process;
+                const orderProductSKU = this.$.editProductSelector.selectedItem.sku;
+                const orderQuantity = this.getActualQuantity(this.$.editOrderQuantity.value);
+                const orderDuration = this.getOrderDurationInMinute(orderProductPart, orderQuantity);
+                const orderDelivery = (new Date(this.$.editDeliverySelector.value).getTime() / 1000);
+
+                if (this.$.editOrderQuantity.value === 0) {
+                    window.alert("Order product quantity cannot be 0")
+                    return;
+                }
+                if (orderCustomerName !== "" && orderProductName !== "" && orderProductPart !==
+                    "" && orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(
+                        isNaN(orderDelivery))) {
+
+                    this.$.editOrderQuery.ref.update({
+                        order_customer: orderCustomerName,
+                        order_product_name: orderProductName,
+                        order_product_part: orderProductPart,
+                        order_product_dependency: orderProductProcess,
+                        order_product_sku: orderProductSKU,
+                        order_quantity: orderQuantity,
+                        order_duration: orderDuration,
+                        order_delivery: orderDelivery,
+                        order_status: "waiting",
+                    });
+                    this.$.notificationQuery.ref.push({
+                        created: timestamp,
+                        detail: 'Edited order no.' + orderNo,
+                        type: 'normal'
+                    });
+                    this.dismissEditOrder()
+                    this._clearField()
+                    this._refreshOrderTable()
+                } else {
+                    window.alert("Input field cannot be blank, please fill in completely.");
+                }
+            }
+
+            getOrderDurationInMinute(part, amount) {
+                let productCycleArr = []
+                let productSetupArr = []
+                productCycleArr = part.map(part => part.cycle); // returns a new array of part cycle iterated
+                productSetupArr = part.map(part => part.setup); // returns a new array of part setup iterated
+                const flatCycleArr = productCycleArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
+                const flatSetupArr = productSetupArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
+                const sumCycle = flatCycleArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumCycle
+                const sumSetup = flatSetupArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
+                const sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
+                return sumDuration;
+            }
+
+            getActualQuantity(amount) {
+                if (!amount) return 0;
+                const accept_waste = this.factoryPerformance.aw;
+                const actual_quantity = Math.ceil((amount / (1 - accept_waste)));
+                this.actualQuantity = actual_quantity;
+                return actual_quantity;
+            }
+
+            _clearField() {
+                this.$.editCustomerSelector.value = "";
+                this.$.editProductSelector.value = "";
+                this.$.editOrderQuantity.value = 1;
+                this.$.editDeliverySelector.value = "";
+            }
+
+            getTimestampToDate(timestamp) {
+                const today = new Date(timestamp * 1000);
+                let dd = today.getDate()
+                let mm = today.getMonth() + 1
+                let yyyy = today.getFullYear()
+                if (dd < 10) {
+                    dd = '0' + dd
+                }
+                if (mm < 10) {
+                    mm = '0' + mm
+                }
+                this.todayDate = yyyy + '-' + mm + '-' + dd
             }
 
             openEditOrderCard(e) {

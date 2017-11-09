@@ -190,10 +190,11 @@
         <vaadin-dialog id="reportFinishDialog" class="dialog">
             <template>
                 <custom-style>
-                    <style is="custom-style">
+                    <style is="custom-style" include="view-settings">
                          :host {
-                            width: 500px;
-                            --app-primary-color: #202020;
+                            max-width: 500px;
+                            margin-top: 100px;
+                            --app-background-color: transpalent;
                             --paper-input-container-focus-color: var( --app-primary-color);
                         }
 
@@ -210,8 +211,13 @@
                         }
 
                         .btn-group {
-                            float: right;
-                            margin: 10px 0;
+                            margin: 10px 0 0 0;
+                            display: flex;
+                            text-align: center;
+                        }
+
+                        .btn {
+                            margin: 0 10px 0px 10px;
                         }
                     </style>
                 </custom-style>

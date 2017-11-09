@@ -566,7 +566,6 @@
                 this.$.customerSelector.value = "";
                 this.$.productSelector.value = "";
                 this.$.orderQuantity.value = 1;
-                this.$.actualQuantity = 1;
                 this.$.deliverySelector.value = "";
             }
 
@@ -587,11 +586,11 @@
             createOrder() {
                 const orderNo = this.orderNumber;
                 const orderCustomerName = this.$.customerSelector.value;
-                const orderDate = Math.round(new Date().getTime() / 1000.0);
+                const timestamp = Math.round(new Date().getTime() / 1000.0);
                 const orderProductName = this.$.productSelector.value;
-                const orderProductPart = this.orderProductPart;
+                const orderProductPart = this.$.productSelector.selectedItem.part;
                 const orderProductProcess = this.$.productSelector.selectedItem.process;
-                const orderProductSKU = this.productSKU;
+                const orderProductSKU = this.$.productSelector.selectedItem.sku;
                 const orderQuantity = this.actualQuantity;
                 const orderDuration = this.orderDuration;
                 const orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
@@ -607,7 +606,7 @@
                         orderDelivery))) {
 
                     this.$.orderQuery.ref.push({
-                        order_date: orderDate,
+                        order_date: timestamp,
                         order_no: orderNo,
                         order_customer: orderCustomerName,
                         order_product_name: orderProductName,
@@ -621,7 +620,7 @@
                         order_color: orderColor
                     });
                     this.$.historyQuery.ref.push({
-                        order_date: orderDate,
+                        order_date: timestamp,
                         order_delivery: orderDelivery,
                         order_no: orderNo,
                         order_customer: orderCustomerName,
@@ -629,7 +628,7 @@
                         order_quantity: orderQuantity
                     });
                     this.$.notificationQuery.ref.push({
-                        created: orderDate,
+                        created: timestamp,
                         detail: 'Created order no.' + orderNo,
                         type: 'normal'
                     });
