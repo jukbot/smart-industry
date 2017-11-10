@@ -688,6 +688,7 @@
                 const productSKU = this.$.productSKU.value
                 const processDependency = this.processDependency
                 const timestamp = Math.round(Date.now() / 1000.0)
+                const productColor = this.getRandomColor();
                 let productPart = this.productPart
                 let productCost = this.$.productCost.value
                 let inventoryCode = this.$.inventoryCode.value
@@ -704,13 +705,14 @@
                             Polymer.Async.timeOut.after(5000), () => {
                                 imageURL = this.imageURL;
                                 this._uploadProduct(timestamp, productCost, productName, productSKU,
-                                    inventoryCode, inventoryQuantity, productPart, imageURL)
+                                    inventoryCode, inventoryQuantity, productPart, productColor,
+                                    imageURL)
                             });
                     } else {
                         imageURL =
                             "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/default%2Fproduct%2Fstock-1.png?alt=media&token=6f83a0d2-5952-4e40-8a19-dbb51a8fbf37";
                         this._uploadProduct(timestamp, productCost, productName, productSKU, inventoryCode,
-                            inventoryQuantity, productPart, imageURL)
+                            inventoryQuantity, productPart, productColor, imageURL)
                     }
                 } else {
                     this.toastText = 'Please fill in the required field.'
@@ -719,13 +721,14 @@
             }
 
             _uploadProduct(timestamp, productCost, productName, productSKU, inventoryCode, inventoryQuantity,
-                productPart, imageURL) {
+                productPart, productColor, imageURL) {
                 this.$.productQuery.ref.child(this.productKey).set({
                     add: timestamp,
                     cost: productCost,
                     name: productName,
                     sku: productSKU,
                     image: imageURL,
+                    color: productColor,
                     inventory_code: inventoryCode,
                     inventory_use: inventoryQuantity,
                     part: productPart,
@@ -798,6 +801,11 @@
                     this.$.toastAlert.open()
                     this.$.uploadImageFile.value = null
                 }
+            }
+
+            getRandomColor() {
+                const color = Math.floor(0x1000000 * Math.random()).toString(16);
+                return '#' + ('000000' + color).slice(-6);
             }
 
             openBrowseImageFile() {

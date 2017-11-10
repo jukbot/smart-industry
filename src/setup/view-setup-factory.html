@@ -145,6 +145,13 @@
                         <vaadin-combo-box label="{{localize('station-concurrency')}}" id="concurrency" value="[[persistedFactoryProfile.concurrency]]"
                             items="[[concurrencyItems]]" item-value-path="value" item-label-path="value" error-message="Invalid Input"
                             loading="[[!concurrencyItems]]" required always-float-label='true'>
+                            <template>
+                                <paper-item>
+                                    <paper-item-body style="min-height: 0">
+                                        <div readonly>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-item>
+                            </template>
                         </vaadin-combo-box>
                         <paper-input label="{{localize('operation-start')}}" id="opStart" value="[[persistedFactoryOperation.op_start]]" type="time"
                             required pattern="[0-9]{2}:[0-9]{2}" always-float-label></paper-input>
@@ -193,6 +200,13 @@
                         <vaadin-combo-box label="{{localize('reschedule-interval')}} ({{localize('day')}})" id="scheduleInterval" value="[[persistedFactorySchedule.interval]]"
                             items="[[intervalItems]]" item-value-path="value" item-label-path="value" error-message="Invalid Input"
                             required always-float-label>
+                            <template>
+                                <paper-item>
+                                    <paper-item-body style="min-height: 0">
+                                        <div readonly>[[item.value]]</div>
+                                    </paper-item-body>
+                                </paper-item>
+                            </template>
                         </vaadin-combo-box>
                         <paper-input label="{{localize('delay-between-station')}} ({{localize('minute')}})" name="stationDelay" id="delayBetweenStation"
                             value="[[persistedFactorySchedule.delay]]" type="number" min="0" max="180" step="1" auto-validate

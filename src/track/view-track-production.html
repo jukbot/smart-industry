@@ -123,7 +123,7 @@
                                 <p>{{localize('quantity')}}: [[item.job_quantity]] {{localize('item')}} </p>
                                 <p>{{localize('product-part')}}: [[item.order_product]]</p>
                                 <p style$="color:[[item.order_color]]">{{localize('order-number')}}: [[item.order_no]]</p>
-                                <p>{{localize('workload')}}: [[item.job_workload]]</p>
+                                <p>{{localize('workload')}}: [[item.job_workload]] {{localize('mins')}}</p>
                                 <p>{{localize('station')}}: [[item.job_station]]</p>
                                 <p>{{localize('est-start')}}: [[timestampUTCToTime(item.start)]]</p>
                                 <p>{{localize('est-end')}}: [[timestampUTCToTime(item.end)]]</p>
@@ -131,7 +131,6 @@
                                 <p>{{localize('actual-end')}}: [[timestampToTime(item.actual_end)]]</p>
                                 <p>{{localize('duration')}}: [[getActualDuration(item.actual_start,item.actual_end)]]</p>
                                 <p>{{localize('defect')}}: [[item.job_defect]] {{localize('item')}} </p>
-                                <p>Job good: [[item.job_good]] {{localize('item')}} </p>
                                 <p>Productivity rate: 0 {{localize('item')}} / {{localize('hour')}}</p>
                                 <p>{{localize('done')}}: [[item.job_good]] / [[item.job_quantity]]</p>
                                 <p>{{localize('status')}}:
@@ -142,7 +141,7 @@
                                 <button>Receive</button>
                             </flat-button>
                             <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]">
-                                <button disabled="[[isDone(item.job_status)]]">Finish</button>
+                                <button disabled="[[isDone(item.job_status)]]">{{localize('done')}}</button>
                             </flat-button>
                             <flat-button class="thunderbird btn" on-tap="removeJob" job="[[item]]">
                                 <button>{{localize('remove')}}</button>
@@ -292,7 +291,6 @@
             }
 
             receiveJob(e) {
-                console.log(e.currentTarget.job.order_no);
                 this.$.scheduleQuery.ref.child(e.currentTarget.job.$key).update({
                     actual_start: Math.round(new Date().getTime() / 1000.0),
                     job_status: 'wip'
@@ -345,28 +343,36 @@
             _checkJobStatus() {
                 if (!this.scheduleItems) return
                 // 1) group by order_no as an array
-                let order_group = this.scheduleItems.reduce((r, a) => {
+                const order_group = this.scheduleItems.reduce((r, a) => {
                     r[a.order_no] = r[a.order_no] || [];
                     r[a.order_no].push(a);
                     return r;
-                }, new Array());
+                }, {});
+                console.table(order_group)
+
+                const arr = Object.values(this.scheduleItems)
+                const unique = (v, i, a) => a.indexOf(v) === i
+                const productNames = arr.map(product => product.order_product).filter(unique)
+                const groupByName = productNames.map(name => arr.filter(product => product.order_product ===
+                    name))
+
                 // 2) condition to filter order_status == done
-                let isDone = ((element, index, array) => {
-                    if (element.job_status === 'done') {
-                        return true;
-                    }
+                let isDone = ((element) => {
+                    return element.job_status === 'done'
                 })
                 // 3) check that element job_status of every item is == done
                 let done_order = [];
                 if (order_group.length > 0) {
-                    let i = 1;
-                    while (i < order_group.length) {
-                        if (order_group[i].every(isDone)) {
-                            done_order.push(order_group[i]);
-                        }
-                        i++
-                    }
+                    // let i = order_group.length;
+                    // while (i > 0) {
+                    //     if (order_group[i].every(isDone)) {
+                    //         done_order.push(order_group[i]);
+                    //     }
+                    //     i--
+                    // }
                 }
+
+                console.log(done_order);
                 // 4) if every jobs in order is done so push to done_order 
                 if (done_order.length > 0) {
                     let warehouse_order;
@@ -389,55 +395,34 @@
                         });
                     }
                     console.table(warehouse_order);
-                    this.addToWarehouse(warehouse_order);
-                    let groupOrderNew = this.groupByProp(warehouse_order, 'order_no');
-                    console.table(groupOrderNew);
 
-                    let groupOrder = this.groupByKey(warehouse_order, x => x.order_no);
-                    console.table(groupOrder);
-
-                    let doneOrderNo = warehouse_order.map(o => o.order_no);
-                    console.log(doneOrderNo)
+                    // 5) Remove duplicate order no from array
+                    let filterDoneOrder = warehouse_order.map(o => o.order_no).filter((item, index,
+                        inputArray) => {
+                        return inputArray.indexOf(item) == index;
+                    })
+                    console.log(filterDoneOrder)
                     // for (let j = 0; j < doneOrderNo.length; j++) {
                     //      this.updateOrderTable(doneOrderNo[j]);
                     // }
-
                 }
-            }
-
-            groupByProp(arr, prop) {
-                arr.groupBy = (prop) => {
-                    return this.reduce((groups, item) => {
-                        var val = item[prop];
-                        groups[val] = groups[val] || [];
-                        groups[val].push(item);
-                        return groups;
-                    }, {});
-                }
-            }
-
-            groupByKey(list, keyGetter) {
-                const map = new Map();
-                list.forEach((item) => {
-                    const key = keyGetter(item);
-                    const collection = map.get(key);
-                    if (!collection) {
-                        map.set(key, [item]);
-                    } else {
-                        collection.push(item);
-                    }
-                });
-                return map;
             }
 
             updateOrderTable(orderNo) {
                 if (orderNo) {
                     const query = this.$.orderQuery.ref;
-                    query.orderByChild("order_no").equalTo(orderNo).once("child_added", ((snapshot) => {
+                    // query.orderByChild("order_no").equalTo(orderNo).once("child_added", ((snapshot) => {
+                    //     snapshot.ref.update({
+                    //         order_status: "done"
+                    //     })
+                    // }))
+
+                    query.orderByChild("order_no").equalTo(orderNo).on("value", (snapshot) => {
+                        console.log(snapshot.val())
                         snapshot.ref.update({
                             order_status: "done"
                         })
-                    }))
+                    });
                 }
             }
 
@@ -467,6 +452,7 @@
             }
 
             timestampToTime(timestamp) {
+                if (!timestamp) return 'N/A'
                 const date = new Date((timestamp) * 1000);
                 const hours = date.getHours();
                 const minutes = "0" + date.getMinutes();

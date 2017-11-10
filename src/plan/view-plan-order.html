@@ -90,8 +90,8 @@
             }
 
             .thumbnail {
-                width: 48px;
-                height: 48px;
+                width: 24px;
+                height: 24px;
             }
 
             .signature-frame {
@@ -146,7 +146,7 @@
                         always-float-label='true'>
                         <template>
                             <paper-icon-item style="padding: 0">
-                                <img src$="[[item.image]]" class="thumbnail" slot="item-icon">
+                                <img src$="[[getProductImage(item.image)]]" width="48" height="48" class="thumbnail" slot="item-icon">
                                 <paper-item-body two-line style="min-height: 0">
                                     <div>[[item.name]]</div>
                                     <div secondary>SKU: [[item.sku]]</div>
@@ -316,6 +316,10 @@
                     this.$.optimizeData.hidden = true;
                     this.$.optimizeDataSeparate.hidden = true;
                 }
+            }
+
+            getProductImage(url) {
+                return ((url) ? url : this.rootPath + 'images/product/default.svg')
             }
 
             getOptimalQuantity(cost, part) {

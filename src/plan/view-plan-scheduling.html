@@ -504,7 +504,7 @@
             static get observers() {
                 return [
                     '_isSerialModel(factoryProfile.model)',
-                    'getSortedOrder(orderItems)'
+                    '_refreshOrderTable(orderItems.*)'
                 ]
             }
 

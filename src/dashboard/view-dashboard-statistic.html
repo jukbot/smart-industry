@@ -78,8 +78,11 @@
                 "label": "Data",
                 "type": "string"
               }, {
-                "label": "Value",
+                "label": "Orders",
                 "type": "number"
+              }, {
+                "type": "string",
+                "role": 'style'
               }]
 
             }
@@ -103,7 +106,7 @@
         this.height = this.$.chartContainer.offsetHeight;
         if (this.width > 0) {
           this.columnOptions = {
-            width: this.width,
+            width: this.width - 40,
             height: this.height,
             vAxis: {
               "minValue": 0,
@@ -111,41 +114,39 @@
             },
             tooltip: {
               isHtml: true
+            },
+            legend: {
+              position: "none"
             }
           }
-          if (this.historyData) {
-            this._groupByProp(this.historyData.order)
+          if (this.historyData.length > 0) {
+            this._groupAndSum(this.historyData.order)
+          } else {
+            this.rowItems = [
+              ['No Data', 0, '#202020']
+            ]
           }
           this.$.column.redraw()
         }
       }
 
-      _groupByProp(obj) {
-        // convert obj to arr
-        let arr = Object.keys(obj).map(k => obj[k]);
-        // group by product name
-        let data = arr.reduce((group, item, index, array) => {
-          group[item.order_product] = parseInt(group + item.order_quantity)
-          //array.reduce((total, obj) => {
-          //   return total + obj.order_quantity
-          // }, 0)
-          //
-          return group
-        }, [])
-
-        // convert into sub array
-        this.rowItems = Object.entries(data);
-
-        // THis will sum all order quantity
-        let x = arr.reduce((total, obj) => {
-          return total + obj.order_quantity
-        }, 0)
-        console.log(x)
+      _groupAndSum(productObject) {
+        const products = Object.values(productObject)
+        const unique = (v, i, a) => a.indexOf(v) === i
+        const productNames = products.map(product => product.order_product).filter(unique)
+        const productColor = products.map(product => product.color).filter(unique)
+        const groupByName = productNames.map(name => products.filter(product => product.order_product === name))
+        const quantitySum = groupByName.map(group => {
+          const sum = group.reduce((total, arr) => total + arr.order_quantity, 0)
+          return [group[0].order_product, sum, "#202020"]
+        })
+        this.rowItems = quantitySum
+        return quantitySum
       }
 
       clearStatistic() {
         if (confirm("Are you sure do you want to clear product order history ?") == true) {
-          this.$.orderHistoryQuery.ref.child('order').remove()
+          this.$.historyQuery.ref.child('order').remove()
           this.toastText = "notification-delete-successfully"
           this.$.toastAlert.open()
         }
