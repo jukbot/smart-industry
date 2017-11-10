@@ -113,7 +113,9 @@
               isHtml: true
             }
           }
-          console.log(this._groupByProp(this.historyData.order))
+          if (this.historyData) {
+            this._groupByProp(this.historyData.order)
+          }
           this.$.column.redraw()
         }
       }
