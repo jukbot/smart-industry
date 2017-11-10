@@ -121,19 +121,20 @@
       }
 
       _groupByProp(obj) {
+        // convert obj to arr
         let arr = Object.keys(obj).map(k => obj[k]);
-        console.log(arr)
-
+        // group by product name
         let data = arr.reduce((group, item, index, array) => {
-          group[item.order_product] = array.reduce((total, obj) => {
-            return total + obj.order_quantity
-          }, 0)
-          //parseInt(group + item.order_quantity)
+          group[item.order_product] = parseInt(group + item.order_quantity)
+          //array.reduce((total, obj) => {
+          //   return total + obj.order_quantity
+          // }, 0)
+          //
           return group
         }, [])
 
+        // convert into sub array
         this.rowItems = Object.entries(data);
-        console.log(Object.entries(data))
 
         // THis will sum all order quantity
         let x = arr.reduce((total, obj) => {
@@ -141,7 +142,6 @@
         }, 0)
         console.log(x)
       }
-
 
       clearStatistic() {
         if (confirm("Are you sure do you want to clear product order history ?") == true) {
