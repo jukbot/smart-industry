@@ -134,7 +134,7 @@
         const products = Object.values(productObject)
         const unique = (v, i, a) => a.indexOf(v) === i
         const productNames = products.map(product => product.order_product).filter(unique)
-        const productColor = products.map(product => product.color).filter(unique)
+        c onst productColor = products.map(product => product.color).filter(unique)
         const groupByName = productNames.map(name => products.filter(product => product.order_product === name))
         const quantitySum = groupByName.map(group => {
           const sum = group.reduce((total, arr) => total + arr.order_quantity, 0)
