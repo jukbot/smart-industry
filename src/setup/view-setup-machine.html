@@ -18,7 +18,7 @@
                 width: 250px;
             }
 
-            .btn {
+            .btn-block {
                 width: 100%;
             }
 
@@ -120,7 +120,6 @@
                                 <p>{{localize('machine-type')}}: [[machineItem.type]]</p>
                                 <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] {{localize('items')}}/ {{localize('hour')}}</p>
                                 <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
-                                <!-- <p style="color:#e53935">Machine Key: [[machineItem.$key]]</p> -->
                             </div>
                             <flat-button class="btn btn-block" on-tap="openEditMachineCard" machine="[[machineItem]]">
                                 <button>{{localize('edit')}}</button>
@@ -177,7 +176,7 @@
                     },
                     machineType: {
                         type: Array,
-                        value: function () {
+                        value: () => {
                             return [{
                                     "name": "Cutting",
                                     "code": "cut"

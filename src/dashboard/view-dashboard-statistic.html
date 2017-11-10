@@ -32,30 +32,22 @@
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-    <firebase-query app-name="smart-mes" id="orderHistoryQuery" path="/data/[[k.key]]/historyData/order" data="{{orderHistoryData}}"></firebase-query>
+    <firebase-document app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData" data="{{historyData}}"></firebase-document>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
         <div class="card" id="chartContainer">
 
-          <h1 class="title">Productivity Statistic</h1>
-          <google-chart id="column" type="column" options="[[columnOptions]]" cols='[{"label": "Data", "type": "string"},{"label": "Value", "type": "number"}]'
-            rows='[ ["Col1", 2.0],["Col2", 9.0],["Col3",
-          5.0] ]'></google-chart>
+          <h1 class="title">Product Order Statistic</h1>
+          <google-chart id="column" type="column" options="[[columnOptions]]" cols='[[columnItems]]' rows='[[rowItems]]'></google-chart>
 
           <flat-button class="btn" on-tap="clearStatistic">
             <button>Reset Statistic</button>
           </flat-button>
         </div>
       </li>
-      <li>
-        <div class="card">
-          <h1 class="title">Monthly Order Statistic</h1>
-
-        </div>
-      </li>
     </ul>
-    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
+    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
   </template>
   <script>
     /**
@@ -73,12 +65,28 @@
       static get properties() {
         return {
           language: String,
-          orderHistoryData: Object,
+          historyData: Object,
           columnOptions: Object,
           width: Number,
-          height: Number
+          height: Number,
+          rowItems: Array,
+          toastText: String,
+          columnItems: {
+            type: Array,
+            value: () => {
+              return [{
+                "label": "Data",
+                "type": "string"
+              }, {
+                "label": "Value",
+                "type": "number"
+              }]
+
+            }
+          }
         }
       }
+
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../../data/locales.json'));
@@ -97,9 +105,6 @@
           this.columnOptions = {
             width: this.width,
             height: this.height,
-            chart: {
-              title: 'Order Statistic'
-            },
             vAxis: {
               "minValue": 0,
               "maxValue": 10
@@ -108,15 +113,38 @@
               isHtml: true
             }
           }
-          this._initialChart()
+          console.log(this._groupByProp(this.historyData.order))
           this.$.column.redraw()
         }
       }
 
+      _groupByProp(obj) {
+        let arr = Object.keys(obj).map(k => obj[k]);
+        console.log(arr)
+
+        let data = arr.reduce((group, item, index, array) => {
+          group[item.order_product] = array.reduce((total, obj) => {
+            return total + obj.order_quantity
+          }, 0)
+          //parseInt(group + item.order_quantity)
+          return group
+        }, [])
+
+        this.rowItems = Object.entries(data);
+        console.log(Object.entries(data))
+
+        // THis will sum all order quantity
+        let x = arr.reduce((total, obj) => {
+          return total + obj.order_quantity
+        }, 0)
+        console.log(x)
+      }
+
+
       clearStatistic() {
         if (confirm("Are you sure do you want to clear product order history ?") == true) {
-          this.$.orderHistoryQuery.ref.remove()
-          this.alertText = "notification-delete-successfully"
+          this.$.orderHistoryQuery.ref.child('order').remove()
+          this.toastText = "notification-delete-successfully"
           this.$.toastAlert.open()
         }
       }

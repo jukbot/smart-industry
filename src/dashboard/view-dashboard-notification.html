@@ -97,7 +97,7 @@
           <flat-button class="btn" on-tap="clearNotification">
             <button>{{localize('clear-all-notifications')}}</button>
           </flat-button>
-          <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(alertText)}}"></paper-toast>
+          <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
         </div>
       </li>
     </ul>
@@ -117,7 +117,7 @@
       static get properties() {
         return {
           todayDate: String,
-          alertText: String,
+          toastText: String,
           language: String,
           notificationData: Object,
           type: {
@@ -200,7 +200,7 @@
       clearNotification() {
         if (confirm("Are you sure do you want to clear all notifacation ?") == true) {
           this.$.notificationQuery.ref.remove()
-          this.alertText = "notification-delete-successfully"
+          this.toastText = "notification-delete-successfully"
           this.$.toastAlert.open()
         }
       }

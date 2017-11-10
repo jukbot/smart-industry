@@ -390,15 +390,29 @@
                     }
                     console.table(warehouse_order);
                     this.addToWarehouse(warehouse_order);
-                    let groupOrder = this.groupByKey(warehouse_order, x => x.order_no);
+                    let groupOrderNew = this.groupByProp(warehouse_order, 'order_no');
+                    console.table(groupOrderNew);
 
-                    console.table(grouped.get("1"));
+                    let groupOrder = this.groupByKey(warehouse_order, x => x.order_no);
+                    console.table(groupOrder);
+
                     let doneOrderNo = warehouse_order.map(o => o.order_no);
                     console.log(doneOrderNo)
                     // for (let j = 0; j < doneOrderNo.length; j++) {
                     //      this.updateOrderTable(doneOrderNo[j]);
                     // }
 
+                }
+            }
+
+            groupByProp(arr, prop) {
+                arr.groupBy = (prop) => {
+                    return this.reduce((groups, item) => {
+                        var val = item[prop];
+                        groups[val] = groups[val] || [];
+                        groups[val].push(item);
+                        return groups;
+                    }, {});
                 }
             }
 
