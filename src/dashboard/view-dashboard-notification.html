@@ -61,8 +61,12 @@
           </div>
           <vaadin-grid id="notificationTable" aria-label="Notification Center" items="[[filterNotification(persistedNotificationData, date, type)]]">
             <vaadin-grid-column flex="1">
-              <template class="header">#</template>
-              <template class="cell">[[index]]</template>
+              <template class="header">
+                <div class="cell">#</div>
+              </template>
+              <template>
+                <div class="cell">[[index]]</div>
+              </template>
             </vaadin-grid-column>
 
             <vaadin-grid-column flex="1">
@@ -80,7 +84,7 @@
               </template>
             </vaadin-grid-column>
 
-            <vaadin-grid-column flex-grow="2" flex="1">
+            <vaadin-grid-column flex-grow="1" flex="1">
               <template class="header">{{localize('detail')}}</template>
               <template>
                 <div class="cell">[[item.detail]]</div>
