@@ -148,7 +148,7 @@
                         always-float-label='true'>
                         <template>
                             <paper-icon-item style="padding: 0">
-                                <img src$="[[getProductImage(item.image)]]" width="48" height="48" class="thumbnail" slot="item-icon">
+                                <img src$="[[getProductImage(item.image)]]" width="48" height="auto" class="thumbnail" slot="item-icon">
                                 <paper-item-body two-line style="min-height: 0">
                                     <div>[[item.name]]</div>
                                     <div secondary>SKU: [[item.sku]]</div>
@@ -661,21 +661,23 @@
                 if (!inventoryRequired || !inventoryCode) return
                 const query = this.$.inventoryQuery.ref;
                 query.orderByChild("code").equalTo(inventoryCode).once("value", (snapshot) => {
-                    const key = Object.keys(snapshot.val())
-                    const original = Object.values(snapshot.val()).map(x => x.quantity)
-                    const remain = original - inventoryRequired
+                    if (snapshot.val()) {
+                        const key = Object.keys(snapshot.val())
+                        const original = Object.values(snapshot.val()).map(x => x.quantity)
+                        const remain = original - inventoryRequired
 
-                    if (original < inventoryRequired) {
-                        window.alert(`Raw material code ${inventoryCode} is out of stock.`)
-                        snapshot.ref.child("/" + key).update({
-                            quantity: 0
-                        })
-                        this._pushNotification(`Inventory code ${inventoryCode} is out of stock`,
-                            'critical')
-                    } else {
-                        snapshot.ref.child("/" + key).update({
-                            quantity: remain
-                        })
+                        if (original < inventoryRequired) {
+                            window.alert(`Raw material code ${inventoryCode} is out of stock.`)
+                            snapshot.ref.child("/" + key).update({
+                                quantity: 0
+                            })
+                            this._pushNotification(`Inventory code ${inventoryCode} is out of stock`,
+                                'critical')
+                        } else {
+                            snapshot.ref.child("/" + key).update({
+                                quantity: remain
+                            })
+                        }
                     }
                 });
             }

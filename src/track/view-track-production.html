@@ -411,12 +411,6 @@
             updateOrderTable(orderNo) {
                 if (orderNo) {
                     const query = this.$.orderQuery.ref;
-                    // query.orderByChild("order_no").equalTo(orderNo).once("child_added", ((snapshot) => {
-                    //     snapshot.ref.update({
-                    //         order_status: "done"
-                    //     })
-                    // }))
-
                     query.orderByChild("order_no").equalTo(orderNo).once("value", (snapshot) => {
                         console.log(snapshot.val())
                         snapshot.ref.update({
@@ -428,6 +422,7 @@
 
             addToWarehouse(data) {
                 if (data) {
+                    console.log(data)
                     delete data.warehouse_order
                     console.log(data)
                     this.$.warehouseQuery.ref.push(data);
@@ -518,6 +513,7 @@
                         return 'normal'
                 }
             }
+
             // Device management
             removeDevice(e) {
                 if (window.confirm("Remove this device?") == true) {
