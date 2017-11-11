@@ -12,7 +12,7 @@
 <dom-module id="view-setup-product">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -111,6 +111,7 @@
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="name" data="{{productItems}}"></firebase-query>
+        <firebase-document app-name="smart-mes" id="editProductQuery" path="/data/[[k.key]]/factoryData/product/[[editKey]]" data="{{editProductItems}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="processQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             data="{{processItems}}"></firebase-query>
         <!-- <firebase-storage-ref app-name="smart-mes" path="data/[[k.key]]/product" metadata="{{metadata}}" storage-uri="gs://smart-mes.appspot.com/data/[[k.key]]/product"
@@ -120,6 +121,7 @@
         <app-indexeddb-mirror session="[[user.uid]]" key="product-data" data="{{productItems}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
+                <!-- Add product card!-->
                 <div class="card" hidden="[[showAddProduct]]">
                     <h1 class="title">{{localize('add-product')}}</h1>
                     <paper-input label="Name*" id="productName" type="text" required always-float-label></paper-input>
@@ -190,7 +192,81 @@
                 </div>
             </li>
             <li>
-                <div class="card" hidden="[[!showAddProduct]]">
+
+                <!-- Edit card !-->
+
+                <div class="card" hidden="[[showEditProduct]]">
+                    <h1 class="title">{{localize('edit-product')}}</h1>
+                    <paper-input label="Name*" id="productName" type="text" value="{{editProductItems.cost}}" required always-float-label></paper-input>
+                    <paper-input label="SKU*" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$" value="{{editProductItems.sku}}" required
+                        always-float-label></paper-input>
+                    <paper-input label="Cost" id="productCost" type="number" maxlength="9" value="{{editProductItems.cost}}" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
+                        error-message="number only" min="0" max="99999" step="0.01" auto-validate always-float-label></paper-input>
+                    <paper-input label="Inventory Code" id="inventoryCode" type="text" value="{{editProductItems.inventory_code}}" required always-float-label></paper-input>
+                    <paper-input label="Inventory Require" id="inventoryQuantity" type="number" value="{{editProductItems.inventory_use}}" allowed-pattern="^(0|[1-9]\d*)$"
+                        required always-float-label></paper-input>
+
+                    <flat-button on-tap="openBrowseImageFile" class="btn">
+                        <button>{{localize('browse-image')}}</button>
+                        <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
+                    </flat-button>
+
+                    <flat-button class="btn" on-tap="openAddPartDialog">
+                        <button>{{localize('add-part')}}</button>
+                    </flat-button>
+
+                    <flat-button class="btn" on-tap="clearPartFromProduct">
+                        <button>{{localize('clear')}}</button>
+                    </flat-button>
+
+                    <div class="frame part-block">
+                        <ul class="flex-container wrap">
+                            <template is="dom-repeat" items="[[editProductItems.part]]" as="part">
+                                <li class="flex-item">
+                                    <div class="part">
+                                        <div class="part-info-group">
+                                            <h2 class="title">[[part.name]]</h2>
+                                            <p>Part SKU Number: [[part.sku]]</p>
+                                            <div class="frame">
+                                                <div class="part-list">
+                                                    <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
+                                                        <template>
+                                                            <div tabindex$="[[tabIndex]]" class="item">
+                                                                <p>
+                                                                    <strong>{{localize('process-number')}} [[item.process]]</strong>
+                                                                </p>
+                                                                <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('mins')}}.</p>
+                                                                <p>{{localize('setup-time')}} [[item.setup]] {{localize('mins')}}.</p>
+                                                            </div>
+                                                        </template>
+                                                    </iron-list>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="center">
+                                            <flat-button class="btn" on-tap="openEditStationCard" part="[[part]]">
+                                                <button>{{localize('edit')}}</button>
+                                            </flat-button>
+                                            <flat-button class="thunderbird btn" on-tap="removePartFromProduct">
+                                                <button>{{localize('remove')}}</button>
+                                            </flat-button>
+                                        </div>
+                                    </div>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                    <div class="center">
+                        <flat-button class="btn" on-tap="openProductList">
+                            <button>{{localize('dismiss')}}</button>
+                        </flat-button>
+                        <flat-button class="btn shamrock" on-tap="saveProduct">
+                            <button>{{localize('save')}}</button>
+                        </flat-button>
+                    </div>
+                </div>
+                <!-- Show product management !-->
+                <div class="card" hidden="[[showListProduct]]">
                     <h1 class="title">{{localize('product-management')}}</h1>
                     <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]" size="10">
                         <vaadin-grid-column flex="1">
@@ -294,7 +370,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="editProduct" product="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                    <paper-icon-button on-tap="openEditProductCard" product="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -375,11 +451,123 @@
                 </div>
             </li>
         </ul>
+
+        <!-- ADD Part !-->
         <vaadin-dialog id="addPartDialog" class="dialog" no-close-on-outside-click>
             <template id="addPartContent">
                 <custom-style>
                     <style is="custom-style" include="view-setup-product">
-                         :host {
+                        :host {
+                            height: 100vh;
+                            margin: 0 auto;
+                            --app-primary-color: #202020;
+                            --paper-input-container-focus-color: var( --app-primary-color);
+                            overflow: auto;
+                        }
+
+                        [part="content"] {
+                            padding: 20px 30px;
+                        }
+
+                        .title {
+                            margin: 10px 0 20px 0;
+                        }
+
+                        .btn {
+                            width: 250px;
+                        }
+
+                        .block-group {
+                            margin: 10px 0;
+                        }
+
+                        .delete-btn {
+                            float: right;
+                        }
+
+                        .frame {
+                            min-height: 250px;
+                        }
+
+                        .process-list {
+                            height: 250px;
+                        }
+
+                        .grid-item {
+                            border-bottom: 1px solid #eee;
+                            padding: 10px;
+                            height: 100px;
+                        }
+
+                        .grid-item:hover {
+                            background-color: #eee;
+                        }
+                    </style>
+                </custom-style>
+                <h1 class="title center">{{localize('add')}} {{localize('product-part')}}</h1>
+                <div class="block-group">
+                    <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
+                    <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
+                </div>
+                <div class="block-group">
+                    <!-- Add Process -->
+                    <h3>Process of Part</h3>
+                    <p>([[partProcess.length]] / [[maxProcess]])</p>
+                    <vaadin-combo-box label="{{localize('process-number')}}" id="processNumber" items="[[processItems]]" name="Process selector"
+                        item-label-path="st_number" item-value-path="st_number" value="{{selectedProcess}}" error-message="Invalid input"
+                        loading="[[!processItems]]" required always-float-label='true'>
+                        <template>
+                            <paper-item>
+                                <paper-item-body three-line style="min-height: 0">
+                                    <div style="text-transform: capitalize">{{localize('process-name')}}: [[item.st_name]]</div>
+                                    <div secondary>{{localize('process-number')}}: [[item.st_number]]</div>
+                                    <div secondary>[[item.st_machine.length]] {{localize('machine')}}</div>
+                                </paper-item-body>
+                            </paper-item>
+                        </template>
+                    </vaadin-combo-box>
+                    <paper-input label="Process Cycle Time (mins)" id="processCycle" value="{{processCycle}}" type="number" maxlength="9" error-message="number only"
+                        min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
+                    <paper-input label="Process Setup Time (mins)" id="processSetup" value="{{processSetup}}" type="number" maxlength="9" error-message="number only"
+                        min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
+
+                    <flat-button class="add-btn" on-tap="addProcessToPart">
+                        <button>Add Process</button>
+                    </flat-button>
+                </div>
+                <div class="frame">
+                    <div class="process-list">
+                        <iron-list items="[[processBundle]]" as="item">
+                            <template>
+                                <div tabindex$="[[tabIndex]]" class="grid-item">
+                                    <p>
+                                        <strong>{{localize('process-number')}} [[item.process]]</strong>
+                                    </p>
+                                    <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('mins')}}.</p>
+                                    <p>{{localize('setup-time')}} [[item.setup]] {{localize('mins')}}.</p>
+                                    <paper-icon-button class="delete-btn" on-tap="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+                                </div>
+                            </template>
+                        </iron-list>
+                    </div>
+                </div>
+                <div class="center">
+                    <paper-button class="btn" dialog-dismiss on-tap="closeAddPartDialog">
+                        {{localize('dismiss')}}
+                    </paper-button>
+                    <paper-button class="btn" dialog-confirm autofocus on-tap="addPartToProduct">
+                        {{localize('add-part')}}
+                    </paper-button>
+                </div>
+            </template>
+        </vaadin-dialog>
+
+        <!-- Edit part !-->
+        <vaadin-dialog id="addPartDialog" class="dialog" no-close-on-outside-click>
+            <template id="addPartContent">
+                <custom-style>
+                    <style is="custom-style" include="view-setup-product">
+                        :host {
                             height: 100vh;
                             margin: 0 auto;
                             --app-primary-color: #202020;
@@ -507,6 +695,7 @@
                     processItems: Object,
                     toastText: String,
                     productKey: String,
+                    editKey: String,
                     maxFiles: {
                         type: Number,
                         value: 1,
@@ -521,7 +710,16 @@
                         value: 12,
                         readOnly: true
                     },
+                    showListProduct: {
+                        type: Boolean,
+                        value: false
+                    },
+
                     showAddProduct: {
+                        type: Boolean,
+                        value: true
+                    },
+                    showEditProduct: {
                         type: Boolean,
                         value: true
                     },
@@ -674,7 +872,9 @@
                     setup: this.partProcessSetup
                 };
                 this.push('productPart', partObj)
+                this._clearPartField();
                 this.closeAddPartDialog();
+
             }
 
             removePartFromProduct(e) {
@@ -748,12 +948,53 @@
                 })
             }
 
+            saveProduct() {
+                const productName = this.$.productName.value
+                const productSKU = this.$.productSKU.value
+                const processDependency = this.processDependency
+                const timestamp = Math.round(Date.now() / 1000.0)
+                const productColor = this.getRandomColor();
+                let productPart = this.productPart
+                let productCost = this.$.productCost.value
+                let inventoryCode = this.$.inventoryCode.value
+                let inventoryQuantity = this.$.inventoryQuantity.value
+                let imageURL = "";
+                if (!productCost) productCost = 0;
+                if (!inventoryCode) inventoryCode = "none";
+                if (!inventoryQuantity) inventoryQuantity = 0;
+                productPart = productPart.splice(-1);
+
+                if (productName && productSKU && productPart && processDependency) {
+                    if (this.imageURL) {
+                        this._debouncer = Polymer.Debouncer.debounce(this._debouncer,
+                            Polymer.Async.timeOut.after(5000), () => {
+                                imageURL = this.imageURL;
+                                this._uploadProduct(timestamp, productCost, productName, productSKU,
+                                    inventoryCode, inventoryQuantity, productPart, productColor,
+                                    imageURL)
+                            });
+                    }
+                    else {
+                        imageURL =
+                            "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/default%2Fproduct%2Fstock-1.png?alt=media&token=6f83a0d2-5952-4e40-8a19-dbb51a8fbf37";
+                        this._uploadProduct(timestamp, productCost, productName, productSKU, inventoryCode,
+                            inventoryQuantity, productPart, productColor, imageURL)
+                    }
+                }
+                else {
+                    this.toastText = 'Please fill in the required field.'
+                    this.$.toastAlert.open()
+                }
+
+            }
+
             removeProduct(e) {
                 if (window.confirm("Delete this product ?") == true) {
                     const key = e.currentTarget.product.$key
                     this.$.productQuery.ref.child(key).remove()
                 }
             }
+
 
             _verifyUploadFile() {
                 let file = this.$.uploadImageFile.files[0]
@@ -818,25 +1059,40 @@
 
             openAddPartDialog() {
                 this.$.addPartDialog.opened = true
+
             }
 
             closeAddPartDialog() {
                 this.$.addPartDialog.opened = false
+
             }
 
             openAddProductCard() {
                 this.showAddProduct = false
+                this.showListProduct = true
                 this.productKey = this.$.productQuery.ref.push().key
             }
 
             openProductList() {
                 this.showAddProduct = true
+                this.showEditProduct = true
+                this.showListProduct = false
+
             }
 
             openEditProductCard(e) {
-                this.showAddProduct = false
+                this.showEditProduct = false
+                this.showListProduct = true
                 let key = e.currentTarget.product.$key
                 this.editKey = key
+                console.log(key)
+                console.log(this.editProductItems.pro)
+
+            }
+
+            openEditStationCard(e) {
+                this.$.editPartDialog.opened = true
+
             }
 
             getPartBundle(processArr, cycleArr, setupArr) {
@@ -885,6 +1141,23 @@
 
             _onActiveItemChanged(e) {
                 this.$.productTable.expandedItems = [e.detail.value]
+            }
+
+            _clearField() {
+                this.$.productName.value = ""
+                this.$.productSKU.value = ""
+                this.$.inventoryCode.value = ""
+                this.$.inventoryQuantity.value = ""
+                this.$.uploadImageFile.value = ""
+
+            }
+
+            _clearPartField() {
+                this.partName = ""
+                this.partSKU = ""
+
+
+
             }
         }
         customElements.define(ViewSetupProduct.is, ViewSetupProduct)
