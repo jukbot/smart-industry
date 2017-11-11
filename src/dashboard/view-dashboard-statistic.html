@@ -116,7 +116,7 @@
         if (this.width > 0) {
           this.columnOptions = {
             width: this.width - 40,
-            height: this.height,
+            height: 500,
             vAxis: {
               "minValue": 0,
               "maxValue": 10
@@ -132,6 +132,10 @@
         }
       }
 
+      _redrawChart() {
+        this.$.column.redraw()
+      }
+
       _groupAndSum(productObject) {
         if (!productObject) return
         if (productObject.length <= 0) {
@@ -145,15 +149,17 @@
         const groupByName = productNames.map(name => products.filter(product => product.order_product === name))
         const quantitySum = groupByName.map(group => {
           const sum = group.reduce((total, arr) => total + arr.order_quantity, 0)
-          return [group[0].order_product, sum, "#202020"]
+          return [group[0].order_product, sum, group[0].product_color]
         })
         this.rowItems = quantitySum
+        this._redrawChart()
         return quantitySum
       }
 
       clearStatistic() {
         if (confirm("Are you sure do you want to clear product order history ?") == true) {
           this.$.historyQuery.ref.child('order').remove()
+          this._redrawChart()
           this.toastText = "notification-delete-successfully"
           this.$.toastAlert.open()
         }

@@ -102,6 +102,15 @@
                     ["OEE", oee]
                 ]
             }
+
+            calculateOEE(goodCount, idealCycleTime, plannedProductionTime) {
+                //  const availability = runTime / plannedProductionTime
+                //  const performance = (idealCycleTime * TotalCount) / runTime
+                //  const quality = goodCount / TotalCount
+                const oee = (goodCount * idealCycleTime) / plannedProductionTime
+                return oee
+            }
+
         }
         customElements.define(ViewTrackPerformance.is, ViewTrackPerformance);
     </script>

@@ -66,7 +66,7 @@
       <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
       <view-404 name="404" route="[[subRoute]]"></view-404>
       <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}" name="app">
-        <app-drawer id="drawer" slot="drawer" tabindex="-1" transition-duration="100" swipe-open="[[narrow]]" hidden="[[!user]]">
+        <app-drawer id="drawer" slot="drawer" tabindex="-1" swipe-open="[[narrow]]" hidden="[[!user]]">
           <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
           <h1 title="IMES" class="main-logo-title">IMES</h1>
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -277,7 +277,7 @@
         this.page = page || 'dashboard'
         // Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
-          this.$.drawer.close()
+          this.$.drawer.close();
         }
       }
       _showPage404() {

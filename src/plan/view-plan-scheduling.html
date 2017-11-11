@@ -143,6 +143,8 @@
                         <p>{{localize('production-model')}}: [[factoryProfile.model]]</p>
                         <p id="concurrency">{{localize('station-concurrency')}} : [[factoryProfile.concurrency]] {{localize('order')}} / {{localize('station')}}</p>
                         <p>{{localize('delay-between-station')}}: [[factorySchedule.delay]] {{localize('minute')}}</p>
+                        <p>{{localize('waiting-order')}}: [[getWaitingOrder(orderItems)]] {{localize('order')}}</p>
+                        <p>{{localize('late-order')}}: [[getLateOrder(orderItems)]] {{localize('order')}}</p>
                     </div>
                     <vaadin-grid id="orderTable" items="{{getSortedOrder(orderItems)}}" page-size="20" interacting>
                         <vaadin-grid-selection-column width="66px" flex="0" select-all="{{selectAll}}">
@@ -279,14 +281,14 @@
 
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_refreshOrderTable">
+                        <flat-button class="btn" on-tap="refreshOrderTable">
                             <button>{{localize('refresh')}}</button>
                         </flat-button>
-                        <flat-button class="btn" on-tap="clearOrder">
-                            <button>{{localize('clear-schedule')}}</button>
-                        </flat-button>
-                        <flat-button class="btn thunderbird" on-tap="reSchedule">
+                        <flat-button class="btn" on-tap="reSchedule">
                             <button>{{localize('reschedule')}}</button>
+                        </flat-button>
+                        <flat-button class="btn  thunderbird" on-tap="clearOrder">
+                            <button>{{localize('clear-schedule')}}</button>
                         </flat-button>
                     </div>
                 </div>
@@ -508,8 +510,7 @@
             static get observers() {
                 return [
                     '_isSerialModel(factoryProfile.model)',
-                    '_refreshOrderTable(orderItems)',
-                    '_verifyOrderTable(orderItems)'
+                    'refreshOrderTable(orderItems)',
                 ]
             }
 
@@ -530,7 +531,7 @@
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
             }
 
-            _refreshOrderTable() {
+            refreshOrderTable() {
                 this.$.orderTable.clearCache();
                 this.toastText = 'notification-refreshing-data'
                 this.$.toastAlert.open()
@@ -844,6 +845,15 @@
                 return this.getTimestampToTime(end_timestamp)
             }
 
+            getWaitingOrder(order_data) {
+                if (!order_data) return 0
+                return order_data.filter((i) => i.order_status === "waiting").length
+            }
+
+            getLateOrder(order_data) {
+                if (!order_data) return 0
+                return order_data.filter((i) => i.order_status === "late").length
+            }
             // UTILITY
             _pushNotification(detail, type) {
                 this.$.notificationQuery.ref.push({
@@ -944,7 +954,7 @@
                         type: 'normal'
                     });
                     this.dismissEditOrder()
-                    this._refreshOrderTable()
+                    this.refreshOrderTable()
                     this.toastText = 'notification-save-successfully'
                     this.$.toastAlert.open()
                 } else {
@@ -956,9 +966,9 @@
                 if (confirm("Delete this order ?")) {
                     let key = e.currentTarget.order.$key;
                     this.$.orderQuery.ref.child(key).remove();
-                    this._refreshOrderTable()
                     this.toastText = 'notification-delete-successfully'
                     this.$.toastAlert.open()
+                    this.refreshOrderTable()
                 }
             }
 
@@ -994,21 +1004,25 @@
 
             reSchedule() {
                 //  window.alert('Note: Orders that are working in process will not able to reschedule.');
-                switch (this.factoryProfile.model) {
-                    case "serial":
-                        this._serialSchedule()
-                        break;
-                    case "parallel":
-                        this._parallelSchedule()
-                        break;
-                    case "multi":
-                        this._multiSchedule()
-                        break;
-                    default:
-                        window.alert("Invalid production model")
+                if (this.sortedOrder) {
+                    switch (this.factoryProfile.model) {
+                        case "serial":
+                            this._serialSchedule()
+                            break;
+                        case "parallel":
+                            this._parallelSchedule()
+                            break;
+                        case "multi":
+                            this._multiSchedule()
+                            break;
+                        default:
+                            window.alert("Invalid production model")
+                    }
+                    this.toastText = 'notification-refreshing-data'
+                    this.$.toastAlert.open()
+                } else {
+                    window.alert("No order data found")
                 }
-                this.toastText = 'notification-refreshing-data'
-                this.$.toastAlert.open()
             }
 
             refreshChart(data) {
@@ -1034,66 +1048,67 @@
                 this.$.chartQuery.ref.set(data)
             }
 
-            // verify that every order in table have one part or more than one parts
-            _verifyOrderTable(orderData) {
-                if (!orderData) return
-                console.log(orderData)
-                // let multipartItem = orderData.filter((i) => i.order_product_part.length > 1 && i.quantity > 0).map((obj) => {
-                //     return obj.code;
-                // })
-                // const query = this.$.orderQuery.ref;
-                // query.orderByChild("order_product_name").equalTo("U1EL5623").once("value", snapshot => {
-                //     const userData = snapshot.val();
-                //     if (userData) {
-                //         console.log("exists!");
-                //     }
-                // });
-
-            }
-
-
             gcd(a, b) {
                 return (b == 0) ? a : gcd(b, a % b);
-            }
-
-            _serialSchedule() {
-                let order = this.sortedOrder;
-                if (order.length > 0) {
-
-                } else {
-                    window.alert("No order to reschedule")
-                }
             }
 
             _parallelSchedule() {
                 let order = this.sortedOrder;
                 if (order.length > 0) {
                     // 1) Get concurrent and initial value
-                    let concurrent = this.factoryProfile.concurrency;
-                    let wip_order_part = [];
-                    let wip_order_dependency = []
+                    const concurrent = this.factoryProfile.concurrency;
 
-                    // 2) Copy first concurrent orders from sorted order table
+                    // 2) Copy first concurrent orders from sorted order table 
                     let selected_order = order.slice(0, concurrent).concat(order.slice(order.length));
-                    // shift original order arr of concurrent and push into work in process order arr
-                    console.table(selected_order)
 
-                    wip_order_part = selected_order
-                        .filter(o => o.order_status !== 'done') // change this to waiting
-                        .map(o => o.order_product_part)
-                    console.table(wip_order_part)
+                    // 3) Filter only waiting, late or wip order 
+                    selected_order = selected_order.filter(o => o.order_status !== 'done') // change this to waiting
+                    console.log('selected order')
+                    console.log(selected_order)
 
-                    // wip_order_dependency = wip_order
-                    //     .filter(o => o.order_status !== 'done') // change this to waiting
-                    //     .map(o => o.order_product_dependency)
-                    // console.table(wip_order_dependency)
+                    // 4) Set order part and order quantity data 
+                    let order_part = selected_order.map(o => o.order_product_part)
+                    let order_quantity = selected_order.map(o => o.order_quantity)
 
+                    // Order quantity
+                    console.log('order quantity')
+                    console.log(order_quantity)
+
+                    // 5) Flat array of order part data  (only parallel and serial)
+                    order_part = order_part.reduce((a, b) =>
+                        a.concat(b), [])
+                    console.log('order part')
+                    console.table(order_part)
+
+                    // 5.1) Array of cycle 
+                    let cycleArr = order_part.map(element => element.cycle)
+                    console.log('order cycle')
+                    console.log(cycleArr)
+
+                    // 5.2) Array of setup
+                    let setupArr = order_part.map(element => element.setup)
+                    console.log('order setup')
+                    console.log(setupArr)
+
+                    // 5.3) Array of process no (index) 
+                    let processArr = order_part.map(element => element.process)
+                    console.log('order process')
+                    console.log(processArr)
+
+                    // 6) Calculate job workload of each process
+                    let workloadArr = [];
+                    for (let i = 0; i < cycleArr.length; i++) {
+                        workloadArr = cycleArr[i].map((x, k) => (x * order_quantity[k]))
+                    }
+
+                    console.log('job workload')
+                    console.table(workloadArr)
                     // Machine in each station
                     let machine_in_station = this.stationItems.map(o => o.st_machine.length);
                     console.info("machine in each station")
                     console.table(machine_in_station);
 
-                    // 3. Calculate workload of sum of each process and each part
+
                     // 4. Calculate the machine used
                     // 5. Calculate the duration of each job
 
@@ -1108,24 +1123,44 @@
                     // }
 
                     // Group order by stations
-                    const result = wip_order_part.reduce(function (r, a) {
+                    const result = cycleArr.reduce(function (r, a) {
                         r[a.process] = r[a.process] || [];
                         r[a.process].push(a);
                         return r;
                     }, Object.create(null));
-                    // console.log(result);
+                    console.log(result);
 
-                    // thos._addToSchedule(orderDate, orderNo, orderProduct, orderColor, jobPart, jobQuantity, jobMachine,
-                    //jobStatus, jobStation, jobWorkload, startTime, endTime)
-                } else {
-                    window.alert("No order to reschedule")
+
+                    if (this.scheduleItems.length < this.factoryProfile.concurrency) {
+                        this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
+                            jobPart, jobQuantity,
+                            jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
+                    } else if (this.scheduleItems.length >= this.factoryProfile.concurrency) {
+                        window.alert("Full capacity of current concurrency")
+                    } else {
+                        window.alert("No order to reschedule")
+                    }
+                }
+            }
+
+            _serialSchedule() {
+                if (this.scheduleItems.length <= 0) {
+                    this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
+                        jobPart, jobQuantity,
+                        jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
+                } else if (this.scheduleItems.length > 0) {
+                    window.alert("Full capacity of 1 concurrency")
                 }
             }
 
             _multiSchedule() {
-                let order = this.sortedOrder;
-                if (order.length > 0) {} else {
-                    window.alert("No order to reschedule")
+                if (this.scheduleItems.length <= 0) {
+                    this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
+                        jobPart, jobQuantity,
+                        jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
+
+                } else if (this.scheduleItems.length > 0) {
+                    window.alert("Full capacity of current concurrency")
                 }
             }
 

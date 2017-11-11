@@ -108,7 +108,7 @@
             <div class="center">
                 <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
                     <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                        <paper-button class="station-btn" name="[[stationItem.st_number]]">
+                        <paper-button class="station-btn" name$="[[stationItem.st_number]]">
                             {{localize('station')}} [[stationItem.st_number]]
                         </paper-button>
                     </template>
@@ -137,13 +137,13 @@
                                     <span class$="[[getTextStatus(item.job_status)]]" style$="color:[[getColorStatus(item.job_status)]]">[[item.job_status]]</span>
                                 </p>
                             </div>
-                            <flat-button class="btn" on-tap="receiveJob" job="[[item]]">
+                            <flat-button class="btn" on-tap="receiveJob" job$="[[item]]">
                                 <button>Receive</button>
                             </flat-button>
-                            <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]">
+                            <flat-button class="btn shamrock" on-tap="finishJob" job$="[[item]]">
                                 <button disabled="[[isDone(item.job_status)]]">{{localize('done')}}</button>
                             </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="removeJob" job="[[item]]">
+                            <flat-button class="thunderbird btn" on-tap="removeJob" job$="[[item]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -165,15 +165,27 @@
                                 <p>Count: [[device.counter]]</p>
                                 <p>{{localize('order-number')}}: [[device.order_no]]</p>
                                 <p>Updated: [[timestampToTime(device.update)]]</p>
+                                <p>Current target: [[selectJob.job_part]]</p>
                             </div>
+                            <vaadin-combo-box id="scheduleJob" label="Target Job" items="[[scheduleItems]]" item-value-path="job_part" item-label-path="job_part"
+                                loading="[[!scheduleItems]]" selected-item='{{selectJob}}' always-float-label required>
+                                <template>
+                                    <paper-item>
+                                        <paper-item-body two-line style="min-height: 0">
+                                            <div style="text-transform: capitalize">[[item.name]]</div>
+                                            <div secondary>Product [[item.order_product]]</div>
+                                        </paper-item-body>
+                                    </paper-item>
+                                </template>
+                            </vaadin-combo-box>
                             <paper-toggle-button class="switch" checked="{{device.enable}}" id="deviceControlSwitch" noink> Enabled</paper-toggle-button>
-                            <flat-button class="btn" on-tap="resetCounter" device="[[device]]">
+                            <flat-button class="btn" on-tap="resetCounter" device$="[[device]]">
                                 <button>Reset Counter</button>
                             </flat-button>
-                            <flat-button class="btn" on-tap="_openEditMachineCard" device="[[device]]">
+                            <flat-button class="btn" on-tap="_openEditMachineCard" device$="[[device]]">
                                 <button>{{localize('edit')}}</button>
                             </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="removeDevice" device="[[device]]">
+                            <flat-button class="thunderbird btn" on-tap="removeDevice" device$="[[device]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -358,21 +370,24 @@
 
                 // 2) condition to filter order_status == done
                 let isDone = ((element) => {
-                    return element.job_status === 'done'
+                    if (element.job_status == 'done') {
+                        return true;
+                    }
                 })
+
                 // 3) check that element job_status of every item is == done
                 let done_order = [];
-                if (order_group.length > 0) {
-                    // let i = order_group.length;
-                    // while (i > 0) {
-                    //     if (order_group[i].every(isDone)) {
-                    //         done_order.push(order_group[i]);
-                    //     }
-                    //     i--
-                    // }
+                if (order_group) {
+                    let i = Object.keys(order_group).length;
+                    while (i > 0) {
+                        if (order_group[i].every(isDone)) {
+                            console.log('xxx')
+                            done_order.push(order_group[i]);
+                        }
+                        i--
+                    }
                 }
 
-                console.log(done_order);
                 // 4) if every jobs in order is done so push to done_order 
                 if (done_order.length > 0) {
                     let warehouse_order;
@@ -394,38 +409,52 @@
                             };
                         });
                     }
-                    console.table(warehouse_order);
 
                     // 5) Remove duplicate order no from array
                     let filterDoneOrder = warehouse_order.map(o => o.order_no).filter((item, index,
                         inputArray) => {
                         return inputArray.indexOf(item) == index;
                     })
-                    console.log(filterDoneOrder)
-                    // for (let j = 0; j < doneOrderNo.length; j++) {
-                    //      this.updateOrderTable(doneOrderNo[j]);
-                    // }
+
+                    // 6) Update order no table
+                    for (let j = 0; j < filterDoneOrder.length; j++) {
+                        this.updateOrderTable(filterDoneOrder[j]);
+                    }
+                    console.log(done_order)
+                    let exportData = done_order.reduce((a, b) => a.concat(b), []);
+                    // 7) Add to warehouse
+                    this.addToWarehouse(exportData);
                 }
             }
 
             updateOrderTable(orderNo) {
-                if (orderNo) {
-                    const query = this.$.orderQuery.ref;
-                    query.orderByChild("order_no").equalTo(orderNo).once("value", (snapshot) => {
+                if (!orderNo) return
+                const query = this.$.orderQuery.ref;
+                query.orderByChild("order_no").equalTo(orderNo).once("value", (snapshot) => {
+                    if (snapshot.val()) {
                         console.log(snapshot.val())
                         snapshot.ref.update({
                             order_status: "done"
                         })
-                    });
-                }
+                    }
+                });
             }
 
             addToWarehouse(data) {
                 if (data) {
-                    console.log(data)
-                    delete data.warehouse_order
-                    console.log(data)
-                    this.$.warehouseQuery.ref.push(data);
+                    var resultObject = data.reduce((result, currentObject) => {
+                        for (let key in currentObject) {
+                            if (currentObject.hasOwnProperty(key)) {
+                                result[key] = currentObject[key];
+                            }
+                        }
+                        return result;
+                    }, {});
+
+                    delete resultObject.$key
+
+                    console.log(resultObject)
+                    this.$.warehouseQuery.ref.push(resultObject);
                 }
             }
 

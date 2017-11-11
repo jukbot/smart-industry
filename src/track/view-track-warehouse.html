@@ -77,7 +77,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[item.order_product_name]]</div>
+                                <div class="cell">[[item.order_product]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -90,7 +90,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[item.order_quantity]]</div>
+                                <div class="cell">[[item.job_quantity]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -103,7 +103,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[item.order_defect]]</div>
+                                <div class="cell">[[item.job_defect]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -114,7 +114,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[getOrderDuration(item.plan_duration)]]</div>
+                                <div class="cell">[[getActualDuration(item.actual_start,item.actual_end)]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -131,22 +131,11 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <vaadin-grid-sorter path="order_delivery">
-                                    <div class="cell"> {{localize('delivery-date')}}</div>
-                                </vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                <div class="cell">[[getDeliveryDate(item.order_delivery)]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column flex="1">
-                            <template class="header">
                                 <div class="cell numeric last">{{localize('delete')}}</div>
                             </template>
                             <template>
                                 <div class="cell numeric last">
-                                    <paper-icon-button on-tap="deleteItem" order="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-tap="deleteItem" order$="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -176,6 +165,7 @@
                     orderHistoryData: Object,
                     warehouseItems: Object,
                     toastText: String,
+                    selectAll: Object
                 }
             }
             connectedCallback() {
@@ -186,6 +176,14 @@
             getOrderDuration(order_duration) {
                 if (!order_duration) return 0
                 return this._minutesToStr(order_duration)
+            }
+
+            getActualDuration(start, end) {
+                if (start && end) {
+                    const diff = end - start;
+                    return this.secondsToHms(diff);
+                }
+                return 0
             }
 
             getDeliveryDate(timestamp) {
@@ -217,6 +215,14 @@
             // ADD 0 to numbers less than 10,Eg: 2 -> 02 
             _leftPad(number) {
                 return ((number < 10 && number >= 0) ? '0' : '') + number
+            }
+
+            secondsToHms(sec) {
+                sec = Number(sec);
+                const h = Math.floor(sec / 3600);
+                const m = Math.floor(sec % 3600 / 60);
+                const s = Math.floor(sec % 3600 % 60);
+                return ('0' + h).slice(-2) + ":" + ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
             }
 
             deleteItem(e) {

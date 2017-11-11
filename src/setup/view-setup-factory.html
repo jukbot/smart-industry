@@ -613,7 +613,7 @@
             }
 
             _isSerialModel(production_model) {
-                if (production_model === 'serial') {
+                if (production_model === 'serial' || production_model === 'multi') {
                     this.$.concurrency.hidden = true
                     this.$.concurrency.disabled = true
                     this.$.concurrencyData.hidden = true

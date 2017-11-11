@@ -115,6 +115,7 @@
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[k.key]]/factoryData/order" data="{{factoryOrderIndex}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryProfileModel" path="/data/[[k.key]]/factoryData/profile/model" data="{{factoryProfileModel}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="factoryInventory" path="/data/[[k.key]]/factoryData/inventory" order-by-child="code"
             equal-to="[[inventoryCode]]" data="{{factoryInventory}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData/order"></firebase-query>
@@ -144,8 +145,8 @@
                         </template>
                     </vaadin-combo-box>
                     <vaadin-combo-box label="{{localize('product')}}" name="product" items="[[productItems]]" id="productSelector" item-label-path="name"
-                        item-value-path="name" selected-item='{{selectProduct}}' loading="[[!productItems]]" required prevent-invalid-input
-                        always-float-label='true'>
+                        item-value-path="name" selected-item='{{selectProduct}}' on-change="verifyProductPart" loading="[[!productItems]]"
+                        required prevent-invalid-input always-float-label='true'>
                         <template>
                             <paper-icon-item style="padding: 0">
                                 <img src$="[[getProductImage(item.image)]]" width="48" height="auto" class="thumbnail" slot="item-icon">
@@ -288,7 +289,8 @@
                     selectProduct: Object,
                     selectCustomer: Object,
                     operationTime: Number,
-                    inventoryItems: Object
+                    inventoryItems: Object,
+                    factoryProfileModel: String
                 }
             }
 
@@ -589,6 +591,7 @@
             _limitOperationTime(duration) {
                 if (duration > this.operationTime) {
                     window.alert("OVERLOAD WARNING: Order duration time is longer than working operation time.")
+                    return
                 }
             }
 
@@ -597,6 +600,25 @@
                 document.title = 'order_' + this.getDateTime();
                 window.print()
                 return
+            }
+
+            // verify that selected product is 
+            verifyProductPart() {
+                const model = this.factoryProfileModel;
+                const partLength = this.$.productSelector.selectedItem.part.length;
+                if ((model === "parallel" || model === "serial") && partLength > 1) {
+                    window.alert(
+                        `Forbidden! You cannot manufacture this product with current ${model} production model. Please select multi-component model`
+                    )
+                    this._clearField();
+                    return
+                } else if (model === "multi" && partLength === 1) {
+                    window.alert(
+                        `Forbidden! You cannot manufacture this product with current ${model} production model. Please select multi-component model`
+                    )
+                    this._clearField();
+                    return
+                }
             }
 
             // CREATE ORDER
@@ -612,6 +634,7 @@
                 const orderDuration = this.orderDuration
                 const orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000)
                 const orderColor = this.getRandomColor()
+                const productColor = this.$.productSelector.selectedItem.color
                 const inventoryUse = this.$.productSelector.selectedItem.inventory_use
                 const inventoryCode = this.$.productSelector.selectedItem.inventory_code
                 const inventoryRequired = this.getUseInventory(this.$.orderQuantity.value, inventoryUse)
@@ -645,7 +668,8 @@
                         order_no: orderNo,
                         order_customer: orderCustomerName,
                         order_product: orderProductName,
-                        order_quantity: orderQuantity
+                        order_quantity: orderQuantity,
+                        product_color: productColor
                     });
                     this._pushNotification(`Create order no. ${orderNo}`, 'normal')
                     this._updateOrderIndex(orderNo)
