@@ -169,7 +169,7 @@
                                             </div>
                                         </div>
                                         <div class="center">
-                                            <flat-button class="btn" on-tap="openEditStationCard" part="[[part]]">
+                                            <flat-button class="btn" on-tap="openEditPartDialog" part="[[part]]">
                                                 <button>{{localize('edit')}}</button>
                                             </flat-button>
                                             <flat-button class="thunderbird btn" on-tap="removePartFromProduct">
@@ -197,7 +197,7 @@
 
                 <div class="card" hidden="[[showEditProduct]]">
                     <h1 class="title">{{localize('edit-product')}}</h1>
-                    <paper-input label="Name*" id="productName" type="text" value="{{editProductItems.cost}}" required always-float-label></paper-input>
+                    <paper-input label="Name*" id="productName" type="text" value="{{editProductItems.name}}" required always-float-label></paper-input>
                     <paper-input label="SKU*" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$" value="{{editProductItems.sku}}" required
                         always-float-label></paper-input>
                     <paper-input label="Cost" id="productCost" type="number" maxlength="9" value="{{editProductItems.cost}}" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
@@ -244,7 +244,7 @@
                                             </div>
                                         </div>
                                         <div class="center">
-                                            <flat-button class="btn" on-tap="openEditStationCard" part="[[part]]">
+                                            <flat-button class="btn" on-tap="openEditPartDialog" part="[[part]]">
                                                 <button>{{localize('edit')}}</button>
                                             </flat-button>
                                             <flat-button class="thunderbird btn" on-tap="removePartFromProduct">
@@ -563,8 +563,8 @@
         </vaadin-dialog>
 
         <!-- Edit part !-->
-        <vaadin-dialog id="addPartDialog" class="dialog" no-close-on-outside-click>
-            <template id="addPartContent">
+        <vaadin-dialog id="editPartDialog" class="dialog" no-close-on-outside-click>
+            <template id="editPartContent">
                 <custom-style>
                     <style is="custom-style" include="view-setup-product">
                         :host {
@@ -618,7 +618,7 @@
                         }
                     </style>
                 </custom-style>
-                <h1 class="title center">{{localize('add')}} {{localize('product-part')}}</h1>
+                <h1 class="title center">{{localize('edit')}} {{localize('product-part')}}</h1>
                 <div class="block-group">
                     <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
                     <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
@@ -666,7 +666,7 @@
                     </div>
                 </div>
                 <div class="center">
-                    <paper-button class="btn" dialog-dismiss on-tap="closeAddPartDialog">
+                    <paper-button class="btn" dialog-dismiss on-tap="closeEditPartDialog">
                         {{localize('dismiss')}}
                     </paper-button>
                     <paper-button class="btn" dialog-confirm autofocus on-tap="addPartToProduct">
@@ -724,6 +724,15 @@
                         value: true
                     },
                     showEditProduct: {
+                        type: Boolean,
+                        value: true
+                    },
+
+                    showAddPart: {
+                        type: Boolean,
+                        value: true
+                    },
+                    showEditPart: {
                         type: Boolean,
                         value: true
                     },
@@ -832,6 +841,7 @@
 
             // Add Process to Part
             addProcessToPart() {
+
                 if (this.selectedProcess && this.processCycle && this.processSetup) {
                     // if found duplicate it will return index > -1
                     let isDuplicated = this.partProcess.map(item => item).indexOf(this.selectedProcess) > -1
@@ -952,6 +962,30 @@
                 })
             }
 
+            _updateProduct(timestamp, productCost, productName, productSKU, inventoryCode, inventoryQuantity,
+                productPart, productColor, imageURL) {
+                this.$.productQuery.ref.child(this.productKey).update({
+                    add: timestamp,
+                    cost: productCost,
+                    name: productName,
+                    sku: productSKU,
+                    image: imageURL,
+                    color: productColor,
+                    inventory_code: inventoryCode,
+                    inventory_use: inventoryQuantity,
+                    part: productPart,
+                    process: this.processDependency
+                }).then(() => {
+                    this.openProductList();
+                    this.toastText = 'Add Product successfully.'
+                    this.$.toastAlert.open()
+                }).catch((error) => {
+                    this.toastText = 'Add Product failed.'
+                    this.$.toastAlert.open()
+                    console.error(error)
+                })
+            }
+
             saveProduct() {
                 const productName = this.$.productName.value
                 const productSKU = this.$.productSKU.value
@@ -973,7 +1007,7 @@
                         this._debouncer = Polymer.Debouncer.debounce(this._debouncer,
                             Polymer.Async.timeOut.after(5000), () => {
                                 imageURL = this.imageURL;
-                                this._uploadProduct(timestamp, productCost, productName, productSKU,
+                                this._updateProduct(timestamp, productCost, productName, productSKU,
                                     inventoryCode, inventoryQuantity, productPart, productColor,
                                     imageURL)
                             });
@@ -981,7 +1015,7 @@
                     else {
                         imageURL =
                             "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/default%2Fproduct%2Fstock-1.png?alt=media&token=6f83a0d2-5952-4e40-8a19-dbb51a8fbf37";
-                        this._uploadProduct(timestamp, productCost, productName, productSKU, inventoryCode,
+                        this._updateProduct(timestamp, productCost, productName, productSKU, inventoryCode,
                             inventoryQuantity, productPart, productColor, imageURL)
                     }
                 }
@@ -1067,8 +1101,13 @@
             }
 
             closeAddPartDialog() {
+
                 this.$.addPartDialog.opened = false
 
+            }
+
+            closeEditPartDialog() {
+                this.$.editPartDialog.opened = false
             }
 
             openAddProductCard() {
@@ -1094,7 +1133,7 @@
 
             }
 
-            openEditStationCard(e) {
+            openEditPartDialog(e) {
                 this.$.editPartDialog.opened = true
 
             }
