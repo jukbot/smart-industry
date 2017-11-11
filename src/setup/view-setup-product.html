@@ -40,7 +40,7 @@
             }
 
             .product-image {
-                height: 120px;
+                height: auto;
                 width: 120px;
             }
 
@@ -387,6 +387,10 @@
                             overflow: auto;
                         }
 
+                        iron-list {
+                            overflow-y: hidden !important;
+                        }
+
                         [part="content"] {
                             padding: 20px 30px;
                         }
@@ -635,7 +639,7 @@
                     let isDuplicated = this.partProcess.map(item => item).indexOf(this.selectedProcess) > -1
                     if (this.partProcess.length < this.maxProcess) {
                         if (isDuplicated) {
-                            windows.alert('You already added this process')
+                            window.alert('You already added this process')
                             return
                         }
                         this.push('partProcess', this.selectedProcess)

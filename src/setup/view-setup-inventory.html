@@ -276,7 +276,6 @@
                 this.showAddInventory = false;
                 this.showEditInventory = false;
                 this._clearField();
-                // this.$.inventoryTable.clearCache()
             }
 
             addInventory() {
@@ -311,7 +310,6 @@
                     this.$.inventoryQuery.ref.child(key).remove()
                     this.toastText = 'notification-delete-successfully'
                     this.$.toastAlert.open()
-                    // this.$.inventoryTable.clearCache()
                 }
             }
 
