@@ -2,67 +2,19 @@
   "appData": {
     "auto_backup": false,
     "email_alert": "false",
-    "language": "en",
+    "language": "th",
     "notification": true,
     "sms_alert": "false"
   },
   "chartData": [
-    [
-      "1",
-      "Order 1",
-      "#865551",
-      1511055000,
-      1511055180
-    ],
-    [
-      "1",
-      "Order 2",
-      "#85DF4C",
-      1511055000,
-      1511055480
-    ],
-    [
-      "2",
-      "Order 1",
-      "#865551",
-      1511055180,
-      1511055900
-    ],
-    [
-      "2",
-      "Order 2",
-      "#85DF4C",
-      1511055480,
-      1511056200
-    ],
-    [
-      "3",
-      "Order 1",
-      "#865551",
-      1511055900,
-      1511056836
-    ],
-    [
-      "3",
-      "Order 2",
-      "#85DF4C",
-      1511056200,
-      1511057667
-    ],
-    [
-      "4",
-      "Order 1",
-      "#865551",
-      1511056836,
-      1511058612
-    ],
-    [
-      "4",
-      "Order 1",
-      "#85DF4C",
-      1511057667,
-      1511061612
-    ]
+    ["1", "Order 1", "#865551", 1511055000, 1511055180],
+    ["1", "Order 2", "#85DF4C", 1511055000, 1511055480],
+    ["2", "Order 1", "#865551", 1511055180, 1511055900],
+    ["2", "Order 2", "#85DF4C", 1511055480, 1511056200],
+    ["3", "Order 1", "#865551", 1511055900, 1511056836],
+    ["3", "Order 2", "#85DF4C", 1511056200, 1511057667],
+    ["4", "Order 1", "#865551", 1511056836, 1511058612],
+    ["4", "Order 1", "#85DF4C", 1511057667, 1511061612]
   ],
   "customerData": {
     "-KsbOmwjuwcejdqWOaA0": {
@@ -140,23 +92,26 @@
       "-KtmjEs50e8KfSX3Nepj": {
         "add": 1505163542,
         "code": "CB-A001",
-        "cost": "3",
+        "cost": 3,
         "name": "Card board Type A",
-        "quantity": "500"
+        "quantity": 520,
+        "update": 1510372462
       },
       "-KtmkkWDW8RHH5fXvvdg": {
         "add": 1505163937,
         "code": "CB-B002",
-        "cost": "4",
+        "cost": 4,
         "name": "Card Board Type B",
-        "quantity": "400"
+        "quantity": 450,
+        "update": 1510372466
       },
       "-Ktmkpl8qGLwCVv8z_kw": {
         "add": 1505163959,
         "code": "CB-C003",
-        "cost": "7",
+        "cost": 7,
         "name": "Card Board Type C",
-        "quantity": "300"
+        "quantity": 500,
+        "update": 1510381752
       }
     },
     "machine": {
@@ -306,7 +261,7 @@
       "ot_start": "19:00"
     },
     "order": {
-      "order_count": 36
+      "order_count": 68
     },
     "performance": {
       "au": "100",
@@ -317,360 +272,249 @@
     "product": {
       "-Ky9J4oc_hiNKk6OVRzr": {
         "add": 1509854044,
+        "color": "#c3ca00",
         "cost": "50",
         "inventory_code": "B001",
         "inventory_use": "3",
         "name": "G",
         "part": [{
-          "cycle": [
-            3,
-            3,
-            5,
-            3
-          ],
+          "cycle": [3, 3, 5, 3],
           "name": "G1",
-          "process": [
-            1,
-            2,
-            3,
-            4
-          ],
-          "setup": [
-            5,
-            4,
-            4,
-            5
-          ],
+          "process": [1, 2, 3, 4],
+          "setup": [5, 4, 4, 5],
           "sku": "9001"
         }],
         "process": [{
-            "number": 0,
-            "required": "none"
-          },
-          {
-            "number": 1,
-            "required": "none"
-          },
-          {
-            "number": 2,
-            "required": "none"
-          },
-          {
-            "number": 3,
-            "required": "none"
-          }
-        ],
+          "number": 0,
+          "required": "none"
+        }, {
+          "number": 1,
+          "required": "none"
+        }, {
+          "number": 2,
+          "required": "none"
+        }, {
+          "number": 3,
+          "required": "none"
+        }],
         "sku": "9000"
       },
       "-KyDR6OXYSBTxelhJbNd": {
         "add": 1509923256,
+        "color": "#00ca64",
         "cost": "60",
         "inventory_code": "H001",
         "inventory_use": "3",
         "name": "H",
         "part": [{
-          "cycle": [
-            7,
-            5,
-            5,
-            10
-          ],
+          "cycle": [7, 5, 5, 10],
           "name": "H1",
-          "process": [
-            1,
-            2,
-            3,
-            4
-          ],
-          "setup": [
-            5,
-            8,
-            6,
-            7
-          ],
+          "process": [1, 2, 3, 4],
+          "setup": [5, 8, 6, 7],
           "sku": "8001"
         }],
         "process": [{
-            "number": 0,
-            "required": "none"
-          },
-          {
-            "number": 1,
-            "required": "none"
-          },
-          {
-            "number": 2,
-            "required": "none"
-          },
-          {
-            "number": 3,
-            "required": "none"
-          }
-        ],
+          "number": 0,
+          "required": "none"
+        }, {
+          "number": 1,
+          "required": "none"
+        }, {
+          "number": 2,
+          "required": "none"
+        }, {
+          "number": 3,
+          "required": "none"
+        }],
         "sku": "8000"
       },
       "-KyDTXLxE7KYOC2o666v": {
         "add": 1509923889,
+        "color": "#ca3000",
         "cost": "75",
         "inventory_code": "none",
         "inventory_use": 0,
         "name": "E",
         "part": [{
-          "cycle": [
-            5,
-            5,
-            5,
-            5
-          ],
+          "cycle": [5, 5, 5, 5],
           "name": "E1",
-          "process": [
-            1,
-            2,
-            3,
-            4
-          ],
-          "setup": [
-            7,
-            7,
-            8,
-            10
-          ],
+          "process": [1, 2, 3, 4],
+          "setup": [7, 7, 8, 10],
           "sku": "7001"
         }],
         "process": [{
-            "number": 0,
-            "required": "none"
-          },
-          {
-            "number": 1,
-            "required": "none"
-          },
-          {
-            "number": 2,
-            "required": "none"
-          },
-          {
-            "number": 3,
-            "required": "none"
-          }
-        ],
+          "number": 0,
+          "required": "none"
+        }, {
+          "number": 1,
+          "required": "none"
+        }, {
+          "number": 2,
+          "required": "none"
+        }, {
+          "number": 3,
+          "required": "none"
+        }],
         "sku": "7000"
       },
       "-KyDa7B4usiyHJ3OXj9G": {
         "add": 1509925922,
+        "color": "#001dca",
         "cost": "45",
         "inventory_code": "none",
         "inventory_use": 0,
         "name": "D",
         "part": [{
-          "cycle": [
-            5,
-            5,
-            5,
-            5
-          ],
+          "cycle": [5, 5, 5, 5],
           "name": "D1",
-          "process": [
-            1,
-            2,
-            3,
-            4
-          ],
-          "setup": [
-            6,
-            7,
-            7,
-            8
-          ],
+          "process": [1, 2, 3, 4],
+          "setup": [6, 7, 7, 8],
           "sku": "4001"
         }],
         "process": [{
-            "number": 0,
-            "required": "none"
-          },
-          {
-            "number": 1,
-            "required": "none"
-          },
-          {
-            "number": 2,
-            "required": "none"
-          },
-          {
-            "number": 3,
-            "required": "none"
-          }
-        ],
+          "number": 0,
+          "required": "none"
+        }, {
+          "number": 1,
+          "required": "none"
+        }, {
+          "number": 2,
+          "required": "none"
+        }, {
+          "number": 3,
+          "required": "none"
+        }],
         "sku": "4000"
+      },
+      "-KyVcBJj7ztfcxeQIlCn": {
+        "add": 1510228452,
+        "color": "#7200ca",
+        "cost": "60",
+        "image": "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/user%2F7FLKDsDXr5eLM3EooTP2ftvkBYs2%2Fproduct%2F-KyVcBJj7ztfcxeQIlCn?alt=media&token=16496e81-84ae-4d7f-bad8-9163ac529b19",
+        "inventory_code": "none",
+        "inventory_use": 0,
+        "name": "F",
+        "part": [{
+          "cycle": [6, 5, 4],
+          "name": "A",
+          "process": [1, 2, 4],
+          "setup": [4, 4, 5],
+          "sku": "6001"
+        }],
+        "process": [{
+          "number": 0,
+          "required": "none"
+        }, {
+          "number": 1,
+          "required": "none"
+        }, {
+          "number": 2,
+          "required": "none"
+        }, {
+          "number": 3,
+          "required": "none"
+        }],
+        "sku": "6000"
       },
       "4w8tugjnhlsuzgvlkhd": {
         "add": 1493380800,
+        "color": "#c300ca",
         "cost": 140,
         "image": "",
         "inventory_code": "CB-A001",
         "inventory_use": 5,
         "name": "A",
         "part": [{
-            "cycle": [
-              0.8,
-              3.8,
-              0.4,
-              6.4
-            ],
-            "name": "A1",
-            "process": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "setup": [
-              20,
-              5,
-              0,
-              0
-            ],
-            "sku": 1001
-          },
-          {
-            "cycle": [
-              0.5,
-              0,
-              1.5,
-              2.5
-            ],
-            "name": "A2",
-            "process": [
-              1,
-              2,
-              4
-            ],
-            "setup": [
-              10,
-              5,
-              0,
-              30
-            ],
-            "sku": 1002
-          }
-        ],
+          "cycle": [0.8, 3.8, 0.4, 6.4],
+          "name": "A1",
+          "process": [1, 2, 3, 4],
+          "setup": [20, 5, 0, 0],
+          "sku": 1001
+        }, {
+          "cycle": [0.5, 0, 1.5, 2.5],
+          "name": "A2",
+          "process": [1, 2, 4],
+          "setup": [10, 5, 0, 30],
+          "sku": 1002
+        }],
         "process": [{
-            "number": 0,
-            "required": "none"
-          },
-          {
-            "number": 1,
-            "required": "none"
-          },
-          {
-            "number": 2,
-            "required": "none"
-          },
-          {
-            "number": 3,
-            "required": "none"
-          }
-        ],
+          "number": 0,
+          "required": "none"
+        }, {
+          "number": 1,
+          "required": "none"
+        }, {
+          "number": 2,
+          "required": "none"
+        }, {
+          "number": 3,
+          "required": "none"
+        }],
         "sku": 1000
       },
       "esjhgvsdluighst": {
         "add": 1493380400,
+        "color": "#ca002b",
         "cost": 120,
         "image": "",
         "inventory_code": "CB-B002",
         "inventory_use": 3,
         "name": "B",
         "part": [{
-          "cycle": [
-            0.3,
-            0.5,
-            0,
-            0.1
-          ],
+          "cycle": [0.3, 0.5, 0, 0.1],
           "name": "B1",
-          "process": [
-            1,
-            2,
-            4
-          ],
-          "setup": [
-            50,
-            0,
-            0,
-            50
-          ],
+          "process": [1, 2, 4],
+          "setup": [50, 0, 0, 50],
           "sku": 2001
         }],
         "process": [{
-            "number": 0,
-            "required": "none"
-          },
-          {
-            "number": 1,
-            "required": "none"
-          },
-          {
-            "number": 2,
-            "required": "none"
-          },
-          {
-            "number": 3,
-            "required": "none"
-          }
-        ],
+          "number": 0,
+          "required": "none"
+        }, {
+          "number": 1,
+          "required": "none"
+        }, {
+          "number": 2,
+          "required": "none"
+        }, {
+          "number": 3,
+          "required": "none"
+        }],
         "sku": 1600
       },
       "rtugv8wirnhsifbsds": {
         "add": 1493380270,
+        "color": "#e5b200",
         "cost": 160,
         "image": "",
         "inventory_code": "CB-C003",
         "inventory_use": 4,
         "name": "C",
         "part": [{
-          "cycle": [
-            0,
-            3.8,
-            2.8,
-            2.3
-          ],
+          "cycle": [0, 3.8, 2.8, 2.3],
           "name": "C1",
-          "process": [
-            1,
-            2,
-            3,
-            4
-          ],
-          "setup": [
-            20,
-            0,
-            0,
-            0
-          ],
+          "process": [1, 2, 3, 4],
+          "setup": [20, 0, 0, 0],
           "sku": 1501
         }],
         "process": [{
-            "number": 0,
-            "required": "none"
-          },
-          {
-            "number": 1,
-            "required": "none"
-          },
-          {
-            "number": 2,
-            "required": "none"
-          },
-          {
-            "number": 3,
-            "required": "none"
-          }
-        ],
+          "number": 0,
+          "required": "none"
+        }, {
+          "number": 1,
+          "required": "none"
+        }, {
+          "number": 2,
+          "required": "none"
+        }, {
+          "number": 3,
+          "required": "none"
+        }],
         "sku": 3000
       }
     },
     "profile": {
-      "concurrency": 2,
+      "concurrency": 3,
       "model": "parallel",
       "name": "Sample Parallel Factory",
       "type": "jobshop"
@@ -684,145 +528,130 @@
     "station": {
       "-Kl0IT2AlzuQTentNLVu": {
         "st_machine": [{
-            "code": "cut",
-            "effi": 100,
-            "mid": "-Kiztt5iZ-77NtpQzLBG",
-            "name": "Cutting Machine 1",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "code": "cut",
-            "effi": 100,
-            "mid": "-KizuFLlQXwhkRbMokaQ",
-            "name": "Cutting Machine 2",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "code": "cut",
-            "effi": 100,
-            "mid": "-KizuHgMboBMFUMmWu8M",
-            "name": "Cutting Machine 3",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "capacity": "100",
-            "code": "cut",
-            "install": 1506202741,
-            "mid": "-KukfTIZqpRcDEEnISAz",
-            "name": "Cutting Machine 4",
-            "number": 13,
-            "type": "Cutting"
-          }
-        ],
+          "code": "cut",
+          "effi": 100,
+          "mid": "-Kiztt5iZ-77NtpQzLBG",
+          "name": "Cutting Machine 1",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "code": "cut",
+          "effi": 100,
+          "mid": "-KizuFLlQXwhkRbMokaQ",
+          "name": "Cutting Machine 2",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "code": "cut",
+          "effi": 100,
+          "mid": "-KizuHgMboBMFUMmWu8M",
+          "name": "Cutting Machine 3",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "capacity": "100",
+          "code": "cut",
+          "install": 1506202741,
+          "mid": "-KukfTIZqpRcDEEnISAz",
+          "name": "Cutting Machine 4",
+          "number": 13,
+          "type": "Cutting"
+        }],
         "st_name": "Cutting Station",
         "st_number": 1
       },
       "-Kl5CWt64LGJqm8oEMcS": {
         "st_machine": [{
-            "code": "fold",
-            "effi": 100,
-            "mid": "-Kizu8ucOa7u7WeYttDP",
-            "name": "Folding Machine 1",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "code": "fold",
-            "effi": 100,
-            "mid": "-KizuAZlfYqTO8sDbO03",
-            "name": "Folding Machine 2",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "code": "fold",
-            "effi": 100,
-            "mid": "-KizuBpB5A0u5VXf_J72",
-            "name": "Folding Machine 3",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "capacity": "200",
-            "code": "fold",
-            "install": 1506202872,
-            "mid": "-KukfyNvblR6NMtvqMpF",
-            "name": "Folding Machine 4",
-            "number": 14,
-            "type": "Folding"
-          }
-        ],
+          "code": "fold",
+          "effi": 100,
+          "mid": "-Kizu8ucOa7u7WeYttDP",
+          "name": "Folding Machine 1",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "code": "fold",
+          "effi": 100,
+          "mid": "-KizuAZlfYqTO8sDbO03",
+          "name": "Folding Machine 2",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "code": "fold",
+          "effi": 100,
+          "mid": "-KizuBpB5A0u5VXf_J72",
+          "name": "Folding Machine 3",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "capacity": "200",
+          "code": "fold",
+          "install": 1506202872,
+          "mid": "-KukfyNvblR6NMtvqMpF",
+          "name": "Folding Machine 4",
+          "number": 14,
+          "type": "Folding"
+        }],
         "st_name": "Folding Station",
         "st_number": 2
       },
       "-Kl5HQJrig6oW9vWiaZr": {
         "st_machine": [{
-            "code": "slot",
-            "effi": 100,
-            "mid": "-Kiztyuja5Ab699NtXx9",
-            "name": "Slotting Machine 1",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "code": "slot",
-            "effi": 100,
-            "mid": "-Kiztyuja5Ab699NtXx9",
-            "name": "Slotting Machine 2",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "code": "slot",
-            "effi": 100,
-            "mid": "-Kizu-HZ7xRR_2EnZWzL",
-            "name": "Slotting Machine 3",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "capacity": "200",
-            "code": "slot",
-            "install": 1506202907,
-            "mid": "-Kukg5u-dd2ccynGEmjK",
-            "name": "Slotting Machine 4",
-            "number": 16,
-            "type": "Slotting"
-          }
-        ],
+          "code": "slot",
+          "effi": 100,
+          "mid": "-Kiztyuja5Ab699NtXx9",
+          "name": "Slotting Machine 1",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "code": "slot",
+          "effi": 100,
+          "mid": "-Kiztyuja5Ab699NtXx9",
+          "name": "Slotting Machine 2",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "code": "slot",
+          "effi": 100,
+          "mid": "-Kizu-HZ7xRR_2EnZWzL",
+          "name": "Slotting Machine 3",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "capacity": "200",
+          "code": "slot",
+          "install": 1506202907,
+          "mid": "-Kukg5u-dd2ccynGEmjK",
+          "name": "Slotting Machine 4",
+          "number": 16,
+          "type": "Slotting"
+        }],
         "st_name": "Slotting Station",
         "st_number": 3
       },
       "-Kl5pRCsMWkfBNJ_MXv6": {
         "st_machine": [{
-            "code": "glue",
-            "effi": 100,
-            "mid": "-KizuD5OAfKFPRF-JbFa",
-            "name": "Gluing Machine 1",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "code": "glue",
-            "effi": 100,
-            "mid": "-KiztuvqORJsmCcNgGIP",
-            "name": "Gluing Machine 2",
-            "queue": 0,
-            "status": "Stopped"
-          },
-          {
-            "capacity": "15",
-            "code": "glue",
-            "install": 1493573294,
-            "mid": "-KiztxY3ON0DK-QBf9-F",
-            "name": "Gluing Machine 3",
-            "number": 12,
-            "type": "Gluing"
-          }
-        ],
+          "code": "glue",
+          "effi": 100,
+          "mid": "-KizuD5OAfKFPRF-JbFa",
+          "name": "Gluing Machine 1",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "code": "glue",
+          "effi": 100,
+          "mid": "-KiztuvqORJsmCcNgGIP",
+          "name": "Gluing Machine 2",
+          "queue": 0,
+          "status": "Stopped"
+        }, {
+          "capacity": "15",
+          "code": "glue",
+          "install": 1493573294,
+          "mid": "-KiztxY3ON0DK-QBf9-F",
+          "name": "Gluing Machine 3",
+          "number": 12,
+          "type": "Gluing"
+        }],
         "st_name": "Gluing Station",
         "st_number": 4
       }
@@ -830,245 +659,189 @@
   },
   "historyData": {
     "order": {
-      "-KtxR8fHvd0pwPvgso5B": {
-        "order_customer": "-KsbOmwjuwcejdqWOaA0",
-        "order_date": 1505343086,
-        "order_delivery": 1505606400,
-        "order_no": 1,
+      "-KycYAW0xlmdSKoM8hwH": {
+        "order_customer": "Chukkrit Visitsaktavorn",
+        "order_date": 1510361315,
+        "order_delivery": 1510444800,
+        "order_no": 45,
         "order_product": "A",
-        "order_quantity": 11
-      },
-      "-KtxRjh7TYOpu5LaHFqP": {
-        "order_customer": "-Kth_e8pBCDp5E3v8cHU",
-        "order_date": 1505343241,
-        "order_delivery": 1505692800,
-        "order_no": 1,
-        "order_product": "B",
-        "order_quantity": 13
-      },
-      "-KtxRqE_fzNp6ofYkpA5": {
-        "order_customer": "-Kth_zhdsZ-X5SptlM0T",
-        "order_date": 1505343268,
-        "order_delivery": 1505952000,
-        "order_no": 1,
-        "order_product": "C",
-        "order_quantity": 21
-      },
-      "-KtzuBXA-_-unFxpsibI": {
-        "order_customer": "-Kth_TRc7vEYW2QihisL",
-        "order_date": 1505384514,
-        "order_delivery": 1506124800,
-        "order_no": 1,
-        "order_product": "A",
-        "order_quantity": 4
-      },
-      "-Ku-VC3nyjOP_fzbNx6-": {
-        "order_customer": "-Kth_e8pBCDp5E3v8cHU",
-        "order_date": 1505394480,
-        "order_delivery": 1505865600,
-        "order_no": 5,
-        "order_product": "B",
-        "order_quantity": 4
-      },
-      "-Ku0aQAwgBfBGi7dceSW": {
-        "order_customer": "Kim Alexa",
-        "order_date": 1505412888,
-        "order_delivery": 1506124800,
-        "order_no": 3,
-        "order_product": "C",
-        "order_quantity": 11
-      },
-      "-Ku0rJ2riJWDy69MzuVC": {
-        "order_customer": "Marisa Dumlukin",
-        "order_date": 1505417315,
-        "order_delivery": 1505865600,
-        "order_no": 4,
-        "order_product": "A",
-        "order_quantity": 11
-      },
-      "-Ku0rURA765IGtMJbmYR": {
-        "order_customer": "Thomson Mirak",
-        "order_date": 1505417361,
-        "order_delivery": 1505952000,
-        "order_no": 5,
-        "order_product": "A",
-        "order_quantity": 11
-      },
-      "-Ku0ruI9zkaINUXk_sbv": {
-        "order_customer": "David Lee",
-        "order_date": 1505417471,
-        "order_delivery": 1505865600,
-        "order_no": 3,
-        "order_product": "B",
-        "order_quantity": 7
-      },
-      "-Ku0s8R0TmlEXseIjxuP": {
-        "order_customer": "David Lee",
-        "order_date": 1505417533,
-        "order_delivery": 1505952000,
-        "order_no": 3,
-        "order_product": "B",
-        "order_quantity": 16
-      },
-      "-Ku2PzRrFm0Scs-hT18_": {
-        "order_customer": "Thomson Mirak",
-        "order_date": 1505443445,
-        "order_delivery": 1505865600,
-        "order_no": 4,
-        "order_product": "B",
-        "order_quantity": 10
-      },
-      "-KuY_OKaFFULZ-fgpgLA": {
-        "order_customer": "Phill Jackson",
-        "order_date": 1505983043,
-        "order_delivery": 1506038400,
-        "order_no": 5,
-        "order_product": "A",
-        "order_quantity": 2
-      },
-      "-Kuivh_o4Ej5uakPvnv_": {
-        "order_customer": "Marisa Dumlukin",
-        "order_date": 1506173443,
-        "order_delivery": 1506470400,
-        "order_no": 6,
-        "order_product": "C",
         "order_quantity": 6
       },
-      "-KuivpeK5GSbp2-q2Hya": {
-        "order_customer": "Thomson Mirak",
-        "order_date": 1506173476,
-        "order_delivery": 1506556800,
-        "order_no": 2,
-        "order_product": "B",
+      "-KycbzxKfRGPmcWv039N": {
+        "order_customer": "Chukkrit Visitsaktavorn",
+        "order_date": 1510362579,
+        "order_delivery": 1511395200,
+        "order_no": 46,
+        "order_product": "G",
+        "order_quantity": 5
+      },
+      "-Kych08Ncntaq0UqZLaF": {
+        "order_customer": "Chukkrit Visitsaktavorn",
+        "order_date": 1510363895,
+        "order_delivery": 1511913600,
+        "order_no": 47,
+        "order_product": "H",
+        "order_quantity": 6
+      },
+      "-KycigOnqZWB1C6a_5rl": {
+        "order_customer": "Warut Sathorn",
+        "order_date": 1510364334,
+        "order_delivery": 1512000000,
+        "order_no": 48,
+        "order_product": "H",
         "order_quantity": 8
       },
-      "-Kuivv4AnBOVIuNXx2xv": {
-        "order_customer": "Kim Alexa",
-        "order_date": 1506173498,
-        "order_delivery": 1506384000,
-        "order_no": 3,
-        "order_product": "A",
+      "-KycjH-cUmzBZsuUK74w": {
+        "order_customer": "Chukkrit Visitsaktavorn",
+        "order_date": 1510364488,
+        "order_delivery": 1511913600,
+        "order_no": 49,
+        "order_product": "H",
         "order_quantity": 4
       },
-      "-KuixqNsfmxF9QGV4wTP": {
-        "order_customer": "Thomson Mirak",
-        "order_date": 1506174003,
-        "order_delivery": 1506384000,
-        "order_no": 1,
-        "order_product": "A",
-        "order_quantity": 6
-      },
-      "-KuiykWrfp5LtX4vc_pw": {
-        "order_customer": "Marisa Dumlukin",
-        "order_date": 1506174242,
-        "order_delivery": 1506470400,
-        "order_no": 2,
-        "order_product": "B",
-        "order_quantity": 7
-      },
-      "-Kuiyn_xv3MwKn0wi7t5": {
-        "order_customer": "Phill Jackson",
-        "order_date": 1506174254,
-        "order_delivery": 1506556800,
-        "order_no": 3,
-        "order_product": "C",
-        "order_quantity": 10
-      },
-      "-Kuo5ONZyXyshZdGatL8": {
+      "-KycjSR-VPt_CFqfG80i": {
         "order_customer": "David Lee",
-        "order_date": 1506260130,
-        "order_delivery": 1506729600,
-        "order_no": 4,
-        "order_product": "A",
-        "order_quantity": 6
-      },
-      "-KupzMTZEhPzsACTkaRg": {
-        "order_customer": "Mark Janova",
-        "order_date": 1506291842,
-        "order_delivery": 1506816000,
-        "order_no": 5,
-        "order_product": "A",
-        "order_quantity": 6
-      },
-      "-KupzR0TWpn19rIC9TMk": {
-        "order_customer": "Kim Alexa",
-        "order_date": 1506291860,
-        "order_delivery": 1506816000,
-        "order_no": 5,
+        "order_date": 1510364535,
+        "order_delivery": 1511827200,
+        "order_no": 50,
         "order_product": "A",
         "order_quantity": 2
       },
-      "-KurbSNrttR4Avs698AY": {
-        "order_customer": "Warut Sathorn",
-        "order_date": 1506319128,
-        "order_delivery": 1506470400,
-        "order_no": 6,
-        "order_product": "B",
-        "order_quantity": 21
-      },
-      "-KusReXNVcOe0e8i9e02": {
-        "order_customer": "Warut Sathorn",
-        "order_date": 1506333076,
-        "order_delivery": 1506470400,
-        "order_no": 7,
-        "order_product": "C",
-        "order_quantity": 11
-      },
-      "-KxZ65KOP3FUVMcpvK6v": {
+      "-Kycjd5BHYLrNdRvrxBO": {
         "order_customer": "David Lee",
-        "order_date": 1509213104,
-        "order_delivery": 1509408000,
-        "order_no": 7,
+        "order_date": 1510364582,
+        "order_delivery": 1511222400,
+        "order_no": 51,
         "order_product": "A",
-        "order_quantity": 4
+        "order_quantity": 41
       },
-      "-Kx_Ya5mkB-nTG0Bh6Cx": {
-        "order_customer": "Phill Jackson",
-        "order_date": 1509237350,
-        "order_delivery": 1509321600,
-        "order_no": 8,
+      "-KyckBTnWJwrtssGGPTE": {
+        "order_customer": "David Lee",
+        "order_date": 1510364728,
+        "order_delivery": 1511222400,
+        "order_no": 52,
+        "order_product": "B",
+        "order_quantity": 6
+      },
+      "-Kyckg2y5ixD8dtPfYUp": {
+        "order_customer": "Mark Janova",
+        "order_date": 1510364857,
+        "order_delivery": 1511740800,
+        "order_no": 53,
         "order_product": "A",
         "order_quantity": 6
       },
-      "-Kx_Zmwavn8A1egVS5Lv": {
-        "order_customer": "Warut Sathorn",
-        "order_date": 1509237665,
-        "order_delivery": 1509408000,
-        "order_no": 9,
-        "order_product": "C",
-        "order_quantity": 4
+      "-KycnVi5V3jAzgtfc27F": {
+        "order_customer": "Mark Janova",
+        "order_date": 1510365597,
+        "order_delivery": 1511913600,
+        "order_no": 54,
+        "order_product": "B",
+        "order_quantity": 58
       },
-      "-KxhFszEPSfArpzLnqPQ": {
-        "order_customer": "Warut Sathorn",
-        "order_date": 1509366665,
-        "order_delivery": 1509408000,
-        "order_no": 8,
-        "order_product": "A",
-        "order_quantity": 4
-      },
-      "-KyIQMNC6arQN06d4PO9": {
-        "order_customer": "Chukkrit Visitsaktavorn",
-        "order_date": 1510006945,
-        "order_delivery": 1510704000,
-        "order_no": 37,
+      "-KycnngQOsa8s7Lne5VG": {
+        "order_customer": "David Lee",
+        "order_date": 1510365674,
+        "order_delivery": 1511740800,
+        "order_no": 55,
         "order_product": "G",
         "order_quantity": 6
       },
-      "-KyN_91i4dcKJAOlvc7i": {
-        "order_customer": "Chukkrit Visitsaktavorn",
-        "order_date": 1510093398,
-        "order_delivery": 1510272000,
-        "order_no": 37,
-        "order_product": "E",
+      "-Kyco4zaJ00pcce1wiPT": {
+        "order_customer": "David Lee",
+        "order_date": 1510365749,
+        "order_delivery": 1511827200,
+        "order_no": 56,
+        "order_product": "B",
+        "order_quantity": 6
+      },
+      "-KycoIRzeBFLfLGQL_u-": {
+        "order_customer": "David Lee",
+        "order_date": 1510365805,
+        "order_delivery": 1511740800,
+        "order_no": 57,
+        "order_product": "B",
+        "order_quantity": 12
+      },
+      "-KycoaWMaHvUM68IyF1V": {
+        "order_customer": "Mark Janova",
+        "order_date": 1510365883,
+        "order_delivery": 1511913600,
+        "order_no": 58,
+        "order_product": "B",
         "order_quantity": 5
       },
-      "-KyN_T8Ox-uiCdALf9Ou": {
-        "order_customer": "Thomson Mirak",
-        "order_date": 1510093481,
-        "order_delivery": 1510272000,
-        "order_no": 37,
-        "order_product": "E",
-        "order_quantity": 11
+      "-KycomiNJSO1DPmmnKau": {
+        "order_customer": "Marisa Dumlukin",
+        "order_date": 1510365933,
+        "order_delivery": 1511913600,
+        "order_no": 59,
+        "order_product": "A",
+        "order_quantity": 6
+      },
+      "-KycqY_4A5l1cgtC6tBb": {
+        "order_customer": "Mark Janova",
+        "order_date": 1510366395,
+        "order_delivery": 1511913600,
+        "order_no": 60,
+        "order_product": "A",
+        "order_quantity": 7
+      },
+      "-Kycqps0nFwlSCE_7miw": {
+        "order_customer": "David Lee",
+        "order_date": 1510366470,
+        "order_delivery": 1511136000,
+        "order_no": 61,
+        "order_product": "A",
+        "order_quantity": 4
+      },
+      "-KycrgU-6fQmjGkj8JAy": {
+        "order_customer": "David Lee",
+        "order_date": 1510366694,
+        "order_delivery": 1511913600,
+        "order_no": 62,
+        "order_product": "A",
+        "order_quantity": 5
+      },
+      "-KycsaVIYCuW74EFjKUe": {
+        "order_customer": "David Lee",
+        "order_date": 1510366931,
+        "order_delivery": 1511740800,
+        "order_no": 63,
+        "order_product": "A",
+        "order_quantity": 3
+      },
+      "-Kyctcmfrsder6jBdqyu": {
+        "order_customer": "David Lee",
+        "order_date": 1510367203,
+        "order_delivery": 1512000000,
+        "order_no": 64,
+        "order_product": "A",
+        "order_quantity": 2
+      },
+      "-KycuRJSKjcSfvkyycDd": {
+        "order_customer": "David Lee",
+        "order_date": 1510367414,
+        "order_delivery": 1512000000,
+        "order_no": 65,
+        "order_product": "A",
+        "order_quantity": 3
+      },
+      "-KycxBqVoZsBPKT4kJud": {
+        "order_customer": "Chukkrit Visitsaktavorn",
+        "order_date": 1510368137,
+        "order_delivery": 1511136000,
+        "order_no": 66,
+        "order_product": "F",
+        "order_quantity": 3
+      },
+      "-Kyd8hDAuqN_pHLgFPF9": {
+        "order_customer": "Mark Janova",
+        "order_date": 1510371415,
+        "order_delivery": 1511308800,
+        "order_no": 67,
+        "order_product": "C",
+        "order_quantity": 3
       }
     }
   },
@@ -1147,88 +920,370 @@
       "created": 1510093481,
       "detail": "Created order no.37",
       "type": "normal"
+    },
+    "-KyOK96na1P5a68VOBg7": {
+      "created": 1510105982,
+      "detail": "Created order no.37",
+      "type": "normal"
+    },
+    "-KyOMXKwsnNLUAkxJgO0": {
+      "created": 1510106605,
+      "detail": "Created order no.37",
+      "type": "normal"
+    },
+    "-KyOUH5tU_XjUmou9z4_": {
+      "created": 1510108636,
+      "detail": "Created order no.37",
+      "type": "normal"
+    },
+    "-KyOVe5gwgWRbZS1Yp6X": {
+      "created": 1510108996,
+      "detail": "Created order no.37",
+      "type": "normal"
+    },
+    "-KyOW7jIOyzR1fgYWlWt": {
+      "created": 1510109122,
+      "detail": "Created order no.37",
+      "type": "normal"
+    },
+    "-KyOWHmHazZA3x3WwsBA": {
+      "created": 1510109163,
+      "detail": "Created order no.39",
+      "type": "normal"
+    },
+    "-KyOWjgiHqxmEmQPZ-vP": {
+      "created": 1510109281,
+      "detail": "Created order no.41",
+      "type": "normal"
+    },
+    "-KyOX1F8sVXQD-coghLu": {
+      "created": 1510109357,
+      "detail": "Created order no.43",
+      "type": "normal"
+    },
+    "-KyOX_6HL9eQw5JjJHUt": {
+      "created": 1510109500,
+      "detail": "Created order no.42",
+      "type": "normal"
+    },
+    "-KyOYXf-2oNtJDCGjNzI": {
+      "created": 1510109752,
+      "detail": "Created order no.42",
+      "type": "normal"
+    },
+    "-KyOYn79Am3QPGkyvCRN": {
+      "created": 1510109820,
+      "detail": "Created order no.43",
+      "type": "normal"
+    },
+    "-KyOYuryzVpkpWGUcW1n": {
+      "created": 1510109851,
+      "detail": "Created order no.44",
+      "type": "normal"
+    },
+    "-KyOYzK5eN3LXOM4QKE5": {
+      "created": 1510109870,
+      "detail": "Created order no.45",
+      "type": "normal"
+    },
+    "-KyUeb4OOsaqN9KfWrqn": {
+      "created": 1510212268,
+      "detail": "Edited order no.1",
+      "type": "normal"
+    },
+    "-KyUg9tEaQ13TCAR3wIh": {
+      "created": 1510212676,
+      "detail": "Edited order no.1",
+      "type": "normal"
+    },
+    "-KyUgyVRjKo5Q6xvlW1j": {
+      "created": 1510212888,
+      "detail": "Edited order no.1",
+      "type": "normal"
+    },
+    "-KyUhLbAQtdmZbwUNs49": {
+      "created": 1510212986,
+      "detail": "Edited order no.1",
+      "type": "normal"
+    },
+    "-KyV80Ase8ZJd_wN167c": {
+      "created": 1510220240,
+      "detail": "Edited order no.1",
+      "type": "normal"
+    },
+    "-KyV87UlGc0kaOEwdfTi": {
+      "created": 1510220270,
+      "detail": "Edited order no.1",
+      "type": "normal"
+    },
+    "-KyV89QYoBym-uIUHa4l": {
+      "created": 1510220278,
+      "detail": "Edited order no.5",
+      "type": "normal"
+    },
+    "-KyV8kSab4PGyUZ6FoF7": {
+      "created": 1510220433,
+      "detail": "Edited order no.5",
+      "type": "normal"
+    },
+    "-KyV8lVM0X736C3Cvinn": {
+      "created": 1510220438,
+      "detail": "Edited order no.1",
+      "type": "normal"
+    },
+    "-KyV8oJ11xN66PvWf1YM": {
+      "created": 1510220449,
+      "detail": "Edited order no.5",
+      "type": "normal"
+    },
+    "-KyVAPQYAVQslcfkFkd1": {
+      "created": 1510220867,
+      "detail": "Edited order no.1",
+      "type": "normal"
+    },
+    "-KyVARqkajWp6CEYhRgt": {
+      "created": 1510220877,
+      "detail": "Edited order no.1",
+      "type": "normal"
+    },
+    "-KyVR8cgcbcpzhrcoss9": {
+      "created": 1510225255,
+      "detail": "Edited order no.1",
+      "type": "normal"
+    },
+    "-KycYAW4lCX-8uO9UGaq": {
+      "created": 1510361315,
+      "detail": "Created order no.45",
+      "type": "normal"
+    },
+    "-KycbzxMN1oTSiUkTU6m": {
+      "created": 1510362579,
+      "detail": "Created order no.46",
+      "type": "normal"
+    },
+    "-Kych08PJMXqJ1QjiMsy": {
+      "created": 1510363895,
+      "detail": "Created order no.47",
+      "type": "normal"
+    },
+    "-KycigOru7mIwNcAXoZm": {
+      "created": 1510364334,
+      "detail": "Created order no.48",
+      "type": "normal"
+    },
+    "-KycjH-fVLqkJYNcbWBw": {
+      "created": 1510364488,
+      "detail": "Created order no.49",
+      "type": "normal"
+    },
+    "-KycjSR2yVhg3KgBe4pw": {
+      "created": 1510364535,
+      "detail": "Created order no.50",
+      "type": "normal"
+    },
+    "-Kycjd5FegiBNRdggOnP": {
+      "created": 1510364582,
+      "detail": "Created order no.51",
+      "type": "normal"
+    },
+    "-KyckBTqpYXGQsfdxJMn": {
+      "created": 1510364728,
+      "detail": "Created order no.52",
+      "type": "normal"
+    },
+    "-Kyckg308k3sdjyJM53e": {
+      "created": 1510364857,
+      "detail": "Created order no.53",
+      "type": "normal"
+    },
+    "-KycnVi857-WP0rLMZO9": {
+      "created": 1510365597,
+      "detail": "Created order no.54",
+      "type": "normal"
+    },
+    "-KycnngTl0fCFU7LMj01": {
+      "created": 1510365674,
+      "detail": "Created order no.55",
+      "type": "normal"
+    },
+    "-Kyco4zeeuugPnqGCk-c": {
+      "created": 1510365749,
+      "detail": "Created order no.56",
+      "type": "normal"
+    },
+    "-KycoIS1HRRqIJYuHdgI": {
+      "created": 1510365805,
+      "detail": "Created order no.57",
+      "type": "normal"
+    },
+    "-KycoaWPnnDwvpY0i1Zj": {
+      "created": 1510365883,
+      "detail": "Created order no.58",
+      "type": "normal"
+    },
+    "-KycomiRu030m9nl0817": {
+      "created": 1510365933,
+      "detail": "Created order no.59",
+      "type": "normal"
+    },
+    "-KycqY_7hob-IYo99JEN": {
+      "created": 1510366395,
+      "detail": "Created order no.60",
+      "type": "normal"
+    },
+    "-Kycqps3u-jF15pR2KGv": {
+      "created": 1510366470,
+      "detail": "Created order no.61",
+      "type": "normal"
+    },
+    "-KycrgU1acjnPRlEE9BO": {
+      "created": 1510366694,
+      "detail": "Created order no.62",
+      "type": "normal"
+    },
+    "-KycsaVL9-WNhf67dToj": {
+      "created": 1510366931,
+      "detail": "Created order no.63",
+      "type": "normal"
+    },
+    "-Kyctcmj8uF7NmtfiQdb": {
+      "created": 1510367203,
+      "detail": "Created order no.64",
+      "type": "normal"
+    },
+    "-KycuRJWRku5aS6hFq1L": {
+      "created": 1510367414,
+      "detail": "Created order no.65",
+      "type": "normal"
+    },
+    "-KycxBqb2yIINXk0UJ9Q": {
+      "created": 1510368137,
+      "detail": "Created order no.66",
+      "type": "normal"
+    },
+    "-Kyd4IqutfTVWOYeiR4J": {
+      "created": 1.510370262646E9,
+      "detail": "Inventory code Card board Type A stock is low",
+      "type": "warn"
+    },
+    "-Kyd4PH8zlJH551w4g09": {
+      "created": 1.510370288889E9,
+      "detail": "Inventory code Card board Type A stock is low",
+      "type": "warn"
+    },
+    "-Kyd4PIDRk39SpAtaxF0": {
+      "created": 1.510370288889E9,
+      "detail": "Inventory code Card Board Type B stock is low",
+      "type": "warn"
+    },
+    "-Kyd62pKpTy9ajD4dsAu": {
+      "created": 1.510370721294E9,
+      "detail": "Inventory code CB-A001 is low stock",
+      "type": "warn"
+    },
+    "-Kyd62qzvD4beqUatxHt": {
+      "created": 1.510370721294E9,
+      "detail": "Inventory code CB-B002 is low stock",
+      "type": "warn"
+    },
+    "-Kyd6gO_VIWfwyyPsBzM": {
+      "created": 1.510370887453E9,
+      "detail": "Inventory code CB-A001 is low stock",
+      "type": "warn"
+    },
+    "-Kyd6gQ7cAyyTAlOzfg8": {
+      "created": 1.510370887453E9,
+      "detail": "Inventory code CB-B002 is low stock",
+      "type": "warn"
+    },
+    "-Kyd72cGYpdYHup1ilv9": {
+      "created": 1.510370982529E9,
+      "detail": "Inventory code CB-A001 is low stock",
+      "type": "warn"
+    },
+    "-Kyd72dOlpmKkwQLPWHg": {
+      "created": 1.510370982529E9,
+      "detail": "Inventory code CB-B002 is low stock",
+      "type": "warn"
+    },
+    "-Kyd79NJVildxHufS7Kh": {
+      "created": 1.510371010253E9,
+      "detail": "Inventory code CB-A001 is low stock",
+      "type": "warn"
+    },
+    "-Kyd79OET1N5js2qz8FZ": {
+      "created": 1.510371010253E9,
+      "detail": "Inventory code CB-B002 is low stock",
+      "type": "warn"
+    },
+    "-Kyd7EiEU5_IVUfLQC4V": {
+      "created": 1.51037103214E9,
+      "detail": "Inventory code CB-A001 is low stock",
+      "type": "warn"
+    },
+    "-Kyd7EjAtmzc1X_iPhn3": {
+      "created": 1.51037103214E9,
+      "detail": "Inventory code CB-B002 is low stock",
+      "type": "warn"
+    },
+    "-Kyd7fxo0QLAINSaUl4I": {
+      "created": 1.510371147824E9,
+      "detail": "Inventory code CB-A001 is low stock",
+      "type": "warn"
+    },
+    "-Kyd7yX3d6RHahK6rS9K": {
+      "created": 1.510371223797E9,
+      "detail": "Inventory code CB-A001 is low stock",
+      "type": "warn"
+    },
+    "-Kyd8ZKJCm7zDyamFLdN": {
+      "created": 1.5103713787E9,
+      "detail": "Inventory code CB-A001 is low stock",
+      "type": "warn"
+    },
+    "-Kyd8hDEaJJrwVWzRgLj": {
+      "created": 1510371415,
+      "detail": "Created order no.67",
+      "type": "normal"
+    },
+    "-KydClLyxelGfLFLdasc": {
+      "created": 1.510372480564E9,
+      "detail": "Inventory code CB-C003 is out of stock.",
+      "type": "critical"
+    },
+    "-KydDe2WGrzAaQ1PmBJH": {
+      "created": 1.510372712859E9,
+      "detail": "Inventory code CB-C003 is out of stock.",
+      "type": "critical"
+    },
+    "-KydEHPFKHlvtKapwlAe": {
+      "created": 1.510372878799E9,
+      "detail": "Inventory code CB-C003 is out of stock.",
+      "type": "critical"
+    },
+    "-KydEkyHqiix2upL7M4p": {
+      "created": 1.510373003338E9,
+      "detail": "Inventory code CB-C003 is out of stock.",
+      "type": "critical"
+    },
+    "-KydUth8HfwKlfCjH-PZ": {
+      "created": 1.510377233344E9,
+      "detail": "Inventory code CB-C003 is out of stock.",
+      "type": "critical"
+    },
+    "-KydkL1fMpAMXKVyfBvn": {
+      "created": 1.510381543217E9,
+      "detail": "Inventory code CB-C003 is out of stock.",
+      "type": "critical"
+    },
+    "-KydkPj88N33LIKLUO-w": {
+      "created": 1.510381562515E9,
+      "detail": "Inventory code CB-C003 is out of stock.",
+      "type": "critical"
     }
   },
   "orderData": {
     "-KuixqNm4NMZdm4bRamQ": {
-      "order_color": "#91524f",
-      "order_customer": "Thomson Mirak",
-      "order_date": 1506174003,
-      "order_delivery": 1506384000,
-      "order_duration": 365.5,
-      "order_no": 1,
-      "order_product_name": "A",
-      "order_product_part": [{
-          "cycle": [
-            0.8,
-            3.8,
-            0.4,
-            6.4
-          ],
-          "name": "A1",
-          "process": "1,2,3,4",
-          "setup": [
-            20,
-            5,
-            0,
-            0
-          ],
-          "sku": 1001
-        },
-        {
-          "cycle": [
-            0,
-            0.8,
-            0.7,
-            6.4
-          ],
-          "name": "A2",
-          "process": "2,3,4",
-          "setup": [
-            0,
-            40,
-            10,
-            40
-          ],
-          "sku": 1002
-        },
-        {
-          "cycle": [
-            2.75,
-            0.8,
-            0,
-            6.4
-          ],
-          "name": "A3",
-          "process": "1,2,4",
-          "setup": [
-            25,
-            10,
-            40,
-            0
-          ],
-          "sku": 1003
-        }
-      ],
-      "order_product_process": [{
-          "number": 0,
-          "required": "none"
-        },
-        {
-          "number": 1,
-          "required": "none"
-        },
-        {
-          "number": 2,
-          "required": "none"
-        },
-        {
-          "number": 3,
-          "required": "A1,A2,A3"
-        }
-      ],
-      "order_product_sku": 1000,
-      "order_quantity": 6,
       "order_status": "late"
     },
     "-KuiykWiU2v28Q7HljLv": {
@@ -1240,699 +1295,1079 @@
       "order_no": 2,
       "order_product_name": "B",
       "order_product_part": [{
-          "cycle": [
-            0.3,
-            0.5,
-            0,
-            0.1
-          ],
-          "name": "B1",
-          "process": "1,2,4",
-          "setup": [
-            50,
-            0,
-            0,
-            50
-          ],
-          "sku": 2001
-        },
-        {
-          "cycle": [
-            0,
-            0.5,
-            0.05,
-            0.1
-          ],
-          "name": "B2",
-          "process": "2,3,4",
-          "setup": [
-            0,
-            50,
-            0,
-            0
-          ],
-          "sku": 2002
-        },
-        {
-          "cycle": [
-            0.3,
-            0,
-            0.05,
-            0.1
-          ],
-          "name": "B3",
-          "process": "1,3,4",
-          "setup": [
-            50,
-            25,
-            25,
-            50
-          ],
-          "sku": 2003
-        }
-      ],
+        "cycle": [0.3, 0.5, 0, 0.1],
+        "name": "B1",
+        "process": "1,2,4",
+        "setup": [50, 0, 0, 50],
+        "sku": 2001
+      }, {
+        "cycle": [0, 0.5, 0.05, 0.1],
+        "name": "B2",
+        "process": "2,3,4",
+        "setup": [0, 50, 0, 0],
+        "sku": 2002
+      }, {
+        "cycle": [0.3, 0, 0.05, 0.1],
+        "name": "B3",
+        "process": "1,3,4",
+        "setup": [50, 25, 25, 50],
+        "sku": 2003
+      }],
       "order_product_process": [{
-          "number": 0,
-          "required": "none"
-        },
-        {
-          "number": 1,
-          "required": "none"
-        },
-        {
-          "number": 2,
-          "required": "none"
-        },
-        {
-          "number": 3,
-          "required": "B1,B2,B3"
-        }
-      ],
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "B1,B2,B3"
+      }],
       "order_product_sku": 1600,
       "order_quantity": 7,
-      "order_status": "wip"
-    },
-    "-Kuiyn_qN5WqBDz1zs4H": {
-      "order_color": "#baf865",
-      "order_customer": "Phill Jackson",
-      "order_date": 1506174254,
-      "order_delivery": 1506556800,
-      "order_duration": 603,
-      "order_no": 3,
-      "order_product_name": "C",
-      "order_product_part": [{
-          "cycle": [
-            0.8,
-            3.8,
-            2.8,
-            2.3
-          ],
-          "name": "C1",
-          "process": "2,3,4",
-          "setup": [
-            20,
-            0,
-            0,
-            0
-          ],
-          "sku": 1501
-        },
-        {
-          "cycle": [
-            0.7,
-            1.85,
-            5.5,
-            6.4
-          ],
-          "name": "C2",
-          "process": "1,2,3,4",
-          "setup": [
-            0,
-            50,
-            50,
-            60
-          ],
-          "sku": 1502
-        },
-        {
-          "cycle": [
-            2.75,
-            0.8,
-            1.8,
-            2.3
-          ],
-          "name": "C3",
-          "process": "2,3,4",
-          "setup": [
-            25,
-            20,
-            0,
-            60
-          ],
-          "sku": 1503
-        }
-      ],
-      "order_product_process": [{
-          "number": 0,
-          "required": "none"
-        },
-        {
-          "number": 1,
-          "required": "none"
-        },
-        {
-          "number": 2,
-          "required": "none"
-        },
-        {
-          "number": 3,
-          "required": "C1,C2,C3"
-        }
-      ],
-      "order_product_sku": 3000,
-      "order_quantity": 10,
       "order_status": "late"
     },
-    "-Kuo5ONQK-CzZevRjKJQ": {
-      "order_color": "#7f2bdf",
-      "order_customer": "David Lee",
-      "order_date": 1506260130,
-      "order_delivery": 1506729600,
-      "order_duration": 365.5,
-      "order_no": 4,
-      "order_product_name": "A",
-      "order_product_part": [{
-          "cycle": [
-            0.8,
-            3.8,
-            0.4,
-            6.4
-          ],
-          "name": "A1",
-          "process": "1,2,3,4",
-          "setup": [
-            20,
-            5,
-            0,
-            0
-          ],
-          "sku": 1001
-        },
-        {
-          "cycle": [
-            0,
-            0.8,
-            0.7,
-            6.4
-          ],
-          "name": "A2",
-          "process": "2,3,4",
-          "setup": [
-            0,
-            40,
-            10,
-            40
-          ],
-          "sku": 1002
-        },
-        {
-          "cycle": [
-            2.75,
-            0.8,
-            0,
-            6.4
-          ],
-          "name": "A3",
-          "process": "1,2,4",
-          "setup": [
-            25,
-            10,
-            40,
-            0
-          ],
-          "sku": 1003
-        }
-      ],
-      "order_product_process": [{
-          "number": 0,
-          "required": "none"
-        },
-        {
-          "number": 1,
-          "required": "none"
-        },
-        {
-          "number": 2,
-          "required": "none"
-        },
-        {
-          "number": 3,
-          "required": "A1,A2,A3"
-        }
-      ],
-      "order_product_sku": 1000,
-      "order_quantity": 6,
-      "order_status": "late"
-    },
-    "-KupzQxUyFfFwShWf7IZ": {
-      "order_color": "#90e2ce",
-      "order_customer": "Kim Alexa",
-      "order_date": 1506291860,
-      "order_delivery": 1506816000,
-      "order_duration": 248.5,
-      "order_no": 5,
-      "order_product_name": "A",
-      "order_product_part": [{
-          "cycle": [
-            0.8,
-            3.8,
-            0.4,
-            6.4
-          ],
-          "name": "A1",
-          "process": "1,2,3,4",
-          "setup": [
-            20,
-            5,
-            0,
-            0
-          ],
-          "sku": 1001
-        },
-        {
-          "cycle": [
-            0,
-            0.8,
-            0.7,
-            6.4
-          ],
-          "name": "A2",
-          "process": "2,3,4",
-          "setup": [
-            0,
-            40,
-            10,
-            40
-          ],
-          "sku": 1002
-        },
-        {
-          "cycle": [
-            2.75,
-            0.8,
-            0,
-            6.4
-          ],
-          "name": "A3",
-          "process": "1,2,4",
-          "setup": [
-            25,
-            10,
-            40,
-            0
-          ],
-          "sku": 1003
-        }
-      ],
-      "order_product_process": [{
-          "number": 0,
-          "required": "none"
-        },
-        {
-          "number": 1,
-          "required": "none"
-        },
-        {
-          "number": 2,
-          "required": "none"
-        },
-        {
-          "number": 3,
-          "required": "A1,A2,A3"
-        }
-      ],
-      "order_product_sku": 1000,
-      "order_quantity": 2,
-      "order_status": "late"
-    },
-    "-KusReX8Ti985bP8hWKN": {
-      "order_color": "#5eee01",
-      "order_customer": "Warut Sathorn",
-      "order_date": 1506333076,
-      "order_delivery": 1506470400,
-      "order_duration": 634.8,
-      "order_no": 7,
-      "order_product_name": "C",
-      "order_product_part": [{
-          "cycle": [
-            0.8,
-            3.8,
-            2.8,
-            2.3
-          ],
-          "name": "C1",
-          "process": "2,3,4",
-          "setup": [
-            20,
-            0,
-            0,
-            0
-          ],
-          "sku": 1501
-        },
-        {
-          "cycle": [
-            0.7,
-            1.85,
-            5.5,
-            6.4
-          ],
-          "name": "C2",
-          "process": "1,2,3,4",
-          "setup": [
-            0,
-            50,
-            50,
-            60
-          ],
-          "sku": 1502
-        },
-        {
-          "cycle": [
-            2.75,
-            0.8,
-            1.8,
-            2.3
-          ],
-          "name": "C3",
-          "process": "2,3,4",
-          "setup": [
-            25,
-            20,
-            0,
-            60
-          ],
-          "sku": 1503
-        }
-      ],
-      "order_product_process": [{
-          "number": 0,
-          "required": "none"
-        },
-        {
-          "number": 1,
-          "required": "none"
-        },
-        {
-          "number": 2,
-          "required": "none"
-        },
-        {
-          "number": 3,
-          "required": "C1,C2,C3"
-        }
-      ],
-      "order_product_sku": 3000,
-      "order_quantity": 11,
-      "order_status": "late"
-    },
-    "-KyIQMN3q7IzxP_p-pW5": {
-      "order_color": "#d3b3f0",
+    "-KyOW7j7L6R6uMqUzjT5": {
+      "order_color": "#f41754",
       "order_customer": "Chukkrit Visitsaktavorn",
-      "order_date": 1510006945,
-      "order_delivery": 1510704000,
-      "order_duration": 102,
+      "order_date": 1510109122,
+      "order_delivery": 1512000000,
+      "order_duration": 134,
       "order_no": 37,
       "order_product_dependency": [{
-          "number": 0,
-          "required": "none"
-        },
-        {
-          "number": 1,
-          "required": "none"
-        },
-        {
-          "number": 2,
-          "required": "none"
-        },
-        {
-          "number": 3,
-          "required": "none"
-        }
-      ],
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "H",
+      "order_product_part": [{
+        "cycle": [7, 5, 5, 10],
+        "name": "H1",
+        "process": [1, 2, 3, 4],
+        "setup": [5, 8, 6, 7],
+        "sku": "8001"
+      }],
+      "order_product_sku": "8000",
+      "order_quantity": 4,
+      "order_status": "waiting"
+    },
+    "-KyOWHm74bEHTOwPb4nM": {
+      "order_color": "#11297b",
+      "order_customer": "Thomson Mirak",
+      "order_date": 1510109163,
+      "order_delivery": 1511308800,
+      "order_duration": 80,
+      "order_no": 39,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "H",
+      "order_product_part": [{
+        "cycle": [7, 5, 5, 10],
+        "name": "H1",
+        "process": [1, 2, 3, 4],
+        "setup": [5, 8, 6, 7],
+        "sku": "8001"
+      }],
+      "order_product_sku": "8000",
+      "order_quantity": 2,
+      "order_status": "waiting"
+    },
+    "-KyOWjgRXt_sXg6cceFV": {
+      "order_color": "#18a9ae",
+      "order_customer": "Warut Sathorn",
+      "order_date": 1510109281,
+      "order_delivery": 1510790400,
+      "order_duration": 112,
+      "order_no": 41,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "E",
+      "order_product_part": [{
+        "cycle": [5, 5, 5, 5],
+        "name": "E1",
+        "process": [1, 2, 3, 4],
+        "setup": [7, 7, 8, 10],
+        "sku": "7001"
+      }],
+      "order_product_sku": "7000",
+      "order_quantity": 4,
+      "order_status": "waiting"
+    },
+    "-KyOYXeoh69V-f773K31": {
+      "order_color": "#6e732e",
+      "order_customer": "Phill Jackson",
+      "order_date": 1510109752,
+      "order_delivery": 1511222400,
+      "order_duration": 60,
+      "order_no": 42,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
       "order_product_name": "G",
       "order_product_part": [{
-        "cycle": [
-          3,
-          3,
-          5,
-          3
-        ],
+        "cycle": [3, 3, 5, 3],
         "name": "G1",
-        "process": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "setup": [
-          5,
-          4,
-          4,
-          5
-        ],
+        "process": [1, 2, 3, 4],
+        "setup": [5, 4, 4, 5],
+        "sku": "9001"
+      }],
+      "order_product_sku": "9000",
+      "order_quantity": 3,
+      "order_status": "waiting"
+    },
+    "-KyOYn7-RImZ0t3TuNbq": {
+      "order_color": "#61be53",
+      "order_customer": "David Lee",
+      "order_date": 1510109820,
+      "order_delivery": 1510444800,
+      "order_duration": 105.4,
+      "order_no": 43,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "B",
+      "order_product_part": [{
+        "cycle": [0.3, 0.5, 0, 0.1],
+        "name": "B1",
+        "process": [1, 2, 4],
+        "setup": [50, 0, 0, 50],
+        "sku": 2001
+      }],
+      "order_product_sku": 1600,
+      "order_quantity": 6,
+      "order_status": "waiting"
+    },
+    "-KyOYuroSetMtKO9rz6G": {
+      "order_color": "#e4d6a0",
+      "order_customer": "Marisa Dumlukin",
+      "order_date": 1510109851,
+      "order_delivery": 1511827200,
+      "order_duration": 72,
+      "order_no": 44,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "E",
+      "order_product_part": [{
+        "cycle": [5, 5, 5, 5],
+        "name": "E1",
+        "process": [1, 2, 3, 4],
+        "setup": [7, 7, 8, 10],
+        "sku": "7001"
+      }],
+      "order_product_sku": "7000",
+      "order_quantity": 2,
+      "order_status": "waiting"
+    },
+    "-KycYAVkhGocPqxtAsJC": {
+      "order_color": "#a5cda2",
+      "order_customer": "Chukkrit Visitsaktavorn",
+      "order_date": 1510361315,
+      "order_delivery": 1510444800,
+      "order_duration": 165.4,
+      "order_no": 45,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "A",
+      "order_product_part": [{
+        "cycle": [0.8, 3.8, 0.4, 6.4],
+        "name": "A1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 5, 0, 0],
+        "sku": 1001
+      }, {
+        "cycle": [0.5, 0, 1.5, 2.5],
+        "name": "A2",
+        "process": [1, 2, 4],
+        "setup": [10, 5, 0, 30],
+        "sku": 1002
+      }],
+      "order_product_sku": 1000,
+      "order_quantity": 6,
+      "order_status": "waiting"
+    },
+    "-KycbzwrRJ2ZfGkyHF7h": {
+      "order_color": "#4ecff6",
+      "order_customer": "Chukkrit Visitsaktavorn",
+      "order_date": 1510362579,
+      "order_delivery": 1511395200,
+      "order_duration": 88,
+      "order_no": 46,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "G",
+      "order_product_part": [{
+        "cycle": [3, 3, 5, 3],
+        "name": "G1",
+        "process": [1, 2, 3, 4],
+        "setup": [5, 4, 4, 5],
+        "sku": "9001"
+      }],
+      "order_product_sku": "9000",
+      "order_quantity": 5,
+      "order_status": "waiting"
+    },
+    "-Kych080RaM9IOaV663l": {
+      "order_color": "#44d8fa",
+      "order_customer": "Chukkrit Visitsaktavorn",
+      "order_date": 1510363895,
+      "order_delivery": 1511913600,
+      "order_duration": 188,
+      "order_no": 47,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "H",
+      "order_product_part": [{
+        "cycle": [7, 5, 5, 10],
+        "name": "H1",
+        "process": [1, 2, 3, 4],
+        "setup": [5, 8, 6, 7],
+        "sku": "8001"
+      }],
+      "order_product_sku": "8000",
+      "order_quantity": 6,
+      "order_status": "waiting"
+    },
+    "-KycjH-NN8Im8xD--FOX": {
+      "order_color": "#7e14d5",
+      "order_customer": "Chukkrit Visitsaktavorn",
+      "order_date": 1510364488,
+      "order_delivery": 1511913600,
+      "order_duration": 134,
+      "order_no": 49,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "H",
+      "order_product_part": [{
+        "cycle": [7, 5, 5, 10],
+        "name": "H1",
+        "process": [1, 2, 3, 4],
+        "setup": [5, 8, 6, 7],
+        "sku": "8001"
+      }],
+      "order_product_sku": "8000",
+      "order_quantity": 4,
+      "order_status": "waiting"
+    },
+    "-Kycjd4tyPw5AMW6gqlh": {
+      "order_color": "#ba0305",
+      "order_customer": "David Lee",
+      "order_date": 1510364582,
+      "order_delivery": 1511222400,
+      "order_duration": 721.9,
+      "order_no": 51,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "A",
+      "order_product_part": [{
+        "cycle": [0.8, 3.8, 0.4, 6.4],
+        "name": "A1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 5, 0, 0],
+        "sku": 1001
+      }, {
+        "cycle": [0.5, 0, 1.5, 2.5],
+        "name": "A2",
+        "process": [1, 2, 4],
+        "setup": [10, 5, 0, 30],
+        "sku": 1002
+      }],
+      "order_product_sku": 1000,
+      "order_quantity": 41,
+      "order_status": "waiting"
+    },
+    "-KyckBTPBsG8HqUBuxVA": {
+      "order_color": "#f21bf3",
+      "order_customer": "David Lee",
+      "order_date": 1510364728,
+      "order_delivery": 1511222400,
+      "order_duration": 105.4,
+      "order_no": 52,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "B",
+      "order_product_part": [{
+        "cycle": [0.3, 0.5, 0, 0.1],
+        "name": "B1",
+        "process": [1, 2, 4],
+        "setup": [50, 0, 0, 50],
+        "sku": 2001
+      }],
+      "order_product_sku": 1600,
+      "order_quantity": 6,
+      "order_status": "waiting"
+    },
+    "-Kyckg2eHOknAibnd8wN": {
+      "order_color": "#9e1195",
+      "order_customer": "Mark Janova",
+      "order_date": 1510364857,
+      "order_delivery": 1511740800,
+      "order_duration": 165.4,
+      "order_no": 53,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "A",
+      "order_product_part": [{
+        "cycle": [0.8, 3.8, 0.4, 6.4],
+        "name": "A1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 5, 0, 0],
+        "sku": 1001
+      }, {
+        "cycle": [0.5, 0, 1.5, 2.5],
+        "name": "A2",
+        "process": [1, 2, 4],
+        "setup": [10, 5, 0, 30],
+        "sku": 1002
+      }],
+      "order_product_sku": 1000,
+      "order_quantity": 6,
+      "order_status": "waiting"
+    },
+    "-KycnVhpup0N2LL-O-Iy": {
+      "order_color": "#c4a6dd",
+      "order_customer": "Mark Janova",
+      "order_date": 1510365597,
+      "order_delivery": 1511913600,
+      "order_duration": 152.2,
+      "order_no": 54,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "B",
+      "order_product_part": [{
+        "cycle": [0.3, 0.5, 0, 0.1],
+        "name": "B1",
+        "process": [1, 2, 4],
+        "setup": [50, 0, 0, 50],
+        "sku": 2001
+      }],
+      "order_product_sku": 1600,
+      "order_quantity": 58,
+      "order_status": "waiting"
+    },
+    "-KycnnflUFI8buHxzpPZ": {
+      "order_color": "#2b8ee0",
+      "order_customer": "David Lee",
+      "order_date": 1510365674,
+      "order_delivery": 1511740800,
+      "order_duration": 102,
+      "order_no": 55,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "G",
+      "order_product_part": [{
+        "cycle": [3, 3, 5, 3],
+        "name": "G1",
+        "process": [1, 2, 3, 4],
+        "setup": [5, 4, 4, 5],
         "sku": "9001"
       }],
       "order_product_sku": "9000",
       "order_quantity": 6,
       "order_status": "waiting"
     },
-    "-KyN_91_IQSTP-doCiTx": {
-      "order_color": "#8b4952",
-      "order_customer": "Chukkrit Visitsaktavorn",
-      "order_date": 1510093398,
-      "order_delivery": 1510272000,
-      "order_duration": 132,
-      "order_no": 37,
+    "-Kyco4zL0K5boXHDkGrk": {
+      "order_color": "#98aa71",
+      "order_customer": "David Lee",
+      "order_date": 1510365749,
+      "order_delivery": 1511827200,
+      "order_duration": 105.4,
+      "order_no": 56,
       "order_product_dependency": [{
-          "number": 0,
-          "required": "none"
-        },
-        {
-          "number": 1,
-          "required": "none"
-        },
-        {
-          "number": 2,
-          "required": "none"
-        },
-        {
-          "number": 3,
-          "required": "none"
-        }
-      ],
-      "order_product_name": "E",
-      "order_product_part": [{
-        "cycle": [
-          5,
-          5,
-          5,
-          5
-        ],
-        "name": "E1",
-        "process": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "setup": [
-          7,
-          7,
-          8,
-          10
-        ],
-        "sku": "7001"
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
       }],
-      "order_product_sku": "7000",
+      "order_product_name": "B",
+      "order_product_part": [{
+        "cycle": [0.3, 0.5, 0, 0.1],
+        "name": "B1",
+        "process": [1, 2, 4],
+        "setup": [50, 0, 0, 50],
+        "sku": 2001
+      }],
+      "order_product_sku": 1600,
+      "order_quantity": 6,
+      "order_status": "waiting"
+    },
+    "-KycoIRWzxeleAtL7hci": {
+      "order_color": "#d0f851",
+      "order_customer": "David Lee",
+      "order_date": 1510365805,
+      "order_delivery": 1511740800,
+      "order_duration": 110.8,
+      "order_no": 57,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "B",
+      "order_product_part": [{
+        "cycle": [0.3, 0.5, 0, 0.1],
+        "name": "B1",
+        "process": [1, 2, 4],
+        "setup": [50, 0, 0, 50],
+        "sku": 2001
+      }],
+      "order_product_sku": 1600,
+      "order_quantity": 12,
+      "order_status": "waiting"
+    },
+    "-KycoaVevxP29MSBFrSJ": {
+      "order_color": "#17b567",
+      "order_customer": "Mark Janova",
+      "order_date": 1510365883,
+      "order_delivery": 1511913600,
+      "order_duration": 104.5,
+      "order_no": 58,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "B",
+      "order_product_part": [{
+        "cycle": [0.3, 0.5, 0, 0.1],
+        "name": "B1",
+        "process": [1, 2, 4],
+        "setup": [50, 0, 0, 50],
+        "sku": 2001
+      }],
+      "order_product_sku": 1600,
       "order_quantity": 5,
       "order_status": "waiting"
     },
-    "-KyN_T8EIO0q903FvlTm": {
-      "order_color": "#6902f6",
-      "order_customer": "Thomson Mirak",
-      "order_date": 1510093481,
-      "order_delivery": 1510272000,
-      "order_duration": 252,
-      "order_no": 37,
+    "-Kycomi7WJo1AOojSWdZ": {
+      "order_color": "#66909a",
+      "order_customer": "Marisa Dumlukin",
+      "order_date": 1510365933,
+      "order_delivery": 1511913600,
+      "order_duration": 165.4,
+      "order_no": 59,
       "order_product_dependency": [{
-          "number": 0,
-          "required": "none"
-        },
-        {
-          "number": 1,
-          "required": "none"
-        },
-        {
-          "number": 2,
-          "required": "none"
-        },
-        {
-          "number": 3,
-          "required": "none"
-        }
-      ],
-      "order_product_name": "E",
-      "order_product_part": [{
-        "cycle": [
-          5,
-          5,
-          5,
-          5
-        ],
-        "name": "E1",
-        "process": [
-          1,
-          2,
-          3,
-          4
-        ],
-        "setup": [
-          7,
-          7,
-          8,
-          10
-        ],
-        "sku": "7001"
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
       }],
-      "order_product_sku": "7000",
-      "order_quantity": 11,
+      "order_product_name": "A",
+      "order_product_part": [{
+        "cycle": [0.8, 3.8, 0.4, 6.4],
+        "name": "A1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 5, 0, 0],
+        "sku": 1001
+      }, {
+        "cycle": [0.5, 0, 1.5, 2.5],
+        "name": "A2",
+        "process": [1, 2, 4],
+        "setup": [10, 5, 0, 30],
+        "sku": 1002
+      }],
+      "order_product_sku": 1000,
+      "order_quantity": 6,
+      "order_status": "waiting"
+    },
+    "-KycqYZodiZkv1dQpIwf": {
+      "order_color": "#111f2d",
+      "order_customer": "Mark Janova",
+      "order_date": 1510366395,
+      "order_delivery": 1511913600,
+      "order_duration": 181.3,
+      "order_no": 60,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "A",
+      "order_product_part": [{
+        "cycle": [0.8, 3.8, 0.4, 6.4],
+        "name": "A1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 5, 0, 0],
+        "sku": 1001
+      }, {
+        "cycle": [0.5, 0, 1.5, 2.5],
+        "name": "A2",
+        "process": [1, 2, 4],
+        "setup": [10, 5, 0, 30],
+        "sku": 1002
+      }],
+      "order_product_sku": 1000,
+      "order_quantity": 7,
+      "order_status": "waiting"
+    },
+    "-KycqprlB4zuCDNsyXRb": {
+      "order_color": "#ea9d11",
+      "order_customer": "David Lee",
+      "order_date": 1510366470,
+      "order_delivery": 1511136000,
+      "order_duration": 133.6,
+      "order_no": 61,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "A",
+      "order_product_part": [{
+        "cycle": [0.8, 3.8, 0.4, 6.4],
+        "name": "A1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 5, 0, 0],
+        "sku": 1001
+      }, {
+        "cycle": [0.5, 0, 1.5, 2.5],
+        "name": "A2",
+        "process": [1, 2, 4],
+        "setup": [10, 5, 0, 30],
+        "sku": 1002
+      }],
+      "order_product_sku": 1000,
+      "order_quantity": 4,
+      "order_status": "waiting"
+    },
+    "-KycrgTkhzhx4aq9we29": {
+      "order_color": "#eefb31",
+      "order_customer": "David Lee",
+      "order_date": 1510366694,
+      "order_delivery": 1511913600,
+      "order_duration": 149.5,
+      "order_no": 62,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "A",
+      "order_product_part": [{
+        "cycle": [0.8, 3.8, 0.4, 6.4],
+        "name": "A1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 5, 0, 0],
+        "sku": 1001
+      }, {
+        "cycle": [0.5, 0, 1.5, 2.5],
+        "name": "A2",
+        "process": [1, 2, 4],
+        "setup": [10, 5, 0, 30],
+        "sku": 1002
+      }],
+      "order_product_sku": 1000,
+      "order_quantity": 5,
+      "order_status": "waiting"
+    },
+    "-KycsaV0bIeFyKW7bZQY": {
+      "order_color": "#f91a30",
+      "order_customer": "David Lee",
+      "order_date": 1510366931,
+      "order_delivery": 1511740800,
+      "order_duration": 117.7,
+      "order_no": 63,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "A",
+      "order_product_part": [{
+        "cycle": [0.8, 3.8, 0.4, 6.4],
+        "name": "A1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 5, 0, 0],
+        "sku": 1001
+      }, {
+        "cycle": [0.5, 0, 1.5, 2.5],
+        "name": "A2",
+        "process": [1, 2, 4],
+        "setup": [10, 5, 0, 30],
+        "sku": 1002
+      }],
+      "order_product_sku": 1000,
+      "order_quantity": 3,
+      "order_status": "waiting"
+    },
+    "-KyctcmNLKkVqLvXLSQk": {
+      "order_color": "#fccfd5",
+      "order_customer": "David Lee",
+      "order_date": 1510367203,
+      "order_delivery": 1512000000,
+      "order_duration": 101.8,
+      "order_no": 64,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "A",
+      "order_product_part": [{
+        "cycle": [0.8, 3.8, 0.4, 6.4],
+        "name": "A1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 5, 0, 0],
+        "sku": 1001
+      }, {
+        "cycle": [0.5, 0, 1.5, 2.5],
+        "name": "A2",
+        "process": [1, 2, 4],
+        "setup": [10, 5, 0, 30],
+        "sku": 1002
+      }],
+      "order_product_sku": 1000,
+      "order_quantity": 2,
+      "order_status": "waiting"
+    },
+    "-KycuRJ9r4TqRcFuEap8": {
+      "order_color": "#61e574",
+      "order_customer": "David Lee",
+      "order_date": 1510367414,
+      "order_delivery": 1512000000,
+      "order_duration": 117.7,
+      "order_no": 65,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "A",
+      "order_product_part": [{
+        "cycle": [0.8, 3.8, 0.4, 6.4],
+        "name": "A1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 5, 0, 0],
+        "sku": 1001
+      }, {
+        "cycle": [0.5, 0, 1.5, 2.5],
+        "name": "A2",
+        "process": [1, 2, 4],
+        "setup": [10, 5, 0, 30],
+        "sku": 1002
+      }],
+      "order_product_sku": 1000,
+      "order_quantity": 3,
+      "order_status": "waiting"
+    },
+    "-KycxBqAIFamUC_QDwSj": {
+      "order_color": "#c7fcc6",
+      "order_customer": "Chukkrit Visitsaktavorn",
+      "order_date": 1510368137,
+      "order_delivery": 1511136000,
+      "order_duration": 58,
+      "order_no": 66,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "F",
+      "order_product_part": [{
+        "cycle": [6, 5, 4],
+        "name": "A",
+        "process": [1, 2, 4],
+        "setup": [4, 4, 5],
+        "sku": "6001"
+      }],
+      "order_product_sku": "6000",
+      "order_quantity": 3,
+      "order_status": "waiting"
+    },
+    "-Kyd8hD3anK_UPaXtwU4": {
+      "order_color": "#966e7c",
+      "order_customer": "Mark Janova",
+      "order_date": 1510371415,
+      "order_delivery": 1511308800,
+      "order_duration": 46.699999999999996,
+      "order_no": 67,
+      "order_product_dependency": [{
+        "number": 0,
+        "required": "none"
+      }, {
+        "number": 1,
+        "required": "none"
+      }, {
+        "number": 2,
+        "required": "none"
+      }, {
+        "number": 3,
+        "required": "none"
+      }],
+      "order_product_name": "C",
+      "order_product_part": [{
+        "cycle": [0, 3.8, 2.8, 2.3],
+        "name": "C1",
+        "process": [1, 2, 3, 4],
+        "setup": [20, 0, 0, 0],
+        "sku": 1501
+      }],
+      "order_product_sku": 3000,
+      "order_quantity": 3,
       "order_status": "waiting"
     }
   },
   "performanceData": {
-    "oee": 97
+    "oee": 95
   },
   "planData": [{
-      "name": "Plan A",
-      "stations": [{
-          "color": "rgb(56,125,213)",
-          "machine": [{
-              "name": "A1"
-            },
-            {
-              "name": "A2"
-            },
-            {
-              "name": "A3"
-            },
-            {
-              "name": "A4"
-            }
-          ],
-          "name": "A",
-          "number": 1,
-          "status": "Running"
-        },
-        {
-          "color": "rgb(99,171,165)",
-          "machine": [{
-              "name": "B1"
-            },
-            {
-              "name": "B2"
-            },
-            {
-              "name": "B3"
-            },
-            {
-              "name": "B4"
-            }
-          ],
-          "name": "B",
-          "number": 2,
-          "status": "Running"
-        },
-        {
-          "color": "rgb(108,136,186)",
-          "machine": [{
-              "name": "C1"
-            },
-            {
-              "name": "C2"
-            },
-            {
-              "name": "C3"
-            },
-            {
-              "name": "C4"
-            }
-          ],
-          "name": "C",
-          "number": 3,
-          "status": "Running"
-        }
-      ]
-    },
-    {
-      "name": "Plan B",
-      "stations": [{
-          "color": "rgb(56,125,213)",
-          "machine": [{
-              "name": "A1"
-            },
-            {
-              "name": "A2"
-            },
-            {
-              "name": "A3"
-            }
-          ],
-          "name": "A",
-          "number": 1,
-          "status": "Running"
-        },
-        {
-          "color": "rgb(99,171,165)",
-          "machine": [{
-              "name": "B1"
-            },
-            {
-              "name": "B2"
-            },
-            {
-              "name": "B3"
-            }
-          ],
-          "name": "B",
-          "number": 2,
-          "status": "Running"
-        },
-        {
-          "color": "rgb(108,136,186)",
-          "machine": [{
-              "name": "C1"
-            },
-            {
-              "name": "C2"
-            },
-            {
-              "name": "C3"
-            }
-          ],
-          "name": "C",
-          "number": 3,
-          "status": "Running"
-        },
-        {
-          "color": "rgb(237,71,59)",
-          "machine": [{
-              "name": "D1"
-            },
-            {
-              "name": "D2"
-            },
-            {
-              "name": "D3"
-            }
-          ],
-          "name": "D",
-          "number": 4,
-          "status": "Running"
-        }
-      ]
-    },
-    {
-      "name": "Plan C"
-    }
-  ],
+    "name": "Plan A",
+    "stations": [{
+      "color": "rgb(56,125,213)",
+      "machine": [{
+        "name": "A1"
+      }, {
+        "name": "A2"
+      }, {
+        "name": "A3"
+      }, {
+        "name": "A4"
+      }],
+      "name": "A",
+      "number": 1,
+      "status": "Running"
+    }, {
+      "color": "rgb(99,171,165)",
+      "machine": [{
+        "name": "B1"
+      }, {
+        "name": "B2"
+      }, {
+        "name": "B3"
+      }, {
+        "name": "B4"
+      }],
+      "name": "B",
+      "number": 2,
+      "status": "Running"
+    }, {
+      "color": "rgb(108,136,186)",
+      "machine": [{
+        "name": "C1"
+      }, {
+        "name": "C2"
+      }, {
+        "name": "C3"
+      }, {
+        "name": "C4"
+      }],
+      "name": "C",
+      "number": 3,
+      "status": "Running"
+    }]
+  }, {
+    "name": "Plan B",
+    "stations": [{
+      "color": "rgb(56,125,213)",
+      "machine": [{
+        "name": "A1"
+      }, {
+        "name": "A2"
+      }, {
+        "name": "A3"
+      }],
+      "name": "A",
+      "number": 1,
+      "status": "Running"
+    }, {
+      "color": "rgb(99,171,165)",
+      "machine": [{
+        "name": "B1"
+      }, {
+        "name": "B2"
+      }, {
+        "name": "B3"
+      }],
+      "name": "B",
+      "number": 2,
+      "status": "Running"
+    }, {
+      "color": "rgb(108,136,186)",
+      "machine": [{
+        "name": "C1"
+      }, {
+        "name": "C2"
+      }, {
+        "name": "C3"
+      }],
+      "name": "C",
+      "number": 3,
+      "status": "Running"
+    }, {
+      "color": "rgb(237,71,59)",
+      "machine": [{
+        "name": "D1"
+      }, {
+        "name": "D2"
+      }, {
+        "name": "D3"
+      }],
+      "name": "D",
+      "number": 4,
+      "status": "Running"
+    }]
+  }, {
+    "name": "Plan C"
+  }],
   "scheduleData": {
     "23ertghjiuytfrvbg": {
+      "actual_end": 1510314370,
+      "actual_start": 1510314368,
+      "job_defect": "0",
+      "job_good": 7,
       "job_machine": 1,
       "job_part": "B1",
       "job_quantity": 7,
       "job_station": 4,
-      "job_status": "waiting",
+      "job_status": "done",
       "job_workload": 3.5,
       "order_color": "#56e431",
       "order_no": 2,
@@ -1940,9 +2375,11 @@
       "start": 1511056836
     },
     "35gwgwrfsdghfgsd": {
-      "actual_end": 1506343245,
-      "actual_start": 1508962421,
+      "actual_end": 1510179868,
+      "actual_start": 1510179835,
       "end": 1506240480,
+      "job_defect": "1",
+      "job_good": 5,
       "job_machine": 2,
       "job_part": "A1",
       "job_quantity": 6,
@@ -1955,12 +2392,16 @@
       "start": 1506328200
     },
     "3dfhyujhgfrertgv": {
+      "actual_end": 1510314663,
+      "actual_start": 1510314661,
       "end": 1506328200,
+      "job_defect": "0",
+      "job_good": 6,
       "job_machine": 2,
       "job_part": "A1",
       "job_quantity": 6,
       "job_station": 4,
-      "job_status": "waiting",
+      "job_status": "done",
       "job_workload": 4.2,
       "order_color": "#91524f",
       "order_no": 1,
@@ -1968,9 +2409,11 @@
       "start": 1506328200
     },
     "654efghjkdfthgf": {
-      "actual_end": 1509450806,
-      "actual_start": 1509450806,
+      "actual_end": 1510200470,
+      "actual_start": 1510200462,
       "end": 1506328500,
+      "job_defect": "0",
+      "job_good": 7,
       "job_machine": 2,
       "job_part": "B1",
       "job_quantity": 7,
@@ -1983,9 +2426,11 @@
       "start": 1506328200
     },
     "65gvthy654rwedvbg": {
-      "actual_end": 1509369272,
-      "actual_start": 1509369272,
+      "actual_end": 1510234048,
+      "actual_start": 1510234043,
       "end": 1506328728,
+      "job_defect": "2",
+      "job_good": 4,
       "job_machine": 2,
       "job_part": "A1",
       "job_quantity": 6,
@@ -1998,12 +2443,16 @@
       "start": 1506328200
     },
     "98765rdfghjgfd": {
+      "actual_end": 1510312784,
+      "actual_start": 1510312782,
       "end": 1506328200,
+      "job_defect": "0",
+      "job_good": 6,
       "job_machine": 2,
       "job_part": "A1",
       "job_quantity": 6,
       "job_station": 3,
-      "job_status": "waiting",
+      "job_status": "done",
       "job_workload": 4.2,
       "order_color": "#91524f",
       "order_no": 1,
@@ -2011,9 +2460,11 @@
       "start": 1506330015
     },
     "gshshrhrfsderbfsv": {
-      "actual_end": 1507460163,
-      "actual_start": 1508962415,
+      "actual_end": 1510323595,
+      "actual_start": 1510323593,
       "end": 1506240180,
+      "job_defect": "0",
+      "job_good": 7,
       "job_machine": 2,
       "job_part": "B1",
       "job_quantity": 7,
@@ -2026,11 +2477,15 @@
       "start": 1506328200
     },
     "njuytredfghe3ddsd": {
+      "actual_end": 1510234070,
+      "actual_start": 1510234068,
+      "job_defect": "2",
+      "job_good": 5,
       "job_machine": 2,
       "job_part": "B1",
       "job_quantity": 7,
       "job_station": 3,
-      "job_status": "waiting",
+      "job_status": "done",
       "job_workload": 0.35,
       "order_color": "#56e431",
       "order_no": 2,
