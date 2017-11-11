@@ -469,7 +469,7 @@
                     },
                     orderItems: {
                         type: Object,
-                        observer: '_refreshOrderTable'
+                        notify: true
                     },
                     showOrderTable: {
                         type: Boolean,
@@ -504,7 +504,7 @@
             static get observers() {
                 return [
                     '_isSerialModel(factoryProfile.model)',
-                    '_refreshOrderTable(orderItems.*)'
+                    '_refreshOrderTable(orderItems)'
                 ]
             }
 

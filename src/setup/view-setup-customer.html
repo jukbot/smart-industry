@@ -192,7 +192,10 @@
                 return {
                     language: String,
                     editKey: String,
-                    customerData: Object,
+                    customerData: {
+                        type: Object,
+                        notify: true
+                    },
                     editCustomerItems: Object,
                     selectAll: Boolean,
                     toastText: String,

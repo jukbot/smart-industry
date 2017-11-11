@@ -156,7 +156,10 @@
                     language: String,
                     toastText: String,
                     editKey: String,
-                    machineItems: Object,
+                    machineItems: {
+                        type: Object,
+                        notify: true
+                    },
                     editMachineItems: Object,
                     showAddMachine: {
                         type: Boolean,

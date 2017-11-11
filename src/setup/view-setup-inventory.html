@@ -22,6 +22,7 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+        <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
         <firebase-query app-name="smart-mes" id="inventoryQuery" path="/data/[[k.key]]/factoryData/inventory" order-by-child="fname"
             data="{{inventoryData}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="editInventoryQuery" path="/data/[[k.key]]/factoryData/inventory/[[editKey]]"
@@ -152,7 +153,7 @@
                 </div>
             </li>
         </ul>
-        <paper-toast id="toastSetupInventory" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
+        <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
         /**
@@ -171,7 +172,10 @@
                 return {
                     language: String,
                     editKey: String,
-                    inventoryData: Object,
+                    inventoryData: {
+                        type: Object,
+                        notify: true
+                    },
                     editInventoryItems: Object,
                     selectAll: Boolean,
                     toastText: String,
@@ -208,6 +212,12 @@
                 requestAnimationFrame(this._installListeners.bind(this))
             }
 
+            static get observers() {
+                return [
+                    '_checkInventory(inventoryData)',
+                ]
+            }
+
             _installListeners() {
                 this.$.inventoryName.addEventListener('input', this._validateInput.bind(this))
                 this.$.inventoryCode.addEventListener('input', this._validateInput.bind(this))
@@ -241,7 +251,7 @@
                 const quantity = this.$.edit_inventoryQuantity.value
                 const decimal = /^(0|[1-9]\d*)(\.\d+)?$/ // alow decimal 2 points
                 const integer = /^(0|[1-9]\d*)$/ // alow only positive interger
-                if (name && code && cost && quantity && cost.match(decimal) && cost <= this.maxInput &&
+                if (name && code && cost && quantity && String(cost).match(decimal) && cost <= this.maxInput &&
                     quantity.match(integer) && quantity > 0 && quantity <= this.maxInput) {
                     this.disabled = false
                 } else {
@@ -266,6 +276,7 @@
                 this.showAddInventory = false;
                 this.showEditInventory = false;
                 this._clearField();
+                // this.$.inventoryTable.clearCache()
             }
 
             addInventory() {
@@ -279,18 +290,18 @@
                     this.$.inventoryQuery.ref.push({
                         name: name,
                         code: code,
-                        cost: cost,
-                        quantity: quantity,
+                        cost: parseInt(cost),
+                        quantity: parseInt(quantity),
                         add: timestamp,
                         update: timestamp
                     })
                     this._clearField()
                     this.toastText = 'notification-add-successfully'
-                    this.$.toastSetupInventory.open()
+                    this.$.toastAlert.open()
                     this._openInventoryTable()
                 } else {
                     this.toastText = 'notification-error-incomplete-input'
-                    this.$.toastSetupInventory.open()
+                    this.$.toastAlert.open()
                 }
             }
 
@@ -299,7 +310,8 @@
                     let key = e.currentTarget.inventory.$key
                     this.$.inventoryQuery.ref.child(key).remove()
                     this.toastText = 'notification-delete-successfully'
-                    this.$.toastSetupInventory.open()
+                    this.$.toastAlert.open()
+                    // this.$.inventoryTable.clearCache()
                 }
             }
 
@@ -315,19 +327,49 @@
                     this.$.editInventoryQuery.ref.update({
                         name: name,
                         code: code,
-                        cost: cost,
-                        quantity: quantity,
+                        cost: parseInt(cost),
+                        quantity: parseInt(quantity),
                         update: timestamp
                     });
                     this.toastText = 'notification-save-successfully'
-                    this.$.toastSetupInventory.open()
+                    this.$.toastAlert.open()
                     this._openInventoryTable()
                 } else {
-                    this.toastText = 'notification-error-incomplete-input';
-                    this.$.toastSetupInventory.open();
+                    this.toastText = 'notification-error-incomplete-input'
+                    this.$.toastAlert.open()
                 }
             }
 
+            _checkInventory(data) {
+                if (data.length <= 0) return
+                let lowInventoryItem = data.filter((i) => i.quantity < 30 && i.quantity > 0).map((obj) => {
+                    return obj.code;
+                })
+                let zeroInventoryItem = data.filter((i) => i.quantity === 0).map((obj) => {
+                    return obj.code;
+                })
+                if (lowInventoryItem.length > 0) {
+                    const timestamp = new Date().getTime() / 1000
+                    for (let i = 0; i < lowInventoryItem.length; i++) {
+                        this.$.notificationQuery.ref.push({
+                            created: timestamp,
+                            detail: 'Inventory code ' + lowInventoryItem[i] + ' is low stock',
+                            type: 'warn'
+                        });
+                    }
+                }
+                if (zeroInventoryItem.length > 0) {
+                    const timestamp = new Date().getTime() / 1000
+                    for (let i = 0; i < zeroInventoryItem.length; i++) {
+                        this.$.notificationQuery.ref.push({
+                            created: timestamp,
+                            detail: 'Inventory code ' + zeroInventoryItem[i] + ' is out of stock.',
+                            type: 'critical'
+                        });
+                    }
+                }
+                return data;
+            }
 
             _clearField() {
                 this.$.inventoryName.value = ""

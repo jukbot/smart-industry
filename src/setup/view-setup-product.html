@@ -499,7 +499,10 @@
             static get properties() {
                 return {
                     language: String,
-                    productData: Object,
+                    productData: {
+                        type: Object,
+                        notify: true
+                    },
                     processItems: Object,
                     toastText: String,
                     productKey: String,

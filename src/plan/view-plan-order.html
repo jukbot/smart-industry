@@ -121,6 +121,8 @@
         <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
         <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="name" data="{{productItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="inventoryQuery" path="/data/[[k.key]]/factoryData/inventory" order-by-child="code"
+            data="{{inventoryItems}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
@@ -184,6 +186,8 @@
                             <div class="separator-line" role="separator"></div>
                             <p>{{localize('actual-quantity')}}</p>
                             <div class="separator-line" role="separator"></div>
+                            <p>{{localize('raw-materials-required')}}</p>
+                            <div class="separator-line" role="separator"></div>
                             <p>{{localize('order-duration')}}</p>
                             <div class="separator-line" role="separator"></div>
                             <p>{{localize('delivery-date')}}</p>
@@ -214,6 +218,9 @@
                             <div class="separator-line" role="separator"></div>
                             <p>
                                 <span>[[getActualQuantity(amount)]]</span>&nbsp;</p>
+                            <div class="separator-line" role="separator"></div>
+                            <p>
+                                <span>[[selectProduct.inventory_code]] [[getUseInventory(amount,selectProduct.inventory_use)]]</span>&nbsp;</p>
                             <div class="separator-line" role="separator"></div>
                             <p>
                                 <span>[[getSumProductTime(selectProduct.part,amount)]]</span>&nbsp;</p>
@@ -280,7 +287,8 @@
                     optimalQuantity: Object,
                     selectProduct: Object,
                     selectCustomer: Object,
-                    operationTime: Number
+                    operationTime: Number,
+                    inventoryItems: Object
                 }
             }
 
@@ -478,6 +486,11 @@
                 return sumCycle / 60;
             }
 
+            getUseInventory(amount, material) {
+                if (!amount || !material) return 0;
+                return (this.getActualQuantity(amount) * material);
+            }
+
             setProductPart(product) {
                 if (!product) return 0;
                 this.orderProductPart = product.part; // set to global variable
@@ -588,17 +601,20 @@
 
             // CREATE ORDER
             createOrder() {
-                const orderNo = this.orderNumber;
-                const orderCustomerName = this.$.customerSelector.value;
-                const timestamp = Math.round(new Date().getTime() / 1000.0);
-                const orderProductName = this.$.productSelector.value;
-                const orderProductPart = this.$.productSelector.selectedItem.part;
-                const orderProductProcess = this.$.productSelector.selectedItem.process;
-                const orderProductSKU = this.$.productSelector.selectedItem.sku;
-                const orderQuantity = this.getActualQuantity(this.$.orderQuantity.value);
-                const orderDuration = this.orderDuration;
-                const orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000);
-                const orderColor = this.getRandomColor();
+                const orderNo = this.orderNumber
+                const orderCustomerName = this.$.customerSelector.value
+                const timestamp = Math.round(new Date().getTime() / 1000.0)
+                const orderProductName = this.$.productSelector.value
+                const orderProductPart = this.$.productSelector.selectedItem.part
+                const orderProductProcess = this.$.productSelector.selectedItem.process
+                const orderProductSKU = this.$.productSelector.selectedItem.sku
+                const orderQuantity = this.getActualQuantity(this.$.orderQuantity.value)
+                const orderDuration = this.orderDuration
+                const orderDelivery = (new Date(this.$.deliverySelector.value).getTime() / 1000)
+                const orderColor = this.getRandomColor()
+                const inventoryUse = this.$.productSelector.selectedItem.inventory_use
+                const inventoryCode = this.$.productSelector.selectedItem.inventory_code
+                const inventoryRequired = this.getUseInventory(this.$.orderQuantity.value, inventoryUse)
 
                 if (this.$.orderQuantity.value === 0) {
                     window.alert("Order product quantity cannot be 0")
@@ -631,13 +647,9 @@
                         order_product: orderProductName,
                         order_quantity: orderQuantity
                     });
-                    this.$.notificationQuery.ref.push({
-                        created: timestamp,
-                        detail: 'Created order no.' + orderNo,
-                        type: 'normal'
-                    });
-
+                    this._pushNotification(`Create order no. ${orderNo}`, 'normal')
                     this._updateOrderIndex(orderNo)
+                    this._updateMaterialInventory(inventoryRequired, inventoryCode)
                     window.alert("Added to production schedule successfully");
                     this._clearField();
                 } else {
@@ -645,11 +657,42 @@
                 }
             }
 
+            _updateMaterialInventory(inventoryRequired, inventoryCode) {
+                if (!inventoryRequired || !inventoryCode) return
+                const query = this.$.inventoryQuery.ref;
+                query.orderByChild("code").equalTo(inventoryCode).once("value", (snapshot) => {
+                    const key = Object.keys(snapshot.val())
+                    const original = Object.values(snapshot.val()).map(x => x.quantity)
+                    const remain = original - inventoryRequired
+
+                    if (original < inventoryRequired) {
+                        window.alert(`Raw material code ${inventoryCode} is out of stock.`)
+                        snapshot.ref.child("/" + key).update({
+                            quantity: 0
+                        })
+                        this._pushNotification(`Inventory code ${inventoryCode} is out of stock`,
+                            'critical')
+                    } else {
+                        snapshot.ref.child("/" + key).update({
+                            quantity: remain
+                        })
+                    }
+                });
+            }
+
             _updateOrderIndex(previous) {
                 this.$.factoryOrderIndex.ref.set({
                     order_count: previous + 1
                 });
                 this.orderNumber = this.factoryOrderIndex.order_count;
+            }
+
+            _pushNotification(detail, type) {
+                this.$.notificationQuery.ref.push({
+                    created: Math.round(new Date().getTime() / 1000.0),
+                    detail: detail,
+                    type: type
+                });
             }
 
         }

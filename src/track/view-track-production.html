@@ -417,7 +417,7 @@
                     //     })
                     // }))
 
-                    query.orderByChild("order_no").equalTo(orderNo).on("value", (snapshot) => {
+                    query.orderByChild("order_no").equalTo(orderNo).once("value", (snapshot) => {
                         console.log(snapshot.val())
                         snapshot.ref.update({
                             order_status: "done"

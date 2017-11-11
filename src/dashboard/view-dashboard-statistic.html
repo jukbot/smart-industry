@@ -65,7 +65,10 @@
       static get properties() {
         return {
           language: String,
-          historyData: Object,
+          historyData: {
+            type: Object,
+            notify: true
+          },
           columnOptions: Object,
           width: Number,
           height: Number,
@@ -96,6 +99,12 @@
         requestAnimationFrame(this._installListeners.bind(this))
       }
 
+      static get observers() {
+        return [
+          '_groupAndSum(historyData.order)',
+        ]
+      }
+
       _installListeners() {
         // listen for custom events on main page
         this.addEventListener('iron-resize', (e) => this._setChartSize(e))
@@ -119,22 +128,20 @@
               position: "none"
             }
           }
-          if (this.historyData.length > 0) {
-            this._groupAndSum(this.historyData.order)
-          } else {
-            this.rowItems = [
-              ['No Data', 0, '#202020']
-            ]
-          }
           this.$.column.redraw()
         }
       }
 
       _groupAndSum(productObject) {
+        if (!productObject) return
+        if (productObject.length <= 0) {
+          this.rowItems = [
+            ['No Data', 0, '#202020']
+          ]
+        }
         const products = Object.values(productObject)
         const unique = (v, i, a) => a.indexOf(v) === i
         const productNames = products.map(product => product.order_product).filter(unique)
-        const productColor = products.map(product => product.color).filter(unique)
         const groupByName = productNames.map(name => products.filter(product => product.order_product === name))
         const quantitySum = groupByName.map(group => {
           const sum = group.reduce((total, arr) => total + arr.order_quantity, 0)

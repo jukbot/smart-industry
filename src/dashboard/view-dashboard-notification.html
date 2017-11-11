@@ -62,7 +62,7 @@
           <vaadin-grid id="notificationTable" aria-label="Notification Center" items="[[filterNotification(persistedNotificationData, date, type)]]">
             <vaadin-grid-column flex="1">
               <template class="header">#</template>
-              <template>[[index]]</template>
+              <template class="cell">[[index]]</template>
             </vaadin-grid-column>
 
             <vaadin-grid-column flex="1">
@@ -119,17 +119,20 @@
           todayDate: String,
           toastText: String,
           language: String,
-          notificationData: Object,
+          notificationData: {
+            type: Object,
+            notify: true
+          },
           type: {
             type: String,
-            value: "none"
+            value: "disabled"
           },
           filterItems: {
             type: Array,
             value: () => {
               return [{
-                  "name": "None",
-                  "value": "none"
+                  "name": "Disabled",
+                  "value": "disabled"
                 },
                 {
                   "name": "Normal",
@@ -162,7 +165,7 @@
       filterNotification(data, date, type) {
         const selectTimestamp = new Date(date)
         switch (type) {
-          case "none":
+          case "disabled":
             return data
             break;
           case "normal":
