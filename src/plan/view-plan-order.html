@@ -606,15 +606,10 @@
             verifyProductPart() {
                 const model = this.factoryProfileModel;
                 const partLength = this.$.productSelector.selectedItem.part.length;
-                if ((model === "parallel" || model === "serial") && partLength > 1) {
+                if (((model === "parallel" || model === "serial") && partLength > 1) || (model === "multi" &&
+                        partLength === 1)) {
                     window.alert(
-                        `Forbidden! You cannot manufacture this product with current ${model} production model. Please select multi-component model`
-                    )
-                    this._clearField();
-                    return
-                } else if (model === "multi" && partLength === 1) {
-                    window.alert(
-                        `Forbidden! You cannot manufacture this product with current ${model} production model. Please select multi-component model`
+                        `Forbidden! You cannot manufacture this product with ${model} production model. Please select multi-component model`
                     )
                     this._clearField();
                     return

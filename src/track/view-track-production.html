@@ -137,13 +137,13 @@
                                     <span class$="[[getTextStatus(item.job_status)]]" style$="color:[[getColorStatus(item.job_status)]]">[[item.job_status]]</span>
                                 </p>
                             </div>
-                            <flat-button class="btn" on-tap="receiveJob" job$="[[item]]">
-                                <button>Receive</button>
+                            <flat-button class="btn" on-tap="receiveJob" job="[[item]]">
+                                <button disabled="[[isWIP(item.job_status)]]">Receive</button>
                             </flat-button>
-                            <flat-button class="btn shamrock" on-tap="finishJob" job$="[[item]]">
+                            <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]">
                                 <button disabled="[[isDone(item.job_status)]]">{{localize('done')}}</button>
                             </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="removeJob" job$="[[item]]">
+                            <flat-button class="thunderbird btn" on-tap="removeJob" job="[[item]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -179,13 +179,13 @@
                                 </template>
                             </vaadin-combo-box>
                             <paper-toggle-button class="switch" checked="{{device.enable}}" id="deviceControlSwitch" noink> Enabled</paper-toggle-button>
-                            <flat-button class="btn" on-tap="resetCounter" device$="[[device]]">
+                            <flat-button class="btn" on-tap="resetCounter" device="[[device]]">
                                 <button>Reset Counter</button>
                             </flat-button>
-                            <flat-button class="btn" on-tap="_openEditMachineCard" device$="[[device]]">
+                            <flat-button class="btn" on-tap="_openEditMachineCard" device="[[device]]">
                                 <button>{{localize('edit')}}</button>
                             </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="removeDevice" device$="[[device]]">
+                            <flat-button class="thunderbird btn" on-tap="removeDevice" device="[[device]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -494,6 +494,13 @@
 
             isDone(status) {
                 if (status === 'done') {
+                    return true;
+                }
+                return false;
+            }
+
+            isWIP(status) {
+                if (status === 'WIP' || status === 'done') {
                     return true;
                 }
                 return false;

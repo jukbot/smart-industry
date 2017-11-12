@@ -1069,6 +1069,11 @@
                     // 4) Set order part and order quantity data 
                     let order_part = selected_order.map(o => o.order_product_part)
                     let order_quantity = selected_order.map(o => o.order_quantity)
+                    let order_product_name = selected_order.map(o => o.order_product_name)
+                    let order_no = selected_order.map(o => o.order_no)
+                    let order_duration = selected_order.map(o => o.order_duration)
+                    let order_delivery = selected_order.map(o => o.order_delivery)
+                    let order_color = selected_order.map(o => o.order_color)
 
                     // Order quantity
                     console.log('order quantity')
@@ -1096,45 +1101,90 @@
                     console.log(processArr)
 
                     // 6) Calculate job workload of each process
-                    let workloadArr = [];
-                    for (let i = 0; i < cycleArr.length; i++) {
-                        workloadArr = cycleArr[i].map((x, k) => (x * order_quantity[k]))
+                    let workloadArr = []
+                    for (let i = 0; i < order_part.length; i++) {
+                        workloadArr[i] = cycleArr[i].map((x, i) => (x * order_quantity[i]))
                     }
+                    console.log(workloadArr)
 
-                    console.log('job workload')
-                    console.table(workloadArr)
-                    // Machine in each station
+                    // 7) Map Process, Cycle and Setup arr into object
+                    let mapArr = processArr.map(function (x, i) {
+                        return {
+                            "process": x,
+                            "cycle": cycleArr[i],
+                            "setup": setupArr[i],
+                            "workload": workloadArr[i]
+                        }
+                    }.bind(this));
+
+                    console.table(mapArr)
+
+                    // 8) Calculate weight of each process based on workload
+                    let workload = mapArr.map((x) => x.workload)
+                    console.log(workload)
+
+                    let sumWorkload = workload.reduce((r, a) => r.map((b, i) => a[i] + b))
+                    console.log(sumWorkload)
+
+                    let weight = []
+                    for (let i = 0; i < workload.length; i++) {
+                        weight[i] = workload[i].map((x, i) => x / sumWorkload[i])
+                    }
+                    console.log(weight)
+
+                    // 9) Calculate used machine
+                    let machine = []
                     let machine_in_station = this.stationItems.map(o => o.st_machine.length);
-                    console.info("machine in each station")
-                    console.table(machine_in_station);
+                    for (let i = 0; i < weight.length; i++) {
+                        machine[i] = weight[i].map((x, i) => Math.round(x * machine_in_station[i]))
+                    }
+                    console.log(machine)
 
+                    // 10) Calculate the duration of each process
+                    let duration = []
+                    for (let i = 0; i < workload.length; i++) {
+                        duration[i] = workload[i].map((x, i) => {
+                            if (machine[i] === 0) {
+                                return x
+                            } else {
+                                return (x / parseInt(machine[i]))
+                            }
+                        })
+                    }
+                    console.log(duration)
 
-                    // 4. Calculate the machine used
-                    // 5. Calculate the duration of each job
+                    let result = processArr.map(function (x, i) {
+                        return {
+                            "process": x,
+                            "cycle": cycleArr[i],
+                            "setup": setupArr[i],
+                            "workload": workloadArr[i],
+                            "duration": duration[i],
+                            "job_machine": machine[i],
+                            "job_station": x,
+                            "job_part": order_part[i].name,
+                            "job_sku": order_part[i].sku,
+                            "order_color": "",
+                            "order_product": order_product_name[i],
+                            "order_quantity": order_quantity[i]
+                        }
+                    }.bind(this));
+                    console.table(result)
 
-                    // for (let i in wip_order) {
-                    //     let jobWorkload = wip_order.map((x) => x * order_quantity[i])
-                    // }
+                    result.map =>
+                    const jobObj = result.reduce(function (acc, cur, i) {
+                        acc[i] = cur;
+                        return acc;
+                    }, {});
 
+                    console.table(jobObj)
 
-                    // Print part dependency
-                    // for (let i in wip_order) {
-                    //     console.table(wip_order[i].order_product_process)
-                    // }
-
-                    // Group order by stations
-                    const result = cycleArr.reduce(function (r, a) {
-                        r[a.process] = r[a.process] || [];
-                        r[a.process].push(a);
-                        return r;
-                    }, Object.create(null));
-                    console.log(result);
-
+                    
 
                     if (this.scheduleItems.length < this.factoryProfile.concurrency) {
-                        this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
-                            jobPart, jobQuantity,
-                            jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
+                        // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
+                        //     jobPart, jobQuantity,
+                        //     jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
                     } else if (this.scheduleItems.length >= this.factoryProfile.concurrency) {
                         window.alert("Full capacity of current concurrency")
                     } else {
@@ -1145,19 +1195,19 @@
 
             _serialSchedule() {
                 if (this.scheduleItems.length <= 0) {
-                    this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
-                        jobPart, jobQuantity,
-                        jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
+                    // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
+                    //     jobPart, jobQuantity,
+                    //     jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
                 } else if (this.scheduleItems.length > 0) {
-                    window.alert("Full capacity of 1 concurrency")
+                    window.alert("Full capacity of current concurrency")
                 }
             }
 
             _multiSchedule() {
                 if (this.scheduleItems.length <= 0) {
-                    this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
-                        jobPart, jobQuantity,
-                        jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
+                    // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
+                    //     jobPart, jobQuantity,
+                    //     jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
 
                 } else if (this.scheduleItems.length > 0) {
                     window.alert("Full capacity of current concurrency")
