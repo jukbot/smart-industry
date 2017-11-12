@@ -1159,17 +1159,15 @@
                             "order_quantity": order_quantity[i]
                         }
                     }.bind(this));
-                    console.table(result)
+                    console.table(result)   
 
-                    let c = result.map((x) => x.job_station)
-                    console.log(c)
+
                     const jobObj = result.reduce(function (acc, cur, i) {
                         acc[i] = cur;
                         return acc;
                     }, {});
 
                     console.table(jobObj)
-
 
                     if (this.scheduleItems.length < this.factoryProfile.concurrency) {
                         // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
