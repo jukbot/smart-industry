@@ -1102,37 +1102,27 @@
 
                     // 6) Calculate job workload of each process
                     let workloadArr = []
-                    for (let i = 0; i < order_part.length; i++) {
-                        workloadArr[i] = cycleArr[i].map((x, i) => (x * order_quantity[i]))
+                    for (let i = 0; i < processArr.length; i++) {
+                        workloadArr[i] = cycleArr[i].map((x, i) => parseInt(x * order_quantity[i]))
+                        // .reduce((a, b, i) => {
+                        //     return parseInt(a + setupArr[i])
+                        // }, 0)
                     }
                     console.log(workloadArr)
 
-                    // 7) Map Process, Cycle and Setup arr into object
-                    let mapArr = processArr.map(function (x, i) {
-                        return {
-                            "process": x,
-                            "cycle": cycleArr[i],
-                            "setup": setupArr[i],
-                            "workload": workloadArr[i]
-                        }
-                    }.bind(this));
 
-                    console.table(mapArr)
+                    // 7) Calculate weight of each process based on workload
 
-                    // 8) Calculate weight of each process based on workload
-                    let workload = mapArr.map((x) => x.workload)
-                    console.log(workload)
-
-                    let sumWorkload = workload.reduce((r, a) => r.map((b, i) => a[i] + b))
+                    let sumWorkload = workloadArr.reduce((r, a) => r.map((b, i) => a[i] + b))
                     console.log(sumWorkload)
 
                     let weight = []
-                    for (let i = 0; i < workload.length; i++) {
-                        weight[i] = workload[i].map((x, i) => x / sumWorkload[i])
+                    for (let i = 0; i < workloadArr.length; i++) {
+                        weight[i] = workloadArr[i].map((x, i) => x / sumWorkload[i])
                     }
                     console.log(weight)
 
-                    // 9) Calculate used machine
+                    // 8) Calculate used machine
                     let machine = []
                     let machine_in_station = this.stationItems.map(o => o.st_machine.length);
                     for (let i = 0; i < weight.length; i++) {
@@ -1140,10 +1130,10 @@
                     }
                     console.log(machine)
 
-                    // 10) Calculate the duration of each process
+                    // 9) Calculate the duration of each process
                     let duration = []
-                    for (let i = 0; i < workload.length; i++) {
-                        duration[i] = workload[i].map((x, i) => {
+                    for (let i = 0; i < workloadArr.length; i++) {
+                        duration[i] = workloadArr[i].map((x, i) => {
                             if (machine[i] === 0) {
                                 return x
                             } else {
@@ -1171,7 +1161,8 @@
                     }.bind(this));
                     console.table(result)
 
-                    result.map =>
+                    let c = result.map((x) => x.job_station)
+                    console.log(c)
                     const jobObj = result.reduce(function (acc, cur, i) {
                         acc[i] = cur;
                         return acc;
@@ -1179,7 +1170,6 @@
 
                     console.table(jobObj)
 
-                    
 
                     if (this.scheduleItems.length < this.factoryProfile.concurrency) {
                         // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
