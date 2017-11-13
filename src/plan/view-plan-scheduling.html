@@ -429,7 +429,7 @@
                     <div class="center btn-group">
                         <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
                             <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                                <paper-button class="station-btn" name="[[stationItem.st_number]]">
+                                <paper-button class="station-btn" name="[[stationItem.st_number]]" noink>
                                     {{localize('station')}} [[stationItem.st_number]]
                                 </paper-button>
                             </template>
