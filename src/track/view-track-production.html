@@ -53,22 +53,22 @@
                 width: 200px;
             }
 
-            .machine {
+            .card-item {
                 margin: 10px;
                 padding: 20px;
                 border: 1px solid rgba(0, 0, 0, .10);
                 border-radius: 3px;
             }
 
-            .machine p {
+            .card-item p {
                 margin: 10px 0;
             }
 
-            .machine h1 {
+            .card-item h1 {
                 text-align: center;
             }
 
-            .machine-info-group {
+            .card-item-info-group {
                 margin-bottom: auto;
             }
 
@@ -89,7 +89,7 @@
                 margin-top: 26px;
             }
 
-            p.machine-title {
+            p.card-item-title {
                 font-weight: 500;
             }
         </style>
@@ -117,8 +117,8 @@
             <ul class="app-grid">
                 <template is="dom-repeat" filter="{{filterByStation(selectedStation)}}" observe="job_station" items="{{scheduleItems}}" as="item">
                     <li>
-                        <div class="machine">
-                            <div class="machine-info-group">
+                        <div class="card-item">
+                            <div class="card-item-info-group">
                                 <h2 class="title">{{localize('part')}} [[item.job_part]]</h2>
                                 <p>{{localize('quantity')}}: [[item.job_quantity]] {{localize('item')}} </p>
                                 <p>{{localize('product-part')}}: [[item.order_product]]</p>
@@ -168,12 +168,12 @@
             <h1 class="title">{{localize('tracking-device-management')}}</h1>
             <ul class="app-grid">
                 <template is="dom-repeat" items="{{deviceItems}}" as="device">
-                    <li>
-                        <div class="machine">
-                            <div class="machine-info-group">
+                    <li hidden="[[device.hide]]">
+                        <div class="card-item">
+                            <div class="card-item-info-group">
                                 <h2 class="title">[[device.name]]</h2>
                                 <p>{{localize('type')}}: [[device.type]]</p>
-                                <p>{{localize('machine-number')}}: [[device.machine]]</p>
+                                <p>{{localize('machine')}}: [[device.machine]]</p>
                                 <p>{{localize('count')}}: [[device.counter]]</p>
                                 <p>{{localize('order-number')}}: [[device.order_no]]</p>
                                 <p>{{localize('updated')}}: [[timestampToTime(device.update)]]</p>
