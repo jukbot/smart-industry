@@ -32,7 +32,7 @@
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerData}}"></firebase-query>
-        <firebase-document app-name="smart-mes" id="editCustomerQuery" path="/data/[[k.key]]/customerData/[[editKey]]" data="{{editCustomerItems}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="editCustomerQuery" path="/data/[[k.key]]/customerData/[[editKey]]" data="{{editCustomerData}}"></firebase-document>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <app-indexeddb-mirror session="[[user.uid]]" id="customerIndexDB" key="customer-data" data="{{customerData}}" persisted-data="{{persistedCustomerData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
@@ -63,16 +63,16 @@
             <li>
                 <div class="card" hidden="[[!showEditCustomer]]">
                     <h1 class="title">{{localize('edit-customer')}}</h1>
-                    <paper-input label="{{localize('first-name')}}" id="edit_customerFirstName" max-length="40" type="text" value="[[getNamePosition(editCustomerItems.name, 0)]]"
+                    <paper-input label="{{localize('first-name')}}" id="edit_customerFirstName" max-length="40" type="text" value="[[getNamePosition(editCustomerData.name, 0)]]"
                         auto-validate allowed-pattern="[a-zA-Z]" error-message="text only" always-float-label></paper-input>
-                    <paper-input label="{{localize('last-name')}}" id="edit_customerLastName" max-length="40" type="text" value="[[getNamePosition(editCustomerItems.name, 1)]]"
+                    <paper-input label="{{localize('last-name')}}" id="edit_customerLastName" max-length="40" type="text" value="[[getNamePosition(editCustomerData.name, 1)]]"
                         auto-validate allowed-pattern="[a-zA-Z]" error-message="text only" always-float-label></paper-input>
-                    <paper-input label="{{localize('email')}}" id="edit_customerEmail" max-length="40" type="email" value="[[editCustomerItems.email]]"
+                    <paper-input label="{{localize('email')}}" id="edit_customerEmail" max-length="40" type="email" value="[[editCustomerData.email]]"
                         auto-validate error-message="invalid input" always-float-label>
                     </paper-input>
-                    <paper-input label="{{localize('mobile')}}" id="edit_customerMobile" max-length="15" type="tel" value="[[editCustomerItems.mobile]]"
+                    <paper-input label="{{localize('mobile')}}" id="edit_customerMobile" max-length="15" type="tel" value="[[editCustomerData.mobile]]"
                         auto-validate allowed-pattern="^(0|[1-9]\d*)$" error-message="number only" always-float-label></paper-input>
-                    <paper-input label="{{localize('address')}}" id="edit_customerAddress" max-length="200" type="text" value="[[editCustomerItems.address]]"
+                    <paper-input label="{{localize('address')}}" id="edit_customerAddress" max-length="200" type="text" value="[[editCustomerData.address]]"
                         auto-validate error-message="text only" always-float-label></paper-input>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openCustomerTable">
@@ -196,7 +196,7 @@
                         type: Object,
                         notify: true
                     },
-                    editCustomerItems: Object,
+                    editCustomerData: Object,
                     selectAll: Boolean,
                     toastText: String,
                     disabled: {

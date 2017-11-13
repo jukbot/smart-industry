@@ -271,13 +271,13 @@
             <p>Select Your Production Model</p>
 
             <iron-selector selected="{{model}}" attr-for-selected="name" fallback-selection="1" class="flex-container" role="navigation">
-              <paper-button name="parallel" class="model-btn">
+              <paper-button name="parallel" class="model-btn" noink>
                 Parallel
               </paper-button>
-              <paper-button name="serial" class="model-btn">
+              <paper-button name="serial" class="model-btn" noink>
                 Serial
               </paper-button>
-              <paper-button name="multi" class="model-btn">
+              <paper-button name="multi" class="model-btn" noink>
                 Multi
               </paper-button>
             </iron-selector>
@@ -400,7 +400,7 @@
         } else if (type === 1) {
           this.resetPassword();
         }
-        event.preventDefault(); // No need to `return false;`.
+        e.preventDefault(); // No need to `return false;`.
       }
 
       _goToTermOfService(e) {
@@ -431,12 +431,11 @@
         if (!this.persistedSampleData) {
           const request = this.$.requestSampleData.generateRequest()
           request.completes.then((req) => {
-            //console.log(req.response);
-            console.info('%cLoaded sample data status:' + req.status + " " + req.statusText, 'color:green;');
+            //console.info('%cLoaded sample data status:' + req.status + " " + req.statusText, 'color:green;');
           }).catch((rejected) => {
             let req = rejected.request;
             let error = rejected.error;
-            console.error("Error requesting data: " + error + " of request " + req);
+            //console.error("Error requesting data: " + error + " of request " + req);
           })
         }
 

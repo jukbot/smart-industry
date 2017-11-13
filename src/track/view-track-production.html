@@ -104,7 +104,7 @@
         <firebase-query app-name="smart-mes" id="deviceQuery" path="/data/[[k.key]]/factoryData/device" data="{{deviceItems}}"></firebase-query>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <div class="card main-card">
-            <h1 class="title">Work In Progress Order Tracking</h1>
+            <h1 class="title">{{localize('work-in-progress-job-tracking')}}</h1>
             <div class="center">
                 <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
                     <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
@@ -131,14 +131,26 @@
                                 <p>{{localize('actual-end')}}: [[timestampToTime(item.actual_end)]]</p>
                                 <p>{{localize('duration')}}: [[getActualDuration(item.actual_start,item.actual_end)]]</p>
                                 <p>{{localize('defect')}}: [[item.job_defect]] {{localize('item')}} </p>
-                                <p>Productivity rate: 0 {{localize('item')}} / {{localize('hour')}}</p>
                                 <p>{{localize('done')}}: [[item.job_good]] / [[item.job_quantity]]</p>
+                                <p>{{localize('count')}}: [[getDeviceCounter(item,item.job_quantity,selectedDevice)]]</p>
                                 <p>{{localize('status')}}:
                                     <span class$="[[getTextStatus(item.job_status)]]" style$="color:[[getColorStatus(item.job_status)]]">[[item.job_status]]</span>
                                 </p>
                             </div>
+                            <vaadin-combo-box label="{{localize('sensor')}}" items="[[deviceItems]]" item-value-path="name" item-label-path="name" loading="[[!deviceItems]]"
+                                selected-item="{{selectedDevice}}" value="{{item.job_sensor}}" always-float-label required>
+                                <template>
+                                    <paper-item>
+                                        <paper-item-body two-line style="min-height: 0">
+                                            <div>[[item.name]]</div>
+                                            <div secondary>[[item.type]]</div>
+                                        </paper-item-body>
+                                    </paper-item>
+                                </template>
+                            </vaadin-combo-box>
                             <flat-button class="btn" on-tap="receiveJob" job="[[item]]">
-                                <button disabled="[[isWIP(item.job_status)]]">Receive</button>
+                                <button>{{localize('receive')}}</button>
+                                <!-- disabled="[[isWIP(item.job_status)]]" -->
                             </flat-button>
                             <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]">
                                 <button disabled="[[isDone(item.job_status)]]">{{localize('done')}}</button>
@@ -153,7 +165,7 @@
             </ul>
         </div>
         <div class="card main-card">
-            <h1 class="title">Tracking Device Management</h1>
+            <h1 class="title">{{localize('tracking-device-management')}}</h1>
             <ul class="app-grid">
                 <template is="dom-repeat" items="{{deviceItems}}" as="device">
                     <li>
@@ -162,25 +174,13 @@
                                 <h2 class="title">[[device.name]]</h2>
                                 <p>{{localize('type')}}: [[device.type]]</p>
                                 <p>{{localize('machine-number')}}: [[device.machine]]</p>
-                                <p>Count: [[device.counter]]</p>
+                                <p>{{localize('count')}}: [[device.counter]]</p>
                                 <p>{{localize('order-number')}}: [[device.order_no]]</p>
-                                <p>Updated: [[timestampToTime(device.update)]]</p>
-                                <p>Current target: [[selectJob.job_part]]</p>
+                                <p>{{localize('updated')}}: [[timestampToTime(device.update)]]</p>
                             </div>
-                            <vaadin-combo-box id="scheduleJob" label="Target Job" items="[[scheduleItems]]" item-value-path="job_part" item-label-path="job_part"
-                                loading="[[!scheduleItems]]" selected-item='{{selectJob}}' always-float-label required>
-                                <template>
-                                    <paper-item>
-                                        <paper-item-body two-line style="min-height: 0">
-                                            <div style="text-transform: capitalize">[[item.name]]</div>
-                                            <div secondary>Product [[item.order_product]]</div>
-                                        </paper-item-body>
-                                    </paper-item>
-                                </template>
-                            </vaadin-combo-box>
-                            <paper-toggle-button class="switch" checked="{{device.enable}}" id="deviceControlSwitch" noink> Enabled</paper-toggle-button>
+                            <paper-toggle-button class="switch" checked="{{device.enable}}" id="deviceControlSwitch" noink> {{localize('enabled')}}</paper-toggle-button>
                             <flat-button class="btn" on-tap="resetCounter" device="[[device]]">
-                                <button>Reset Counter</button>
+                                <button>{{localize('reset')}}</button>
                             </flat-button>
                             <flat-button class="btn" on-tap="_openEditMachineCard" device="[[device]]">
                                 <button>{{localize('edit')}}</button>
@@ -233,6 +233,7 @@
                     </style>
                 </custom-style>
                 <h1 class="center">Done Report</h1>
+                <paper-input label="Good" id="goodCount" value="{{good}}" type="number" always-float-label></paper-input>
                 <paper-input label="Defect" id="defectCount" value="{{defect}}" type="number" always-float-label></paper-input>
                 <div class="btn-group">
                     <paper-button dialog-dismiss on-tap="closeFinishDialog">
@@ -316,7 +317,7 @@
                         actual_end: Math.round(new Date().getTime() / 1000.0),
                         job_status: 'done',
                         job_defect: this.defect,
-                        job_good: (this.selectedJob.job_quantity - this.defect) // output of station
+                        job_good: this.good || (this.selectedJob.job_quantity - this.defect) // output of station
                     })
                     this.$.reportFinishDialog.opened = false;
                     this.selectedJob = '';
@@ -452,7 +453,6 @@
                     }, {});
 
                     delete resultObject.$key
-
                     console.log(resultObject)
                     this.$.warehouseQuery.ref.push(resultObject);
                 }
@@ -548,6 +548,27 @@
                     default:
                         return 'normal'
                 }
+            }
+
+            getDeviceCounter(item, quantity, selectDevice) {
+                if (!selectDevice) return 0
+                const query = this.$.deviceQuery.ref;
+                let count = 0;
+                query.child("/" + selectDevice.$key + "/counter").once("value", (snapshot) => {
+                    if (snapshot.val()) {
+                        count = snapshot.val()
+                    }
+                });
+                if (count >= quantity) {
+                    this.$.scheduleQuery.ref.child(item.$key).update({
+                        actual_end: Math.round(new Date().getTime() / 1000.0),
+                        job_status: 'done',
+                        job_defect: 0,
+                        job_good: count // output of station
+                    })
+                    this._checkJobStatus()
+                }
+                return count
             }
 
             // Device management

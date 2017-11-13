@@ -13,8 +13,6 @@
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
-<!-- import shared style component -->
-<link rel="import" href="style/shared-styles.html">
 <!-- paper modules used for component style -->
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
@@ -43,7 +41,9 @@
 <link rel="import" href="view-error.html">
 <link rel="import" href="view-404.html">
 <!-- import google api -->
-<link rel="import" href="/lib/app-analytics.html">
+<link rel="import" href="../lib/app-analytics.html">
+<!-- import shared style component -->
+<link rel="import" href="style/shared-styles.html">
 <dom-module id="view-app">
   <template>
     <style include="shared-styles">
@@ -101,7 +101,7 @@
                 <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
               </paper-tooltip>
               <p>[[persistedUserData.displayname]]</p>
-              <p>{{localize('version')}} 1.0.7</p>
+              <p>{{localize('version')}} 1.0.8</p>
             </div>
           </div>
         </app-drawer>
@@ -129,7 +129,7 @@
         </app-header-layout>
       </app-drawer-layout>
     </iron-pages>
-    <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="3000"
+    <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000"
       hidden="true">
       <div class="toast-flex-container">
         <div class="toast-flex-item">
@@ -211,8 +211,8 @@
       }
       static get observers() {
         return [
+          '_routeChanged(subRoute.*)',
           '_routePageChanged(subPageData.page, visible)',
-          '_handleUser(user)',
           '_verifyEmailAlert(user.emailVerified, signedIn)',
           '_signedInChanged(signedIn)'
         ]
@@ -272,13 +272,15 @@
       getUserImage(url) {
         return ((url) ? url : this.rootPath + 'images/profile/default.svg')
       }
-      _routePageChanged(page, visible) {
-        if (!visible) return this.page = page
-        this.page = page || 'dashboard'
-        // Close a non-persistent drawer when the page & route are changed.
+      _routeChanged(changeRecord) {
+        //Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
           this.$.drawer.close();
         }
+      }
+      _routePageChanged(page, visible) {
+        if (!visible) return this.page = page
+        this.page = page || 'dashboard'
       }
       _showPage404() {
         this.page = '404'
@@ -346,7 +348,6 @@
         } else {
           // Browser not support service worker
           console.warn('%cService Worker is not support by your browser.' + err, crimsonColor)
-          window.alert('Service Worker is not support by your browser. Please upgrade your browser.')
         }
       }
       _activateFetch() {
@@ -433,12 +434,6 @@
         this.toastText = text
         this.$.toastVerify.hidden = false;
         this.$.toastVerify.open()
-      }
-      _handleUser(user) {
-        // user = JSON.stringify(user, null, '\t')
-        // if (user) {
-        //   console.info(`DEBUG User ${user}`)
-        // }
       }
       _handleError(e) {
         console.error('Error: ' + e.message)

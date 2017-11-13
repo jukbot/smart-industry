@@ -1143,33 +1143,67 @@
                     }
                     console.log(duration)
 
-                    let result = processArr.map(function (x, i) {
+                    let start = []
+                    let end = []
+                    // 10) Map value and key to a new object 
+                    // and reduce to flat array for each part order
+                    let result = processArr.map((x, i) => {
+                        var today = new Date();
+                        var dd = today.getDate();
+                        var months = new Array('January', 'February', 'March', 'April', 'May', 'June',
+                            'July', 'August', 'September', 'October', 'November', 'December');
+                        var mm = months[today.getMonth()];
+                        var yyyy = today.getFullYear();
+                        if (dd < 10) {
+                            dd = '0' + dd;
+                        }
+
+                        var initialStart = Date.parse(dd + '-' + months + '-' + yyyy + " " + this.factoryOperation
+                            .op_start) / 1000
+                        if (!start[i]) {
+                            start[i] = initialStart
+                        } else {
+                            start[i] = end[i - 1]
+                        }
+
+                        end[i] = parseInt(start[i] + duration[i])
+
                         return {
-                            "process": x,
-                            "cycle": cycleArr[i],
-                            "setup": setupArr[i],
-                            "workload": workloadArr[i],
-                            "duration": duration[i],
-                            "job_machine": machine[i],
+                            "job_cycle": cycleArr[i].filter(value => !Number.isNaN(value)),
+                            "job_setup": setupArr[i].filter(value => !Number.isNaN(value)),
+                            "job_workload": workloadArr[i].filter(value => !Number.isNaN(value)),
+                            "job_duration": duration[i].filter(value => !Number.isNaN(value)),
+                            "job_machine": machine[i].filter(value => !Number.isNaN(value)),
                             "job_station": x,
-                            "job_part": order_part[i].name,
+                            "job_part": order_part[i].name.toString(),
                             "job_sku": order_part[i].sku,
-                            "order_color": "",
-                            "order_product": order_product_name[i],
+                            "job_weight": weight[i].filter(value => !Number.isNaN(value)),
+                            "order_process": x,
+                            "start": start[i],
+                            "end": end[i],
+                            "order_color": order_color[i].toString(),
+                            "order_product": order_product_name[i].toString(),
                             "order_quantity": order_quantity[i]
                         }
-                    }.bind(this));
-                    console.table(result)   
+                    }).reduce((a, b) => {
+                        return a.concat(b);
+                    }, []); // use reduce only for serial and parallel
 
+                    console.table(result)
 
-                    const jobObj = result.reduce(function (acc, cur, i) {
+                    // convert to arr obj
+                    const flatObj = result.reduce(function (acc, cur, i) {
                         acc[i] = cur;
                         return acc;
-                    }, {});
+                    }, []);
 
-                    console.table(jobObj)
+
 
                     if (this.scheduleItems.length < this.factoryProfile.concurrency) {
+                        delete result.$key
+                        for (let i = 0; i < result.length; i++) {
+                            this.$.scheduleQuery.ref.push(result[i])
+                        }
                         // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
                         //     jobPart, jobQuantity,
                         //     jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)

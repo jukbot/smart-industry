@@ -23,10 +23,10 @@
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
-        <firebase-query app-name="smart-mes" id="inventoryQuery" path="/data/[[k.key]]/factoryData/inventory" order-by-child="fname"
+        <firebase-query app-name="smart-mes" id="inventoryQuery" path="/data/[[k.key]]/factoryData/inventory" order-by-child="name"
             data="{{inventoryData}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="editInventoryQuery" path="/data/[[k.key]]/factoryData/inventory/[[editKey]]"
-            data="{{editInventoryItems}}"></firebase-document>
+            data="{{editInventoryData}}"></firebase-document>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <app-indexeddb-mirror session="[[user.uid]]" id="inventoryIndexDB" key="inventory-data" data="{{inventoryData}}" persisted-data="{{persistedInventoryData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
@@ -36,9 +36,9 @@
                     <paper-input label="{{localize('name')}}" id="inventoryName" type="text" maxlength="40" auto-validate always-float-label></paper-input>
                     <paper-input label="{{localize('code')}}" id="inventoryCode" type="text" maxlength="20" auto-validate always-float-label></paper-input>
                     <paper-input label="{{localize('cost')}}" id="inventoryCost" type="number" maxlength="9" allowed-pattern="^[0-9]+(\.\d{2})?$"
-                        error-message="number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
+                        error-message="Number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
                     <paper-input label="{{localize('quantity')}}" id="inventoryQuantity" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)$"
-                        error-message="number only" min="1" max$="[[maxInput]]" step="1" auto-validate always-float-label>
+                        error-message="Number only" min="1" max$="[[maxInput]]" step="1" auto-validate always-float-label>
                     </paper-input>
                     <div class="center">
                         <flat-button class="btn" on-tap="_openInventoryTable">
@@ -53,14 +53,14 @@
             <li>
                 <div class="card" hidden="[[!showEditInventory]]">
                     <h1 class="title">{{localize('edit-inventory')}}</h1>
-                    <paper-input label="{{localize('name')}}" id="edit_inventoryName" type="text" value="[[editInventoryItems.name]]" maxlength="40"
+                    <paper-input label="{{localize('name')}}" id="edit_inventoryName" type="text" value="[[editInventoryData.name]]" maxlength="40"
                         auto-validate always-float-label></paper-input>
-                    <paper-input label="{{localize('code')}}" id="edit_inventoryCode" type="text" value="[[editInventoryItems.code]]" maxlength="20"
+                    <paper-input label="{{localize('code')}}" id="edit_inventoryCode" type="text" value="[[editInventoryData.code]]" maxlength="20"
                         auto-validate always-float-label></paper-input>
-                    <paper-input label="{{localize('cost')}}" id="edit_inventoryCost" type="number" value="[[editInventoryItems.cost]]" maxlength="9"
+                    <paper-input label="{{localize('cost')}}" id="edit_inventoryCost" type="number" value="[[editInventoryData.cost]]" maxlength="9"
                         allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only" min="0" max="[[maxInput]]" step="0.01"
                         auto-validate always-float-label></paper-input>
-                    <paper-input label="{{localize('quantity')}}" id="edit_inventoryQuantity" type="number" value="[[editInventoryItems.quantity]]"
+                    <paper-input label="{{localize('quantity')}}" id="edit_inventoryQuantity" type="number" value="[[editInventoryData.quantity]]"
                         maxlength="9" allowed-pattern="^(0|[1-9]\d*)$" error-message="number only" min="1" max$="[[maxInput]]"
                         step="1" auto-validate always-float-label>
                     </paper-input>
@@ -119,7 +119,7 @@
                                 <div class="cell">{{localize('quantity')}}</div>
                             </template>
                             <template>
-                                <div class="cell">[[item.quantity]] items</div>
+                                <div class="cell">[[item.quantity]] {{localize('item')}}</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -176,7 +176,7 @@
                         type: Object,
                         notify: true
                     },
-                    editInventoryItems: Object,
+                    editInventoryData: Object,
                     selectAll: Boolean,
                     toastText: String,
                     maxInput: {
@@ -214,7 +214,7 @@
 
             static get observers() {
                 return [
-                    '_checkInventory(inventoryData)',
+                    '_checkInventory(persistedInventoryData)',
                 ]
             }
 
