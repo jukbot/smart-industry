@@ -6,6 +6,7 @@
 <link rel="import" href="../../bower_components/google-chart/google-chart.html">
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../lib/sugar.html">
+<link rel="import" href="../../lib/lodash.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -1007,10 +1008,10 @@
                 if (this.sortedOrder) {
                     switch (this.factoryProfile.model) {
                         case "serial":
-                            this._serialSchedule()
+                            this._serialSchedule(1)
                             break;
                         case "parallel":
-                            this._parallelSchedule()
+                            this._scheduleOrder(this.factoryProfile.concurrency)
                             break;
                         case "multi":
                             this._multiSchedule()
@@ -1026,37 +1027,39 @@
             }
 
             refreshChart(data) {
-                data = [
-                    ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 8, 33, 0).getTime() / 1000],
-                    ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 8, 38, 0).getTime() / 1000],
-                    ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 8, 45, 0).getTime() / 1000],
-                    ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 8, 50, 0).getTime() / 1000],
-                    ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 9, 0, 36).getTime() / 1000],
-                    ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(
-                        2017, 10, 19, 9, 14, 27).getTime() / 1000],
-                    ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(
-                        2017, 10, 19, 9, 30, 12).getTime() / 1000],
-                    ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000, new Date(
-                        2017, 10, 19, 10, 20, 12).getTime() / 1000]
-                ]
-                console.table(data)
-                this.$.chartQuery.ref.set(data)
+                // [[station, order, color ,start ,end]]
+                // data = [
+                //     ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
+                //         2017, 10, 19, 8, 33, 0).getTime() / 1000],
+                //     ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
+                //         2017, 10, 19, 8, 38, 0).getTime() / 1000],
+                //     ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(
+                //         2017, 10, 19, 8, 45, 0).getTime() / 1000],
+                //     ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(
+                //         2017, 10, 19, 8, 50, 0).getTime() / 1000],
+                //     ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(
+                //         2017, 10, 19, 9, 0, 36).getTime() / 1000],
+                //     ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(
+                //         2017, 10, 19, 9, 14, 27).getTime() / 1000],
+                //     ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(
+                //         2017, 10, 19, 9, 30, 12).getTime() / 1000],
+                //     ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000, new Date(
+                //         2017, 10, 19, 10, 20, 12).getTime() / 1000]
+                // ]
+                chartData = Object.entries(data)
+                console.table(chartData)
+                this.$.chartQuery.ref.set(chartData)
             }
 
             gcd(a, b) {
                 return (b == 0) ? a : gcd(b, a % b);
             }
 
-            _parallelSchedule() {
+            _scheduleOrder(c) {
                 let order = this.sortedOrder;
                 if (order.length > 0) {
                     // 1) Get concurrent and initial value
-                    const concurrent = this.factoryProfile.concurrency;
+                    const concurrent = c;
 
                     // 2) Copy first concurrent orders from sorted order table 
                     let selected_order = order.slice(0, concurrent).concat(order.slice(order.length));
@@ -1068,22 +1071,22 @@
 
                     // 4) Set order part and order quantity data 
                     let order_part = selected_order.map(o => o.order_product_part)
-                    let order_quantity = selected_order.map(o => o.order_quantity)
                     let order_product_name = selected_order.map(o => o.order_product_name)
                     let order_no = selected_order.map(o => o.order_no)
                     let order_duration = selected_order.map(o => o.order_duration)
                     let order_delivery = selected_order.map(o => o.order_delivery)
                     let order_color = selected_order.map(o => o.order_color)
 
-                    // Order quantity
-                    console.log('order quantity')
-                    console.log(order_quantity)
-
                     // 5) Flat array of order part data  (only parallel and serial)
                     order_part = order_part.reduce((a, b) =>
                         a.concat(b), [])
                     console.log('order part')
                     console.table(order_part)
+
+                    // 5.1a) Array of quantity
+                    console.log('order quantity')
+                    let order_quantity = selected_order.map(o => o.order_quantity)
+                    console.log(order_quantity)
 
                     // 5.1) Array of cycle 
                     let cycleArr = order_part.map(element => element.cycle)
@@ -1103,13 +1106,12 @@
                     // 6) Calculate job workload of each process
                     let workloadArr = []
                     for (let i = 0; i < processArr.length; i++) {
-                        workloadArr[i] = cycleArr[i].map((x, i) => parseInt(x * order_quantity[i]))
+                        workloadArr[i] = order_quantity.map((x, j) => (x * cycleArr[j]) + setupArr[j])
                         // .reduce((a, b, i) => {
                         //     return parseInt(a + setupArr[i])
                         // }, 0)
                     }
                     console.log(workloadArr)
-
 
                     // 7) Calculate weight of each process based on workload
 
@@ -1124,7 +1126,13 @@
 
                     // 8) Calculate used machine
                     let machine = []
-                    let machine_in_station = this.stationItems.map(o => o.st_machine.length);
+                    let machine_in_station = this.stationItems.map(o => {
+                        if (!o.st_machine.length) {
+                            return 0
+                        } else {
+                            return o.st_machine.length
+                        }
+                    })
                     for (let i = 0; i < weight.length; i++) {
                         machine[i] = weight[i].map((x, i) => Math.round(x * machine_in_station[i]))
                     }
@@ -1169,15 +1177,15 @@
                         end[i] = parseInt(start[i] + duration[i])
 
                         return {
-                            "job_cycle": cycleArr[i].filter(value => !Number.isNaN(value)),
-                            "job_setup": setupArr[i].filter(value => !Number.isNaN(value)),
-                            "job_workload": workloadArr[i].filter(value => !Number.isNaN(value)),
-                            "job_duration": duration[i].filter(value => !Number.isNaN(value)),
-                            "job_machine": machine[i].filter(value => !Number.isNaN(value)),
+                            "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
+                            "job_setup": setupArr[i].filter(value => isNaN(value) ? 0 : value),
+                            "job_workload": workloadArr[i].filter(value => isNaN(value) ? 0 : value),
+                            "job_duration": duration[i].filter(value => isNaN(value) ? 0 : value),
+                            "job_machine": machine[i].filter(value => isNaN(value) ? 0 : value),
                             "job_station": x,
                             "job_part": order_part[i].name.toString(),
                             "job_sku": order_part[i].sku,
-                            "job_weight": weight[i].filter(value => !Number.isNaN(value)),
+                            "job_weight": weight[i].filter(value => isNaN(value) ? 0 : value),
                             "order_process": x,
                             "start": start[i],
                             "end": end[i],
@@ -1192,11 +1200,22 @@
                     console.table(result)
 
                     // convert to arr obj
-                    const flatObj = result.reduce(function (acc, cur, i) {
-                        acc[i] = cur;
-                        return acc;
-                    }, []);
+                    // const flatObj = result.reduce(function (acc, cur, i) {
+                    //     acc[i] = cur;
+                    //     return acc;
+                    // }, []);
 
+                    let splitArr = result.map((data) => _.transform(data, function (result, value, key) {
+                        if (!_.isArray(value)) return;
+                        if (result.length < value.length) {
+                            result.push(..._.times(value.length - result.length, () => _.clone(
+                                data)))
+                        }
+                        value.map((ele, index) => result[index][key] = ele)
+                    }, []))
+
+                    // let splitArr = result.map((data) => (_.mapValues(data, (val) => _.isArray(val) ? val[0] : val)))
+                    console.log(splitArr)
 
 
                     if (this.scheduleItems.length < this.factoryProfile.concurrency) {
@@ -1215,18 +1234,9 @@
                 }
             }
 
-            _serialSchedule() {
-                if (this.scheduleItems.length <= 0) {
-                    // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
-                    //     jobPart, jobQuantity,
-                    //     jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
-                } else if (this.scheduleItems.length > 0) {
-                    window.alert("Full capacity of current concurrency")
-                }
-            }
-
             _multiSchedule() {
                 if (this.scheduleItems.length <= 0) {
+                    window.alert("All order must be multi components type.")
                     // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
                     //     jobPart, jobQuantity,
                     //     jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
