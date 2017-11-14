@@ -66,8 +66,8 @@
     <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[usr.key]]/appData/email_alert" data="[[emailalert]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[usr.key]]/appData/auto_backup" data="[[autobackup]]"></firebase-document>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-    <iron-ajax url="[[rootPath]]/data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
-    <iron-ajax id="requestSampleData" url="[[rootPath]]/data/sample/sample-parallel.json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
+    <iron-ajax url="[[rootPath]]data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="[[rootPath]]data/sample/sample-parallel.json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <ul class="app-grid">
       <li>
         <div class="card">
