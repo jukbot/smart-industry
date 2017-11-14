@@ -1,24 +1,30 @@
 {
+  "name": "imes",
+  "version": "1.0.6",
+  "description": "Intelligent Manufacturing Execution System",
   "author": "KMUTT",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jukbot/smart-industry.git"
+  },
   "dependencies": {
-    "@polymer/polymer": "2.2.0",
-    "@webcomponents/webcomponentsjs": "^1.0.18",
     "countdown": "github:mckamey/countdownjs",
     "express": "^4.16.2",
     "intl": "^1.2.5",
     "javascript-lp-solver": "^0.4.5",
     "lodash": "^4.17.4",
-    "mathjs": "^3.16.5",
     "polymer-redux": "^1.0.4",
     "prpl-server": "^1.0.0",
     "redux": "^3.7.2",
     "server": "^1.0.4",
     "sugar": "^2.0.4",
     "turbojs": "^1.0.2",
-    "web-animations-js": "^2.3.1",
-    "web-component-tester": "^6.4.0"
+    "web-animations-js": "^2.3.1"
   },
-  "description": "Intelligent Manufacturing Execution System",
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
@@ -35,26 +41,18 @@
     "polymer-webpack-loader": "^2.0.0",
     "workbox-webpack-plugin": "^2.1.1"
   },
-  "engines": {
-    "node": ">=6.0"
-  },
-  "license": "Apache-2.0",
-  "name": "imes",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jukbot/smart-industry.git"
-  },
   "scripts": {
-    "build": "polymer build",
-    "deploy": "polymer build && firebase deploy",
-    "dev": "polymer serve -p 8080",
+    "start": "node index.js",
     "lint": "npm run lint:javascript && polymer lint --input src/**/*.html",
+    "dev": "polymer serve -p 8080",
+    "test": "polymer test",
+    "build": "polymer build",
     "serve:dev": "polymer serve",
     "serve:prod": "polymer build && firebase serve --only functions,hosting",
-    "start": "node index.js",
-    "test": "polymer test"
+    "deploy": "polymer build && firebase deploy"
   },
   "standard": {
+    "parser": "babel-eslint",
     "globals": [
       "$",
       "jQuery",
@@ -64,11 +62,9 @@
       "node_modules/**",
       "bower_components/**"
     ],
-    "parser": "babel-eslint",
     "plugins": [
       "html",
       "polymer"
     ]
-  },
-  "version": "1.0.6"
+  }
 }

@@ -1,4 +1,4 @@
-<link rel="import" href="../../node_modules/@polymer/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
@@ -996,8 +996,8 @@
 
             deleteJob(e) {
                 if (confirm("Delete this job ?")) {
-                    let key = e.currentTarget.job.$key;
-                    this.$.jobQuery.ref.remove();
+                    let key = e.currentTarget.order.$key;
+                    this.$.jobQuery.ref.child(key).remove();
                     this.toastText = 'notification-delete-successfully'
                     this.$.toastAlert.open()
                 }
@@ -1104,40 +1104,19 @@
                     console.log(processArr)
 
                     // 6) Calculate job workload of each process
-                    // for (let i = 0; i < processArr.length; i++) {
-                    // for (let j = 0; j < order_quantity.length; j++) {
-                    //     workloadArr[j] = cycleArr.map((x, i) => parseInt(order_quantity[j]) * parseFloat(x) +
-                    //         parseFloat(setupArr[i]))
-                    // }
-                    // }
-
-                    // for (let i = 0; i < processArr.length; i++) {
-                    //     workloadArr[i] = cycleArr[i].map((x, i) => parseInt(x * order_quantity[i]))
-                    // }
-                    // console.log(workloadArr)
-
-                    console.log('Workload Array', {
-                        order_quantity,
-                        cycleArr,
-                        setupArr
-                    })
-
-                    const multResult = order_quantity.map((item, index) => cycleArr[index].map(c => c * item))
-
-                    const workloadArr = multResult.map((item, index) => {
-                        return item.map((i, j) => i + setupArr[index][j])
-                    })
-
-                    console.log('Init', workloadArr[0])
+                    let workloadArr = []
+                    for (let i = 0; i < processArr.length; i++) {
+                        workloadArr[i] = order_quantity.map((x, j) => (x * cycleArr[j]) + setupArr[j])
+                        // .reduce((a, b, i) => {
+                        //     return parseInt(a + setupArr[i])
+                        // }, 0)
+                    }
+                    console.log(workloadArr)
 
                     // 7) Calculate weight of each process based on workload
-                    let sumWorkload = workloadArr.reduce((prev, cur) => {
-                        return prev.map((item, index) => {
-                            return (cur[index] || 0) + item
-                        })
-                    })
 
-                    console.log('Sum of Workload', sumWorkload)
+                    let sumWorkload = workloadArr.reduce((r, a) => r.map((b, i) => a[i] + b))
+                    console.log(sumWorkload)
 
                     let weight = []
                     for (let i = 0; i < workloadArr.length; i++) {
@@ -1146,7 +1125,7 @@
                     console.log(weight)
 
                     // 8) Calculate used machine
-                    let machines = []
+                    let machine = []
                     let machine_in_station = this.stationItems.map(o => {
                         if (!o.st_machine.length) {
                             return 0
@@ -1154,23 +1133,19 @@
                             return o.st_machine.length
                         }
                     })
-                    console.log(machine_in_station)
                     for (let i = 0; i < weight.length; i++) {
-                        machines[i] = weight[i].map((x, i) => Math.round(x * machine_in_station[i]))
+                        machine[i] = weight[i].map((x, i) => Math.round(x * machine_in_station[i]))
                     }
-                    console.log(machines)
+                    console.log(machine)
 
                     // 9) Calculate the duration of each process
                     let duration = []
                     for (let i = 0; i < workloadArr.length; i++) {
-                        duration[i] = workloadArr[i].map((workload, index) => {
-                            const machine = machines[index]
-
-                            if (machine === 0) {
-                                return workload
+                        duration[i] = workloadArr[i].map((x, i) => {
+                            if (machine[i] === 0) {
+                                return x
                             } else {
-                                console.log('Calculate Duration', workload, machine)
-                                return (workload / parseInt(machine))
+                                return (x / parseInt(machine[i]))
                             }
                         })
                     }
@@ -1183,8 +1158,7 @@
                     let result = processArr.map((x, i) => {
                         var today = new Date();
                         var dd = today.getDate();
-                        var months = new Array('January', 'February', 'March', 'April', 'May',
-                            'June',
+                        var months = new Array('January', 'February', 'March', 'April', 'May', 'June',
                             'July', 'August', 'September', 'October', 'November', 'December');
                         var mm = months[today.getMonth()];
                         var yyyy = today.getFullYear();
@@ -1197,7 +1171,7 @@
                         if (!start[i]) {
                             start[i] = initialStart
                         } else {
-                            start[i] = end[i]
+                            start[i] = end[i - 1]
                         }
 
                         end[i] = parseInt(start[i] + duration[i])
@@ -1207,7 +1181,7 @@
                             "job_setup": setupArr[i].filter(value => isNaN(value) ? 0 : value),
                             "job_workload": workloadArr[i].filter(value => isNaN(value) ? 0 : value),
                             "job_duration": duration[i].filter(value => isNaN(value) ? 0 : value),
-                            "job_machine": machines[i].filter(value => isNaN(value) ? 0 : value),
+                            "job_machine": machine[i].filter(value => isNaN(value) ? 0 : value),
                             "job_station": x,
                             "job_part": order_part[i].name.toString(),
                             "job_sku": order_part[i].sku,
