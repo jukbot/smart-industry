@@ -192,14 +192,14 @@
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]"></firebase-document>
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
-    <iron-ajax id="requestSampleData" url="[[rootPath]]/data/sample/sample-[[model]].json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="data/sample/sample-[[model]].json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <app-indexeddb-mirror key="sampleData" data="{{sampleData}}" persisted-data="{{persistedSampleData}}">
     </app-indexeddb-mirror>
     <section class="flex-container">
       <div class="flex-item">
         <article>
-          <img class="logo" src="[[rootPath]]/images/logo/logo.svg" title="Logo" alt="app logo">
+          <img class="logo" src="images/logo/logo.svg" title="Logo" alt="app logo">
           <div hidden$="[[!loginForm]]" class="login-form">
             <div class="form-title">
               <h2>Log in</h2>

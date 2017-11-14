@@ -278,7 +278,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
       getUserImage(url) {
-        return ((url) ? url : this.rootPath + 'images/profile/default.svg')
+        return ((url) ? url : 'images/profile/default.svg')
       }
       _routeChanged(changeRecord) {
         //Close a non-persistent drawer when the page & route are changed.
@@ -338,7 +338,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // Load and register pre-caching Service Worker for offline usage
         if ('serviceWorker' in navigator) {
           // Register service worker
-          navigator.serviceWorker.register('/service-worker.js', {
+          navigator.serviceWorker.register('service-worker.js', {
             scope: Polymer.rootPath
           }).then((registration) => {
             console.info('%cService Worker Registered to ' + registration.scope, purpleColor)

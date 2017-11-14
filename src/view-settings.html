@@ -66,8 +66,8 @@
     <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[usr.key]]/appData/email_alert" data="[[emailalert]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[usr.key]]/appData/auto_backup" data="[[autobackup]]"></firebase-document>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-    <iron-ajax url="[[rootPath]]data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
-    <iron-ajax id="requestSampleData" url="[[rootPath]]data/sample/sample-parallel.json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
+    <iron-ajax url="data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="data/sample/sample-parallel.json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <ul class="app-grid">
       <li>
         <div class="card">
@@ -84,12 +84,12 @@
             </template>
           </vaadin-combo-box>
           <p>{{localize('user-id')}}: [[user.uid]]</p>
-          <!-- <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
+           <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
             <button>Search Sensor</button>
           </flat-button>
           <flat-button on-tap="showDevice" class="btn" title="Show sensor">
             <button>Show Sensor</button>
-          </flat-button> -->
+          </flat-button> 
           <flat-button on-tap="resetOrderCount" class="btn" title="Reset Order Count">
             <button>{{localize('reset-order-count')}}</button>
           </flat-button>
