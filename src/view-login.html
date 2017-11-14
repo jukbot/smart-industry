@@ -192,14 +192,14 @@
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]"></firebase-document>
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
-    <iron-ajax id="requestSampleData" url="/data/sample/sample-[[model]].json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="[[rootPath]]/data/sample/sample-[[model]].json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <app-indexeddb-mirror key="sampleData" data="{{sampleData}}" persisted-data="{{persistedSampleData}}">
     </app-indexeddb-mirror>
     <section class="flex-container">
       <div class="flex-item">
         <article>
-          <img class="logo" src="/images/logo/logo.svg" title="Logo" alt="app logo">
+          <img class="logo" src="[[rootPath]]/images/logo/logo.svg" title="Logo" alt="app logo">
           <div hidden$="[[!loginForm]]" class="login-form">
             <div class="form-title">
               <h2>Log in</h2>
@@ -284,7 +284,7 @@
 
             <div class="link">
               <p>By signing up you agree to IMES’s
-                <a href="/term" target="_self" id="termOfService">Terms of Service</a>
+                <a href="[[rootPath]]/term" target="_self" id="termOfService">Terms of Service</a>
             </div>
             </p>
             <paper-button class="register-btn" on-tap="register" title="Register and Login" noink>Register and Login</paper-button>
@@ -375,7 +375,8 @@
           sampleData: Object,
           persistedSampleData: Object,
           errorMessage: String,
-          successMessage: String
+          successMessage: String,
+          rootPath: String
         }
       }
       constructor() {
@@ -431,11 +432,11 @@
         if (!this.persistedSampleData) {
           const request = this.$.requestSampleData.generateRequest()
           request.completes.then((req) => {
-            //console.info('%cLoaded sample data status:' + req.status + " " + req.statusText, 'color:green;');
+            console.info('%cLoaded sample data status:' + req.status + " " + req.statusText, 'color:green;');
           }).catch((rejected) => {
             let req = rejected.request;
             let error = rejected.error;
-            //console.error("Error requesting data: " + error + " of request " + req);
+            console.error("Error requesting data: " + error + " of request " + req);
           })
         }
 
