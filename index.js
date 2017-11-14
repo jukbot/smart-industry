@@ -9,8 +9,7 @@ app.get(
   "/*",
   prpl.makeHandler(".", {
     builds: [
-      { name: "modern", browserCapabilities: ["es2015", "push"] },
-      { name: "fallback" }
+      { name: "build/default", browserCapabilities: ["es2015", "push"], basePath: true }
     ]
   })
 );
@@ -22,5 +21,5 @@ app.get("/images/*", (req, res, next) => {
 
 // Tell the app to listen for requests on port 8080
 app.listen(8080, function() {
-  console.info("Example app listening on port 8080!");
+  console.info("Application is listening on port 8080!");
 });

@@ -10,13 +10,11 @@
 
 ## Demo
 
-Sorry. We have to disable the demo for temporary, due to re-structure the database to improve the performance and flexibility. 
+ [Login here](https://smart-mes.firebaseapp.com/) 
 
-<!-- [Login here](https://smart-mes.firebaseapp.com/) -->
-
-<!-- | E-mail | Password | 
+| E-mail | Password | 
 |---------|---------------|
-| demo@imes.in.th | demouser | -->
+| demo@imes.in.th | demouser | 
 
 
 # Contribution
@@ -24,7 +22,6 @@ Sorry. We have to disable the demo for temporary, due to re-structure the databa
 Please know that this project is still in development with a lot of bugs, if you want to contribute us (help me) working on this project please read [About Project document](https://github.com/jukbot/smart-industry/blob/master/About%20Project.pdf) for an overview and scope of this project phase I and for the technical information please read [Technical document](https://goo.gl/JNmrPE) to understand how this application will work.
 
 Wanna join chat with us just join this [Gitter room](https://gitter.im/imes-project/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) 
-
 
 
 # About IMES Project
@@ -105,7 +102,7 @@ The PRPL pattern, in a nutshell:
 
 ##### Prerequisites
 
-NodeJS (required version >= 6.x)
+NodeJS (required version >= 8.x)
 
     https://nodejs.org/en/
 
@@ -128,7 +125,7 @@ Install [bower](https://bower.io/) (require version >= 1.8.2)
     yarn add global bower
 
 
-### Install dependency
+### Install dependency packages
 
     npm install
     bower install
@@ -140,8 +137,15 @@ routing for the app:
 
     polymer serve --open
 
+### Start the production server (PRPL Server)
 
-### Build
+This command serves the app at `http://localhost:8081` and provides basic URL
+routing for the app:
+
+    polymer build
+    npm start
+
+### Build Project
 
 This command performs HTML, CSS, and JS minification on the application
 dependencies, and generates a service-worker.js file with code to pre-cache the
@@ -174,19 +178,10 @@ browsers currently installed on your machine.
 
     polymer test
 
-### Adding a new view
-
-You can extend the app by adding more views that will be demand-loaded
-e.g. based on the route, or to progressively render non-critical sections
-of the application.  Each new demand-loaded fragment should be added to the
-list of `fragments` in the included `polymer.json` file.  This will ensure
-those components and their dependencies are added to the list of pre-cached
-components (and will have bundles created in the fallback `bundled` build).
-
 
 ## Contribution
 
-If you’ve found an error in this library, please file an issue at: https://github.com/thangman22/mole-fetch/issues
+If you’ve found an error in this library, please file an issue at: https://github.com/jukbot/smart-industry/issues
 
 Patches are encouraged, and may be submitted by forking this project and submitting a pull request through GitHub.
 
