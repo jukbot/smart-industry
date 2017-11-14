@@ -8,8 +8,9 @@ app.get("/api/launch", (req, res, next) => res.send("boom"));
 app.get(
   "/*",
   prpl.makeHandler(".", {
+    entrypoint: "index.html",
     builds: [
-      { name: "build/default", browserCapabilities: ["es2015", "push"], basePath: true }
+      { name: "build", browserCapabilities: ["es2015", "push"], basePath: true }
     ]
   })
 );
@@ -17,6 +18,19 @@ app.get(
 app.get("/images/*", (req, res, next) => {
   res.setHeader("Cache-Control", "public, max-age=31536000");
   next();
+});
+
+app.get('/*', prpl.makeHandler('.', {
+  builds: [ ... ],
+  forwardErrors: true
+}));
+
+app.use((err, req, res, next) => {
+  if (err.status === 404) {
+    res.status(404).sendFile('src/view-404.html', {root: rootDir});
+  } else {
+    next();
+  }
 });
 
 // Tell the app to listen for requests on port 8080

@@ -46,7 +46,7 @@
     "lint": "npm run lint:javascript && polymer lint --input src/**/*.html",
     "serve:dev": "polymer serve",
     "serve:prod": "polymer build && firebase serve --only functions,hosting",
-    "start": "node index.js",
+    "start": "prpl-server --host 0.0.0.0 --https-redirect",
     "test": "polymer test"
   },
   "standard": {

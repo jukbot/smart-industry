@@ -3,15 +3,20 @@
     "rules": "database.rules.json"
   },
   "hosting": {
-    "public": "build/default",
+    "public": "build",
     "ignore": [
       "firebase.json",
       "**/.*"
     ],
-    "rewrites": [{
-      "source": "**/!(*.*)",
-      "destination": "/index.html"
-    }],
+    "rewrites": [
+      {
+        "source": "/",
+        "function": "serve"
+      }, {
+        "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
+        "function": "serve"
+      }
+    ],
     "headers": [{
         "source": "**/service-worker.js",
         "headers": [{
