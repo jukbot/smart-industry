@@ -13,6 +13,7 @@ app.get(
     builds: [
       {name: 'modern', browserCapabilities: ['es2015', 'push'], basePath: true},
     ],
+    forwardErrors: true
   })
 );
 

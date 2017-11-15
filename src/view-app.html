@@ -287,7 +287,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
       _routePageChanged(page, visible) {
-        if (!visible) return this.page = page
+        if (page === undefined) {
+          return;
+        }
+        if (!visible) {
+          return this.page = page
+        }
         this.page = page || 'dashboard'
       }
       _showPage404() {
