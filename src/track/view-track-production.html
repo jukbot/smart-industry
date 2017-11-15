@@ -148,12 +148,11 @@
                                     </paper-item>
                                 </template>
                             </vaadin-combo-box>
-                            <flat-button class="btn" on-tap="receiveJob" job="[[item]]">
-                                <button>{{localize('receive')}}</button>
-                                <!-- disabled="[[isWIP(item.job_status)]]" -->
+                            <flat-button class="btn" on-tap="receiveJob" disabled="[[isWIP(item.job_status)]]" job="[[item]]">
+                                <button>{{localize('receive-job')}}</button>
                             </flat-button>
                             <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]">
-                                <button disabled="[[isDone(item.job_status)]]">{{localize('done')}}</button>
+                                <button disabled="[[isDone(item.job_status)]]">{{localize('done-job')}}</button>
                             </flat-button>
                             <flat-button class="thunderbird btn" on-tap="removeJob" job="[[item]]">
                                 <button>{{localize('remove')}}</button>
