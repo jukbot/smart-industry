@@ -2,16 +2,13 @@
   "builds": [
     {
       "name": "modern",
-      "basePath": true,
-      "browserCapabilities": [
-        "es2015",
-        "push"
-      ],
+      "browserCapabilities": ["es2015", "push"],
       "js": {
         "compile": false,
         "minify": false
       },
-      "preset": "es6-unbundled"
+      "preset": "es6-unbundled",
+      "basePath": true
     }
   ],
   "entrypoint": "index.html",
@@ -38,13 +35,8 @@
     "src/lazy-resources.html"
   ],
   "lint": {
-    "ignoreWarnings": [
-      "undefined-elements",
-      "set-unknown-attribute"
-    ],
-    "rules": [
-      "polymer-2"
-    ]
+    "ignoreWarnings": ["undefined-elements", "set-unknown-attribute"],
+    "rules": ["polymer-2"]
   },
   "shell": "src/view-app.html",
   "sources": [
