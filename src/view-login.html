@@ -54,11 +54,6 @@
         padding: 1rem;
       }
 
-      .model-btn {
-        margin: 0;
-        width: 160px;
-      }
-
       .form-title {
         text-align: center;
       }
@@ -192,7 +187,7 @@
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]"></firebase-document>
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
-    <iron-ajax id="requestSampleData" url="data/sample/sample-[[model]].json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="data/sample/sample-parallel.json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <app-indexeddb-mirror key="sampleData" data="{{sampleData}}" persisted-data="{{persistedSampleData}}">
     </app-indexeddb-mirror>
@@ -268,20 +263,6 @@
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <p>Select Your Production Model</p>
-
-            <iron-selector selected="{{model}}" attr-for-selected="name" fallback-selection="1" class="flex-container" role="navigation">
-              <paper-button name="parallel" class="model-btn" noink>
-                Parallel
-              </paper-button>
-              <paper-button name="serial" class="model-btn" noink>
-                Serial
-              </paper-button>
-              <paper-button name="multi" class="model-btn" noink>
-                Multi
-              </paper-button>
-            </iron-selector>
-
             <div class="link">
               <p>By signing up you agree to IMES’s
                 <a href="[[rootPath]]/term" target="_self" id="termOfService">Terms of Service</a>
@@ -363,10 +344,6 @@
           registerForm: {
             type: Boolean,
             value: false
-          },
-          model: {
-            type: String,
-            value: 'parallel'
           },
           remember: {
             type: Boolean,
