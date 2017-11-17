@@ -1104,28 +1104,39 @@
                     console.log(processArr)
 
                     // 6) Calculate job workload of each process
-                    let workloadArr = []
-                    for (let i = 0; i < processArr.length; i++) {
-                        workloadArr[i] = order_quantity.map((x, j) => (x * cycleArr[j]) + setupArr[j])
-                        // .reduce((a, b, i) => {
-                        //     return parseInt(a + setupArr[i])
-                        // }, 0)
-                    }
+                    const multResult = order_quantity.map((item, index) => cycleArr[index].map(c => c * item))
+                    const workloadArr = multResult.map((item, index) => {
+                        return item.map((i, j) => i + setupArr[index][j])
+                    })
+                    console.log('Init', workloadArr[0])
                     console.log(workloadArr)
 
                     // 7) Calculate weight of each process based on workload
 
-                    let sumWorkload = workloadArr.reduce((r, a) => r.map((b, i) => a[i] + b))
-                    console.log(sumWorkload)
+                    // sum array as column
+                    let sumWorkloadEachProcess = workloadArr.reduce((prev, cur) => {
+                        return prev.map((item, index) => {
+                            return (cur[index] || 0) + item
+                        })
+                    })
+
+                    // sum array as row
+                    let sumWorkloadEachOrder = workloadArr.map((item) => {
+                        return [item.reduce((a, b) => {
+                            return a + b;
+                        })];
+                    });
+
+                    console.log('Sum of Workload', sumWorkloadEachProcess)
 
                     let weight = []
                     for (let i = 0; i < workloadArr.length; i++) {
-                        weight[i] = workloadArr[i].map((x, i) => x / sumWorkload[i])
+                        weight[i] = workloadArr[i].map((x, i) => x / sumWorkloadEachProcess[i])
                     }
                     console.log(weight)
 
                     // 8) Calculate used machine
-                    let machine = []
+                    let machines = []
                     let machine_in_station = this.stationItems.map(o => {
                         if (!o.st_machine.length) {
                             return 0
@@ -1133,19 +1144,24 @@
                             return o.st_machine.length
                         }
                     })
+                    console.log(machine_in_station)
+
                     for (let i = 0; i < weight.length; i++) {
-                        machine[i] = weight[i].map((x, i) => Math.round(x * machine_in_station[i]))
+                        machines[i] = weight[i].map((x, i) => Math.round(x * machine_in_station[i]))
                     }
-                    console.log(machine)
+                    console.log(machines)
 
                     // 9) Calculate the duration of each process
                     let duration = []
                     for (let i = 0; i < workloadArr.length; i++) {
-                        duration[i] = workloadArr[i].map((x, i) => {
-                            if (machine[i] === 0) {
-                                return x
+                        duration[i] = workloadArr[i].map((workload, index) => {
+                            const machine = machines[index]
+
+                            if (machine === 0) {
+                                return workload
                             } else {
-                                return (x / parseInt(machine[i]))
+                                console.log('Calculate Duration', workload, machine)
+                                return (workload / parseInt(machine))
                             }
                         })
                     }
@@ -1181,7 +1197,7 @@
                             "job_setup": setupArr[i].filter(value => isNaN(value) ? 0 : value),
                             "job_workload": workloadArr[i].filter(value => isNaN(value) ? 0 : value),
                             "job_duration": duration[i].filter(value => isNaN(value) ? 0 : value),
-                            "job_machine": machine[i].filter(value => isNaN(value) ? 0 : value),
+                            "job_machine": machines[i].filter(value => isNaN(value) ? 0 : value),
                             "job_station": x,
                             "job_part": order_part[i].name.toString(),
                             "job_sku": order_part[i].sku,
