@@ -433,6 +433,12 @@
         width: 75%;
       }
 
+
+      .thumbnail {
+        width: 24px;
+        height: 24px;
+      }
+
       .blink {
         animation: blinker 1s linear infinite;
       }
@@ -442,6 +448,7 @@
           opacity: 0;
         }
       }
+      /* Mobile - Portrait Tablet screen */
 
       @media (min-width: 360px) and (max-width: 768px) {
 
@@ -476,31 +483,28 @@
           font-size: 1.5rem;
         }
       }
+      /* Landscape Tablet - Small Desktop screen */
 
-      @media (min-width: 769px) and (max-width: 1024px) {
+      @media (min-width: 769px) and (max-width: 1200px) {
          :host {
           --app-grid-columns: 2;
         }
       }
-
-      @media (min-width: 1025px) and (max-width: 1200px) {
-         :host {
-          --app-grid-columns: 2;
-        }
-      }
+      /* Medium Resolution (1080p) screen */
 
       @media (min-width: 1201px) and (max-width: 2560px) {
          :host {
           --app-grid-columns: 3;
         }
       }
+      /* High Resolution (2K-4K) screen */
 
       @media (min-width: 2561px) and (max-width: 4096px) {
          :host {
           --app-grid-columns: 4;
         }
       }
-
+      /* Print */
 
       @media print {
          :host {

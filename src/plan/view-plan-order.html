@@ -89,16 +89,6 @@
                 margin: 10px;
             }
 
-            .thumbnail {
-                width: 24px;
-                height: 24px;
-            }
-
-            .signature-frame {
-                min-height: 50px;
-                display: none;
-            }
-
             @media print {
                 #createOrderCard {
                     display: none;
@@ -131,7 +121,7 @@
                     <h1 class="title">{{localize('create-order')}}</h1>
                     <vaadin-combo-box label="{{localize('customer-name')}}" name="customer-name" id="customerSelector" items="[[customerItems]]"
                         item-label-path="name" item-value-path="name" selected-item='{{selectCustomer}}' loading="[[!customerItems]]"
-                        required allow-custom-value prevent-invalid-input always-float-label='true'>
+                        required allow-custom-value prevent-invalid-input always-float-label>
                         <template>
                             <paper-item>
                                 <paper-icon-item style="padding: 0">
@@ -146,7 +136,7 @@
                     </vaadin-combo-box>
                     <vaadin-combo-box label="{{localize('product')}}" name="product" items="[[productItems]]" id="productSelector" item-label-path="name"
                         item-value-path="name" selected-item='{{selectProduct}}' on-change="verifyProductPart" loading="[[!productItems]]"
-                        required prevent-invalid-input always-float-label='true'>
+                        required prevent-invalid-input always-float-label>
                         <template>
                             <paper-icon-item style="padding: 0">
                                 <img src$="[[getProductImage(item.image)]]" width="48" height="auto" class="thumbnail" slot="item-icon">
@@ -161,7 +151,7 @@
                         max="1000" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
                     <vaadin-date-picker class="date-picker" label="{{localize('delivery-date')}}" min="[[todayDate]]" max="2030-01-01" name="delivery"
                         id="deliverySelector" initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input"
-                        required always-float-label='true'></vaadin-date-picker>
+                        required always-float-label></vaadin-date-picker>
                     <flat-button on-tap="printOrderReport" class="btn" title="Print order report">
                         <button>{{localize('print-order-report')}}</button>
                     </flat-button>
