@@ -29,6 +29,11 @@ app.get("/images/*", (req, res, next) => {
   next();
 });
 
+app.get("/data/*", (req, res, next) => {
+  res.setHeader("Cache-Control", "public, max-age=31536000");
+  next();
+});
+
 app.use((err, req, res, next) => {
   if (err.status === 404) {
     res.status(404).sendFile("src/view-404.html", { root: rootDir });

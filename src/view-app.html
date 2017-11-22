@@ -114,14 +114,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </app-drawer>
         <app-header-layout>
-          <template is="dom-if" if="[[user]]">
-            <app-header class="main-header" id="header" slot="header">
-              <app-toolbar>
-                <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
-                <h2 class="page-title" main-title>{{localize(subPageData.page)}}</h2>
-              </app-toolbar>
-            </app-header>
-          </template>
+          <app-header class="main-header" id="header" slot="header" reveals>
+            <app-toolbar>
+              <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
+              <h2 class="page-title" main-title>{{localize(subPageData.page)}}</h2>
+            </app-toolbar>
+          </app-header>
+
           <iron-lazy-pages selected="[[subPageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
             role="main" loading="{{loading}}">
             <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]"></view-dashboard>
@@ -174,7 +173,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           language: {
             type: String,
             value: () => {
-              if (localStorage.getItem('app-lang') != null) {
+              if (localStorage.getItem('app-lang')) {
                 return localStorage.getItem('app-lang')
               } else if (localStorage.getItem('app-lang') == {} || !localStorage.getItem('app-lang')) {
                 return 'us'

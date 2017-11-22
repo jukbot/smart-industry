@@ -4,32 +4,35 @@
   },
   "hosting": {
     "public": "build",
-    "ignore": [
-      "firebase.json",
-      "**/.*"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "/",
         "function": "serve"
-      }, {
+      },
+      {
         "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
         "function": "serve"
       }
     ],
-    "headers": [{
+    "headers": [
+      {
         "source": "**/service-worker.js",
-        "headers": [{
-          "key": "Service-Worker-Allowed",
-          "value": "/"
-        }]
+        "headers": [
+          {
+            "key": "Service-Worker-Allowed",
+            "value": "/"
+          }
+        ]
       },
       {
         "source": "images/logo/logo.svg",
-        "headers": [{
-          "key": "Cache-Control",
-          "value": "max-age=31536000"
-        }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=31536000"
+          }
+        ]
       }
     ]
   }

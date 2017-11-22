@@ -12,46 +12,47 @@
 
 module.exports = {
   staticFileGlobs: [
-    "index.html",
-    "manifest.json",
-    "src/**/*",
-    "images/**/*",
-    "data/**/*",
-    "bower_components/webcomponentsjs/webcomponents-loader.js",
-    "bower_components/app-storage/app-indexeddb-mirror/*.js"
+    'index.html',
+    'manifest.json',
+    'src/**/*',
+    'images/**/*',
+    'data/**/*',
+    'bower_components/webcomponentsjs/webcomponents-loader.js',
+    'bower_components/webcomponentsjs/custom-elements-es5-adapter.js',
+    'bower_components/app-storage/app-indexeddb-mirror/*.js',
   ],
   runtimeCaching: [
     {
       urlPattern: /\/bower_components\/webcomponentsjs\/.*.js/,
-      handler: "fastest",
+      handler: 'fastest',
       options: {
         cache: {
-          name: "webcomponentsjs-polyfills-cache"
-        }
-      }
+          name: 'webcomponentsjs-polyfills-cache',
+        },
+      },
     },
     {
       urlPattern: /\/data\/images\/.*/,
-      handler: "cacheFirst",
-      options: {
-        cache: {
-          maxEntries: 200,
-          name: "items-cache"
-        }
-      }
-    },
-    {
-      urlPattern: /\/data\/.*json/,
-      handler: "fastest",
+      handler: 'cacheFirst',
       options: {
         cache: {
           maxEntries: 100,
-          name: "data-cache"
-        }
-      }
-    }
+          name: 'images-cache',
+        },
+      },
+    },
+    {
+      urlPattern: /\/data\/.*json/,
+      handler: 'networkFirst',
+      options: {
+        cache: {
+          maxEntries: 100,
+          name: 'data-cache',
+        },
+      },
+    },
   ],
-  navigateFallback: "index.html",
+  navigateFallback: 'index.html',
   navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/],
-  dontCacheBustUrlsMatching: /./
+  dontCacheBustUrlsMatching: /./,
 };
