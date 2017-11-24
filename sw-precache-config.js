@@ -18,7 +18,6 @@ module.exports = {
     'images/**/*',
     'data/**/*',
     'bower_components/webcomponentsjs/webcomponents-loader.js',
-    'bower_components/webcomponentsjs/custom-elements-es5-adapter.js',
     'bower_components/app-storage/app-indexeddb-mirror/*.js',
   ],
   runtimeCaching: [
@@ -54,5 +53,4 @@ module.exports = {
   ],
   navigateFallback: 'index.html',
   navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/],
-  dontCacheBustUrlsMatching: /./,
 };

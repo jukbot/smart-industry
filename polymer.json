@@ -1,14 +1,19 @@
 {
   "builds": [
     {
-      "name": "modern",
-      "browserCapabilities": ["es2015", "push"],
+      "basePath": true,
+      "browserCapabilities": ["es2015"],
       "js": {
         "compile": false,
         "minify": false
       },
-      "preset": "es6-unbundled",
-      "basePath": true
+      "name": "modern-es6",
+      "preset": "es6-unbundled"
+    },
+    {
+      "basePath": true,
+      "name": "fallback-es5",
+      "preset": "es5-bundled"
     }
   ],
   "entrypoint": "index.html",
@@ -17,8 +22,7 @@
     "bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js",
     "bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js",
     "server/app.yaml",
-    "manifest.json",
-    "firebase-messaging-sw.js"
+    "manifest.json"
   ],
   "fragments": [
     "src/view-dashboard.html",
