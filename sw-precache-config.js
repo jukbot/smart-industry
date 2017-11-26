@@ -14,10 +14,9 @@ module.exports = {
   staticFileGlobs: [
     'index.html',
     'manifest.json',
-    'src/**/*',
     'images/**/*',
     'data/**/*',
-    'bower_components/webcomponentsjs/webcomponents-loader.js',
+    'bower_components/webcomponentsjs/*.js',
     'bower_components/app-storage/app-indexeddb-mirror/*.js',
   ],
   runtimeCaching: [

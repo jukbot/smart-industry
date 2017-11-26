@@ -1234,8 +1234,7 @@
                     // let splitArr = result.map((data) => (_.mapValues(data, (val) => _.isArray(val) ? val[0] : val)))
                     console.log(splitArr)
 
-
-                    if (this.scheduleItems.length < this.factoryProfile.concurrency) {
+                    if (this.scheduleItems.length <= this.factoryProfile.concurrency) {
                         delete result.$key
                         for (let i = 0; i < result.length; i++) {
                             this.$.scheduleQuery.ref.push(result[i])
@@ -1243,7 +1242,7 @@
                         // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
                         //     jobPart, jobQuantity,
                         //     jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
-                    } else if (this.scheduleItems.length >= this.factoryProfile.concurrency) {
+                    } else if (this.scheduleItems.length > this.factoryProfile.concurrency) {
                         window.alert("Full capacity of current concurrency")
                     } else {
                         window.alert("No order to reschedule")
@@ -1253,16 +1252,12 @@
 
             _multiSchedule() {
                 if (this.scheduleItems.length <= 0) {
-                    window.alert("All order must be multi components type.")
                     // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
                     //     jobPart, jobQuantity,
                     //     jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
 
-                } else if (this.scheduleItems.length > 0) {
-                    window.alert("Full capacity of current concurrency")
                 }
             }
-
         }
         customElements.define(ViewPlanScheduling.is, ViewPlanScheduling)
     </script>

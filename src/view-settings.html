@@ -63,8 +63,9 @@
     <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[usr.key]]/factoryData/order" data="{{factoryOrderIndex}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.uid]]/token" data="[[token]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[usr.key]]/appData/notification" data="[[notification]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[usr.key]]/appData/email_alert" data="[[emailalert]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[usr.key]]/appData/auto_backup" data="[[autobackup]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[usr.key]]/appData/email_alert" data="[[emailAlert]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appMaterialCount" path="/data/[[usr.key]]/appData/material_count" data="[[materialCount]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appBackup" path="/data/[[usr.key]]/appData/auto_backup" data="[[autoBackup]]"></firebase-document>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <iron-ajax url="data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
     <iron-ajax id="requestSampleData" url="data/sample/sample-parallel.json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
@@ -84,22 +85,22 @@
             </template>
           </vaadin-combo-box>
           <p>{{localize('user-id')}}: [[user.uid]]</p>
-           <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
+          <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
             <button>Search Sensor</button>
           </flat-button>
           <flat-button on-tap="showDevice" class="btn" title="Show sensor">
             <button>Show Sensor</button>
-          </flat-button> 
+          </flat-button>
           <flat-button on-tap="resetOrderCount" class="btn" title="Reset Order Count">
             <button>{{localize('reset-order-count')}}</button>
           </flat-button>
+          <paper-toggle-button class="switch" value="[[materialCount]]" on-change="changeMaterialCount" id="materialCountSwitch" noink>Raw Materials Calculation</paper-toggle-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1 class="title">{{localize('account-settings')}}</h1>
           <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text" always-float-label></paper-input>
-          <!-- <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress> -->
           <flat-button on-tap="openBrowseImageFile" class="btn" title="{{localize('upload-profile-image')}}">
             <button>{{localize('change-profile-image')}}</button>
             <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
@@ -140,17 +141,16 @@
             <button>{{localize('import-data')}}</button>
             <input type="file" accept="application/json,.json" name="import-file" id="importFile" />
           </flat-button>
-          <paper-toggle-button class="switch" value="[[autobackup]]" on-change="changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
+          <paper-toggle-button class="switch" value="[[autoBackup]]" on-change="changeAutoBackup" id="autobackupSwitch" noink>{{localize('auto-backup')}}</paper-toggle-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1 class="title">{{localize('notification-settings')}}</h1>
-          <p>{{localize('web-notification')}}</p>
           <paper-toggle-button class="switch" value="[[notification]]" on-change="changeNotification" id="webNotificationSwitch" checked="[[token]]"
-            noink> {{localize('notification')}}</paper-toggle-button>
+            noink> {{localize('web-notification')}}</paper-toggle-button>
           <p>{{localize('email-notifcation')}}</p>
-          <paper-toggle-button class="switch" value="[[emailalert]]" on-change="changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
+          <paper-toggle-button class="switch" value="[[emailAlert]]" on-change="changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
         </div>
       </li>
       <li>
@@ -252,8 +252,9 @@
           languageItems: Array,
           user: Object,
           appdata: Object,
-          emailalert: Object,
-          autobackup: Object,
+          emailAlert: Object,
+          autoBackup: Object,
+          materialCount: Object,
           statusKnown: Object,
           active: Object,
           pushSupported: Object,
@@ -449,8 +450,19 @@
         }
       }
 
+      changeMaterialCount() {
+        this.set('materialCount', this.$.materialCountSwitch.checked)
+        if (this.$.materialCountSwitch.checked) {
+          this.toastText = 'autobackup-notification-alert-on'
+          this.$.toastAlert.open()
+        } else {
+          this.toastText = 'autobackup-notification-alert-off'
+          this.$.toastAlert.open()
+        }
+      }
+
       changeAutoBackup() {
-        this.autobackup = this.$.autobackupSwitch.checked
+        this.set('autoBackup', this.$.autobackupSwitch.checked)
         if (this.$.autobackupSwitch.checked) {
           this.toastText = 'autobackup-notification-alert-on'
           this.$.toastAlert.open()
@@ -461,7 +473,7 @@
       }
 
       changeNotification() {
-        this.notification = this.$.webNotificationSwitch.checked
+        this.set('notification', this.$.webNotificationSwitch.checked)
         if (this.$.webNotificationSwitch.checked) {
           // Requesting notification permission
           this.$.messaging.requestPermission()
@@ -480,7 +492,7 @@
       }
 
       changeEmailAlert() {
-        this.emailAlert = this.$.emailAlertSwitch.checked
+        this.set('emailAlert', this.$.emailAlertSwitch.checked)
         if (this.$.emailAlertSwitch.checked) {
           this.toastText = 'email-notification-alert-on'
           this.$.toastAlert.open()

@@ -3,10 +3,6 @@
     {
       "basePath": true,
       "browserCapabilities": ["es2015"],
-      "js": {
-        "compile": false,
-        "minify": false
-      },
       "name": "modern-es6",
       "preset": "es6-unbundled"
     },
@@ -18,9 +14,8 @@
   ],
   "entrypoint": "index.html",
   "extraDependencies": [
-    "bower_components/webcomponentsjs/webcomponents-loader.js",
-    "bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror-worker.js",
-    "bower_components/app-storage/app-indexeddb-mirror/common-worker-scope.js",
+    "bower_components/webcomponentsjs/*.js",
+    "bower_components/app-storage/app-indexeddb-mirror/*.js",
     "server/app.yaml",
     "manifest.json"
   ],
