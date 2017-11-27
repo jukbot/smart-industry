@@ -152,7 +152,7 @@
                                 <button>{{localize('receive-job')}}</button>
                             </flat-button>
                             <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]">
-                                <button disabled="[[isDone(item.job_status)]]">{{localize('done-job')}}</button>
+                                <button disabled="[[isDone(item.job_status)]]">{{localize('finish-job')}}</button>
                             </flat-button>
                             <flat-button class="thunderbird btn" on-tap="removeJob" job="[[item]]">
                                 <button>{{localize('remove')}}</button>
@@ -177,7 +177,7 @@
                                 <p>{{localize('order-number')}}: [[device.order_no]]</p>
                                 <p>{{localize('updated')}}: [[timestampToTime(device.update)]]</p>
                             </div>
-                            <paper-toggle-button class="switch" checked="{{device.enable}}" id="deviceControlSwitch" noink> {{localize('enabled')}}</paper-toggle-button>
+                            <paper-toggle-button class="switch" checked="[[device.enable]]" id="deviceControlSwitch" noink> {{localize('enabled')}}</paper-toggle-button>
                             <flat-button class="btn" on-tap="resetCounter" device="[[device]]">
                                 <button>{{localize('reset')}}</button>
                             </flat-button>
@@ -270,6 +270,10 @@
                     orderItems: Object,
                     scheduleItems: Object,
                     warehouseItems: Object,
+                    deviceItems: {
+                        type: Object,
+                        computed: ''
+                    },
                     defect: {
                         type: Number,
                         value: 0
@@ -381,7 +385,6 @@
                     let i = Object.keys(order_group).length;
                     while (i > 0) {
                         if (order_group[i].every(isDone)) {
-                            console.log('xxx')
                             done_order.push(order_group[i]);
                         }
                         i--
@@ -391,6 +394,7 @@
                 // 4) if every jobs in order is done so push to done_order 
                 if (done_order.length > 0) {
                     let warehouse_order;
+                    console.log(done_order)
                     for (let i = 0; i < done_order.length; i++) {
                         warehouse_order = done_order[i].map((value, index, arr) => {
                             return {
@@ -421,7 +425,7 @@
                         this.updateOrderTable(filterDoneOrder[j]);
                     }
                     console.log(done_order)
-                    let exportData = done_order.reduce((a, b) => a.concat(b), []);
+                    let exportData = warehouse_order.reduce((a, b) => a.concat(b), []);
                     // 7) Add to warehouse
                     this.addToWarehouse(exportData);
                 }
@@ -453,7 +457,13 @@
 
                     delete resultObject.$key
                     console.log(resultObject)
-                    this.$.warehouseQuery.ref.push(resultObject);
+                    let isDuplicated = this.warehouseItems.map(item => item.order_no).indexOf(resultObject.order_no) >
+                        -1
+                    if (isDuplicated) {
+                        alert('aleready added to warehouse')
+                    } else {
+                        this.$.warehouseQuery.ref.push(resultObject);
+                    }
                 }
             }
 
@@ -466,6 +476,7 @@
             }
 
             timestampUTCToTime(timestamp) {
+                if (!timestamp) return 'N/A'
                 const date = new Date((timestamp - 25200) * 1000);
                 const hours = date.getHours();
                 const minutes = "0" + date.getMinutes();

@@ -90,7 +90,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[item.job_quantity]]</div>
+                                <div class="cell">[[item.order_quantity]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -103,7 +103,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[item.job_defect]]</div>
+                                <div class="cell">[[item.order_defect]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -114,7 +114,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[getActualDuration(item.actual_start,item.actual_end)]]</div>
+                                <div class="cell">[[getOrderDuration(item.actual_duration)]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -125,7 +125,7 @@
                                 </vaadin-grid-sorter>
                             </template>
                             <template>
-                                <div class="cell">[[getOrderDuration(item.actual_duration)]]</div>
+                                <div class="cell">[[getOrderDuration(item.plan_duration)]]</div>
                             </template>
                         </vaadin-grid-column>
 
