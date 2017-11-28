@@ -78,7 +78,7 @@
                 <div class="card" hidden="[[!showListInventory]]">
                     <h1 class="title">{{localize('inventory-management')}}</h1>
                     <vaadin-grid id="inventoryTable" aria-label="inventory Management" items="[[persistedInventoryData]]">
-                        <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
+                        <vaadin-grid-selection-column flex="1" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
                             </template>

@@ -41,7 +41,15 @@
 
             .product-image {
                 height: auto;
-                width: 120px;
+                width: 100px;
+            }
+
+            .image-cell {
+                height: 100px;
+                width: 100px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
             .details {
@@ -286,7 +294,7 @@
                                 <div class="cell center">{{localize('image')}}</div>
                             </template>
                             <template>
-                                <div class="cell center">
+                                <div class="cell image-cell center">
                                     <img class="product-image" src="[[item.image]]" alt="No Image">
                                 </div>
                             </template>

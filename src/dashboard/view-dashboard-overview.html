@@ -237,7 +237,7 @@
           if (parseFloat(current) < starttime || parseFloat(current) > endtime) {
             this.remainOpTime = this.localize('end-of-shift');
           } else {
-            this.remainOpTime = timeleft.toFixed(2) + " " + this.localize('hrs') + ".";
+            this.remainOpTime = timeleft.toFixed(2) + " " + this.localize('hrs');
           }
         } else {
           this.remainOpTime = this.localize('day-off')

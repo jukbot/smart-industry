@@ -86,9 +86,9 @@
             </li>
             <li>
                 <div class="card" hidden="[[!showListCustomer]]">
-                    <h1 class="title">{{localize('customer-management')}}</h1>[[selectItem]]
+                    <h1 class="title">{{localize('customer-management')}}</h1>
                     <vaadin-grid id="customerTable" aria-label="Customer Management" items="[[persistedCustomerData]]" selected-items="{{selectItem}}">
-                        <vaadin-grid-selection-column flex="0" select-all="{{selectAll}}">
+                        <vaadin-grid-selection-column flex="1" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
                             </template>

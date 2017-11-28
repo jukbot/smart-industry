@@ -224,14 +224,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           '_signedInChanged(signedIn)'
         ]
       }
+      constructor() {
+        super()
+        console.log('%cPolymer: ' + Polymer.version + ' on ' + window.location.host, 'color: DeepPink')
+      }
       connectedCallback() {
         super.connectedCallback()
-        this.loadResources(this.resolveUrl('../data/locales.json'))
         requestAnimationFrame(this._installListeners.bind(this))
       }
       ready() {
         super.ready()
         this.removeAttribute('unresolved')
+        this.loadResources(this.resolveUrl('../data/locales.json'))
         Polymer.RenderStatus.afterNextRender(this, () => {
           this._activateFetch()
         })
