@@ -3,7 +3,7 @@
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
-<link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -23,10 +23,7 @@
             }
 
             .details {
-                padding: 20px;
-                display: flex;
-                justify-content: left;
-                align-items: center;
+                padding: 10px;
             }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
@@ -87,7 +84,8 @@
             <li>
                 <div class="card" hidden="[[!showListCustomer]]">
                     <h1 class="title">{{localize('customer-management')}}</h1>
-                    <vaadin-grid id="customerTable" aria-label="Customer Management" items="[[persistedCustomerData]]" selected-items="{{selectItem}}">
+                    <vaadin-grid id="customerTable" aria-label="Customer Management" items="[[persistedCustomerData]]" active-item="{{activeItem}}"
+                        selected-items="{{selectedItem}}">
                         <vaadin-grid-selection-column flex="1" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
@@ -129,7 +127,7 @@
                                 <div class="cell">{{localize('detail')}}</div>
                             </template>
                             <template>
-                                <paper-checkbox aria-label$="Show Details for [[item.name]]" checked="{{expanded}}"></paper-checkbox>
+                                <paper-checkbox aria-label$="Show Details for [[item.name]]" checked="{{detailsOpened}}"></paper-checkbox>
                             </template>
                         </vaadin-grid-column>
 

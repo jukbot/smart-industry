@@ -3,7 +3,10 @@
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-filter.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-sorter.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
+<link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-column-group.html">
 <link rel="import" href="../../bower_components/vaadin-dialog/vaadin-dialog.html">
+<link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -98,8 +101,7 @@
             }
 
             .flex-item {
-                width: 500px;
-                text-align: center;
+                width: auto;
                 flex: 1;
             }
 
@@ -111,8 +113,7 @@
                 height: 700px;
 
                 --vaadin-grid-body-cell: {
-                    height: 150px;
-                    font-size: 1rem;
+                    height: 200px;
                 }
             }
         </style>
@@ -288,7 +289,8 @@
                 <!-- Show product management !-->
                 <div class="card" hidden="[[showListProduct]]">
                     <h1 class="title">{{localize('product-management')}}</h1>
-                    <vaadin-grid id="productTable" aria-label="product Management" items="[[persistedProductData]]" size="10">
+                    <vaadin-grid id="productTable" aria-label="Product Management" active-item="{{activeItem}}" selected-items="{{selectedItem}}"
+                        items="[[persistedProductData]]" size="10">
                         <vaadin-grid-column flex="1">
                             <template class="header">
                                 <div class="cell center">{{localize('image')}}</div>
@@ -380,7 +382,7 @@
                                 <div class="cell">{{localize('detail')}}</div>
                             </template>
                             <template>
-                                <paper-checkbox aria-label$="Show Details for [[item.name]]" checked="{{expanded}}"></paper-checkbox>
+                                <paper-checkbox aria-label$="Show Details for [[item.name]]" checked="{{detailsOpened}}"></paper-checkbox>
                             </template>
                         </vaadin-grid-column>
 
@@ -472,7 +474,7 @@
             </li>
         </ul>
 
-        <!-- ADD Part !-->
+        <!-- ADD Part dialog !-->
         <vaadin-dialog id="addPartDialog" class="dialog" no-close-on-outside-click>
             <template id="addPartContent">
                 <custom-style>
@@ -582,7 +584,7 @@
             </template>
         </vaadin-dialog>
 
-        <!-- Edit part !-->
+        <!-- Edit part dialog !-->
         <vaadin-dialog id="editPartDialog" class="dialog" no-close-on-outside-click>
             <template id="editPartContent">
                 <custom-style>
@@ -695,6 +697,7 @@
                 </div>
             </template>
         </vaadin-dialog>
+
         <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{toastText}}"></paper-toast>
     </template>
     <script>
@@ -1199,10 +1202,6 @@
                 if (!cycle) return 0
                 let sumCycleTime = cycle.reduce((a, b) => a + b) // apply sum function to all arr items to get sumCycle
                 return sumCycleTime.toFixed(1)
-            }
-
-            _onActiveItemChanged(e) {
-                this.$.productTable.expandedItems = [e.detail.value]
             }
 
             _clearField() {

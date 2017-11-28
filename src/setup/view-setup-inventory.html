@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../../bower_components/vaadin-grid/vaadin-grid-selection-column.html">
-<link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -77,7 +77,7 @@
             <li>
                 <div class="card" hidden="[[!showListInventory]]">
                     <h1 class="title">{{localize('inventory-management')}}</h1>
-                    <vaadin-grid id="inventoryTable" aria-label="inventory Management" items="[[persistedInventoryData]]">
+                    <vaadin-grid id="inventoryTable" aria-label="inventory Management" items="[[persistedInventoryData]]" selected-items="{{selectedItem}}">
                         <vaadin-grid-selection-column flex="1" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>

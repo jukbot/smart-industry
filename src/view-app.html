@@ -114,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </app-drawer>
         <app-header-layout>
-          <app-header class="main-header" id="header" slot="header" reveals>
+          <app-header class="main-header" id="header" slot="header">
             <app-toolbar>
               <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
               <h2 class="page-title" main-title>{{localize(subPageData.page)}}</h2>
@@ -151,13 +151,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
   <script>
     /**
+     * `<view-app>` show the main page of your app.
      * @ViewApp
      * @polymer 
      * @extends {Polymer.Element}
      * @appliesMixin Polymer.AppLocalizeBehavior
      */
-    // Gesture events like tap and track generated from touch will not be
-    // preventable, allowing for better scrolling performance.
     Polymer.setPassiveTouchGestures(true);
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
@@ -230,12 +229,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       connectedCallback() {
         super.connectedCallback()
+        this.loadResources(this.resolveUrl('../data/locales.json'))
         requestAnimationFrame(this._installListeners.bind(this))
       }
       ready() {
         super.ready()
         this.removeAttribute('unresolved')
-        this.loadResources(this.resolveUrl('../data/locales.json'))
         Polymer.RenderStatus.afterNextRender(this, () => {
           this._activateFetch()
         })
