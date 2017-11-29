@@ -185,30 +185,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Object,
             notify: true
           },
-          signedIn: {
-            type: Boolean,
+          persistedUserData: {
+            type: Object,
             notify: true
           },
-          route: {
-            type: String,
-            notify: true,
-          },
-          subRoute: {
-            type: String,
-            notify: true,
-          },
-          subPageRoute: {
-            type: String,
-            notify: true,
+          signedIn: {
+            type: Boolean,
+            observer: '_signedInChanged'
           },
           loadComplete: {
             type: Boolean,
             value: false
           },
-          persistedUserData: {
-            type: Object,
-            notify: true
-          },
+          route: String,
+          subRoute: String,
+          subPageRoute: String,
           toastText: String,
           loading: Boolean,
           rootPath: String,
@@ -220,7 +211,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           '_routeChanged(subRoute.*)',
           '_routePageChanged(subPageData.page, visible)',
           '_verifyEmailAlert(user.emailVerified, signedIn)',
-          '_signedInChanged(signedIn)'
         ]
       }
       constructor() {
@@ -295,7 +285,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (!visible) {
           return this.page = page
         }
-        this.page = page || 'dashboard'
+        this.page = page || 'login'
       }
       _showPage404() {
         this.page = '404'
@@ -401,12 +391,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         Polymer.RenderStatus.afterNextRender(this, function () {
           // If singed in but at login page
           if (isSignedIn && this.route.path === '/login') { // window.location.pathname.match('^/login')
-            this.page = 'dashboard'
             this.set('route.path', '/app/dashboard')
           }
           // If not sign in but not at term page
           else if (!isSignedIn && this.route.path !== '/term') {
-            this.page = 'login'
             this.set('route.path', '/login')
           }
         })
