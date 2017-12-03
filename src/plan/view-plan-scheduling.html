@@ -1105,12 +1105,39 @@
                     console.log('order process')
                     console.log(processArr)
 
+                    // 5.4) Merge cycle & process arr to obj value
+                    let cycleProcessObj = order_part.map((k, i) => Object.assign({}, ...processArr[i].map((
+                            process,
+                            index) =>
+                        ({
+                            [process]: cycleArr[i][index]
+                        }))))
+                    console.log('cycle process object')
+                    console.log(cycleProcessObj)
+
+                    // 5.5) Merge setup & process arr to obj value
+                    let setupProcessObj = order_part.map((k, i) => Object.assign({}, ...processArr[i].map((
+                            process,
+                            index) =>
+                        ({
+                            [process]: setupArr[i][index]
+                        }))))
+                    console.log('setup process object')
+                    console.log(setupProcessObj)
+
                     // 6) Calculate job workload of each process
-                    const multResult = order_quantity.map((item, index) => cycleArr[index].map(c => c * item))
-                    const workloadArr = multResult.map((item, index) => {
+                    let multResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q))
+                    let workloadArr = multResult.map((item, index) => {
                         return item.map((i, j) => i + setupArr[index][j])
                     })
-                    console.log(workloadArr)
+                    let workloadProcessObj = workloadArr.map((k, i) => Object.assign({}, ...processArr[i].map((
+                            process,
+                            index) =>
+                        ({
+                            [process]: workloadArr[i][index]
+                        }))))
+                    console.log('workload process object')
+                    console.log(workloadProcessObj)
 
                     // 7) Calculate weight of each process based on workload
 
@@ -1228,10 +1255,9 @@
                             result.push(..._.times(value.length - result.length, () => _.clone(
                                 data)))
                         }
-                        value.map((ele, index) => result[index][key] = ele)
+                        value.map((item, index) => result[index][key] = item)
                     }, []))
 
-                    // let splitArr = result.map((data) => (_.mapValues(data, (val) => _.isArray(val) ? val[0] : val)))
                     console.log(splitArr)
 
                     if (this.scheduleItems.length <= this.factoryProfile.concurrency) {
@@ -1240,8 +1266,7 @@
                             this.$.scheduleQuery.ref.push(result[i])
                         }
                         // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
-                        //     jobPart, jobQuantity,
-                        //     jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
+                        //     jobPart, jobQuantity,jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
                     } else if (this.scheduleItems.length > this.factoryProfile.concurrency) {
                         window.alert("Full capacity of current concurrency")
                     } else {
