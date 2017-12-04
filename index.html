@@ -26,13 +26,12 @@
   <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png" />
   <link rel="apple-touch-icon" sizes="256x256" href="images/manifest/icon-256x256.png" />
   <link rel="apple-touch-icon" sizes="512x512" href="images/manifest/icon-512x512.png" />
-  <script type="text/javascript" src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
   <script>
     window.Polymer = {
       rootPath: '/'
     };
   </script>
-  <link rel="import" href="src/view-app.html">
   <style>
     html {
       line-height: 1.15;
@@ -293,6 +292,7 @@
     }
   </style>
 </head>
+<link rel="import" href="src/view-app.html">
 
 <body>
   <view-app unresolved role="main">
