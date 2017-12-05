@@ -55,11 +55,22 @@
                 align-items: center;
             }
 
+            .details-group {
+                border-bottom: 1px solid #eee;
+                width: 100%;
+                margin: 0;
+            }
+
             .details {
                 padding: 10px;
                 display: flex;
                 justify-content: space-around;
                 align-items: center;
+                min-height: 70px;
+            }
+
+            [part~="cell"] {
+                padding: 0;
             }
 
             .part-list {
@@ -69,7 +80,7 @@
             .part {
                 margin: 10px;
                 padding: 20px;
-                border: 1px solid rgba(0, 0, 0, .10);
+                border: 1px solid #eee;
                 border-radius: 2px;
             }
 
@@ -410,57 +421,58 @@
 
                         <!-- Row detail -->
                         <template class="row-details">
-                            <div class="details">
-                                <div class="flex-item">
-                                    <h3>{{localize('part-name')}}</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[productPart.name]]</p>
-                                    </template>
+                            <div class="details-group">
+                                <div class="details">
+                                    <div class="flex-item">
+                                        <h3>{{localize('part-name')}}</h3>
+                                        <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                            <p>[[productPart.name]]</p>
+                                        </template>
+                                    </div>
+                                    <div class="flex-item">
+                                        <h3>{{localize('process-sequence')}}</h3>
+                                        <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                            <p>[[getProductProcessSequence(productPart.process)]]</p>
+                                        </template>
+                                    </div>
+                                    <div class="flex-item">
+                                        <h3>{{localize('process-number')}}</h3>
+                                        <template is="dom-repeat" items="[[item.process]]" as="productProcess">
+                                            <p>[[getProcessNumber(productProcess.number)]]</p>
+                                        </template>
+                                    </div>
+                                    <div class="flex-item">
+                                        <h3>Part Dependency</h3>
+                                        <template is="dom-repeat" items="[[item.process]]" as="productProcess">
+                                            <p>[[productProcess.required]]</p>
+                                        </template>
+                                    </div>
                                 </div>
-                                <div class="flex-item">
-                                    <h3>{{localize('process-sequence')}}</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[getProductProcessSequence(productPart.process)]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
-                                    <h3>{{localize('process-number')}}</h3>
-                                    <template is="dom-repeat" items="[[item.process]]" as="productProcess">
-                                        <p>[[getProcessNumber(productProcess.number)]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
-                                    <h3>Part Dependency</h3>
-                                    <template is="dom-repeat" items="[[item.process]]" as="productProcess">
-                                        <p>[[productProcess.required]]</p>
-                                    </template>
-                                </div>
-                            </div>
-                            <div class="details">
-                                <div class="flex-item">
-                                    <h3>{{localize('setup-time')}} ({{localize('mins')}})</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[getProductProcessSequence(productPart.setup)]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
-                                    <h3>Total Setup time ({{localize('mins')}})</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[getSumSetupTime(productPart.setup)]]</p>
-                                    </template>
-                                </div>
-
-                                <div class="flex-item">
-                                    <h3>{{localize('cycle-time')}} ({{localize('mins')}})</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[getProductProcessSequence(productPart.cycle)]]</p>
-                                    </template>
-                                </div>
-                                <div class="flex-item">
-                                    <h3>Total Cycle time ({{localize('mins')}})</h3>
-                                    <template is="dom-repeat" items="[[item.part]]" as="productPart">
-                                        <p>[[getSumCycleTime(productPart.cycle)]]</p>
-                                    </template>
+                                <div class="details">
+                                    <div class="flex-item">
+                                        <h3>{{localize('setup-time')}} ({{localize('mins')}})</h3>
+                                        <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                            <p>[[getProductProcessSequence(productPart.setup)]]</p>
+                                        </template>
+                                    </div>
+                                    <div class="flex-item">
+                                        <h3>Total Setup time ({{localize('mins')}})</h3>
+                                        <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                            <p>[[getSumSetupTime(productPart.setup)]]</p>
+                                        </template>
+                                    </div>
+                                    <div class="flex-item">
+                                        <h3>{{localize('cycle-time')}} ({{localize('mins')}})</h3>
+                                        <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                            <p>[[getProductProcessSequence(productPart.cycle)]]</p>
+                                        </template>
+                                    </div>
+                                    <div class="flex-item">
+                                        <h3>Total Cycle time ({{localize('mins')}})</h3>
+                                        <template is="dom-repeat" items="[[item.part]]" as="productPart">
+                                            <p>[[getSumCycleTime(productPart.cycle)]]</p>
+                                        </template>
+                                    </div>
                                 </div>
                             </div>
                         </template>
