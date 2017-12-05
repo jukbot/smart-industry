@@ -23,7 +23,7 @@
       </paper-tabs>
     </app-header>
     <iron-pages selected="[[tabs]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
-      <view-plan-order name="order"></view-plan-order>
+      <view-plan-order id="order" name="order"></view-plan-order>
       <view-plan-scheduling name="scheduling"></view-plan-scheduling>
       <view-plan-production name="production"></view-plan-production>
     </iron-pages>
@@ -90,9 +90,17 @@
         Polymer.importHref(resolvedTabsUrl, null, null, true);
       }
 
+      ready() {
+        super.ready();
+        this.$.order.addEventListener('closedrawer', (e) => {
+          console.log(e)
+        })
+      }
+
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../data/locales.json'));
+
       }
     }
     window.customElements.define(ViewPlan.is, ViewPlan);

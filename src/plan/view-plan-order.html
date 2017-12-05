@@ -93,10 +93,6 @@
                 #createOrderCard {
                     display: none;
                 }
-
-                .signature-frame {
-                    display: block;
-                }
             }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
@@ -161,7 +157,7 @@
                 </div>
             </li>
             <li>
-                <div class="card" id="DetailOrderCard">
+                <div class="card" id="detailOrderCard">
                     <h1 class="title">{{localize('order-detail')}}</h1>
                     <div class="flex-container order-info">
                         <div class="flex-item left-group">
@@ -239,9 +235,6 @@
                         <p>{{localize('process-sequence')}}: [[getProductProcessSequence(part.process)]]</p>
                         <p>{{localize('setup-time')}}: [[getSumSetupTime(part.setup)]] minutes</p>
                         <p>{{localize('cycle-time')}}: [[getSumCycleTime(part.cycle)]] minutes</p>
-                        <div class="frame flex-item signature-frame">
-                            <h4>Response by:</h4>
-                        </div>
                     </div>
                 </template>
             </div>
@@ -586,9 +579,15 @@
             }
 
             // PRINT ORDER REPORT
-            printOrderReport() {
+            printOrderReport(e) {
+                this.dispatchEvent(new CustomEvent('closedrawer', {
+                    detail: {
+                        kicked: true,
+                        composed: true
+                    }
+                }));
                 document.title = 'order_' + this.getDateTime();
-                window.print()
+                window.print();
                 return
             }
 

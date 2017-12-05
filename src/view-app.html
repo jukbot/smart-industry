@@ -1,12 +1,4 @@
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
+<!-- POLYMER 2 -->
 <!-- app modules - used for core functions -->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
@@ -70,11 +62,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{usr}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
     <iron-pages selected="[[pageData.page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404" role="main">
-      <view-term name="term" route="[[subRoute]]" hidden$="[[user]]"></view-term>
-      <view-login name="login" route="[[subRoute]]" hidden$="[[user]]"></view-login>
+      <view-term name="term" route="[[subRoute]]" hidden$="[[signedIn]]"></view-term>
+      <view-login name="login" route="[[subRoute]]" hidden$="[[signedIn]]"></view-login>
       <view-404 name="404" route="[[subRoute]]"></view-404>
       <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}" name="app">
-        <app-drawer id="drawer" slot="drawer" tabindex="-1" swipe-open="[[narrow]]" hidden="[[!user]]">
+        <app-drawer id="drawer" slot="drawer" tabindex="-1" swipe-open="[[narrow]]" hidden="[[!signedIn]]">
           <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
           <h1 title="IMES" class="main-logo-title">IMES</h1>
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -120,7 +112,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <h2 class="page-title" main-title>{{localize(subPageData.page)}}</h2>
             </app-toolbar>
           </app-header>
-
           <iron-lazy-pages selected="[[subPageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
             role="main" loading="{{loading}}">
             <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]"></view-dashboard>
@@ -151,7 +142,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
   <script>
     /**
-     * `<view-app>` show the main page of your app.
      * @ViewApp
      * @polymer 
      * @extends {Polymer.Element}
@@ -219,12 +209,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       connectedCallback() {
         super.connectedCallback()
-        this.loadResources(this.resolveUrl('../data/locales.json'))
         requestAnimationFrame(this._installListeners.bind(this))
       }
       ready() {
         super.ready()
         this.removeAttribute('unresolved')
+        this.loadResources(this.resolveUrl('../data/locales.json'))
         Polymer.RenderStatus.afterNextRender(this, () => {
           this._activateFetch()
         })
@@ -391,10 +381,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         Polymer.RenderStatus.afterNextRender(this, function () {
           // If singed in but at login page
           if (isSignedIn && this.route.path === '/login') { // window.location.pathname.match('^/login')
+            this.page = 'dashboard'
             this.set('route.path', '/app/dashboard')
           }
           // If not sign in but not at term page
           else if (!isSignedIn && this.route.path !== '/term') {
+            this.page = 'login'
             this.set('route.path', '/login')
           }
         })

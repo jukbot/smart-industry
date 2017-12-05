@@ -49,7 +49,7 @@
             }
 
             .btn-group {
-                margin-top: 20px;
+                margin: 20px 0;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
@@ -57,12 +57,8 @@
                     width: 100%;
                 }
             }
-
-            google-chart {
-                height: auto;
-                width: 100%;
-            }
         </style>
+        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factoryProfile" path="/data/[[k.key]]/factoryData/profile" data="{{factoryProfile}}"></firebase-document>
@@ -78,7 +74,7 @@
         <!-- STATION -->
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             data="{{stationItems}}"></firebase-query>
-        <!-- ORDER TABLE 1 -->
+        <!-- ORDER TABLE -->
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
         <!-- CHART DATA -->
         <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{chartItems}}"></firebase-document>
@@ -89,15 +85,14 @@
         <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" equal-to="[[selectedStation]]"
             order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
 
-        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
-            <!-- Edit Order Card -->
+            <!-- Edit order card -->
             <li>
                 <div class="card " hidden="[[showEditOrder]]">
                     <h1 class="title">{{localize('edit-order')}}</h1>
                     <vaadin-combo-box label="{{localize('customer-name')}}" value="[[editOrderItems.order_customer]]" name="customer-name" id="editCustomerSelector"
-                        items="[[customerItems]]" item-label-path="name" item-value-path="name" selected-item='{{selectCustomer}}'
-                        loading="[[!customerItems]]" required allow-custom-value prevent-invalid-input always-float-label='true'>
+                        items="[[customerItems]]" item-label-path="name" item-value-path="name" loading="[[!customerItems]]"
+                        required allow-custom-value prevent-invalid-input always-float-label='true'>
                         <template>
                             <paper-item>
                                 <paper-icon-item style="padding: 0">
@@ -111,8 +106,8 @@
                         </template>
                     </vaadin-combo-box>
                     <vaadin-combo-box label="{{localize('product')}}" value="[[editOrderItems.order_product_name]]" name="product" items="[[productItems]]"
-                        id="editProductSelector" selected-item="{{selectedProduct}}" item-label-path="name" item-value-path="name"
-                        loading="[[!productItems]]" required prevent-invalid-input always-float-label='true'>
+                        id="editProductSelector" item-label-path="name" item-value-path="name" loading="[[!productItems]]" required
+                        prevent-invalid-input always-float-label='true'>
                         <template>
                             <paper-icon-item style="padding: 0">
                                 <img src$="[[item.image]]" class="thumbnail" slot="item-icon">
@@ -138,6 +133,7 @@
                     </div>
                 </div>
             </li>
+            <!-- Order table card -->
             <li>
                 <div class="card" hidden="[[showOrderTable]]">
                     <h1 class="title">{{localize('order-table')}}</h1>
@@ -290,9 +286,6 @@
                         <flat-button class="btn" on-tap="reSchedule">
                             <button>{{localize('reschedule')}}</button>
                         </flat-button>
-                        <flat-button class="btn  thunderbird" on-tap="clearOrder">
-                            <button>{{localize('clear-schedule')}}</button>
-                        </flat-button>
                     </div>
                 </div>
             </li>
@@ -311,6 +304,15 @@
                     <p>{{localize('machine-quantity')}}:
                         <template is="dom-repeat" items="[[selectedStationData]]" as="stationItem">[[stationItem.st_machine.length]] {{localize('machine')}}</template>
                     </p>
+                    <div class="center btn-group">
+                        <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
+                            <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
+                                <paper-button class="station-btn" name="[[stationItem.st_number]]" noink>
+                                    {{localize('station')}} [[stationItem.st_number]]
+                                </paper-button>
+                            </template>
+                        </iron-selector>
+                    </div>
                     <vaadin-grid id="jobSchedulingTable" items="{{scheduleItems}}" page-size="20">
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
@@ -429,14 +431,10 @@
                         </vaadin-grid-column>
 
                     </vaadin-grid>
-                    <div class="center btn-group">
-                        <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
-                            <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                                <paper-button class="station-btn" name="[[stationItem.st_number]]" noink>
-                                    {{localize('station')}} [[stationItem.st_number]]
-                                </paper-button>
-                            </template>
-                        </iron-selector>
+                    <div class="center">
+                        <flat-button class="btn  thunderbird" on-tap="clearSchedule">
+                            <button>{{localize('clear-schedule')}}</button>
+                        </flat-button>
                     </div>
                 </div>
             </li>
@@ -513,7 +511,7 @@
             static get observers() {
                 return [
                     '_isSerialModel(factoryProfile.model)',
-                    'refreshOrderTable(orderItems)',
+                    'refreshOrderTable(orderItems.*)',
                 ]
             }
 
@@ -674,7 +672,6 @@
                 });
             }
 
-            // GET
             getSortedOrder(order) {
                 this.$.orderTable.clearCache();
                 console.log('run sort order')
@@ -909,12 +906,12 @@
                 return ((status === 'wip') ? true : false)
             }
 
-            clearOrder() {
+            clearSchedule() {
                 if (window.confirm(
                         "Clear all schedule ? The order that are working in process will not be deleted."
                     ) ==
                     true) {
-                    this.$.orderQuery.ref.remove();
+                    this.$.scheduleQuery.ref.remove();
                     this.toastText = 'notification-delete-successfully'
                     this.$.toastAlert.open()
                 }
@@ -967,11 +964,10 @@
 
             deleteOrder(e) {
                 if (confirm("Delete this order ?")) {
-                    let key = e.currentTarget.order.$key;
-                    this.$.orderQuery.ref.child(key).remove();
+                    let key = e.currentTarget.order.$key
+                    this.$.orderQuery.ref.child(key).remove()
                     this.toastText = 'notification-delete-successfully'
                     this.$.toastAlert.open()
-                    this.refreshOrderTable()
                 }
             }
 
@@ -1010,7 +1006,7 @@
                 if (this.sortedOrder) {
                     switch (this.factoryProfile.model) {
                         case "serial":
-                            this._serialSchedule(1)
+                            this._scheduleOrder(1)
                             break;
                         case "parallel":
                             this._scheduleOrder(this.factoryProfile.concurrency)

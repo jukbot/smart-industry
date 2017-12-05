@@ -37,13 +37,13 @@
     <ul class="app-grid">
       <li>
         <div class="card" id="chartContainer">
-
-          <h1 class="title">Product Order Statistic</h1>
+          <h1 class="title">Product Order Statistics</h1>
           <google-chart id="column" type="column" options="[[columnOptions]]" cols='[[columnItems]]' rows='[[rowItems]]'></google-chart>
-
-          <flat-button class="btn" on-tap="clearStatistic">
-            <button>Reset Statistic</button>
-          </flat-button>
+          <div class="center">
+            <flat-button class="btn" on-tap="clearStatistic">
+              <button>Reset Statistics</button>
+            </flat-button>
+          </div>
         </div>
       </li>
     </ul>
