@@ -76,6 +76,8 @@
             data="{{stationItems}}"></firebase-query>
         <!-- ORDER TABLE -->
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
+        <!-- SCHEDULE DATA -->
+        <firebase-query app-name="smart-mes" path="/data/[[k.key]]/scheduleData" order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
         <!-- CHART DATA -->
         <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{chartItems}}"></firebase-document>
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
@@ -83,7 +85,7 @@
             equal-to="{{selectedStation}}" data="{{selectedStationData}}"></firebase-query>
         <!-- JOB SCHEDULE TABLE SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" equal-to="[[selectedStation]]"
-            order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
+            order-by-child="job_station" data="{{filterScheduleItems}}"></firebase-query>
 
         <ul class="app-grid">
             <!-- Edit order card -->
@@ -168,9 +170,7 @@
 
                         <vaadin-grid-column flex="1">
                             <template class="header">
-                                <vaadin-grid-sorter path="order_status">
-                                    <div class="cell">{{localize('color')}}</div>
-                                </vaadin-grid-sorter>
+                                <div class="cell">{{localize('color')}}</div>
                             </template>
                             <template>
                                 <div class="cell" style$="color:[[item.order_color]]">&#9608;</div>
@@ -188,11 +188,7 @@
 
                         <vaadin-grid-column>
                             <template class="header">
-                                <vaadin-grid-sorter path="order_product_name">
-                                    <div class="cell">
-                                        <span>{{localize('product')}}</span>
-                                    </div>
-                                </vaadin-grid-sorter>
+                                <div class="cell">{{localize('product')}}</div>
                             </template>
                             <template>
                                 <div class="cell">[[item.order_product_name]]</div>
@@ -313,7 +309,7 @@
                             </template>
                         </iron-selector>
                     </div>
-                    <vaadin-grid id="jobSchedulingTable" items="{{scheduleItems}}" page-size="20">
+                    <vaadin-grid id="jobSchedulingTable" items="{{filterScheduleItems}}" page-size="20">
                         <vaadin-grid-column width="100px" flex="0">
                             <template class="header">
                                 <div class="cell center">{{localize('station')}}</div>
@@ -379,7 +375,7 @@
                                 <div class="cell">{{localize('workload')}}</div>
                             </template>
                             <template>
-                                <div class="cell">[[item.job_workload]] ({{localize('mins')}}.)</div>
+                                <div class="cell">[[item.job_workload]] ({{localize('second')}}.)</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -498,7 +494,7 @@
                     factoryPerformance: Object,
                     factoryOperation: Object,
                     factoryProfile: Object,
-                    scheduleItems: Object,
+                    filterScheduleItems: Object,
                     timelineOptions: Object,
                     chartItems: Object,
                     width: Number,
@@ -663,7 +659,7 @@
                     dataTable.addRows(result);
                 } else {
                     dataTable.addRows([
-                        ['\0', '\0', '#FFFFFF', new Date(1506470400), new Date(1506480400)]
+                        ['\0', 'N/A', '#FFFFFF', new Date(1506470400), new Date(1506480400)]
                     ]);
                 }
                 document.createElement('google-chart-loader').dataTable(
@@ -911,7 +907,9 @@
                         "Clear all schedule ? The order that are working in process will not be deleted."
                     ) ==
                     true) {
-                    this.$.scheduleQuery.ref.remove();
+                    this.$.scheduleQuery.ref.remove()
+                    this.$.chartQuery.ref.remove()
+                    this._initialChart()
                     this.toastText = 'notification-delete-successfully'
                     this.$.toastAlert.open()
                 }
@@ -971,27 +969,6 @@
                 }
             }
 
-            // ORDER SCHEDULING
-            _addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor, jobPart, jobQuantity,
-                jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime) {
-                this.$.scheduleQuery.ref.push({
-                    order_date: orderDate,
-                    order_delivert: orderDelivery,
-                    order_no: orderNo,
-                    order_product: orderProduct,
-                    order_color: orderColor,
-                    job_part: jobPart,
-                    job_quantity: jobQuantity,
-                    job_machine: jobMachine,
-                    job_station: jobStation,
-                    job_workload: jobWorkload,
-                    job_weight: jobWeight,
-                    job_status: "waiting",
-                    start: startTime,
-                    end: endTime,
-                })
-            }
-
             deleteJob(e) {
                 if (confirm("Delete this job ?")) {
                     let key = e.currentTarget.order.$key;
@@ -1002,7 +979,6 @@
             }
 
             reSchedule() {
-                //  window.alert('Note: Orders that are working in process will not able to reschedule.');
                 if (this.sortedOrder) {
                     switch (this.factoryProfile.model) {
                         case "serial":
@@ -1024,29 +1000,14 @@
                 }
             }
 
-            refreshChart(data) {
-                // [[station, order, color ,start ,end]]
-                // data = [
-                //     ['1', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
-                //         2017, 10, 19, 8, 33, 0).getTime() / 1000],
-                //     ['1', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 30, 0).getTime() / 1000, new Date(
-                //         2017, 10, 19, 8, 38, 0).getTime() / 1000],
-                //     ['2', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 33, 0).getTime() / 1000, new Date(
-                //         2017, 10, 19, 8, 45, 0).getTime() / 1000],
-                //     ['2', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 38, 0).getTime() / 1000, new Date(
-                //         2017, 10, 19, 8, 50, 0).getTime() / 1000],
-                //     ['3', 'Order 1', '#865551', new Date(2017, 10, 19, 8, 45, 0).getTime() / 1000, new Date(
-                //         2017, 10, 19, 9, 0, 36).getTime() / 1000],
-                //     ['3', 'Order 2', '#85DF4C', new Date(2017, 10, 19, 8, 50, 0).getTime() / 1000, new Date(
-                //         2017, 10, 19, 9, 14, 27).getTime() / 1000],
-                //     ['4', 'Order 1', '#865551', new Date(2017, 10, 19, 9, 0, 36).getTime() / 1000, new Date(
-                //         2017, 10, 19, 9, 30, 12).getTime() / 1000],
-                //     ['4', 'Order 1', '#85DF4C', new Date(2017, 10, 19, 9, 14, 27).getTime() / 1000, new Date(
-                //         2017, 10, 19, 10, 20, 12).getTime() / 1000]
-                // ]
-                chartData = Object.entries(data)
-                console.table(chartData)
-                this.$.chartQuery.ref.set(chartData)
+            _refreshChart() {
+                let newChartData = this.scheduleItems.map((data) => {
+                    return [data.job_station.toString(), 'Order ' + data.order_no, data.order_color,
+                        data.start, data.end
+                    ]
+                });
+                console.table(newChartData)
+                this.$.chartQuery.ref.set(newChartData)
             }
 
             gcd(a, b) {
@@ -1067,61 +1028,37 @@
                     console.log('selected order')
                     console.log(selected_order)
 
-                    // 4) Set order part and order quantity data 
+                    // 4) Set order status to work in progress
+                    selected_order.map((order) => this.setOrderStatus(order.$key, 'wip'))
+
+                    // 5) Set order part and order quantity data 
                     let order_part = selected_order.map(o => o.order_product_part)
                     let order_product_name = selected_order.map(o => o.order_product_name)
                     let order_no = selected_order.map(o => o.order_no)
                     let order_duration = selected_order.map(o => o.order_duration)
                     let order_delivery = selected_order.map(o => o.order_delivery)
                     let order_color = selected_order.map(o => o.order_color)
+                    let order_date = selected_order.map(o => o.order_date)
 
-                    // 5) Flat array of order part data  (only parallel and serial)
+                    // 6) Flat array of order part data  (only parallel and serial)
                     order_part = order_part.reduce((a, b) =>
                         a.concat(b), [])
                     console.log('order part')
                     console.table(order_part)
 
-                    // 5.1a) Array of quantity
-                    console.log('order quantity')
+                    // 6.1a) Array of quantity
                     let order_quantity = selected_order.map(o => o.order_quantity)
-                    console.log(order_quantity)
 
-                    // 5.1) Array of cycle 
+                    // 6.1) Array of cycle 
                     let cycleArr = order_part.map(element => element.cycle)
-                    console.log('order cycle')
-                    console.log(cycleArr)
 
-                    // 5.2) Array of setup
+                    // 6.2) Array of setup
                     let setupArr = order_part.map(element => element.setup)
-                    console.log('order setup')
-                    console.log(setupArr)
 
-                    // 5.3) Array of process no (index) 
+                    // 6.3) Array of process no (index) 
                     let processArr = order_part.map(element => element.process)
-                    console.log('order process')
-                    console.log(processArr)
 
-                    // 5.4) Merge cycle & process arr to obj value
-                    let cycleProcessObj = order_part.map((k, i) => Object.assign({}, ...processArr[i].map((
-                            process,
-                            index) =>
-                        ({
-                            [process]: cycleArr[i][index]
-                        }))))
-                    console.log('cycle process object')
-                    console.log(cycleProcessObj)
-
-                    // 5.5) Merge setup & process arr to obj value
-                    let setupProcessObj = order_part.map((k, i) => Object.assign({}, ...processArr[i].map((
-                            process,
-                            index) =>
-                        ({
-                            [process]: setupArr[i][index]
-                        }))))
-                    console.log('setup process object')
-                    console.log(setupProcessObj)
-
-                    // 6) Calculate job workload of each process
+                    // 7) Calculate job workload of each process
                     let multResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q))
                     let workloadArr = multResult.map((item, index) => {
                         return item.map((i, j) => i + setupArr[index][j])
@@ -1135,31 +1072,29 @@
                     console.log('workload process object')
                     console.log(workloadProcessObj)
 
-                    // 7) Calculate weight of each process based on workload
-
+                    // 8) Calculate sum workload of each process
                     // sum array as column
                     let sumWorkloadEachProcess = workloadArr.reduce((prev, cur) => {
                         return prev.map((item, index) => {
                             return (cur[index] || 0) + item
                         })
                     })
-
                     // sum array as row
                     let sumWorkloadEachOrder = workloadArr.map((item) => {
                         return [item.reduce((a, b) => {
                             return a + b;
                         })];
                     });
+                    console.log('Sum of Workload ', sumWorkloadEachProcess)
 
-                    console.log('Sum of Workload', sumWorkloadEachProcess)
-
+                    // 9) Calculate weight of each process based on workload
                     let weight = []
                     for (let i = 0; i < workloadArr.length; i++) {
                         weight[i] = workloadArr[i].map((x, i) => x / sumWorkloadEachProcess[i])
                     }
-                    console.log(weight)
+                    console.log('Weight ', weight)
 
-                    // 8) Calculate used machine
+                    // 10) Calculate allocated machine
                     let machines = []
                     let machine_in_station = this.stationItems.map(o => {
                         if (!o.st_machine.length) {
@@ -1168,20 +1103,29 @@
                             return o.st_machine.length
                         }
                     })
-                    console.log(machine_in_station)
+                    console.log('Machine in station ', machine_in_station)
 
                     for (let i = 0; i < weight.length; i++) {
-                        machines[i] = weight[i].map((x, i) => Math.round(x * machine_in_station[i]))
+                        machines[i] = weight[i].map((x, i) => {
+                            let allocatedMachine = Math.round(x * machine_in_station[i])
+                            if (allocatedMachine >= machine_in_station[i]) {
+                                return allocatedMachine - 1
+                            } else if (allocatedMachine <= 1) {
+                                return 1
+                            } else {
+                                return allocatedMachine
+                            }
+                        })
                     }
-                    console.log(machines)
+                    console.log('Allocated machines ', machines)
 
-                    // 9) Calculate the duration of each process
+                    // 11) Calculate the duration of each process
                     let duration = []
                     for (let i = 0; i < workloadArr.length; i++) {
                         duration[i] = workloadArr[i].map((workload, index) => {
                             const machine = machines[index]
 
-                            if (machine === 0) {
+                            if (!machine) {
                                 return workload
                             } else {
                                 console.log('Calculate Duration', workload, machine)
@@ -1191,30 +1135,29 @@
                     }
                     console.log(duration)
 
+                    // 12) Map value and key to a new object 
+                    // and reduce to flat array for each part order
                     let start = []
                     let end = []
-                    // 10) Map value and key to a new object 
-                    // and reduce to flat array for each part order
-                    let result = processArr.map((x, i) => {
-                        var today = new Date();
-                        var dd = today.getDate();
-                        var months = new Array('January', 'February', 'March', 'April', 'May', 'June',
+                    let result = processArr.map((station, i) => {
+                        let today = new Date();
+                        let dd = today.getDate();
+                        let months = new Array('January', 'February', 'March', 'April', 'May', 'June',
                             'July', 'August', 'September', 'October', 'November', 'December');
-                        var mm = months[today.getMonth()];
-                        var yyyy = today.getFullYear();
+                        let mm = months[today.getMonth()];
+                        let yyyy = today.getFullYear();
                         if (dd < 10) {
                             dd = '0' + dd;
                         }
-
-                        var initialStart = Date.parse(dd + '-' + months + '-' + yyyy + " " + this.factoryOperation
+                        let initialStart = Date.parse(dd + '-' + months + '-' + yyyy + " " + this.factoryOperation
                             .op_start) / 1000
+                        console.log(initialStart)
                         if (!start[i]) {
                             start[i] = initialStart
                         } else {
                             start[i] = end[i - 1]
                         }
-
-                        end[i] = parseInt(start[i] + duration[i])
+                        end[i] = parseInt(start[i], 10) + parseInt(duration[i], 10)
 
                         return {
                             "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
@@ -1222,29 +1165,25 @@
                             "job_workload": workloadArr[i].filter(value => isNaN(value) ? 0 : value),
                             "job_duration": duration[i].filter(value => isNaN(value) ? 0 : value),
                             "job_machine": machines[i].filter(value => isNaN(value) ? 0 : value),
-                            "job_station": x,
+                            "job_station": station,
                             "job_part": order_part[i].name.toString(),
                             "job_sku": order_part[i].sku,
                             "job_weight": weight[i].filter(value => isNaN(value) ? 0 : value),
-                            "order_process": x,
+                            "job_quantity": order_quantity[i],
+                            "job_status": "waiting",
                             "start": start[i],
                             "end": end[i],
+                            "order_no": order_no[i],
+                            "order_date": order_date[i],
                             "order_color": order_color[i].toString(),
-                            "order_product": order_product_name[i].toString(),
-                            "order_quantity": order_quantity[i]
+                            "order_product": order_product_name[i].toString()
                         }
                     }).reduce((a, b) => {
                         return a.concat(b);
                     }, []); // use reduce only for serial and parallel
-
                     console.table(result)
 
-                    // convert to arr obj
-                    // const flatObj = result.reduce(function (acc, cur, i) {
-                    //     acc[i] = cur;
-                    //     return acc;
-                    // }, []);
-
+                    // 13) Split arr into group of key-value arr
                     let splitArr = result.map((data) => _.transform(data, function (result, value, key) {
                         if (!_.isArray(value)) return;
                         if (result.length < value.length) {
@@ -1253,31 +1192,31 @@
                         }
                         value.map((item, index) => result[index][key] = item)
                     }, []))
-
                     console.log(splitArr)
 
-                    if (this.scheduleItems.length <= this.factoryProfile.concurrency) {
-                        delete result.$key
-                        for (let i = 0; i < result.length; i++) {
-                            this.$.scheduleQuery.ref.push(result[i])
+                    // 14) If job schedule table is available then push the order into the table
+                    if (this.filterScheduleItems.length <= this.factoryProfile.concurrency) {
+                        delete splitArr.$key
+                        for (let i = 0; i < splitArr.length; i++) {
+                            if (splitArr[i].length > 0) {
+                                for (let j = 0; j < splitArr[i].length; j++) {
+                                    this.$.scheduleQuery.ref.push(splitArr[i][j])
+                                }
+                            }
                         }
-                        // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
-                        //     jobPart, jobQuantity,jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
-                    } else if (this.scheduleItems.length > this.factoryProfile.concurrency) {
+                        this._refreshChart()
+                    } else if (this.filterScheduleItems.length > this.factoryProfile.concurrency) {
                         window.alert("Full capacity of current concurrency")
                     } else {
-                        window.alert("No order to reschedule")
+                        window.alert("No order to schedule")
                     }
+                } else {
+                    window.alert("No order to schedule")
                 }
             }
 
             _multiSchedule() {
-                if (this.scheduleItems.length <= 0) {
-                    // this._addToSchedule(orderDate, orderDelivery, orderNo, orderProduct, orderColor,
-                    //     jobPart, jobQuantity,
-                    //     jobMachine, jobStation, jobWorkload, jobWeight, startTime, endTime)
-
-                }
+                if (this.filterScheduleItems.length <= 0) {}
             }
         }
         customElements.define(ViewPlanScheduling.is, ViewPlanScheduling)

@@ -192,8 +192,8 @@
                                                                 <p>
                                                                     <strong>{{localize('process-number')}} [[item.process]]</strong>
                                                                 </p>
-                                                                <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('mins')}}.</p>
-                                                                <p>{{localize('setup-time')}} [[item.setup]] {{localize('mins')}}.</p>
+                                                                <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
+                                                                <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
                                                             </div>
                                                         </template>
                                                     </iron-list>
@@ -267,8 +267,8 @@
                                                                 <p>
                                                                     <strong>{{localize('process-number')}} [[item.process]]</strong>
                                                                 </p>
-                                                                <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('mins')}}.</p>
-                                                                <p>{{localize('setup-time')}} [[item.setup]] {{localize('mins')}}.</p>
+                                                                <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
+                                                                <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
                                                             </div>
                                                         </template>
                                                     </iron-list>
@@ -450,25 +450,25 @@
                                 </div>
                                 <div class="details">
                                     <div class="flex-item">
-                                        <h3>{{localize('setup-time')}} ({{localize('mins')}})</h3>
+                                        <h3>{{localize('setup-time')}} ({{localize('second')}})</h3>
                                         <template is="dom-repeat" items="[[item.part]]" as="productPart">
                                             <p>[[getProductProcessSequence(productPart.setup)]]</p>
                                         </template>
                                     </div>
                                     <div class="flex-item">
-                                        <h3>Total Setup time ({{localize('mins')}})</h3>
+                                        <h3>Total Setup time ({{localize('second')}})</h3>
                                         <template is="dom-repeat" items="[[item.part]]" as="productPart">
                                             <p>[[getSumSetupTime(productPart.setup)]]</p>
                                         </template>
                                     </div>
                                     <div class="flex-item">
-                                        <h3>{{localize('cycle-time')}} ({{localize('mins')}})</h3>
+                                        <h3>{{localize('cycle-time')}} ({{localize('second')}})</h3>
                                         <template is="dom-repeat" items="[[item.part]]" as="productPart">
                                             <p>[[getProductProcessSequence(productPart.cycle)]]</p>
                                         </template>
                                     </div>
                                     <div class="flex-item">
-                                        <h3>Total Cycle time ({{localize('mins')}})</h3>
+                                        <h3>Total Cycle time ({{localize('second')}})</h3>
                                         <template is="dom-repeat" items="[[item.part]]" as="productPart">
                                             <p>[[getSumCycleTime(productPart.cycle)]]</p>
                                         </template>
@@ -560,9 +560,9 @@
                             </paper-item>
                         </template>
                     </vaadin-combo-box>
-                    <paper-input label="Process Cycle Time (mins)" id="processCycle" value="{{processCycle}}" type="number" maxlength="9" error-message="number only"
+                    <paper-input label="Process Cycle Time (second)" id="processCycle" value="{{processCycle}}" type="number" maxlength="9" error-message="number only"
                         min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
-                    <paper-input label="Process Setup Time (mins)" id="processSetup" value="{{processSetup}}" type="number" maxlength="9" error-message="number only"
+                    <paper-input label="Process Setup Time (second)" id="processSetup" value="{{processSetup}}" type="number" maxlength="9" error-message="number only"
                         min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
 
                     <flat-button class="add-btn" on-tap="addProcessToPart">
@@ -577,8 +577,8 @@
                                     <p>
                                         <strong>{{localize('process-number')}} [[item.process]]</strong>
                                     </p>
-                                    <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('mins')}}.</p>
-                                    <p>{{localize('setup-time')}} [[item.setup]] {{localize('mins')}}.</p>
+                                    <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
+                                    <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
                                     <paper-icon-button class="delete-btn" on-tap="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
@@ -674,9 +674,9 @@
                             </paper-item>
                         </template>
                     </vaadin-combo-box>
-                    <paper-input label="{{localize('cycle-time')}} ({{localize('mins')}})" id="processCycle" value="{{processCycle}}" type="number"
+                    <paper-input label="{{localize('cycle-time')}} ({{localize('second')}})" id="processCycle" value="{{processCycle}}" type="number"
                         maxlength="9" error-message="number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
-                    <paper-input label="{{localize('setup-time')}} ({{localize('mins')}})" id="processSetup" value="{{processSetup}}" type="number"
+                    <paper-input label="{{localize('setup-time')}} ({{localize('second')}})" id="processSetup" value="{{processSetup}}" type="number"
                         maxlength="9" error-message="number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
 
                     <flat-button class="add-btn" on-tap="addProcessToPart">
@@ -691,8 +691,8 @@
                                     <p>
                                         <strong>{{localize('process-number')}} [[item.process]]</strong>
                                     </p>
-                                    <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('mins')}}.</p>
-                                    <p>{{localize('setup-time')}} [[item.setup]] {{localize('mins')}}.</p>
+                                    <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
+                                    <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
                                     <paper-icon-button class="delete-btn" on-tap="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
