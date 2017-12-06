@@ -375,7 +375,7 @@
                                 <div class="cell">{{localize('workload')}}</div>
                             </template>
                             <template>
-                                <div class="cell">[[item.job_workload]] ({{localize('second')}}.)</div>
+                                <div class="cell">[[item.job_workload]] ({{localize('second')}})</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -716,7 +716,7 @@
             }
 
             getTimestampToTime(timestamp) {
-                let date = new Date((timestamp - 25200) * 1000);
+                let date = new Date(timestamp * 1000);
                 // Hours part from the timestamp
                 let hours = date.getHours();
                 // Minutes part from the timestamp
@@ -755,7 +755,7 @@
 
             getOrderDuration(order_duration) {
                 if (!order_duration) return 0
-                return this._minutesToStr(order_duration)
+                return this._durationToStr(order_duration)
             }
 
             getRemainDay(delivery_date, status, key) {
@@ -836,7 +836,7 @@
             }
 
             getEstEnd(start, workload) {
-                let workload_second = workload * 60
+                let workload_second = workload
                 let end_timestamp = start + workload_second
                 return this.getTimestampToTime(end_timestamp)
             }
@@ -860,14 +860,13 @@
             }
 
             // CONVERT TIME TO STRING
-            _minutesToStr(minute) {
+            _durationToStr(sec) {
+                sec = Number(sec);
                 let sign = '';
-                if (minute < 0) {
-                    sign = '0';
-                }
-                let hours = this._leftPad(Math.floor(Math.abs(minute) / 60));
-                let minutes = this._leftPad(Math.round(Math.abs(minute) % 60));
-                return sign + hours + 'hrs ' + minutes + 'min';
+                let hours = this._leftPad(Math.floor(Math.abs(sec) / 3600));
+                let minutes = this._leftPad(Math.round(Math.abs(sec) % 3600 / 60));
+                let seconds = this._leftPad(Math.round(Math.abs(sec) % 3600 % 60));
+                return hours + 'hrs ' + minutes + 'min' + seconds + 'sec';
             }
 
             // ADD 0 to numbers less than 10,Eg: 2 -> 02 
@@ -1006,8 +1005,8 @@
                         data.start, data.end
                     ]
                 });
-                console.table(newChartData)
                 this.$.chartQuery.ref.set(newChartData)
+                this._initialChart()
             }
 
             gcd(a, b) {
@@ -1076,7 +1075,7 @@
                     // sum array as column
                     let sumWorkloadEachProcess = workloadArr.reduce((prev, cur) => {
                         return prev.map((item, index) => {
-                            return (cur[index] || 0) + item
+                            return (cur[index] || 0) + item || item
                         })
                     })
                     // sum array as row
@@ -1128,12 +1127,12 @@
                             if (!machine) {
                                 return workload
                             } else {
-                                console.log('Calculate Duration', workload, machine)
                                 return (workload / parseInt(machine))
                             }
                         })
                     }
-                    console.log(duration)
+                    console.log('workload', workloadArr)
+                    console.log('duration', duration)
 
                     // 12) Map value and key to a new object 
                     // and reduce to flat array for each part order
@@ -1152,13 +1151,12 @@
                         let initialStart = Date.parse(dd + '-' + months + '-' + yyyy + " " + this.factoryOperation
                             .op_start) / 1000
                         console.log(initialStart)
+
                         if (!start[i]) {
                             start[i] = initialStart
                         } else {
                             start[i] = end[i - 1]
                         }
-                        end[i] = parseInt(start[i], 10) + parseInt(duration[i], 10)
-
                         return {
                             "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
                             "job_setup": setupArr[i].filter(value => isNaN(value) ? 0 : value),
@@ -1172,7 +1170,7 @@
                             "job_quantity": order_quantity[i],
                             "job_status": "waiting",
                             "start": start[i],
-                            "end": end[i],
+                            "end": parseInt(duration[i]) + parseInt(start[i]),
                             "order_no": order_no[i],
                             "order_date": order_date[i],
                             "order_color": order_color[i].toString(),

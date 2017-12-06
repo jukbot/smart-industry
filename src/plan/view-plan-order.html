@@ -233,8 +233,8 @@
                         <h2 class="title">{{localize('product-part')}} [[part.name]]</h2>
                         <p>{{localize('sku-code')}}: [[part.sku]]</p>
                         <p>{{localize('process-sequence')}}: [[getProductProcessSequence(part.process)]]</p>
-                        <p>{{localize('setup-time')}}: [[getSumSetupTime(part.setup)]] minutes</p>
-                        <p>{{localize('cycle-time')}}: [[getSumCycleTime(part.cycle)]] minutes</p>
+                        <p>{{localize('setup-time')}}: [[getSumSetupTime(part.setup)]] seconds</p>
+                        <p>{{localize('cycle-time')}}: [[getSumCycleTime(part.cycle)]] seconds</p>
                     </div>
                 </template>
             </div>
@@ -402,7 +402,7 @@
                 const sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
                 this.orderDuration = sumDuration;
                 this._limitOperationTime(sumDuration);
-                return this._minutesToStr(sumDuration); // convert to hr and min
+                return this._durationToStr(sumDuration); // convert to hr min sec
             }
 
             getProductCost(cost, amount) {
@@ -497,14 +497,13 @@
             }
 
             // CONVERT TIME TO STRING
-            _minutesToStr(minute) {
+            _durationToStr(sec) {
+                sec = Number(sec);
                 let sign = '';
-                if (minute < 0) {
-                    sign = '0';
-                }
-                let hours = this._leftPad(Math.floor(Math.abs(minute) / 60));
-                let minutes = this._leftPad(Math.round(Math.abs(minute) % 60));
-                return sign + hours + 'hrs ' + minutes + 'min';
+                let hours = this._leftPad(Math.floor(Math.abs(sec) / 3600));
+                let minutes = this._leftPad(Math.round(Math.abs(sec) % 3600 / 60));
+                let seconds = this._leftPad(Math.round(Math.abs(sec) % 3600 % 60));
+                return hours + 'hrs ' + minutes + 'min' + seconds + 'sec';
             }
 
             // ADD 0 to numbers less than 10,Eg: 2 -> 02 
