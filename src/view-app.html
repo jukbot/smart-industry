@@ -106,7 +106,7 @@
           </div>
         </app-drawer>
         <app-header-layout>
-          <app-header class="main-header" id="header" slot="header">
+          <app-header class="main-header" id="header" slot="header" hidden="[[!signedIn]]">
             <app-toolbar>
               <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
               <h2 class="page-title" main-title>{{localize(subPageData.page)}}</h2>

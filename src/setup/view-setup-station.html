@@ -1,5 +1,8 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
@@ -131,12 +134,20 @@
         <!-- Edit Station Card -->
         <div class="card main-card" hidden="[[showEditStation]]">
             <h1 class="title">{{localize('edit-station')}}</h1>
-            <paper-input type="number" id="edit_stationNumber" name="station-number" label="{{localize('station-number')}}" value="{{editStationItems.st_number}}"
+            <paper-input type="number" id="edit_stationNumber" name="station number" label="{{localize('station-number')}}" value="{{editStationItems.st_number}}"
                 min="1" max="999" readonly required always-float-label></paper-input>
-            <paper-input type="text" id="edit_stationName" name="station-name" label="{{localize('station-name')}}" value="[[editStationItems.st_name]]"
+            <paper-input type="text" id="edit_stationName" name="station name" label="{{localize('station-name')}}" value="[[editStationItems.st_name]]"
                 required error-message="Invalid Input" always-float-label></paper-input>
-            <vaadin-combo-box label="Machine" id="edit_machineSelector" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
-                item-value-path="name" loading="[[!persistedMachineData]]" required always-float-label></vaadin-combo-box>
+            <vaadin-combo-box label="Machine" id="edit_machineSelector" items="[[persistedMachineData]]" name="machine station" item-label-path="name"
+                item-value-path="name" loading="[[!persistedMachineData]]" required always-float-label>
+                <template>
+                    <paper-item>
+                        <paper-item-body style="min-height: 0">
+                            <div readonly>[[item.name]]</div>
+                        </paper-item-body>
+                    </paper-item>
+                </template>
+            </vaadin-combo-box>
             <p class="machine-counter">You added [[stationEditMachineCount]] / [[stationMaxMachine]] {{localize('machine')}}</p>
             <flat-button class="add-btn" on-tap="editAddMachine">
                 <button>{{localize('add-machine')}}</button>

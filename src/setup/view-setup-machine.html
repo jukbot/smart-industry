@@ -42,7 +42,7 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" order-by-child="name" data="{{machineItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" data="{{machineItems}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="editMachineQuery" path="/data/[[k.key]]/factoryData/machine/[[editKey]]" data="{{editMachineItems}}"></firebase-document>
         <app-indexeddb-mirror session="[[user.uid]]" key="machine-data" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
@@ -110,7 +110,8 @@
                 always-float-label></paper-input>
             <h1 class="sub-title center" hidden="[[machineItems]]">{{localize('please-add-machine-before-adding-station')}}</h1>
             <ul class="app-grid">
-                <template is="dom-repeat" filter="{{searchMachine(searchString)}}" observe="name" items="{{persistedMachineData}}" as="machineItem">
+                <template is="dom-repeat" filter="{{searchMachine(searchString)}}" observe="name" items="{{persistedMachineData}}" index-as="capacity"
+                    as="machineItem">
                     <li>
                         <div class="machine">
                             <div class="machine-info-group">

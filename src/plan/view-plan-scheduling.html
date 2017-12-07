@@ -77,7 +77,7 @@
         <!-- ORDER TABLE -->
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
         <!-- SCHEDULE DATA -->
-        <firebase-query app-name="smart-mes" path="/data/[[k.key]]/scheduleData" order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="jobQuery" path="/data/[[k.key]]/scheduleData" order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
         <!-- CHART DATA -->
         <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{chartItems}}"></firebase-document>
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
@@ -472,6 +472,14 @@
                         type: Object,
                         notify: true
                     },
+                    scheduleItems: {
+                        type: Object,
+                        notify: true,
+                    },
+                    chartItems: {
+                        type: Object,
+                        notify: true,
+                    },
                     showOrderTable: {
                         type: Boolean,
                         value: false
@@ -494,9 +502,8 @@
                     factoryPerformance: Object,
                     factoryOperation: Object,
                     factoryProfile: Object,
-                    filterScheduleItems: Object,
                     timelineOptions: Object,
-                    chartItems: Object,
+                    filterScheduleItems: Object,
                     width: Number,
                     height: Number,
                     editKey: String,
@@ -607,7 +614,6 @@
                         width: this.width - 40,
                         height: this.height + 200,
                         timeline: {
-                            showRowLabels: true,
                             rowLabelStyle: {
                                 fontSize: 16
                             },
@@ -659,18 +665,17 @@
                     dataTable.addRows(result);
                 } else {
                     dataTable.addRows([
-                        ['\0', 'N/A', '#FFFFFF', new Date(1506470400), new Date(1506480400)]
+                        ['\0', 'No data', '#FFFFFF', new Date(1506470400), new Date(1506480400)]
                     ]);
                 }
                 document.createElement('google-chart-loader').dataTable(
                     dataTable).then((data) => {
                     chart.data = data;
                 });
+                this.$.timeline.redraw()
             }
 
             getSortedOrder(order) {
-                this.$.orderTable.clearCache();
-                console.log('run sort order')
                 // SORT BY EDD THEN BY SPT
                 let sort = order.sort((a, b) => {
                     return a["order_delivery"] - b["order_delivery"] || a["order_duration"] - b[
@@ -889,6 +894,7 @@
                 this.showOrderTable = false
                 this.showScheduleTable = false
                 this.showChartTable = false
+                this.editKey = ''
             }
 
             setOrderStatus(key, status) {
@@ -908,7 +914,7 @@
                     true) {
                     this.$.scheduleQuery.ref.remove()
                     this.$.chartQuery.ref.remove()
-                    this._initialChart()
+                    this._refreshChart()
                     this.toastText = 'notification-delete-successfully'
                     this.$.toastAlert.open()
                 }
@@ -970,10 +976,11 @@
 
             deleteJob(e) {
                 if (confirm("Delete this job ?")) {
-                    let key = e.currentTarget.order.$key;
+                    let key = e.currentTarget.job.$key;
                     this.$.jobQuery.ref.child(key).remove();
                     this.toastText = 'notification-delete-successfully'
                     this.$.toastAlert.open()
+                    this._refreshChart()
                 }
             }
 
@@ -1000,13 +1007,15 @@
             }
 
             _refreshChart() {
-                let newChartData = this.scheduleItems.map((data) => {
-                    return [data.job_station.toString(), 'Order ' + data.order_no, data.order_color,
-                        data.start, data.end
-                    ]
-                });
-                this.$.chartQuery.ref.set(newChartData)
-                this._initialChart()
+                if (this.scheduleItems) {
+                    let newChartData = this.scheduleItems.map((data) => {
+                        return [data.job_station.toString(), 'Order ' + data.order_no, data.order_color,
+                            data.start, data.end
+                        ]
+                    });
+                    this.$.chartQuery.ref.set(newChartData)
+                    this._initialChart()
+                }
             }
 
             gcd(a, b) {
@@ -1138,26 +1147,24 @@
                     // and reduce to flat array for each part order
                     let start = []
                     let end = []
-                    let result = processArr.map((station, i) => {
-                        let today = new Date();
-                        let dd = today.getDate();
-                        let months = new Array('January', 'February', 'March', 'April', 'May', 'June',
-                            'July', 'August', 'September', 'October', 'November', 'December');
-                        let mm = months[today.getMonth()];
-                        let yyyy = today.getFullYear();
-                        if (dd < 10) {
-                            dd = '0' + dd;
-                        }
-                        let initialStart = Date.parse(dd + '-' + months + '-' + yyyy + " " + this.factoryOperation
-                            .op_start) / 1000
-                        console.log(initialStart)
+                    let today = new Date();
+                    let dd = today.getDate();
+                    let months = new Array('January', 'February', 'March', 'April', 'May', 'June',
+                        'July', 'August', 'September', 'October', 'November', 'December');
+                    let mm = months[today.getMonth()];
+                    let yyyy = today.getFullYear();
+                    if (dd < 10) {
+                        dd = '0' + dd;
+                    }
+                    let initialStart = Date.parse(dd + '-' + months + '-' + yyyy + " " + this.factoryOperation
+                        .op_start) / 1000
+                    console.log(initialStart)
 
-                        if (!start[i]) {
-                            start[i] = initialStart
-                        } else {
-                            start[i] = end[i - 1]
-                        }
+                    let result = processArr.map((station, i, arr) => {
+                        console.log(duration[i].slice());
+                        console.log(i)
                         return {
+                            "job_id": Math.random().toString(36).substr(2, 12),
                             "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
                             "job_setup": setupArr[i].filter(value => isNaN(value) ? 0 : value),
                             "job_workload": workloadArr[i].filter(value => isNaN(value) ? 0 : value),
@@ -1169,12 +1176,24 @@
                             "job_weight": weight[i].filter(value => isNaN(value) ? 0 : value),
                             "job_quantity": order_quantity[i],
                             "job_status": "waiting",
-                            "start": start[i],
-                            "end": parseInt(duration[i]) + parseInt(start[i]),
+                            "job_good": 0,
+                            "job_defect": 0,
+                            "start": start[i] = duration[i].map((dura, idx) => {
+                                console.log(start[i], dura, idx)
+                                if (i == 0) {
+                                    return initialStart
+                                } else {
+                                    return parseInt(end[i - 1]) + 50 // delay between order
+                                }
+                            }),
+                            "end": end[i] = duration[i].map((dura, idx) => {
+                                console.log(start[i], dura, idx)
+                                return parseInt(dura) + parseInt(start[i])
+                            }),
                             "order_no": order_no[i],
                             "order_date": order_date[i],
                             "order_color": order_color[i].toString(),
-                            "order_product": order_product_name[i].toString()
+                            "order_product": order_product_name[i].toString(),
                         }
                     }).reduce((a, b) => {
                         return a.concat(b);
@@ -1193,6 +1212,7 @@
                     console.log(splitArr)
 
                     // 14) If job schedule table is available then push the order into the table
+                    //  let isDuplicated = this.scheduleItems.map(item => item.job_id).indexOf(resultObject.job_id) > -1
                     if (this.filterScheduleItems.length <= this.factoryProfile.concurrency) {
                         delete splitArr.$key
                         for (let i = 0; i < splitArr.length; i++) {
@@ -1203,10 +1223,8 @@
                             }
                         }
                         this._refreshChart()
-                    } else if (this.filterScheduleItems.length > this.factoryProfile.concurrency) {
-                        window.alert("Full capacity of current concurrency")
                     } else {
-                        window.alert("No order to schedule")
+                        window.alert("Full capacity of current concurrency")
                     }
                 } else {
                     window.alert("No order to schedule")

@@ -120,6 +120,7 @@
                         <div class="card-item">
                             <div class="card-item-info-group">
                                 <h2 class="title">{{localize('part')}} [[item.job_part]]</h2>
+                                <p>Job Id [[item.job_id]]</p>
                                 <p>{{localize('quantity')}}: [[item.job_quantity]] {{localize('item')}} </p>
                                 <p>{{localize('product-part')}}: [[item.order_product]]</p>
                                 <p style$="color:[[item.order_color]]">{{localize('order-number')}}: [[item.order_no]]</p>
@@ -318,12 +319,11 @@
                     this.$.scheduleQuery.ref.child(this.selectedJob.$key).update({
                         actual_end: Math.round(new Date().getTime() / 1000.0),
                         job_status: 'done',
-                        job_defect: this.defect,
-                        job_good: this.good || (this.selectedJob.job_quantity - this.defect) // output of station
-                    })
+                        job_defect: parseInt(this.defect),
+                        job_good: parseInt(this.good) || (this.selectedJob.job_quantity - this.defect) // output of station
+                    }).then(this._checkJobStatus())
                     this.$.reportFinishDialog.opened = false;
                     this.selectedJob = '';
-                    this._checkJobStatus()
                 }
             }
 
@@ -362,7 +362,7 @@
                     r[a.order_no] = r[a.order_no] || [];
                     r[a.order_no].push(a);
                     return r;
-                }, {});
+                }, []);
                 console.table(order_group)
 
                 const arr = Object.values(this.scheduleItems)
@@ -373,21 +373,19 @@
 
                 // 2) condition to filter order_status == done
                 let isDone = ((element) => {
-                    if (element.job_status == 'done') {
-                        return true;
-                    }
+                    return (element.job_status === 'done')
                 })
 
                 // 3) check that element job_status of every item is == done
                 let done_order = [];
                 if (order_group) {
-                    let i = Object.keys(order_group).length;
-                    while (i > 0) {
+                    order_group.map((key, i) => {
+                        console.log(order_group[i])
+                        console.log(order_group[i].every(isDone))
                         if (order_group[i].every(isDone)) {
                             done_order.push(order_group[i]);
                         }
-                        i--
-                    }
+                    })
                 }
 
                 // 4) if every jobs in order is done so push to done_order 
@@ -404,29 +402,32 @@
                                 order_no: value.order_no,
                                 order_defect: parseInt(value.job_defect),
                                 job_station: value.job_station,
-                                // order_defect: done_order[i].reduce((a, o) => {
-                                //     return a + o.job_defect
-                                // }, 0),
                                 plan_duration: (value.end - value.start),
                                 actual_duration: (value.actual_end - value.actual_start),
                             };
                         });
                     }
 
-                    // 5) Remove duplicate order no from array
+                    // 5) Sum duration of all jobs 
+                    let sum_actual_duration = warehouse_order.reduce((a, b) =>
+                        a + b.actual_duration, 0)
+                    console.log(sum_actual_duration)
+
+                    // 6) Remove duplicate order no from array
                     let filterDoneOrder = warehouse_order.map(o => o.order_no).filter((item, index,
                         inputArray) => {
                         return inputArray.indexOf(item) == index;
                     })
 
-                    // 6) Update order no table
+                    // 7) Update order no table
                     for (let j = 0; j < filterDoneOrder.length; j++) {
                         this.updateOrderTable(filterDoneOrder[j]);
                     }
-                    console.log(done_order)
+
+                    // 8) Add to warehouse
                     let exportData = warehouse_order.reduce((a, b) => a.concat(b), []);
-                    // 7) Add to warehouse
                     this.addToWarehouse(exportData);
+
                 }
             }
 
@@ -445,7 +446,7 @@
 
             addToWarehouse(data) {
                 if (data) {
-                    var resultObject = data.reduce((result, currentObject) => {
+                    let resultObject = data.reduce((result, currentObject) => {
                         for (let key in currentObject) {
                             if (currentObject.hasOwnProperty(key)) {
                                 result[key] = currentObject[key];
@@ -459,7 +460,7 @@
                     let isDuplicated = this.warehouseItems.map(item => item.order_no).indexOf(resultObject.order_no) >
                         -1
                     if (isDuplicated) {
-                        alert('aleready added to warehouse')
+                        window.alert('This order aleready added to warehouse')
                     } else {
                         this.$.warehouseQuery.ref.push(resultObject);
                     }
@@ -574,8 +575,9 @@
                         job_status: 'done',
                         job_defect: 0,
                         job_good: count // output of station
-                    })
-                    this._checkJobStatus()
+                    }).then(
+                        this._checkJobStatus()
+                    )
                 }
                 return count
             }

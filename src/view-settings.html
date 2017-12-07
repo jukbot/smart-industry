@@ -172,9 +172,9 @@
       </li>
     </ul>
     <vaadin-dialog id="manageKeyDialog" class="dialog">
-      <template id="manageKeyContent">
+      <template>
         <custom-style>
-          <style is="custom-style" include="view-settings">
+          <style include="view-settings">
              :host {
               max-width: 500px;
               margin-top: 30vh;
@@ -247,6 +247,10 @@
             type: Number,
             value: 1000000
           },
+          tempKey: {
+            type: String,
+            notify: true
+          },
           language: String,
           notification: Boolean,
           languageItems: Array,
@@ -296,11 +300,11 @@
       }
 
       openManageKey() {
-        this.$.manageKeyDialog.opened = true;
+        this.$.manageKeyDialog.opened = true
       }
 
       closeKeyDialog() {
-        this.$.manageKeyDialog.opened = false;
+        this.$.manageKeyDialog.opened = false
       }
 
       openManageUser() {
@@ -575,7 +579,8 @@
             const request = this.$.requestSampleData.generateRequest()
             request.completes.then((req) => {
               //console.log(req.response);
-              console.info('%cLoaded sample data status:' + req.status + " " + req.statusText, 'color:green;');
+              console.info('%cLoaded sample data status:' + req.status + " " + req.statusText,
+                'color:green;');
               this.$.factoryData.ref.child(this.usr.key).set(this.sampleData).catch(error => {
                 console.error(error)
               })

@@ -106,8 +106,7 @@
       }
 
       _installListeners() {
-        // listen for custom events on main page
-        this.addEventListener('iron-resize', (e) => this._setChartSize(e))
+        this.addEventListener('iron-resize', this._setChartSize.bind(this))
       }
 
       _setChartSize() {
