@@ -56,11 +56,11 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
-    <firebase-messaging app-name="smart-mes" id="messaging" active="{{active}}" status-known="{{statusKnown}}" push-supported="{{pushSupported}}"
+    <firebase-messaging app-name="smart-mes" id="messaging" active="[[active]]" status-known="[[statusKnown]]" push-supported="[[pushSupported]]"
       on-message="handleMessage" token="{{token}}"></firebase-messaging>
     <firebase-document app-name="smart-mes" id="appData" path="/data/[[usr.key]]" data="{{appdata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{usr}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[usr.key]]/factoryData/order" data="{{factoryOrderIndex}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[usr.key]]/factoryData/order" data="[[factoryOrderIndex]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.uid]]/token" data="[[token]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[usr.key]]/appData/notification" data="[[notification]]"></firebase-document>
     <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[usr.key]]/appData/email_alert" data="[[emailAlert]]"></firebase-document>
@@ -457,10 +457,10 @@
       changeMaterialCount() {
         this.set('materialCount', this.$.materialCountSwitch.checked)
         if (this.$.materialCountSwitch.checked) {
-          this.toastText = 'autobackup-notification-alert-on'
+          this.toastText = 'notification-alert-on'
           this.$.toastAlert.open()
         } else {
-          this.toastText = 'autobackup-notification-alert-off'
+          this.toastText = 'notification-alert-off'
           this.$.toastAlert.open()
         }
       }
@@ -468,10 +468,10 @@
       changeAutoBackup() {
         this.set('autoBackup', this.$.autobackupSwitch.checked)
         if (this.$.autobackupSwitch.checked) {
-          this.toastText = 'autobackup-notification-alert-on'
+          this.toastText = 'notification-alert-on'
           this.$.toastAlert.open()
         } else {
-          this.toastText = 'autobackup-notification-alert-off'
+          this.toastText = 'notification-alert-off'
           this.$.toastAlert.open()
         }
       }
@@ -498,10 +498,10 @@
       changeEmailAlert() {
         this.set('emailAlert', this.$.emailAlertSwitch.checked)
         if (this.$.emailAlertSwitch.checked) {
-          this.toastText = 'email-notification-alert-on'
+          this.toastText = 'notification-alert-on'
           this.$.toastAlert.open()
         } else {
-          this.toastText = 'email-notification-alert-off'
+          this.toastText = 'notification-alert-off'
           this.$.toastAlert.open()
         }
       }

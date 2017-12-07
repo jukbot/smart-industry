@@ -120,10 +120,10 @@
                         <div class="card-item">
                             <div class="card-item-info-group">
                                 <h2 class="title">{{localize('part')}} [[item.job_part]]</h2>
+                                <p style$="color:[[item.order_color]]">{{localize('order-number')}}: [[item.order_no]]</p>
                                 <p>Job Id [[item.job_id]]</p>
                                 <p>{{localize('quantity')}}: [[item.job_quantity]] {{localize('item')}} </p>
                                 <p>{{localize('product-part')}}: [[item.order_product]]</p>
-                                <p style$="color:[[item.order_color]]">{{localize('order-number')}}: [[item.order_no]]</p>
                                 <p>{{localize('workload')}}: [[item.job_workload]] {{localize('mins')}}</p>
                                 <p>{{localize('station')}}: [[item.job_station]]</p>
                                 <p>{{localize('est-start')}}: [[timestampUTCToTime(item.start)]]</p>
@@ -395,6 +395,8 @@
                     for (let i = 0; i < done_order.length; i++) {
                         warehouse_order = done_order[i].map((value, index, arr) => {
                             return {
+                                order_delivery: value.order_delivery,
+                                order_customer: value.order_customer,
                                 order_product: value.order_product,
                                 order_color: value.order_color,
                                 order_good: value.job_good,
@@ -498,7 +500,8 @@
             resetCounter(e) {
                 const key = e.currentTarget.device.$key;
                 this.$.deviceQuery.ref.child(key).update({
-                    counter: 0
+                    counter: 0,
+                    update: Math.round(new Date().getTime() / 1000.0)
                 })
             }
 

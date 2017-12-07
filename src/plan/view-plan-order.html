@@ -97,11 +97,12 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="appMaterialCount" path="/data/[[k.key]]/appData/material_count" data="[[materialCount]]"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="[[factoryPerformance]]"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="[[factoryOperation]]"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[k.key]]/factoryData/order" data="[[factoryOrderIndex]]"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryProfileModel" path="/data/[[k.key]]/factoryData/profile/model" data="[[factoryProfileModel]]"></firebase-document>
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" data="{{orderItems}}"></firebase-query>
-        <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[k.key]]/factoryData/order" data="{{factoryOrderIndex}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factoryProfileModel" path="/data/[[k.key]]/factoryData/profile/model" data="{{factoryProfileModel}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="factoryInventory" path="/data/[[k.key]]/factoryData/inventory" order-by-child="code"
             equal-to="[[inventoryCode]]" data="{{factoryInventory}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData/order"></firebase-query>
@@ -273,7 +274,8 @@
                     selectCustomer: Object,
                     operationTime: Number,
                     inventoryItems: Object,
-                    factoryProfileModel: String
+                    factoryProfileModel: String,
+                    materialCount: Boolean
                 }
             }
 
@@ -656,7 +658,9 @@
                     });
                     this._pushNotification(`Create order no. ${orderNo}`, 'normal')
                     this._updateOrderIndex(orderNo)
-                    this._updateMaterialInventory(inventoryRequired, inventoryCode)
+                    if (this.materialCount) {
+                        this._updateMaterialInventory(inventoryRequired, inventoryCode)
+                    }
                     window.alert("Added to production schedule successfully");
                     this._clearField();
                 } else {
