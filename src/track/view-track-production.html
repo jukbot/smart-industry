@@ -420,27 +420,14 @@
 
                     // 7) Update order no table
                     for (let j = 0; j < filterDoneOrder.length; j++) {
-                        this.updateOrderTable(filterDoneOrder[j]);
+                        //this.updateOrderTable(filterDoneOrder[j]);
                         console.log(filterDoneOrder[j])
                     }
-                    filterDoneOrder.map
-
 
                     // 8) Add to warehouse
                     let exportData = warehouse_order.reduce((a, b) => a.concat(b), []);
                     this.addToWarehouse(exportData);
                 }
-            }
-
-            updateOrderTable(orderNo) {
-                if (!orderNo) return
-                this.$.orderQuery.ref.orderByChild("order_no").equalTo(orderNo).once("value", (snapshot) => {
-                    if (snapshot.val() !== null) {
-                        snapshot.ref.update({
-                            order_status: "done"
-                        })
-                    }
-                });
             }
 
             addToWarehouse(data) {
