@@ -414,16 +414,17 @@
                     console.log(sum_actual_duration)
 
                     // 6) Remove duplicate order no from array
-                    let filterDoneOrder = warehouse_order.map(o => o.order_no).filter((item, index,
-                        inputArray) => {
-                        return inputArray.indexOf(item) == index;
-                    })
+                    let filterDoneOrder = warehouse_order
+                        .map(o => o.order_no)
+                        .filter((item, index, inputArray) => inputArray.indexOf(item) == index)
 
                     // 7) Update order no table
                     for (let j = 0; j < filterDoneOrder.length; j++) {
                         this.updateOrderTable(filterDoneOrder[j]);
                         console.log(filterDoneOrder[j])
                     }
+                    filterDoneOrder.map
+
 
                     // 8) Add to warehouse
                     let exportData = warehouse_order.reduce((a, b) => a.concat(b), []);

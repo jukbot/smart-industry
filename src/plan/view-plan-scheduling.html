@@ -122,7 +122,7 @@
                     </vaadin-combo-box>
                     <paper-input label="{{localize('quantity')}}" value="[[editOrderItems.order_quantity]]" name="order-quantity" value='{{amount}}'
                         id="editOrderQuantity" type="number" min="1" max="1000" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
-                    <vaadin-date-picker class="date-picker" value="[[getTimestampToDate(editOrderItems.order_delivery)]]" label="{{localize('delivery-date')}}"
+                    <vaadin-date-picker class="date-picker" value="[[getTimestampToDatePicker(editOrderItems.order_delivery)]]" label="{{localize('delivery-date')}}"
                         min="[[todayDate]]" max="2030-01-01" name="delivery" id="editDeliverySelector" initial-position="[[todayDate]]"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label='true'></vaadin-date-picker>
                     <div class="center">
@@ -717,7 +717,7 @@
                 if (mm < 10) {
                     mm = '0' + mm
                 }
-                this.todayDate = yyyy + '-' + mm + '-' + dd
+                return Array.of(dd, mm, yyyy)
             }
 
             getTimestampToTime(timestamp) {
@@ -782,18 +782,13 @@
             }
 
             getDeliveryDate(timestamp) {
-                let today = new Date(timestamp * 1000);
-                let dd = today.getDate();
-                let mm = today.getMonth() + 1; //January is 0!
-                let yyyy = today.getFullYear();
-                if (dd < 10) {
-                    dd = '0' + dd
-                }
-                if (mm < 10) {
-                    mm = '0' + mm
-                }
-                let deliveryDate = dd + '/' + mm + '/' + yyyy;
-                return deliveryDate;
+                let date = this.getTimestampToDate(timestamp)
+                return date[0] + '/' + date[1] + '/' + date[2];
+            }
+
+            getTimestampToDatePicker(timestamp) {
+                let date = this.getTimestampToDate(timestamp)
+                this.todayDate = date[2] + '-' + date[1] + '-' + date[0]
             }
 
             getOrderStatus(order_status) {
@@ -1184,7 +1179,7 @@
                                 if (i == 0) {
                                     return initialStart
                                 } else {
-                                    return parseInt(end[i - 1]) + 50 // delay between order
+                                    return parseInt(end[i - 1]) + 60 // delay between order
                                 }
                             }),
                             "end": end[i] = duration[i].map((dura, idx) => {

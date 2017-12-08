@@ -209,12 +209,12 @@
       }
       connectedCallback() {
         super.connectedCallback()
+        this.loadResources(this.resolveUrl('../data/locales.json'))
         requestAnimationFrame(this._installListeners.bind(this))
       }
       ready() {
         super.ready()
         this.removeAttribute('unresolved')
-        this.loadResources(this.resolveUrl('../data/locales.json'))
         Polymer.RenderStatus.afterNextRender(this, () => {
           this._activateFetch()
         })

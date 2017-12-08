@@ -1085,12 +1085,12 @@
                 if (file.type.match(/image.*/) && file.size < this.maxFileSize) {
                     this.toastText = 'Uploading image'
                     this.$.toastAlert.open()
-                    let uid = this.user.uid
+                    let uid = this.k.key
                     let storageRef = this.$.auth.app.storage().ref()
                     let metadata = {
                         'contentType': file.type
                     }
-                    let imagesRef = storageRef.child('user/' + uid + '/product/' + filename)
+                    let imagesRef = storageRef.child('factory/' + uid + '/product/' + filename)
                     imagesRef.put(file, metadata)
                         .then(snapshot => {
                             let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100

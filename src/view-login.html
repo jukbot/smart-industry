@@ -187,7 +187,7 @@
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]"></firebase-document>
     <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
-    <iron-ajax id="requestSampleData" url="data/sample/sample-parallel.json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
+    <iron-ajax id="requestSampleData" url="data/sample/sample.json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <app-indexeddb-mirror key="sampleData" data="{{sampleData}}" persisted-data="{{persistedSampleData}}">
     </app-indexeddb-mirror>
@@ -458,7 +458,6 @@
             phone: phone,
             organization: organize,
             role: 'admin',
-            description: 'No description for this user',
             key: keyid,
             created: timestamp
           })
