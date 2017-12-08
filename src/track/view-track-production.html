@@ -114,18 +114,21 @@
                     </template>
                 </iron-selector>
             </div>
+
+            <div class="center">
+                <h1 hidden$="[[isEmptyJobs(scheduleItems.length)]]">No Job in Schedule</h1>
+            </div>
             <ul class="app-grid">
-                <template is="dom-repeat" filter="{{filterByStation(selectedStation)}}" observe="job_station" items="{{scheduleItems}}" as="item">
+                <template is="dom-repeat" filter="{{filterByStation(selectedStation)}}" items="{{scheduleItems}}" as="item">
                     <li>
                         <div class="card-item">
                             <div class="card-item-info-group">
                                 <h2 class="title">{{localize('part')}} [[item.job_part]]</h2>
                                 <p style$="color:[[item.order_color]]">{{localize('order-number')}}: [[item.order_no]]</p>
-                                <p>Job Id [[item.job_id]]</p>
+                                <p>Job ID: [[item.job_id]]</p>
                                 <p>{{localize('quantity')}}: [[item.job_quantity]] {{localize('item')}} </p>
-                                <p>{{localize('product-part')}}: [[item.order_product]]</p>
+                                <p>{{localize('product-name')}}: [[item.order_product]]</p>
                                 <p>{{localize('workload')}}: [[item.job_workload]] {{localize('mins')}}</p>
-                                <p>{{localize('station')}}: [[item.job_station]]</p>
                                 <p>{{localize('est-start')}}: [[timestampUTCToTime(item.start)]]</p>
                                 <p>{{localize('est-end')}}: [[timestampUTCToTime(item.end)]]</p>
                                 <p>{{localize('actual-start')}}: [[timestampToTime(item.actual_start)]]</p>
@@ -149,19 +152,18 @@
                                     </paper-item>
                                 </template>
                             </vaadin-combo-box>
-                            <flat-button class="btn" on-tap="receiveJob" disabled="[[isWIP(item.job_status)]]" job="[[item]]">
-                                <button>{{localize('receive-job')}}</button>
-                            </flat-button>
-                            <flat-button class="btn shamrock" on-tap="finishJob" job="[[item]]">
-                                <button disabled="[[isDone(item.job_status)]]">{{localize('finish-job')}}</button>
-                            </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="removeJob" job="[[item]]">
-                                <button>{{localize('remove')}}</button>
-                            </flat-button>
+                            <paper-button class="btn" on-tap="receiveJob" disabled$="[[isDoneOrWIP(item.job_status)]]" job="[[item]]">
+                                {{localize('receive-job')}}
+                            </paper-button>
+                            <paper-button class="btn shamrock" on-tap="openFinishDialog" job="[[item]]" disabled$="[[isDone(item.job_status)]]">
+                                {{localize('finish-job')}}
+                            </paper-button>
+                            <paper-button class="thunderbird btn" on-tap="removeJob" job="[[item]]">
+                                {{localize('remove')}}
+                            </paper-button>
                         </div>
                     </li>
                 </template>
-                <h1 class="center" hidden$="[[isEmptyJobs(scheduleItems.length)]]">No job schedule found</h1>
             </ul>
         </div>
         <div class="card main-card">
@@ -231,7 +233,7 @@
                         }
                     </style>
                 </custom-style>
-                <h1 class="center">Done Report</h1>
+                <h1 class="center">Job Report</h1>
                 <paper-input label="Good" id="goodCount" value="{{good}}" type="number" always-float-label></paper-input>
                 <paper-input label="Defect" id="defectCount" value="{{defect}}" type="number" always-float-label></paper-input>
                 <div class="btn-group">
@@ -282,19 +284,19 @@
             }
 
             connectedCallback() {
-                super.connectedCallback();
-                this.loadResources(this.resolveUrl('../../data/locales.json'));
+                super.connectedCallback()
+                this.loadResources(this.resolveUrl('../../data/locales.json'))
             }
 
+            ready() {
+                super.ready()
+                this._checkJobStatus()
+            }
             removeJob(e) {
                 if (window.confirm("Remove this job?") == true) {
                     const key = e.currentTarget.job.$key;
                     this.$.scheduleQuery.ref.child(key).remove();
                 }
-            }
-
-            finishJob(e) {
-                this.openFinishDialog(e);
             }
 
             openFinishDialog(e) {
@@ -336,11 +338,7 @@
             }
 
             isEmptyJobs(length) {
-                if (length === 0) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return (length > 0)
             }
 
             filterByStation(station) {
@@ -363,7 +361,6 @@
                     r[a.order_no].push(a);
                     return r;
                 }, []);
-                console.table(order_group)
 
                 const arr = Object.values(this.scheduleItems)
                 const unique = (v, i, a) => a.indexOf(v) === i
@@ -372,7 +369,7 @@
                     name))
 
                 // 2) condition to filter order_status == done
-                let isDone = ((element) => {
+                let isStatusDone = ((element) => {
                     return (element.job_status === 'done')
                 })
 
@@ -381,8 +378,9 @@
                 if (order_group) {
                     order_group.map((key, i) => {
                         console.log(order_group[i])
-                        console.log(order_group[i].every(isDone))
-                        if (order_group[i].every(isDone)) {
+                        console.log(order_group[i].every(isStatusDone))
+                        console.log(done_order)
+                        if (order_group[i].every(isStatusDone)) {
                             done_order.push(order_group[i]);
                         }
                     })
@@ -391,7 +389,7 @@
                 // 4) if every jobs in order is done so push to done_order 
                 if (done_order.length > 0) {
                     let warehouse_order;
-                    console.log(done_order)
+
                     for (let i = 0; i < done_order.length; i++) {
                         warehouse_order = done_order[i].map((value, index, arr) => {
                             return {
@@ -424,21 +422,19 @@
                     // 7) Update order no table
                     for (let j = 0; j < filterDoneOrder.length; j++) {
                         this.updateOrderTable(filterDoneOrder[j]);
+                        console.log(filterDoneOrder[j])
                     }
 
                     // 8) Add to warehouse
                     let exportData = warehouse_order.reduce((a, b) => a.concat(b), []);
                     this.addToWarehouse(exportData);
-
                 }
             }
 
             updateOrderTable(orderNo) {
                 if (!orderNo) return
-                const query = this.$.orderQuery.ref;
-                query.orderByChild("order_no").equalTo(orderNo).once("value", (snapshot) => {
-                    if (snapshot.val()) {
-                        console.log(snapshot.val())
+                this.$.orderQuery.ref.orderByChild("order_no").equalTo(orderNo).once("value", (snapshot) => {
+                    if (snapshot.val() !== null) {
                         snapshot.ref.update({
                             order_status: "done"
                         })
@@ -506,17 +502,11 @@
             }
 
             isDone(status) {
-                if (status === 'done') {
-                    return true;
-                }
-                return false;
+                return (status === 'done')
             }
 
-            isWIP(status) {
-                if (status === 'WIP' || status === 'done') {
-                    return true;
-                }
-                return false;
+            isDoneOrWIP(status) {
+                return (status === 'wip' || status === 'done')
             }
 
             getColorStatus(job_status) {
@@ -542,25 +532,7 @@
             }
 
             getTextStatus(job_status) {
-                switch (job_status) {
-                    case 'waiting':
-                        return 'normal'
-                        break;
-                    case 'wip':
-                        return 'blink'
-                        break;
-                    case 'done':
-                        return 'normal'
-                        break;
-                    case 'late':
-                        return 'normal'
-                        break;
-                    case 'cancel':
-                        return 'normal'
-                        break;
-                    default:
-                        return 'normal'
-                }
+                return job_status === 'wip' ? 'blink' : 'normal'
             }
 
             getDeviceCounter(item, quantity, selectDevice) {
@@ -585,7 +557,6 @@
                 return count
             }
 
-            // Device management
             removeDevice(e) {
                 if (window.confirm("Remove this device?") == true) {
                     const key = e.currentTarget.device.$key;

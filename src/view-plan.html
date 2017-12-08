@@ -41,7 +41,7 @@
     class ViewPlan extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
-        return 'view-plan';
+        return 'view-plan'
       }
 
       static get properties() {
@@ -85,24 +85,24 @@
       }
 
       _tabsChanged(tabs, visible) {
-        if (!visible) return;
-        const resolvedTabsUrl = this.resolveUrl('plan/view-plan-' + tabs + '.html');
-        Polymer.importHref(resolvedTabsUrl, null, null, true);
+        if (!visible) return
+        const resolvedTabsUrl = this.resolveUrl('plan/view-plan-' + tabs + '.html')
+        Polymer.importHref(resolvedTabsUrl, null, null, true)
       }
 
       ready() {
-        super.ready();
+        super.ready()
         this.$.order.addEventListener('closedrawer', (e) => {
           console.log(e)
         })
       }
 
       connectedCallback() {
-        super.connectedCallback();
-        this.loadResources(this.resolveUrl('../data/locales.json'));
+        super.connectedCallback()
+        this.loadResources(this.resolveUrl('../data/locales.json'))
 
       }
     }
-    window.customElements.define(ViewPlan.is, ViewPlan);
+    window.customElements.define(ViewPlan.is, ViewPlan)
   </script>
 </dom-module>

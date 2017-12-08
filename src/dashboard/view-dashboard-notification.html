@@ -100,9 +100,11 @@
               </template>
             </vaadin-grid-column>
           </vaadin-grid>
-          <flat-button class="btn" on-tap="clearNotification">
-            <button>{{localize('clear-all-notifications')}}</button>
-          </flat-button>
+          <div class="center">
+            <flat-button class="btn" on-tap="clearNotification">
+              <button>{{localize('clear-all-notifications')}}</button>
+            </flat-button>
+          </div>
           <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
         </div>
       </li>
@@ -118,7 +120,7 @@
     class ViewDashboardNotification extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
-        return 'view-dashboard-notification';
+        return 'view-dashboard-notification'
       }
       static get properties() {
         return {
@@ -173,19 +175,19 @@
         switch (type) {
           case "disabled":
             return data
-            break;
+            break
           case "normal":
             return data.filter(d => d.type === "normal" && new Date(d.created * 1000).toDateString() ===
               selectTimestamp.toDateString())
-            break;
+            break
           case "warn":
             return data.filter(d => d.type === "warn" && new Date(d.created * 1000).toDateString() ===
               selectTimestamp.toDateString())
-            break;
+            break
           case "critical":
             return data.filter(d => d.type === "critical" && new Date(d.created * 1000).toDateString() ===
               selectTimestamp.toDateString())
-            break;
+            break
           default:
             return data
         }
@@ -218,20 +220,20 @@
         switch (type) {
           case 'normal':
             return '#7CB342'
-            break;
+            break
           case 'warn':
             return '#FFB300'
-            break;
+            break
           case 'critical':
             return '#E53935'
-            break;
+            break
           default:
             return '#202020'
         }
       }
 
       getDate(timestamp) {
-        let today = new Date(timestamp * 1000);
+        let today = new Date(timestamp * 1000)
         let dd = today.getDate()
         let m = today.getMonth() + 1 //January is 0!
         let yyyy = today.getFullYear()
@@ -257,6 +259,6 @@
         return date
       }
     }
-    customElements.define(ViewDashboardNotification.is, ViewDashboardNotification);
+    customElements.define(ViewDashboardNotification.is, ViewDashboardNotification)
   </script>
 </dom-module>

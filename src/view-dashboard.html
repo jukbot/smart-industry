@@ -42,7 +42,7 @@
     class ViewDashboard extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
-        return 'view-dashboard';
+        return 'view-dashboard'
       }
 
       static get properties() {
@@ -83,15 +83,15 @@
       }
 
       _tabsChanged(tabs, visible) {
-        if (!visible) return;
-        const resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html');
-        Polymer.importHref(resolvedTabsUrl, null, null, true);
+        if (!visible) return
+        const resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html')
+        Polymer.importHref(resolvedTabsUrl, null, null, true)
       }
       connectedCallback() {
-        super.connectedCallback();
-        this.loadResources(this.resolveUrl('../data/locales.json'));
+        super.connectedCallback()
+        this.loadResources(this.resolveUrl('../data/locales.json'))
       }
     }
-    window.customElements.define(ViewDashboard.is, ViewDashboard);
+    window.customElements.define(ViewDashboard.is, ViewDashboard)
   </script>
 </dom-module>

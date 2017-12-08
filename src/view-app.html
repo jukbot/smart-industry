@@ -147,7 +147,7 @@
      * @extends {Polymer.Element}
      * @appliesMixin Polymer.AppLocalizeBehavior
      */
-    Polymer.setPassiveTouchGestures(true);
+
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
         return 'view-app'
@@ -239,7 +239,6 @@
               }, 500)
             })
             .catch((error) => {
-              console.error('Authenticate Failed: ' + error.code)
               this.page = 'error'
             })
         } else {
@@ -265,12 +264,12 @@
       _routeChanged(changeRecord) {
         //Close a non-persistent drawer when the page & route are changed.
         if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
+          this.$.drawer.close()
         }
       }
       _routePageChanged(page, visible) {
         if (!page) {
-          return;
+          return
         }
         if (!visible) {
           return this.page = page
@@ -329,7 +328,7 @@
             scope: Polymer.rootPath
           }).then((registration) => {
             console.info('%cService Worker Registered to ' + registration.scope, purpleColor)
-            Polymer.swRegistration = registration;
+            Polymer.swRegistration = registration
           }).catch((err) => {
             console.error('%cService Worker Register Failed 😖: ' + err, crimsonColor)
           })
@@ -342,7 +341,7 @@
           })
         } else {
           // Browser not support service worker
-          console.warn('%cService Worker is not support by your browser.' + err, crimsonColor)
+          console.warn('%cService Worker is not support by your browser.', crimsonColor)
         }
       }
       _activateFetch() {
@@ -427,7 +426,7 @@
       }
       _showAlertToast(text) {
         this.toastText = text
-        this.$.toastVerify.hidden = false;
+        this.$.toastVerify.hidden = false
         this.$.toastVerify.open()
       }
       _handleError(e) {

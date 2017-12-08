@@ -221,10 +221,10 @@
             <paper-button class="login-btn" on-tap="login" title="Login" noink>Log in</paper-button>
 
             <div class="link">
-              <a href="javascript:void(0);" on-click="showReset">Forgot?</a>
+              <a href="javascript:void(0)" on-click="showReset">Forgot?</a>
             </div>
             <div class="link">
-              <a href="javascript:void(0);" on-click="showRegister">Don’t have an account? Sign up now.</a>
+              <a href="javascript:void(0)" on-click="showRegister">Don’t have an account? Sign up now.</a>
             </div>
           </div>
 
@@ -270,7 +270,7 @@
             </p>
             <paper-button class="register-btn" on-tap="register" title="Register and Login" noink>Register and Login</paper-button>
             <div class="link">
-              <a href="javascript:void(0);" on-click="hideRegister">Already have account? Log in</a>
+              <a href="javascript:void(0)" on-click="hideRegister">Already have account? Log in</a>
             </div>
           </div>
 
@@ -289,7 +289,7 @@
             </flat-input>
             <paper-button class="reset-btn" on-tap="resetPassword" title="Reset password" noink>Reset Password</paper-button>
             <div class="link">
-              <a href="javascript:void(0);" rel="noopenner" on-click="hideReset">Return to login</a>
+              <a href="javascript:void(0)" rel="noopenner" on-click="hideReset">Return to login</a>
             </div>
           </div>
         </article>
@@ -372,13 +372,13 @@
       }
 
       _onEnterTrigger(e, type) {
-        if (e.key !== "Enter") return;
+        if (e.key !== "Enter") return
         if (type === 0) {
-          this.login();
+          this.login()
         } else if (type === 1) {
-          this.resetPassword();
+          this.resetPassword()
         }
-        e.preventDefault(); // No need to `return false;`.
+        e.preventDefault() // No need to `return false`.
       }
 
       _goToTermOfService(e) {
@@ -405,15 +405,15 @@
         const phone = this.$.register_phone.value
         const password = this.$.register_passwd.value
         const username = 'Untitled'
-        const timestamp = Math.round(Date.now() / 1000.0);
+        const timestamp = Math.round(Date.now() / 1000.0)
         if (!this.persistedSampleData) {
           const request = this.$.requestSampleData.generateRequest()
           request.completes.then((req) => {
-            console.info('%cLoaded sample data status:' + req.status + " " + req.statusText, 'color:green;');
+            console.info('%cLoaded sample data status:' + req.status + " " + req.statusText, 'color:green')
           }).catch((rejected) => {
-            let req = rejected.request;
-            let error = rejected.error;
-            console.error("Error requesting data: " + error + " of request " + req);
+            let req = rejected.request
+            let error = rejected.error
+            console.error("Error requesting data: " + error + " of request " + req)
           })
         }
 
@@ -473,7 +473,7 @@
           this.$.userAuth.sendPasswordResetEmail(resetPassword)
             .then((response) => {
               this._showSuccessToast('Reset password link has been send to your email.')
-              this.$.resetPassword.value = "";
+              this.$.resetPassword.value = ""
             })
             .catch((error) => {
               this._showErrorToast(error.code)

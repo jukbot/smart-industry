@@ -130,7 +130,7 @@
      */
     class ViewHelp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
-        return 'view-help';
+        return 'view-help'
       }
 
       static get properties() {
@@ -144,11 +144,11 @@
       }
 
       connectedCallback() {
-        super.connectedCallback();
-        this.loadResources(this.resolveUrl('../data/locales.json'));
+        super.connectedCallback()
+        this.loadResources(this.resolveUrl('../data/locales.json'))
       }
     }
 
-    window.customElements.define(ViewHelp.is, ViewHelp);
+    window.customElements.define(ViewHelp.is, ViewHelp)
   </script>
 </dom-module>

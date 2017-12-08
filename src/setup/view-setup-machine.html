@@ -107,10 +107,10 @@
         <div class="card main-card" hidden="[[showListMachine]]">
             <h1 class="title">{{localize('machine-management')}}</h1>
             <paper-input class="search-input" label="Search machine name" id="searchMachineInput" value="{{searchString::input}}" type="text"
-                always-float-label></paper-input>
+                always-float-label hidden="[[!machineItems]]"></paper-input>
             <h1 class="sub-title center" hidden="[[machineItems]]">{{localize('please-add-machine-before-adding-station')}}</h1>
             <ul class="app-grid">
-                <template is="dom-repeat" filter="{{searchMachine(searchString)}}" observe="name" items="{{persistedMachineData}}" index-as="capacity"
+                <template is="dom-repeat" filter="{{searchMachine(searchString)}}" items="{{persistedMachineData}}" observe="name" index-as="number"
                     as="machineItem">
                     <li>
                         <div class="machine">

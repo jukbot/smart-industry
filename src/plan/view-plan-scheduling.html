@@ -258,7 +258,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="openEditOrderCard" order="[[item]]" icon="vaadin:pencil" title="Edit" disabled="[[isDeletable(item.order_status)]]"></paper-icon-button>
+                                    <paper-icon-button on-tap="openEditOrderCard" order="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -269,7 +269,7 @@
                             </template>
                             <template>
                                 <div class="cell numeric last">
-                                    <paper-icon-button on-tap="deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.order_status)]]"></paper-icon-button>
+                                    <paper-icon-button on-tap="deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -657,7 +657,7 @@
                 if (this.chartItems.length > 0) {
                     // convert time stamp to new date 
                     const result = this.chartItems.map((x) => {
-                        return [x[0], x[1], x[2],
+                        return [this.localize('station') + x[0], x[1], x[2],
                             new Date(x[3] * 1000),
                             new Date(x[4] * 1000)
                         ]
@@ -1045,6 +1045,7 @@
                     let order_no = selected_order.map(o => o.order_no)
                     let order_duration = selected_order.map(o => o.order_duration)
                     let order_delivery = selected_order.map(o => o.order_delivery)
+                    let order_customer = selected_order.map(o => o.order_customer)
                     let order_color = selected_order.map(o => o.order_color)
                     let order_date = selected_order.map(o => o.order_date)
 
@@ -1190,6 +1191,8 @@
                                 console.log(start[i], dura, idx)
                                 return parseInt(dura) + parseInt(start[i])
                             }),
+                            "order_customer": order_customer[i],
+                            "order_delivery": order_delivery[i],
                             "order_no": order_no[i],
                             "order_date": order_date[i],
                             "order_color": order_color[i].toString(),

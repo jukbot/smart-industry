@@ -48,7 +48,7 @@
     class ViewSetup extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
       static get is() {
-        return 'view-setup';
+        return 'view-setup'
       }
 
       static get properties() {
@@ -104,16 +104,16 @@
       }
 
       _tabsChanged(tabs, visible) {
-        if (!visible) return;
-        const resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html');
-        Polymer.importHref(resolvedTabsUrl, null, null, true);
+        if (!visible) return
+        const resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html')
+        Polymer.importHref(resolvedTabsUrl, null, null, true)
       }
 
       connectedCallback() {
-        super.connectedCallback();
-        this.loadResources(this.resolveUrl('../data/locales.json'));
+        super.connectedCallback()
+        this.loadResources(this.resolveUrl('../data/locales.json'))
       }
     }
-    window.customElements.define(ViewSetup.is, ViewSetup);
+    window.customElements.define(ViewSetup.is, ViewSetup)
   </script>
 </dom-module>
