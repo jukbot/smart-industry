@@ -2,11 +2,10 @@
 <link rel="import" href="../../bower_components/google-chart/google-chart.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-<link rel="import" href="../style/flat-button.html">
 
 <dom-module id="view-track-performance">
     <template>
-        <style include="shared-styles app-grid-style flat-button">
+        <style include="shared-styles app-grid-style">
              :host {
                 margin: 10px;
                 display: block;
@@ -21,8 +20,8 @@
             }
 
             .btn {
-                width: 250px;
                 margin: 20px 0 4px 0;
+                width: 300px;
             }
 
             google-chart {
@@ -43,15 +42,19 @@
             <li>
                 <div class="card">
                     <h1 class="title">Performance Tracking</h1>
-                    <div class=>
-                        <h2 class="center">{{localize('overall-equipment-effectiveness')}}</h2>
-                        <google-chart type="gauge" data='[[getPerformanceValue(productionPerformance.oee)]]' options='[[gaugeOption]]'>
-                        </google-chart>
+                    <h2 class="center">{{localize('overall-equipment-effectiveness')}}</h2>
+                    <google-chart type="gauge" data='[[getPerformanceValue(productionPerformance.oee)]]' options='[[gaugeOption]]'>
+                    </google-chart>
+                    <div class="center">
+                        <paper-button class="btn" on-tap="clearWarehouse">
+                            Reset Performance Meter
+                        </paper-button>
                     </div>
-                    <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
+                </div>
                 </div>
             </li>
         </ul>
+        <paper-toast id="toast" always-on-top horizontal-align="right" text="No statistic found"></paper-toast>
     </template>
     <script>
         /**

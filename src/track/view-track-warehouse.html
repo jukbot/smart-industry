@@ -4,10 +4,9 @@
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-<link rel="import" href="../style/flat-button.html">
 <dom-module id="view-track-warehouse">
     <template>
-        <style include="shared-styles app-grid-style flat-button">
+        <style include="shared-styles app-grid-style">
              :host {
                 margin: 10px;
                 display: block;
@@ -158,9 +157,9 @@
                         </vaadin-grid-column>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="clearWarehouse">
-                            <button>Clear Warehouse</button>
-                        </flat-button>
+                        <paper-button class="btn" on-tap="clearWarehouse">
+                            Clear Warehouse
+                        </paper-button>
                     </div>
                 </div>
             </li>
