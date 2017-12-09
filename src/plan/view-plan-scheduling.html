@@ -1175,15 +1175,13 @@
                             "job_good": 0,
                             "job_defect": 0,
                             "start": start[i] = duration[i].map((dura, idx) => {
-                                console.log(start[i], dura, idx)
                                 if (i == 0) {
                                     return initialStart
                                 } else {
-                                    return parseInt(end[i - 1]) + 60 // delay between order
+                                    return parseInt(end[i - 1]) + parseInt(dura)
                                 }
                             }),
                             "end": end[i] = duration[i].map((dura, idx) => {
-                                console.log(start[i], dura, idx)
                                 return parseInt(dura) + parseInt(start[i])
                             }),
                             "order_customer": order_customer[i],

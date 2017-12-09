@@ -97,11 +97,11 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="appMaterialCount" path="/data/[[k.key]]/appData/material_count" data="[[materialCount]]"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="[[factoryPerformance]]"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="[[factoryOperation]]"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[k.key]]/factoryData/order" data="[[factoryOrderIndex]]"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factoryProfileModel" path="/data/[[k.key]]/factoryData/profile/model" data="[[factoryProfileModel]]"></firebase-document>
+        <firebase-document app-name="smart-mes" id="appMaterialCount" path="/data/[[k.key]]/appData/material_count" data="{{materialCount}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[k.key]]/factoryData/order" data="{{factoryOrderIndex}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="factoryProfileModel" path="/data/[[k.key]]/factoryData/profile/model" data="{{factoryProfileModel}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" data="{{orderItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="factoryInventory" path="/data/[[k.key]]/factoryData/inventory" order-by-child="code"
             equal-to="[[inventoryCode]]" data="{{factoryInventory}}"></firebase-query>
@@ -368,7 +368,7 @@
                 const starttime = start.replace(/\:/g, '.');
                 const opTime = endtime - starttime;
                 const opDay = opday.split(',').length
-                this.operationTime = opTime * 60;
+                this.operationTime = opTime * 3600;
                 const weekOptime = this.weekOptime = opTime * opDay; // set to global variable
                 return weekOptime;
             }

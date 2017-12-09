@@ -46,7 +46,7 @@
                     <google-chart type="gauge" data='[[getPerformanceValue(productionPerformance.oee)]]' options='[[gaugeOption]]'>
                     </google-chart>
                     <div class="center">
-                        <paper-button class="btn" on-tap="clearWarehouse">
+                        <paper-button class="btn" on-tap="resetPerformance">
                             Reset Performance Meter
                         </paper-button>
                     </div>
@@ -112,6 +112,10 @@
                 //  const quality = goodCount / TotalCount
                 const oee = (goodCount * idealCycleTime) / plannedProductionTime
                 return oee
+            }
+
+            resetPerformance() {
+                this.set('productionPerformance', 100)
             }
 
         }

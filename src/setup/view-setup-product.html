@@ -221,15 +221,17 @@
                 <!-- Edit product card !-->
                 <div class="card" hidden="[[showEditProduct]]">
                     <h1 class="title">{{localize('edit-product')}}</h1>
-                    <paper-input label="{{localize('product-name')}}*" id="editProductName" type="text" value="{{editProductData.name}}" required
+                    <paper-input label="{{localize('product-name')}}*" id="edit_ProductName" type="text" value="{{editProductData.name}}" required
                         always-float-label></paper-input>
-                    <paper-input label="{{localize('sku-code')}}*" id="productPartSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$" value="{{editProductData.sku}}"
+                    <paper-input label="{{localize('sku-code')}}*" id="edit_ProductPartSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$" value="{{editProductData.sku}}"
                         required always-float-label></paper-input>
-                    <paper-input label="{{localize('cost')}}" id="productCost" type="number" maxlength="9" value="{{editProductData.cost}}" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
-                        error-message="number only" min="0" max="99999" step="0.01" auto-validate always-float-label></paper-input>
-                    <paper-input label="Inventory Code" id="inventoryCode" type="text" value="{{editProductData.inventory_code}}" required always-float-label></paper-input>
-                    <paper-input label="Inventory Require" id="inventoryQuantity" type="number" value="{{editProductData.inventory_use}}" allowed-pattern="^(0|[1-9]\d*)$"
-                        required always-float-label></paper-input>
+                    <paper-input label="{{localize('cost')}}" id="edit_ProductCost" type="number" maxlength="9" value="{{editProductData.cost}}"
+                        allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only" min="0" max="99999" step="0.01"
+                        auto-validate always-float-label></paper-input>
+                    <paper-input label="Inventory Code" id="edit_InventoryCode" type="text" value="{{editProductData.inventory_code}}" required
+                        always-float-label></paper-input>
+                    <paper-input label="Inventory Require" id="edit_InventoryQuantity" type="number" value="{{editProductData.inventory_use}}"
+                        allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
                     <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress>
                     <flat-button on-tap="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
@@ -932,13 +934,10 @@
                 const timestamp = Math.round(Date.now() / 1000.0)
                 const productColor = this.getRandomColor();
                 let productPart = this.productPart
-                let productCost = this.$.productCost.value
-                let inventoryCode = this.$.inventoryCode.value
-                let inventoryQuantity = this.$.inventoryQuantity.value
+                let productCost = this.$.productCost.value || 0
+                let inventoryCode = this.$.inventoryCode.value || 'none'
+                let inventoryQuantity = this.$.inventoryQuantity.value || 0
                 let imageURL = "";
-                if (!productCost) productCost = 0;
-                if (!inventoryCode) inventoryCode = "none";
-                if (!inventoryQuantity) inventoryQuantity = 0;
                 productPart = productPart.splice(-1);
                 console.log(productName)
                 console.log(productSKU)
@@ -982,8 +981,8 @@
                     part: productPart,
                     process: this.processDependency
                 }).then(() => {
-                    this.openProductList();
-                    this.toastText = 'Add Product successfully.'
+                    this.openProductList()
+                    this.toastText = 'Add product successfully.'
                     this.$.toastAlert.open()
                 }).catch((error) => {
                     this.toastText = 'Add Product failed.'
@@ -1007,25 +1006,25 @@
                     process: this.processDependency
                 }).then(() => {
                     this.openProductList();
-                    this.toastText = 'Add Product successfully.'
+                    this.toastText = 'Update product successfully.'
                     this.$.toastAlert.open()
                 }).catch((error) => {
-                    this.toastText = 'Add Product failed.'
+                    this.toastText = 'Update Product failed.'
                     this.$.toastAlert.open()
                     console.error(error)
                 })
             }
 
             saveProduct() {
-                const productName = this.$.productName.value
-                const productSKU = this.$.productSKU.value
-                const processDependency = this.processDependency
+                const productName = this.$.edit_ProductName.value
+                const productSKU = this.$.edit_ProductSKU.value
+                const processDependency = this.edit_ProcessDependency
                 const timestamp = Math.round(Date.now() / 1000.0)
                 const productColor = this.getRandomColor();
-                let productPart = this.productPart
-                let productCost = this.$.productCost.value
-                let inventoryCode = this.$.inventoryCode.value
-                let inventoryQuantity = this.$.inventoryQuantity.value
+                let productPart = this.edit_ProductPart
+                let productCost = this.$.edit_ProductCost.value
+                let inventoryCode = this.$.edit_InventoryCode.value
+                let inventoryQuantity = this.$.edit_InventoryQuantity.value
                 let imageURL = "";
                 if (!productCost) productCost = 0;
                 if (!inventoryCode) inventoryCode = "none";
@@ -1149,6 +1148,7 @@
                 this.showAddProduct = true
                 this.showEditProduct = true
                 this.showListProduct = false
+                this.editKey = ''
             }
 
             openEditProductCard(e) {
@@ -1212,7 +1212,6 @@
                 this.$.inventoryCode.value = ""
                 this.$.inventoryQuantity.value = ""
                 this.$.uploadImageFile.value = ""
-                this.editKey = ""
             }
 
             _clearPartField() {
