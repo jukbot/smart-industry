@@ -19,7 +19,7 @@
       }
 
       .card {
-        min-height: 440px;
+        min-height: 450px;
       }
 
       .upload-bar {
@@ -29,6 +29,10 @@
 
       .switch {
         padding: 10px 0;
+      }
+
+      .organization-meta-data>p {
+        padding: 5px 0;
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
@@ -107,8 +111,8 @@
           <flat-button on-tap="deleteProfileImage" class="btn thunderbird" title="{{localize('remove-profile-image')}}">
             <button>{{localize('remove-profile-image')}}</button>
           </flat-button>
-          <flat-button on-tap="verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]">
-            <button disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button>
+          <flat-button on-tap="deleteAccount" class="btn thunderbird" title="{{localize('delete-account')}}">
+            <button>{{localize('delete-account')}}</button>
           </flat-button>
           <flat-button on-tap="saveAccountSettings" class="btn shamrock" title="{{localize('save-settings')}}">
             <button>{{localize('save-settings')}}</button>
@@ -124,8 +128,8 @@
           <flat-button on-tap="changePassword" class="btn" title="{{localize('change-password')}}">
             <button>{{localize('change-password')}}</button>
           </flat-button>
-          <flat-button on-tap="deleteAccount" class="btn thunderbird" title="{{localize('delete-account')}}">
-            <button>{{localize('delete-account')}}</button>
+          <flat-button on-tap="verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]">
+            <button disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button>
           </flat-button>
         </div>
       </li>
@@ -155,8 +159,10 @@
         <div class="card">
           <h1 class="title">{{localize('organization-settings')}}</h1>
           <paper-input label="{{localize('organization')}}" id="organizationName" value="[[usr.organization]]" type="text" always-float-label></paper-input>
-          <p>{{localize('data-keychain')}}: [[usr.key]]</p>
-          <p>{{localize('user-role')}}: [[usr.role]]</p>
+          <div class="organization-meta-data">
+            <p>{{localize('data-keychain')}}: [[usr.key]]</p>
+            <p>{{localize('user-role')}}: [[usr.role]]</p>
+          </div>
           <flat-button on-tap="openManageKey" class="btn">
             <button>{{localize('manage-keychain')}}</button>
           </flat-button>
