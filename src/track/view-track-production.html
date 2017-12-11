@@ -115,7 +115,7 @@
                 <h1 hidden$="[[isEmptyJobs(scheduleItems.length)]]">No Job in Schedule</h1>
             </div>
             <ul class="app-grid">
-                <template is="dom-repeat" filter="{{filterByStation(selectedStation)}}" items="{{scheduleItems}}" as="item">
+                <template is="dom-repeat" filter="{{filterByStation(selectedStation)}}" items="{{scheduleItems}}" index-as="job_status" as="item">
                     <li>
                         <div class="card-item">
                             <div class="card-item-info-group">

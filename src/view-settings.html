@@ -471,10 +471,10 @@
       changeMaterialCount() {
         this.set('materialCount', this.$.materialCountSwitch.checked)
         if (this.$.materialCountSwitch.checked) {
-          this.toastText = 'notification-alert-on'
+          this.toastText = 'notification-material-count-on'
           this.$.toastAlert.open()
         } else {
-          this.toastText = 'notification-alert-off'
+          this.toastText = 'notification-material-count-off'
           this.$.toastAlert.open()
         }
       }
