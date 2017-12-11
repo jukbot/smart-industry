@@ -68,8 +68,7 @@
       <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}" name="app">
         <app-drawer id="drawer" slot="drawer" tabindex="-1" swipe-open="[[narrow]]" hidden="[[!signedIn]]">
           <!-- <div class="app-logo" role="image" title="IMES" alt="Application logo"></div> -->
-          <iron-image preload fade class="app-logo" role="image" title="IMES" alt="Application logo" sizing="contain" placeholder="Loading"
-            src="images/logo/logo.svg"></iron-image>
+          <iron-image preload fade class="app-logo" role="image" title="IMES" alt="Application logo" sizing="contain" src="images/logo/logo.svg"></iron-image>
           <h1 title="IMES" class="main-logo-title">IMES</h1>
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
           <nav role="navigation">
@@ -94,7 +93,7 @@
           <div class="flex-center">
             <paper-button class="logout-btn" on-tap="logout" title="Logout" noink>{{localize('logout-button')}}</paper-button>
             <div class="user-info">
-              <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" placeholder="Loading" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
+              <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
               <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="10">
                 <p>{{localize('email')}}: [[persistedUserData.email]]</p>
                 <p>{{localize('verify-status')}}:
