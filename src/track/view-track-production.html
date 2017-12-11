@@ -425,7 +425,7 @@
                         a + b.order_defect, 0)
                     console.log(sum_defect)
 
-                    // 6) Remove duplicate order no from array
+                    // 6) Remove duplicate order no from array export single
                     let filterDoneOrder = warehouse_order
                         .map(o => o.order_no)
                         .filter((item, index, inputArray) => inputArray.indexOf(item) == index)
@@ -433,13 +433,14 @@
                     // 7) Update order no table
                     for (let j = 0; j < filterDoneOrder.length; j++) {
                         this._updateOrderTable(filterDoneOrder[j]);
-                        console.log(filterDoneOrder[j])
+                        console.log('order no. that done is : ' + filterDoneOrder[j])
                     }
 
-                    // 8) Covert to array obj
+                    // 8) Covert data to array 
                     let exportData = warehouse_order.reduce((a, b) => a.concat(b), []);
+                    console.log(exportData)
 
-                    // 9) Check is duplicate order in warehouse or not
+                    // 9) Convert data to object with match key
                     let resultObject = exportData.reduce((result, currentObject) => {
                         for (let key in currentObject) {
                             if (currentObject.hasOwnProperty(key)) {
@@ -448,12 +449,17 @@
                         }
                         return result;
                     }, {});
+
                     delete resultObject.$key
+                    resultObject.order_defect = sum_defect
+                    resultObject.plan_duration = sum_plan_duration
+                    resultObject.actual_duration = sum_actual_duration
+
                     console.log(resultObject)
                     let isDuplicated = this.warehouseItems.map(item => item.order_no).indexOf(resultObject.order_no) >
                         -1
 
-                    // 10) If not duplicate add order to warehouse
+                    // 10) If not duplicate in warehouse add order to warehouse
                     if (!isDuplicated) {
                         this._addToWarehouse(resultObject)
                     }
@@ -472,8 +478,6 @@
                         this.$.orderQuery.ref.orderByChild("order_no").equalTo(data.order_no).once(
                             "value", (snapshot) => {
                                 if (snapshot.val() !== null) {
-                                    console.info('Update status of order no ' + data.order_no +
-                                        ' to done')
                                     let key = Object.keys(snapshot.val())[0]
                                     snapshot.ref.child(key).update({
                                         order_status: "done"
@@ -557,7 +561,7 @@
                         actual_end: Math.round(new Date().getTime() / 1000.0),
                         job_status: 'done',
                         job_defect: 0,
-                        job_good: count // output of station
+                        job_good: parseInt(count) // output of station
                     }).then(
                         this._checkJobStatus()
                     )
