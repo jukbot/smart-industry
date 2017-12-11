@@ -681,6 +681,7 @@
                             data.start, data.end
                         ]
                     });
+                    this.$.chartQuery.ref.remove()
                     this.$.chartQuery.ref.set(newChartData)
                     this.$.timeline.redraw()
                 }
