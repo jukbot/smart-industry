@@ -2,9 +2,6 @@ const functions = require('firebase-functions');
 const capabilities = require('browser-capabilities');
 const rp = require('request-promise');
 const request = require('request');
-
-/* eslint no-console: ["error", { allow: ["warn", "error", "log"] }] */
-
 exports.serve = functions.https.onRequest((req, res) => {
   const baseUrl = 'https://' + functions.config().firebase.authDomain;
 
@@ -15,7 +12,6 @@ exports.serve = functions.https.onRequest((req, res) => {
   }).then((config) => {
     // Find a build that matches the client browser capabilities
     const client = capabilities.browserCapabilities(req.headers['user-agent']);
-    console.log(client);
     let builds = config.builds.filter((build) => {
       if (!build.browserCapabilities) {
         return true;
@@ -27,7 +23,7 @@ exports.serve = functions.https.onRequest((req, res) => {
       }
       return true;
     });
-    console.log(builds);
+
     // Sort the builds so that the one with most requirements,
     // which is assumed to be "best" build, is served first.
     builds.sort((build1, build2) => {
@@ -37,7 +33,6 @@ exports.serve = functions.https.onRequest((req, res) => {
     });
 
     // Fetch the appropriate index.html for the chosen build
-    // request(baseUrl + '/' + builds[0].name + '/index.html')
     request(baseUrl + '/index.html')
       .on('response', (res) => {
         // Tell Firebase Hosting to cache the result based on user-agent

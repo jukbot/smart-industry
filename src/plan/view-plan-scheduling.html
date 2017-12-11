@@ -668,10 +668,9 @@
                     ]);
                 }
                 document.createElement('google-chart-loader').dataTable(
-                    dataTable).then((data) => {
-                    chart.data = data;
+                    dataTable).then((dataTable) => {
+                    chart.data = dataTable;
                 });
-                this.$.timeline.redraw()
             }
 
             _refreshChart() {
@@ -684,6 +683,7 @@
                     this.$.chartQuery.ref.remove()
                     this.$.chartQuery.ref.set(newChartData)
                     this.$.timeline.redraw()
+                    this._initialChart()
                 }
             }
 

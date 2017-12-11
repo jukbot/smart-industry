@@ -1,11 +1,15 @@
 {
   "hosting": {
     "public": "build",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "ignore": ["firebase.json", "**/.*"],
     "rewrites": [
       {
-        "source": "**/!(*.*)",
-        "destination": "/index.html"
+        "source": "/",
+        "function": "serve"
+      },
+      {
+        "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
+        "function": "serve"
       }
     ],
     "headers": [
