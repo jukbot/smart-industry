@@ -67,7 +67,9 @@
       <view-404 name="404" route="[[subRoute]]"></view-404>
       <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}" name="app">
         <app-drawer id="drawer" slot="drawer" tabindex="-1" swipe-open="[[narrow]]" hidden="[[!signedIn]]">
-          <div class="app-logo" role="image" title="IMES" alt="Application logo"></div>
+          <!-- <div class="app-logo" role="image" title="IMES" alt="Application logo"></div> -->
+          <iron-image preload fade class="app-logo" role="image" title="IMES" alt="Application logo" sizing="contain" placeholder="Loading"
+            src="images/logo/logo.svg"></iron-image>
           <h1 title="IMES" class="main-logo-title">IMES</h1>
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
           <nav role="navigation">
