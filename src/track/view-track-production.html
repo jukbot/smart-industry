@@ -125,8 +125,8 @@
                                 <p>{{localize('quantity')}}: [[item.job_quantity]] {{localize('item')}} </p>
                                 <p>{{localize('product-name')}}: [[item.order_product]]</p>
                                 <p>{{localize('workload')}}: [[item.job_workload]] {{localize('mins')}}</p>
-                                <p>{{localize('est-start')}}: [[timestampUTCToTime(item.start)]]</p>
-                                <p>{{localize('est-end')}}: [[timestampUTCToTime(item.end)]]</p>
+                                <p>{{localize('est-start')}}: [[timestampToTime(item.start)]]</p>
+                                <p>{{localize('est-end')}}: [[timestampToTime(item.end)]]</p>
                                 <p>{{localize('actual-start')}}: [[timestampToTime(item.actual_start)]]</p>
                                 <p>{{localize('actual-end')}}: [[timestampToTime(item.actual_end)]]</p>
                                 <p>{{localize('duration')}}: [[getActualDuration(item.actual_start,item.actual_end)]]</p>
@@ -267,7 +267,11 @@
                     orderHistoryData: Object,
                     orderItems: Object,
                     scheduleItems: Object,
-                    warehouseItems: Object,
+                    warehouseItems: {
+                        type: Object,
+                        notify: true,
+                        observer: '_updateOrderTable'
+                    },
                     deviceItems: {
                         type: Object,
                         computed: ''
@@ -404,10 +408,22 @@
                         });
                     }
 
-                    // 5) Sum duration of all jobs 
+                    console.log(warehouse_order)
+
+                    // 5.1) Sum actual duration of all jobs 
                     let sum_actual_duration = warehouse_order.reduce((a, b) =>
                         a + b.actual_duration, 0)
                     console.log(sum_actual_duration)
+
+                    // 5.2) Sum plan duration of all jobs 
+                    let sum_plan_duration = warehouse_order.reduce((a, b) =>
+                        a + b.plan_duration, 0)
+                    console.log(sum_plan_duration)
+
+                    // 5.3) Sum defect of all jobs 
+                    let sum_defect = warehouse_order.reduce((a, b) =>
+                        a + b.order_defect, 0)
+                    console.log(sum_defect)
 
                     // 6) Remove duplicate order no from array
                     let filterDoneOrder = warehouse_order
@@ -416,19 +432,15 @@
 
                     // 7) Update order no table
                     for (let j = 0; j < filterDoneOrder.length; j++) {
-                        //this.updateOrderTable(filterDoneOrder[j]);
+                        this._updateOrderTable(filterDoneOrder[j]);
                         console.log(filterDoneOrder[j])
                     }
 
-                    // 8) Add to warehouse
+                    // 8) Covert to array obj
                     let exportData = warehouse_order.reduce((a, b) => a.concat(b), []);
-                    this.addToWarehouse(exportData);
-                }
-            }
 
-            addToWarehouse(data) {
-                if (data) {
-                    let resultObject = data.reduce((result, currentObject) => {
+                    // 9) Check is duplicate order in warehouse or not
+                    let resultObject = exportData.reduce((result, currentObject) => {
                         for (let key in currentObject) {
                             if (currentObject.hasOwnProperty(key)) {
                                 result[key] = currentObject[key];
@@ -436,16 +448,39 @@
                         }
                         return result;
                     }, {});
-
                     delete resultObject.$key
                     console.log(resultObject)
                     let isDuplicated = this.warehouseItems.map(item => item.order_no).indexOf(resultObject.order_no) >
                         -1
-                    if (isDuplicated) {
-                        window.alert('This order aleready added to warehouse')
-                    } else {
-                        this.$.warehouseQuery.ref.push(resultObject);
+
+                    // 10) If not duplicate add order to warehouse
+                    if (!isDuplicated) {
+                        this._addToWarehouse(resultObject)
                     }
+                }
+            }
+
+            _addToWarehouse(data) {
+                if (data) {
+                    this.$.warehouseQuery.ref.push(data)
+                }
+            }
+
+            _updateOrderTable(warehouse) {
+                if (warehouse.length > 0) {
+                    this.warehouseItems.map((data) => {
+                        this.$.orderQuery.ref.orderByChild("order_no").equalTo(data.order_no).once(
+                            "value", (snapshot) => {
+                                if (snapshot.val() !== null) {
+                                    console.info('Update status of order no ' + data.order_no +
+                                        ' to done')
+                                    let key = Object.keys(snapshot.val())[0]
+                                    snapshot.ref.child(key).update({
+                                        order_status: "done"
+                                    })
+                                }
+                            })
+                    })
                 }
             }
 
@@ -454,27 +489,16 @@
                 const h = Math.floor(sec / 3600);
                 const m = Math.floor(sec % 3600 / 60);
                 const s = Math.floor(sec % 3600 % 60);
-                return ('0' + h).slice(-2) + ":" + ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2);
-            }
-
-            timestampUTCToTime(timestamp) {
-                if (!timestamp) return 'N/A'
-                const date = new Date(timestamp * 1000);
-                const hours = date.getHours();
-                const minutes = "0" + date.getMinutes();
-                const seconds = "0" + date.getSeconds();
-                const formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                return formattedTime;
+                return ('0' + h).substr(-2) + ':' + ('0' + m).substr(-2) + ':' + ('0' + s).substr(-2);
             }
 
             timestampToTime(timestamp) {
                 if (!timestamp) return 'N/A'
                 const date = new Date((timestamp) * 1000);
-                const hours = date.getHours();
-                const minutes = "0" + date.getMinutes();
-                const seconds = "0" + date.getSeconds();
-                const formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                return formattedTime;
+                const h = date.getHours();
+                const m = date.getMinutes();
+                const s = date.getSeconds();
+                return ('0' + h).substr(-2) + ':' + ('0' + m).substr(-2) + ':' + ('0' + s).substr(-2);
             }
 
             resetCounter(e) {

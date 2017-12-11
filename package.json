@@ -3,7 +3,6 @@
   "dependencies": {
     "countdown": "github:mckamey/countdownjs",
     "express": "^4.16.2",
-    "global": "^4.3.2",
     "intl": "^1.2.5",
     "javascript-lp-solver": "^0.4.5",
     "lodash": "^4.17.4",
@@ -22,13 +21,12 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "critical": "^1.1.0",
-    "eslint": "^4.12.1",
+    "eslint": "^4.13.0",
     "eslint-config-google": "^0.9.1",
     "eslint-config-recommended": "^1.5.0",
     "eslint-plugin-polymer": "^0.1.0",
-    "html-webpack-plugin": "^2.30.1",
     "polymer-webpack-loader": "^2.0.1",
+    "html-webpack-plugin": "^2.30.1",
     "workbox-webpack-plugin": "^2.1.2"
   },
   "engines": {
@@ -51,10 +49,19 @@
     "test": "polymer test"
   },
   "standard": {
-    "globals": ["$", "jQuery", "fetch"],
-    "ignore": ["node_modules/**", "bower_components/**"],
+    "globals": [
+      "$",
+      "jQuery",
+      "fetch"
+    ],
+    "ignore": [
+      "node_modules/**",
+      "bower_components/**"
+    ],
     "parser": "babel-eslint",
-    "plugins": ["polymer"]
+    "plugins": [
+      "polymer"
+    ]
   },
-  "version": "1.0.7"
+  "version": "1.0.8"
 }

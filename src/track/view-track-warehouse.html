@@ -184,10 +184,7 @@
                     language: String,
                     orderHistoryData: Object,
                     orderItems: Object,
-                    warehouseItems: {
-                        type: Object,
-                        observer: '_updateOrderTable'
-                    },
+                    warehouseItems: Object,
                     toastText: String,
                     selectAll: Object
                 }
@@ -199,7 +196,7 @@
 
             getOrderDuration(order_duration) {
                 if (!order_duration) return 0
-                return this._secondsToStr(order_duration)
+                return this._secondsToHms(order_duration)
             }
 
             getTimestampToDate(timestamp) {
@@ -221,34 +218,7 @@
                 return date[0] + '/' + date[1] + '/' + date[2];
             }
 
-            _updateOrderTable(warehouse) {
-                if (warehouse.length > 0) {
-                    warehouse.map((data) => {
-                        this.$.orderQuery.ref.orderByChild("order_no").equalTo(data.order_no).once(
-                            "value", (snapshot) => {
-                                if (snapshot.val() !== null) {
-                                    let key = Object.keys(snapshot.val())[0]
-                                    snapshot.ref.child(key).update({
-                                        order_status: "done"
-                                    })
-                                }
-                            })
-                    })
-                }
-            }
-
-            _secondsToStr(second) {
-                let hours = this._leftPad(Math.floor(Math.abs(second) / 3600))
-                let minutes = this._leftPad(Math.round(Math.abs(second) % 3600 / 60))
-                let seconds = this._leftPad(Math.floor(Math.abs(second % 3600 % 60)))
-                return hours + ':' + minutes + ':' + seconds
-            }
-
-            _leftPad(number) {
-                return ((number < 10 && number >= 0) ? '0' : '') + number
-            }
-
-            secondsToHms(sec) {
+            _secondsToHms(sec) {
                 sec = Number(sec)
                 const h = Math.floor(sec / 3600)
                 const m = Math.floor(sec % 3600 / 60)

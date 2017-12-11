@@ -52,6 +52,10 @@
                 margin: 20px 0;
             }
 
+            #chartContainer {
+                min-height: 700px;
+            }
+
             @media (min-width: 360px) and (max-width: 768px) {
                 .btn {
                     width: 100%;
@@ -375,7 +379,7 @@
                                 <div class="cell">{{localize('workload')}}</div>
                             </template>
                             <template>
-                                <div class="cell">[[item.job_workload]] ({{localize('second')}})</div>
+                                <div class="cell">[[getSecondsToHms(item.job_workload)]]</div>
                             </template>
                         </vaadin-grid-column>
 
@@ -465,20 +469,10 @@
                         value: 1
                     },
                     sortedOrder: {
-                        type: Object,
-                        notify: true
-                    },
-                    orderItems: {
-                        type: Object,
-                        notify: true
+                        type: Object
                     },
                     scheduleItems: {
-                        type: Object,
-                        notify: true,
-                    },
-                    chartItems: {
-                        type: Object,
-                        notify: true,
+                        type: Object
                     },
                     showOrderTable: {
                         type: Boolean,
@@ -498,10 +492,12 @@
                     },
                     language: String,
                     status: String,
+                    orderItems: Object,
+                    chartItems: Object,
                     editOrderItems: Object,
                     factoryPerformance: Object,
-                    factoryOperation: Object,
                     factoryProfile: Object,
+                    factoryOperation: Object,
                     timelineOptions: Object,
                     filterScheduleItems: Object,
                     width: Number,
@@ -530,7 +526,6 @@
                 requestAnimationFrame(this._installListeners.bind(this))
             }
 
-            // INITIAL
             _installListeners() {
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
             }
@@ -609,6 +604,11 @@
             _setChartSize() {
                 this.width = this.$.chartContainer.offsetWidth;
                 this.height = this.$.chartContainer.offsetHeight;
+                if (this.$.timeline.offsetHeight > 0) {
+                    this.updateStyles({
+                        '--chart-container-height': this.$.timeline.offsetHeight
+                    });
+                }
                 if (this.width > 0) {
                     this.timelineOptions = {
                         width: this.width - 40,
@@ -627,7 +627,6 @@
                         avoidOverlappingGridLines: false
                     }
                     google.charts.setOnLoadCallback(this._initialChart())
-                    this.$.timeline.redraw()
                 }
             }
 
@@ -673,6 +672,18 @@
                     chart.data = data;
                 });
                 this.$.timeline.redraw()
+            }
+
+            _refreshChart() {
+                if (this.scheduleItems.length > 0) {
+                    let newChartData = this.scheduleItems.map((data) => {
+                        return [data.job_station.toString(), 'Order ' + data.order_no, data.order_color,
+                            data.start, data.end
+                        ]
+                    });
+                    this.$.chartQuery.ref.set(newChartData)
+                    this._initialChart()
+                }
             }
 
             getSortedOrder(order) {
@@ -723,14 +734,22 @@
             getTimestampToTime(timestamp) {
                 let date = new Date(timestamp * 1000);
                 // Hours part from the timestamp
-                let hours = date.getHours();
+                let h = date.getHours();
                 // Minutes part from the timestamp
-                let minutes = "0" + date.getMinutes();
+                let m = date.getMinutes();
                 // Seconds part from the timestamp
-                let seconds = "0" + date.getSeconds();
+                let s = date.getSeconds();
                 // Will display time in 10:30:23 format
-                let formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-                return formattedTime;
+                //let formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+                return ('0' + h).substr(-2) + ":" + ('0' + m).substr(-2) + ":" + ('0' + s).substr(-2)
+            }
+
+            getSecondsToHms(sec) {
+                sec = Number(sec)
+                const h = Math.floor(sec / 3600)
+                const m = Math.floor(sec % 3600 / 60)
+                const s = Math.floor(sec % 3600 % 60)
+                return ('0' + h).slice(-2) + ":" + ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2)
             }
 
             getNextInterval(last_timestamp, interval) {
@@ -909,7 +928,6 @@
                     true) {
                     this.$.scheduleQuery.ref.remove()
                     this.$.chartQuery.ref.remove()
-                    this._refreshChart()
                     this.toastText = 'notification-delete-successfully'
                     this.$.toastAlert.open()
                 }
@@ -980,36 +998,31 @@
             }
 
             reSchedule() {
-                if (this.sortedOrder) {
-                    switch (this.factoryProfile.model) {
-                        case "serial":
-                            this._scheduleOrder(1)
-                            break;
-                        case "parallel":
-                            this._scheduleOrder(this.factoryProfile.concurrency)
-                            break;
-                        case "multi":
-                            this._multiSchedule()
-                            break;
-                        default:
-                            window.alert("Invalid production model")
+                console.log(this.chartItems)
+                if (window.confirm(
+                        "WARNING!! This will clear all schedules data")) {
+                    this.$.scheduleQuery.ref.remove()
+                    this.$.chartQuery.ref.remove()
+                    if (this.sortedOrder) {
+                        switch (this.factoryProfile.model) {
+                            case "serial":
+                                this._scheduleOrder(1)
+                                break;
+                            case "parallel":
+                                this._scheduleOrder(this.factoryProfile.concurrency)
+                                break;
+                            case "multi":
+                                this._multiSchedule()
+                                break;
+                            default:
+                                window.alert("Invalid production model")
+                        }
+                        this._refreshChart()
+                        this.toastText = 'notification-refreshing-data'
+                        this.$.toastAlert.open()
+                    } else {
+                        window.alert("No order data found")
                     }
-                    this.toastText = 'notification-refreshing-data'
-                    this.$.toastAlert.open()
-                } else {
-                    window.alert("No order data found")
-                }
-            }
-
-            _refreshChart() {
-                if (this.scheduleItems) {
-                    let newChartData = this.scheduleItems.map((data) => {
-                        return [data.job_station.toString(), 'Order ' + data.order_no, data.order_color,
-                            data.start, data.end
-                        ]
-                    });
-                    this.$.chartQuery.ref.set(newChartData)
-                    this._initialChart()
                 }
             }
 
@@ -1018,21 +1031,24 @@
             }
 
             _scheduleOrder(c) {
-                let order = this.sortedOrder;
-                if (order.length > 0) {
+                if (this.sortedOrder.length > 0) {
                     // 1) Get concurrent and initial value
                     const concurrent = c;
+                    console.log('Concurrent ' + c)
 
-                    // 2) Copy first concurrent orders from sorted order table 
-                    let selected_order = order.slice(0, concurrent).concat(order.slice(order.length));
+                    // 2) Filter only waiting, late or wip order 
+                    const undone_order = this.sortedOrder.filter(o => o.order_status !== 'done')
+                    console.log('undone order')
+                    console.log(undone_order)
 
-                    // 3) Filter only waiting, late or wip order 
-                    selected_order = selected_order.filter(o => o.order_status !== 'done') // change this to waiting
-                    console.log('selected order')
+                    // 3) Copy first concurrent orders from sorted order table 
+                    const selected_order = undone_order.slice(0, concurrent).concat(undone_order.slice(
+                        undone_order.length));
+                    console.log('selected_order')
                     console.log(selected_order)
 
                     // 4) Set order status to work in progress
-                    selected_order.map((order) => this.setOrderStatus(order.$key, 'wip'))
+                    selected_order.map((data) => this.setOrderStatus(data.$key, 'wip'))
 
                     // 5) Set order part and order quantity data 
                     let order_part = selected_order.map(o => o.order_product_part)
@@ -1050,22 +1066,26 @@
                     console.log('order part')
                     console.table(order_part)
 
-                    // 6.1a) Array of quantity
+                    // 6.2) Array of quantity
                     let order_quantity = selected_order.map(o => o.order_quantity)
 
-                    // 6.1) Array of cycle 
+                    // 6.2) Array of cycle 
                     let cycleArr = order_part.map(element => element.cycle)
 
-                    // 6.2) Array of setup
+                    // 6.3) Array of setup
                     let setupArr = order_part.map(element => element.setup)
 
-                    // 6.3) Array of process no (index) 
+                    // 6.4) Array of process no (index) 
                     let processArr = order_part.map(element => element.process)
 
                     // 7) Calculate job workload of each process
                     let multResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q))
                     let workloadArr = multResult.map((item, index) => {
-                        return item.map((i, j) => i + setupArr[index][j])
+                        return item.map((i, j) => {
+                            console.log('wl index ' + index)
+                            console.log('wl i ' + i)
+                            return i + setupArr[index][j]
+                        })
                     })
                     let workloadProcessObj = workloadArr.map((k, i) => Object.assign({}, ...processArr[i].map((
                             process,
@@ -1178,7 +1198,7 @@
                                 if (i == 0) {
                                     return initialStart
                                 } else {
-                                    return parseInt(end[i - 1]) + parseInt(dura)
+                                    return initialStart //parseInt(end[i - 1]) + parseInt(dura)
                                 }
                             }),
                             "end": end[i] = duration[i].map((dura, idx) => {
@@ -1218,7 +1238,6 @@
                                 }
                             }
                         }
-                        this._refreshChart()
                     } else {
                         window.alert("Full capacity of current concurrency")
                     }
