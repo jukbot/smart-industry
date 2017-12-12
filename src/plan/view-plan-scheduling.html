@@ -1199,7 +1199,8 @@
                                 if (i == 0) {
                                     return initialStart
                                 } else {
-                                    return initialStart //parseInt(end[i - 1]) + parseInt(dura)
+                                    return (concurrent === 1) ? parseInt(end[i - 1]) + parseInt(
+                                        dura) : initialStart
                                 }
                             }),
                             "end": end[i] = duration[i].map((dura, idx) => {
