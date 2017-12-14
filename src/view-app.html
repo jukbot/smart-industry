@@ -91,7 +91,7 @@
           </nav>
           <div class="separator-line" role="separator"></div>
           <div class="flex-center">
-            <paper-button class="logout-btn" on-tap="logout" title="Logout" noink>{{localize('logout-button')}}</paper-button>
+            <paper-button class="logout-btn" on-tap="logout" title="Logout">{{localize('logout-button')}}</paper-button>
             <div class="user-info">
               <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
               <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="10">

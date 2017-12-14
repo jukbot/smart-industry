@@ -33,7 +33,7 @@ exports.serve = functions.https.onRequest((req, res) => {
     });
 
     // Fetch the appropriate index.html for the chosen build
-    request(baseUrl + 'modern-es6/index.html')
+    request(baseUrl + '/index.html')
       .on('response', (res) => {
         // Tell Firebase Hosting to cache the result based on user-agent
         // Unfortunately this is the only way so far to make sure each
