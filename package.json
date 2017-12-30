@@ -17,11 +17,11 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.3",
+    "babel-eslint": "^8.1.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
-    "eslint": "^4.13.1",
+    "eslint": "^4.14.0",
     "eslint-config-google": "^0.9.1",
     "eslint-config-recommended": "^2.0.0",
     "eslint-plugin-polymer": "^0.1.0",
@@ -49,10 +49,19 @@
     "test": "polymer test"
   },
   "standard": {
-    "globals": ["$", "jQuery", "fetch"],
-    "ignore": ["node_modules/**", "bower_components/**"],
+    "globals": [
+      "$",
+      "jQuery",
+      "fetch"
+    ],
+    "ignore": [
+      "node_modules/**",
+      "bower_components/**"
+    ],
     "parser": "babel-eslint",
-    "plugins": ["polymer"]
+    "plugins": [
+      "polymer"
+    ]
   },
   "version": "1.0.8"
 }
