@@ -27,15 +27,12 @@
         width: 350px;
       }
 
-      .filter-bar {
-        margin-top: 10px;
-      }
-
       vaadin-combo-box#notificationFilter,
       vaadin-date-picker#notificationDateSelector {
         width: 250px;
         margin: 0;
-      }
+        padding: 0;
+        }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -134,14 +131,14 @@
           },
           type: {
             type: String,
-            value: "disabled"
+            value: "default"
           },
           filterItems: {
             type: Array,
             value: () => {
               return [{
-                  "name": "Disabled",
-                  "value": "disabled"
+                  "name": "Default",
+                  "value": "default"
                 },
                 {
                   "name": "Normal",
@@ -174,7 +171,7 @@
       filterNotification(data, date, type) {
         const selectTimestamp = new Date(date)
         switch (type) {
-          case "disabled":
+          case "default":
             return data
             break
           case "normal":

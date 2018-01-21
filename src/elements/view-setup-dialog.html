@@ -1,0 +1,38 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
+<dom-module id="view-setup-dialog">
+    <template>
+        <style>
+             :host {
+                display: block;
+                margin: 0 auto;
+                background: white;
+                color: black;
+                padding: 24px;
+                border-radius: .2em;
+                transition: all 0.3s;
+                width: 50%;
+                max-width: 700px;
+                box-shadow: rgba(0, 0, 0, 0.24) -2px 5px 12px 0px, rgba(0, 0, 0, 0.12) 0px 0px 12px 0px;
+            }
+        </style>
+        <slot>test</slot>
+    </template>
+    <script>
+        /**
+         * @ViewSetupDialog
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class ViewSetupDialog extends Polymer.mixinBehaviors([Polymer.IronOverlayBehavior], Polymer.Element) {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'view-setup-dialog';
+            }
+        }
+
+        window.customElements.define(ViewSetupDialog.is, ViewSetupDialog);
+    </script>
+</dom-module>

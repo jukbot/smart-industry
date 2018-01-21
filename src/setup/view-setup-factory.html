@@ -1,11 +1,9 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
-<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="../style/flat-button.html">
+<link rel="import" href="../elements/view-setup-dialog.html">
 
 <dom-module id="view-setup-factory">
     <template>
@@ -128,6 +126,7 @@
                                 </paper-item>
                             </template>
                         </vaadin-combo-box>
+                        <paper-icon-button  on-tap="openHelpDialog" icon="help"></paper-icon-button>
                         <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[persistedFactoryProfile.model]]"
                             items="[[productionModel]]" item-value-path="value" item-label-path="name" loading="[[!productionModel]]"
                             error-message="Invalid Input" selected-item="{{selectProductionModel}}" required always-float-label='true'>
@@ -306,6 +305,7 @@
                 </div>
             </li>
         </ul>
+        <view-setup-dialog id="setupHelpDialog" with-backdrop scroll-action="lock"></view-setup-dialog>
         <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
@@ -438,6 +438,10 @@
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
+            }
+
+            openHelpDialog() {
+                this.$.setupHelpDialog.open()
             }
 
             saveValue() {
