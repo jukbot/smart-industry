@@ -1057,6 +1057,7 @@
                     // 5) Set order part and order quantity data 
                     let order_part = selected_order.map(o => o.order_product_part)
                     let order_product_name = selected_order.map(o => o.order_product_name)
+                    let order_description = selected_order.map(o => o.order_product_description)
                     let order_no = selected_order.map(o => o.order_no)
                     let order_duration = selected_order.map(o => o.order_duration)
                     let order_delivery = selected_order.map(o => o.order_delivery)
@@ -1215,6 +1216,7 @@
                             "order_date": order_date[i],
                             "order_color": order_color[i].toString(),
                             "order_product": order_product_name[i].toString(),
+                            "order_description": order_description[i].toString(),
                         }
                     }).reduce((a, b) => {
                         return a.concat(b);

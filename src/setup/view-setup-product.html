@@ -151,6 +151,7 @@
                     <paper-input label="{{localize('sku-code')}}*" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
                     <paper-input label="{{localize('cost')}}" id="productCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
                         error-message="number only" min="0" max="99999" step="0.01" auto-validate always-float-label></paper-input>
+                   <paper-input label="Description" id="productDescription" type="text" maxlength="300" required always-float-label></paper-input>
                     <vaadin-combo-box label="{{localize('raw-materials-required')}}" id="inventoryCode" items="[[inventoryData]]" item-value-path="code"
                         item-label-path="name" loading="[[!inventoryData]]" always-float-label>
                         <template>
@@ -224,11 +225,13 @@
                     <h1 class="title">{{localize('edit-product')}}</h1>
                     <paper-input label="{{localize('product-name')}}*" id="edit_ProductName" type="text" value="{{editProductData.name}}" required
                         always-float-label></paper-input>
-                    <paper-input label="{{localize('sku-code')}}*" id="edit_ProductPartSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$" value="{{editProductData.sku}}"
+                    <paper-input label="{{localize('sku-code')}}*" id="edit_ProductPartSKU" type="text" value="{{editProductData.sku}}"
                         required always-float-label></paper-input>
                     <paper-input label="{{localize('cost')}}" id="edit_ProductCost" type="number" maxlength="9" value="{{editProductData.cost}}"
                         allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only" min="0" max="99999" step="0.01"
                         auto-validate always-float-label></paper-input>
+                    <paper-input label="Description" id="edit_ProductDescription" type="text" value="{{editProductDescription.name}}" required
+                        always-float-label></paper-input>
                     <paper-input label="Inventory Code" id="edit_InventoryCode" type="text" value="{{editProductData.inventory_code}}" required
                         always-float-label></paper-input>
                     <paper-input label="Inventory Require" id="edit_InventoryQuantity" type="number" value="{{editProductData.inventory_use}}"
@@ -466,6 +469,13 @@
                                             <p>[[getSumCycleTime(productPart.cycle)]]</p>
                                         </template>
                                     </div>
+                                    <div class="flex-item">
+                                        <h3>Description</h3>
+                                        <template>
+                                            <div class="cell">[[item.description]]</div>
+                                        </template>
+                                    </div>
+
                                 </div>
                             </div>
                         </template>
@@ -936,20 +946,18 @@
                 const productColor = this.getRandomColor();
                 let productPart = this.productPart
                 let productCost = this.$.productCost.value || 0
+                let productDescription = this.$.productDescription.value || ''
                 let inventoryCode = this.$.inventoryCode.value || 'none'
                 let inventoryQuantity = this.$.inventoryQuantity.value || 0
                 let imageURL = "";
                 productPart = productPart.splice(-1);
-                console.log(productName)
-                console.log(productSKU)
-                console.log(productPart)
                 if (productName && productSKU && productPart) {
                     if (this.imageURL) {
                         this._debouncer = Polymer.Debouncer.debounce(this._debouncer,
                             Polymer.Async.timeOut.after(3000), () => {
                                 imageURL = this.imageURL;
                                 this._addProduct(timestamp, productCost, productName, productSKU,
-                                    inventoryCode, inventoryQuantity, productPart, productColor,
+                                    inventoryCode, inventoryQuantity, productPart, productDescription, productColor,
                                     imageURL)
                                 this.toastText = 'Processing product.'
                                 this.$.toastAlert.open()
@@ -969,13 +977,14 @@
             }
 
             _addProduct(timestamp, productCost, productName, productSKU, inventoryCode, inventoryQuantity,
-                productPart, productColor, imageURL) {
+                productPart, productDescription, productColor, imageURL) {
                 this.$.productQuery.ref.child(this.productKey).set({
                     add: timestamp,
                     cost: productCost,
                     name: productName,
                     sku: productSKU,
                     image: imageURL,
+                    description: productDescription,
                     color: productColor,
                     inventory_code: inventoryCode,
                     inventory_use: inventoryQuantity,

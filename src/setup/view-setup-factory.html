@@ -126,7 +126,7 @@
                                 </paper-item>
                             </template>
                         </vaadin-combo-box>
-                        <paper-icon-button  on-tap="openHelpDialog" icon="help"></paper-icon-button>
+                        <paper-icon-button  on-tap="openHelpDialog" icon="icons:help"></paper-icon-button>
                         <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[persistedFactoryProfile.model]]"
                             items="[[productionModel]]" item-value-path="value" item-label-path="name" loading="[[!productionModel]]"
                             error-message="Invalid Input" selected-item="{{selectProductionModel}}" required always-float-label='true'>
@@ -305,7 +305,7 @@
                 </div>
             </li>
         </ul>
-        <view-setup-dialog id="setupHelpDialog" with-backdrop scroll-action="lock"></view-setup-dialog>
+        <view-setup-dialog id="setupHelpDialog" scroll-action="lock"></view-setup-dialog>
         <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
