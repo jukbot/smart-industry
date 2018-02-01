@@ -80,6 +80,10 @@
         background-color: #EDEDEE;
       }
 
+      .squares li[data-level="0"] {
+        background-color: #EDEDEE;
+      }
+
       .squares li[data-level="1"] {
         background-color: #CCE191;
       }
@@ -140,6 +144,7 @@
         margin-left: -60px;
     }
     
+
     .tooltip .tooltiptext::after {
         content: "";
         position: absolute;
@@ -150,7 +155,7 @@
         border-style: solid;
         border-color: black transparent transparent transparent;
     }
-    
+
     .tooltip:hover .tooltiptext {
         visibility: visible;
     }
@@ -282,22 +287,7 @@
           commit: {
             type: Array,
             value() {
-              return [
-                { level: '3' },
-                { level: '2' },
-                { level: '3' },
-                { level: '1' },
-                { level: '3' },
-                { level: '1' },
-                { level: '3' },
-                { level: '2' },
-                { level: '3' },
-                { level: '2' },
-                { level: '3' },
-                { level: '2' },
-                { level: '3' },
-                { level: '2' }
-              ];
+              return this.commit || Array(365).fill('0');
             }
           }
         }
