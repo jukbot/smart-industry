@@ -13,7 +13,7 @@
  <!-- [Login here](https://smart-mes.firebaseapp.com/)  -->
  
 ``Sorry, we've to temporary disable demo login and register due to database structure maintenance for optimizing best performance. 
-This will take around 1 week to fixed all issues from database changed. :)``
+This will take around 1 week to fix all issues from database changed. :)``
 
 <!-- | E-mail | Password | 
 |---------|---------------|
