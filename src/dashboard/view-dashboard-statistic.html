@@ -179,6 +179,8 @@
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData" data="{{historyData}}"></firebase-document>
+    <firebase-query app-name="notes" id="commitQuery" path="/data/[[k.key]]/commitData" data="{{commitData}}">
+</firebase-query>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
@@ -221,7 +223,7 @@
                 <li>Sat</li>
               </ul>
               <ul class="squares">
-                <template is="dom-repeat" items="{{commit}}">
+                <template is="dom-repeat" items="{{commitData}}">
                   <li class="tooltip" data-level$="[[item.level]]"> <span class="tooltiptext">[[item.level]]</span></li>
                 </template>
               </ul>
@@ -284,7 +286,7 @@
 
             }
           },
-          commit: {
+          commitData: {
             type: Array,
             value() {
               return this.commit || Array(365).fill('0');

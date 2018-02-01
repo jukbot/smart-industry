@@ -10,11 +10,14 @@
 
 ## Demo
 
- [Login here](https://smart-mes.firebaseapp.com/) 
+ <!-- [Login here](https://smart-mes.firebaseapp.com/)  -->
+ 
+``Sorry, we've to temporary disable demo login and register due to database structure maintenance for optimizing best performance. 
+This will take around 1 week to fixed all issues from database changed. :)``
 
-| E-mail | Password | 
+<!-- | E-mail | Password | 
 |---------|---------------|
-| demo@imes.in.th | demouser | 
+| demo@imes.in.th | demouser |  -->
 
 
 # Contribution
