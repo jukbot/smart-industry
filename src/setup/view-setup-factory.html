@@ -109,6 +109,7 @@
             <li>
                 <div class="card">
                     <h1 class="title">{{localize('factory-initialize')}}</h1>
+                       <paper-icon-button  on-tap="openHelpDialog" icon="vaadin:question-circle"></paper-icon-button> 
                     <div>
                         <paper-input label="{{localize('factory-name')}}" id="factoryName" value="[[persistedFactoryProfile.name]]" type="text" required
                             always-float-label></paper-input>
@@ -126,7 +127,6 @@
                                 </paper-item>
                             </template>
                         </vaadin-combo-box>
-                        <paper-icon-button  on-tap="openHelpDialog" icon="vaadin:question-circle"></paper-icon-button> 
                         <vaadin-combo-box label="{{localize('production-model')}}" id="productionModel" value="[[persistedFactoryProfile.model]]"
                             items="[[productionModel]]" item-value-path="value" item-label-path="name" loading="[[!productionModel]]"
                             error-message="Invalid Input" selected-item="{{selectProductionModel}}" required always-float-label='true'>

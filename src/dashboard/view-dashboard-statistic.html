@@ -8,12 +8,152 @@
 <dom-module id="view-dashboard-statistic">
   <template>
     <style include="shared-styles app-grid-style flat-button">
-       :host {
+      :host {
         margin: 10px;
         display: block;
         --app-grid-columns: 1;
         --app-grid-item-height: 50%;
       }
+
+      :root {
+        --square-size: 1rem;
+        --square-gap: 3px;
+        --week-width: calc(var(--square-size) + var(--square-gap));
+      }
+
+      .months {
+        grid-area: months;
+      }
+
+      .days {
+        grid-area: days;
+      }
+
+      .squares {
+        grid-area: squares;
+      }
+
+      .graph {
+        display: grid;
+        grid-template-areas: "empty months" "days squares";
+        grid-template-columns: auto 1fr;
+        grid-gap: 10px;
+        padding: 20px;
+        border: 1px #eeeeee solid;
+        margin: 10px;
+      }
+
+      .months {
+        display: grid;
+        grid-template-columns: calc(var(--week-width) * 4)/* Jan */
+        calc(var(--week-width) * 5)/* Feb */
+        calc(var(--week-width) * 4)/* Mar */
+        calc(var(--week-width) * 5)/* Apr */
+        calc(var(--week-width) * 4)/* May */
+        calc(var(--week-width) * 5)/* Jun */
+        calc(var(--week-width) * 4)/* Jul */
+        calc(var(--week-width) * 5)/* Aug */
+        calc(var(--week-width) * 4)/* Sep */
+        calc(var(--week-width) * 5)/* Oct */
+        calc(var(--week-width) * 4)/* Nov */
+        calc(var(--week-width) * 5)/* Dec */
+        ;
+      }
+
+      .days,
+      .squares {
+        display: grid;
+        grid-gap: var(--square-gap);
+        grid-template-rows: repeat(7, var(--square-size));
+      }
+
+      .squares {
+        grid-auto-flow: column;
+        grid-auto-columns: var(--square-size);
+      }
+
+      /* .days li:nth-child(odd) {
+        visibility: hidden;
+      } */
+
+      .squares li {
+        background-color: #EDEDEE;
+      }
+
+      .squares li[data-level="1"] {
+        background-color: #CCE191;
+      }
+
+      .squares li[data-level="2"] {
+        background-color: #8FC575;
+      }
+
+      .squares li[data-level="3"] {
+        background-color: #529646;
+      }
+
+      .squares li[data-level="4"] {
+        background-color: #365F30;
+      }
+
+      .squares {
+        grid-area: squares;
+      }
+
+      .graph {
+        display: inline-grid;
+        grid-gap: 10px;
+        grid-template-columns: auto 1fr;
+        grid-template-areas: "empty months" "days squares";
+      }
+
+      .contrib-legend .legend {
+        position: relative;
+        display: inline-block;
+        margin: 10px 5px;
+        list-style: none;
+      }
+
+      .contrib-legend .legend li {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+      }
+
+      .tooltip {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: rgba(0, 0, 0, 0.85);
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 150%;
+        left: 50%;
+        margin-left: -60px;
+    }
+    
+    .tooltip .tooltiptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: black transparent transparent transparent;
+    }
+    
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }
 
       .btn {
         margin: 20px 0 4px 0;
@@ -44,6 +184,54 @@
             <flat-button class="btn" on-tap="clearStatistic">
               <button>Reset Statistics</button>
             </flat-button>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="card">
+          <h1 class="title">Overall Working Statistics</h1>
+          <div class="center">
+            <div class="graph">
+              <ul class="months">
+                <li>Jan</li>
+                <li>Feb</li>
+                <li>Mar</li>
+                <li>Apr</li>
+                <li>May</li>
+                <li>Jun</li>
+                <li>Jul</li>
+                <li>Aug</li>
+                <li>Sep</li>
+                <li>Oct</li>
+                <li>Nov</li>
+                <li>Dec</li>
+              </ul>
+              <ul class="days">
+                <li>Sun</li>
+                <li>Mon</li>
+                <li>Tue</li>
+                <li>Wed</li>
+                <li>Thu</li>
+                <li>Fri</li>
+                <li>Sat</li>
+              </ul>
+              <ul class="squares">
+                <template is="dom-repeat" items="{{commit}}">
+                  <li class="tooltip" data-level$="[[item.level]]"> <span class="tooltiptext">[[item.level]]</span></li>
+                </template>
+              </ul>
+            </div>
+            <div class="contrib-legend">
+              Low
+              <ul class="legend">
+                <li style="background-color: #eee" class=""></li>
+                <li style="background-color: #c6e48b" class=""></li>
+                <li style="background-color: #7bc96f" class=""></li>
+                <li style="background-color: #239a3b" class=""></li>
+                <li style="background-color: #196127" class=""></li>
+              </ul>
+              High
+            </div>
           </div>
         </div>
       </li>
@@ -90,6 +278,27 @@
               }]
 
             }
+          },
+          commit: {
+            type: Array,
+            value() {
+              return [
+                { level: '3' },
+                { level: '2' },
+                { level: '3' },
+                { level: '1' },
+                { level: '3' },
+                { level: '1' },
+                { level: '3' },
+                { level: '2' },
+                { level: '3' },
+                { level: '2' },
+                { level: '3' },
+                { level: '2' },
+                { level: '3' },
+                { level: '2' }
+              ];
+            }
           }
         }
       }
@@ -104,6 +313,15 @@
         return [
           '_groupAndSum(historyData.order)',
         ]
+      }
+
+      ready() {
+        super.ready()
+        // const squares = this.$$('.squares');
+        // for (var i = 1; i < 365; i++) {
+        //   const level = Math.floor(Math.random() * 4);
+        //   squares.insertAdjacentHTML('beforeend', `<li data-level="${level}"></li>`);
+        // }
       }
 
       _installListeners() {
