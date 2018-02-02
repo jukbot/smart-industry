@@ -9,6 +9,7 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <!-- import style component -->
@@ -194,7 +195,7 @@
     <section class="flex-container">
       <div class="flex-item">
         <article>
-          <img class="logo" src$="[[rootPath]]images/logo/logo.svg" title="Logo" alt="app logo">
+          <iron-image preload fade class="logo" role="image" title="IMES" alt="Application logo" sizing="contain" src="[[rootPath]]images/logo/logo.svg"></iron-image>
           <div hidden$="[[!loginForm]]" class="login-form">
             <div class="form-title">
               <h2>Log in</h2>
