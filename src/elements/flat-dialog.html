@@ -1,6 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/iron-overlay-behavior/iron-overlay-behavior.html">
-<dom-module id="view-setup-dialog">
+<dom-module id="flat-dialog">
     <template>
         <style>
              :host {
@@ -22,19 +22,19 @@
     </template>
     <script>
         /**
-         * @ViewSetupDialog
+         * @FlatDialog
          * @polymer
          * @extends {Polymer.Element}
          */
-        class ViewSetupDialog extends Polymer.mixinBehaviors([Polymer.IronOverlayBehavior], Polymer.Element) {
+        class FlatDialog extends Polymer.mixinBehaviors([Polymer.IronOverlayBehavior], Polymer.Element) {
             /**
              * String providing the tag name to register the element under.
              */
             static get is() {
-                return 'view-setup-dialog';
+                return 'flat-dialog';
             }
         }
 
-        window.customElements.define(ViewSetupDialog.is, ViewSetupDialog);
+        window.customElements.define(FlatDialog.is, FlatDialog);
     </script>
 </dom-module>

@@ -3,7 +3,7 @@
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-<link rel="import" href="../style/flat-button.html">
+<script src="../utilizes/daysOfTheYear.js"></script>
 
 <dom-module id="view-dashboard-statistic">
   <template>
@@ -252,6 +252,7 @@
      * @extends {Polymer.Element}
      * @appliesMixin Polymer.AppLocalizeBehavior
      */
+    
     class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
       Polymer.Element) {
       static get is() {
@@ -289,7 +290,7 @@
           commitData: {
             type: Array,
             value() {
-              return this.commit || Array(365).fill('0');
+              return this.commit || Array(isLeapYear(new Date().getFullYear()) ? 366 : 365).fill('0');
             }
           }
         }

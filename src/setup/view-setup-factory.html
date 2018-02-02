@@ -2,8 +2,6 @@
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-<link rel="import" href="../style/flat-button.html">
-<link rel="import" href="../elements/view-setup-dialog.html">
 
 <dom-module id="view-setup-factory">
     <template>
@@ -305,7 +303,7 @@
                 </div>
             </li>
         </ul>
-        <view-setup-dialog id="setupHelpDialog" scroll-action="lock"></view-setup-dialog>
+        <flat-dialog id="setupHelpDialog" scroll-action="lock"></flat-dialog>
         <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
