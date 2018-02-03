@@ -1,9 +1,7 @@
 language: node_js
-sudo: false
+sudo: true 
 dist: trusty
-node_js:
-  - "node"
-  - "8"
+node_js: 8
 addons: 
   firefox: latest
   chrome: stable
@@ -21,12 +19,15 @@ install:
 - yarn install
 - bower install
 before_script:
-- mkdir -p ~/bin
-- ln -s /usr/bin/google-chrome-beta ~/bin/google-chrome
-- export PATH=$HOME/bin:$PATH
-- ls
+- polymer lint --input ./src/**/*.html
+- xvfb-run -s '-screen 0 1024x768x24' wct
 script:
 - polymer build -v
-- polymer lint --input src/**/*.html
+- "if [[ \"$TRAVIS_EVENT_TYPE\" != \"pull_request\" && \"$TRAVIS_BRANCH\" != quick/* ]]; then wct --env saucelabs; fi",
+  "if [ \"$TRAVIS_EVENT_TYPE\" = \"cron\" ]; then wct --env saucelabs-cron; fi"
 notifications:
   email: false
+group: stable
+os: linux
+
+

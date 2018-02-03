@@ -11,7 +11,9 @@
 <link rel="import" href="../../lib/lodash.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-
+<script src="../../node_modules/moment/min/moment.min.js"></script>
+<script src="../../node_modules/snapsvg/dist/snap.svg-min.js"></script>
+<script src="../../node_modules/frappe-gantt/dist/frappe-gantt.min.js"></script>
 <dom-module id="view-plan-scheduling">
     <template>
         <style include="shared-styles app-grid-style flat-button">
@@ -50,6 +52,14 @@
             .btn-group {
                 margin: 20px 0;
             }
+
+            .gantt-container {
+			overflow: scroll;
+	     	}
+		/* custom class */
+		.gantt .bar-milestone .bar-progress {
+			fill: tomato;
+		}
 
             vaadin-grid .cell.last {
                 text-overflow: unset;
@@ -441,11 +451,14 @@
                     </div>
                 </div>
             </li>
-
+            <div class="gantt-container">
+                    <svg id="gantt" width="400" height="600"></svg>
+                </div>
             <li>
                 <div class="card" id="chartContainer" hidden="[[showChartTable]]">
                     <h1 class="title">{{localize('scheduling-chart')}}</h1>
                     <google-chart id="timeline" type="timeline" options="[[timelineOptions]]"></google-chart>
+                   
                 </div>
             </li>
         </ul>
@@ -519,6 +532,7 @@
 
             ready() {
                 super.ready();
+                this._initialGanttChart();
                 this._initialDatePicker();
                 this._setOrderDatePosition();
             }
@@ -538,6 +552,54 @@
                 this.toastText = 'notification-refreshing-data'
                 this.$.toastAlert.open()
             }
+
+            _initialGanttChart() {
+            var names = [
+			["Redesign website", [0, 7]],
+			["Write new content", [1, 4]],
+			["Apply new styles", [3, 6]],
+			["Review", [7, 7]],
+			["Deploy", [8, 9]],
+			["Go Live!", [10, 10]]
+		];
+
+		var tasks = names.map(function(name, i) {
+			var today = new Date();
+			var start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+			var end = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+			start.setDate(today.getDate() + name[1][0]);
+			end.setDate(today.getDate() + name[1][1]);
+			return {
+				start: start,
+				end: end,
+				name: name[0],
+				id: "Task " + i,
+				progress: parseInt(Math.random() * 100, 10)
+			}
+		});
+		tasks[1].progress = 0;
+		tasks[1].dependencies = "Task 0"
+		tasks[2].dependencies = "Task 1"
+		tasks[3].dependencies = "Task 2"
+		tasks[5].dependencies = "Task 4"
+		tasks[5].custom_class = "bar-milestone";
+
+		var gantt_chart = Gantt(this.$.gantt, tasks, {
+			on_click: function (task) {
+				console.log(task);
+			},
+			on_date_change: function(task, start, end) {
+				console.log(task, start, end);
+			},
+			on_progress_change: function(task, progress) {
+				console.log(task, progress);
+			},
+			on_view_change: function(mode) {
+				console.log(mode);
+			}
+		});
+        console.log(gantt_chart);
+    }
 
             _isSerialModel(production_model) {
                 if (production_model === 'serial' || production_model === 'multi') {

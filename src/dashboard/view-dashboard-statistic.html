@@ -307,16 +307,7 @@
           '_groupAndSum(historyData.order)',
         ]
       }
-
-      ready() {
-        super.ready()
-        // const squares = this.$$('.squares');
-        // for (var i = 1; i < 365; i++) {
-        //   const level = Math.floor(Math.random() * 4);
-        //   squares.insertAdjacentHTML('beforeend', `<li data-level="${level}"></li>`);
-        // }
-      }
-
+              
       _installListeners() {
         this.addEventListener('iron-resize', this._setChartSize.bind(this))
       }

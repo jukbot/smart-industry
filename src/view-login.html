@@ -417,39 +417,37 @@
             console.error("Error requesting data: " + error + " of request " + req)
           })
         }
-
-        window.alert('Sorry, Temporary disable for database maintenance')
-        // if (email && organize && phone && password && username && timestamp && this.persistedSampleData) {
-        //   this.$.userAuth.createUserWithEmailAndPassword(email, password)
-        //     .then((response) => {
-        //       this.$.userAuth.signInWithEmailAndPassword(email, password)
-        //         .then((response) => {
-        //           this.user.updateProfile({
-        //             displayName: username,
-        //             phoneNumber: phone
-        //           })
-        //           this.user.sendEmailVerification()
-        //           this._showSuccessToast(
-        //             "Register successful. We've sent a confirmation link to your email you must follow in order to activate your account."
-        //           )
-        //           const keyid = this.$.factoryData.ref.push().key
-        //           this._addProfileInfo(username, email, organize, phone, keyid, timestamp)
-        //           this.$.factoryData.ref.child(keyid).set(this.sampleData).catch(error => {
-        //             console.error(error)
-        //             this._showErrorToast(error.code)
-        //           })
-        //         }).catch((error) => {
-        //           console.error(error)
-        //           this._showErrorToast(error.code)
-        //         })
-        //     })
-        //     .catch((error) => {
-        //       console.error(error)
-        //       this._showErrorToast(error.code)
-        //     })
-        // } else {
-        //   this._showErrorToast('Please fill in the form completely.')
-        // }
+        if (email && organize && phone && password && username && timestamp && this.persistedSampleData) {
+          this.$.userAuth.createUserWithEmailAndPassword(email, password)
+            .then((response) => {
+              this.$.userAuth.signInWithEmailAndPassword(email, password)
+                .then((response) => {
+                  this.user.updateProfile({
+                    displayName: username,
+                    phoneNumber: phone
+                  })
+                  this.user.sendEmailVerification()
+                  this._showSuccessToast(
+                    "Register successful. We've sent a confirmation link to your email you must follow in order to activate your account."
+                  )
+                  const keyid = this.$.factoryData.ref.push().key
+                  this._addProfileInfo(username, email, organize, phone, keyid, timestamp)
+                  this.$.factoryData.ref.child(keyid).set(this.sampleData).catch(error => {
+                    console.error(error)
+                    this._showErrorToast(error.code)
+                  })
+                }).catch((error) => {
+                  console.error(error)
+                  this._showErrorToast(error.code)
+                })
+            })
+            .catch((error) => {
+              console.error(error)
+              this._showErrorToast(error.code)
+            })
+        } else {
+          this._showErrorToast('Please fill in the form completely.')
+        }
       }
 
       _addProfileInfo(username, email, organize, phone, keyid, timestamp) {
