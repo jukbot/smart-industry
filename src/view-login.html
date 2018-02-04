@@ -301,7 +301,7 @@
             <p>[[successMessage]]</p>
           </div>
           <div class="toast-flex-item">
-            <paper-icon-button on-click="_closeToastSuccess" data-name$="toastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
+            <paper-icon-button on-click="_closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
           </div>
         </div>
       </paper-toast>
@@ -311,7 +311,7 @@
             <p>[[errorMessage]]</p>
           </div>
           <div class="toast-flex-item">
-            <paper-icon-button on-click="_closeToastError" data-item$="toastError" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
+            <paper-icon-button on-click="_closeToastError" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
           </div>
         </div>
       </paper-toast>
@@ -366,7 +366,7 @@
       _installListeners() {
         this.$.loginPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 0))
         this.$.resetPasswordEmail.addEventListener('keyup', (e) => this._onEnterTrigger(e, 1))
-        this.$.termOfService.addEventListener('click', (e) => this._goToTermOfService(e))
+        this.$.termOfService.addEventListener('click', (e) => this.set('route.path', '/term'))
       }
 
       _onEnterTrigger(e, type) {
@@ -377,10 +377,6 @@
           this.resetPassword()
         }
         e.preventDefault() // No need to `return false`.
-      }
-
-      _goToTermOfService(e) {
-        this.set('route.path', '/term')
       }
 
       login() {
@@ -511,8 +507,7 @@
       }
 
       _closeToastError(e) {
-        console.log(e.target.dataset.item)
-        //this.$.toastError.close()
+        this.$.toastError.close()
       }
 
       _closeToastSuccess() {
