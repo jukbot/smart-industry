@@ -96,9 +96,9 @@
             </vaadin-grid-column>
           </vaadin-grid>
           <div class="center">
-            <flat-button class="btn" on-click="clearNotification">
-              <button>{{localize('clear-all-notifications')}}</button>
-            </flat-button>
+            <paper-button class="btn" on-click="clearNotification">
+              {{localize('clear-all-notifications')}}
+            </paper-button>
           </div>
           <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
         </div>

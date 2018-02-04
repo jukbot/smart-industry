@@ -27,8 +27,8 @@
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerData}}"></firebase-query>
-        <firebase-document app-name="smart-mes" id="editCustomerQuery" path="/data/[[k.key]]/customerData/[[editKey]]" data="{{editCustomerData}}"></firebase-document>
+        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/factoryData/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
+        <firebase-document app-name="smart-mes" id="editCustomerQuery" path="/data/[[k.key]]/factoryData/customer/[[editKey]]" data="{{editCustomerData}}"></firebase-document>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <app-indexeddb-mirror session="[[user.uid]]" id="customerIndexDB" key="customer-data" data="{{customerData}}" persisted-data="{{persistedCustomerData}}"></app-indexeddb-mirror>
         <ul class="app-grid">

@@ -6,8 +6,60 @@
 <script src="../utilizes/daysOfTheYear.js"></script>
 
 <dom-module id="view-dashboard-statistic">
-  <template>
-    <style include="shared-styles app-grid-style flat-button">
+  <script>
+    /**
+     * @ViewDashboardStatistic
+     * @polymer 
+     * @extends {Polymer.Element}
+     * @appliesMixin Polymer.AppLocalizeBehavior
+     */
+    
+    class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
+      Polymer.Element) {
+      static get is() {
+        return 'view-dashboard-statistic';
+      }
+
+      static get properties() {
+        return {
+          language: String,
+          historyData: {
+            type: Object,
+            notify: true
+          },
+          columnOptions: Object,
+          width: Number,
+          height: Number,
+          rowItems: Array,
+          toastText: String,
+          columnItems: {
+            type: Array,
+            value: () => {
+              return [{
+                "label": "Data",
+                "type": "string"
+              }, {
+                "label": "No. of orders",
+                "type": "number"
+              }, {
+                "type": "string",
+                "role": 'style'
+              }]
+
+            }
+          },
+          commitData: {
+            type: Array,
+            value() {
+              return this.commit ||  Array(isLeapYear() ? 366 : 365).fill().map((_,i) => ({ 'level' : 0, 'commit': 0,  'dayno': i+1, 'date': dateFromDays(i+1) }));
+            }
+          }
+        }
+      }
+
+      static get template() {
+          return Polymer.html`
+          <style include="shared-styles app-grid-style flat-button">
       :host {
         margin: 10px;
         display: block;
@@ -185,9 +237,7 @@
           <h1 class="title">Product Order Statistics</h1>
           <google-chart id="column" type="column" options="[[columnOptions]]" cols='[[columnItems]]' rows='[[rowItems]]'></google-chart>
           <div class="center">
-            <flat-button class="btn" on-click="clearStatistic">
-              <button>Reset Statistics</button>
-            </flat-button>
+            <paper-button class="btn" on-click="resetOrderStatistic">Reset Order Statistics</paper-button>
           </div>
         </div>
       </li>
@@ -221,12 +271,12 @@
               </ul>
               <ul class="squares">
                 <template is="dom-repeat" items="{{commitData}}">
-                  <li class="tooltip" data-level$="[[item.level]]"> <span class="tooltiptext">[[item.level]]</span></li>
+                  <li class="tooltip" data-level$="[[item.level]]"><span class="tooltiptext">[[item.commit]] commits on [[item.date]]</span></li>
                 </template>
               </ul>
             </div>
             <div class="contrib-legend">
-              Low
+              Low load
               <ul class="legend">
                 <li style="background-color: #eee" class=""></li>
                 <li style="background-color: #c6e48b" class=""></li>
@@ -234,66 +284,19 @@
                 <li style="background-color: #239a3b" class=""></li>
                 <li style="background-color: #196127" class=""></li>
               </ul>
-              High
+              High load
             </div>
           </div>
-          <paper-button on-click="temp"></paper-button>
+          <div class="center">
+          <paper-button class="btn" on-click="resetWorkCommit">Reset Working Statistics</paper-button>
+          </div>  
         </div>
       </li>
     </ul>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
-  </template>
-  <script>
-    /**
-     * @ViewDashboardStatistic
-     * @polymer 
-     * @extends {Polymer.Element}
-     * @appliesMixin Polymer.AppLocalizeBehavior
-     */
+    `
+    }
     
-    class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
-      Polymer.Element) {
-      static get is() {
-        return 'view-dashboard-statistic';
-      }
-
-      static get properties() {
-        return {
-          language: String,
-          historyData: {
-            type: Object,
-            notify: true
-          },
-          columnOptions: Object,
-          width: Number,
-          height: Number,
-          rowItems: Array,
-          toastText: String,
-          columnItems: {
-            type: Array,
-            value: () => {
-              return [{
-                "label": "Data",
-                "type": "string"
-              }, {
-                "label": "No. of orders",
-                "type": "number"
-              }, {
-                "type": "string",
-                "role": 'style'
-              }]
-
-            }
-          },
-          commitData: {
-            type: Array,
-            value() {
-              return this.commit || Array(isLeapYear(new Date().getFullYear()) ? 366 : 365).fill('0');
-            }
-          }
-        }
-      }
-
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../../data/locales.json'));
@@ -345,14 +348,14 @@
         const groupByName = productNames.map(name => products.filter(product => product.order_product === name))
         const quantitySum = groupByName.map(group => {
           const sum = group.reduce((total, arr) => total + arr.order_quantity, 0)
-          return [group[0].order_product, sum, group[0].product_color]
+              return [group[0].order_product, sum, group[0].product_color]
         })
         this.rowItems = quantitySum
         this.$.column.redraw()
         return quantitySum
       }
 
-      clearStatistic() {
+      resetOrderStatistic() {
         if (confirm("Are you sure do you want to clear product order history ?") == true) {
           this.$.historyQuery.ref.child('order').remove()
           this.$.column.redraw()
@@ -361,9 +364,9 @@
         }
       }
 
-      temp() {
-        let t = Array(isLeapYear(new Date().getFullYear()) ? 366 : 365).fill('0');
-        this.$.commitQuery.set(t)
+      resetWorkCommit() {
+        let t = Array(isLeapYear() ? 366 : 365).fill().map((_,i) => ({ 'level' : 0, 'commit': 0,  'dayno': i+1, 'date': dateFromDays(i+1) }));
+        this.$.commitQuery.ref.set(t)
       }
     }
     customElements.define(ViewDashboardStatistic.is, ViewDashboardStatistic);
