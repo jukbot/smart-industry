@@ -40,10 +40,10 @@
                         error-message="Number only" min="1" max$="[[maxInput]]" step="1" auto-validate always-float-label>
                     </paper-input>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openInventoryTable">
+                        <flat-button class="btn" on-click="_openInventoryTable">
                             <button>{{localize('dismiss')}}</button>
                         </flat-button>
-                        <flat-button class="btn shamrock" on-tap="addInventory">
+                        <flat-button class="btn shamrock" on-click="addInventory">
                             <button disabled$="[[disabled]]">{{localize('add')}}</button>
                         </flat-button>
                     </div>
@@ -64,10 +64,10 @@
                         step="1" auto-validate always-float-label>
                     </paper-input>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openInventoryTable">
+                        <flat-button class="btn" on-click="_openInventoryTable">
                             <button>{{localize('dismiss')}}</button>
                         </flat-button>
-                        <flat-button class="btn shamrock" on-tap="saveInventory">
+                        <flat-button class="btn shamrock" on-click="saveInventory">
                             <button disabled$="[[disabled]]">{{localize('save')}}</button>
                         </flat-button>
                     </div>
@@ -128,7 +128,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="_openEditInventoryCard" inventory="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                    <paper-icon-button on-click="_openEditInventoryCard" inventory="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -139,13 +139,13 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="deleteInventory" inventory="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-click="deleteInventory" inventory="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openAddInventoryCard">
+                        <flat-button class="btn" on-click="_openAddInventoryCard">
                             <button>{{localize('add-inventory')}}</button>
                         </flat-button>
                     </div>

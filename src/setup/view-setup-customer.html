@@ -47,10 +47,10 @@
                     <paper-input label="{{localize('address')}}" id="customerAddress" max-length="200" type="text" auto-validate error-message="text only"
                         always-float-label></paper-input>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openCustomerTable">
+                        <flat-button class="btn" on-click="_openCustomerTable">
                             <button>{{localize('dismiss')}}</button>
                         </flat-button>
-                        <flat-button class="btn shamrock" on-tap="addCustomer">
+                        <flat-button class="btn shamrock" on-click="addCustomer">
                             <button disabled$="[[disabled]]">{{localize('add')}}</button>
                         </flat-button>
                     </div>
@@ -71,10 +71,10 @@
                     <paper-input label="{{localize('address')}}" id="edit_customerAddress" max-length="200" type="text" value="[[editCustomerData.address]]"
                         auto-validate error-message="text only" always-float-label></paper-input>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openCustomerTable">
+                        <flat-button class="btn" on-click="_openCustomerTable">
                             <button>{{localize('dismiss')}}</button>
                         </flat-button>
-                        <flat-button class="btn shamrock" on-tap="saveCustomer">
+                        <flat-button class="btn shamrock" on-click="saveCustomer">
                             <button disabled$="[[disabled]]">{{localize('save')}}</button>
                         </flat-button>
                     </div>
@@ -135,7 +135,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="_openEditCustomerCard" customer="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                    <paper-icon-button on-click="_openEditCustomerCard" customer="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -146,7 +146,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="deleteCustomer" customer="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-click="deleteCustomer" customer="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -162,7 +162,7 @@
                         </template>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="_openAddCustomerCard">
+                        <flat-button class="btn" on-click="_openAddCustomerCard">
                             <button>{{localize('add-customer')}}</button>
                         </flat-button>
                     </div>

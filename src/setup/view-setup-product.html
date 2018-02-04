@@ -163,14 +163,14 @@
                     </vaadin-combo-box>
                     <paper-input label="Raw material quantity" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$" required
                         always-float-label></paper-input>
-                    <flat-button on-tap="openBrowseImageFile" class="btn">
+                    <flat-button on-click="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
                         <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
                     </flat-button>
-                    <flat-button class="btn" on-tap="openAddPartDialog">
+                    <flat-button class="btn" on-click="openAddPartDialog">
                         <button>{{localize('add-part')}}</button>
                     </flat-button>
-                    <flat-button class="btn" on-tap="clearPartFromProduct">
+                    <flat-button class="btn" on-click="clearPartFromProduct">
                         <button>{{localize('clear')}}</button>
                     </flat-button>
                     <div class="frame part-block">
@@ -196,10 +196,10 @@
                                             </div>
                                         </div>
                                         <div class="center">
-                                            <flat-button class="btn" on-tap="openEditPartDialog" part="[[part]]">
+                                            <flat-button class="btn" on-click="openEditPartDialog" part="[[part]]">
                                                 <button>{{localize('edit')}}</button>
                                             </flat-button>
-                                            <flat-button class="thunderbird btn" on-tap="removePartFromProduct">
+                                            <flat-button class="thunderbird btn" on-click="removePartFromProduct">
                                                 <button>{{localize('remove')}}</button>
                                             </flat-button>
                                         </div>
@@ -209,10 +209,10 @@
                         </ul>
                     </div>
                     <div class="center">
-                        <flat-button class="btn" on-tap="openProductList">
+                        <flat-button class="btn" on-click="openProductList">
                             <button>{{localize('dismiss')}}</button>
                         </flat-button>
-                        <flat-button class="btn shamrock" on-tap="addProduct">
+                        <flat-button class="btn shamrock" on-click="addProduct">
                             <button>{{localize('add')}}</button>
                         </flat-button>
                     </div>
@@ -236,14 +236,14 @@
                     <paper-input label="Inventory Require" id="edit_InventoryQuantity" type="number" value="{{editProductData.inventory_use}}"
                         allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
                     <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress>
-                    <flat-button on-tap="openBrowseImageFile" class="btn">
+                    <flat-button on-click="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
                         <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
                     </flat-button>
-                    <flat-button class="btn" on-tap="openAddPartDialog">
+                    <flat-button class="btn" on-click="openAddPartDialog">
                         <button>{{localize('add-part')}}</button>
                     </flat-button>
-                    <flat-button class="btn" on-tap="clearPartFromProduct">
+                    <flat-button class="btn" on-click="clearPartFromProduct">
                         <button>{{localize('clear')}}</button>
                     </flat-button>
                     <div class="frame part-block">
@@ -271,10 +271,10 @@
                                             </div>
                                         </div>
                                         <div class="center">
-                                            <flat-button class="btn" on-tap="openEditPartDialog" part="[[part]]">
+                                            <flat-button class="btn" on-click="openEditPartDialog" part="[[part]]">
                                                 <button>{{localize('edit')}}</button>
                                             </flat-button>
-                                            <flat-button class="thunderbird btn" on-tap="removePartFromProduct">
+                                            <flat-button class="thunderbird btn" on-click="removePartFromProduct">
                                                 <button>{{localize('remove')}}</button>
                                             </flat-button>
                                         </div>
@@ -284,10 +284,10 @@
                         </ul>
                     </div>
                     <div class="center">
-                        <flat-button class="btn" on-tap="openProductList">
+                        <flat-button class="btn" on-click="openProductList">
                             <button>{{localize('dismiss')}}</button>
                         </flat-button>
-                        <flat-button class="btn shamrock" on-tap="saveProduct">
+                        <flat-button class="btn shamrock" on-click="saveProduct">
                             <button>{{localize('save')}}</button>
                         </flat-button>
                     </div>
@@ -398,7 +398,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="openEditProductCard" product="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                    <paper-icon-button on-click="openEditProductCard" product="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -409,7 +409,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="removeProduct" product="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-click="removeProduct" product="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -480,7 +480,7 @@
                         </template>
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="openAddProductCard">
+                        <flat-button class="btn" on-click="openAddProductCard">
                             <button>{{localize('add-product')}}</button>
                         </flat-button>
                     </div>
@@ -567,7 +567,7 @@
                     <paper-input label="Process Setup Time (second)" id="processSetup" value="{{processSetup}}" type="number" maxlength="9" error-message="number only"
                         min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
 
-                    <flat-button class="add-btn" on-tap="addProcessToPart">
+                    <flat-button class="add-btn" on-click="addProcessToPart">
                         <button>Add Process</button>
                     </flat-button>
                 </div>
@@ -581,17 +581,17 @@
                                     </p>
                                     <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
                                     <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
-                                    <paper-icon-button class="delete-btn" on-tap="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+                                    <paper-icon-button class="delete-btn" on-click="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </iron-list>
                     </div>
                 </div>
                 <div class="center">
-                    <paper-button class="btn" dialog-dismiss on-tap="closeAddPartDialog">
+                    <paper-button class="btn" dialog-dismiss on-click="closeAddPartDialog">
                         {{localize('dismiss')}}
                     </paper-button>
-                    <paper-button class="btn" dialog-confirm autofocus on-tap="addPartToProduct">
+                    <paper-button class="btn" dialog-confirm autofocus on-click="addPartToProduct">
                         {{localize('add-part')}}
                     </paper-button>
                 </div>
@@ -681,7 +681,7 @@
                     <paper-input label="{{localize('setup-time')}} ({{localize('second')}})" id="processSetup" value="{{processSetup}}" type="number"
                         maxlength="9" error-message="number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
 
-                    <flat-button class="add-btn" on-tap="addProcessToPart">
+                    <flat-button class="add-btn" on-click="addProcessToPart">
                         <button>Add Process</button>
                     </flat-button>
                 </div>
@@ -695,17 +695,17 @@
                                     </p>
                                     <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
                                     <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
-                                    <paper-icon-button class="delete-btn" on-tap="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+                                    <paper-icon-button class="delete-btn" on-click="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </iron-list>
                     </div>
                 </div>
                 <div class="center">
-                    <paper-button class="btn" dialog-dismiss on-tap="closeEditPartDialog">
+                    <paper-button class="btn" dialog-dismiss on-click="closeEditPartDialog">
                         {{localize('dismiss')}}
                     </paper-button>
-                    <paper-button class="btn" dialog-confirm autofocus on-tap="addPartToProduct">
+                    <paper-button class="btn" dialog-confirm autofocus on-click="addPartToProduct">
                         {{localize('add-part')}}
                     </paper-button>
                 </div>

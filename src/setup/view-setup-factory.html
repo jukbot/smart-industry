@@ -107,7 +107,7 @@
             <li>
                 <div class="card">
                     <h1 class="title">{{localize('factory-initialize')}}</h1>
-                       <paper-icon-button  on-tap="openHelpDialog" icon="vaadin:question-circle"></paper-icon-button> 
+                       <paper-icon-button  on-click="openHelpDialog" icon="vaadin:question-circle"></paper-icon-button> 
                     <div>
                         <paper-input label="{{localize('factory-name')}}" id="factoryName" value="[[persistedFactoryProfile.name]]" type="text" required
                             always-float-label></paper-input>
@@ -208,10 +208,10 @@
                         <paper-input label="{{localize('delay-between-station')}} ({{localize('minute')}})" name="stationDelay" id="delayBetweenStation"
                             value="[[persistedFactorySchedule.delay]]" type="number" min="0" max="180" step="1" auto-validate
                             error-message="Input out of range" required always-float-label></paper-input>
-                        <flat-button on-tap="restoreDefault" class="btn" title="Restore Default">
+                        <flat-button on-click="restoreDefault" class="btn" title="Restore Default">
                             <button>{{localize('restore')}}</button>
                         </flat-button>
-                        <flat-button on-tap="saveValue" class="shamrock btn" title="Save settings">
+                        <flat-button on-click="saveValue" class="shamrock btn" title="Save settings">
                             <button>{{localize('save-settings')}}</button>
                         </flat-button>
 

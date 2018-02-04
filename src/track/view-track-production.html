@@ -149,13 +149,13 @@
                                     </paper-item>
                                 </template>
                             </vaadin-combo-box>
-                            <paper-button class="btn" on-tap="receiveJob" disabled$="[[isDoneOrWIP(item.job_status)]]" job="[[item]]">
+                            <paper-button class="btn" on-click="receiveJob" disabled$="[[isDoneOrWIP(item.job_status)]]" job="[[item]]">
                                 {{localize('receive-job')}}
                             </paper-button>
-                            <paper-button class="btn shamrock" on-tap="openFinishDialog" job="[[item]]" disabled$="[[isDone(item.job_status)]]">
+                            <paper-button class="btn shamrock" on-click="openFinishDialog" job="[[item]]" disabled$="[[isDone(item.job_status)]]">
                                 {{localize('finish-job')}}
                             </paper-button>
-                            <paper-button class="thunderbird btn" on-tap="removeJob" job="[[item]]">
+                            <paper-button class="thunderbird btn" on-click="removeJob" job="[[item]]">
                                 {{localize('remove')}}
                             </paper-button>
                         </div>
@@ -177,13 +177,13 @@
                                 <p>{{localize('updated')}}: [[timestampToTime(device.update)]]</p>
                             </div>
                             <paper-toggle-button class="switch" checked="[[device.enable]]" id="deviceControlSwitch" noink> {{localize('enabled')}}</paper-toggle-button>
-                            <flat-button class="btn" on-tap="resetCounter" device="[[device]]">
+                            <flat-button class="btn" on-click="resetCounter" device="[[device]]">
                                 <button>{{localize('reset')}}</button>
                             </flat-button>
-                            <flat-button class="btn" on-tap="_openEditMachineCard" device="[[device]]">
+                            <flat-button class="btn" on-click="_openEditMachineCard" device="[[device]]">
                                 <button>{{localize('edit')}}</button>
                             </flat-button>
-                            <flat-button class="thunderbird btn" on-tap="removeDevice" device="[[device]]">
+                            <flat-button class="thunderbird btn" on-click="removeDevice" device="[[device]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -191,7 +191,7 @@
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-tap="openAddDeviceCard">
+                <flat-button class="big-btn" on-click="openAddDeviceCard">
                     <button>Add Device</button>
                 </flat-button>
             </div>
@@ -234,10 +234,10 @@
                 <paper-input label="Good" id="goodCount" value="{{good}}" type="number" always-float-label></paper-input>
                 <paper-input label="Defect" id="defectCount" value="{{defect}}" type="number" always-float-label></paper-input>
                 <div class="btn-group">
-                    <paper-button dialog-dismiss on-tap="closeFinishDialog">
+                    <paper-button dialog-dismiss on-click="closeFinishDialog">
                         {{localize('dismiss')}}
                     </paper-button>
-                    <paper-button dialog-confirm autofocus on-tap="updateFinish">
+                    <paper-button dialog-confirm autofocus on-click="updateFinish">
                         {{localize('save')}}
                     </paper-button>
                 </div>

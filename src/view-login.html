@@ -186,8 +186,8 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]"></firebase-document>
-    <firebase-query app-name="smart-mes" id="factoryData" path="/data"></firebase-query>
+    <firebase-document app-name="smart-mes" id="userDataTree" path="/user/[[user.uid]]"></firebase-document>
+    <firebase-query app-name="smart-mes" id="factoryDataTree" path="/data"></firebase-query>
     <iron-ajax id="requestSampleData" url="data/sample/sample.json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
     <app-indexeddb-mirror key="sampleData" data="{{sampleData}}" persisted-data="{{persistedSampleData}}">
@@ -219,7 +219,7 @@
             <div class="keep-session-checkbox">
               <paper-checkbox id="keepSession" checked$="[[remember]]" on-change="toggleKeepSession" noink>Keep me signed in</paper-checkbox>
             </div>
-            <paper-button class="login-btn" on-tap="login" title="Login" noink>Log in</paper-button>
+            <paper-button class="login-btn" on-click="login" title="Login" noink>Log in</paper-button>
 
             <div class="link">
               <a href="javascript:void(0)" on-click="showReset">Forgot?</a>
@@ -269,7 +269,7 @@
                 <a href="/term" target="_self" id="termOfService">Terms of Service</a>
             </div>
             </p>
-            <paper-button class="register-btn" on-tap="register" title="Register and Login" noink>Register and Login</paper-button>
+            <paper-button class="register-btn" on-click="register" title="Register and Login" noink>Register and Login</paper-button>
             <div class="link">
               <a href="javascript:void(0)" on-click="hideRegister">Already have account? Log in</a>
             </div>
@@ -281,14 +281,14 @@
               <p>Enter the email you used to signup with and we'll send you a link to reset your password.</p>
             </div>
             <flat-input>
-              <input type="email" id="resetPassword" name="resetPassword" placeholder="Email address" maxlength="30" auto-complete="email"
+              <input type="email" id="resetPasswordEmail" name="Reset Password E-mail" placeholder="Email address" maxlength="30" auto-complete="email"
                 required aria-labelledby="resetPasswordLabel">
               <span class="flat-md-decorator" error-message="Invalid Email" aria-hidden="true">
                 <label id="resetPasswordLabel">Email address</label>
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <paper-button class="reset-btn" on-tap="resetPassword" title="Reset password" noink>Reset Password</paper-button>
+            <paper-button class="reset-btn" on-click="resetPassword" title="Reset password" noink>Reset Password</paper-button>
             <div class="link">
               <a href="javascript:void(0)" rel="noopenner" on-click="hideReset">Return to login</a>
             </div>
@@ -301,7 +301,7 @@
             <p>[[successMessage]]</p>
           </div>
           <div class="toast-flex-item">
-            <paper-icon-button on-tap="_closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
+            <paper-icon-button on-click="_closeToastSuccess" data-name$="toastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
           </div>
         </div>
       </paper-toast>
@@ -311,7 +311,7 @@
             <p>[[errorMessage]]</p>
           </div>
           <div class="toast-flex-item">
-            <paper-icon-button on-tap="_closetoastError" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
+            <paper-icon-button on-click="_closeToastError" data-item$="toastError" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
           </div>
         </div>
       </paper-toast>
@@ -357,9 +357,6 @@
           rootPath: String
         }
       }
-      constructor() {
-        super()
-      }
 
       connectedCallback() {
         super.connectedCallback()
@@ -368,7 +365,7 @@
 
       _installListeners() {
         this.$.loginPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 0))
-        this.$.resetPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 1))
+        this.$.resetPasswordEmail.addEventListener('keyup', (e) => this._onEnterTrigger(e, 1))
         this.$.termOfService.addEventListener('click', (e) => this._goToTermOfService(e))
       }
 
@@ -430,9 +427,9 @@
                   this._showSuccessToast(
                     "Register successful. We've sent a confirmation link to your email you must follow in order to activate your account."
                   )
-                  const keyid = this.$.factoryData.ref.push().key
+                  const keyid = this.$.factoryDataTree.ref.push().key
                   this._addProfileInfo(username, email, organize, phone, keyid, timestamp)
-                  this.$.factoryData.ref.child(keyid).set(this.sampleData).catch(error => {
+                  this.$.factoryDataTree.ref.child(keyid).set(this.sampleData).catch(error => {
                     console.error(error)
                     this._showErrorToast(error.code)
                   })
@@ -440,8 +437,7 @@
                   console.error(error)
                   this._showErrorToast(error.code)
                 })
-            })
-            .catch((error) => {
+            }).catch((error) => {
               console.error(error)
               this._showErrorToast(error.code)
             })
@@ -451,7 +447,7 @@
       }
 
       _addProfileInfo(username, email, organize, phone, keyid, timestamp) {
-        this.$.userData.ref.set({
+        this.$.userDataTree.ref.set({
             displayname: username,
             email: email,
             photoURL: null,
@@ -460,19 +456,17 @@
             role: 'admin',
             key: keyid,
             created: timestamp
-          })
-          .catch(error => {
+          }).catch(error => {
             this._showErrorToast(error.code)
           })
       }
 
       resetPassword() {
-        let resetPassword = this.$.resetPassword.value
-        if (resetPassword) {
-          this.$.userAuth.sendPasswordResetEmail(resetPassword)
+        if (this.$.resetPasswordEmail.value) {
+          this.$.userAuth.sendPasswordResetEmail(this.$.resetPasswordEmail.value)
             .then((response) => {
               this._showSuccessToast('Reset password link has been send to your email.')
-              this.$.resetPassword.value = ""
+              this.$.resetPasswordEmail.value = ""
             })
             .catch((error) => {
               this._showErrorToast(error.code)
@@ -516,8 +510,9 @@
         this.$.toastSuccess.open()
       }
 
-      _closetoastError() {
-        this.$.toastError.close()
+      _closeToastError(e) {
+        console.log(e.target.dataset.item)
+        //this.$.toastError.close()
       }
 
       _closeToastSuccess() {

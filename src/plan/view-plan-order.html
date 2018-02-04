@@ -148,10 +148,10 @@
                     <vaadin-date-picker class="date-picker" label="{{localize('delivery-date')}}" min="[[todayDate]]" max="2030-01-01" name="delivery"
                         id="deliverySelector" initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input"
                         required always-float-label></vaadin-date-picker>
-                    <flat-button on-tap="printOrderReport" class="btn" title="Print order report">
+                    <flat-button on-click="printOrderReport" class="btn" title="Print order report">
                         <button>{{localize('print-order-report')}}</button>
                     </flat-button>
-                    <flat-button on-tap="createOrder" class="shamrock btn" title="Add order">
+                    <flat-button on-click="createOrder" class="shamrock btn" title="Add order">
                         <button>{{localize('add-to-schedule')}}</button>
                     </flat-button>
                 </div>

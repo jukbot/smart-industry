@@ -88,13 +88,13 @@
             </template>
           </vaadin-combo-box>
           <p>{{localize('user-id')}}: [[user.uid]]</p>
-          <flat-button on-tap="scanDevice" class="btn" title="Search sensor">
+          <flat-button on-click="scanDevice" class="btn" title="Search sensor">
             <button>Search Sensor</button>
           </flat-button>
-          <flat-button on-tap="showDevice" class="btn" title="Show sensor">
+          <flat-button on-click="showDevice" class="btn" title="Show sensor">
             <button>Show Sensor</button>
           </flat-button>
-          <flat-button on-tap="resetOrderCount" class="btn" title="Reset Order Count">
+          <flat-button on-click="resetOrderCount" class="btn" title="Reset Order Count">
             <button>{{localize('reset-order-count')}}</button>
           </flat-button>
           <paper-toggle-button class="switch" value="[[materialCount]]" on-change="changeMaterialCount" id="materialCountSwitch" noink>Raw Materials Calculation</paper-toggle-button>
@@ -104,17 +104,17 @@
         <div class="card">
           <h1 class="title">{{localize('account-settings')}}</h1>
           <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text" always-float-label></paper-input>
-          <flat-button on-tap="openBrowseImageFile" class="btn" title="{{localize('upload-profile-image')}}">
+          <flat-button on-click="openBrowseImageFile" class="btn" title="{{localize('upload-profile-image')}}">
             <button>{{localize('change-profile-image')}}</button>
             <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
           </flat-button>
-          <flat-button on-tap="deleteProfileImage" class="btn thunderbird" title="{{localize('remove-profile-image')}}">
+          <flat-button on-click="deleteProfileImage" class="btn thunderbird" title="{{localize('remove-profile-image')}}">
             <button>{{localize('remove-profile-image')}}</button>
           </flat-button>
-          <flat-button on-tap="deleteAccount" class="btn thunderbird" title="{{localize('delete-account')}}">
+          <flat-button on-click="deleteAccount" class="btn thunderbird" title="{{localize('delete-account')}}">
             <button>{{localize('delete-account')}}</button>
           </flat-button>
-          <flat-button on-tap="saveAccountSettings" class="btn shamrock" title="{{localize('save-settings')}}">
+          <flat-button on-click="saveAccountSettings" class="btn shamrock" title="{{localize('save-settings')}}">
             <button>{{localize('save-settings')}}</button>
           </flat-button>
         </div>
@@ -125,10 +125,10 @@
           <paper-input label="{{localize('email')}}" id="userEmail" type="email" readonly value="[[user.email]]" always-float-label></paper-input>
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password" always-float-label></paper-input>
           <paper-input label="{{localize('new-password')}}" id="newPassword" type="password" always-float-label></paper-input>
-          <flat-button on-tap="changePassword" class="btn" title="{{localize('change-password')}}">
+          <flat-button on-click="changePassword" class="btn" title="{{localize('change-password')}}">
             <button>{{localize('change-password')}}</button>
           </flat-button>
-          <flat-button on-tap="verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]">
+          <flat-button on-click="verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]">
             <button disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button>
           </flat-button>
         </div>
@@ -137,10 +137,10 @@
         <div class="card">
           <h1 class="title">{{localize('backup-settings')}}</h1>
           <p>{{localize('export-or-import-factory-data-to-backup-as-a-file')}}</p>
-          <flat-button on-tap="exportData" class="btn" title="{{localize('export-data')}}">
+          <flat-button on-click="exportData" class="btn" title="{{localize('export-data')}}">
             <button>{{localize('export-data')}}</button>
           </flat-button>
-          <flat-button on-tap="importData" class="btn" title="{{localize('import-data')}}">
+          <flat-button on-click="importData" class="btn" title="{{localize('import-data')}}">
             <button>{{localize('import-data')}}</button>
             <input type="file" accept="application/json,.json" name="import-file" id="importFile" />
           </flat-button>
@@ -163,13 +163,13 @@
             <p>{{localize('data-keychain')}}: [[usr.key]]</p>
             <p>{{localize('user-role')}}: [[usr.role]]</p>
           </div>
-          <flat-button on-tap="openManageKey" class="btn">
+          <flat-button on-click="openManageKey" class="btn">
             <button>{{localize('manage-keychain')}}</button>
           </flat-button>
-          <flat-button on-tap="openManageUser" class="btn">
+          <flat-button on-click="openManageUser" class="btn">
             <button>{{localize('manage-users')}}</button>
           </flat-button>
-          <flat-button on-tap="saveOrganizationSettings" class="btn shamrock" title="{{localize('save-settings')}}">
+          <flat-button on-click="saveOrganizationSettings" class="btn shamrock" title="{{localize('save-settings')}}">
             <button>{{localize('save-settings')}}</button>
           </flat-button>
         </div>
@@ -213,10 +213,10 @@
         <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
         <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
         <div class="btn-group">
-          <paper-button class="btn" dialog-dismiss on-tap="closeKeyDialog">
+          <paper-button class="btn" dialog-dismiss on-click="closeKeyDialog">
             {{localize('dismiss')}}
           </paper-button>
-          <paper-button class="btn shamrock" dialog-confirm autofocus on-tap="updateKey">
+          <paper-button class="btn shamrock" dialog-confirm autofocus on-click="updateKey">
             {{localize('save')}}
           </paper-button>
         </div>

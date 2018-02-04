@@ -95,7 +95,7 @@
           </nav>
           <div class="separator-line" role="separator"></div>
           <div class="flex-center">
-            <paper-button class="logout-btn" on-tap="logout" title="Logout">{{localize('logout-button')}}</paper-button>
+            <paper-button class="logout-btn" on-click="logout" title="Logout">{{localize('logout-button')}}</paper-button>
             <div class="user-info">
               <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
               <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="10">
@@ -139,7 +139,7 @@
           <p>{{localize(toastText)}}</p>
         </div>
         <div class="toast-flex-item">
-          <paper-icon-button on-tap="closeToastAlert" class="close-toast-button" icon="vaadin:close-big" noink></paper-icon-button>
+          <paper-icon-button on-click="closeToastAlert" class="close-toast-button" icon="vaadin:close-big" noink></paper-icon-button>
         </div>
       </div>
     </paper-toast>
@@ -310,7 +310,7 @@
         this.loadComplete || (this.loadComplete = true, Polymer.RenderStatus.afterNextRender(this, () => {
           // import lazy resource file
           Polymer.importHref(
-            this.resolveUrl('lazy-resources.html'),
+            this.resolveUrl('resources/lazy-resources.html'),
             () => {
               this._registerServiceWorker()
               this._networkChanged()

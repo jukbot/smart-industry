@@ -13,9 +13,6 @@
         display: block;
         --app-grid-columns: 1;
         --app-grid-item-height: 50%;
-      }
-
-      :root {
         --square-size: 1rem;
         --square-gap: 3px;
         --week-width: calc(var(--square-size) + var(--square-gap));
@@ -179,7 +176,7 @@
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData" data="{{historyData}}"></firebase-document>
-    <firebase-query app-name="notes" id="commitQuery" path="/data/[[k.key]]/commitData" data="{{commitData}}">
+    <firebase-query app-name="smart-mes" id="commitQuery" path="/data/[[k.key]]/commitData" data="{{commitData}}">
 </firebase-query>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
@@ -188,7 +185,7 @@
           <h1 class="title">Product Order Statistics</h1>
           <google-chart id="column" type="column" options="[[columnOptions]]" cols='[[columnItems]]' rows='[[rowItems]]'></google-chart>
           <div class="center">
-            <flat-button class="btn" on-tap="clearStatistic">
+            <flat-button class="btn" on-click="clearStatistic">
               <button>Reset Statistics</button>
             </flat-button>
           </div>
@@ -240,6 +237,7 @@
               High
             </div>
           </div>
+          <paper-button on-click="temp"></paper-button>
         </div>
       </li>
     </ul>
@@ -307,17 +305,17 @@
           '_groupAndSum(historyData.order)',
         ]
       }
-              
+
       _installListeners() {
         this.addEventListener('iron-resize', this._setChartSize.bind(this))
       }
 
       _setChartSize() {
-        this.width = this.$.chartContainer.offsetWidth;
-        this.height = this.$.chartContainer.offsetHeight;
+        this.width = this.$.chartContainer.offsetWidth
+        this.height = this.$.chartContainer.offsetHeight
         if (this.width > 0) {
           this.columnOptions = {
-            width: this.width - 40,
+            width: this.width,
             height: 500,
             vAxis: {
               "minValue": 0,
@@ -342,7 +340,7 @@
           ]
         }
         const products = Object.values(productObject)
-        const unique = (v, i, a) => a.indexOf(v) === i
+        const unique = (v, i, a)  => a.indexOf(v) === i
         const productNames = products.map(product => product.order_product).filter(unique)
         const groupByName = productNames.map(name => products.filter(product => product.order_product === name))
         const quantitySum = groupByName.map(group => {
@@ -361,6 +359,11 @@
           this.toastText = "notification-delete-successfully"
           this.$.toastAlert.open()
         }
+      }
+
+      temp() {
+        let t = Array(isLeapYear(new Date().getFullYear()) ? 366 : 365).fill('0');
+        this.$.commitQuery.set(t)
       }
     }
     customElements.define(ViewDashboardStatistic.is, ViewDashboardStatistic);

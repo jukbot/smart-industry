@@ -143,10 +143,10 @@
                         min="[[todayDate]]" max="2030-01-01" name="delivery" id="editDeliverySelector" initial-position="[[todayDate]]"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label='true'></vaadin-date-picker>
                     <div class="center">
-                        <flat-button class="btn" on-tap="dismissEditOrder">
+                        <flat-button class="btn" on-click="dismissEditOrder">
                             <button>{{localize('dismiss')}}</button>
                         </flat-button>
-                        <flat-button class="btn shamrock" on-tap="updateOrder">
+                        <flat-button class="btn shamrock" on-click="updateOrder">
                             <button>{{localize('save')}}</button>
                         </flat-button>
                     </div>
@@ -275,7 +275,7 @@
                             </template>
                             <template>
                                 <div class="cell last">
-                                    <paper-icon-button on-tap="openEditOrderCard" order="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                                    <paper-icon-button on-click="openEditOrderCard" order="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
@@ -286,17 +286,17 @@
                             </template>
                             <template>
                                 <div class="cell numeric last">
-                                    <paper-icon-button on-tap="deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-click="deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
 
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-tap="refreshOrderTable">
+                        <flat-button class="btn" on-click="refreshOrderTable">
                             <button>{{localize('refresh')}}</button>
                         </flat-button>
-                        <flat-button class="btn" on-tap="reSchedule">
+                        <flat-button class="btn" on-click="reSchedule">
                             <button>{{localize('reschedule')}}</button>
                         </flat-button>
                     </div>
@@ -438,14 +438,14 @@
                             </template>
                             <template>
                                 <div class="cell numeric last">
-                                    <paper-icon-button on-tap="deleteJob" job="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.job_status)]]"></paper-icon-button>
+                                    <paper-icon-button on-click="deleteJob" job="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.job_status)]]"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
 
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn  thunderbird" on-tap="clearSchedule">
+                        <flat-button class="btn  thunderbird" on-click="clearSchedule">
                             <button>{{localize('clear-schedule')}}</button>
                         </flat-button>
                     </div>

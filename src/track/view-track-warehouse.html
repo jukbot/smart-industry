@@ -151,13 +151,13 @@
                             </template>
                             <template>
                                 <div class="cell numeric last">
-                                    <paper-icon-button on-tap="deleteItem" item="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+                                    <paper-icon-button on-click="deleteItem" item="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                                 </div>
                             </template>
                         </vaadin-grid-column>
                     </vaadin-grid>
                     <div class="center">
-                        <paper-button class="btn" on-tap="clearWarehouse">
+                        <paper-button class="btn" on-click="clearWarehouse">
                             Clear Warehouse
                         </paper-button>
                     </div>

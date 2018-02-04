@@ -65,10 +65,10 @@
                 </template>
             </vaadin-combo-box>
             <div class="center">
-                <flat-button class="btn" on-tap="openMachineListCard">
+                <flat-button class="btn" on-click="openMachineListCard">
                     <button>{{localize('dismiss')}}</button>
                 </flat-button>
-                <flat-button class="btn shamrock" on-tap="addMachine">
+                <flat-button class="btn shamrock" on-click="addMachine">
                     <button disabled="[[disabled]]">{{localize('add')}}</button>
                 </flat-button>
             </div>
@@ -94,10 +94,10 @@
                 </template>
             </vaadin-combo-box>
             <div class="center">
-                <flat-button class="btn" on-tap="openMachineListCard">
+                <flat-button class="btn" on-click="openMachineListCard">
                     <button>{{localize('dismiss')}}</button>
                 </flat-button>
-                <flat-button class="btn shamrock" on-tap="saveMachine">
+                <flat-button class="btn shamrock" on-click="saveMachine">
                     <button>{{localize('save')}}</button>
                 </flat-button>
             </div>
@@ -120,10 +120,10 @@
                                 <p>{{localize('machine-max-capacity')}}: [[machineItem.capacity]] {{localize('items')}}/ {{localize('hour')}}</p>
                                 <p>{{localize('machine-install-date')}}: [[getInstallDate(machineItem.install)]]</p>
                             </div>
-                            <flat-button class="btn btn-block" on-tap="openEditMachineCard" machine="[[machineItem]]">
+                            <flat-button class="btn btn-block" on-click="openEditMachineCard" machine="[[machineItem]]">
                                 <button>{{localize('edit')}}</button>
                             </flat-button>
-                            <flat-button class="btn btn-block thunderbird " on-tap="removeMachine" machine="[[machineItem]]">
+                            <flat-button class="btn btn-block thunderbird " on-click="removeMachine" machine="[[machineItem]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -131,7 +131,7 @@
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-tap="openAddMachineCard">
+                <flat-button class="big-btn" on-click="openAddMachineCard">
                     <button> {{localize('add-machine')}}</button>
                 </flat-button>
             </div>

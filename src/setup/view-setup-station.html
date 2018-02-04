@@ -118,22 +118,22 @@
                 </template>
             </vaadin-combo-box>
             <p class="machine-counter">You added [[stationMachineCount]] / [[stationMaxMachine]] {{localize('machine')}}</p>
-            <flat-button class="add-btn" on-tap="addMachine">
+            <flat-button class="add-btn" on-click="addMachine">
                 <button>{{localize('add-machine')}}</button>
             </flat-button>
             <div class="frame">
                 <ul class="flex-container wrap">
                     <template is="dom-repeat" items="{{machines}}" as="machineItem">
-                        <li class="flex-item machine-item" on-tap="removeMachine" number="[[index]]" title="Click here to remove this item">[[machineItem.name]]
+                        <li class="flex-item machine-item" on-click="removeMachine" number="[[index]]" title="Click here to remove this item">[[machineItem.name]]
                         </li>
                     </template>
                 </ul>
             </div>
             <div class="center">
-                <flat-button class="btn" on-tap="openStationMainCard">
+                <flat-button class="btn" on-click="openStationMainCard">
                     <button>{{localize('dismiss')}}</button>
                 </flat-button>
-                <flat-button class="btn shamrock" on-tap="addStation">
+                <flat-button class="btn shamrock" on-click="addStation">
                     <button>{{localize('add')}}</button>
                 </flat-button>
             </div>
@@ -156,22 +156,22 @@
                 </template>
             </vaadin-combo-box>
             <p class="machine-counter">You added [[stationEditMachineCount]] / [[stationMaxMachine]] {{localize('machine')}}</p>
-            <flat-button class="add-btn" on-tap="editAddMachine">
+            <flat-button class="add-btn" on-click="editAddMachine">
                 <button>{{localize('add-machine')}}</button>
             </flat-button>
             <div class="frame">
                 <ul class="flex-container wrap">
                     <template is="dom-repeat" items="{{editMachines}}" as="machineItem">
-                        <li class="flex-item machine-item" on-tap="editRemoveMachine" number="[[index]]" title="Click here to remove this item">[[machineItem.name]]
+                        <li class="flex-item machine-item" on-click="editRemoveMachine" number="[[index]]" title="Click here to remove this item">[[machineItem.name]]
                         </li>
                     </template>
                 </ul>
             </div>
             <div class="center">
-                <flat-button class="btn" on-tap="dismissEditStation">
+                <flat-button class="btn" on-click="dismissEditStation">
                     <button>{{localize('dismiss')}}</button>
                 </flat-button>
-                <flat-button class="btn shamrock" on-tap="saveStation">
+                <flat-button class="btn shamrock" on-click="saveStation">
                     <button>{{localize('save')}}</button>
                 </flat-button>
             </div>
@@ -201,10 +201,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <flat-button class="btn btn-block" on-tap="openEditStationCard" station="[[stationItem]]">
+                            <flat-button class="btn btn-block" on-click="openEditStationCard" station="[[stationItem]]">
                                 <button>{{localize('edit')}}</button>
                             </flat-button>
-                            <flat-button class="btn btn-block thunderbird" on-tap="removeStation" station="[[stationItem]]">
+                            <flat-button class="btn btn-block thunderbird" on-click="removeStation" station="[[stationItem]]">
                                 <button>{{localize('remove')}}</button>
                             </flat-button>
                         </div>
@@ -212,7 +212,7 @@
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-tap="openAddStationCard">
+                <flat-button class="big-btn" on-click="openAddStationCard">
                     <button> {{localize('add-station')}}</button>
                 </flat-button>
             </div>
