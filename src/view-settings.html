@@ -179,8 +179,7 @@
     <flat-dialog id="manageKeyDialog" scroll-action="lock">
         <h1 class="center">{{localize('manage-keychain')}}</h1>
         <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
-        <!-- <vaadin-combo-box id="demo1" label="Data Keychain" allow-custom-value></vaadin-combo-box> -->
-        <paper-input label="Data key" id="keyData" value="[[userdata.key]]" type="text" always-float-label></paper-input>
+        <vaadin-combo-box id="keyData" label="Data Keychain" items="{{getKeyList(userdata.key)}}" allow-custom-value></vaadin-combo-box> 
         <div class="btn-group">
           <paper-button class="btn" dialog-dismiss on-click="closeKeyDialog">
             {{localize('dismiss')}}
@@ -280,6 +279,13 @@
 
       openManageUser() {
 
+      }
+
+      getKeyList(key) {
+        if(!key) {
+          return [key]
+        }
+        return [key]
       }
 
       setKeyValue(key) {

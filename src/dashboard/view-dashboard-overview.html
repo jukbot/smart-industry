@@ -5,7 +5,7 @@
 <dom-module id="view-dashboard-overview">
   <template>
     <style include="shared-styles app-grid-style">
-       :host {
+      :host {
         margin: 10px;
         display: block;
       }
@@ -33,26 +33,44 @@
         margin-top: 20px;
       }
 
+      .btn {
+        width: 250px;
+      }
+
+      .new-user {
+        margin: 70px 0 10px 0;
+      }
+
+      .warn-blink {
+        animation: blinker 1s linear infinite;
+      }
+
+      @keyframes blinker {
+        50% {
+          border: 1px solid #F44336;
+        }
+      }
+
       @media (min-width: 360px) and (max-width: 768px) {
-         :host {
+        :host {
           --app-grid-columns: 1;
         }
       }
 
       @media (min-width: 769px) and (max-width: 1024px) {
-         :host {
+        :host {
           --app-grid-columns: 1;
         }
       }
 
       @media (min-width: 1025px) and (max-width: 1200px) {
-         :host {
+        :host {
           --app-grid-columns: 2;
         }
       }
 
       @media (min-width: 1201px) {
-         :host {
+        :host {
           --app-grid-columns: 3;
         }
       }
@@ -69,14 +87,17 @@
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <div class="card main-card">
       <ul class="app-grid">
-          <li>
-              <div class="frame">
-                <h1 class="title">Step 1: One more thing to done.</h1>
-                <a name="setup" role="link" href="[[rootPath]]app/setup" rel="setup" tabindex="-1" title="Setup">
+        <li>
+          <div class="frame warn-blink">
+            <h1 class="title new-user">Are you new user?</h1>
+            <p class="center">Please setup your factory before using.</p>
+            <div class="center">
+              <a name="setup" role="link" href="[[rootPath]]app/setup/factory" rel="setup" tabindex="-1" title="Setup factory">
                 <paper-button class="btn">Setup your factory</paper-button>
-                </a>
-              </div>
-            </li>
+            </div>
+            </a>
+          </div>
+        </li>
         <li>
           <div class="frame">
             <h1 class="title">{{localize('waiting-order')}}</h1>
