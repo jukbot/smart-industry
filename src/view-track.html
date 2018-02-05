@@ -8,17 +8,19 @@
 <dom-module id="view-track">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
       }
     </style>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-header id="subheader" slot="header" shadow>
       <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
-        <template is="dom-repeat" items="{{submenus}}">
-          <paper-tab name$="{{item.view}}">
-            <paper-icon-button icon="{{item.icon}}" alt="{{item.title}}"></paper-icon-button>
-            <span class="tab-title">{{localize(item.title)}}</span>
+        <template is="dom-repeat" items="[[submenus]]">
+          <paper-tab link role="tab" name$="[[item.view]]" disabled="[[item.disable]]">
+            <a href="[[rootPath]]app/track/[[item.view]]" tabindex="-1">
+              <paper-icon-button icon="[[item.icon]]" alt="[[item.title]]"></paper-icon-button>
+              <span class="tab-title">{{localize(item.title)}}</span>
+            </a>
           </paper-tab>
         </template>
       </paper-tabs>
@@ -45,11 +47,8 @@
 
       static get properties() {
         return {
-          route: {
-            type: Object,
-            notify: true
-          },
           language: String,
+          roothPath: String,
           tabs: {
             type: String,
             reflectToAttribute: true,
@@ -60,20 +59,20 @@
             type: Array,
             value: () => {
               return [{
-                  "title": "production",
-                  "view": "production",
-                  "icon": "vaadin:progressbar"
-                },
-                {
-                  "title": "warehouse",
-                  "view": "warehouse",
-                  "icon": "vaadin:storage"
-                },
-                {
-                  "title": "performance",
-                  "view": "performance",
-                  "icon": "vaadin:stopwatch"
-                }
+                "title": "production",
+                "view": "production",
+                "icon": "vaadin:progressbar"
+              },
+              {
+                "title": "warehouse",
+                "view": "warehouse",
+                "icon": "vaadin:storage"
+              },
+              {
+                "title": "performance",
+                "view": "performance",
+                "icon": "vaadin:stopwatch"
+              }
               ]
             }
           }

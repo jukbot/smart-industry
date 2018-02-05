@@ -107,7 +107,6 @@
             <li>
                 <div class="card">
                     <h1 class="title">{{localize('factory-initialize')}}</h1>
-                       <paper-icon-button  on-click="openHelpDialog" icon="vaadin:question-circle"></paper-icon-button> 
                     <div>
                         <paper-input label="{{localize('factory-name')}}" id="factoryName" value="[[persistedFactoryProfile.name]]" type="text" required
                             always-float-label></paper-input>
@@ -435,10 +434,6 @@
             connectedCallback() {
                 super.connectedCallback()
                 this.loadResources(this.resolveUrl('../../data/locales.json'))
-            }
-
-            openHelpDialog() {
-                this.$.setupHelpDialog.open()
             }
 
             saveValue() {

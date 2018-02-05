@@ -42,6 +42,14 @@
         margin: 0;
       }
 
+      a {
+        text-decoration: none;
+      }
+
+      a:focus {
+        outline: none;
+      }
+
       ul {
         padding: 0;
         list-style: none;
@@ -77,6 +85,14 @@
         color: var(--app-secondary-color);
       }
 
+      paper-tab[link] a {
+        /* These mixins (from iron-flex-layout) center the link text. */
+        @apply --layout-horizontal;
+        @apply --layout-center-center;
+        color: #FFFFFF;
+        text-decoration: none;
+       }
+  
       paper-dialog {
         max-width: 500px;
       }

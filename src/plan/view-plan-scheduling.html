@@ -85,7 +85,7 @@
         <firebase-document app-name="smart-mes" id="editOrderQuery" path="/data/[[k.key]]/orderData/[[editKey]]" data="{{editOrderItems}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
         <!-- CUSTOMER DATA -->
-        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/customerData" order-by-child="fname" data="{{customerItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/factoryData/customer" order-by-child="fname" data="{{customerItems}}"></firebase-query>
         <!-- PRODUCT DATA -->
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="name" data="{{productItems}}"></firebase-query>
         <!-- STATION -->

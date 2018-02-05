@@ -3,10 +3,10 @@
 <link rel="import" href="../bower_components/vaadin-material-theme/vaadin-text-field.html">
 <link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
-<link rel="import" href="../bower_components/vaadin-dialog/vaadin-dialog.html">
 <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="view-app.html">
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-settings">
@@ -31,7 +31,7 @@
         padding: 10px 0;
       }
 
-      .organization-meta-data>p {
+      .meta-data>p {
         padding: 5px 0;
       }
 
@@ -62,13 +62,14 @@
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-messaging app-name="smart-mes" id="messaging" active="[[active]]" status-known="[[statusKnown]]" push-supported="[[pushSupported]]"
       on-message="handleMessage" token="{{token}}"></firebase-messaging>
-    <firebase-document app-name="smart-mes" id="appData" path="/data/[[usr.key]]" data="{{appdata}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{usr}}"></firebase-document>
+    <firebase-query app-name="smart-mes" id="appRoot" path="/data"></firebase-query>
+    <firebase-document app-name="smart-mes" id="appData" path="/data/[[userdata.key]]" data="{{appdata}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{userdata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userToken" path="/user/[[user.uid]]/token" data="[[token]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[usr.key]]/factoryData/order" data="[[factoryOrderIndex]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[usr.key]]/appData/notification" data="[[notification]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[usr.key]]/appData/email_alert" data="[[emailAlert]]"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appMaterialCount" path="/data/[[usr.key]]/appData/material_count" data="[[materialCount]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryOrderIndex" path="/data/[[userdata.key]]/factoryData/order" data="[[factoryOrderIndex]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appNotification" path="/data/[[userdata.key]]/appData/notification" data="[[notification]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appEmailAlert" path="/data/[[userdata.key]]/appData/email_alert" data="[[emailAlert]]"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appMaterialCount" path="/data/[[userdata.key]]/appData/material_count" data="[[materialCount]]"></firebase-document>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <iron-ajax url="data/languages.json" auto handle-as="json" last-response="{{languageItems}}"></iron-ajax>
     <iron-ajax id="requestSampleData" url="data/sample/sample-parallel.json" handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
@@ -158,16 +159,16 @@
       <li>
         <div class="card">
           <h1 class="title">{{localize('organization-settings')}}</h1>
-          <paper-input label="{{localize('organization')}}" id="organizationName" value="[[usr.organization]]" type="text" always-float-label></paper-input>
-          <div class="organization-meta-data">
-            <p>{{localize('data-keychain')}}: [[usr.key]]</p>
-            <p>{{localize('user-role')}}: [[usr.role]]</p>
+          <paper-input label="{{localize('company')}}" id="companyName" value="[[userdata.company]]" type="text" always-float-label></paper-input>
+          <div class="meta-data">
+            <p>{{localize('data-keychain')}}: [[userdata.key]]</p>
+            <p>{{localize('user-role')}}: [[userdata.role]]</p>
           </div>
           <flat-button on-click="openManageKey" class="btn">
             <button>{{localize('manage-keychain')}}</button>
           </flat-button>
           <flat-button on-click="openManageUser" class="btn">
-            <button>{{localize('manage-users')}}</button>
+            <button disabled>{{localize('manage-users')}}</button>
           </flat-button>
           <flat-button on-click="saveOrganizationSettings" class="btn shamrock" title="{{localize('save-settings')}}">
             <button>{{localize('save-settings')}}</button>
@@ -175,43 +176,11 @@
         </div>
       </li>
     </ul>
-    <vaadin-dialog id="manageKeyDialog" class="dialog">
-      <template>
-        <custom-style>
-          <style include="view-settings">
-             :host {
-              max-width: 500px;
-              margin-top: 30vh;
-              --app-background-color: transpalent;
-              --paper-input-container-focus-color: var( --app-primary-color);
-            }
-
-            [part="content"] {
-              padding: 20px 30px;
-            }
-
-            h1 {
-              margin: 10px 0 20px 0;
-            }
-
-            .center {
-              text-align: center;
-            }
-
-            .btn-group {
-              margin: 10px 0 0 0;
-              display: flex;
-              text-align: center;
-            }
-
-            .btn {
-              margin: 0 10px 0px 10px;
-            }
-          </style>
-        </custom-style>
+    <flat-dialog id="manageKeyDialog" scroll-action="lock">
         <h1 class="center">{{localize('manage-keychain')}}</h1>
         <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
-        <paper-input label="Data key" id="keyData" value="[[usr.key]]" type="text" always-float-label></paper-input>
+        <!-- <vaadin-combo-box id="demo1" label="Data Keychain" allow-custom-value></vaadin-combo-box> -->
+        <paper-input label="Data key" id="keyData" value="[[userdata.key]]" type="text" always-float-label></paper-input>
         <div class="btn-group">
           <paper-button class="btn" dialog-dismiss on-click="closeKeyDialog">
             {{localize('dismiss')}}
@@ -220,8 +189,7 @@
             {{localize('save')}}
           </paper-button>
         </div>
-      </template>
-    </vaadin-dialog>
+    </flat-dialog>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
   </template>
 
@@ -274,7 +242,7 @@
       }
       static get observers() {
         return [
-          'setKeyValue(usr.key)'
+          'setKeyValue(userdata.key)'
         ]
       }
 
@@ -320,6 +288,15 @@
 
       updateKey() {
         if (this.newKey) {
+        //   this.$.appRoot.ref.child(this.newKey).once('value')
+        //   .then((snapshot)=> {
+        //   let value = snapshot.val();
+        //    console.log('key:', snapshot.key)
+        //   console.log('value:', value);
+        //   console.log('location:', value.account_capabilities);
+        //  })
+        //  .catch((err) => { console.log(err) })
+        // }
           this.$.userData.ref.update({
             key: this.newKey
           }).then(() => {
@@ -348,7 +325,7 @@
       }
 
       saveAccountSettings() {
-        let displayNameInput = this.$.displayName.value
+        const displayNameInput = this.$.displayName.value
         if (displayNameInput !== '' && displayNameInput !== this.user.displayName) {
           this.user.updateProfile({
             displayName: displayNameInput
@@ -364,10 +341,10 @@
       }
 
       saveOrganizationSettings() {
-        let organizationNameInput = this.$.organizationName.value
-        if (organizationNameInput !== '' && organizationNameInput !== this.usr.organization) {
+        const companyNameInput = this.$.companyName.value
+        if (companyNameInput !== '' && companyNameInput !== this.userdata.company) {
           this.$.userData.ref.update({
-            organization: organizationNameInput
+            company: companyNameInput
           }).then(() => {
             this.toastText = 'notification-save-settings'
             this.$.toastAlert.open()
@@ -584,7 +561,7 @@
               //console.log(req.response);
               console.info('%cLoaded sample data status:' + req.status + " " + req.statusText,
                 'color:green;');
-              this.$.factoryData.ref.child(this.usr.key).set(this.sampleData).catch(error => {
+              this.$.factoryData.ref.child(this.userdata.key).set(this.sampleData).catch(error => {
                 console.error(error)
               })
             }).catch((rejected) => {

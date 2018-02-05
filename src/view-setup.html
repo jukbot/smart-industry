@@ -11,17 +11,19 @@
 <dom-module id="view-setup">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
       }
     </style>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <app-header id="subheader" slot="header" shadow>
       <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
-        <template is="dom-repeat" items="{{submenus}}">
-          <paper-tab name$="{{item.view}}">
-            <paper-icon-button icon="{{item.icon}}"></paper-icon-button>
-            <span class="tab-title">{{localize(item.title)}}</span>
+        <template is="dom-repeat" items="[[submenus]]">
+          <paper-tab link role="tab" name$="[[item.view]]" disabled="[[item.disable]]">
+            <a href="[[rootPath]]app/setup/[[item.view]]" tabindex="-1">
+              <paper-icon-button icon="[[item.icon]]" alt="[[item.title]]"></paper-icon-button>
+              <span class="tab-title">{{localize(item.title)}}</span>
+            </a>
           </paper-tab>
         </template>
       </paper-tabs>
@@ -53,11 +55,8 @@
 
       static get properties() {
         return {
-          route: {
-            type: Object,
-            notify: true
-          },
           language: String,
+          roothPath: String,
           tabs: {
             type: String,
             reflectToAttribute: true,
@@ -68,35 +67,35 @@
             type: Array,
             value: () => {
               return [{
-                  "title": "factory",
-                  "view": "factory",
-                  "icon": "vaadin:factory"
-                },
-                {
-                  "title": "machine",
-                  "view": "machine",
-                  "icon": "vaadin:automation"
-                },
-                {
-                  "title": "station",
-                  "view": "station",
-                  "icon": "vaadin:viewport"
-                },
-                {
-                  "title": "product",
-                  "view": "product",
-                  "icon": "vaadin:barcode"
-                },
-                {
-                  "title": "customer",
-                  "view": "customer",
-                  "icon": "vaadin:clipboard-user"
-                },
-                {
-                  "title": "inventory",
-                  "view": "inventory",
-                  "icon": "vaadin:stock"
-                }
+                "title": "factory",
+                "view": "factory",
+                "icon": "vaadin:factory"
+              },
+              {
+                "title": "machine",
+                "view": "machine",
+                "icon": "vaadin:automation"
+              },
+              {
+                "title": "station",
+                "view": "station",
+                "icon": "vaadin:viewport"
+              },
+              {
+                "title": "product",
+                "view": "product",
+                "icon": "vaadin:barcode"
+              },
+              {
+                "title": "customer",
+                "view": "customer",
+                "icon": "vaadin:clipboard-user"
+              },
+              {
+                "title": "inventory",
+                "view": "inventory",
+                "icon": "vaadin:stock"
+              }
               ]
             }
           }

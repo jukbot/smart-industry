@@ -4,60 +4,8 @@
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <script src="../utilizes/formatDate.js"></script>
-
 <dom-module id="view-dashboard-statistic">
-  <script>
-    /**
-     * @ViewDashboardStatistic
-     * @polymer 
-     * @extends {Polymer.Element}
-     * @appliesMixin Polymer.AppLocalizeBehavior
-     */
-    class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
-      Polymer.Element) {
-      static get is() {
-        return 'view-dashboard-statistic';
-      }
-
-      static get properties() {
-        return {
-          language: String,
-          historyData: {
-            type: Object,
-            notify: true
-          },
-          columnOptions: Object,
-          width: Number,
-          height: Number,
-          rowItems: Array,
-          toastText: String,
-          columnItems: {
-            type: Array,
-            value: () => {
-              return [{
-                "label": "Data",
-                "type": "string"
-              }, {
-                "label": "No. of orders",
-                "type": "number"
-              }, {
-                "type": "string",
-                "role": 'style'
-              }]
-
-            }
-          },
-          commitData: {
-            type: Array,
-            value() {
-              return this.commit || Array(isLeapYear() ? 366 : 365).fill().map((_, i) => ({ 'level': 0, 'commit': 0, 'dayno': i + 1, 'date': dateFromDays(i + 1) }));
-            }
-          }
-        }
-      }
-
-      static get template() {
-        return Polymer.html`
+  <template>
     <style include="shared-styles app-grid-style">
       :host {
         margin: 10px;
@@ -121,8 +69,8 @@
       }
 
       /* .days li:nth-child(odd) {
-        visibility: hidden;
-      } */
+            visibility: hidden;
+          } */
 
       .squares li {
         background-color: #EDEDEE;
@@ -175,9 +123,9 @@
       .tooltip {
         position: relative;
         display: inline-block;
-    }
-    
-    .tooltip .tooltiptext {
+      }
+
+      .tooltip .tooltiptext {
         visibility: hidden;
         width: 120px;
         background-color: rgba(0, 0, 0, 0.75);
@@ -190,10 +138,10 @@
         bottom: 150%;
         left: 50%;
         margin-left: -60px;
-    }
-    
+      }
 
-    .tooltip .tooltiptext::after {
+
+      .tooltip .tooltiptext::after {
         content: "";
         position: absolute;
         top: 100%;
@@ -202,7 +150,7 @@
         border-width: 5px;
         border-style: solid;
         border-color: black transparent transparent transparent;
-    }
+      }
 
       .tooltip:hover .tooltiptext {
         visibility: visible;
@@ -227,7 +175,7 @@
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData" data="{{historyData}}"></firebase-document>
     <firebase-query app-name="smart-mes" id="commitQuery" path="/data/[[k.key]]/commitData" data="{{commitData}}">
-</firebase-query>
+    </firebase-query>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
@@ -269,7 +217,9 @@
               </ul>
               <ul class="squares">
                 <template is="dom-repeat" items="{{commitData}}">
-                  <li class="tooltip" data-level$="[[item.level]]"><span class="tooltiptext">[[item.commit]] commits on [[item.date]]</span></li>
+                  <li class="tooltip" data-level$="[[item.level]]">
+                    <span class="tooltiptext">[[item.commit]] commits on [[item.date]]</span>
+                  </li>
                 </template>
               </ul>
             </div>
@@ -286,13 +236,61 @@
             </div>
           </div>
           <div class="center">
-          <paper-button class="btn" on-click="resetWorkLevelStatistics">Reset Working Statistics</paper-button>
-          </div>  
+            <paper-button class="btn" on-click="resetWorkLevelStatistics">Reset Working Statistics</paper-button>
+          </div>
         </div>
       </li>
     </ul>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
-    `
+  </template>
+  <script>
+    /**
+     * @ViewDashboardStatistic
+     * @polymer 
+     * @extends {Polymer.Element}
+     * @appliesMixin Polymer.AppLocalizeBehavior
+     */
+    class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
+      Polymer.Element) {
+      static get is() {
+        return 'view-dashboard-statistic';
+      }
+
+      static get properties() {
+        return {
+          language: String,
+          historyData: {
+            type: Object,
+            notify: true
+          },
+          columnOptions: Object,
+          width: Number,
+          height: Number,
+          rowItems: Array,
+          toastText: String,
+          columnItems: {
+            type: Array,
+            value: () => {
+              return [{
+                "label": "Data",
+                "type": "string"
+              }, {
+                "label": "No. of orders",
+                "type": "number"
+              }, {
+                "type": "string",
+                "role": 'style'
+              }]
+
+            }
+          },
+          commitData: {
+            type: Array,
+            value() {
+              return this.commit || Array(isLeapYear() ? 366 : 365).fill().map((_, i) => ({ 'level': 0, 'commit': 0, 'dayno': i + 1, 'date': dateFromDays(i + 1) }));
+            }
+          }
+        }
       }
 
       connectedCallback() {
@@ -308,7 +306,7 @@
       }
 
       _installListeners() {
-        this.addEventListener('iron-resize', this._setChartSize.bind(this))
+        this.addEventListener('iron-resize', this._setChartSize)
       }
 
       _setChartSize() {
@@ -364,8 +362,8 @@
 
       resetWorkLevelStatistics() {
         if (confirm("Are you sure do you want to reset work level statistics ?") == true) {
-        let t = Array(isLeapYear() ? 366 : 365).fill().map((_, i) => ({ 'level': 0, 'commit': 0, 'dayno': i + 1, 'date': dateFromDays(i + 1) }));
-        this.$.commitQuery.ref.set(t)
+          let t = Array(isLeapYear() ? 366 : 365).fill().map((_, i) => ({ 'level': 0, 'commit': 0, 'dayno': i + 1, 'date': dateFromDays(i + 1) }));
+          this.$.commitQuery.ref.set(t)
         }
       }
     }

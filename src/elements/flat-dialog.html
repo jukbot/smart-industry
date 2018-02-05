@@ -3,7 +3,7 @@
 <dom-module id="flat-dialog">
     <template>
         <style>
-             :host {
+            :host {
                 display: block;
                 margin: 0 auto;
                 background: white;
@@ -12,12 +12,11 @@
                 border-radius: .2em;
                 transition: all 0.3s;
                 width: 50%;
-                max-width: 700px;
+                max-width: 500px;
                 box-shadow: rgba(0, 0, 0, 0.24) -2px 5px 12px 0px, rgba(0, 0, 0, 0.12) 0px 0px 12px 0px;
             }
         </style>
-        <slot>
-            
+        <slot>   
         </slot>
     </template>
     <script>
@@ -34,7 +33,6 @@
                 return 'flat-dialog';
             }
         }
-
         window.customElements.define(FlatDialog.is, FlatDialog);
     </script>
 </dom-module>

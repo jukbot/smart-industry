@@ -6,7 +6,6 @@
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
@@ -15,10 +14,11 @@
 <!-- import style component -->
 <link rel="import" href="elements/flat-icons.html">
 <link rel="import" href="elements/flat-input.html">
+<link rel="import" href="elements/flat-button.html">
 
 <dom-module id="view-login">
   <template>
-    <style include="flat-input">
+    <style include="flat-input flat-button">
        :host {
         display: block;
         background-color: #ffffff;
@@ -28,6 +28,10 @@
       h2 {
         margin: 0;
         font-weight: 400;
+      }
+
+      p {
+        margin: 10px 0;
       }
 
       section {
@@ -64,32 +68,10 @@
         margin-bottom: 20px;
       }
 
-      .login-btn,
-      .register-btn,
-      .reset-btn,
-      .login-form,
-      .reset-form,
-      .register-form {
+      .btn,
+      .authen-form {
         width: 100%;
         margin: 10px auto;
-      }
-
-      paper-button {
-        font-size: 1rem;
-        font-weight: 500;
-        height: 50px;
-        color: #202020;
-        border: 1px solid #202020;
-      }
-
-      paper-button:hover,
-      paper-button.iron-selected {
-        color: #ffffff;
-        background-color: #202020;
-      }
-
-      p {
-        margin: 10px 0;
       }
 
       .link>a {
@@ -100,7 +82,7 @@
       }
 
       .link>a:hover {
-        color: #0070c9;
+        color: #0086f4;
       }
 
       .link>a:before,
@@ -196,13 +178,13 @@
       <div class="flex-item">
         <article>
           <iron-image preload fade class="logo" role="image" title="IMES" alt="Application logo" sizing="contain" src="[[rootPath]]images/logo/logo.svg"></iron-image>
-          <div hidden$="[[!loginForm]]" class="login-form">
+          <div hidden$="[[!loginForm]]" class="authen-form">
             <div class="form-title">
-              <h2>Log in</h2>
+              <h2>User Login</h2>
             </div>
             <flat-input>
               <input type="email" id="loginEmail" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" autofocus
-                required aria-labelledby="accountEmailLabel">
+                required aria-labelledby="accountEmailLabel" tabindex="0">
               <span class="flat-md-decorator" error-message="Invalid Email" aria-hidden="true">
                 <label id="accountEmailLabel">Email address</label>
                 <span class="flat-underline"></span>
@@ -210,7 +192,7 @@
             </flat-input>
             <flat-input>
               <input type="password" id="loginPassword" name="Password" placeholder="Password" maxlength="30" auto-complete="current-password"
-                autofocus required aria-labelledby="accountPasswordLabel" autocomplete="off">
+                autofocus required aria-labelledby="accountPasswordLabel" tabindex="1" autocomplete="off">
               <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="accountPasswordLabel">Password</label>
                 <span class="flat-underline"></span>
@@ -219,23 +201,25 @@
             <div class="keep-session-checkbox">
               <paper-checkbox id="keepSession" checked$="[[remember]]" on-change="toggleKeepSession" noink>Keep me signed in</paper-checkbox>
             </div>
-            <paper-button class="login-btn" on-click="login" title="Login" noink>Log in</paper-button>
-
+            <flat-button class="btn" on-click="login" title="Login">
+                <button tabindex="2">Login</button>
+            </flat-button>  
             <div class="link">
-              <a href="javascript:void(0)" on-click="showReset">Forgot?</a>
+              <a href="javascript:void(0)" tabindex="4" role="link" on-click="showReset">Forgot?</a>
             </div>
             <div class="link">
-              <a href="javascript:void(0)" on-click="showRegister">Don’t have an account? Sign up now.</a>
+              <a href="javascript:void(0)" tabindex="5" role="link" on-click="showRegister">Don’t have an account? Sign up now.</a>
             </div>
           </div>
 
-          <div hidden$="[[!registerForm]]" class="register-form">
+
+          <div hidden$="[[!registerForm]]" class="authen-form">
             <div class="form-title">
               <h2>Register</h2>
             </div>
             <flat-input>
               <input type="email" id="register_email" name="Email" placeholder="Email address" maxlength="30" auto-complete="email" required
-                aria-labelledby="registerEmailLabel">
+                aria-labelledby="registerEmailLabel" tabindex="0">
               <span class="flat-md-decorator" error-message="Invalid Email" aria-hidden="true">
                 <label id="registerEmailLabel">Email address</label>
                 <span class="flat-underline"></span>
@@ -243,22 +227,22 @@
             </flat-input>
             <flat-input>
               <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="30" required aria-labelledby="registerPasswordLabel"
-                autocomplete="off">
+              tabindex="1" autocomplete="off">
               <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="registerPasswordLabel">New password</label>
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
             <flat-input>
-              <input type="text" id="register_organization" name="Organization" placeholder="Organization" maxlength="30" required aria-labelledby="registerOrganizationLabel">
+              <input type="text" id="register_company" name="Company" placeholder="Company" maxlength="30" required aria-labelledby="registerCompanyLabel" tabindex="2">
               <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
-                <label id="registerOrganizationLabel">Organization</label>
+                <label id="registerCompanyLabel">Company name</label>
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
             <flat-input>
               <input type="tel" id="register_phone" name="Phone" placeholder="Phone" maxlength="10" required aria-labelledby="registerPhoneLabel"
-                pattern="\d{10}" onkeypress='return event.charCode >= 48 && event.charCode <= 57'>
+                pattern="\d{10}" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3">
               <span class="flat-md-decorator" error-message="Invalid Phone Number" aria-hidden="true">
                 <label id="registerPhoneLabel">Phone</label>
                 <span class="flat-underline"></span>
@@ -266,42 +250,48 @@
             </flat-input>
             <div class="link">
               <p>By signing up you agree to IMES’s
-                <a href="/term" target="_self" id="termOfService">Terms of Service</a>
+                <a href="[[rootPath]]term" target="_self" id="termOfService" tabindex="4" role="link" >Terms of Service</a>
             </div>
             </p>
-            <paper-button class="register-btn" on-click="register" title="Register and Login" noink>Register and Login</paper-button>
+            <flat-button class="btn" on-click="register" title="Register and Login">
+                <button tabindex="5">Register and Login</button>
+            </flat-button>  
             <div class="link">
-              <a href="javascript:void(0)" on-click="hideRegister">Already have account? Log in</a>
+              <a href="javascript:void(0)" on-click="hideRegister" tabindex="6" role="link" >Already have account? Log in</a>
             </div>
           </div>
 
-          <div hidden$="[[!resetForm]]" class="reset-form">
+
+          <div hidden$="[[!resetForm]]" class="authen-form">
             <div class="form-title">
               <h2>Reset your password</h2>
               <p>Enter the email you used to signup with and we'll send you a link to reset your password.</p>
             </div>
             <flat-input>
               <input type="email" id="resetPasswordEmail" name="Reset Password E-mail" placeholder="Email address" maxlength="30" auto-complete="email"
-                required aria-labelledby="resetPasswordLabel">
+                required aria-labelledby="resetPasswordLabel" tabindex="0">
               <span class="flat-md-decorator" error-message="Invalid Email" aria-hidden="true">
                 <label id="resetPasswordLabel">Email address</label>
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
-            <paper-button class="reset-btn" on-click="resetPassword" title="Reset password" noink>Reset Password</paper-button>
+            <flat-button class="btn" on-click="resetPassword" title="Reset Password">
+                <button tabindex="1">Reset Password</button>
+            </flat-button>  
             <div class="link">
-              <a href="javascript:void(0)" rel="noopenner" on-click="hideReset">Return to login</a>
+              <a href="javascript:void(0)" rel="noopenner" on-click="hideReset" tabindex="2" role="link">Return to login</a>
             </div>
           </div>
         </article>
       </div>
+    </section>
       <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
         <div class="toast-flex-container">
           <div class="toast-flex-item">
             <p>[[successMessage]]</p>
           </div>
           <div class="toast-flex-item">
-            <paper-icon-button on-click="_closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
+            <paper-icon-button on-click="closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
           </div>
         </div>
       </paper-toast>
@@ -311,11 +301,10 @@
             <p>[[errorMessage]]</p>
           </div>
           <div class="toast-flex-item">
-            <paper-icon-button on-click="_closeToastError" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
+            <paper-icon-button on-click="closeToastError" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
           </div>
         </div>
       </paper-toast>
-    </section>
   </template>
   <script>
     /**
@@ -361,6 +350,7 @@
       connectedCallback() {
         super.connectedCallback()
         requestAnimationFrame(this._installListeners.bind(this))
+        this.tabIndex = 0;
       }
 
       _installListeners() {
@@ -395,7 +385,7 @@
 
       register() {
         const email = this.$.register_email.value
-        const organize = this.$.register_organization.value
+        const company = this.$.register_company.value
         const phone = this.$.register_phone.value
         const password = this.$.register_passwd.value
         const username = 'Untitled'
@@ -410,7 +400,7 @@
             console.error("Error requesting data: " + error + " of request " + req)
           })
         }
-        if (email && organize && phone && password && username && timestamp && this.persistedSampleData) {
+        if (email && company && phone && password && username && timestamp && this.persistedSampleData) {
           this.$.userAuth.createUserWithEmailAndPassword(email, password)
             .then((response) => {
               this.$.userAuth.signInWithEmailAndPassword(email, password)
@@ -424,7 +414,7 @@
                     "Register successful. We've sent a confirmation link to your email you must follow in order to activate your account."
                   )
                   const keyid = this.$.factoryDataTree.ref.push().key
-                  this._addProfileInfo(username, email, organize, phone, keyid, timestamp)
+                  this._addProfileInfo(username, email, company, phone, keyid, timestamp)
                   this.$.factoryDataTree.ref.child(keyid).set(this.sampleData).catch(error => {
                     console.error(error)
                     this._showErrorToast(error.code)
@@ -442,13 +432,13 @@
         }
       }
 
-      _addProfileInfo(username, email, organize, phone, keyid, timestamp) {
+      _addProfileInfo(username, email, company, phone, keyid, timestamp) {
         this.$.userDataTree.ref.set({
             displayname: username,
             email: email,
             photoURL: null,
             phone: phone,
-            organization: organize,
+            company: company,
             role: 'admin',
             key: keyid,
             created: timestamp
@@ -496,6 +486,14 @@
         this.loginForm = true
       }
 
+      closeToastError(e) {
+        this.$.toastError.close()
+      }
+
+      closeToastSuccess() {
+        this.$.toastSuccess.close()
+      }
+
       _showErrorToast(text) {
         this.errorMessage = text
         this.$.toastError.open()
@@ -504,14 +502,6 @@
       _showSuccessToast(text) {
         this.successMessage = text
         this.$.toastSuccess.open()
-      }
-
-      _closeToastError(e) {
-        this.$.toastError.close()
-      }
-
-      _closeToastSuccess() {
-        this.$.toastSuccess.close()
       }
     }
     window.customElements.define(ViewLogin.is, ViewLogin)

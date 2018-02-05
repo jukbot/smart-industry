@@ -103,7 +103,7 @@
                 <p>{{localize('verify-status')}}:
                   <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span>
                 </p>
-                <p>{{localize('organization')}}: [[persistedUserData.organization]]</p>
+                <p>{{localize('organization')}}: [[persistedUserData.company]]</p>
               </paper-tooltip>
               <p>[[persistedUserData.displayname]]</p>
               <p>{{localize('version')}} 1.0.9</p>
@@ -132,7 +132,6 @@
         </iron-lazy-pages>
       </app-drawer-layout>
     </iron-pages>
-    <flat-dialog id="setupHelpDialog" scroll-action="lock" with-backdrop></flat-dialog>
     <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000"
       hidden="true">
       <div class="toast-flex-container">
@@ -309,8 +308,8 @@
           Polymer.importHref(
             this.resolveUrl('resources/lazy-resources.html'),
             () => {
-              _registerServiceWorker()
-              _notifyNetworkStatus()
+              this._registerServiceWorker()
+              this._notifyNetworkStatus()
               this.loadComplete = true
             },
             this._showPage404.bind(this),
