@@ -13,7 +13,7 @@
      * @extends {Polymer.Element}
      * @appliesMixin Polymer.AppLocalizeBehavior
      */
-    
+
     class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
       Polymer.Element) {
       static get is() {
@@ -51,15 +51,15 @@
           commitData: {
             type: Array,
             value() {
-              return this.commit ||  Array(isLeapYear() ? 366 : 365).fill().map((_,i) => ({ 'level' : 0, 'commit': 0,  'dayno': i+1, 'date': dateFromDays(i+1) }));
+              return this.commit || Array(isLeapYear() ? 366 : 365).fill().map((_, i) => ({ 'level': 0, 'commit': 0, 'dayno': i + 1, 'date': dateFromDays(i + 1) }));
             }
           }
         }
       }
 
       static get template() {
-          return Polymer.html`
-          <style include="shared-styles app-grid-style flat-button">
+        return Polymer.html`
+    <style include="shared-styles app-grid-style">
       :host {
         margin: 10px;
         display: block;
@@ -181,10 +181,10 @@
     .tooltip .tooltiptext {
         visibility: hidden;
         width: 120px;
-        background-color: rgba(0, 0, 0, 0.85);
+        background-color: rgba(0, 0, 0, 0.75);
         color: #fff;
         text-align: center;
-        border-radius: 6px;
+        border-radius: 3px;
         padding: 5px 0;
         position: absolute;
         z-index: 1;
@@ -205,12 +205,11 @@
         border-color: black transparent transparent transparent;
     }
 
-    .tooltip:hover .tooltiptext {
+      .tooltip:hover .tooltiptext {
         visibility: visible;
-    }
+      }
 
       .btn {
-        margin: 20px 0 4px 0;
         width: 250px;
       }
 
@@ -276,7 +275,7 @@
               </ul>
             </div>
             <div class="contrib-legend">
-              Low load
+              Low
               <ul class="legend">
                 <li style="background-color: #eee" class=""></li>
                 <li style="background-color: #c6e48b" class=""></li>
@@ -284,19 +283,19 @@
                 <li style="background-color: #239a3b" class=""></li>
                 <li style="background-color: #196127" class=""></li>
               </ul>
-              High load
+              High
             </div>
           </div>
           <div class="center">
-          <paper-button class="btn" on-click="resetWorkCommit">Reset Working Statistics</paper-button>
+          <paper-button class="btn" on-click="resetWorkLevelStatistics">Reset Working Statistics</paper-button>
           </div>  
         </div>
       </li>
     </ul>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     `
-    }
-    
+      }
+
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../../data/locales.json'));
@@ -343,12 +342,12 @@
           ]
         }
         const products = Object.values(productObject)
-        const unique = (v, i, a)  => a.indexOf(v) === i
+        const unique = (v, i, a) => a.indexOf(v) === i
         const productNames = products.map(product => product.order_product).filter(unique)
         const groupByName = productNames.map(name => products.filter(product => product.order_product === name))
         const quantitySum = groupByName.map(group => {
           const sum = group.reduce((total, arr) => total + arr.order_quantity, 0)
-              return [group[0].order_product, sum, group[0].product_color]
+          return [group[0].order_product, sum, group[0].product_color]
         })
         this.rowItems = quantitySum
         this.$.column.redraw()
@@ -356,7 +355,7 @@
       }
 
       resetOrderStatistic() {
-        if (confirm("Are you sure do you want to clear product order history ?") == true) {
+        if (confirm("Are you sure do you want to reset order statistics ?") == true) {
           this.$.historyQuery.ref.child('order').remove()
           this.$.column.redraw()
           this.toastText = "notification-delete-successfully"
@@ -364,9 +363,11 @@
         }
       }
 
-      resetWorkCommit() {
-        let t = Array(isLeapYear() ? 366 : 365).fill().map((_,i) => ({ 'level' : 0, 'commit': 0,  'dayno': i+1, 'date': dateFromDays(i+1) }));
+      resetWorkLevelStatistics() {
+        if (confirm("Are you sure do you want to reset work level statistics ?") == true) {
+        let t = Array(isLeapYear() ? 366 : 365).fill().map((_, i) => ({ 'level': 0, 'commit': 0, 'dayno': i + 1, 'date': dateFromDays(i + 1) }));
         this.$.commitQuery.ref.set(t)
+        }
       }
     }
     customElements.define(ViewDashboardStatistic.is, ViewDashboardStatistic);
