@@ -3,7 +3,7 @@
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-<script src="../utilizes/daysOfTheYear.js"></script>
+<script src="../utilizes/formatDate.js"></script>
 
 <dom-module id="view-dashboard-statistic">
   <script>
@@ -13,7 +13,6 @@
      * @extends {Polymer.Element}
      * @appliesMixin Polymer.AppLocalizeBehavior
      */
-
     class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
       Polymer.Element) {
       static get is() {

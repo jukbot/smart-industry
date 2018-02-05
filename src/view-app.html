@@ -46,13 +46,13 @@
 <link rel="import" href="elements/flat-button.html">
 <link rel="import" href="elements/flat-icons.html">
 <!-- import google api -->
-<link rel="import" href="../lib/app-analytics.html">
+<link rel="import" href="elements/app-analytics.html">
 <!-- import shared style component -->
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-app">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
       }
     </style>
@@ -118,18 +118,18 @@
             </app-toolbar>
           </app-header>
         </app-header-layout>
-          <iron-lazy-pages selected="[[subPageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
-            role="main" loading="{{loading}}">
-            <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]"></view-dashboard>
-            <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]"></view-setup>
-            <view-plan name="plan" route="[[subPageRoute]]" hidden$="[[!user]]"></view-plan>
-            <view-track name="track" route="[[subPageRoute]]" hidden$="[[!user]]"></view-track>
-            <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]"></view-help>
-            <view-settings name="settings" route="[[subPageRoute]]" hidden$="[[!user]]"></view-settings>
-            <view-404 name="404" route="[[subPageRoute]]" hidden$="[[!user]]"></view-404>
-            <view-offline name="offline" route="[[subPageRoute]]" hidden$="[[!user]]"></view-offline>
-            <view-error name="error" route="[[subPageRoute]]" hidden$="[[!user]]"></view-error>
-          </iron-lazy-pages>
+        <iron-lazy-pages selected="[[subPageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
+          role="main" loading="{{loading}}">
+          <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]"></view-dashboard>
+          <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]"></view-setup>
+          <view-plan name="plan" route="[[subPageRoute]]" hidden$="[[!user]]"></view-plan>
+          <view-track name="track" route="[[subPageRoute]]" hidden$="[[!user]]"></view-track>
+          <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]"></view-help>
+          <view-settings name="settings" route="[[subPageRoute]]" hidden$="[[!user]]"></view-settings>
+          <view-404 name="404" route="[[subPageRoute]]" hidden$="[[!user]]"></view-404>
+          <view-offline name="offline" route="[[subPageRoute]]" hidden$="[[!user]]"></view-offline>
+          <view-error name="error" route="[[subPageRoute]]" hidden$="[[!user]]"></view-error>
+        </iron-lazy-pages>
       </app-drawer-layout>
     </iron-pages>
     <flat-dialog id="setupHelpDialog" scroll-action="lock" with-backdrop></flat-dialog>
@@ -144,7 +144,7 @@
         </div>
       </div>
     </paper-toast>
-   <app-analytics key="UA-51514677-9"></app-analytics> 
+    <app-analytics key="UA-51514677-9"></app-analytics>
   </template>
   <script>
     /**
@@ -220,16 +220,14 @@
       ready() {
         super.ready()
         this.removeAttribute('unresolved')
-        Polymer.RenderStatus.afterNextRender(this, () => {
-          this._activateFetch()
-        })
       }
       _installListeners() {
-        this.addEventListener('show-invalid-url-warning', (e) => this._showPage404(e))
-        this.addEventListener('on-error', (e) => this.handleError(e))
         Polymer.RenderStatus.afterNextRender(this, () => {
-          window.addEventListener('online', (e) => this._networkChanged(e))
-          window.addEventListener('offline', (e) => this._networkChanged(e))
+          this._activateFetch()
+          this.addEventListener('show-invalid-url-warning', (e) => this._showPage404(e))
+          this.addEventListener('on-error', (e) => this.handleError(e))
+          window.addEventListener('online', (e) => _notifyNetworkStatus(e))
+          window.addEventListener('offline', (e) => _notifyNetworkStatus(e))
         })
       }
       logout() {
@@ -288,7 +286,6 @@
         if (page == 'dashboard') {
           this._pageLoaded(Boolean(oldPage))
         } else {
-          // When a load failed, it triggered a 404 which means we need to eagerly load the 404 page definition
           Polymer.importHref(
             this.resolveUrl('view-' + page + '.html'),
             this._pageLoaded.bind(this, Boolean(oldPage)),
@@ -309,45 +306,16 @@
       }
       _ensureLazyLoaded() {
         this.loadComplete || (this.loadComplete = true, Polymer.RenderStatus.afterNextRender(this, () => {
-          // import lazy resource file
           Polymer.importHref(
             this.resolveUrl('resources/lazy-resources.html'),
             () => {
-              this._registerServiceWorker()
-              this._networkChanged()
+              _registerServiceWorker()
+              _notifyNetworkStatus()
               this.loadComplete = true
             },
             this._showPage404.bind(this),
             true)
         }))
-      }
-      _registerServiceWorker() {
-        const greenColor = 'color: green'
-        const crimsonColor = 'color: crimson'
-        const purpleColor = 'color: purple'
-        const palevioletredColor = 'color: palevioletred'
-        // Load and register pre-caching Service Worker for offline usage
-        if ('serviceWorker' in navigator) {
-          // Register service worker
-          navigator.serviceWorker.register('service-worker.js', {
-            scope: Polymer.rootPath
-          }).then((registration) => {
-            console.info('%cService Worker Registered to ' + registration.scope, purpleColor)
-            Polymer.swRegistration = registration
-          }).catch((err) => {
-            console.error('%cService Worker Register Failed 😖: ' + err, crimsonColor)
-          })
-          // Check state of service worker
-          navigator.serviceWorker.ready.then((registration) => {
-            console.info('%cService Worker Ready 😃', greenColor)
-            return registration.navigationPreload.getState()
-          }).then(state => {
-            console.info('%cService Worker State:' + JSON.stringify(state), palevioletredColor)
-          })
-        } else {
-          // Browser not support service worker
-          console.warn('%cService Worker is not support by your browser.', crimsonColor)
-        }
       }
       _activateFetch() {
         if ('fetch' in window) {
@@ -395,7 +363,7 @@
           }
         })
       }
-      _networkChanged() {
+      _notifyNetworkStatus() {
         let oldOffline = this.offline
         this.offline = !navigator.onLine
         // Show the snackbar if the user is offline when starting a new session or if the network status changed.
@@ -421,6 +389,51 @@
         this.$.userIndexDB.refreshNetworkStatus()
         this.$.userAuth.refreshNetworkStatus()
         this.$.userData.refreshNetworkStatus()
+      }
+      _registerServiceWorker() {
+        const greenColor = "color: green";
+        const crimsonColor = "color: crimson";
+        const purpleColor = "color: purple";
+        const palevioletredColor = "color: palevioletred";
+        // Load and register pre-caching Service Worker for offline usage
+        if ("serviceWorker" in navigator) {
+          // Register service worker
+          navigator.serviceWorker
+            .register("service-worker.js", {
+              scope: Polymer.rootPath
+            })
+            .then(registration => {
+              console.info(
+                "%cService Worker Registered to " + registration.scope,
+                purpleColor
+              );
+              Polymer.swRegistration = registration;
+            })
+            .catch(err => {
+              console.error(
+                "%cService Worker Register Failed 😖: " + err,
+                crimsonColor
+              );
+            });
+          // Check state of service worker
+          navigator.serviceWorker.ready
+            .then(registration => {
+              console.info("%cService Worker Ready 😃", greenColor);
+              return registration.navigationPreload.getState();
+            })
+            .then(state => {
+              console.info(
+                "%cService Worker State:" + JSON.stringify(state),
+                palevioletredColor
+              );
+            });
+        } else {
+          // Browser not support service worker
+          console.warn(
+            "%cService Worker is not support by your browser.",
+            crimsonColor
+          );
+        }
       }
       _verifyEmailAlert(verified, signedIn) {
         if (!verified && signedIn) {
