@@ -945,7 +945,7 @@
                 const productColor = this.getRandomColor();
                 let productPart = this.productPart
                 let productCost = this.$.productCost.value || 0
-                let productDescription = this.$.productDescription.value || ''
+                let productDescription = this.$.productDescription.value || 'N/A'
                 let inventoryCode = this.$.inventoryCode.value || 'none'
                 let inventoryQuantity = this.$.inventoryQuantity.value || 0
                 let imageURL = "";
@@ -955,7 +955,7 @@
                         this._debouncer = Polymer.Debouncer.debounce(this._debouncer,
                             Polymer.Async.timeOut.after(3000), () => {
                                 imageURL = this.imageURL;
-                                this._addProduct(timestamp, productCost, productName, productSKU,
+                                this._addProductToDatabase(timestamp, productCost, productName, productSKU,
                                     inventoryCode, inventoryQuantity, productPart, productDescription, productColor,
                                     imageURL)
                                 this.toastText = 'Processing product.'
@@ -965,8 +965,8 @@
                     } else {
                         imageURL =
                             "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/default%2Fproduct%2Fstock-1.png?alt=media&token=6f83a0d2-5952-4e40-8a19-dbb51a8fbf37";
-                        this._addProduct(timestamp, productCost, productName, productSKU, inventoryCode,
-                            inventoryQuantity, productPart, productColor, imageURL)
+                        this._addProductToDatabase(timestamp, productCost, productName, productSKU, inventoryCode,
+                            inventoryQuantity, productPart, productDescription, productColor, imageURL)
                         this.openProductList()
                     }
                 } else {
@@ -975,7 +975,7 @@
                 }
             }
 
-            _addProduct(timestamp, productCost, productName, productSKU, inventoryCode, inventoryQuantity,
+            _addProductToDatabase(timestamp, productCost, productName, productSKU, inventoryCode, inventoryQuantity,
                 productPart, productDescription, productColor, imageURL) {
                 this.$.productQuery.ref.child(this.productKey).set({
                     add: timestamp,
@@ -1189,7 +1189,6 @@
                     i++
                 }
                 this.processBundle = mergeObj;
-                console.table(mergeObj)
                 return mergeObj
             }
 
