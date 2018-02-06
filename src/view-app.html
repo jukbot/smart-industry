@@ -226,8 +226,8 @@
           this._activateFetch()
           this.addEventListener('show-invalid-url-warning', (e) => this._showPage404(e))
           this.addEventListener('on-error', (e) => this.handleError(e))
-          window.addEventListener('online', (e) => _notifyNetworkStatus(e))
-          window.addEventListener('offline', (e) => _notifyNetworkStatus(e))
+          window.addEventListener('online', (e) => this._notifyNetworkStatus(e))
+          window.addEventListener('offline', (e) => this._notifyNetworkStatus(e))
         })
       }
       logout() {

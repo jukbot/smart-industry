@@ -677,7 +677,7 @@
             _refreshChart() {
                 if (this.scheduleItems.length > 0) {
                     let newChartData = this.scheduleItems.map((data) => {
-                        return [data.job_station.toString(), 'Order ' + data.order_no, data.order_color,
+                        return [data.job_station.toString() || 'N/A', 'Order ' + data.order_no, data.order_color,
                             data.start, data.end
                         ]
                     });
@@ -1089,7 +1089,7 @@
                             return i + setupArr[index][j]
                         })
                     })
-                    console.log('fuck workload: ' + workloadArr)
+                    console.log('fuck workload' + workloadArr)
                     // calculate workload into obj 
                     let workloadProcessObj = workloadArr
                     .map((k, i) => Object.assign({}, ...processArr[i]
