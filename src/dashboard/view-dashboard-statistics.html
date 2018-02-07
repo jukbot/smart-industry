@@ -4,7 +4,7 @@
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <script src="../utilizes/formatDate.js"></script>
-<dom-module id="view-dashboard-statistic">
+<dom-module id="view-dashboard-statistics">
   <template>
     <style include="shared-styles app-grid-style">
       :host {
@@ -253,8 +253,10 @@
     class ViewDashboardStatistic extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
       Polymer.Element) {
       static get is() {
-        return 'view-dashboard-statistic';
+        return 'view-dashboard-statistics';
       }
+
+      static get styleTemplate() { return Polymer.htmlLiteral`.shadowed { background: gray; }`; }
 
       static get properties() {
         return {

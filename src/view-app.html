@@ -201,6 +201,8 @@
           online: Boolean
         }
       }
+      static get styleTemplate() { return Polymer.htmlLiteral`.shadowed { background: gray; }`; }
+
       static get observers() {
         return [
           '_routeChanged(subRoute.*)',
@@ -224,7 +226,7 @@
       _installListeners() {
         Polymer.RenderStatus.afterNextRender(this, () => {
           this._activateFetch()
-          this.addEventListener('show-invalid-url-warning', (e) => this._showPage404(e))
+          this.addEventListener('show-invalid-url-warning', (e) => this._showPage404.bind(this))
           this.addEventListener('on-error', (e) => this.handleError(e))
           window.addEventListener('online', (e) => this._notifyNetworkStatus(e))
           window.addEventListener('offline', (e) => this._notifyNetworkStatus(e))
@@ -286,11 +288,15 @@
         if (page == 'dashboard') {
           this._pageLoaded(Boolean(oldPage))
         } else {
-          Polymer.importHref(
-            this.resolveUrl('view-' + page + '.html'),
-            this._pageLoaded.bind(this, Boolean(oldPage)),
-            this._showPage404.bind(this),
-            true)
+          // Start loading the overview page after we're done showing the login page.
+          requestAnimationFrame(() => {
+            setTimeout(() =>
+              Polymer.importHref(
+                this.resolveUrl('view-' + page + '.html'),
+                this._pageLoaded.bind(this, Boolean(oldPage)),
+                this._showPage404.bind(this),
+                true), 0);
+          });
         }
       }
       _pageLoaded(shouldResetLayout) {
@@ -309,9 +315,9 @@
           Polymer.importHref(
             this.resolveUrl('resources/lazy-resources.html'),
             () => {
+              this.loadComplete = true
               this._registerServiceWorker()
               this._notifyNetworkStatus()
-              this.loadComplete = true
             },
             this._showPage404.bind(this),
             true)

@@ -999,7 +999,6 @@
             }
 
             reSchedule() {
-                console.log(this.chartItems)
                 if (window.confirm(
                         "WARNING!! This will clear all schedules data")) {
                     this.$.scheduleQuery.ref.remove()
@@ -1098,7 +1097,7 @@
                     console.log('workload process object')
                     console.log(workloadProcessObj)
 
-                    // 8) Calculate sum workload of each process
+                    // 8) Calculate sum workload of each process 
                     // sum array as column
                     let sumWorkloadEachProcess = workloadArr.reduce((prev, cur) => {
                         return prev.map((item, index) => {
@@ -1111,7 +1110,8 @@
                             return a + b;
                         })];
                     });
-                    console.log('Sum of Workload ', sumWorkloadEachProcess)
+                    console.log('Sum Workload of each station ', sumWorkloadEachProcess)
+                    console.log('Sum workload of each order ' , sumWorkloadEachOrder)
 
                     // 9) Calculate weight of each process based on workload
                     let weight = []

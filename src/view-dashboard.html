@@ -1,37 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="dashboard/view-dashboard-overview.html">
 <link rel="import" href="dashboard/view-dashboard-notification.html">
-<link rel="import" href="dashboard/view-dashboard-statistic.html">
+<link rel="import" href="dashboard/view-dashboard-statistics.html">
 <link rel="import" href="view-app.html">
 <link rel="import" href="style/shared-styles.html">
 
 <dom-module id="view-dashboard">
-  <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
-      }
-    </style>
-    <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-    <app-header id="subheader" slot="header" shadow>
-      <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
-        <template is="dom-repeat" items="[[submenus]]">
-          <paper-tab link role="tab" name$="[[item.view]]" disabled="[[item.disable]]">
-            <a href="[[rootPath]]app/dashboard/[[item.view]]" tabindex="-1">
-              <paper-icon-button icon="[[item.icon]]" alt="[[item.title]]"></paper-icon-button>
-              <span class="tab-title">{{localize(item.title)}}</span>
-            </a>
-          </paper-tab>
-        </template>
-      </paper-tabs>
-    </app-header>
-    <iron-pages selected="[[tabs]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
-      <view-dashboard-overview name="overview"></view-dashboard-overview>
-      <view-dashboard-notification name="notification"></view-dashboard-notification>
-      <view-dashboard-statistic name="statistic"></view-dashboard-statistic>
-    </iron-pages>
-  </template>
-
   <script>
     /**
      * # Dashboard
@@ -43,8 +17,37 @@
      */
     class ViewDashboard extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
       Polymer.Element) {
+
       static get is() {
         return 'view-dashboard'
+      }
+
+      static get template() {
+        return Polymer.html`
+        <style include="shared-styles">
+            :host {
+              display: block;
+            }
+          </style>
+          <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
+          <app-header id="subheader" slot="header" shadow>
+            <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
+              <template is="dom-repeat" items="[[submenus]]">
+                <paper-tab link role="tab" name$="[[item.view]]" disabled="[[item.disable]]">
+                  <a href="[[rootPath]]app/dashboard/[[item.view]]" tabindex="-1">
+                    <paper-icon-button icon="[[item.icon]]" alt="[[item.title]]"></paper-icon-button>
+                    <span class="tab-title">{{localize(item.title)}}</span>
+                  </a>
+                </paper-tab>
+              </template>
+            </paper-tabs>
+          </app-header>
+          <iron-pages selected="[[tabs]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
+            <view-dashboard-overview name="overview"></view-dashboard-overview>
+            <view-dashboard-notification name="notification"></view-dashboard-notification>
+            <view-dashboard-statistics name="statistics"></view-dashboard-statistics>
+          </iron-pages>
+          `;
       }
 
       static get properties() {
@@ -72,7 +75,7 @@
               },
               {
                 "title": "statistics",
-                "view": "statistic",
+                "view": "statistics",
                 "icon": "vaadin:bar-chart"
               }
               ]
