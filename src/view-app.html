@@ -272,13 +272,15 @@
           this.$.drawer.close()
         }
       }
-      _routePageChanged(page, visible) {
+      _routePageChanged(page, isAttached) {
+        if (!isAttached) {
+          return
+        } 
         if (!page) {
+          this.set('route.path', '/app/dashboard');
           return
         }
-        if (!visible) {
-          return
-        }
+        Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
         this.page = page || 'login'
       }
       _showPage404() {
@@ -401,11 +403,8 @@
         const crimsonColor = "color: crimson";
         const purpleColor = "color: purple";
         const palevioletredColor = "color: palevioletred";
-        // Load and register pre-caching Service Worker for offline usage
         if ("serviceWorker" in navigator) {
-          // Register service worker
-          navigator.serviceWorker
-            .register("service-worker.js", {
+          navigator.serviceWorker.register("service-worker.js", {
               scope: Polymer.rootPath
             })
             .then(registration => {
@@ -421,7 +420,6 @@
                 crimsonColor
               );
             });
-          // Check state of service worker
           navigator.serviceWorker.ready
             .then(registration => {
               console.info("%cService Worker Ready 😃", greenColor);
@@ -435,7 +433,7 @@
             });
         } else {
           // Browser not support service worker
-          console.warn(
+          console.error(
             "%cService Worker is not support by your browser.",
             crimsonColor
           );
