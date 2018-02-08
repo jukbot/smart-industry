@@ -287,7 +287,7 @@
           commitData: {
             type: Array,
             value() {
-              return this.commit || Array(isLeapYear() ? 366 : 365).fill().map((_, i) => ({ 'level': 0, 'commit': 0, 'dayno': i + 1, 'date': dateFromDays(i + 1) }));
+              return this.commit || [...Array(isLeapYear() ? 366 : 365)].map((_, i) => ({ 'level': 0, 'commit': 0, 'dayno': i + 1, 'date': dateFromDays(i + 1) }));
             }
           }
         }
@@ -362,7 +362,7 @@
 
       resetWorkLevelStatistics() {
         if (confirm("Are you sure do you want to reset work level statistics ?") == true) {
-          let t = Array(isLeapYear() ? 366 : 365).fill().map((_, i) => ({ 'level': 0, 'commit': 0, 'dayno': i + 1, 'date': dateFromDays(i + 1) }));
+          let t = [...Array(isLeapYear() ? 366 : 365)].map((_, i) => ({ 'level': 0, 'commit': 0, 'dayno': i + 1, 'date': dateFromDays(i + 1) }));
           this.$.commitQuery.ref.set(t)
         }
       }
