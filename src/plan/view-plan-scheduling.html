@@ -155,8 +155,6 @@
                         <p>{{localize('late-order')}}: [[getLateOrder(orderItems)]] {{localize('order')}}</p>
                     </div>
                     <vaadin-grid id="orderTable" items="{{getSortedOrder(orderItems)}}" page-size="20">
-                        -->
-
                         <vaadin-grid-column flex="2">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_no">

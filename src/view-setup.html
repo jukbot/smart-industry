@@ -103,8 +103,7 @@
         }
       }
 
-      _tabsChanged(tabs, visible) {
-        if (!visible) return
+      _tabsChanged(tabs) {
         const resolvedTabsUrl = this.resolveUrl('setup/view-setup-' + tabs + '.html')
         Polymer.importHref(resolvedTabsUrl, null, null, true)
       }

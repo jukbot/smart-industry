@@ -80,7 +80,7 @@
         }
       }
 
-      _tabsChanged(tabs, visible) {
+      _tabsChanged(tabs) {
         let resolvedTabsUrl = this.resolveUrl('track/view-track-' + tabs + '.html')
         Polymer.importHref(resolvedTabsUrl, null, null, true)
       }
