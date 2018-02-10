@@ -68,7 +68,7 @@
     <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[usr.key]]/appData/language" data="[[language]]"></firebase-document>
     <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{usr}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
     <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
-    <iron-pages selected="[[pageData.page]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404" role="main">
+    <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" role="main">
       <view-term name="term" route="[[subRoute]]" hidden$="[[signedIn]]"></view-term>
       <view-login name="login" route="[[subRoute]]" hidden$="[[signedIn]]"></view-login>
       <view-404 name="404" route="[[subRoute]]"></view-404>
@@ -271,8 +271,8 @@
           this.$.drawer.close()
         }
       }
-      _routePageChanged(page, isAttached) {
-        if (!isAttached) {
+      _routePageChanged(page, visible) {
+        if (!visible) {
           return
         }
         if (!page) {
