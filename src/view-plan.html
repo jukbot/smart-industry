@@ -5,32 +5,6 @@
 <link rel="import" href="view-app.html">
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-plan">
-  <template>
-    <style include="shared-styles">
-       :host {
-        display: block;
-      }
-    </style>
-    <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-    <app-header id="subheader" slot="header" shadow>
-      <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
-        <template is="dom-repeat" items="[[submenus]]">
-          <paper-tab link role="tab" name$="[[item.view]]" disabled="[[item.disable]]">
-            <a href="[[rootPath]]app/plan/[[item.view]]" tabindex="-1">
-            <paper-icon-button icon="[[item.icon]]" alt="[[item.title]]"></paper-icon-button>
-            <span class="tab-title">{{localize(item.title)}}</span>
-            </a>
-          </paper-tab>
-        </template>
-      </paper-tabs>
-    </app-header>
-    <iron-pages selected="[[tabs]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
-      <view-plan-order id="order" name="order"></view-plan-order>
-      <view-plan-scheduling name="scheduling"></view-plan-scheduling>
-      <view-plan-production name="production"></view-plan-production>
-    </iron-pages>
-  </template>
-
   <script>
     /**
      * # Plan
@@ -46,6 +20,34 @@
         return 'view-plan'
       }
 
+      static get template() {
+        return Polymer.html`
+          <style include="shared-styles">
+            :host {
+             display: block;
+           }
+         </style>
+         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
+         <app-header id="subheader" slot="header" shadow>
+           <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
+             <template is="dom-repeat" items="[[submenus]]">
+               <paper-tab link role="tab" name$="[[item.view]]" disabled="[[item.disable]]">
+                 <a href="[[rootPath]]app/plan/[[item.view]]" tabindex="-1">
+                 <paper-icon-button icon="[[item.icon]]" alt="[[item.title]]"></paper-icon-button>
+                 <span class="tab-title">{{localize(item.title)}}</span>
+                 </a>
+               </paper-tab>
+             </template>
+           </paper-tabs>
+         </app-header>
+         <iron-pages selected="[[tabs]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
+           <view-plan-order id="order" name="order"></view-plan-order>
+           <view-plan-scheduling name="scheduling"></view-plan-scheduling>
+           <view-plan-production name="production"></view-plan-production>
+         </iron-pages>
+        `
+      }
+      
       static get properties() {
         return {
           language: String,
