@@ -5,12 +5,12 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-<link rel="import" href="redux-mixin.html"> 
+<link rel="import" href="redux-mixin-babel.html">
 
 <dom-module id="view-setup-station">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 display: block;
                 margin: 10px;
                 --app-grid-item-height: 50%;
@@ -180,10 +180,11 @@
         <div class="card main-card" hidden="[[showListStation]]">
             <h1 class="title">{{localize('station-management')}}</h1>
             <paper-input class="search-input" label="Search station name" id="searchStationInput" value="{{searchString::input}}" type="text"
-            always-float-label hidden="[[!stationItems]]"></paper-input>
+                always-float-label hidden="[[!stationItems]]"></paper-input>
             <h1 class="sub-title center" hidden="[[machineItems]]">{{localize('please-add-machine-before-adding-station')}}</h1>
             <ul class="app-grid">
-                <template is="dom-repeat" filter="{{searchStation(searchString)}}" observe="st_name" index-as="number" items="{{persistedStationData}}" as="stationItem">
+                <template is="dom-repeat" filter="{{searchStation(searchString)}}" observe="st_name" index-as="number" items="{{persistedStationData}}"
+                    as="stationItem">
                     <li>
                         <div class="station">
                             <div class="station-info-group">
