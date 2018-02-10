@@ -57,6 +57,7 @@
         display: block;
       }
     </style>
+    <!-- <app-analytics key="UA-51514677-9"></app-analytics> -->
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{pageData}}" tail="{{subRoute}}"></app-route>
     <app-route route="{{subRoute}}" pattern="/:page" data="{{subPageData}}" tail="{{subPageRoute}}"></app-route>
@@ -144,7 +145,7 @@
         </div>
       </div>
     </paper-toast>
-    <app-analytics key="UA-51514677-9"></app-analytics>
+
   </template>
   <script>
     /**

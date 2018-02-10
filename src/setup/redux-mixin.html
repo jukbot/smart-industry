@@ -1,6 +1,8 @@
-<!-- <link rel="import" href="../../node_modules/polymer-redux/dist/polymer-redux.html">
-<script src="../../node_modules/redux/dist/redux.min.js"></script>
+<link rel="import" href="../../node_modules/polymer-redux/dist/polymer-redux.html">
+<script src="../../node_modules/redux/dist/redux.min.js"></script> 
 <script>
+    //import Redux from '../../node_modules/redux/dist/redux.min.js';
+
     const initial = {
         machines: [],
         editMachines: []
@@ -84,5 +86,7 @@
             window.devToolsExtension() :
             v => v)
     );
+    //window.ReduxMixin = PolymerRedux(store);
     const ReduxMixin = PolymerRedux(store);
-</script> -->
+    //export default ReduxMixin;
+</script>

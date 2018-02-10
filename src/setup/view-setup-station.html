@@ -5,7 +5,7 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-<link rel="import" href="redux-mixin-babel.html">
+<link rel="import" href="redux-mixin.html"> 
 
 <dom-module id="view-setup-station">
     <template>
@@ -214,9 +214,7 @@
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-click="openAddStationCard">
-                    <button> {{localize('add-station')}}</button>
-                </flat-button>
+                <paper-button class="btn big" on-click="openAddStationCard">{{localize('add-station')}}</paper-button>
             </div>
         </div>
         <paper-toast id="toastAlert" always-on-top horizontal-align="right">{{localize(toastText)}}</paper-toast>
@@ -520,6 +518,7 @@
                 this.showEditStation = true
                 this.showAddStation = true
                 this.showListStation = false
+                this.clearField()
             }
         }
         customElements.define(ViewSetupStation.is, ViewSetupStation)
