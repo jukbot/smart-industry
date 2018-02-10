@@ -185,14 +185,11 @@
             type: Object,
             notify: true
           },
-          signedIn: {
-            type: Boolean,
-            observer: '_signedInChanged'
-          },
           loadComplete: {
             type: Boolean,
             value: false
           },
+          signedIn: Boolean,
           route: String,
           subRoute: String,
           subPageRoute: String,
@@ -209,6 +206,7 @@
           '_routeChanged(subRoute.*)',
           '_routePageChanged(subPageData.page, visible)',
           '_verifyEmailAlert(user.emailVerified, signedIn)',
+          '_signedInChanged(signedIn)'
         ]
       }
       constructor() {
@@ -276,7 +274,7 @@
       _routePageChanged(page, isAttached) {
         if (!isAttached) {
           return
-        } 
+        }
         if (!page) {
           this.set('route.path', '/app/dashboard');
           return
@@ -406,8 +404,8 @@
         const palevioletredColor = "color: palevioletred";
         if ("serviceWorker" in navigator) {
           navigator.serviceWorker.register("service-worker.js", {
-              scope: Polymer.rootPath
-            })
+            scope: Polymer.rootPath
+          })
             .then(registration => {
               console.info(
                 "%cService Worker Registered to " + registration.scope,
@@ -424,7 +422,13 @@
           navigator.serviceWorker.ready
             .then(registration => {
               console.info("%cService Worker Ready 😃", greenColor);
-              return registration.navigationPreload.getState();
+              if (registration.navigationPreload) {
+                return registration.navigationPreload.getState()
+              }
+              else {
+                console.error('Oh no preload is not support on your f_cking browser. Try Google Chrome!! :)')
+                return
+              }
             })
             .then(state => {
               console.info(

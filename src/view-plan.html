@@ -47,11 +47,11 @@
          </iron-pages>
         `
       }
-      
+
       static get properties() {
         return {
           language: String,
-          rootPath: String, 
+          rootPath: String,
           tabs: {
             type: String,
             reflectToAttribute: true,
@@ -62,23 +62,23 @@
             type: Array,
             value: () => {
               return [{
-                  "title": "order",
-                  "view": "order",
-                  "icon": "vaadin:list-ol",
-                  "disable": false
-                },
-                {
-                  "title": "scheduling",
-                  "view": "scheduling",
-                  "icon": "vaadin:calendar",
-                  "disable": false
-                },
-                {
-                  "title": "production",
-                  "view": "production",
-                  "icon": "vaadin:start-cog",
-                  "disable": false
-                }
+                "title": "order",
+                "view": "order",
+                "icon": "vaadin:list-ol",
+                "disable": false
+              },
+              {
+                "title": "scheduling",
+                "view": "scheduling",
+                "icon": "vaadin:calendar",
+                "disable": false
+              },
+              {
+                "title": "production",
+                "view": "production",
+                "icon": "vaadin:start-cog",
+                "disable": false
+              }
               ]
             }
           }

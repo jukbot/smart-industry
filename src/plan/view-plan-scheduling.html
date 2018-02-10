@@ -14,7 +14,7 @@
 <dom-module id="view-plan-scheduling">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -74,7 +74,8 @@
         <firebase-document app-name="smart-mes" id="editOrderQuery" path="/data/[[k.key]]/orderData/[[editKey]]" data="{{editOrderItems}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
         <!-- CUSTOMER DATA -->
-        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/factoryData/customer" order-by-child="fname" data="{{customerItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/factoryData/customer" order-by-child="fname"
+            data="{{customerItems}}"></firebase-query>
         <!-- PRODUCT DATA -->
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="name" data="{{productItems}}"></firebase-query>
         <!-- STATION -->
@@ -153,15 +154,8 @@
                         <p>{{localize('waiting-order')}}: [[getWaitingOrder(orderItems)]] {{localize('order')}}</p>
                         <p>{{localize('late-order')}}: [[getLateOrder(orderItems)]] {{localize('order')}}</p>
                     </div>
-                    <vaadin-grid id="orderTable" items="{{getSortedOrder(orderItems)}}" page-size="20" interacting>
-                        <vaadin-grid-selection-column width="50px" flex="0" select-all="{{selectAll}}">
-                            <template class="header">
-                                <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
-                            </template>
-                            <template>
-                                <paper-checkbox checked="{{selected}}"></paper-checkbox>
-                            </template>
-                        </vaadin-grid-selection-column>
+                    <vaadin-grid id="orderTable" items="{{getSortedOrder(orderItems)}}" page-size="20">
+                        -->
 
                         <vaadin-grid-column flex="2">
                             <template class="header">
@@ -576,7 +570,7 @@
                     firstDayOfWeek: 1,
                     monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'
                         .split(
-                            '_'),
+                        '_'),
                     weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
                     weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
                     formatDate: function (date) {
@@ -658,8 +652,8 @@
                     // convert time stamp to new date 
                     const result = this.chartItems.map((x) => {
                         return [this.localize('station') + x[0], x[1], x[2],
-                            new Date(x[3] * 1000),
-                            new Date(x[4] * 1000)
+                        new Date(x[3] * 1000),
+                        new Date(x[4] * 1000)
                         ]
                     });
                     dataTable.addRows(result);
@@ -670,15 +664,15 @@
                 }
                 document.createElement('google-chart-loader').dataTable(
                     dataTable).then((dataTable) => {
-                    chart.data = dataTable;
-                });
+                        chart.data = dataTable;
+                    });
             }
 
             _refreshChart() {
                 if (this.scheduleItems.length > 0) {
                     let newChartData = this.scheduleItems.map((data) => {
                         return [data.job_station.toString() || 'N/A', 'Order ' + data.order_no, data.order_color,
-                            data.start, data.end
+                        data.start, data.end
                         ]
                     });
                     this.$.chartQuery.ref.remove()
@@ -924,8 +918,8 @@
 
             clearSchedule() {
                 if (window.confirm(
-                        "Clear all schedule ? The order that are working in process will not be deleted."
-                    ) ==
+                    "Clear all schedule ? The order that are working in process will not be deleted."
+                ) ==
                     true) {
                     this.$.scheduleQuery.ref.remove()
                     this.$.chartQuery.ref.remove()
@@ -1000,7 +994,7 @@
 
             reSchedule() {
                 if (window.confirm(
-                        "WARNING!! This will clear all schedules data")) {
+                    "WARNING!! This will clear all schedules data")) {
                     this.$.scheduleQuery.ref.remove()
                     this.$.chartQuery.ref.remove()
                     if (this.sortedOrder) {
@@ -1091,9 +1085,9 @@
                     console.log('fuck workload' + workloadArr)
                     // calculate workload into obj 
                     let workloadProcessObj = workloadArr
-                    .map((k, i) => Object.assign({}, ...processArr[i]
-                    .map((process,index) =>({ [process]: workloadArr[i][index] }))
-                    ))
+                        .map((k, i) => Object.assign({}, ...processArr[i]
+                            .map((process, index) => ({ [process]: workloadArr[i][index] }))
+                        ))
                     console.log('workload process object')
                     console.log(workloadProcessObj)
 
@@ -1111,7 +1105,7 @@
                         })];
                     });
                     console.log('Sum Workload of each station ', sumWorkloadEachProcess)
-                    console.log('Sum workload of each order ' , sumWorkloadEachOrder)
+                    console.log('Sum workload of each order ', sumWorkloadEachOrder)
 
                     // 9) Calculate weight of each process based on workload
                     let weight = []
@@ -1251,7 +1245,7 @@
             }
 
             _multiSchedule() {
-                if (this.filterScheduleItems.length <= 0) {}
+                if (this.filterScheduleItems.length <= 0) { }
             }
         }
         customElements.define(ViewPlanScheduling.is, ViewPlanScheduling)

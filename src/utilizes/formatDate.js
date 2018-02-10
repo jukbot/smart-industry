@@ -7,6 +7,10 @@ function isLeapYear() {
 
 function dateFromDays(day) {
   let timestamp = new Date(new Date(new Date().getFullYear(), 0)).setDate(day); // initialize a date in `year-01-01`
+  return dateFromTimeStamp(timestamp);
+}
+
+function dateFromTimeStamp(timestamp) {
   let date = new Date(timestamp);
   let dd = date.getDate();
   let mm = date.getMonth() + 1;

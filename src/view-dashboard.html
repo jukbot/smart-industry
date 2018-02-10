@@ -57,8 +57,7 @@
           tabs: {
             type: String,
             reflectToAttribute: true,
-            value: 'overview',
-            obersver: '_tabsChanged'
+            value: 'overview'
           },
           submenus: {
             type: Array,
@@ -84,8 +83,13 @@
         }
       }
 
-      _tabsChanged(tabs, visible) {
-        if (!visible) return
+      static get observers() {
+        return [
+          '_tabsChanged(tabs)'
+        ]
+      }
+
+      _tabsChanged(tabs) {
         const resolvedTabsUrl = this.resolveUrl('dashboard/view-dashboard-' + tabs + '.html')
         Polymer.importHref(resolvedTabsUrl, null, null, true)
       }
