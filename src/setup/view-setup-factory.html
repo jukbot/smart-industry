@@ -566,7 +566,7 @@
                     let nextIntervalTimeStamp = (last_timestamp * 1000) + (range * 1000)
                     return dateFromTimeStamp(nextIntervalTimeStamp)
                 } else { // else if diff exceed the day interval then set new start interval 
-                    this.set('persistedFactorySchedule.start_interval', current)
+                    this.set('factorySchedule.start_interval', current)
                     let nextIntervalTimeStamp = (current * 1000) + (range * 1000)
                     return dateFromTimeStamp(nextIntervalTimeStamp)
                 }

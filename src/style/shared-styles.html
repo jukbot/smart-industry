@@ -90,7 +90,7 @@
       }
 
       paper-dialog {
-        max-width: 500px;
+        max-device-width: 500px;
       }
 
       paper-button {
@@ -378,7 +378,7 @@
 
       /* Mobile - Portrait Tablet screen */
 
-      @media (min-width: 360px) and (max-width: 768px) {
+      @media screen and (min-device-width: 360px) and (max-device-width: 768px) {
 
         :host {
           --app-grid-columns: 1;
@@ -414,7 +414,7 @@
 
       /* Landscape Tablet - Small Desktop screen */
 
-      @media (min-width: 769px) and (max-width: 1200px) {
+      @media screen and (min-device-width: 769px) and (max-device-width: 1200px) {
         :host {
           --app-grid-columns: 2;
         }
@@ -422,7 +422,7 @@
 
       /* Medium Resolution (1080p) screen */
 
-      @media (min-width: 1201px) and (max-width: 2560px) {
+      @media screen and (min-device-width: 1201px) and (max-device-width: 2560px) {
         :host {
           --app-grid-columns: 3;
         }
@@ -430,7 +430,7 @@
 
       /* High Resolution (2K-4K) screen */
 
-      @media (min-width: 2561px) and (max-width: 4096px) {
+      @media screen and (min-device-width: 2561px) and (max-device-width: 4096px) {
         :host {
           --app-grid-columns: 4;
         }

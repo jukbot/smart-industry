@@ -1,7 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-
+<script src="../utilizes/formatDate.js"></script>
 <dom-module id="view-dashboard-overview">
   <template>
     <style include="shared-styles app-grid-style">
@@ -211,20 +211,25 @@
         const range = interval * 24 * 60 * 60;
         if (diff <= range) {
           const nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 * 1000);
-          const nextIntervalDate = new Date(nextIntervalStamp);
-          let dd = nextIntervalDate.getDate();
-          let mm = nextIntervalDate.getMonth() + 1; //January is 0!
-          let yyyy = nextIntervalDate.getFullYear();
-          if (dd < 10) {
-            dd = '0' + dd
-          }
-          if (mm < 10) {
-            mm = '0' + mm
-          }
-          let nextInterval = dd + '/' + mm + '/' + yyyy;
-          this.nextInterval = nextInterval;
+          const nextIntervalDate = dateFromTimeStamp(nextIntervalStamp);
+          this.nextInterval = nextIntervalDate;
         } else {
           this.set('factorySchedule.start_interval', current);
+        }
+      }
+
+      getNextInterval(last_timestamp, interval) {
+        if (!last_timestamp || !interval) return 0
+        const current = Math.floor(Date.now() / 1000)
+        const diff = (current - last_timestamp)
+        const range = (interval * 24 * 60 * 60) // convert day to seconds
+        if (diff <= range) { // if diff still less than the day interval
+          let nextIntervalTimeStamp = (last_timestamp * 1000) + (range * 1000)
+          return dateFromTimeStamp(nextIntervalTimeStamp)
+        } else { // else if diff exceed the day interval then set new start interval 
+          this.set('factorySchedule.start_interval', current)
+          let nextIntervalTimeStamp = (current * 1000) + (range * 1000)
+          return dateFromTimeStamp(nextIntervalTimeStamp)
         }
       }
 
@@ -256,7 +261,7 @@
             dateText = "sun";
             break;
           default:
-            dateText = "n/a";
+            dateText = "N/A";
         }
         const current_hour = date.getHours();
         const current_minute = date.getMinutes();
@@ -310,7 +315,6 @@
           this.set('wipOrderCount', 0);
         }
       }
-
     }
     customElements.define(ViewDashboardOverview.is, ViewDashboardOverview);
   </script>
