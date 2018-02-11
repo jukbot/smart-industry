@@ -1,6 +1,10 @@
 <!-- POLYMER 2 -->
-<!-- app modules - used for core functions -->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<!-- helper elements -->
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-module.html">
+<!-- app elements - used for core functions -->
 <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
@@ -13,22 +17,28 @@
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
 <link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
-<!-- paper modules used for component style -->
+<!-- paper elements used for component style -->
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<!-- iron modules used for component functions -->
+<!-- iron elements used for component functions -->
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<!-- 3rd party modules -->
+<!-- import 3rd party elements -->
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
+<!-- import custom elements -->
+<link rel="import" href="elements/flat-toast.html">
+<link rel="import" href="elements/flat-dialog.html">
+<link rel="import" href="elements/flat-button.html">
+<link rel="import" href="elements/flat-icons.html">
+<link rel="import" href="elements/app-analytics.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-dashboard.html">
@@ -41,13 +51,6 @@
 <link rel="import" href="view-offline.html">
 <link rel="import" href="view-error.html">
 <link rel="import" href="view-404.html">
-<!-- import custom elements -->
-<link rel="import" href="elements/flat-toast.html">
-<link rel="import" href="elements/flat-dialog.html">
-<link rel="import" href="elements/flat-button.html">
-<link rel="import" href="elements/flat-icons.html">
-<!-- import google api -->
-<link rel="import" href="elements/app-analytics.html">
 <!-- import shared style component -->
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-app">
@@ -101,14 +104,14 @@
             <div class="user-info">
               <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
               <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="10">
-                <p>{{localize('email')}}: [[persistedUserData.email]]</p>
+                <p>[[persistedUserData.email]]</p>
                 <p>{{localize('verify-status')}}:
                   <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span>
                 </p>
-                <p>{{localize('organization')}}: [[persistedUserData.company]]</p>
+                <p>[[persistedUserData.company]]</p>
+                <p>{{localize('version')}} 1.1.0</p>
               </paper-tooltip>
               <p>[[persistedUserData.displayname]]</p>
-              <p>{{localize('version')}} 1.1.0</p>
             </div>
           </div>
         </app-drawer>
@@ -256,10 +259,10 @@
       getVerifyStatus(status) {
         if (status) {
           this.$$('.verify').style.color = 'green'
-          return 'Verified'
+          return this.localize('verified')
         } else {
           this.$$('.verify').style.color = 'red'
-          return 'Not verify'
+          return this.localize('not-verify')
         }
       }
       getUserImage(url) {

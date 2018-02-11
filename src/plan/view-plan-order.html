@@ -45,11 +45,6 @@
                 }
             }
 
-            vaadin-date-picker,
-            vaadin-text-field {
-                width: 100%;
-            }
-
             .order-info>p {
                 margin: 16px 0;
             }
@@ -150,8 +145,6 @@
                     <vaadin-text-field label="{{localize('quantity')}}" value='{{amount}}' name="order-quantity" id="orderQuantity" error-message="Invalid Input"
                         allowed-pattern="[0-9]" onkeypress='return event.charCode >= 48 && event.charCode <= 57' required>
                     </vaadin-text-field>
-                    <!-- <paper-input label="{{localize('quantity')}} *" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number"
-                        min="1" max="1000" step="1" allowed-pattern="[0-9]" required></paper-input> -->
                     <vaadin-date-picker label="{{localize('delivery-date')}}" min="[[todayDate]]" max="2030-01-01" name="delivery" id="deliverySelector"
                         initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
                     <flat-button on-click="printOrderReport" class="btn" title="Print order report">

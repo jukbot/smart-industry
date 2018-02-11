@@ -10,6 +10,7 @@
 <link rel="import" href="../../lib/sugar.html">
 <link rel="import" href="../../lib/lodash.html">
 <link rel="import" href="../view-app.html">
+<link rel="import" href="../elements/flat-gantt-chart.html">
 <link rel="import" href="../style/shared-styles.html">
 <dom-module id="view-plan-scheduling">
     <template>
@@ -436,6 +437,13 @@
                 <div class="card" id="chartContainer" hidden="[[showChartTable]]">
                     <h1 class="title">{{localize('scheduling-chart')}}</h1>
                     <google-chart id="timeline" type="timeline" options="[[timelineOptions]]"></google-chart>
+                </div>
+            </li>
+            <li>
+                <div class="card">
+                    <h1 class="title">Production Gantt Chart</h1>
+                    <!-- <flat-gantt-chart></flat-gantt-chart> -->
+                    <paper-button class="btn">Print</paper-button>
                 </div>
             </li>
         </ul>
@@ -1004,7 +1012,7 @@
                                 this._scheduleOrder(this.factoryProfile.concurrency)
                                 break;
                             case "multi":
-                                this._multiSchedule()
+                                this._scheduleOrder(this.factoryProfile.concurrency)
                                 break;
                             default:
                                 window.alert("Invalid production model")
@@ -1173,6 +1181,21 @@
                     let result = processArr.map((station, i, arr) => {
                         console.log(duration[i].slice());
                         console.log(i)
+
+                        start[i] = duration[i].map((dur, idx) => {
+                            if (i == 0) {
+                                return initialStart
+                            } else {
+                                return (concurrent === 1) ? parseInt(end[i - 1]) + parseInt(
+                                    dur) : parseInt(end[i - 1]) + parseInt(dur) // next job = prev end + job duration // if concurrency === 1 return 
+                            }
+                        })
+                        end[i] = duration[i].map((dur, idx) => {
+                            return parseInt(dur) + parseInt(start[i])
+                        })
+                        console.log(start[i])
+                        console.log(duration[i])
+                        console.log(end[i])
                         return {
                             "job_id": Math.random().toString(36).substr(2, 12),
                             "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
@@ -1188,17 +1211,8 @@
                             "job_status": "waiting",
                             "job_good": 0,
                             "job_defect": 0,
-                            "start": start[i] = duration[i].map((dura, idx) => {
-                                if (i == 0) {
-                                    return initialStart
-                                } else {
-                                    return (concurrent === 1) ? parseInt(end[i - 1]) + parseInt(
-                                        dura) : initialStart
-                                }
-                            }),
-                            "end": end[i] = duration[i].map((dura, idx) => {
-                                return parseInt(dura) + parseInt(start[i])
-                            }),
+                            "start": start[i],
+                            "end": end[i],
                             "order_customer": order_customer[i],
                             "order_delivery": order_delivery[i],
                             "order_no": order_no[i],

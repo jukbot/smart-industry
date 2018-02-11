@@ -87,17 +87,19 @@
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <div class="card main-card">
       <ul class="app-grid">
-        <li>
-          <div class="frame warn-blink">
-            <h1 class="title new-user">Are you new user?</h1>
-            <p class="center">Please setup your factory before using.</p>
-            <div class="center">
-              <a name="setup" role="link" href="[[rootPath]]app/setup" rel="setup" tabindex="-1" title="Setup factory">
-                <paper-button class="btn">Setup your factory</paper-button>
+        <template is="dom-if" if="[[!k.setup]]">
+          <li>
+            <div class="frame warn-blink">
+              <h1 class="title new-user">Are you new user?</h1>
+              <p class="center">Please setup your factory before using.</p>
+              <div class="center">
+                <a name="setup" role="link" href="[[rootPath]]app/setup" rel="setup" tabindex="-1" title="Setup factory">
+                  <paper-button class="btn">Setup your factory</paper-button>
+                </a>
+              </div>
             </div>
-            </a>
-          </div>
-        </li>
+          </li>
+        </template>
         <li>
           <div class="frame">
             <h1 class="title">{{localize('waiting-order')}}</h1>

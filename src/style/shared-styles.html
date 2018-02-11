@@ -3,7 +3,7 @@
 <dom-module id="shared-styles">
   <template>
     <style>
-       :host {
+      :host {
         display: block;
         --material-primary-color: #202020;
         --material-body-text-color: #202020;
@@ -87,8 +87,8 @@
         @apply --layout-center-center;
         color: #FFFFFF;
         text-decoration: none;
-       }
-  
+      }
+
       paper-dialog {
         max-width: 500px;
       }
@@ -154,91 +154,11 @@
         margin: 0;
       }
 
-      vaadin-combo-box {
+      vaadin-combo-box,
+      vaadin-text-field,
+      vaadin-date-picker {
         width: 100%;
       }
-
-      /* vaadin-grid {
-        --divider-color: rgba(0, 0, 0, 0.10);
-        --vaadin-grid-cell: {
-          padding: 0;
-        }
-        ;
-
-        --vaadin-grid-header-cell: {
-          height: 64px;
-          color: var(--app-font-color);
-          font-size: var(--app-font-size);
-        }
-        ;
-
-        --vaadin-grid-body-cell: {
-          height: 48px;
-          color: var(--app-font-color);
-          font-size: 1rem;
-        }
-        ;
-
-        --vaadin-grid-body-row-hover-cell: {
-          background-color: var(--app-background-color);
-        }
-        ;
-
-        --vaadin-grid-body-row-selected-cell: {
-          background-color: var(--app-background-color);
-        }
-        ;
-
-        --vaadin-grid-focused-cell: {
-          box-shadow: none;
-          font-weight: bold;
-        }
-        ;
-      }
-
-      vaadin-grid .cell {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        padding: 0;
-      }
-
-      vaadin-grid .cell.last {
-        padding-right: 24px;
-      }
-
-      vaadin-grid .cell.numeric {
-        text-align: right;
-      }
-
-      vaadin-grid vaadin-grid-sorter {
-        --vaadin-grid-sorter-arrow: {
-          display: none !important;
-        }
-        ;
-      }
-
-      vaadin-grid vaadin-grid-sorter .cell {
-        flex: 1;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      vaadin-grid vaadin-grid-sorter iron-icon {
-        transform: scale(0.8);
-      }
-
-      vaadin-grid vaadin-grid-sorter:not([direction]) iron-icon {
-        color: rgba(0, 0, 0, 0.10);
-      }
-
-      vaadin-grid vaadin-grid-sorter[direction] {
-        color: rgba(0, 0, 0, 0.10);
-      }
-
-      vaadin-grid vaadin-grid-sorter[direction=desc] iron-icon {
-        transform: scale(0.8) rotate(180deg);
-      } */
 
       .title {
         text-align: center;
@@ -455,11 +375,12 @@
           opacity: 0;
         }
       }
+
       /* Mobile - Portrait Tablet screen */
 
       @media (min-width: 360px) and (max-width: 768px) {
 
-         :host {
+        :host {
           --app-grid-columns: 1;
         }
 
@@ -490,31 +411,35 @@
           font-size: 1.5rem;
         }
       }
+
       /* Landscape Tablet - Small Desktop screen */
 
       @media (min-width: 769px) and (max-width: 1200px) {
-         :host {
+        :host {
           --app-grid-columns: 2;
         }
       }
+
       /* Medium Resolution (1080p) screen */
 
       @media (min-width: 1201px) and (max-width: 2560px) {
-         :host {
+        :host {
           --app-grid-columns: 3;
         }
       }
+
       /* High Resolution (2K-4K) screen */
 
       @media (min-width: 2561px) and (max-width: 4096px) {
-         :host {
+        :host {
           --app-grid-columns: 4;
         }
       }
+
       /* Print */
 
       @media print {
-         :host {
+        :host {
           margin: 0;
           --app-background-color: transpalent;
           --app-drawer-width: 0;

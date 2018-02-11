@@ -1,15 +1,36 @@
-"use strict";
+/* eslint no-invalid-this: "error" */
+/* eslint-env es6 */
 
+"use strict";
+// @ts-check
+
+/**
+ * Return boolean
+ * @function
+ * @return {boolean} - The title of the book.
+ */
 function isLeapYear() {
   let year = new Date().getFullYear();
   return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
 }
 
+/**
+ * Get date format from day of the year.
+ * @function
+ * @param {number} day
+ * @return {string}
+ */
 function dateFromDays(day) {
   let timestamp = new Date(new Date(new Date().getFullYear(), 0)).setDate(day); // initialize a date in `year-01-01`
   return dateFromTimeStamp(timestamp);
 }
 
+/**
+ * Get date format from timestamp in millisec.
+ * @function
+ * @param {number} timestamp
+ * @return {string}
+ */
 function dateFromTimeStamp(timestamp) {
   let date = new Date(timestamp);
   let dd = date.getDate();
@@ -24,37 +45,49 @@ function dateFromTimeStamp(timestamp) {
   return dd + "/" + mm + "/" + yyyy;
 }
 
+/**
+ * Get day of the year
+ * @function
+ * @return {number}
+ */
 function daysOfTheYear() {
   const now = new Date();
-  let start = new Date(now.getFullYear(), 0, 0);
-  let diff =
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff =
     now -
     start +
     (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000;
-  let oneDay = 1000 * 60 * 60 * 24;
-  let day = Math.floor(diff / oneDay);
+  const oneDay = 1000 * 60 * 60 * 24;
+  const day = Math.floor(diff / oneDay);
   return day;
 }
 
-//  function datesInTheYear() {
-//     const getDates = ((startDate, endDate) => {
-//     HTMLTextAreaElement dates = [],
-//     currentDate = startDate,
-//         addDays = function(days) {
-//           let date = new Date(this.valueOf());
-//           date.setDate(date.getDate() + days);
-//           return date;
-//         };
-//     while (currentDate <= endDate) {
-//       dates.push(currentDate);
-//       currentDate = addDays.call(currentDate, 1);
-//     }
-//     return dates;
-//   });
+/**
+ *
+ * @function
+ * @param {number} timestamp -
+ * @return {string}
+ */
+function datesInThisYear() {
+  const getDates = (startDate, endDate) => {
+    let dates = [];
+    let currentDate = startDate;
+    let addDays = function(days) {
+      let date = new Date(this.valueOf());
+      date.setDate(date.getDate() + days);
+      return date;
+    };
+    while (currentDate <= endDate) {
+      dates.push(currentDate);
+      currentDate = addDays.call(currentDate, 1);
+    }
+    return dates;
+  };
 
-//   // Jan start at 0
-//   let dates = getDates(new Date(new Date().getFullYear(),0,1), new Date(new Date().getFullYear(),11,31));
-//   dates.forEach(function(date) {
-//     console.log(date);
-//   });
-//  }
+  // Jan start at 0
+  let dates = getDates(
+    new Date(new Date().getFullYear(), 0, 1),
+    new Date(new Date().getFullYear(), 11, 31)
+  );
+  return dates;
+}

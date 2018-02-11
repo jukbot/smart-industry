@@ -13,7 +13,7 @@
             }
 
             static get template() {
-        return Polymer.html`
+                return Polymer.html`
                <style>
                 :host {
                    display: block;
@@ -191,6 +191,10 @@
 
             static get properties() {
                 return {
+                    route: {
+                        type: Object,
+                        notify: true
+                    }
                 }
             }
 

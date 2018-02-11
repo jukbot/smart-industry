@@ -19,7 +19,7 @@
 <dom-module id="view-login">
   <template>
     <style include="flat-input flat-button">
-       :host {
+      :host {
         display: block;
         background-color: #ffffff;
       }
@@ -202,8 +202,8 @@
               <paper-checkbox id="keepSession" checked$="[[remember]]" on-change="toggleKeepSession" noink>Keep me signed in</paper-checkbox>
             </div>
             <flat-button class="btn" on-click="login" title="Login">
-                <button tabindex="2">Login</button>
-            </flat-button>  
+              <button tabindex="2">Login</button>
+            </flat-button>
             <div class="link">
               <a href="javascript:void(0)" tabindex="4" role="link" on-click="showReset">Forgot?</a>
             </div>
@@ -227,14 +227,15 @@
             </flat-input>
             <flat-input>
               <input type="password" id="register_passwd" name="Password" placeholder="New password" maxlength="30" required aria-labelledby="registerPasswordLabel"
-              tabindex="1" autocomplete="off">
+                tabindex="1" autocomplete="off">
               <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="registerPasswordLabel">New password</label>
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
             <flat-input>
-              <input type="text" id="register_company" name="Company" placeholder="Company" maxlength="30" required aria-labelledby="registerCompanyLabel" tabindex="2">
+              <input type="text" id="register_company" name="Company" placeholder="Company" maxlength="30" required aria-labelledby="registerCompanyLabel"
+                tabindex="2">
               <span class="flat-md-decorator" error-message="Invalid Input" aria-hidden="true">
                 <label id="registerCompanyLabel">Company name</label>
                 <span class="flat-underline"></span>
@@ -250,14 +251,14 @@
             </flat-input>
             <div class="link">
               <p>By signing up you agree to IMES’s
-                <a href="[[rootPath]]term" target="_self" id="termOfService" tabindex="4" role="link" >Terms of Service</a>
+                <a href="[[rootPath]]term" target="_self" id="termOfService" tabindex="4" role="link">Terms of Service</a>
             </div>
             </p>
             <flat-button class="btn" on-click="register" title="Register and Login">
-                <button tabindex="5">Register and Login</button>
-            </flat-button>  
+              <button tabindex="5">Register and Login</button>
+            </flat-button>
             <div class="link">
-              <a href="javascript:void(0)" on-click="hideRegister" tabindex="6" role="link" >Already have account? Log in</a>
+              <a href="javascript:void(0)" on-click="hideRegister" tabindex="6" role="link">Already have account? Log in</a>
             </div>
           </div>
 
@@ -276,8 +277,8 @@
               </span>
             </flat-input>
             <flat-button class="btn" on-click="resetPassword" title="Reset Password">
-                <button tabindex="1">Reset Password</button>
-            </flat-button>  
+              <button tabindex="1">Reset Password</button>
+            </flat-button>
             <div class="link">
               <a href="javascript:void(0)" rel="noopenner" on-click="hideReset" tabindex="2" role="link">Return to login</a>
             </div>
@@ -285,26 +286,26 @@
         </article>
       </div>
     </section>
-      <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
-        <div class="toast-flex-container">
-          <div class="toast-flex-item">
-            <p>[[successMessage]]</p>
-          </div>
-          <div class="toast-flex-item">
-            <paper-icon-button on-click="closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
-          </div>
+    <paper-toast id="toastSuccess" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
+      <div class="toast-flex-container">
+        <div class="toast-flex-item">
+          <p>[[successMessage]]</p>
         </div>
-      </paper-toast>
-      <paper-toast id="toastError" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
-        <div class="toast-flex-container">
-          <div class="toast-flex-item">
-            <p>[[errorMessage]]</p>
-          </div>
-          <div class="toast-flex-item">
-            <paper-icon-button on-click="closeToastError" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
-          </div>
+        <div class="toast-flex-item">
+          <paper-icon-button on-click="closeToastSuccess" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
         </div>
-      </paper-toast>
+      </div>
+    </paper-toast>
+    <paper-toast id="toastError" always-on-top vertical-align="bottom" class="toast fit-bottom" duration="5000">
+      <div class="toast-flex-container">
+        <div class="toast-flex-item">
+          <p>[[errorMessage]]</p>
+        </div>
+        <div class="toast-flex-item">
+          <paper-icon-button on-click="closeToastError" class="close-toast-button" icon="icons:close-big" tabindex="-1" noink></paper-icon-button>
+        </div>
+      </div>
+    </paper-toast>
   </template>
   <script>
     /**
@@ -389,7 +390,6 @@
         const phone = this.$.register_phone.value
         const password = this.$.register_passwd.value
         const username = 'Untitled'
-        const timestamp = Math.round(Date.now() / 1000.0)
         if (!this.persistedSampleData) {
           const request = this.$.requestSampleData.generateRequest()
           request.completes.then((req) => {
@@ -400,7 +400,7 @@
             console.error("Error requesting data: " + error + " of request " + req)
           })
         }
-        if (email && company && phone && password && username && timestamp && this.persistedSampleData) {
+        if (email && company && phone && password && username && this.persistedSampleData) {
           this.$.userAuth.createUserWithEmailAndPassword(email, password)
             .then((response) => {
               this.$.userAuth.signInWithEmailAndPassword(email, password)
@@ -414,7 +414,7 @@
                     "Register successful. We've sent a confirmation link to your email you must follow in order to activate your account."
                   )
                   const keyid = this.$.factoryDataTree.ref.push().key
-                  this._addProfileInfo(username, email, company, phone, keyid, timestamp)
+                  this._addProfileInfo(username, email, company, phone, keyid)
                   this.$.factoryDataTree.ref.child(keyid).set(this.sampleData).catch(error => {
                     console.error(error)
                     this._showErrorToast(error.code)
@@ -432,19 +432,20 @@
         }
       }
 
-      _addProfileInfo(username, email, company, phone, keyid, timestamp) {
+      _addProfileInfo(username, email, company, phone, keyid) {
         this.$.userDataTree.ref.set({
-            displayname: username,
-            email: email,
-            photoURL: null,
-            phone: phone,
-            company: company,
-            role: 'admin',
-            key: keyid,
-            created: timestamp
-          }).catch(error => {
-            this._showErrorToast(error.code)
-          })
+          company: company,
+          created: Math.round(Date.now() / 1000),
+          displayname: username,
+          email: email,
+          key: keyid,
+          photoURL: null,
+          phone: phone,
+          role: 'admin',
+          setup: false
+        }).catch(error => {
+          this._showErrorToast(error.code)
+        })
       }
 
       resetPassword() {

@@ -128,7 +128,7 @@
                                     <paper-icon-item style="padding: 0">
                                         <iron-icon icon="vaadin:[[item.icon]]" slot="item-icon"></iron-icon>
                                         <paper-item-body style="min-height: 0">
-                                            <div readonly>[[item.name]]</div>
+                                            <div readonly>{{localize(item.name)}}</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </paper-item>
@@ -434,7 +434,7 @@
                         type: Array,
                         value: () => {
                             return [{
-                                "name": "Serial",
+                                "name": 'serial',
                                 "value": "serial",
                                 "icon": "file-tree-sub"
                             },
@@ -444,7 +444,7 @@
                                 "icon": "file-tree"
                             },
                             {
-                                "name": "Multi-Component",
+                                "name": "Multi-Component (Serial)",
                                 "value": "multi",
                                 "icon": "tree-table"
                             }
@@ -526,6 +526,7 @@
                     this.set('persistedFactoryOperation.ot_end', ot_end)
                     this.toastText = 'notification-save-factory-information-successful'
                     this.$.toastAlert.open()
+                    this.set('k.setup', true)
                 } else {
                     this.toastText = 'notification-error-incomplete-input'
                     this.$.toastAlert.open()

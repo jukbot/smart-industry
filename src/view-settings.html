@@ -12,7 +12,7 @@
 <dom-module id="view-settings">
   <template>
     <style include="shared-styles app-grid-style flat-button">
-       :host {
+      :host {
         display: block;
         padding: 10px;
         --app-grid-item-height: 50%;
@@ -36,25 +36,25 @@
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
-         :host {
+        :host {
           --app-grid-columns: 1;
         }
       }
 
       @media (min-width: 769px) and (max-width: 1024px) {
-         :host {
+        :host {
           --app-grid-columns: 1;
         }
       }
 
       @media (min-width: 1025px) and (max-width: 1200px) {
-         :host {
+        :host {
           --app-grid-columns: 2;
         }
       }
 
       @media (min-width: 1201px) {
-         :host {
+        :host {
           --app-grid-columns: 3;
         }
       }
@@ -160,6 +160,8 @@
         <div class="card">
           <h1 class="title">{{localize('organization-settings')}}</h1>
           <paper-input label="{{localize('company')}}" id="companyName" value="[[userdata.company]]" type="text" always-float-label></paper-input>
+          <paper-input label="{{localize('phone')}}" id="phoneNumber" value="[[userdata.phone]]" type="text" allowed-pattern="[0-9]"
+            onkeypress='return event.charCode >= 48 && event.charCode <= 57' always-float-label></paper-input>
           <div class="meta-data">
             <p>{{localize('data-keychain')}}: [[userdata.key]]</p>
             <p>{{localize('user-role')}}: [[userdata.role]]</p>
@@ -177,17 +179,17 @@
       </li>
     </ul>
     <flat-dialog id="manageKeyDialog" scroll-action="lock">
-        <h1 class="center">{{localize('manage-keychain')}}</h1>
-        <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
-        <vaadin-combo-box id="keyData" label="Data Keychain" items="{{getKeyList(userdata.key)}}" allow-custom-value></vaadin-combo-box> 
-        <div class="btn-group">
-          <paper-button class="btn" dialog-dismiss on-click="closeKeyDialog">
-            {{localize('dismiss')}}
-          </paper-button>
-          <paper-button class="btn shamrock" dialog-confirm autofocus on-click="updateKey">
-            {{localize('save')}}
-          </paper-button>
-        </div>
+      <h1 class="center">{{localize('manage-keychain')}}</h1>
+      <p>!!WARNNING!! CHANGING KEYCHAIN MIGHT LOST ALL DATA PLEASE BACKUP YOUR KEYCHAIN BEFORE CHANGE THE KEY.</p>
+      <vaadin-combo-box id="keyData" label="Data Keychain" items="{{getKeyList(userdata.key)}}" allow-custom-value></vaadin-combo-box>
+      <div class="btn-group">
+        <paper-button class="btn" dialog-dismiss on-click="closeKeyDialog">
+          {{localize('dismiss')}}
+        </paper-button>
+        <paper-button class="btn shamrock" dialog-confirm autofocus on-click="updateKey">
+          {{localize('save')}}
+        </paper-button>
+      </div>
     </flat-dialog>
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
   </template>
@@ -282,7 +284,7 @@
       }
 
       getKeyList(key) {
-        if(!key) {
+        if (!key) {
           return [key]
         }
         return [key]
@@ -294,15 +296,15 @@
 
       updateKey() {
         if (this.newKey) {
-        //   this.$.appRoot.ref.child(this.newKey).once('value')
-        //   .then((snapshot)=> {
-        //   let value = snapshot.val();
-        //    console.log('key:', snapshot.key)
-        //   console.log('value:', value);
-        //   console.log('location:', value.account_capabilities);
-        //  })
-        //  .catch((err) => { console.log(err) })
-        // }
+          //   this.$.appRoot.ref.child(this.newKey).once('value')
+          //   .then((snapshot)=> {
+          //   let value = snapshot.val();
+          //    console.log('key:', snapshot.key)
+          //   console.log('value:', value);
+          //   console.log('location:', value.account_capabilities);
+          //  })
+          //  .catch((err) => { console.log(err) })
+          // }
           this.$.userData.ref.update({
             key: this.newKey
           }).then(() => {
@@ -583,12 +585,12 @@
         if ('usb' in navigator) {
           let device
           device = navigator.usb.requestDevice({
-              filters: [{
-                vendorId: 0x2341
-              }, {
-                vendorId: 0x2a03
-              }]
-            })
+            filters: [{
+              vendorId: 0x2341
+            }, {
+              vendorId: 0x2a03
+            }]
+          })
             .then(device => {
               console.log(device.productName) // "Arduino Micro"
               console.log(device.manufacturerName) // "Arduino LLC"
@@ -608,12 +610,12 @@
       showDevice() {
         if ('usb' in navigator) {
           navigator.usb.getDevices().then(devices => {
-              devices.map(device => {
-                console.log(device.productName) // "Arduino Micro"
-                console.log(device.manufacturerName) // "Arduino LLC"
-                console.log(device.vendorId) // "Vender ID"
-              })
+            devices.map(device => {
+              console.log(device.productName) // "Arduino Micro"
+              console.log(device.manufacturerName) // "Arduino LLC"
+              console.log(device.vendorId) // "Vender ID"
             })
+          })
             .catch(error => {
               console.error(error)
             })
