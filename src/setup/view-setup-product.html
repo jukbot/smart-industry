@@ -15,7 +15,7 @@
 <dom-module id="view-setup-product">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 margin: 10px;
                 display: block;
                 --app-grid-columns: 1;
@@ -224,8 +224,8 @@
                     <h1 class="title">{{localize('edit-product')}}</h1>
                     <paper-input label="{{localize('product-name')}}*" id="edit_ProductName" type="text" value="{{editProductData.name}}" required
                         always-float-label></paper-input>
-                    <paper-input label="{{localize('sku-code')}}*" id="edit_ProductPartSKU" type="text" value="{{editProductData.sku}}"
-                        required always-float-label></paper-input>
+                    <paper-input label="{{localize('sku-code')}}*" id="edit_ProductPartSKU" type="text" value="{{editProductData.sku}}" required
+                        always-float-label></paper-input>
                     <paper-input label="{{localize('cost')}}" id="edit_ProductCost" type="number" maxlength="9" value="{{editProductData.cost}}"
                         allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only" min="0" max="99999" step="0.01"
                         auto-validate always-float-label></paper-input>
@@ -387,9 +387,9 @@
                             <template class="header">
                                 <div class="cell">{{localize('detail')}}</div>
                             </template>
-                            <template>
-                                <paper-checkbox aria-label$="Show Details for [[item.name]]" checked="{{detailsOpened}}"></paper-checkbox>
-                            </template>
+                            <!-- <template>
+                                    <paper-checkbox aria-label$="Show Details for [[item.name]]" checked="{{detailsOpened}}"></paper-checkbox>
+                                </template> -->
                         </vaadin-grid-column>
 
                         <vaadin-grid-column flex="0">
@@ -493,7 +493,7 @@
             <template id="addPartContent">
                 <custom-style>
                     <style include="view-setup-product">
-                         :host {
+                        :host {
                             height: 100vh;
                             margin: 0 auto;
                             --app-primary-color: #202020;
@@ -603,7 +603,7 @@
             <template id="editPartContent">
                 <custom-style>
                     <style include="view-setup-product">
-                         :host {
+                        :host {
                             height: 100vh;
                             margin: 0 auto;
                             --app-primary-color: #202020;

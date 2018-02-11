@@ -99,7 +99,7 @@
             <li>
                 <div class="card " hidden="[[showEditOrder]]">
                     <h1 class="title">{{localize('edit-order')}}</h1>
-                    <vaadin-combo-box label="{{localize('customer-name')}}" value="[[editOrderItems.order_customer]]" name="customer-name" id="editCustomerSelector"
+                    <!-- <vaadin-combo-box label="{{localize('customer-name')}}" value="[[editOrderItems.order_customer]]" name="customer-name" id="editCustomerSelector"
                         items="[[customerItems]]" item-label-path="name" item-value-path="name" loading="[[!customerItems]]"
                         required allow-custom-value prevent-invalid-input always-float-label='true'>
                         <template>
@@ -113,7 +113,7 @@
                                 </paper-icon-item>
                             </paper-item>
                         </template>
-                    </vaadin-combo-box>
+                    </vaadin-combo-box> -->
                     <vaadin-combo-box label="{{localize('product')}}" value="[[editOrderItems.order_product_name]]" name="product" items="[[productItems]]"
                         id="editProductSelector" item-label-path="name" item-value-path="name" loading="[[!productItems]]" required
                         prevent-invalid-input always-float-label='true'>

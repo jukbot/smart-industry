@@ -135,6 +135,7 @@
                                 <p>{{localize('duration')}}: [[getActualDuration(item.actual_start,item.actual_end)]]</p>
                                 <p>{{localize('defect')}}: [[item.job_defect]] {{localize('item')}} </p>
                                 <p>{{localize('done')}}: [[item.job_good]] / [[item.job_quantity]]</p>
+                                <p>Completed: [[getCompleteProgress(item.job_good,item.job_quantity)]] &#37;</p>
                                 <p>{{localize('count')}}: [[getDeviceCounter(item,item.job_quantity,selectedDevice)]]</p>
                                 <p>{{localize('status')}}:
                                     <span class$="[[getTextStatus(item.job_status)]]" style$="color:[[getColorStatus(item.job_status)]]">[[item.job_status]]</span>
@@ -154,8 +155,8 @@
                             <paper-button class="btn" on-click="receiveJob" disabled$="[[isDoneOrWIP(item.job_status)]]" job="[[item]]">
                                 {{localize('receive-job')}}
                             </paper-button>
-                            <paper-button class="btn shamrock" on-click="openFinishDialog" job="[[item]]" disabled$="[[isDone(item.job_status)]]">
-                                {{localize('finish-job')}}
+                            <paper-button class="btn shamrock" on-click="openReportDialog" job="[[item]]" disabled$="[[isDone(item.job_status)]]">
+                                Report Job
                             </paper-button>
                             <paper-button class="thunderbird btn" on-click="removeJob" job="[[item]]">
                                 {{localize('remove')}}
@@ -198,7 +199,7 @@
                 </flat-button>
             </div>
         </div>
-        <vaadin-dialog id="reportFinishDialog" class="dialog">
+        <vaadin-dialog id="reportJobDialog" class="dialog">
             <template>
                 <custom-style>
                     <style include="view-settings">
@@ -245,6 +246,7 @@
                 </div>
             </template>
         </vaadin-dialog>
+
     </template>
     <script>
         /**
@@ -307,13 +309,13 @@
                 }
             }
 
-            openFinishDialog(e) {
-                this.$.reportFinishDialog.opened = true;
+            openReportDialog(e) {
+                this.$.reportJobDialog.opened = true;
                 this.selectedJob = e.currentTarget.job;
             }
 
             closeFinishDialog() {
-                this.$.reportFinishDialog.opened = false;
+                this.$.reportJobDialog.opened = false;
             }
 
             receiveJob(e) {
@@ -325,16 +327,21 @@
 
             updateFinish(e) {
                 if (!this.defect) this.defect = 0;
-                if (this.defect < this.selectedJob.job_quantity) {
+                if (parseInt(this.good) >= this.selectedJob.job_quantity) {
                     this.$.scheduleQuery.ref.child(this.selectedJob.$key).update({
                         actual_end: Math.round(new Date().getTime() / 1000.0),
                         job_status: 'done',
                         job_defect: parseInt(this.defect),
                         job_good: parseInt(this.good) || (this.selectedJob.job_quantity - this.defect) // output of station
                     }).then(this._checkJobStatus())
-                    this.$.reportFinishDialog.opened = false;
-                    this.selectedJob = '';
+                } else {
+                    this.$.scheduleQuery.ref.child(this.selectedJob.$key).update({
+                        job_defect: parseInt(this.defect),
+                        job_good: parseInt(this.good) || (this.selectedJob.job_quantity - this.defect) // output of station
+                    }).then(this._checkJobStatus())
                 }
+                this.$.reportJobDialog.opened = false;
+                this.selectedJob = '';
             }
 
             getActualDuration(start, end) {
@@ -579,6 +586,10 @@
 
             getTextStatus(job_status) {
                 return job_status === 'wip' ? 'blink' : 'normal'
+            }
+
+            getCompleteProgress(job_good, job_quantity) {
+                return ((job_good * 100) / job_quantity).toFixed(2)
             }
 
             getDeviceCounter(item, quantity, selectDevice) {

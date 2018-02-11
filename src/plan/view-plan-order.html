@@ -1,5 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-date-picker.html">
+<link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-text-field.html">
+<link rel="import" href="../../bower_components/vaadin-text-field/vaadin-text-field.html">
 <link rel="import" href="../../bower_components/vaadin-date-picker/vaadin-date-picker.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
@@ -13,37 +15,38 @@
 <dom-module id="view-plan-order">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 margin: 10px;
                 display: block;
                 --app-grid-item-height: 50%;
             }
 
             @media (min-width: 360px) and (max-width: 768px) {
-                 :host {
+                :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 769px) and (max-width: 1024px) {
-                 :host {
+                :host {
                     --app-grid-columns: 1;
                 }
             }
 
             @media (min-width: 1025px) and (max-width: 1200px) {
-                 :host {
+                :host {
                     --app-grid-columns: 2;
                 }
             }
 
             @media (min-width: 1201px) {
-                 :host {
+                :host {
                     --app-grid-columns: 2;
                 }
             }
 
-            vaadin-date-picker.date-picker {
+            vaadin-date-picker,
+            vaadin-text-field {
                 width: 100%;
             }
 
@@ -106,7 +109,8 @@
             equal-to="[[inventoryCode]]" data="{{factoryInventory}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="historyQuery" path="/data/[[k.key]]/historyData/order"></firebase-query>
         <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
-        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/factoryData/customer" order-by-child="fname" data="{{customerItems}}"></firebase-query>
+        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/factoryData/customer" order-by-child="fname"
+            data="{{customerItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="name" data="{{productItems}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="inventoryQuery" path="/data/[[k.key]]/factoryData/inventory" order-by-child="code"
             data="{{inventoryItems}}"></firebase-query>
@@ -143,11 +147,13 @@
                             </paper-icon-item>
                         </template>
                     </vaadin-combo-box>
-                    <paper-input label="{{localize('quantity')}}" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number" min="1"
-                        max="1000" step="1" allowed-pattern="[0-9]" required always-float-label></paper-input>
-                    <vaadin-date-picker class="date-picker" label="{{localize('delivery-date')}}" min="[[todayDate]]" max="2030-01-01" name="delivery"
-                        id="deliverySelector" initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input"
-                        required always-float-label></vaadin-date-picker>
+                    <vaadin-text-field label="{{localize('quantity')}}" value='{{amount}}' name="order-quantity" id="orderQuantity" error-message="Invalid Input"
+                        allowed-pattern="[0-9]" onkeypress='return event.charCode >= 48 && event.charCode <= 57' required>
+                    </vaadin-text-field>
+                    <!-- <paper-input label="{{localize('quantity')}} *" name="order-quantity" value='{{amount}}' id="orderQuantity" type="number"
+                        min="1" max="1000" step="1" allowed-pattern="[0-9]" required></paper-input> -->
+                    <vaadin-date-picker label="{{localize('delivery-date')}}" min="[[todayDate]]" max="2030-01-01" name="delivery" id="deliverySelector"
+                        initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
                     <flat-button on-click="printOrderReport" class="btn" title="Print order report">
                         <button>{{localize('print-order-report')}}</button>
                     </flat-button>
@@ -542,7 +548,7 @@
                     firstDayOfWeek: 1,
                     monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'
                         .split(
-                            '_'),
+                        '_'),
                     weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
                     weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
                     formatDate: function (date) {
@@ -594,7 +600,7 @@
                 const model = this.factoryProfileModel;
                 const partLength = this.$.productSelector.selectedItem.part.length;
                 if (((model === "parallel" || model === "serial") && partLength > 1) || (model === "multi" &&
-                        partLength === 1)) {
+                    partLength === 1)) {
                     window.alert(
                         `Forbidden! You cannot manufacture this product with ${model} production model. Please select multi-component model`
                     )
