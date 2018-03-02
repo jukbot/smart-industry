@@ -394,9 +394,9 @@
                 let done_order = [];
                 if (order_group) {
                     order_group.map((key, i) => {
-                        console.log(order_group[i])
-                        console.log(order_group[i].every(isStatusDone))
-                        console.log(done_order)
+                        //console.log(order_group[i])
+                        //console.log(order_group[i].every(isStatusDone))
+                        //console.log(done_order)
                         if (order_group[i].every(isStatusDone)) {
                             done_order.push(order_group[i]);
                         }
@@ -424,23 +424,22 @@
                             };
                         });
                     }
-
-                    console.log(warehouse_order)
+                    //console.log(warehouse_order)
 
                     // 5.1) Sum actual duration of all jobs 
                     let sum_actual_duration = warehouse_order.reduce((a, b) =>
                         a + b.actual_duration, 0)
-                    console.log(sum_actual_duration)
+                    //console.log(sum_actual_duration)
 
                     // 5.2) Sum plan duration of all jobs 
                     let sum_plan_duration = warehouse_order.reduce((a, b) =>
                         a + b.plan_duration, 0)
-                    console.log(sum_plan_duration)
+                    //console.log(sum_plan_duration)
 
                     // 5.3) Sum defect of all jobs 
                     let sum_defect = warehouse_order.reduce((a, b) =>
                         a + b.order_defect, 0)
-                    console.log(sum_defect)
+                    //console.log(sum_defect)
 
                     // 6) Remove duplicate order no from array export single
                     let filterDoneOrder = warehouse_order
@@ -450,12 +449,10 @@
                     // 7) Update order no table
                     for (let j = 0; j < filterDoneOrder.length; j++) {
                         this._updateOrderTable(filterDoneOrder[j]);
-                        console.log('order no. that done is : ' + filterDoneOrder[j])
                     }
 
                     // 8) Covert data to array 
                     let exportData = warehouse_order.reduce((a, b) => a.concat(b), []);
-                    console.log(exportData)
 
                     // 9) Convert data to object with match key
                     let resultObject = exportData.reduce((result, currentObject) => {
@@ -467,16 +464,18 @@
                         return result;
                     }, {});
 
+                    // 10) Delete key that can't add to firebase and replace with default index
                     delete resultObject.$key
+
+                    // 11) Update order information from all jobs
                     resultObject.order_defect = sum_defect
                     resultObject.plan_duration = sum_plan_duration
                     resultObject.actual_duration = sum_actual_duration
-
                     console.log(resultObject)
+
+                    // 12) If not duplicate in warehouse add order to warehouse
                     let isDuplicated = this.warehouseItems.map(item => item.order_no).indexOf(resultObject.order_no) >
                         -1
-
-                    // 10) If not duplicate in warehouse add order to warehouse
                     if (!isDuplicated) {
                         this._addToWarehouse(resultObject)
                     }
