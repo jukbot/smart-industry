@@ -56,33 +56,6 @@
                 flex: auto;
                 align-content: stretch;
             }
-
-            .wrap {
-                -webkit-flex-flow: row wrap;
-                flex-flow: row wrap;
-            }
-
-            .left {
-                text-align: left;
-                font-weight: 500;
-            }
-
-            .right {
-                text-align: left;
-                font-weight: 400;
-            }
-
-            ul .parent {
-                display: flex;
-                overflow: hidden;
-                align-items: center;
-                justify-content: center;
-            }
-
-            ul .parent>li {
-                flex: 1;
-                margin: 1rem 0;
-            }
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>

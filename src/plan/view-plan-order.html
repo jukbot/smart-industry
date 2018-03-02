@@ -49,34 +49,6 @@
                 margin: 16px 0;
             }
 
-            .flex-container {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-direction: row;
-            }
-
-            .wrap {
-                -webkit-flex-flow: row wrap;
-                flex-flow: row wrap;
-            }
-
-            .flex-item {
-                flex: 1;
-            }
-
-            .left-group>p {
-                font-weight: 500;
-            }
-
-            .right-group>p {
-                font-weight: 400;
-            }
-
-            .flex-item>p {
-                margin: 12px 0;
-            }
-
             .frame {
                 padding: 10px;
             }
@@ -158,69 +130,108 @@
             <li>
                 <div class="card" id="detailOrderCard">
                     <h1 class="title">{{localize('order-detail')}}</h1>
-                    <div class="flex-container order-info">
-                        <div class="flex-item left-group">
+                    <ul class="parent">
+                        <li class="left">
                             <p>{{localize('order-number')}}</p>
-                            <div class="separator-line" role="separator"></div>
+                        </li>
+                        <li class="right">
+                            <p>[[orderNumber]]</p>
+                        </li>
+                    </ul>
+                    <div class="separator-line" role="separator"></div>
+                    <ul class="parent">
+                        <li class="left">
                             <p>{{localize('customer-name')}}</p>
-                            <div class="separator-line" role="separator"></div>
+                        </li>
+                        <li class="right">
+                            <p>[[selectCustomer.name]]</p>
+                        </li>
+                    </ul>
+                    <div class="separator-line" role="separator"></div>
+                    <ul class="parent">
+                        <li class="left">
                             <p>{{localize('product-name')}}</p>
-                            <div class="separator-line" role="separator"></div>
+                        </li>
+                        <li class="right">
+                            <p>[[setProductPart(selectProduct)]]</p>
+                        </li>
+                    </ul>
+                    <div class="separator-line" role="separator"></div>
+                    <ul class="parent">
+                        <li class="left">
                             <p>{{localize('sku-code')}}</p>
-                            <div class="separator-line" role="separator"></div>
+                        </li>
+                        <li class="right">
+                            <p>[[setProductSKU(selectProduct.sku)]]</p>
+                        </li>
+                    </ul>
+                    <div class="separator-line" role="separator"></div>
+                    <ul class="parent">
+                        <li class="left">
                             <p>{{localize('product-part')}}</p>
-                            <div class="separator-line" role="separator"></div>
+                        </li>
+                        <li class="right">
+                            <p>
+                                <template is="dom-repeat" items="[[selectProduct.part]]" as="productPart">
+                                    [[productPart.name]]
+                                </template>
+                            </p>
+                        </li>
+                    </ul>
+                    <div class="separator-line" role="separator"></div>
+                    <ul class="parent">
+                        <li class="left">
                             <p>{{localize('actual-quantity')}}</p>
-                            <div class="separator-line" role="separator"></div>
+                        </li>
+                        <li class="right">
+                            <p>[[getActualQuantity(amount)]]</p>
+                        </li>
+                    </ul>
+                    <div class="separator-line" role="separator"></div>
+                    <ul class="parent">
+                        <li class="left">
                             <p>{{localize('raw-materials-required')}}</p>
-                            <div class="separator-line" role="separator"></div>
+                        </li>
+                        <li class="right">
+                            <p>[[selectProduct.inventory_code]] [[getUseInventory(amount,selectProduct.inventory_use)]]</p>
+                        </li>
+                    </ul>
+                    <div class="separator-line" role="separator"></div>
+                    <ul class="parent">
+                        <li class="left">
                             <p>{{localize('order-duration')}}</p>
-                            <div class="separator-line" role="separator"></div>
+                        </li>
+                        <li class="right">
+                            <p>[[getSumProductTime(selectProduct.part,amount)]]</p>
+                        </li>
+                    </ul>
+                    <div class="separator-line" role="separator"></div>
+                    <ul class="parent">
+                        <li class="left">
                             <p>{{localize('delivery-date')}}</p>
-                            <div class="separator-line" role="separator"></div>
+                        </li>
+                        <li class="right">
+                            <p>[[delivery]]</p>
+                        </li>
+                    </ul>
+                    <div class="separator-line" role="separator"></div>
+                    <ul class="parent">
+                        <li class="left">
                             <p>{{localize('cost')}}</p>
-                            <div class="separator-line" role="separator" id="optimizeTitleSeparate"></div>
-                            <p id="optimizeTitle">{{localize('optimal-quantity')}} / {{localize('week')}}</p>
-                        </div>
-                        <div class="flex-item right-group">
-                            <p>
-                                <span>[[orderNumber]]</span>&nbsp;</p>
-                            <div class="separator-line" role="separator"></div>
-                            <p>
-                                <span>[[selectCustomer.name]]</span>&nbsp;</p>
-                            <div class="separator-line" role="separator"></div>
-                            <p>
-                                <span>[[setProductPart(selectProduct)]]</span>&nbsp;</p>
-                            <div class="separator-line" role="separator"></div>
-                            <p>
-                                <span>[[setProductSKU(selectProduct.sku)]]</span>&nbsp;</p>
-                            <div class="separator-line" role="separator"></div>
-                            <p>
-                                <span>
-                                    <template is="dom-repeat" items="[[selectProduct.part]]" as="productPart">
-                                        [[productPart.name]]
-                                    </template>
-                                </span>&nbsp;</p>
-                            <div class="separator-line" role="separator"></div>
-                            <p>
-                                <span>[[getActualQuantity(amount)]]</span>&nbsp;</p>
-                            <div class="separator-line" role="separator"></div>
-                            <p>
-                                <span>[[selectProduct.inventory_code]] [[getUseInventory(amount,selectProduct.inventory_use)]]</span>&nbsp;</p>
-                            <div class="separator-line" role="separator"></div>
-                            <p>
-                                <span>[[getSumProductTime(selectProduct.part,amount)]]</span>&nbsp;</p>
-                            <div class="separator-line" role="separator"></div>
-                            <p>
-                                <span>[[delivery]]</span>&nbsp;</p>
-                            <div class="separator-line" role="separator"></div>
-                            <p>
-                                <span>[[getProductCost(selectProduct.cost,amount)]]</span>&nbsp;</p>
-                            <div class="separator-line" role="separator" id="optimizeDataSeparate"></div>
-                            <p id="optimizeData">
-                                <span>[[getOptimalQuantity(selectProduct.cost, selectProduct.part)]]</span>&nbsp;</p>
-                        </div>
-                    </div>
+                        </li>
+                        <li class="right">
+                            <p>[[getProductCost(selectProduct.cost,amount)]]</p>
+                        </li>
+                    </ul>
+                    <div class="separator-line" role="separator" id="optimizeDataSeparate"></div>
+                    <ul class="parent" id="optimizeData">
+                        <li class="left">
+                            <p>{{localize('optimal-quantity')}} / {{localize('week')}}</p>
+                        </li>
+                        <li class="right">
+                            <p>[[getOptimalQuantity(selectProduct.cost, selectProduct.part)]]</p>
+                        </li>
+                    </ul>
                 </div>
             </li>
         </ul>
@@ -299,13 +310,9 @@
 
             isOptimizeModeEnabled(optimizeMode) {
                 if (optimizeMode === 'increase-profit' || optimizeMode === 'reduce-cost') {
-                    this.$.optimizeTitle.hidden = false;
-                    this.$.optimizeTitleSeparate.hidden = false;
                     this.$.optimizeData.hidden = false;
                     this.$.optimizeDataSeparate.hidden = false;
                 } else {
-                    this.$.optimizeTitle.hidden = true;
-                    this.$.optimizeTitleSeparate.hidden = true;
                     this.$.optimizeData.hidden = true;
                     this.$.optimizeDataSeparate.hidden = true;
                 }

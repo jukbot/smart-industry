@@ -262,6 +262,13 @@
         flex-flow: row wrap;
       }
 
+      .flex-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+      }
+
       .toast-flex-container {
         display: -webkit-box;
         display: -ms-flexbox;
@@ -368,6 +375,33 @@
         width: 75%;
       }
 
+
+      .left {
+        text-align: left;
+        font-weight: 500;
+      }
+
+      .right {
+        text-align: left;
+        font-weight: 400;
+      }
+
+      ul .parent {
+        display: flex;
+        overflow: hidden;
+        align-items: center;
+        justify-content: center;
+      }
+
+      ul .parent>li {
+        flex: 1;
+        margin: 1rem 0;
+      }
+
+      .wrap {
+        -webkit-flex-flow: row wrap;
+        flex-flow: row wrap;
+      }
 
       .thumbnail {
         width: 24px;
