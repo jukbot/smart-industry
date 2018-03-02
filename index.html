@@ -43,11 +43,21 @@
     html {
       line-height: 1.15;
       -ms-text-size-adjust: 100%;
-      -webkit-text-size-adjust: 100%
+      -webkit-text-size-adjust: 100%;
     }
 
     body {
-      margin: 0
+      margin: 0;
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Helvetica Neue", "Arial", sans-serif;
+      height: 100%;
+      min-height: 100vh;
+      color: #202020;
+      background-color: #fafafa;
+      font-size: 1rem;
+      text-rendering: optimizeLegibility;
+      -webkit-overflow-scrolling: touch;
+      -webkit-tap-highlight-color: transparent;
+      -webkit-font-smoothing: antialiased;
     }
 
     article,
@@ -56,33 +66,33 @@
     header,
     nav,
     section {
-      display: block
+      display: block;
     }
 
     h1 {
       font-size: 2em;
-      margin: .67em 0
+      margin: .67em 0;
     }
 
     figcaption,
     figure,
     main {
-      display: block
+      display: block;
     }
 
     figure {
-      margin: 1em 40px
+      margin: 1em 40px;
     }
 
     hr {
       box-sizing: content-box;
       height: 0;
-      overflow: visible
+      overflow: visible;
     }
 
     pre {
       font-family: monospace, monospace;
-      font-size: 1em
+      font-size: 1em;
     }
 
     a {
@@ -93,37 +103,37 @@
     abbr[title] {
       border-bottom: none;
       text-decoration: underline;
-      text-decoration: underline dotted
+      text-decoration: underline dotted;
     }
 
     b,
     strong {
-      font-weight: inherit
+      font-weight: inherit;
     }
 
     b,
     strong {
-      font-weight: bolder
+      font-weight: bolder;
     }
 
     code,
     kbd,
     samp {
       font-family: monospace, monospace;
-      font-size: 1em
+      font-size: 1em;
     }
 
     dfn {
-      font-style: italic
+      font-style: italic;
     }
 
     mark {
       background-color: #ff0;
-      color: #000
+      color: #000;
     }
 
     small {
-      font-size: 80%
+      font-size: 80%;
     }
 
     sub,
@@ -131,33 +141,33 @@
       font-size: 75%;
       line-height: 0;
       position: relative;
-      vertical-align: baseline
+      vertical-align: baseline;
     }
 
     sub {
-      bottom: -.25em
+      bottom: -.25em;
     }
 
     sup {
-      top: -.5em
+      top: -.5em;
     }
 
     audio,
     video {
-      display: inline-block
+      display: inline-block;
     }
 
     audio:not([controls]) {
       display: none;
-      height: 0
+      height: 0;
     }
 
     img {
-      border-style: none
+      border-style: none;
     }
 
     svg:not(:root) {
-      overflow: hidden
+      overflow: hidden;
     }
 
     button,
@@ -168,17 +178,17 @@
       font-family: sans-serif;
       font-size: 100%;
       line-height: 1.15;
-      margin: 0
+      margin: 0;
     }
 
     button,
     input {
-      overflow: visible
+      overflow: visible;
     }
 
     button,
     select {
-      text-transform: none
+      text-transform: none;
     }
 
     [type=reset],
@@ -193,7 +203,7 @@
     [type=submit]::-moz-focus-inner,
     button::-moz-focus-inner {
       border-style: none;
-      padding: 0
+      padding: 0;
     }
 
     [type=button]:-moz-focusring,
@@ -204,7 +214,7 @@
     }
 
     fieldset {
-      padding: .35em .75em .625em
+      padding: .35em .75em .625em;
     }
 
     legend {
@@ -213,78 +223,63 @@
       display: table;
       max-width: 100%;
       padding: 0;
-      white-space: normal
+      white-space: normal;
     }
 
     progress {
       display: inline-block;
-      vertical-align: baseline
+      vertical-align: baseline;
     }
 
     textarea {
-      overflow: auto
+      overflow: auto;
     }
 
     [type=checkbox],
     [type=radio] {
       box-sizing: border-box;
-      padding: 0
+      padding: 0;
     }
 
     [type=number]::-webkit-inner-spin-button,
     [type=number]::-webkit-outer-spin-button {
-      height: auto
+      height: auto;
     }
 
     [type=search] {
       -webkit-appearance: textfield;
-      outline-offset: -2px
+      outline-offset: -2px;
     }
 
     [type=search]::-webkit-search-cancel-button,
     [type=search]::-webkit-search-decoration {
-      -webkit-appearance: none
+      -webkit-appearance: none;
     }
 
     ::-webkit-file-upload-button {
       -webkit-appearance: button;
-      font: inherit
+      font: inherit;
     }
 
     details,
     menu {
-      display: block
+      display: block;
     }
 
     summary {
-      display: list-item
+      display: list-item;
     }
 
     canvas {
-      display: inline-block
+      display: inline-block;
     }
 
     template {
-      display: none
+      display: none;
     }
 
     [hidden] {
-      display: none
-    }
-
-    /*# sourceMappingURL=normalize.min.css.map */
-
-    body {
-      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Helvetica Neue", "Arial", sans-serif;
-      height: 100%;
-      min-height: 100vh;
-      color: #202020;
-      background-color: #fafafa;
-      font-size: 1rem;
-      text-rendering: optimizeLegibility;
-      -webkit-overflow-scrolling: touch;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-font-smoothing: antialiased;
+      display: none;
     }
 
     view-app[unresolved] {

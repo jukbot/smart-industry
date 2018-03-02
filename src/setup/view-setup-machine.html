@@ -5,7 +5,7 @@
 <dom-module id="view-setup-machine">
     <template>
         <style include="shared-styles app-grid-style flat-button">
-             :host {
+            :host {
                 display: block;
                 margin: 10px;
                 --app-grid-item-height: 50%;
@@ -54,7 +54,7 @@
             <paper-input type="number" id="machineCapacity" label="{{localize('machine-max-capacity')}} (items/hour)" min="1" max="9999"
                 step="1" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
             <vaadin-combo-box id="machineType" label="{{localize('machine-type')}}" items="[[machineType]]" item-value-path="name" item-label-path="name"
-                loading="[[!machineType]]" always-float-label required>
+                loading="[[!machineType]]" allow-custom-value always-float-label required>
                 <template>
                     <paper-item>
                         <paper-item-body two-line style="min-height: 0">
@@ -64,6 +64,7 @@
                     </paper-item>
                 </template>
             </vaadin-combo-box>
+            *To input custom machine type just type custom name in this combo-box.
             <div class="center">
                 <flat-button class="btn" on-click="openMachineListCard">
                     <button>{{localize('dismiss')}}</button>
@@ -131,9 +132,7 @@
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-click="openAddMachineCard">
-                    <button> {{localize('add-machine')}}</button>
-                </flat-button>
+                <paper-button class="btn" on-click="openAddMachineCard">{{localize('add-machine')}}</paper-button>
             </div>
         </div>
         <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
@@ -180,57 +179,57 @@
                         type: Array,
                         value: () => {
                             return [{
-                                    "name": "Cutting",
-                                    "code": "cut"
-                                },
-                                {
-                                    "name": "Folding",
-                                    "code": "fold"
-                                },
-                                {
-                                    "name": "Slotting",
-                                    "code": "slot"
-                                },
-                                {
-                                    "name": "Gluing",
-                                    "code": "glue"
-                                },
-                                {
-                                    "name": "Drilling",
-                                    "code": "drill"
-                                },
-                                {
-                                    "name": "Stitching",
-                                    "code": "stich"
-                                },
-                                {
-                                    "name": "Printing",
-                                    "code": "print"
-                                },
-                                {
-                                    "name": "Packing",
-                                    "code": "pack"
-                                },
-                                {
-                                    "name": "Welding",
-                                    "code": "welding"
-                                },
-                                {
-                                    "name": "Coating",
-                                    "code": "coat"
-                                },
-                                {
-                                    "name": "Painting",
-                                    "code": "paint"
-                                },
-                                {
-                                    "name": "Baking",
-                                    "code": "bake"
-                                },
-                                {
-                                    "name": "Washing",
-                                    "code": "wash"
-                                },
+                                "name": "Cutting",
+                                "code": "cut"
+                            },
+                            {
+                                "name": "Folding",
+                                "code": "fold"
+                            },
+                            {
+                                "name": "Slotting",
+                                "code": "slot"
+                            },
+                            {
+                                "name": "Gluing",
+                                "code": "glue"
+                            },
+                            {
+                                "name": "Drilling",
+                                "code": "drill"
+                            },
+                            {
+                                "name": "Stitching",
+                                "code": "stich"
+                            },
+                            {
+                                "name": "Printing",
+                                "code": "print"
+                            },
+                            {
+                                "name": "Packing",
+                                "code": "pack"
+                            },
+                            {
+                                "name": "Welding",
+                                "code": "welding"
+                            },
+                            {
+                                "name": "Coating",
+                                "code": "coat"
+                            },
+                            {
+                                "name": "Painting",
+                                "code": "paint"
+                            },
+                            {
+                                "name": "Baking",
+                                "code": "bake"
+                            },
+                            {
+                                "name": "Washing",
+                                "code": "wash"
+                            },
                             ]
                         }
                     }
@@ -327,7 +326,7 @@
                 const name = this.$.machineName.value
                 const capacity = this.$.machineCapacity.value
                 const type = this.$.machineType.value
-                const code = this.$.machineType.selectedItem.code
+                const code = this.$.machineType.value.substring(0, 3).toLowerCase();
                 const timestamp = Math.round(Date.now() / 1000.0)
                 if (number && name && capacity && type && code && timestamp) {
                     this.$.machineQuery.ref.push({

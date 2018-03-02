@@ -47,7 +47,9 @@
              */
             static get properties() {
                 return {
-
+                    data: {
+                        type: Object
+                    }
                 };
             }
             /**
@@ -67,6 +69,7 @@
                 Polymer.RenderStatus.afterNextRender(this, function () {
                     this._initialGanttChart()
                 });
+                console.log(this.data)
             }
 
             _initialGanttChart() {

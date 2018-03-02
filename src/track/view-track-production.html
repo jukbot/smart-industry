@@ -142,7 +142,7 @@
                                 </p>
                             </div>
                             <vaadin-combo-box label="{{localize('sensor')}}" items="[[deviceItems]]" item-value-path="name" item-label-path="name" loading="[[!deviceItems]]"
-                                selected-item="{{selectedDevice}}" value="{{item.job_sensor}}" always-float-label required>
+                                selected-item="{{selectedDevice}}" value="{{item.job_sensor}}" always-float-label>
                                 <template>
                                     <paper-item>
                                         <paper-item-body two-line style="min-height: 0">
@@ -155,7 +155,7 @@
                             <paper-button class="btn" on-click="receiveJob" disabled$="[[isDoneOrWIP(item.job_status)]]" job="[[item]]">
                                 {{localize('receive-job')}}
                             </paper-button>
-                            <paper-button class="btn shamrock" on-click="openReportDialog" job="[[item]]" disabled$="[[isDone(item.job_status)]]">
+                            <paper-button class="btn shamrock" on-click="openJobDialog" job="[[item]]" disabled$="[[isDone(item.job_status)]]">
                                 Report Job
                             </paper-button>
                             <paper-button class="thunderbird btn" on-click="removeJob" job="[[item]]">
@@ -237,7 +237,7 @@
                 <paper-input label="Good" id="goodCount" value="{{good}}" type="number" always-float-label></paper-input>
                 <paper-input label="Defect" id="defectCount" value="{{defect}}" type="number" always-float-label></paper-input>
                 <div class="btn-group">
-                    <paper-button dialog-dismiss on-click="closeFinishDialog">
+                    <paper-button dialog-dismiss on-click="closeJobDialog">
                         {{localize('dismiss')}}
                     </paper-button>
                     <paper-button dialog-confirm autofocus on-click="updateFinish">
@@ -309,12 +309,12 @@
                 }
             }
 
-            openReportDialog(e) {
+            openJobDialog(e) {
                 this.$.reportJobDialog.opened = true;
                 this.selectedJob = e.currentTarget.job;
             }
 
-            closeFinishDialog() {
+            closeJobDialog() {
                 this.$.reportJobDialog.opened = false;
             }
 
@@ -331,11 +331,13 @@
                     this.$.scheduleQuery.ref.child(this.selectedJob.$key).update({
                         actual_end: Math.round(new Date().getTime() / 1000.0),
                         job_status: 'done',
+                        job_complete: this.getCompleteProgress(this.good, this.selectedJob.job_quantity),
                         job_defect: parseInt(this.defect),
                         job_good: parseInt(this.good) || (this.selectedJob.job_quantity - this.defect) // output of station
                     }).then(this._checkJobStatus())
                 } else {
                     this.$.scheduleQuery.ref.child(this.selectedJob.$key).update({
+                        job_complete: this.getCompleteProgress(this.good, this.selectedJob.job_quantity),
                         job_defect: parseInt(this.defect),
                         job_good: parseInt(this.good) || (this.selectedJob.job_quantity - this.defect) // output of station
                     }).then(this._checkJobStatus())

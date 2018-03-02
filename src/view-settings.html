@@ -290,15 +290,6 @@
 
       updateKey() {
         if (this.newKey) {
-          //   this.$.appRoot.ref.child(this.newKey).once('value')
-          //   .then((snapshot)=> {
-          //   let value = snapshot.val();
-          //    console.log('key:', snapshot.key)
-          //   console.log('value:', value);
-          //   console.log('location:', value.account_capabilities);
-          //  })
-          //  .catch((err) => { console.log(err) })
-          // }
           this.$.userData.ref.update({
             key: this.newKey
           }).then(() => {

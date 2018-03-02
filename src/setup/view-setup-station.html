@@ -1,8 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/vaadin-combo-box/vaadin-combo-box.html">
-<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
 <link rel="import" href="redux-mixin-babel.html">
@@ -79,7 +76,6 @@
             .machine-list {
                 height: 300px;
             }
-
 
             .btn-block {
                 width: 100%;
@@ -215,7 +211,7 @@
                 </template>
             </ul>
             <div class="center">
-                <paper-button class="btn big" on-click="openAddStationCard">{{localize('add-station')}}</paper-button>
+                <paper-button class="btn" on-click="openAddStationCard">{{localize('add-station')}}</paper-button>
             </div>
         </div>
         <paper-toast id="toastAlert" always-on-top horizontal-align="right">{{localize(toastText)}}</paper-toast>

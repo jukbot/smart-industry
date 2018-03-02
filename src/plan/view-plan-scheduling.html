@@ -51,8 +51,26 @@
                 margin: 20px 0;
             }
 
-            vaadin-grid .cell.last {
-                text-overflow: unset;
+            .plan-list {
+                height: 300px;
+            }
+
+            .item {
+                display: flex;
+                justify-content: space-between;
+            }
+
+            .item:focus {
+                outline: 0;
+                background-color: #ddd;
+            }
+
+            .subtitle {
+                color: #555555;
+            }
+
+            .select-plan {
+                margin: 20px 0;
             }
 
             #chartContainer {
@@ -73,24 +91,27 @@
         <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
         <firebase-document app-name="smart-mes" id="editOrderQuery" path="/data/[[k.key]]/orderData/[[editKey]]" data="{{editOrderItems}}"></firebase-document>
+        <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{chartItems}}"></firebase-document>
+        <!-- NOTIFICATION DATA -->
         <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
         <!-- CUSTOMER DATA -->
         <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/factoryData/customer" order-by-child="fname"
             data="{{customerItems}}"></firebase-query>
         <!-- PRODUCT DATA -->
         <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="name" data="{{productItems}}"></firebase-query>
-        <!-- STATION -->
+        <!-- STATION DATA -->
         <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             data="{{stationItems}}"></firebase-query>
-        <!-- ORDER TABLE -->
+        <!-- ORDER DATA -->
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
         <!-- SCHEDULE DATA -->
         <firebase-query app-name="smart-mes" id="jobQuery" path="/data/[[k.key]]/scheduleData" order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
-        <!-- CHART DATA -->
-        <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{chartItems}}"></firebase-document>
+        <!-- PLAN DATA -->
+        <firebase-query app-name="smart-mes" id="planQuery" path="/data/[[k.key]]/planData" data="{{planItems}}"></firebase-query>
+
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
-            equal-to="{{selectedStation}}" data="{{selectedStationData}}"></firebase-query>
+            equal-to="{{selectedStation}}" data="{{filterStationData}}"></firebase-query>
         <!-- JOB SCHEDULE TABLE SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" equal-to="[[selectedStation]]"
             order-by-child="job_station" data="{{filterScheduleItems}}"></firebase-query>
@@ -100,7 +121,7 @@
             <li>
                 <div class="card " hidden="[[showEditOrder]]">
                     <h1 class="title">{{localize('edit-order')}}</h1>
-                    <!-- <vaadin-combo-box label="{{localize('customer-name')}}" value="[[editOrderItems.order_customer]]" name="customer-name" id="editCustomerSelector"
+                    <vaadin-combo-box label="{{localize('customer-name')}}" value="[[editOrderItems.order_customer]]" name="customer-name" id="editCustomerSelector"
                         items="[[customerItems]]" item-label-path="name" item-value-path="name" loading="[[!customerItems]]"
                         required allow-custom-value prevent-invalid-input always-float-label='true'>
                         <template>
@@ -114,7 +135,7 @@
                                 </paper-icon-item>
                             </paper-item>
                         </template>
-                    </vaadin-combo-box> -->
+                    </vaadin-combo-box>
                     <vaadin-combo-box label="{{localize('product')}}" value="[[editOrderItems.order_product_name]]" name="product" items="[[productItems]]"
                         id="editProductSelector" item-label-path="name" item-value-path="name" loading="[[!productItems]]" required
                         prevent-invalid-input always-float-label='true'>
@@ -287,17 +308,18 @@
             <li>
                 <div class="card" hidden="[[showScheduleTable]]">
                     <h1 class="title">{{localize('production-scheduling-table')}}</h1>
+                    <p>Selected Plan: [[factorySchedule.selected_plan]]</p>
                     <p>{{localize('station')}}: [[selectedStation]]</p>
                     <p>{{localize('station-name')}}:
-                        <template is="dom-repeat" items="[[selectedStationData]]" as="stationItem">[[stationItem.st_name]]</template>
+                        <template is="dom-repeat" items="[[filterStationData]]" as="stationItem">[[stationItem.st_name]]</template>
                     </p>
                     <p>{{localize('station-machine')}}:
-                        <template is="dom-repeat" items="[[selectedStationData]]" as="item">
+                        <template is="dom-repeat" items="[[filterStationData]]" as="item">
                             <template is="dom-repeat" items="[[item.st_machine]]" as="item">[[item.name]] </template>
                         </template>
                     </p>
                     <p>{{localize('machine-quantity')}}:
-                        <template is="dom-repeat" items="[[selectedStationData]]" as="stationItem">[[stationItem.st_machine.length]] {{localize('machine')}}</template>
+                        <template is="dom-repeat" items="[[filterStationData]]" as="stationItem">[[stationItem.st_machine.length]] {{localize('machine')}}</template>
                     </p>
                     <div class="center btn-group">
                         <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
@@ -427,9 +449,9 @@
 
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn  thunderbird" on-click="clearSchedule">
-                            <button>{{localize('clear-schedule')}}</button>
-                        </flat-button>
+                        <paper-button class="btn thunderbird" on-click="clearSchedule">{{localize('clear-schedule')}}</paper-button>
+                        <paper-button class="btn" on-click="openManagePlanDialog">Load Plan</paper-button>
+                        <paper-button class="btn" on-click="saveAsPlan">Save as Plan</paper-button>
                     </div>
                 </div>
             </li>
@@ -442,11 +464,36 @@
             <li>
                 <div class="card">
                     <h1 class="title">Production Gantt Chart</h1>
-                    <!-- <flat-gantt-chart></flat-gantt-chart> -->
-                    <paper-button class="btn">Print</paper-button>
-                </div>
+                    <div class="center">
+                        <paper-button class="btn">Print</paper-button>
+                    </div>
             </li>
         </ul>
+        <flat-dialog id="managePlanDialog" scroll-action="lock">
+            <h1 class="center">Scheduling Plan</h1>
+            <p class="select-plan">Selected Plan: [[selected.name]]</p>
+            <div class="frame">
+                <div class="plan-list">
+                    <iron-list id="planList" items="[[planItems]]" as="item" selected-items={{selected}} selection-enabled>
+                        <template>
+                            <div tabindex$="[[tabIndex]]" class="item">
+                                <div class="left">
+                                    <p class="bold">Name: [[item.name]]</p>
+                                    <p class="subtitle">Type: [[item.type]]</p>
+                                </div>
+                                <div class="right">
+                                    <paper-icon-button on-click="removePlan" plan="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                                </div>
+                            </div>
+                        </template>
+                    </iron-list>
+                </div>
+            </div>
+            <div class="center">
+                <paper-button class="btn shamrock" on-click="loadSelectedPlan">Load Selected</paper-button>
+                <paper-button class="btn" on-click="closeManagePlanDialog">{{localize('close')}}</paper-button>
+            </div>
+        </flat-dialog>
         <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
     </template>
     <script>
@@ -677,13 +724,53 @@
             _refreshChart() {
                 if (this.scheduleItems.length > 0) {
                     let newChartData = this.scheduleItems.map((data) => {
-                        return [data.job_station.toString() || 'N/A', 'Order ' + data.order_no, data.order_color,
+                        return [data.job_station + '' || 'N/A', 'Order ' + data.order_no, data.order_color,
                         data.start, data.end
                         ]
                     });
                     this.$.chartQuery.ref.remove()
                     this.$.chartQuery.ref.set(newChartData)
                     this.$.timeline.redraw()
+                }
+            }
+
+            // PLAN MANAGEMENT
+            openManagePlanDialog() {
+                this.$.managePlanDialog.opened = true
+            }
+
+            closeManagePlanDialog() {
+                this.$.managePlanDialog.opened = false
+            }
+
+            removePlan(e) {
+                if (confirm("Delete this Plan?")) {
+                    const key = e.currentTarget.plan.$key
+                    this.$.planQuery.ref.child(key).remove()
+                }
+            }
+            loadSelectedPlan() {
+                let data = this.$.planList.selectedItem.data;
+                if (data) {
+                    this.set('factorySchedule.selected_plan', this.$.planList.selectedItem.name)
+                    this.$.scheduleQuery.ref.set(data);
+                    this.closeManagePlanDialog();
+                }
+            }
+
+            saveAsPlan() {
+                let planName = prompt("Please enter plan name", "Untitled");
+                if (planName) {
+                    let newObj = Object.assign(...Object.entries(this.scheduleItems)
+                        .map(([i, v]) => {
+                            delete v.$key
+                            return { [i]: v }
+                        }));
+                    this.$.planQuery.ref.push({
+                        name: planName,
+                        type: this.factoryProfile.model,
+                        data: newObj
+                    })
                 }
             }
 
@@ -923,10 +1010,7 @@
             }
 
             clearSchedule() {
-                if (window.confirm(
-                    "Clear all schedule ? The order that are working in process will not be deleted."
-                ) ==
-                    true) {
+                if (confirm("Clear all schedule ? The order that are working in process will not be deleted.")) {
                     this.$.scheduleQuery.ref.remove()
                     this.$.chartQuery.ref.remove()
                     this.toastText = 'notification-delete-successfully'
@@ -965,11 +1049,7 @@
                         order_delivery: orderDelivery,
                         order_status: "waiting",
                     });
-                    this.$.notificationQuery.ref.push({
-                        created: timestamp,
-                        detail: 'Edited order no.' + orderNo,
-                        type: 'normal'
-                    });
+                    this._pushNotification('Edited order no.' + orderNo, 'normal')
                     this.dismissEditOrder()
                     this.refreshOrderTable()
                     this.toastText = 'notification-save-successfully'
@@ -999,7 +1079,7 @@
             }
 
             reSchedule() {
-                if (window.confirm(
+                if (confirm(
                     "WARNING!! This will clear all schedules data")) {
                     this.$.scheduleQuery.ref.remove()
                     this.$.chartQuery.ref.remove()
@@ -1025,11 +1105,6 @@
                     }
                 }
             }
-
-            gcd(a, b) {
-                return (b == 0) ? a : gcd(b, a % b);
-            }
-
             _scheduleOrder(c) {
                 if (this.sortedOrder.length > 0) {
                     // 1) Get concurrent and initial value
@@ -1211,6 +1286,7 @@
                             "job_status": "waiting",
                             "job_good": 0,
                             "job_defect": 0,
+                            "job_complete": 0.00,
                             "start": start[i],
                             "end": end[i],
                             "order_customer": order_customer[i],
