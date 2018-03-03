@@ -751,8 +751,7 @@
                 }
             }
             loadSelectedPlan() {
-                let data = this.$.planList.selectedItem.data;
-                if (data) {
+                if (this.$.planList.selectedItem.data) {
                     this.set('factorySchedule.selected_plan', this.$.planList.selectedItem.name)
                     this.$.scheduleQuery.ref.set(data);
                     this.closeManagePlanDialog();
@@ -1127,6 +1126,7 @@
                     selected_order.map((data) => this.setOrderStatus(data.$key, 'wip'))
 
                     // 5) Set order part and order quantity data 
+                    let order_quantity = selected_order.map(o => o.order_quantity)
                     let order_part = selected_order.map(o => o.order_product_part)
                     let order_product_name = selected_order.map(o => o.order_product_name)
                     let order_description = selected_order.map(o => o.order_product_description)
@@ -1143,9 +1143,6 @@
                     console.log('order part')
                     console.table(order_part)
 
-                    // 6.2) Array of quantity
-                    let order_quantity = selected_order.map(o => o.order_quantity)
-
                     // 6.2) Array of cycle 
                     let cycleArr = order_part.map(element => element.cycle)
 
@@ -1156,11 +1153,9 @@
                     let processArr = order_part.map(element => element.process)
 
                     // 7) Calculate job workload of each process
-                    let multiResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q))
+                    let multiResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q)) // cycle-time x quantity
                     let workloadArr = multiResult.map((item, index) => {
                         return item.map((i, j) => {
-                            console.log('wl index ' + index)
-                            console.log('wl i ' + i)
                             return i + setupArr[index][j]
                         })
                     })
@@ -1288,6 +1283,7 @@
                             "job_good": 0,
                             "job_defect": 0,
                             "job_complete": 0.00,
+                            "job_dependency": "none",
                             "start": start[i],
                             "end": end[i],
                             "order_customer": order_customer[i],

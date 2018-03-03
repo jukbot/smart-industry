@@ -156,7 +156,7 @@
                                 {{localize('receive-job')}}
                             </paper-button>
                             <paper-button class="btn shamrock" on-click="openJobDialog" job="[[item]]" disabled$="[[isDone(item.job_status)]]">
-                                Report Job
+                                Progress Report
                             </paper-button>
                             <paper-button class="thunderbird btn" on-click="removeJob" job="[[item]]">
                                 {{localize('remove')}}
@@ -233,9 +233,9 @@
                         }
                     </style>
                 </custom-style>
-                <h1 class="center">Job Report</h1>
-                <paper-input label="Good" id="goodCount" value="{{good}}" type="number" always-float-label></paper-input>
-                <paper-input label="Defect" id="defectCount" value="{{defect}}" type="number" always-float-label></paper-input>
+                <h1 class="center">Completed Part</h1>
+                <paper-input label="No. of Good" id="goodCount" value="{{good}}" type="number" always-float-label></paper-input>
+                <paper-input label="No. of Defect" id="defectCount" value="{{defect}}" type="number" always-float-label></paper-input>
                 <div class="btn-group">
                     <paper-button dialog-dismiss on-click="closeJobDialog">
                         {{localize('dismiss')}}
