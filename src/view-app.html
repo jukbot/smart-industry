@@ -55,7 +55,7 @@
         display: block;
       }
     </style>
-    <!-- <app-analytics key="UA-51514677-9"></app-analytics> -->
+
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{pageData}}" tail="{{subRoute}}"></app-route>
     <app-route route="{{subRoute}}" pattern="/:page" data="{{subPageData}}" tail="{{subPageRoute}}"></app-route>
@@ -75,6 +75,7 @@
           <iron-image preload fade class="app-logo" role="image" title="IMES" alt="Application logo" sizing="contain" src="[[rootPath]]images/logo/logo.svg"></iron-image>
           <h1 title="IMES" class="main-logo-title">IMES</h1>
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
+          <app-analytics key="UA-51514677-9"></app-analytics>
           <nav role="navigation">
             <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" fallback-selection="404" role="navigation">
               <a name="dashboard" role="link" href="[[rootPath]]app/dashboard" rel="dashboard" title="Dashboard">
