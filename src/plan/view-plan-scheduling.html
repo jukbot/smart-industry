@@ -1159,7 +1159,7 @@
                             return i + setupArr[index][j]
                         })
                     })
-                    console.log('fuck workload' + workloadArr)
+                    console.log('fuck workload: ', workloadArr)
                     // calculate workload into obj 
                     let workloadProcessObj = workloadArr
                         .map((k, i) => Object.assign({}, ...processArr[i]
@@ -1175,6 +1175,10 @@
                             return (cur[index] || 0) + item || item
                         })
                     })
+
+                    // TEMP
+                   // R.mergeWith((a, b) => a + b, {a: 1, b: 2}, {a: 1, b: 3, c: 5})
+
                     // sum array as row
                     let sumWorkloadEachOrder = workloadArr.map((item) => {
                         return [item.reduce((a, b) => {
@@ -1299,7 +1303,7 @@
                     }, []); // use reduce only for serial and parallel
                     console.table(result)
 
-                    // 13) Split arr into group of key-value arr
+                    // 13) Split arr into group of key-value arr using lodash
                     let splitArr = result.map((data) => _.transform(data, function (result, value, key) {
                         if (!_.isArray(value)) return;
                         if (result.length < value.length) {
