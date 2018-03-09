@@ -9,6 +9,7 @@
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../lib/sugar.html">
 <link rel="import" href="../../lib/lodash.html">
+<link rel="import" href="../../lib/ramda.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../elements/flat-gantt-chart.html">
 <link rel="import" href="../style/shared-styles.html">
@@ -1109,18 +1110,17 @@
                 if (this.sortedOrder.length > 0) {
                     // 1) Get concurrent and initial value
                     const concurrent = c;
-                    console.log('Concurrent ' + c)
 
                     // 2) Filter only waiting, late or wip order 
                     const undone_order = this.sortedOrder.filter(o => o.order_status !== 'done')
-                    console.log('undone order that waiting are:')
-                    console.log(undone_order)
+                    //console.log('undone order that waiting are:')
+                    //console.log(undone_order)
 
                     // 3) Copy first concurrent orders from sorted order table 
                     const selected_order = undone_order.slice(0, concurrent).concat(undone_order.slice(
                         undone_order.length));
-                    console.log('selected order that will schedule are:')
-                    console.log(selected_order)
+                    //console.log('selected order that will schedule are:')
+                    //console.log(selected_order)
 
                     // 4) Set order status to work in progress
                     selected_order.map((data) => this.setOrderStatus(data.$key, 'wip'))
@@ -1137,30 +1137,30 @@
                     let order_color = selected_order.map(o => o.order_color)
                     let order_date = selected_order.map(o => o.order_date)
 
-                    // 6) Flat array of order part data  (only parallel and serial)
-                    order_part = order_part.reduce((a, b) =>
-                        a.concat(b), [])
-                    console.log('order part')
-                    console.table(order_part)
+                    // 6) Flat multiple parts array in to flat parts array
+                    order_part = order_part.reduce((a, b) => a.concat(b), [])
+                    //console.log('======= Order parts ========')
+                    //console.table(order_part)
 
                     // 6.2) Array of cycle 
                     let cycleArr = order_part.map(element => element.cycle)
-
                     // 6.3) Array of setup
                     let setupArr = order_part.map(element => element.setup)
-
                     // 6.4) Array of process no (index) 
                     let processArr = order_part.map(element => element.process)
 
-                    // 7) Calculate job workload of each process
-                    let multiResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q)) // cycle-time x quantity
+                    // 7) Calculate workload of each process
+                    let multiResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q)) // cycle = time x quantity
                     let workloadArr = multiResult.map((item, index) => {
                         return item.map((i, j) => {
                             return i + setupArr[index][j]
                         })
                     })
-                    console.log('fuck workload: ', workloadArr)
-                    // calculate workload into obj 
+                    let workloadObj = Object.assign({}, workloadArr)
+                    // console.log('workload array: ', workloadArr)
+                    // console.log('workload object: ', workloadObj)
+
+                    // Convert array into object array
                     let workloadProcessObj = workloadArr
                         .map((k, i) => Object.assign({}, ...processArr[i]
                             .map((process, index) => ({ [process]: workloadArr[i][index] }))
@@ -1168,18 +1168,16 @@
                     console.log('workload process object')
                     console.log(workloadProcessObj)
 
-                    // 8) Calculate sum workload of each process 
-                    // sum array as column
-                    let sumWorkloadEachProcess = workloadArr.reduce((prev, cur) => {
-                        return prev.map((item, index) => {
-                            return (cur[index] || 0) + item || item
-                        })
-                    })
+                    // let sumWorkloadEachProcess = workloadArr.reduce((prev, cur) => {
+                    //     return prev.map((item, index) => {
+                    //         return (cur[index] || 0) + item || item
+                    //     })
+                    // })
 
-                    // TEMP
-                   // R.mergeWith((a, b) => a + b, {a: 1, b: 2}, {a: 1, b: 3, c: 5})
+                    // 8.1) Calculate sum workload of each process (using Ramda)
+                    let sumWorkloadEachProcess = R.reduce(R.mergeWith(R.add), {}, workloadProcessObj)
 
-                    // sum array as row
+                    // 8.2) Calculate sum workload of each order
                     let sumWorkloadEachOrder = workloadArr.map((item) => {
                         return [item.reduce((a, b) => {
                             return a + b;
