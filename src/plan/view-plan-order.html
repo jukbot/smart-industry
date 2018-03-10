@@ -319,7 +319,7 @@
             }
 
             getOptimalQuantity(cost, part) {
-                if (!cost || !part) return 0
+                if (!cost || !part) return
                 const optimizeRule = this.factoryPerformance.optimize
                 const selectInventory = this.factoryInventory
                 const cycleTimePerItem = this.getCycleTimePerItem(part)
@@ -362,7 +362,7 @@
             }
 
             getOperationTime(end, start, opday) {
-                if (!end || !start || !opday) return 0;
+                if (!end || !start || !opday) return;
                 const endtime = end.replace(/\:/g, '.');
                 const starttime = start.replace(/\:/g, '.');
                 const opTime = endtime - starttime;
@@ -383,7 +383,7 @@
             }
 
             getActualQuantity(amount) {
-                if (!amount) return 0;
+                if (!amount) return;
                 const accept_waste = this.factoryPerformance.aw;
                 const actual_quantity = Math.ceil((amount / (1 - accept_waste)));
                 this.actualQuantity = actual_quantity;
@@ -391,7 +391,7 @@
             }
 
             getSumProductTime(part, amount) {
-                if (!part || !amount) return 0;
+                if (!part || !amount) return;
                 let productCycleArr = []
                 let productSetupArr = []
                 productCycleArr = part.map(part => part.cycle); // returns a new array of part cycle iterated
@@ -407,25 +407,25 @@
             }
 
             getProductCost(cost, amount) {
-                if (!cost || !amount) return 0;
+                if (!cost || !amount) return;
                 const actual_amount = this.getActualQuantity(amount);
                 const total_cost = (cost * actual_amount);
                 return total_cost;
             }
 
             getProductProcessSequence(arr) {
-                if (!arr) return 0;
+                if (!arr) return;
                 return arr.join(' → ');
             }
 
             getSumSetupTime(setup) {
-                if (!setup) return 0;
+                if (!setup) return;
                 let sumSetupTime = setup.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
                 return sumSetupTime.toFixed(1);
             }
 
             getSumCycleTime(cycle) {
-                if (!cycle) return 0;
+                if (!cycle) return;
                 let sumCycleTime = cycle.reduce((a, b) => a + b); // apply sum function to all arr items to get sumCycle
                 return sumCycleTime.toFixed(1);
             }
@@ -464,7 +464,7 @@
 
             // SET VALUE
             getCycleTimePerItem(part) {
-                if (!part) return 0;
+                if (!part) return;
                 let productCycleArr = []
                 productCycleArr = part.map(part => part.cycle);
                 const flatCycleArr = productCycleArr.reduce((prev, cur) => [...prev, ...cur])
@@ -473,18 +473,18 @@
             }
 
             getUseInventory(amount, material) {
-                if (!amount || !material) return 0;
+                if (!amount || !material) return;
                 return (this.getActualQuantity(amount) * material);
             }
 
             setProductPart(product) {
-                if (!product) return 0;
+                if (!product) return;
                 this.orderProductPart = product.part; // set to global variable
                 return product.name;
             }
 
             setProductSKU(sku) {
-                if (!sku) return 0;
+                if (!sku) return;
                 this.productSKU = sku; // set to global variable
                 return sku;
             }

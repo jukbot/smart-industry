@@ -1,0 +1,119 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../lib/d3.html">
+
+<dom-module id="flat-timeline-chart">
+    <template>
+        <style>
+            .chart {
+                shape-rendering: crispEdges;
+            }
+
+            .mini text {
+                font: 0.75rem sans-serif;
+                color: #333333;
+            }
+
+            .main text {
+                font: 0.75rem sans-serif;
+                color: #ffffff;
+            }
+
+            .month text {
+                text-anchor: start;
+            }
+
+            .todayLine {
+                stroke: tomato;
+                stroke-width: 2;
+            }
+
+            .axis line,
+            .axis path {
+                stroke: #333333;
+            }
+
+            .miniItem {
+                stroke-width: 6;
+            }
+
+            .future {
+                stroke: gray;
+                fill: #ddd; 
+            }
+
+            .past {
+                fill: gray;
+            }
+
+            .brush .extent {
+                fill: lightgoldenrodyellow;
+                fill-opacity: .75;
+            }
+
+            .item {
+                rx: 3;
+                ry: 3;
+            }
+
+            .item:hover {
+                fill-opacity: .75;
+            }
+
+            .item-label {
+                fill: #333333;
+            }
+        </style>
+        <slot></slot>
+    </template>
+
+    <script>
+        /**
+         * `flat-timeline-chart` Description
+         *
+         * @summary ShortDescription.
+         * @customElement
+         * @polymer
+         * @extends {Polymer.Element}
+         */
+        class FlatTimelineChart extends Polymer.Element {
+            /**
+             * String providing the tag name to register the element under.
+             */
+            static get is() {
+                return 'flat-timeline-chart';
+            }
+
+            /**
+             * Object describing property-related metadata used by Polymer features
+             */
+            static get properties() {
+                return {
+                    data: {
+                        type: Object
+                    }
+                };
+            }
+            /**
+             * Instance of the element is created/upgraded. Use: initializing state,
+             * set up event listeners, create shadow dom.
+             * @constructor
+             */
+            constructor() {
+                super();
+            }
+
+            /**
+             * Use for one-time configuration of your component after local DOM is initialized. 
+             */
+            ready() {
+                super.ready();
+                Polymer.RenderStatus.afterNextRender(this, function () {
+                    this._initialtimelineChart()
+                });
+                console.log(this.data)
+            }
+
+        }
+        window.customElements.define(FlatTimelineChart.is, FlatTimelineChart);
+    </script>
+</dom-module>

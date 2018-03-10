@@ -11,7 +11,7 @@
 <link rel="import" href="../../lib/lodash.html">
 <link rel="import" href="../../lib/ramda.html">
 <link rel="import" href="../view-app.html">
-<link rel="import" href="../elements/flat-gantt-chart.html">
+<link rel="import" href="../elements/flat-timeline-chart.html">
 <link rel="import" href="../style/shared-styles.html">
 <dom-module id="view-plan-scheduling">
     <template>
@@ -1156,9 +1156,10 @@
                             return i + setupArr[index][j]
                         })
                     })
+
                     let workloadObj = Object.assign({}, workloadArr)
-                    // console.log('workload array: ', workloadArr)
-                    // console.log('workload object: ', workloadObj)
+                    console.log('workload array: ', workloadArr)
+                    console.log('workload object: ', workloadObj)
 
                     // Convert array into object array
                     let workloadProcessObj = workloadArr
@@ -1168,42 +1169,39 @@
                     console.log('workload process object')
                     console.log(workloadProcessObj)
 
-                    // let sumWorkloadEachProcess = workloadArr.reduce((prev, cur) => {
-                    //     return prev.map((item, index) => {
-                    //         return (cur[index] || 0) + item || item
-                    //     })
-                    // })
-
                     // 8.1) Calculate sum workload of each process (using Ramda)
                     let sumWorkloadEachProcess = R.reduce(R.mergeWith(R.add), {}, workloadProcessObj)
 
                     // 8.2) Calculate sum workload of each order
                     let sumWorkloadEachOrder = workloadArr.map((item) => {
-                        return [item.reduce((a, b) => {
+                        return item.reduce((a, b) => {
                             return a + b;
-                        })];
+                        });
                     });
                     console.log('Sum Workload of each station ', sumWorkloadEachProcess)
                     console.log('Sum workload of each order ', sumWorkloadEachOrder)
 
-                    // 9) Calculate weight of each process based on workload (workload of n process / total workload of each process)
+                    // 9) Calculate weight of each process based on workload 
+                    // (workload of n process / total workload of each process)
                     // let weight = []
-                    // for (let i = 0; i < workloadArr.length; i++) {
-                    //     weight[i] = workloadArr[i].map((x, i) => x / sumWorkloadEachProcess[i])
-                    // }
+                    //   for (let i = 0; i < workloadArr.length; i++) {
+                    //      weight[i] = workloadArr[i].map((x, i) => x / sumWorkloadEachProcess[i])
+                    //  }
                     let computeWeight = R.mergeWith(R.divide)
                     let weight = R.map(computeWeight(sumWorkloadEachProcess), workloadProcessObj)
                     console.log('Weight ', weight)
 
-                    // 10) Calculate allocated machine
-                    let machines = []
-                    let machine_in_station = this.stationItems.map(o => {
-                        if (!o.st_machine.length) {
+                    // 10) Calculate available machines
+                    let machines = [] // return no of machine in each station 
+                    let machine_in_station = this.stationItems.map(data => 
+                    {
+                        if (!data.st_machine.length) {
                             return 0
                         } else {
-                            return o.st_machine.length
+                            return data.st_machine.length
                         }
                     })
+
                     console.log('Machine in station ', machine_in_station)
 
                     for (let i = 0; i < weight.length; i++) {
@@ -1225,7 +1223,6 @@
                     for (let i = 0; i < workloadArr.length; i++) {
                         duration[i] = workloadArr[i].map((workload, index) => {
                             const machine = machines[index]
-
                             if (!machine) {
                                 return workload
                             } else {

@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/vaadin-material-theme/vaadin-text-field.html">
 <link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="view-app.html">
+<link rel="import" href="elements/flat-usage-chart.html">
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-settings">
   <template>
@@ -16,13 +17,8 @@
         min-height: 450px;
       }
 
-      .upload-bar {
-        width: 100%;
-        height: 10px;
-      }
-
       .switch {
-        padding: 10px 0;
+        padding: 16px 0;
       }
 
       .meta-data>p {
@@ -82,7 +78,6 @@
               </paper-item>
             </template>
           </vaadin-combo-box>
-          <p>{{localize('user-id')}}: [[user.uid]]</p>
           <flat-button on-click="scanDevice" class="btn" title="Search sensor">
             <button>Search Sensor</button>
           </flat-button>
@@ -132,6 +127,7 @@
         <div class="card">
           <h1 class="title">{{localize('backup-settings')}}</h1>
           <p>{{localize('export-or-import-factory-data-to-backup-as-a-file')}}</p>
+          <!-- <flat-usage-chart class="center" radius="100" percentage="0.7" current-text="70" subtitle-text="Storage Usage"></flat-usage-chart> -->
           <flat-button on-click="exportData" class="btn" title="{{localize('export-data')}}">
             <button>{{localize('export-data')}}</button>
           </flat-button>
@@ -148,13 +144,17 @@
             {{localize('web-notification')}}</paper-toggle-button>
           <p>{{localize('email-notifcation')}}</p>
           <paper-toggle-button class="switch" value="[[emailAlert]]" on-change="changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
+          <p>{{localize('user-id')}}: [[user.uid]]</p>
+          <flat-button on-click="openManageUser" class="btn">
+            <button disabled>{{localize('manage-users')}}</button>
+          </flat-button>
         </div>
       </li>
       <li>
         <div class="card">
           <h1 class="title">{{localize('organization-settings')}}</h1>
           <paper-input label="{{localize('company')}}" id="companyName" value="[[userdata.company]]" type="text" always-float-label></paper-input>
-          <paper-input label="{{localize('phone')}}" id="phoneNumber" value="[[userdata.phone]]" type="text" allowed-pattern="[0-9]"
+          <paper-input label="{{localize('phone-number')}}" id="phoneNumber" value="[[userdata.phone]]" type="text" allowed-pattern="[0-9]"
             onkeypress='return event.charCode >= 48 && event.charCode <= 57' always-float-label></paper-input>
           <div class="meta-data">
             <p>{{localize('data-keychain')}}: [[userdata.key]]</p>
@@ -162,9 +162,6 @@
           </div>
           <flat-button on-click="openManageKey" class="btn">
             <button>{{localize('manage-keychain')}}</button>
-          </flat-button>
-          <flat-button on-click="openManageUser" class="btn">
-            <button disabled>{{localize('manage-users')}}</button>
           </flat-button>
           <flat-button on-click="saveOrganizationSettings" class="btn shamrock" title="{{localize('save-settings')}}">
             <button>{{localize('save-settings')}}</button>
@@ -206,17 +203,9 @@
             type: Object,
             notify: true
           },
-          maxFiles: {
-            type: Number,
-            value: 1
-          },
           maxFileSize: {
             type: Number,
             value: 1000000
-          },
-          tempKey: {
-            type: String,
-            notify: true
           },
           language: String,
           notification: Boolean,
@@ -253,12 +242,13 @@
       }
 
       exportData() {
-        const data = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.appdata));
-        const a = document.createElement('a');
-        a.href = 'data:' + data;
-        a.download = 'export.json';
-        a.innerHTML = 'download JSON';
-        a.click();
+        if (this.appdata) {
+          const a = document.createElement('a');
+          a.href = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.appdata));
+          a.download = 'export.json';
+          a.innerHTML = 'download JSON';
+          a.click();
+        }
       }
 
       importData() {
@@ -335,9 +325,11 @@
 
       saveOrganizationSettings() {
         const companyNameInput = this.$.companyName.value
-        if (companyNameInput !== '' && companyNameInput !== this.userdata.company) {
+        const phoneNumberInput = this.$.phoneNumber.value
+        if (companyNameInput !== '' && phoneNumberInput !== '') {
           this.$.userData.ref.update({
-            company: companyNameInput
+            company: companyNameInput,
+            phone: phoneNumberInput
           }).then(() => {
             this.toastText = 'notification-save-settings'
             this.$.toastAlert.open()
@@ -570,37 +562,34 @@
         if ('usb' in navigator) {
           let device
           device = navigator.usb.requestDevice({
-            filters: [{
-              vendorId: 0x2341
-            }, {
-              vendorId: 0x2a03
-            }]
-          })
+              filters: [{
+                vendorId: 0x2341
+              }, {
+                vendorId: 0x2a03
+              }]
+            })
             .then(device => {
               console.log(device.productName) // "Arduino Micro"
               console.log(device.manufacturerName) // "Arduino LLC"
             })
-            .catch(error => {
-              console.error(error)
-            })
-
+            .catch(error => {})
           if (device !== undefined) {
             // Add |device| to the UI.
           }
         } else {
-          window.alert('Your web browser is not support physical device detection. Please use Google Chrome')
+          window.alert('Your web browser is not support physical device detection.')
         }
       }
 
       showDevice() {
         if ('usb' in navigator) {
           navigator.usb.getDevices().then(devices => {
-            devices.map(device => {
-              console.log(device.productName) // "Arduino Micro"
-              console.log(device.manufacturerName) // "Arduino LLC"
-              console.log(device.vendorId) // "Vender ID"
+              devices.map(device => {
+                console.log(device.productName) // "Arduino Micro"
+                console.log(device.manufacturerName) // "Arduino LLC"
+                console.log(device.vendorId) // "Vender ID"
+              })
             })
-          })
             .catch(error => {
               console.error(error)
             })
@@ -640,7 +629,6 @@
         console.log('message received', arguments)
       }
     }
-
     window.customElements.define(ViewSettings.is, ViewSettings)
   </script>
 </dom-module>
