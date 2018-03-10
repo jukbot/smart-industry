@@ -23,13 +23,26 @@
     "eslint": "^4.18.0",
     "eslint-config-google": "^0.9.1",
     "eslint-config-recommended": "^2.0.0",
-    "eslint-plugin-polymer": "^0.2.1"
+    "eslint-plugin-polymer": "^0.2.1",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.0",
+    "pre-commit": "^1.2.2",
+    "prettier": "^1.11.1"
   },
   "engines": {
     "node": ">=8.0"
   },
   "license": "Apache-2.0",
+  "lint-staged": {
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
+  },
   "name": "imes",
+  "pre-commit": [
+    "pre-commit"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/jukbot/smart-industry.git"
@@ -37,8 +50,9 @@
   "scripts": {
     "build": "polymer build",
     "deploy": "polymer build && firebase deploy",
-    "dev": "polymer serve -p 8080",
+    "dev": "polymer serve -p 8080", 
     "lint": "polymer lint --input src/**/*.html",
+    "pre-commit": "lint-staged",
     "serve:dev": "polymer serve",
     "serve:prod": "polymer build && firebase serve --only functions,hosting",
     "start": "prpl-server",

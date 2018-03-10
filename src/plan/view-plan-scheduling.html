@@ -1186,11 +1186,13 @@
                     console.log('Sum Workload of each station ', sumWorkloadEachProcess)
                     console.log('Sum workload of each order ', sumWorkloadEachOrder)
 
-                    // 9) Calculate weight of each process based on workload
-                    let weight = []
-                    for (let i = 0; i < workloadArr.length; i++) {
-                        weight[i] = workloadArr[i].map((x, i) => x / sumWorkloadEachProcess[i])
-                    }
+                    // 9) Calculate weight of each process based on workload (workload of n process / total workload of each process)
+                    // let weight = []
+                    // for (let i = 0; i < workloadArr.length; i++) {
+                    //     weight[i] = workloadArr[i].map((x, i) => x / sumWorkloadEachProcess[i])
+                    // }
+                    let computeWeight = R.mergeWith(R.divide)
+                    let weight = R.map(computeWeight(sumWorkloadEachProcess), workloadProcessObj)
                     console.log('Weight ', weight)
 
                     // 10) Calculate allocated machine
