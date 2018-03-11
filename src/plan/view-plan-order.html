@@ -402,7 +402,7 @@
                 const sumSetup = flatSetupArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
                 const sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
                 this.orderDuration = sumDuration;
-                this._limitOperationTime(sumDuration);
+                //this._limitOperationTime(sumDuration);
                 return this._durationToStr(sumDuration); // convert to hr min sec
             }
 

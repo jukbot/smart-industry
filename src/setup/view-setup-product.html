@@ -453,7 +453,7 @@
                                     </div>
                                     <div class="flex-item">
                                         <h3>Part Dependency</h3>
-                                        <template is="dom-repeat" items="[[item.part_dependency]]" as="productPart">
+                                        <template is="dom-repeat" items="[[item.part]]" as="productPart">
                                             <p>[[productPart.dependency]]</p>
                                         </template>
                                     </div>
@@ -672,8 +672,8 @@
                 </custom-style>
                 <h1 class="title center">{{localize('edit')}} {{localize('product-part')}}</h1>
                 <div class="block-group">
-                    <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
-                    <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
+                    <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" required always-float-label></paper-input>
+                    <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" required always-float-label></paper-input>
                     <paper-input label="Part Dependency (skuxxx,skuxxx,..)" id="partDependency" value="{{partDependency}}" type="text" always-float-label></paper-input>
                 </div>
                 <div class="block-group">
@@ -917,7 +917,7 @@
                     process: this.partProcess,
                     cycle: this.partProcessCycle,
                     setup: this.partProcessSetup,
-                    dependency: this.partDependency
+                    dependency: this.partDependency || 'none'
                 };
                 console.log(partObj)
                 console.log(this.productPart)

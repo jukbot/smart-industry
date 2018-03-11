@@ -825,8 +825,8 @@
                     const planName = this.$.planList.selectedItem.name
                     this.set('factorySchedule.selected_plan', planName)
                     this.isPreviewMode = false;
-                    this.$.scheduleQuery.ref.set(data);
-                    this.$.trackingQuery.ref.set(data);
+                    this.$.scheduleQuery.ref.set(this.$.planList.selectedItem.data);
+                    this.$.trackingQuery.ref.set(this.$.planList.selectedItem.data);
                     alert(`Plan ${planName} has been added/replaced to your tracking section.`)
                     this._refreshChart()
                     this.closeManagePlanDialog();
@@ -837,7 +837,7 @@
                 if (this.$.planList.selectedItem.data) {
                     this.selected_plan = this.$.planList.selectedItem.name
                     this.isPreviewMode = true;
-                    this.$.scheduleQuery.ref.set(data);
+                    this.$.scheduleQuery.ref.set(this.$.planList.selectedItem.data);
                     this._refreshChart()
                     this.closeManagePlanDialog();
                 }
@@ -1264,14 +1264,16 @@
                     console.log('Sum Workload of each station ', sumWorkloadEachProcess)
                     console.log('Sum workload of each order ', sumWorkloadEachOrder)
                     let temp = Object.values(sumWorkloadEachProcess)
+
                     // 9) Calculate weight of each process based on workload 
                     // (workload of n process / total workload of each process)
+                    //let computeWeight = R.mergeWith(R.divide)
 
-                    let computeWeight = ((a,i,o) => {
-                        return R.mergeWith(R.divide)
-                    });
                     let weight = []
-                    weight = R.map(computeWeight(sumWorkloadEachProcess), workloadProcessObj)
+                    for(let i = 0 ; i < workloadProcessObj.length; i++) {  
+                      weight[i] = R.mergeWith(R.divide, workloadProcessObj[i] ,sumWorkloadEachProcess)
+                    }
+
                     console.log('Weight ', weight)
 
                     // 10) Calculate available machines
@@ -1284,7 +1286,6 @@
                     })
 
                     console.log('Machine in station ', machine_in_station)
-                    console.log(weight)
 
                     // 11) Calculate used machines of each job
                     let computeAllocatedMachine = ((x,i) => { 
@@ -1297,7 +1298,9 @@
                             return allocatedMachine
                         }
                     });
-                    let machines = R.map(computeAllocatedMachine, weight);
+                    //let weightArr = Object.values(weight)
+                    weight.map((y) => y).filter((x) => x <= 1)
+                    let machines = weight.map(computeAllocatedMachine);
                     console.log(machines)
 
                     // for (let i = 1; i <= weight.length; i++) {
