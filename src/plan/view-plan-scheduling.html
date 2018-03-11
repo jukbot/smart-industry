@@ -13,6 +13,7 @@
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../elements/flat-timeline-chart.html">
 <link rel="import" href="../style/shared-styles.html">
+<script src="../elements/randomData.js"></script>
 <dom-module id="view-plan-scheduling">
     <template>
         <style include="shared-styles app-grid-style flat-button">
@@ -74,6 +75,15 @@
                 margin: 20px 0;
             }
 
+            .preview-badge {
+                background-color: purple;
+                color: #fff;
+                display: inline-block;
+                padding: 5px 10px;
+                text-align: center;
+                border-radius: 3px;
+            }
+
             #chartContainer {
                 min-height: 700px;
             }
@@ -107,6 +117,8 @@
         <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
         <!-- SCHEDULE DATA -->
         <firebase-query app-name="smart-mes" id="jobQuery" path="/data/[[k.key]]/scheduleData" order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
+        <!-- TRACKING DATA -->
+        <firebase-query app-name="smart-mes" id="trackingQuery" path="/data/[[k.key]]/trackingData"></firebase-query>
         <!-- PLAN DATA -->
         <firebase-query app-name="smart-mes" id="planQuery" path="/data/[[k.key]]/planData" data="{{planItems}}"></firebase-query>
 
@@ -309,6 +321,7 @@
             <li>
                 <div class="card" hidden="[[showScheduleTable]]">
                     <h1 class="title">{{localize('production-scheduling-table')}}</h1>
+                    <span class="preview-badge" hidden="[[!isPreviewMode]]">Preview Plan</span>
                     <p>Selected Plan: [[factorySchedule.selected_plan]]</p>
                     <p>{{localize('station')}}: [[selectedStation]]</p>
                     <p>{{localize('station-name')}}:
@@ -447,7 +460,6 @@
                                 </div>
                             </template>
                         </vaadin-grid-column>
-
                     </vaadin-grid>
                     <div class="center">
                         <paper-button class="btn thunderbird" on-click="clearSchedule">{{localize('clear-schedule')}}</paper-button>
@@ -460,6 +472,7 @@
                 <div class="card" id="chartContainer" hidden="[[showChartTable]]">
                     <h1 class="title">{{localize('scheduling-chart')}}</h1>
                     <google-chart id="timeline" type="timeline" options="[[timelineOptions]]"></google-chart>
+                    <!-- <flat-timeline-chart data="[[timelineData]]"></flat-timeline-chart> -->
                 </div>
             </li>
             <li>
@@ -492,7 +505,8 @@
                 </div>
             </div>
             <div class="center">
-                <paper-button class="btn shamrock" on-click="loadSelectedPlan">Load Selected</paper-button>
+                <paper-button class="btn" disabled$="[[disabled]]" on-click="previewSelectedPlan">Preview</paper-button>
+                <paper-button class="btn shamrock" disabled$="[[disabled]]" on-click="loadSelectedPlan">Apply</paper-button>
                 <paper-button class="btn" on-click="closeManagePlanDialog">{{localize('close')}}</paper-button>
             </div>
         </flat-dialog>
@@ -540,10 +554,56 @@
                         type: Boolean,
                         value: true
                     },
+                    isPreviewMode: {
+                        type: Boolean,
+                        value: false
+                    },
+                    disabled: {
+                        type: Boolean,
+                        value: true
+                    },
+                    timelineData: {
+                        type: Object,
+                        value: randomData()
+                        // value: {
+                        //     lanes: [{
+                        //         class: "past",
+                        //         color: "#4f3520",
+                        //         desc: "This is a description.",
+                        //         end: new Date(),
+                        //         id: 0,
+                        //         start: new Date(),
+                        //         station: 0
+                        //     }],
+                        //     items: [{
+                        //             id: 0,
+                        //             label: "Station 0"
+                        //         }, {
+                        //             id: 1,
+                        //             label: "Station 1"
+                        //         },
+                        //         {
+                        //             id: 2,
+                        //             label: "Station 2"
+                        //         }, {
+                        //             id: 3,
+                        //             label: "Station 3"
+                        //         }, {
+                        //             id: 4,
+                        //             label: "Station 4"
+                        //         },
+                        //         {
+                        //             id: 5,
+                        //             label: "Station 5"
+                        //         }
+                        //     ]
+                        // }
+                    },
                     language: String,
                     status: String,
                     orderItems: Object,
                     chartItems: Object,
+                    trackItems: Object,
                     editOrderItems: Object,
                     factoryPerformance: Object,
                     factoryProfile: Object,
@@ -578,6 +638,7 @@
 
             _installListeners() {
                 this.addEventListener('iron-resize', (e) => this._setChartSize(e))
+                this.$.planList.addEventListener('selected-item-changed', this._validatePlanInput.bind(this))
             }
 
             refreshOrderTable() {
@@ -625,7 +686,7 @@
                     firstDayOfWeek: 1,
                     monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'
                         .split(
-                        '_'),
+                            '_'),
                     weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
                     weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
                     formatDate: function (date) {
@@ -707,8 +768,8 @@
                     // convert time stamp to new date 
                     const result = this.chartItems.map((x) => {
                         return [this.localize('station') + x[0], x[1], x[2],
-                        new Date(x[3] * 1000),
-                        new Date(x[4] * 1000)
+                            new Date(x[3] * 1000),
+                            new Date(x[4] * 1000)
                         ]
                     });
                     dataTable.addRows(result);
@@ -719,15 +780,15 @@
                 }
                 document.createElement('google-chart-loader').dataTable(
                     dataTable).then((dataTable) => {
-                        chart.data = dataTable;
-                    });
+                    chart.data = dataTable;
+                });
             }
 
             _refreshChart() {
                 if (this.scheduleItems.length > 0) {
                     let newChartData = this.scheduleItems.map((data) => {
                         return [data.job_station + '' || 'N/A', 'Order ' + data.order_no, data.order_color,
-                        data.start, data.end
+                            data.start, data.end
                         ]
                     });
                     this.$.chartQuery.ref.remove()
@@ -735,8 +796,15 @@
                     this.$.timeline.redraw()
                 }
             }
-
             // PLAN MANAGEMENT
+            _validatePlanInput() {
+                if (this.$.planList.selectedItem) {
+                    this.disabled = false
+                } else {
+                    this.disabled = true
+                }
+            }
+
             openManagePlanDialog() {
                 this.$.managePlanDialog.opened = true
             }
@@ -751,10 +819,25 @@
                     this.$.planQuery.ref.child(key).remove()
                 }
             }
+
             loadSelectedPlan() {
                 if (this.$.planList.selectedItem.data) {
-                    this.set('factorySchedule.selected_plan', this.$.planList.selectedItem.name)
+                    const planName = this.$.planList.selectedItem.name
+                    this.set('factorySchedule.selected_plan', )
                     this.$.scheduleQuery.ref.set(data);
+                    this.$.trackingQuery.ref.set(data);
+                    alert(`Plan ${planName} has been added/replaced to your tracking section.`)
+                    this._refreshChart()
+                    this.closeManagePlanDialog();
+                }
+            }
+
+            previewSelectedPlan() {
+                if (this.$.planList.selectedItem.data) {
+                    this.selected_plan = this.$.planList.selectedItem.name
+                    this.isPreviewMode = true;
+                    this.$.scheduleQuery.ref.set(data);
+                    this._refreshChart()
                     this.closeManagePlanDialog();
                 }
             }
@@ -765,7 +848,9 @@
                     let newObj = Object.assign(...Object.entries(this.scheduleItems)
                         .map(([i, v]) => {
                             delete v.$key
-                            return { [i]: v }
+                            return {
+                                [i]: v
+                            }
                         }));
                     this.$.planQuery.ref.push({
                         name: planName,
@@ -1081,7 +1166,7 @@
 
             reSchedule() {
                 if (confirm(
-                    "WARNING!! This will clear all schedules data")) {
+                        "WARNING!! This will clear all schedules data")) {
                     this.$.scheduleQuery.ref.remove()
                     this.$.chartQuery.ref.remove()
                     if (this.sortedOrder) {
@@ -1164,7 +1249,9 @@
                     // Convert array into object array
                     let workloadProcessObj = workloadArr
                         .map((k, i) => Object.assign({}, ...processArr[i]
-                            .map((process, index) => ({ [process]: workloadArr[i][index] }))
+                            .map((process, index) => ({
+                                [process]: workloadArr[i][index]
+                            }))
                         ))
                     console.log('workload process object')
                     console.log(workloadProcessObj)
@@ -1193,8 +1280,7 @@
 
                     // 10) Calculate available machines
                     let machines = [] // return no of machine in each station 
-                    let machine_in_station = this.stationItems.map(data => 
-                    {
+                    let machine_in_station = this.stationItems.map(data => {
                         if (!data.st_machine.length) {
                             return 0
                         } else {
@@ -1331,7 +1417,7 @@
             }
 
             _multiSchedule() {
-                if (this.filterScheduleItems.length <= 0) { }
+                if (this.filterScheduleItems.length <= 0) {}
             }
         }
         customElements.define(ViewPlanScheduling.is, ViewPlanScheduling)

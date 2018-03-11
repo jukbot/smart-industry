@@ -140,7 +140,7 @@
         <li>
           <div class="frame">
             <h1 class="title">{{localize('next-reschedule')}}</h1>
-            <h1 class="number" style="font-size: 2.75rem;">[[nextInterval]]</h1>
+            <h1 class="number" style="font-size: 2.75rem;">[[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</h1>
           </div>
         </li>
         <li>
@@ -202,20 +202,6 @@
       connectedCallback() {
         super.connectedCallback();
         this.loadResources(this.resolveUrl('../../data/locales.json'));
-      }
-
-      getNextInterval(last_timestamp, interval) {
-        if (!last_timestamp || !interval) return 0;
-        const current = Math.floor(Date.now() / 1000);
-        const diff = current - last_timestamp;
-        const range = interval * 24 * 60 * 60;
-        if (diff <= range) {
-          const nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 * 1000);
-          const nextIntervalDate = dateFromTimeStamp(nextIntervalStamp);
-          this.nextInterval = nextIntervalDate;
-        } else {
-          this.set('factorySchedule.start_interval', current);
-        }
       }
 
       getNextInterval(last_timestamp, interval) {
