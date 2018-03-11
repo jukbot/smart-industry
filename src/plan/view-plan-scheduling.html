@@ -823,7 +823,8 @@
             loadSelectedPlan() {
                 if (this.$.planList.selectedItem.data) {
                     const planName = this.$.planList.selectedItem.name
-                    this.set('factorySchedule.selected_plan', )
+                    this.set('factorySchedule.selected_plan', planName)
+                    this.isPreviewMode = false;
                     this.$.scheduleQuery.ref.set(data);
                     this.$.trackingQuery.ref.set(data);
                     alert(`Plan ${planName} has been added/replaced to your tracking section.`)
@@ -1241,11 +1242,6 @@
                             return i + setupArr[index][j]
                         })
                     })
-
-                    let workloadObj = Object.assign({}, workloadArr)
-                    console.log('workload array: ', workloadArr)
-                    console.log('workload object: ', workloadObj)
-
                     // Convert array into object array
                     let workloadProcessObj = workloadArr
                         .map((k, i) => Object.assign({}, ...processArr[i]
@@ -1267,19 +1263,18 @@
                     });
                     console.log('Sum Workload of each station ', sumWorkloadEachProcess)
                     console.log('Sum workload of each order ', sumWorkloadEachOrder)
-
+                    let temp = Object.values(sumWorkloadEachProcess)
                     // 9) Calculate weight of each process based on workload 
                     // (workload of n process / total workload of each process)
-                    // let weight = []
-                    //   for (let i = 0; i < workloadArr.length; i++) {
-                    //      weight[i] = workloadArr[i].map((x, i) => x / sumWorkloadEachProcess[i])
-                    //  }
-                    let computeWeight = R.mergeWith(R.divide)
-                    let weight = R.map(computeWeight(sumWorkloadEachProcess), workloadProcessObj)
+
+                    let computeWeight = ((a,i,o) => {
+                        return R.mergeWith(R.divide)
+                    });
+                    let weight = []
+                    weight = R.map(computeWeight(sumWorkloadEachProcess), workloadProcessObj)
                     console.log('Weight ', weight)
 
                     // 10) Calculate available machines
-                    let machines = [] // return no of machine in each station 
                     let machine_in_station = this.stationItems.map(data => {
                         if (!data.st_machine.length) {
                             return 0
@@ -1289,19 +1284,35 @@
                     })
 
                     console.log('Machine in station ', machine_in_station)
+                    console.log(weight)
 
-                    for (let i = 0; i < weight.length; i++) {
-                        machines[i] = weight[i].map((x, i) => {
-                            let allocatedMachine = Math.round(x * machine_in_station[i])
-                            if (allocatedMachine >= machine_in_station[i]) {
-                                return allocatedMachine - 1
-                            } else if (allocatedMachine <= 1) {
-                                return 1
-                            } else {
-                                return allocatedMachine
-                            }
-                        })
-                    }
+                    // 11) Calculate used machines of each job
+                    let computeAllocatedMachine = ((x,i) => { 
+                        let allocatedMachine = Math.round(x * machine_in_station[i])
+                        if (allocatedMachine >= machine_in_station[i]) {
+                            return allocatedMachine - 1
+                        } else if (allocatedMachine <= 1) {
+                            return 1
+                        } else {
+                            return allocatedMachine
+                        }
+                    });
+                    let machines = R.map(computeAllocatedMachine, weight);
+                    console.log(machines)
+
+                    // for (let i = 1; i <= weight.length; i++) {
+                    //     machines[i] = weight[i].map((x, i) => {
+                    //         let allocatedMachine = Math.round(x * machine_in_station[i])
+                    //         if (allocatedMachine >= machine_in_station[i]) {
+                    //             return allocatedMachine - 1
+                    //         } else if (allocatedMachine <= 1) {
+                    //             return 1
+                    //         } else {
+                    //             return allocatedMachine
+                    //         }
+                    //     })
+                    // }
+
                     console.log('Allocated machines ', machines)
 
                     // 11) Calculate the duration of each process

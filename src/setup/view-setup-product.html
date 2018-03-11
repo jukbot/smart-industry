@@ -144,13 +144,14 @@
                 <!-- Add product card!-->
                 <div class="card" hidden="[[showAddProduct]]">
                     <h1 class="title">{{localize('add-product')}}</h1>
-                    <paper-input label="{{localize('product-name')}}*" id="productName" type="text" required always-float-label></paper-input>
-                    <paper-input label="{{localize('sku-code')}}*" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
-                    <paper-input label="{{localize('cost')}}" id="productCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
+                    <paper-input tabindex="0" label="{{localize('product-name')}}*" id="productName" type="text" required always-float-label></paper-input>
+                    <paper-input tabindex="1" label="{{localize('sku-code')}}*" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$"
+                        required always-float-label></paper-input>
+                    <paper-input tabindex="2" label="{{localize('cost')}}" id="productCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
                         error-message="number only" min="0" max="99999" step="0.01" auto-validate always-float-label></paper-input>
-                    <paper-input label="Description" id="productDescription" type="text" maxlength="300" required always-float-label></paper-input>
-                    <vaadin-combo-box label="{{localize('raw-materials-required')}}" id="inventoryCode" items="[[inventoryData]]" item-value-path="code"
-                        item-label-path="name" loading="[[!inventoryData]]" theme="always-float-label">
+                    <paper-input tabindex="3" label="Description" id="productDescription" type="text" maxlength="300" required always-float-label></paper-input>
+                    <vaadin-combo-box tabindex="4" label="{{localize('raw-materials-required')}}" id="inventoryCode" items="[[inventoryData]]"
+                        item-value-path="code" item-label-path="name" loading="[[!inventoryData]]" theme="always-float-label">
                         <template>
                             <paper-item>
                                 <paper-item-body>
@@ -159,8 +160,9 @@
                             </paper-item>
                         </template>
                     </vaadin-combo-box>
-                    <paper-input label="Raw material quantity" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$" required
-                        always-float-label></paper-input>
+                    <paper-input tabindex="5" label="Raw material quantity" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$"
+                        required always-float-label></paper-input>
+                    <paper-input tabindex="6" label="Part Dependency (skuxxx, skuxxx, ..)" id="partDependency" type="text" required always-float-label></paper-input>
                     <flat-button on-click="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
                         <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
@@ -220,20 +222,32 @@
                 <!-- Edit product card !-->
                 <div class="card" hidden="[[showEditProduct]]">
                     <h1 class="title">{{localize('edit-product')}}</h1>
-                    <paper-input label="{{localize('product-name')}}*" id="edit_ProductName" type="text" value="{{editProductData.name}}" required
-                        always-float-label></paper-input>
-                    <paper-input label="{{localize('sku-code')}}*" id="edit_ProductPartSKU" type="text" value="{{editProductData.sku}}" required
-                        always-float-label></paper-input>
-                    <paper-input label="{{localize('cost')}}" id="edit_ProductCost" type="number" maxlength="9" value="{{editProductData.cost}}"
+                    <paper-input tabindex="0" label="{{localize('product-name')}}*" id="edit_ProductName" type="text" value="{{editProductData.name}}"
+                        required always-float-label></paper-input>
+                    <paper-input tabindex="1" label="{{localize('sku-code')}}*" id="edit_ProductPartSKU" type="text" value="{{editProductData.sku}}"
+                        required always-float-label></paper-input>
+                    <paper-input tabindex="2" label="{{localize('cost')}}" id="edit_ProductCost" type="number" maxlength="9" value="{{editProductData.cost}}"
                         allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only" min="0" max="99999" step="0.01"
                         auto-validate always-float-label></paper-input>
-                    <paper-input label="Description" id="edit_ProductDescription" type="text" value="{{editProductDescription.name}}" required
-                        always-float-label></paper-input>
-                    <paper-input label="Inventory Code" id="edit_InventoryCode" type="text" value="{{editProductData.inventory_code}}" required
-                        always-float-label></paper-input>
-                    <paper-input label="Inventory Require" id="edit_InventoryQuantity" type="number" value="{{editProductData.inventory_use}}"
-                        allowed-pattern="^(0|[1-9]\d*)$" required always-float-label></paper-input>
-                    <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress>
+                    <paper-input tabindex="3" label="Description" id="edit_ProductDescription" type="text" value="{{editProductDescription.name}}"
+                        required always-float-label></paper-input>
+                    <vaadin-combo-box tabindex="4" label="{{localize('raw-materials-required')}}" id="edit_InventoryCode" value="editProductData.inventory_code"
+                        items="[[inventoryData]]" item-value-path="code" item-value-path="code" item-label-path="name" loading="[[!inventoryData]]"
+                        theme="always-float-label">
+                        <template>
+                            <paper-item>
+                                <paper-item-body>
+                                    <div>[[item.name]]</div>
+                                </paper-item-body>
+                            </paper-item>
+                        </template>
+                    </vaadin-combo-box>
+                    <paper-input tabindex="5" label="Raw material quantity" id="edit_InventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$"
+                        value="{{editProductData.inventory_use}}" required always-float-label></paper-input>
+
+                    <paper-input tabindex="6" label="Part Dependency (skuxxx,skuxxx,..)" id="edit_PartDependency" type="text" value="{{editProductData.part_dependency}}"
+                        required always-float-label></paper-input>
+                    <!-- <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress> -->
                     <flat-button on-click="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
                         <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
@@ -253,7 +267,6 @@
                                             <h2 class="title">[[part.name]]</h2>
                                             <p>{{localize('sku-code')}}: [[part.sku]]</p>
                                             <div class="frame part-list">
-
                                                 <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
                                                     <template>
                                                         <div tabindex$="[[tabIndex]]" class="item">
@@ -429,15 +442,15 @@
                                         </template>
                                     </div>
                                     <div class="flex-item">
-                                        <h3>{{localize('process-number')}}</h3>
-                                        <template is="dom-repeat" items="[[item.process]]" as="productProcess">
-                                            <p>[[getProcessNumber(productProcess.number)]]</p>
-                                        </template>
-                                    </div>
-                                    <div class="flex-item">
                                         <h3>Part Dependency</h3>
                                         <template is="dom-repeat" items="[[item.process]]" as="productProcess">
                                             <p>[[productProcess.required]]</p>
+                                        </template>
+                                    </div>
+                                    <div class="flex-item">
+                                        <h3>Description</h3>
+                                        <template>
+                                            <div class="cell">[[item.description]]</div>
                                         </template>
                                     </div>
                                 </div>
@@ -466,13 +479,6 @@
                                             <p>[[getSumCycleTime(productPart.cycle)]]</p>
                                         </template>
                                     </div>
-                                    <div class="flex-item">
-                                        <h3>Description</h3>
-                                        <template>
-                                            <div class="cell">[[item.description]]</div>
-                                        </template>
-                                    </div>
-
                                 </div>
                             </div>
                         </template>
@@ -799,25 +805,6 @@
                             return []
                         }
                     },
-                    processDependency: {
-                        type: Array,
-                        value: () => {
-                            return [{
-                                "number": 0,
-                                "required": "none"
-                            }, {
-                                "number": 1,
-                                "required": "none"
-                            }, {
-                                "number": 2,
-                                "required": "none"
-                            }, {
-                                "number": 3,
-                                "required": "none"
-                            }]
-
-                        }
-                    },
                     processBundle: {
                         type: Object,
                         notify: true
@@ -926,19 +913,22 @@
             }
 
             removePartFromProduct(e) {
-                let index = e.model.index;
-                this.splice('productPart', index, 1)
+                if (window.confirm("Do you really want to delete this part?")) {
+                    let index = e.model.index;
+                    this.splice('productPart', index, 1)
+                }
             }
 
             clearPartFromProduct(e) {
-                this.splice('productPart', 0, this.productPart.length)
+                if (window.confirm("Clear all product part?")) {
+                    this.splice('productPart', 0, this.productPart.length)
+                }
             }
 
             // Add Product
             addProduct() {
                 const productName = this.$.productName.value
                 const productSKU = this.$.productSKU.value
-                const processDependency = this.processDependency
                 const timestamp = Math.round(Date.now() / 1000.0)
                 const productColor = this.getRandomColor();
                 let productPart = this.productPart
@@ -946,6 +936,7 @@
                 let productDescription = this.$.productDescription.value || 'N/A'
                 let inventoryCode = this.$.inventoryCode.value || 'none'
                 let inventoryQuantity = this.$.inventoryQuantity.value || 0
+                let partDependency = this.$.partDependency.value || 'none'
                 let imageURL = "";
                 productPart = productPart.splice(-1);
                 if (productName && productSKU && productPart) {
@@ -954,7 +945,8 @@
                             Polymer.Async.timeOut.after(3000), () => {
                                 imageURL = this.imageURL;
                                 this._addProductToDatabase(timestamp, productCost, productName, productSKU,
-                                    inventoryCode, inventoryQuantity, productPart, productDescription, productColor,
+                                    inventoryCode, inventoryQuantity, productPart, productDescription,
+                                    productColor,
                                     imageURL)
                                 this.toastText = 'Processing product.'
                                 this.$.toastAlert.open()
@@ -963,8 +955,10 @@
                     } else {
                         imageURL =
                             "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/default%2Fproduct%2Fstock-1.png?alt=media&token=6f83a0d2-5952-4e40-8a19-dbb51a8fbf37";
-                        this._addProductToDatabase(timestamp, productCost, productName, productSKU, inventoryCode,
-                            inventoryQuantity, productPart, productDescription, productColor, imageURL)
+                        this._addProductToDatabase(timestamp, productCost, productName, productSKU,
+                            inventoryCode,
+                            inventoryQuantity, productPart, partDependency, productDescription,
+                            productColor, imageURL)
                         this.openProductList()
                     }
                 } else {
@@ -974,7 +968,7 @@
             }
 
             _addProductToDatabase(timestamp, productCost, productName, productSKU, inventoryCode, inventoryQuantity,
-                productPart, productDescription, productColor, imageURL) {
+                productPart, partDependency, productDescription, productColor, imageURL) {
                 this.$.productQuery.ref.child(this.productKey).set({
                     add: timestamp,
                     cost: productCost,
@@ -986,7 +980,7 @@
                     inventory_code: inventoryCode,
                     inventory_use: inventoryQuantity,
                     part: productPart,
-                    process: this.processDependency
+                    part_dependency: partDependency
                 }).then(() => {
                     this.openProductList()
                     this.toastText = 'Add product successfully.'
@@ -999,7 +993,7 @@
             }
 
             _updateProduct(timestamp, productCost, productName, productSKU, inventoryCode, inventoryQuantity,
-                productPart, productColor, imageURL) {
+                productPart, partDependency, productColor, imageURL) {
                 this.$.productQuery.ref.child(this.productKey).update({
                     add: timestamp,
                     cost: productCost,
@@ -1010,7 +1004,7 @@
                     inventory_code: inventoryCode,
                     inventory_use: inventoryQuantity,
                     part: productPart,
-                    process: this.processDependency
+                    part_dependency: partDependency
                 }).then(() => {
                     this.openProductList();
                     this.toastText = 'Update product successfully.'
@@ -1028,7 +1022,8 @@
                 const processDependency = this.edit_ProcessDependency
                 const timestamp = Math.round(Date.now() / 1000.0)
                 const productColor = this.getRandomColor();
-                let productPart = this.edit_ProductPart
+                let productPart = this.productPart
+                let partDependency = this.edit_PartDependency.value || 'N/A'
                 let productCost = this.$.edit_ProductCost.value
                 let inventoryCode = this.$.edit_InventoryCode.value
                 let inventoryQuantity = this.$.edit_InventoryQuantity.value
@@ -1044,7 +1039,8 @@
                             Polymer.Async.timeOut.after(3000), () => {
                                 imageURL = this.imageURL;
                                 this._updateProduct(timestamp, productCost, productName, productSKU,
-                                    inventoryCode, inventoryQuantity, productPart, productColor,
+                                    inventoryCode, inventoryQuantity, productPart, partDependency,
+                                    productColor,
                                     imageURL)
                                 this.toastText = 'Processing product.'
                                 this.$.toastAlert.open()
@@ -1054,7 +1050,7 @@
                         imageURL =
                             "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/default%2Fproduct%2Fstock-1.png?alt=media&token=6f83a0d2-5952-4e40-8a19-dbb51a8fbf37";
                         this._updateProduct(timestamp, productCost, productName, productSKU, inventoryCode,
-                            inventoryQuantity, productPart, productColor, imageURL)
+                            inventoryQuantity, productPart, partDependency, productColor, imageURL)
                         this.openProductList()
                     }
                 } else {
@@ -1100,7 +1096,7 @@
                     imagesRef.put(file, metadata)
                         .then(snapshot => {
                             let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                            this.$.uploadProgress.value = progress
+                            // this.$.uploadProgress.value = progress
                             this.$.uploadImageFile.files.uploading = true
                             this.$.uploadImageFile.files.status = snapshot.state
                             this.$.uploadImageFile.files.progress = progress
@@ -1163,6 +1159,7 @@
                 this.showListProduct = true
                 let key = e.currentTarget.product.$key
                 this.editKey = key
+                this.productPart = this.editProductData.part
             }
 
             openEditPartDialog(e) {
