@@ -141,6 +141,10 @@
         <app-indexeddb-mirror session="[[user.uid]]" key="product-data" data="{{productData}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
+
+
+
+
                 <!-- Add product card!-->
                 <div class="card" hidden="[[showAddProduct]]">
                     <h1 class="title">{{localize('add-product')}}</h1>
@@ -162,7 +166,6 @@
                     </vaadin-combo-box>
                     <paper-input tabindex="5" label="Raw material quantity" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$"
                         required always-float-label></paper-input>
-                    <paper-input tabindex="6" label="Part Dependency (skuxxx, skuxxx, ..)" id="partDependency" type="text" required always-float-label></paper-input>
                     <flat-button on-click="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
                         <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
@@ -180,6 +183,7 @@
                                     <div class="part">
                                         <div class="part-info-group">
                                             <h2 class="title">[[part.name]]</h2>
+                                            <p>Part dependency: [[part.part_dependency]]</p>
                                             <p>{{localize('sku-code')}}: [[part.sku]]</p>
                                             <div class="frame part-list">
                                                 <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
@@ -218,8 +222,17 @@
                     </div>
                 </div>
             </li>
+
+
+
+
+
+
+
+
+
+            <!-- Edit product card !-->
             <li>
-                <!-- Edit product card !-->
                 <div class="card" hidden="[[showEditProduct]]">
                     <h1 class="title">{{localize('edit-product')}}</h1>
                     <paper-input tabindex="0" label="{{localize('product-name')}}*" id="edit_ProductName" type="text" value="{{editProductData.name}}"
@@ -244,9 +257,6 @@
                     </vaadin-combo-box>
                     <paper-input tabindex="5" label="Raw material quantity" id="edit_InventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$"
                         value="{{editProductData.inventory_use}}" required always-float-label></paper-input>
-
-                    <paper-input tabindex="6" label="Part Dependency (skuxxx,skuxxx,..)" id="edit_PartDependency" type="text" value="{{editProductData.part_dependency}}"
-                        required always-float-label></paper-input>
                     <!-- <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress> -->
                     <flat-button on-click="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
@@ -443,8 +453,8 @@
                                     </div>
                                     <div class="flex-item">
                                         <h3>Part Dependency</h3>
-                                        <template is="dom-repeat" items="[[item.process]]" as="productProcess">
-                                            <p>[[productProcess.required]]</p>
+                                        <template is="dom-repeat" items="[[item.part_dependency]]" as="productPart">
+                                            <p>[[productPart.dependency]]</p>
                                         </template>
                                     </div>
                                     <div class="flex-item">
@@ -548,6 +558,8 @@
                 <div class="block-group">
                     <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
                     <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
+                    <paper-input label="Part Dependency (skuxxx,skuxxx,..)" id="partDependency" type="text" value="{{partDependency}}"
+                    required always-float-label></paper-input>
                 </div>
                 <div class="block-group">
                     <!-- Add Process -->
@@ -662,6 +674,7 @@
                 <div class="block-group">
                     <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
                     <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
+                    <paper-input label="Part Dependency (skuxxx,skuxxx,..)" id="partDependency" value="{{partDependency}}" type="text" always-float-label></paper-input>
                 </div>
                 <div class="block-group">
                     <!-- Add Process -->
@@ -903,7 +916,8 @@
                     sku: this.partSKU,
                     process: this.partProcess,
                     cycle: this.partProcessCycle,
-                    setup: this.partProcessSetup
+                    setup: this.partProcessSetup,
+                    dependency: this.partDependency
                 };
                 console.log(partObj)
                 console.log(this.productPart)
@@ -936,7 +950,6 @@
                 let productDescription = this.$.productDescription.value || 'N/A'
                 let inventoryCode = this.$.inventoryCode.value || 'none'
                 let inventoryQuantity = this.$.inventoryQuantity.value || 0
-                let partDependency = this.$.partDependency.value || 'none'
                 let imageURL = "";
                 productPart = productPart.splice(-1);
                 if (productName && productSKU && productPart) {
@@ -957,7 +970,7 @@
                             "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/default%2Fproduct%2Fstock-1.png?alt=media&token=6f83a0d2-5952-4e40-8a19-dbb51a8fbf37";
                         this._addProductToDatabase(timestamp, productCost, productName, productSKU,
                             inventoryCode,
-                            inventoryQuantity, productPart, partDependency, productDescription,
+                            inventoryQuantity, productPart, productDescription,
                             productColor, imageURL)
                         this.openProductList()
                     }
@@ -968,7 +981,7 @@
             }
 
             _addProductToDatabase(timestamp, productCost, productName, productSKU, inventoryCode, inventoryQuantity,
-                productPart, partDependency, productDescription, productColor, imageURL) {
+                productPart, productDescription, productColor, imageURL) {
                 this.$.productQuery.ref.child(this.productKey).set({
                     add: timestamp,
                     cost: productCost,
@@ -979,8 +992,7 @@
                     color: productColor,
                     inventory_code: inventoryCode,
                     inventory_use: inventoryQuantity,
-                    part: productPart,
-                    part_dependency: partDependency
+                    part: productPart
                 }).then(() => {
                     this.openProductList()
                     this.toastText = 'Add product successfully.'
@@ -993,7 +1005,7 @@
             }
 
             _updateProduct(timestamp, productCost, productName, productSKU, inventoryCode, inventoryQuantity,
-                productPart, partDependency, productColor, imageURL) {
+                productPart, productColor, imageURL) {
                 this.$.productQuery.ref.child(this.productKey).update({
                     add: timestamp,
                     cost: productCost,
@@ -1003,8 +1015,7 @@
                     color: productColor,
                     inventory_code: inventoryCode,
                     inventory_use: inventoryQuantity,
-                    part: productPart,
-                    part_dependency: partDependency
+                    part: productPart
                 }).then(() => {
                     this.openProductList();
                     this.toastText = 'Update product successfully.'
@@ -1023,7 +1034,6 @@
                 const timestamp = Math.round(Date.now() / 1000.0)
                 const productColor = this.getRandomColor();
                 let productPart = this.productPart
-                let partDependency = this.edit_PartDependency.value || 'N/A'
                 let productCost = this.$.edit_ProductCost.value
                 let inventoryCode = this.$.edit_InventoryCode.value
                 let inventoryQuantity = this.$.edit_InventoryQuantity.value
@@ -1039,7 +1049,7 @@
                             Polymer.Async.timeOut.after(3000), () => {
                                 imageURL = this.imageURL;
                                 this._updateProduct(timestamp, productCost, productName, productSKU,
-                                    inventoryCode, inventoryQuantity, productPart, partDependency,
+                                    inventoryCode, inventoryQuantity, productPart,
                                     productColor,
                                     imageURL)
                                 this.toastText = 'Processing product.'
@@ -1050,7 +1060,7 @@
                         imageURL =
                             "https://firebasestorage.googleapis.com/v0/b/smart-mes.appspot.com/o/default%2Fproduct%2Fstock-1.png?alt=media&token=6f83a0d2-5952-4e40-8a19-dbb51a8fbf37";
                         this._updateProduct(timestamp, productCost, productName, productSKU, inventoryCode,
-                            inventoryQuantity, productPart, partDependency, productColor, imageURL)
+                            inventoryQuantity, productPart, productColor, imageURL)
                         this.openProductList()
                     }
                 } else {
@@ -1219,6 +1229,7 @@
             _clearPartField() {
                 this.partName = ""
                 this.partSKU = ""
+                this.partDependency = ""
             }
         }
         customElements.define(ViewSetupProduct.is, ViewSetupProduct)
