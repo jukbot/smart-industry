@@ -224,12 +224,12 @@
                     <h1 class="title">{{localize('edit-product')}}</h1>
                     <paper-input tabindex="0" label="{{localize('product-name')}}*" id="edit_ProductName" type="text" value="{{editProductData.name}}"
                         required always-float-label></paper-input>
-                    <paper-input tabindex="1" label="{{localize('sku-code')}}*" id="edit_ProductPartSKU" type="text" value="{{editProductData.sku}}"
+                    <paper-input tabindex="1" label="{{localize('sku-code')}}*" id="edit_ProductSKU" type="text" value="{{editProductData.sku}}"
                         required always-float-label></paper-input>
                     <paper-input tabindex="2" label="{{localize('cost')}}" id="edit_ProductCost" type="number" maxlength="9" value="{{editProductData.cost}}"
                         allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only" min="0" max="99999" step="0.01"
                         auto-validate always-float-label></paper-input>
-                    <paper-input tabindex="3" label="Description" id="edit_ProductDescription" type="text" value="{{editProductDescription.name}}"
+                    <paper-input tabindex="3" label="Description" id="edit_ProductDescription" type="text" value="{{editProductData.description}}"
                         required always-float-label></paper-input>
                     <vaadin-combo-box tabindex="4" label="{{localize('raw-materials-required')}}" id="edit_InventoryCode" value="editProductData.inventory_code"
                         items="[[inventoryData]]" item-value-path="code" item-value-path="code" item-label-path="name" loading="[[!inventoryData]]"
@@ -260,7 +260,7 @@
                     </flat-button>
                     <div class="frame part-block">
                         <ul class="flex-container wrap">
-                            <template is="dom-repeat" items="[[editProductData.part]]" as="part">
+                            <template is="dom-repeat" items="{{editProductData.part}}" as="part">
                                 <li class="flex-item">
                                     <div class="part">
                                         <div class="part-info-group">
@@ -890,7 +890,6 @@
                 let index = e.model.index;
                 console.log("Selected index is " + e.model.index);
                 console.log("Selected process is " + e.model.item);
-                // console.log(this.partProcess.indexOf(e.model.item));
                 this.splice('partProcess', index, 1);
                 this.splice('partProcessCycle', index, 1);
                 this.splice('partProcessSetup', index, 1);
@@ -906,8 +905,9 @@
                     cycle: this.partProcessCycle,
                     setup: this.partProcessSetup
                 };
+                console.log(partObj)
+                console.log(this.productPart)
                 this.push('productPart', partObj)
-                //  this._clearPartField();
                 this.closeAddPartDialog();
 
             }
@@ -1159,7 +1159,6 @@
                 this.showListProduct = true
                 let key = e.currentTarget.product.$key
                 this.editKey = key
-                this.productPart = this.editProductData.part
             }
 
             openEditPartDialog(e) {
