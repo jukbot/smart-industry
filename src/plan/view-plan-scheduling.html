@@ -791,6 +791,9 @@
                             data.start, data.end
                         ]
                     });
+                    newChartData.shift()
+                    console.log(newChartData)
+
                     this.$.chartQuery.ref.remove()
                     this.$.chartQuery.ref.set(newChartData)
                     this.$.timeline.redraw()
@@ -1287,34 +1290,42 @@
 
                     console.log('Machine in station ', machine_in_station)
 
-                    // 11) Calculate used machines of each job
-                    let computeAllocatedMachine = ((x,i) => { 
-                        let allocatedMachine = Math.round(x * machine_in_station[i])
-                        if (allocatedMachine >= machine_in_station[i]) {
-                            return allocatedMachine - 1
-                        } else if (allocatedMachine <= 1) {
-                            return 1
-                        } else {
-                            return allocatedMachine
-                        }
-                    });
-                    //let weightArr = Object.values(weight)
-                    weight.map((y) => y).filter((x) => x <= 1)
-                    let machines = weight.map(computeAllocatedMachine);
-                    console.log(machines)
+                    // 10.1) Remove unused weight that > 1
+                    let cleanWeight = weight.map(item => Object.entries(item).filter(([key, value]) => value <= 1).map(([key, value]) => ({[key]: value})).reduce(R.merge))
+                    console.log('Weight2 ', cleanWeight)
 
-                    // for (let i = 1; i <= weight.length; i++) {
-                    //     machines[i] = weight[i].map((x, i) => {
-                    //         let allocatedMachine = Math.round(x * machine_in_station[i])
-                    //         if (allocatedMachine >= machine_in_station[i]) {
-                    //             return allocatedMachine - 1
-                    //         } else if (allocatedMachine <= 1) {
-                    //             return 1
-                    //         } else {
-                    //             return allocatedMachine
-                    //         }
-                    //     })
-                    // }
+                    // 11) Calculate used machines of each job
+                    // let computeAllocatedMachine = ((x,i) => { 
+                    //     console.log(machine_in_station[i])
+                    //     let allocatedMachine = Math.round(x * machine_in_station[i])
+                    //     if (allocatedMachine >= machine_in_station[i]) {
+                    //         return allocatedMachine - 1
+                    //     } else if (allocatedMachine <= 1) {
+                    //         return 1
+                    //     } else {
+                    //         return allocatedMachine
+                    //     }
+                    // });
+                    // let machines = cleanWeight.map(computeAllocatedMachine);
+
+                    //let weightArr = Object.values(weight)
+                    let machines = [];
+                    for (let i = 0; i <= cleanWeight.length; i++) {
+                        machines[i] = cleanWeight.map((x, j) => {
+                            console.log(machine_in_station[i])
+                            console.log(x)
+                            if(x) {
+                            let allocatedMachine = Math.round(x * machine_in_station[i])
+                            if (allocatedMachine >= machine_in_station[i]) {
+                                return allocatedMachine - 1
+                            } else if (allocatedMachine <= 1) {
+                                return 1
+                            } else {
+                                return allocatedMachine
+                            }
+                          }
+                        })
+                    }
 
                     console.log('Allocated machines ', machines)
 

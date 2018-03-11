@@ -613,7 +613,7 @@
                 const orderProductName = this.$.productSelector.value
                 const orderProductDescription = this.$.productSelector.selectedItem.description
                 const orderProductPart = this.$.productSelector.selectedItem.part
-                const orderProductProcess = this.$.productSelector.selectedItem.process
+                const orderProductProcess = this.$.productSelector.selectedItem.process || 'none'
                 const orderProductSKU = this.$.productSelector.selectedItem.sku
                 const orderQuantity = this.getActualQuantity(this.$.orderQuantity.value)
                 const orderDuration = this.orderDuration
