@@ -402,7 +402,7 @@
                 const sumSetup = flatSetupArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
                 const sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
                 this.orderDuration = sumDuration;
-                //this._limitOperationTime(sumDuration);
+                //this._limitOperationTime(sumDuration); DISABLED
                 return this._durationToStr(sumDuration); // convert to hr min sec
             }
 
@@ -462,7 +462,6 @@
                 return dateTime;
             }
 
-            // SET VALUE
             getCycleTimePerItem(part) {
                 if (!part) return;
                 let productCycleArr = []
@@ -544,7 +543,7 @@
                     firstDayOfWeek: 1,
                     monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'
                         .split(
-                        '_'),
+                            '_'),
                     weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
                     weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
                     formatDate: function (date) {
@@ -571,12 +570,13 @@
                 this.$.deliverySelector.value = "";
             }
 
-            _limitOperationTime(duration) {
-                if (duration > this.operationTime) {
-                    window.alert("OVERLOAD WARNING: Order duration time is longer than working operation time.")
-                    return
-                }
-            }
+            // DISABLED OVERLOAD LIMIT
+            // _limitOperationTime(duration) {
+            //     if (duration > this.operationTime) {
+            //         window.alert("OVERLOAD WARNING: Order duration time is longer than working operation time.")
+            //         return
+            //     }
+            // }
 
             // PRINT ORDER REPORT
             printOrderReport(e) {
@@ -591,12 +591,12 @@
                 return
             }
 
-            // verify that selected product is 
+            // Verify that selected product is 
             verifyProductPart() {
                 const model = this.factoryProfileModel;
                 const partLength = this.$.productSelector.selectedItem.part.length;
                 if (((model === "parallel" || model === "serial") && partLength > 1) || (model === "multi" &&
-                    partLength === 1)) {
+                        partLength === 1)) {
                     window.alert(
                         `Forbidden! You cannot manufacture this product with ${model} production model. Please select multi-component model`
                     )
@@ -613,7 +613,6 @@
                 const orderProductName = this.$.productSelector.value
                 const orderProductDescription = this.$.productSelector.selectedItem.description
                 const orderProductPart = this.$.productSelector.selectedItem.part
-                const orderProductProcess = this.$.productSelector.selectedItem.process || 'none'
                 const orderProductSKU = this.$.productSelector.selectedItem.sku
                 const orderQuantity = this.getActualQuantity(this.$.orderQuantity.value)
                 const orderDuration = this.orderDuration
@@ -629,8 +628,7 @@
                     return;
                 }
                 if (orderNo !== "" && orderCustomerName !== "" && orderProductName !== "" && orderProductPart !==
-                    "" &&
-                    orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(
+                    "" && orderProductSKU !== "" && orderQuantity !== "" && !(isNaN(
                         orderDelivery))) {
 
                     this.$.orderQuery.ref.push({
@@ -640,7 +638,6 @@
                         order_product_name: orderProductName,
                         order_product_description: orderProductDescription,
                         order_product_part: orderProductPart,
-                        order_product_dependency: orderProductProcess,
                         order_product_sku: orderProductSKU,
                         order_quantity: orderQuantity,
                         order_duration: orderDuration,
