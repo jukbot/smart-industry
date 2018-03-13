@@ -1175,30 +1175,34 @@
                     order_part = order_part.reduce((a, b) => a.concat(b), [])
                     console.log('======= Order parts ========')
                     console.table(order_part)
+                    
 
                     // 5.1) Array of cycle 
                     let cycleArr = order_part.map(element => element.cycle)
+                    console.log(cycleArr)
+
                     // 5.2) Array of setup
                     let setupArr = order_part.map(element => element.setup)
+                    console.log(setupArr)
+
                     // 5.3) Array of process no (index) 
                     let processArr = order_part.map(element => element.process)
                     console.log(processArr)
 
                     // 6) Calculate workload of each process
                     let multiResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q)) // cycle = time x quantity
-                    let workloadArr = multiResult.map((item, index) => {
+
+                    let workload = multiResult.map((item, index) => {
                         return item.map((i, j) => {
                             return i + setupArr[index][j]
                         })
                     })
-                    console.log('workload arrays')
-                    console.log(workloadArr)
 
                     // 7) Convert array into object array
-                    let workloadProcessObj = workloadArr
+                    let workloadProcessObj = workload
                         .map((k, i) => Object.assign({}, ...processArr[i]
                             .map((process, index) => ({
-                                [process]: workloadArr[i][index]
+                                [process]: workload[i][index]
                             }))
                         ))
 
@@ -1206,7 +1210,7 @@
                     let sumWorkloadEachProcess = R.reduce(R.mergeWith(R.add), {}, workloadProcessObj)
 
                     // 8.2) Calculate sum workload of each order
-                    let sumWorkloadEachOrder = workloadArr.map((item) => {
+                    let sumWorkloadEachOrder = workload.map((item) => {
                         return item.reduce((a, b) => {
                             return a + b;
                         });
@@ -1217,7 +1221,7 @@
                     // 9) Calculate weight of each process based on workload 
                     // (workload of n process / total workload of each process)
                     let weight = []
-                    workloadArr.map((_, i) => {
+                    workload.map((_, i) => {
                         weight[i] = R.mergeWith(R.divide, workloadProcessObj[i], sumWorkloadEachProcess)
                     })
                     //console.log('Weight ', weight)
@@ -1261,15 +1265,15 @@
                     }
                     let machines = cleanWeight.map(computeAllocatedMachine);
                     //console.log('Allocated machines ', machines)
-                    let workload = workloadArr.map(data => Object.values(data))
+                    let workloadArr = workload.map(data => Object.values(data))
+                    console.log('wl ', workloadArr)
 
                     // 12) Calculate the duration of each process
                     let duration = [];
-                    duration = workload.map((w, i) => {
+                    duration = workloadArr.map((w, i) => {
                         return w.map((wl, j) => wl / parseInt(machines[i]))
                     });
-                    console.log('workload', workloadArr)
-                    console.log('duration', duration)
+                    console.log(duration)
 
                     // 13) Map value and key to a new object 
                     // and reduce to flat array for each part order
@@ -1293,11 +1297,12 @@
                         
                         let next = [];
                         let prev = [];
+
                         duration[i].forEach((duration, index) => {
                           if (index == 0) {
                             next.push(initialStart);
                           } else {
-                            next.push(prev[index - 1] + parseInt(this.factorySchedule.delay));
+                            next.push(prev[index - 1] + parseInt(this.factorySchedule.delay*60));
                           }
                           prev.push(next[index] + duration)
                         });
@@ -1305,15 +1310,14 @@
                         start.push(next);
                         end.push(prev);
 
-
                         return {
                             "job_id": Math.random().toString(36).substr(2, 12),
                             "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
                             "job_setup": setupArr[i].filter(value => isNaN(value) ? 0 : value),
-                            "job_workload": workloadArr[i].filter(value => isNaN(value) ? 0 : value),
+                            "job_workload": workload[i].filter(value => isNaN(value) ? 0 : value),
                             "job_duration": duration[i].filter(value => isNaN(value) ? 0 : value),
                             "job_machine": machines[i].filter(value => isNaN(value) ? 0 : value),
-                            "job_station": station,
+                            "job_station": order_part[i].process,
                             "job_part": order_part[i].name.toString(),
                             "job_sku": order_part[i].sku.toString(),
                             "job_weight": Object.values(cleanWeight[i]).filter(value => isNaN(value) ?
