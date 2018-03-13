@@ -1270,7 +1270,8 @@
                                 let allocated = Math.ceil(x[y] * machine_in_station[parseInt(y) - 1])
                                 if (allocated === 0) {
                                     return 1
-                                } else if (allocated === machine_in_station[parseInt(y) - 1] && x[y] !== 1) {
+                                } else if (allocated === machine_in_station[parseInt(y) - 1] && x[y] !==
+                                    1) {
                                     return allocated - 1
                                 } else {
                                     return allocated
@@ -1283,17 +1284,10 @@
                     //console.log('Allocated machines ', machines)
 
                     // 12) Calculate the duration of each process
-                    let duration = []
-                    for (let i = 0; i < workloadArr.length; i++) {
-                        duration[i] = workloadArr[i].map((workload, index) => {
-                            const machine = machines[index]
-                            if (machine <= 1) {
-                                return workload
-                            } else {
-                                return (workload / parseInt(machine))
-                            }
-                        })
-                    }
+                    let duration = [];
+                    duration = workload.map((w, i) => {
+                        return w.map((wl, j) => wl / parseInt(machines[i]))
+                    });
                     console.log('workload', workloadArr)
                     console.log('duration', duration)
 
