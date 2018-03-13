@@ -16,7 +16,7 @@
 <script src="../elements/randomData.js"></script>
 <dom-module id="view-plan-scheduling">
     <template>
-        <style include="shared-styles app-grid-style flat-button">
+        <style include="shared-styles app-grid-style">
             :host {
                 margin: 10px;
                 display: block;
@@ -168,12 +168,12 @@
                         min="[[todayDate]]" max="2030-01-01" name="delivery" id="editDeliverySelector" initial-position="[[todayDate]]"
                         value="{{delivery}}" error-message="Invalid input" required always-float-label='true'></vaadin-date-picker>
                     <div class="center">
-                        <flat-button class="btn" on-click="dismissEditOrder">
-                            <button>{{localize('dismiss')}}</button>
-                        </flat-button>
-                        <flat-button class="btn shamrock" on-click="updateOrder">
-                            <button>{{localize('save')}}</button>
-                        </flat-button>
+                        <paper-button class="btn" on-click="dismissEditOrder">
+                            {{localize('dismiss')}}
+                        </paper-button>
+                        <paper-button class="btn shamrock" on-click="updateOrder">
+                            {{localize('save')}}
+                        </paper-button>
                     </div>
                 </div>
             </li>
@@ -309,12 +309,8 @@
 
                     </vaadin-grid>
                     <div class="center">
-                        <flat-button class="btn" on-click="refreshOrderTable">
-                            <button>{{localize('refresh')}}</button>
-                        </flat-button>
-                        <flat-button class="btn" on-click="reSchedule">
-                            <button>{{localize('reschedule')}}</button>
-                        </flat-button>
+                        <paper-button class="btn" on-click="refreshOrderTable">{{localize('refresh')}}</paper-button>
+                        <paper-button class="btn" on-click="reSchedule">{{localize('reschedule')}}</paper-button>
                     </div>
                 </div>
             </li>
@@ -338,7 +334,7 @@
                     <div class="center btn-group">
                         <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
                             <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                                <paper-button class="station-btn" name="[[stationItem.st_number]]" noink>
+                                <paper-button class="station-btn" name="[[stationItem.st_number]]">
                                     {{localize('station')}} [[stationItem.st_number]]
                                 </paper-button>
                             </template>
@@ -473,15 +469,10 @@
                     <h1 class="title">{{localize('scheduling-chart')}}</h1>
                     <google-chart id="timeline" type="timeline" options="[[timelineOptions]]"></google-chart>
                     <!-- <flat-timeline-chart data="[[timelineData]]"></flat-timeline-chart> -->
-                </div>
-            </li>
-            <li>
-                <div class="card">
-                    <h1 class="title">Production Gantt Chart</h1>
                     <div class="center">
                         <paper-button class="btn">Print</paper-button>
                     </div>
-                </div>
+                </div> 
             </li>
         </ul>
         <flat-dialog id="managePlanDialog" scroll-action="lock">
@@ -754,10 +745,6 @@
                             data.start, data.end
                         ]
                     });
-                    newChartData.shift()
-                    console.log(newChartData)
-
-                    this.$.chartQuery.ref.remove()
                     this.$.chartQuery.ref.set(newChartData)
                     this.$.timeline.redraw()
                 }
@@ -1138,21 +1125,17 @@
                     this.$.chartQuery.ref.remove()
 
                     // 1) Filter only waiting, late or wip order 
-                    const undone_order = this.sortedOrder.filter(o => o.order_status !== 'done')
-                    
-                    //console.log('undone order that waiting are:')
-                    console.log(undone_order.filter(o => o.order_product_part.length() > 1 ))
 
                     if (this.sortedOrder) {
                         switch (this.factoryProfile.model) {
                             case "serial":
-                                //this._scheduleOrder(1, undone_order)
+                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o.order_product_part.length === 1), 1)
                                 break;
                             case "parallel":
-                                //this._scheduleOrder(this.factoryProfile.concurrency, undone_order)
+                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o.order_product_part.length === 1), this.factoryProfile.concurrency)
                                 break;
                             case "multi":
-                                //this._scheduleOrder(undone_order.length, undone_order)
+                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o.order_product_part.length > 1), 1)
                                 break;
                             default:
                                 window.alert("Invalid production model")
@@ -1165,21 +1148,17 @@
                     }
                 }
             }
-            _scheduleOrder(c, undone_order) {
+            _scheduleOrder(undone_order, concurrent) {
                 if (this.sortedOrder.length > 0) {
-
-                    // 1) Get concurrent and initial value
-                    const concurrent = c;
 
                     // 2) Copy first concurrent orders from sorted order table 
                     const selected_order = undone_order.slice(0, concurrent).concat(undone_order.slice(
                         undone_order.length));
-                    //console.log('selected order that will schedule are:')
-                    //console.log(selected_order)
+                    console.log('======= Selected Order ========')
+                    console.table(selected_order)
 
                     // 3) Set order status to work in progress
                     selected_order.map((data) => this.setOrderStatus(data.$key, 'wip'))
-
                     // 4) Set order part and order quantity data 
                     let order_quantity = selected_order.map(o => o.order_quantity)
                     let order_part = selected_order.map(o => o.order_product_part)
@@ -1194,8 +1173,8 @@
 
                     // 5) Flat multiple parts array in to flat parts array
                     order_part = order_part.reduce((a, b) => a.concat(b), [])
-                    //console.log('======= Order parts ========')
-                    //console.table(order_part)
+                    console.log('======= Order parts ========')
+                    console.table(order_part)
 
                     // 5.1) Array of cycle 
                     let cycleArr = order_part.map(element => element.cycle)
@@ -1203,6 +1182,7 @@
                     let setupArr = order_part.map(element => element.setup)
                     // 5.3) Array of process no (index) 
                     let processArr = order_part.map(element => element.process)
+                    console.log(processArr)
 
                     // 6) Calculate workload of each process
                     let multiResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q)) // cycle = time x quantity
@@ -1211,8 +1191,8 @@
                             return i + setupArr[index][j]
                         })
                     })
-                    //console.log('workload arrays')
-                    //console.log(workloadArr)
+                    console.log('workload arrays')
+                    console.log(workloadArr)
 
                     // 7) Convert array into object array
                     let workloadProcessObj = workloadArr
@@ -1221,8 +1201,6 @@
                                 [process]: workloadArr[i][index]
                             }))
                         ))
-                    //console.log('workload process object')
-                    //console.log(workloadProcessObj)
 
                     // 8.1) Calculate sum workload of each process (using Ramda)
                     let sumWorkloadEachProcess = R.reduce(R.mergeWith(R.add), {}, workloadProcessObj)
@@ -1308,33 +1286,26 @@
                     }
                     let initialStart = Date.parse(dd + '-' + months + '-' + yyyy + " " + this.factoryOperation
                         .op_start) / 1000
-                    console.log(initialStart)
 
                     let result = processArr.map((station, i) => {
-                        console.log(`%c Process no ${station}`, 'color: purple;')
-                        console.log(`%c Job ${i}`, 'color: purple;')
+                        console.log(`====== Process no ${station} ======`)
+                        console.log(`====== Order ${i} =======`)
+                        
+                        let next = [];
+                        let prev = [];
+                        duration[i].forEach((duration, index) => {
+                          if (index == 0) {
+                            next.push(initialStart);
+                          } else {
+                            next.push(prev[index - 1] + parseInt(this.factorySchedule.delay));
+                          }
+                          prev.push(next[index] + duration)
+                        });
+                        
+                        start.push(next);
+                        end.push(prev);
 
-                        start[i] = duration[i].map((dur, idx) => {
-                            console.log(`%c Duration ${dur}`, 'color: orange;')
-                            if (idx == 0) {
-                                return initialStart
-                            } else {
-                                return parseInt(end[i - 1]) + parseInt(dur)
-                                // next job = prev end + job duration  
-                            }
-                        })
-                        end[i] = duration[i].map((dur, idx) => {
-                            console.log(`%c Duration ${dur}`, 'color: green;')
-                            if (idx == 0) {
-                                return initialStart + parseInt(dur)
-                            } else {
-                                return parseInt(start[i]) + parseInt(dur)
-                            }
-                        })
-                        console.log('Start ', start[i])
-                        console.log('End ', end[i])
-                        console.log('Duration ', duration[i])
-                        console.log('Machine ', machines[i])
+
                         return {
                             "job_id": Math.random().toString(36).substr(2, 12),
                             "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
@@ -1354,7 +1325,7 @@
                             "job_dependency": order_part[i].dependency,
                             "job_complete": 0.00,
                             "start": start[i].filter(value => isNaN(value) ? initialStart : value),
-                            "end": end[i].filter(value => isNaN(value) ? initialStart+10000 : value),
+                            "end": end[i].filter(value => isNaN(value) ? initialStart + 10000 : value),
                             "order_customer": order_customer[i],
                             "order_delivery": order_delivery[i],
                             "order_no": order_no[i],
@@ -1382,13 +1353,9 @@
                     //  let isDuplicated = this.scheduleItems.map(item => item.job_id).indexOf(resultObject.job_id) > -1
                     if (this.filterScheduleItems.length <= this.sortedOrder.length) {
                         delete splitArr.$key
-                        for (let i = 0; i < splitArr.length; i++) {
-                            if (splitArr[i].length > 0) {
-                                for (let j = 0; j < splitArr[i].length; j++) {
-                                    this.$.scheduleQuery.ref.push(splitArr[i][j])
-                                }
-                            }
-                        }
+                        splitArr.map((data, i) => {
+                            data.map((x,j) => this.$.scheduleQuery.ref.push(data[j]))
+                        })
                     } else {
                         window.alert("Full capacity of current concurrency")
                     }
