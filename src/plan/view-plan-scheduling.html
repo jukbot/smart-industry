@@ -576,7 +576,7 @@
                     width: Number,
                     height: Number,
                     editKey: String,
-                    toastText: String
+                    toastText: String,
                 }
             }
 
@@ -1139,19 +1139,20 @@
 
                     // 1) Filter only waiting, late or wip order 
                     const undone_order = this.sortedOrder.filter(o => o.order_status !== 'done')
+                    
                     //console.log('undone order that waiting are:')
-                    //console.log(undone_order)
+                    console.log(undone_order.filter(o => o.order_product_part.length() > 1 ))
 
                     if (this.sortedOrder) {
                         switch (this.factoryProfile.model) {
                             case "serial":
-                                this._scheduleOrder(1, undone_order)
+                                //this._scheduleOrder(1, undone_order)
                                 break;
                             case "parallel":
-                                this._scheduleOrder(this.factoryProfile.concurrency, undone_order)
+                                //this._scheduleOrder(this.factoryProfile.concurrency, undone_order)
                                 break;
                             case "multi":
-                                this._scheduleOrder(undone_order.length, undone_order)
+                                //this._scheduleOrder(undone_order.length, undone_order)
                                 break;
                             default:
                                 window.alert("Invalid production model")
@@ -1282,6 +1283,7 @@
                     }
                     let machines = cleanWeight.map(computeAllocatedMachine);
                     //console.log('Allocated machines ', machines)
+                    let workload = workloadArr.map(data => Object.values(data))
 
                     // 12) Calculate the duration of each process
                     let duration = [];
@@ -1308,27 +1310,31 @@
                         .op_start) / 1000
                     console.log(initialStart)
 
-                    let result = processArr.map((station, i, arr) => {
+                    let result = processArr.map((station, i) => {
+                        console.log(`%c Process no ${station}`, 'color: purple;')
+                        console.log(`%c Job ${i}`, 'color: purple;')
 
                         start[i] = duration[i].map((dur, idx) => {
+                            console.log(`%c Duration ${dur}`, 'color: orange;')
                             if (idx == 0) {
                                 return initialStart
                             } else {
                                 return parseInt(end[i - 1]) + parseInt(dur)
-                                // next job = prev end + job duration // if concurrency === 1 return 
+                                // next job = prev end + job duration  
                             }
                         })
                         end[i] = duration[i].map((dur, idx) => {
+                            console.log(`%c Duration ${dur}`, 'color: green;')
                             if (idx == 0) {
-                                return parseInt(start[0]) + parseInt(dur)
+                                return initialStart + parseInt(dur)
                             } else {
                                 return parseInt(start[i]) + parseInt(dur)
                             }
                         })
-                        console.log(start[i])
-                        console.log(duration[i])
-                        console.log(end[i])
-                        console.log(machines[i])
+                        console.log('Start ', start[i])
+                        console.log('End ', end[i])
+                        console.log('Duration ', duration[i])
+                        console.log('Machine ', machines[i])
                         return {
                             "job_id": Math.random().toString(36).substr(2, 12),
                             "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
@@ -1338,16 +1344,17 @@
                             "job_machine": machines[i].filter(value => isNaN(value) ? 0 : value),
                             "job_station": station,
                             "job_part": order_part[i].name.toString(),
-                            "job_sku": order_part[i].sku,
-                            "job_weight": weight[i].filter(value => isNaN(value) ? 0 : value),
+                            "job_sku": order_part[i].sku.toString(),
+                            "job_weight": Object.values(cleanWeight[i]).filter(value => isNaN(value) ?
+                                0 : value),
                             "job_quantity": order_quantity[i],
                             "job_status": "waiting",
                             "job_good": 0,
                             "job_defect": 0,
+                            "job_dependency": order_part[i].dependency,
                             "job_complete": 0.00,
-                            "job_dependency": "none",
-                            "start": start[i],
-                            "end": end[i],
+                            "start": start[i].filter(value => isNaN(value) ? initialStart : value),
+                            "end": end[i].filter(value => isNaN(value) ? initialStart+10000 : value),
                             "order_customer": order_customer[i],
                             "order_delivery": order_delivery[i],
                             "order_no": order_no[i],
@@ -1359,7 +1366,6 @@
                     }).reduce((a, b) => {
                         return a.concat(b);
                     }, []); // use reduce only for serial and parallel
-                    console.table(result)
 
                     // 13) Split arr into group of key-value arr using lodash
                     let splitArr = result.map((data) => _.transform(data, function (result, value, key) {
@@ -1374,7 +1380,7 @@
 
                     // 14) If job schedule table is available then push the order into the table
                     //  let isDuplicated = this.scheduleItems.map(item => item.job_id).indexOf(resultObject.job_id) > -1
-                    if (this.filterScheduleItems.length <= this.factoryProfile.concurrency) {
+                    if (this.filterScheduleItems.length <= this.sortedOrder.length) {
                         delete splitArr.$key
                         for (let i = 0; i < splitArr.length; i++) {
                             if (splitArr[i].length > 0) {
