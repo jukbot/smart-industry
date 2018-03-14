@@ -1199,7 +1199,6 @@
                     // 2) Copy first concurrent orders from sorted order table 
                     const selected_order = undone_order.slice(0, concurrent).concat(undone_order.slice(
                         undone_order.length));
-                    console.log('======= Selected Order ========')
                     console.table(selected_order)
 
                     // 3) Set order status to work in progress
@@ -1317,7 +1316,6 @@
                     duration = workloadArr.map((w, i) => {
                         return w.map((wl, j) => wl / parseInt(machines[i]))
                     });
-                    console.log(JSON.stringify(duration), duration.length)
 
                     // 13) Map value and key to a new object 
                     // and reduce to flat array for each part order
@@ -1391,7 +1389,7 @@
                         }
                         value.map((item, index) => result[index][key] = item)
                     }, []))
-                    console.log(splitArr)
+                    console.table(splitArr)
 
                     // 14) If job schedule table is available then push the order into the table
                     //  let isDuplicated = this.scheduleItems.map(item => item.job_id).indexOf(resultObject.job_id) > -1
