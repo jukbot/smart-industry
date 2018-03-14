@@ -761,8 +761,8 @@
                             data.start, data.end
                         ]
                     })
-                        this.$.chartQuery.ref.remove()
-                        this.$.chartQuery.ref.set(newChartData)
+                    this.$.chartQuery.ref.remove()
+                    this.$.chartQuery.ref.set(newChartData)
                 }
             }
             // PLAN MANAGEMENT
@@ -1172,15 +1172,16 @@
                         switch (this.factoryProfile.model) {
                             case "serial":
                                 this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
-                                    .order_product_part.length === 1), 1)
+                                    .order_product_part.length === 1), 1, 'serial')
                                 break;
                             case "parallel":
                                 this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
-                                    .order_product_part.length === 1), this.factoryProfile.concurrency)
+                                        .order_product_part.length === 1), this.factoryProfile.concurrency,
+                                    'parallel')
                                 break;
                             case "multi":
                                 this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
-                                    .order_product_part.length > 1), 1)
+                                    .order_product_part.length > 1), 1, 'multi')
                                 break;
                             default:
                                 window.alert("Invalid production model")
@@ -1192,7 +1193,7 @@
                     }
                 }
             }
-            _scheduleOrder(undone_order, concurrent) {
+            _scheduleOrder(undone_order, concurrent, model) {
                 if (this.sortedOrder.length > 0) {
 
                     // 2) Copy first concurrent orders from sorted order table 
@@ -1217,29 +1218,34 @@
 
                     // 5) Flat multiple parts array in to flat parts array
                     order_part = order_part.reduce((a, b) => a.concat(b), [])
-                    console.log('======= Order parts ========')
                     console.table(order_part)
 
                     // 5.1) Array of cycle 
                     let cycleArr = order_part.map(element => element.cycle)
-                    console.log(cycleArr)
 
                     // 5.2) Array of setup
                     let setupArr = order_part.map(element => element.setup)
-                    console.log(setupArr)
 
                     // 5.3) Array of process no (index) 
                     let processArr = order_part.map(element => element.process)
-                    console.log(processArr)
 
                     // 6) Calculate workload of each process
-                    let multiResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q)) // cycle = time x quantity
-
-                    let workload = multiResult.map((item, index) => {
-                        return item.map((i, j) => {
-                            return i + setupArr[index][j]
+                    let multiResult, workload
+                    if (model === 'multi') {
+                        multiResult = cycleArr.map((c, index) => c.map(c => c * order_quantity)) // cycle = time x quantity
+                        workload = multiResult.map((item, index) => {
+                            return item.map((i, j) => {
+                                return i + setupArr[index][j]
+                            })
                         })
-                    })
+                    } else {
+                        multiResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q)) // cycle = time x quantity
+                        workload = multiResult.map((item, index) => {
+                            return item.map((i, j) => {
+                                return i + setupArr[index][j]
+                            })
+                        })
+                    }
 
                     // 7) Convert array into object array
                     let workloadProcessObj = workload
@@ -1258,8 +1264,6 @@
                             return a + b;
                         });
                     });
-                    //console.log('Sum Workload of each station ', sumWorkloadEachProcess)
-                    //console.log('Sum workload of each order ', sumWorkloadEachOrder)
 
                     // 9) Calculate weight of each process based on workload 
                     // (workload of n process / total workload of each process)
@@ -1277,7 +1281,6 @@
                             return data.st_machine.length
                         }
                     })
-                    //console.log('Machine in station obj ', machine_in_station)
 
                     // 10.1) Remove unused weight that > 1
                     let cleanWeight = weight.map(item => Object.entries(item).filter(([key, value]) => value <=
@@ -1307,16 +1310,14 @@
                         }
                     }
                     let machines = cleanWeight.map(computeAllocatedMachine);
-                    //console.log('Allocated machines ', machines)
                     let workloadArr = workload.map(data => Object.values(data))
-                    console.log('wl ', workloadArr)
 
                     // 12) Calculate the duration of each process
                     let duration = [];
                     duration = workloadArr.map((w, i) => {
                         return w.map((wl, j) => wl / parseInt(machines[i]))
                     });
-                    console.log(duration)
+                    console.log(JSON.stringify(duration), duration.length)
 
                     // 13) Map value and key to a new object 
                     // and reduce to flat array for each part order
@@ -1335,27 +1336,23 @@
                         .op_start + ':00') / 1000
 
                     let result = processArr.map((station, i) => {
-                        console.log(`====== Process no ${station} ======`)
-                        console.log(`====== Order ${i} =======`)
-
-                        let next = [];
-                        let prev = [];
-                        console.log(duration[i])
-
+                        let next = []
+                        let prev = []
                         duration[i].forEach((duration, index) => {
-                            if (index == 0) {
+                            if (index === 0) {
                                 next.push(initialStart);
                             } else {
                                 next.push(prev[index - 1] + parseInt(this.factorySchedule.delay *
                                     60));
                             }
                             prev.push(next[index] + duration)
-                        });
-
-                        start.push(next);
-                        end.push(prev);
+                        })
+                        start.push(next)
+                        end.push(prev)
 
                         return {
+                            "start": start[i].filter(value => isNaN(value) ? initialStart : value),
+                            "end": end[i].filter(value => isNaN(value) ? initialStart + 10000 : value),
                             "job_id": Math.random().toString(36).substr(2, 12),
                             "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
                             "job_setup": setupArr[i].filter(value => isNaN(value) ? 0 : value),
@@ -1367,21 +1364,19 @@
                             "job_sku": order_part[i].sku.toString(),
                             "job_weight": Object.values(cleanWeight[i]).filter(value => isNaN(value) ?
                                 0 : value),
-                            "job_quantity": order_quantity[i],
+                            "job_quantity": order_quantity,
                             "job_status": "waiting",
                             "job_good": 0,
                             "job_defect": 0,
                             "job_dependency": order_part[i].dependency,
                             "job_complete": 0.00,
-                            "start": start[i].filter(value => isNaN(value) ? initialStart : value),
-                            "end": end[i].filter(value => isNaN(value) ? initialStart + 10000 : value),
-                            "order_customer": order_customer[i],
-                            "order_delivery": order_delivery[i],
-                            "order_no": order_no[i],
-                            "order_date": order_date[i],
-                            "order_color": order_color[i].toString(),
-                            "order_product": order_product_name[i].toString(),
-                            "order_description": order_description[i].toString(),
+                            "order_customer": order_customer,
+                            "order_delivery": order_delivery,
+                            "order_no": order_no,
+                            "order_date": order_date,
+                            "order_color": order_color.toString(),
+                            "order_product": order_product_name.toString(),
+                            "order_description": order_description.toString(),
                         }
                     }).reduce((a, b) => {
                         return a.concat(b);
