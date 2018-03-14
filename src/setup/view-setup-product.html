@@ -876,7 +876,7 @@
 
             // Add Process to Part
             addProcessToPart() {
-                if (this.selectedProcess && this.processCycle && this.processSetup) {
+                if (this.selectedProcess && this.processCycle) {
                     // if found duplicate it will return index > -1
                     let isDuplicated = this.partProcess.map(item => item).indexOf(this.selectedProcess) > -1
                     if (this.partProcess.length < this.maxProcess) {
@@ -885,8 +885,8 @@
                             return
                         }
                         this.push('partProcess', this.selectedProcess)
-                        this.push('partProcessCycle', parseInt(this.processCycle))
-                        this.push('partProcessSetup', parseInt(this.processSetup))
+                        this.push('partProcessCycle', parseInt(this.processCycle) || 0)
+                        this.push('partProcessSetup', parseInt(this.processSetup) || 0)
                         this.getPartBundle(this.partProcess, this.partProcessCycle, this.partProcessSetup)
                         this.selectedProcess = null
                         this.processCycle = null

@@ -43,7 +43,7 @@
                 <div class="card">
                     <h1 class="title">Performance Tracking</h1>
                     <h2 class="center">{{localize('overall-equipment-effectiveness')}}</h2>
-                    <google-chart type="gauge" data='[[getPerformanceValue(productionPerformance.oee)]]' options='[[gaugeOption]]'>
+                    <google-chart class="center" type="gauge" data='[[getPerformanceValue(productionPerformance.oee)]]' options='[[gaugeOption]]'>
                     </google-chart>
                     <div class="center">
                         <paper-button class="btn" on-click="resetPerformance">

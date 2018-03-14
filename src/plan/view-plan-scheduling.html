@@ -75,13 +75,22 @@
                 margin: 20px 0;
             }
 
-            .preview-badge {
-                background-color: purple;
+            .badge {
                 color: #fff;
                 display: inline-block;
-                padding: 5px 10px;
+                padding: 7px 10px;
+                margin-bottom: 10px;
                 text-align: center;
                 border-radius: 3px;
+                font-size: 1rem;
+            }
+
+            .preview-badge {
+                background-color: purple;
+            }
+
+            .production-badge {
+                background-color: orangered;
             }
 
             #chartContainer {
@@ -317,7 +326,8 @@
             <li>
                 <div class="card" hidden="[[showScheduleTable]]">
                     <h1 class="title">{{localize('production-scheduling-table')}}</h1>
-                    <span class="preview-badge" hidden="[[!isPreviewMode]]">Preview Plan</span>
+                    <span class="badge preview-badge" hidden="[[!isPreviewMode]]">Preview Mode</span>
+                    <span class="badge production-badge" hidden="[[!isProductionMode]]">Production Mode</span>
                     <p>Selected Plan: [[factorySchedule.selected_plan]]</p>
                     <p>{{localize('station')}}: [[selectedStation]]</p>
                     <p>{{localize('station-name')}}:
@@ -460,7 +470,8 @@
                     <div class="center">
                         <paper-button class="btn thunderbird" on-click="clearSchedule">{{localize('clear-schedule')}}</paper-button>
                         <paper-button class="btn" on-click="openManagePlanDialog">Load Plan</paper-button>
-                        <paper-button class="btn" on-click="saveAsPlan">Save as Plan</paper-button>
+                        <paper-button class="btn" on-click="saveAsPlan" disabled="[[isEmpty(scheduleItems)]]">Save as Plan</paper-button>
+                        <paper-button class="btn shamrock" disabled="[[isEmpty(scheduleItems)]]" on-click="applySchedule">Apply Schedule</paper-button>
                     </div>
                 </div>
             </li>
@@ -472,7 +483,7 @@
                     <div class="center">
                         <paper-button class="btn">Print</paper-button>
                     </div>
-                </div> 
+                </div>
             </li>
         </ul>
         <flat-dialog id="managePlanDialog" scroll-action="lock">
@@ -527,7 +538,8 @@
                         type: Object
                     },
                     scheduleItems: {
-                        type: Object
+                        type: Object,
+                        notyfy: true,
                     },
                     showOrderTable: {
                         type: Boolean,
@@ -546,6 +558,10 @@
                         value: true
                     },
                     isPreviewMode: {
+                        type: Boolean,
+                        value: false
+                    },
+                    isProductionMode: {
                         type: Boolean,
                         value: false
                     },
@@ -744,9 +760,9 @@
                         return [data.job_station + '' || 'N/A', 'Order ' + data.order_no, data.order_color,
                             data.start, data.end
                         ]
-                    });
-                    this.$.chartQuery.ref.set(newChartData)
-                    this.$.timeline.redraw()
+                    })
+                        this.$.chartQuery.ref.remove()
+                        this.$.chartQuery.ref.set(newChartData)
                 }
             }
             // PLAN MANAGEMENT
@@ -776,23 +792,49 @@
             loadSelectedPlan() {
                 if (this.$.planList.selectedItem.data) {
                     const planName = this.$.planList.selectedItem.name
+                    const planData = this.$.planList.selectedItem.data
                     this.set('factorySchedule.selected_plan', planName)
                     this.isPreviewMode = false;
-                    this.$.scheduleQuery.ref.set(this.$.planList.selectedItem.data);
-                    this.$.trackingQuery.ref.set(this.$.planList.selectedItem.data);
+                    this.isProductionMode = true;
+                    this.$.scheduleQuery.ref.set(planData);
+                    this.$.trackingQuery.ref.set(planData);
                     alert(`Plan ${planName} has been added/replaced to your tracking section.`)
                     this._refreshChart()
                     this.closeManagePlanDialog();
                 }
             }
 
+            applySchedule() {
+                this.set('factorySchedule.selected_plan', 'Untitled')
+                this.isPreviewMode = false;
+                this.isProductionMode = true;
+                const scheduleData = Object.assign(...Object.entries(this.scheduleItems)
+                    .map(([i, v]) => {
+                        delete v.$key
+                        return {
+                            [i]: v
+                        }
+                    }));
+                this.$.trackingQuery.ref.set(scheduleData);
+                alert(`This Plan has been added/replaced to your tracking section.`)
+            }
+
             previewSelectedPlan() {
                 if (this.$.planList.selectedItem.data) {
                     this.selected_plan = this.$.planList.selectedItem.name
                     this.isPreviewMode = true;
+                    this.isProductionMode = false;
                     this.$.scheduleQuery.ref.set(this.$.planList.selectedItem.data);
                     this._refreshChart()
                     this.closeManagePlanDialog();
+                }
+            }
+
+            isEmpty(item) {
+                if (item.length > 0) {
+                    return false
+                } else {
+                    return true
                 }
             }
 
@@ -1129,18 +1171,20 @@
                     if (this.sortedOrder) {
                         switch (this.factoryProfile.model) {
                             case "serial":
-                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o.order_product_part.length === 1), 1)
+                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
+                                    .order_product_part.length === 1), 1)
                                 break;
                             case "parallel":
-                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o.order_product_part.length === 1), this.factoryProfile.concurrency)
+                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
+                                    .order_product_part.length === 1), this.factoryProfile.concurrency)
                                 break;
                             case "multi":
-                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o.order_product_part.length > 1), 1)
+                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
+                                    .order_product_part.length > 1), 1)
                                 break;
                             default:
                                 window.alert("Invalid production model")
                         }
-                        this._refreshChart()
                         this.toastText = 'notification-refreshing-data'
                         this.$.toastAlert.open()
                     } else {
@@ -1175,7 +1219,6 @@
                     order_part = order_part.reduce((a, b) => a.concat(b), [])
                     console.log('======= Order parts ========')
                     console.table(order_part)
-                    
 
                     // 5.1) Array of cycle 
                     let cycleArr = order_part.map(element => element.cycle)
@@ -1281,32 +1324,34 @@
                     let end = []
                     let today = new Date();
                     let dd = today.getDate();
-                    let months = new Array('January', 'February', 'March', 'April', 'May', 'June',
-                        'July', 'August', 'September', 'October', 'November', 'December');
+                    let months = new Array('Jan', 'Feb', 'Mar', 'Apri', 'May', 'Jun',
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
                     let mm = months[today.getMonth()];
                     let yyyy = today.getFullYear();
                     if (dd < 10) {
                         dd = '0' + dd;
                     }
-                    let initialStart = Date.parse(dd + '-' + months + '-' + yyyy + " " + this.factoryOperation
-                        .op_start) / 1000
+                    let initialStart = Date.parse(dd + ' ' + mm + ' ' + yyyy + ' ' + this.factoryOperation
+                        .op_start + ':00') / 1000
 
                     let result = processArr.map((station, i) => {
                         console.log(`====== Process no ${station} ======`)
                         console.log(`====== Order ${i} =======`)
-                        
+
                         let next = [];
                         let prev = [];
+                        console.log(duration[i])
 
                         duration[i].forEach((duration, index) => {
-                          if (index == 0) {
-                            next.push(initialStart);
-                          } else {
-                            next.push(prev[index - 1] + parseInt(this.factorySchedule.delay*60));
-                          }
-                          prev.push(next[index] + duration)
+                            if (index == 0) {
+                                next.push(initialStart);
+                            } else {
+                                next.push(prev[index - 1] + parseInt(this.factorySchedule.delay *
+                                    60));
+                            }
+                            prev.push(next[index] + duration)
                         });
-                        
+
                         start.push(next);
                         end.push(prev);
 
@@ -1356,13 +1401,14 @@
                     // 14) If job schedule table is available then push the order into the table
                     //  let isDuplicated = this.scheduleItems.map(item => item.job_id).indexOf(resultObject.job_id) > -1
                     if (this.filterScheduleItems.length <= this.sortedOrder.length) {
-                        delete splitArr.$key
                         splitArr.map((data, i) => {
-                            data.map((x,j) => this.$.scheduleQuery.ref.push(data[j]))
+                            delete data.$key
+                            data.map((x, j) => this.$.scheduleQuery.ref.push(data[j]))
                         })
                     } else {
                         window.alert("Full capacity of current concurrency")
                     }
+                    this._refreshChart()
                 } else {
                     window.alert("No order to schedule")
                 }

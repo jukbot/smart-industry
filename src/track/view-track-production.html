@@ -127,7 +127,8 @@
                                 <p>{{localize('quantity')}}: [[item.job_quantity]] {{localize('item')}} </p>
                                 <p>{{localize('product-name')}}: [[item.order_product]]</p>
                                 <p>Description: [[item.order_description]]</p>
-                                <p>{{localize('workload')}}: [[item.job_workload]] {{localize('mins')}}</p>
+                                <p>Dependency: [[item.job_dependency]]</p>
+                                <p>{{localize('workload')}}: [[getMinuteToStr(item.job_workload)]]</p>
                                 <p>{{localize('est-start')}}: [[timestampToTime(item.start)]]</p>
                                 <p>{{localize('est-end')}}: [[timestampToTime(item.end)]]</p>
                                 <p>{{localize('actual-start')}}: [[timestampToTime(item.actual_start)]]</p>
@@ -316,6 +317,8 @@
 
             closeJobDialog() {
                 this.$.reportJobDialog.opened = false;
+                Polymer.dom(this.$.reportJobDialog).querySelectorAll('#goodCount').value = ''
+                this.good = ''
             }
 
             receiveJob(e) {
@@ -325,7 +328,7 @@
                 })
             }
 
-            updateFinish(e) {
+            updateFinish() {
                 if (!this.defect) this.defect = 0;
                 if (parseInt(this.good) >= this.selectedJob.job_quantity) {
                     this.$.trackingQuery.ref.child(this.selectedJob.$key).update({
@@ -394,9 +397,6 @@
                 let done_order = [];
                 if (order_group) {
                     order_group.map((key, i) => {
-                        //console.log(order_group[i])
-                        //console.log(order_group[i].every(isStatusDone))
-                        //console.log(done_order)
                         if (order_group[i].every(isStatusDone)) {
                             done_order.push(order_group[i]);
                         }
@@ -482,6 +482,10 @@
                 }
             }
 
+            _checkJobDependency() {
+
+            }
+            
             _addToWorkCommit() {
                 let currentDay = daysOfTheYear() - 1;
                 this.$.commitQuery.ref.child('/' + currentDay).once("value", (snapshot) => {
@@ -544,7 +548,10 @@
                 const h = date.getHours();
                 const m = date.getMinutes();
                 const s = date.getSeconds();
-                return ('0' + h).substr(-2) + ':' + ('0' + m).substr(-2) + ':' + ('0' + s).substr(-2);
+                const dd = date.getDate();
+                const mm = date.getMonth() + 1;
+                const yy = date.getFullYear();
+                return ('0' + h).substr(-2) + ':' + ('0' + m).substr(-2) + ' ' + dd + '/' + mm + '/' + yy
             }
 
             resetCounter(e) {
@@ -563,6 +570,20 @@
                 return (status === 'wip' || status === 'done')
             }
 
+            getMinuteToStr(minute) {
+                const sec = Number(minute*60);
+                let sign = '';
+                let hours = this._leftPad(Math.floor(Math.abs(sec) / 3600));
+                let minutes = this._leftPad(Math.round(Math.abs(sec) % 3600 / 60));
+                let seconds = this._leftPad(Math.round(Math.abs(sec) % 3600 % 60));
+                return hours + 'hr. ' + minutes + 'min.' + seconds + 's.';
+            }
+
+             // ADD 0 to numbers less than 10,Eg: 2 -> 02 
+             _leftPad(number) {
+                return ((number < 10 && number >= 0) ? '0' : '') + number;
+            }
+            
             getColorStatus(job_status) {
                 switch (job_status) {
                     case 'waiting':
