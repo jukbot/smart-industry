@@ -94,9 +94,9 @@
             }
 
             #chartContainer {
-                min-height: 700px;
+                min-height: 500px;
             }
-
+            
             @media (min-width: 360px) and (max-width: 768px) {
                 .btn {
                     width: 100%;
@@ -130,7 +130,6 @@
         <firebase-query app-name="smart-mes" id="trackingQuery" path="/data/[[k.key]]/trackingData"></firebase-query>
         <!-- PLAN DATA -->
         <firebase-query app-name="smart-mes" id="planQuery" path="/data/[[k.key]]/planData" data="{{planItems}}"></firebase-query>
-
         <!-- STATION QUERY SELECTED BY STATION NUMBER -->
         <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
             equal-to="{{selectedStation}}" data="{{filterStationData}}"></firebase-query>
@@ -199,7 +198,7 @@
                         <p>{{localize('late-order')}}: [[getLateOrder(orderItems)]] {{localize('order')}}</p>
                     </div>
                     <vaadin-grid id="orderTable" items="{{getSortedOrder(orderItems)}}" page-size="20">
-                        <vaadin-grid-column flex="2">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <vaadin-grid-sorter path="order_no">
                                     <div class="cell">{{localize('order-number')}}</div>
@@ -210,7 +209,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column width="40px">
                             <template class="header">
                                 <div class="cell">{{localize('color')}}</div>
                             </template>
@@ -219,7 +218,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="2">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <div class="cell">{{localize('customer')}}</div>
                             </template>
@@ -239,6 +238,19 @@
 
                         <vaadin-grid-column>
                             <template class="header">
+                                <vaadin-grid-sorter path="order_product_part">
+                                    <div class="cell">
+                                        <span>{{localize('part')}}</span>
+                                    </div>
+                                </vaadin-grid-sorter>
+                            </template>
+                            <template>
+                                <div class="cell">[[item.order_product_part.length]]</div>
+                            </template>
+                        </vaadin-grid-column>
+
+                        <vaadin-grid-column>
+                            <template class="header">
                                 <vaadin-grid-sorter path="order_quantity">
                                     <div class="cell">
                                         <span>{{localize('quantity')}}</span>
@@ -250,7 +262,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <vaadin-grid-sorter path="order_duration">
                                     <div class="cell">{{localize('duration')}}</div>
@@ -261,7 +273,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <vaadin-grid-sorter path="order_delivery">
                                     <div class="cell">{{localize('remaining')}}</div>
@@ -272,7 +284,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <vaadin-grid-sorter path="order_delivery">
                                     <div class="cell">{{localize('delivery-date')}}</div>
@@ -335,7 +347,7 @@
                     </p>
                     <p>{{localize('station-machine')}}:
                         <template is="dom-repeat" items="[[filterStationData]]" as="item">
-                            <template is="dom-repeat" items="[[item.st_machine]]" as="item">[[item.name]] </template>
+                            <template is="dom-repeat" items="[[item.st_machine]]" as="item">[[item.name]] / </template>
                         </template>
                     </p>
                     <p>{{localize('machine-quantity')}}:
@@ -360,7 +372,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <div class="cell">{{localize('order-number')}}</div>
                             </template>
@@ -369,7 +381,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column width="40px">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_status">
                                     <div class="cell">{{localize('color')}}</div>
@@ -380,7 +392,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="2">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <div class="cell">{{localize('product')}}</div>
                             </template>
@@ -389,7 +401,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column>
+                        <vaadin-grid-column width="40px">
                             <template class="header">
                                 <div class="cell">
                                     <span>{{localize('part')}}</span>
@@ -411,7 +423,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <div class="cell">{{localize('workload')}}</div>
                             </template>
@@ -420,7 +432,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <div class="cell">{{localize('est-start')}}</div>
                             </template>
@@ -429,7 +441,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <div class="cell">{{localize('est-end')}}</div>
                             </template>
@@ -438,7 +450,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <div class="cell">{{localize('used-machine')}}</div>
                             </template>
@@ -447,7 +459,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column flex="1">
+                        <vaadin-grid-column>
                             <template class="header">
                                 <div class="cell">{{localize('status')}}</div>
                             </template>
@@ -687,13 +699,14 @@
                 this.height = this.$.chartContainer.offsetHeight;
                 if (this.$.timeline.offsetHeight > 0) {
                     this.updateStyles({
-                        '--chart-container-height': this.$.timeline.offsetHeight
+                        '--chart-container-height': this.$.timeline.offsetHeight,
+                        '#chartContainer': this.$.timeline.offsetHeights
                     });
                 }
                 if (this.width > 0) {
                     this.timelineOptions = {
                         width: this.width - 40,
-                        height: this.height + 200,
+                        height: this.height,
                         timeline: {
                             rowLabelStyle: {
                                 fontSize: 16
@@ -702,6 +715,7 @@
                                 fontSize: 16
                             }
                         },
+                        tooltip: { isHtml: true },
                         legend: {
                             position: 'none'
                         },
@@ -910,7 +924,6 @@
                 // Seconds part from the timestamp
                 let s = date.getSeconds();
                 // Will display time in 10:30:23 format
-                //let formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
                 return ('0' + h).substr(-2) + ":" + ('0' + m).substr(-2) + ":" + ('0' + s).substr(-2)
             }
 
@@ -953,8 +966,8 @@
             }
 
             getRemainDay(delivery_date, status, key) {
-                if (!delivery_date) return 0
-                const current_date = Math.round(new Date().getTime() / 1000.0);
+                if (!delivery_date) return 'N/A'
+                const current_date = Math.round(new Date().getTime() / 1000);
                 const remain = Math.round((delivery_date - current_date) / 86400);
 
                 if (remain < 0 && status !== 'done' && status !== 'wip') {
@@ -962,7 +975,7 @@
                     return 0;
                 } else if (remain < 0 && (status === 'done' || status === 'wip' || status === 'late')) {
                     return 0;
-                } else if (remain >= 0 && status === 'late') {
+                } else if (remain>= 0 && status === 'late') {
                     this.setOrderStatus(key, 'waiting');
                     return remain;
                 } else {
@@ -1167,7 +1180,6 @@
                     this.$.chartQuery.ref.remove()
 
                     // 1) Filter only waiting, late or wip order 
-
                     if (this.sortedOrder) {
                         switch (this.factoryProfile.model) {
                             case "serial":
@@ -1195,7 +1207,6 @@
             }
             _scheduleOrder(undone_order, concurrent, model) {
                 if (this.sortedOrder.length > 0) {
-
                     // 2) Copy first concurrent orders from sorted order table 
                     const selected_order = undone_order.slice(0, concurrent).concat(undone_order.slice(
                         undone_order.length));
@@ -1398,6 +1409,7 @@
                             delete data.$key
                             data.map((x, j) => this.$.scheduleQuery.ref.push(data[j]))
                         })
+                        window.alert("Re-schedule successful, please refresh this page to update a chart.")
                     } else {
                         window.alert("Full capacity of current concurrency")
                     }
