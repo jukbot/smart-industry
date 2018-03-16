@@ -21,7 +21,6 @@
 
 Note: If you found any bugs please report me or open an issue, thanks 😊
 
-
 # Contribution
 
 Please know that this project is still in development with a lot of bugs, if you want to contribute us (help me) working on this project please read [About Project document](https://github.com/jukbot/smart-industry/blob/master/About%20Project.pdf) for an overview and scope of this project phase I and for the technical information please read [Technical document](https://goo.gl/JNmrPE) to understand how this application will work.
