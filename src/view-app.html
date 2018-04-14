@@ -403,10 +403,6 @@
             scope: Polymer.rootPath
           })
             .then(registration => {
-              console.info(
-                "%cService Worker Registered to " + registration.scope,
-                purpleColor
-              );
               Polymer.swRegistration = registration;
             })
             .catch(err => {
@@ -417,7 +413,6 @@
             });
           navigator.serviceWorker.ready
             .then(registration => {
-              console.info("%cService Worker Ready 😃", greenColor);
               if (registration.navigationPreload) {
                 return registration.navigationPreload.getState()
               }
@@ -426,12 +421,6 @@
                 return
               }
             })
-            .then(state => {
-              console.info(
-                "%cService Worker State:" + JSON.stringify(state),
-                palevioletredColor
-              );
-            });
         } else {
           // Browser not support service worker
           console.error(
