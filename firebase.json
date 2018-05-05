@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "build/es6-unbundled",
+    "public": "build",
     "ignore": [
       "**/.*",
       "**/.travis.yml",
@@ -12,19 +12,23 @@
     ],
     "rewrites": [
       {
-        "source": "**/!(*.*)",
-        "destination": "/index.html"
+        "source": "/",
+        "function": "serve"
+      }, {
+        "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
+        "function": "serve"
+      }, {
+        "source": "**/**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
+        "function": "serve"
       }
     ],
     "headers": [
       {
         "source": "**/service-worker.js",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "private, max-age=0, no-cache"
-          }
-        ]
+        "headers": [{
+          "key": "Service-Worker-Allowed",
+          "value": "/"
+        }]
       }
     ]
   }

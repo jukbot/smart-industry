@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 const capabilities = require('browser-capabilities');
 const rp = require('request-promise');
 const request = require('request');
+
 exports.serve = functions.https.onRequest((req, res) => {
   const baseUrl = 'https://' + functions.config().firebase.authDomain;
 
@@ -12,7 +13,7 @@ exports.serve = functions.https.onRequest((req, res) => {
   }).then((config) => {
     // Find a build that matches the client browser capabilities
     const client = capabilities.browserCapabilities(req.headers['user-agent']);
-    let builds = config.builds.filter((build) => {
+    var builds = config.builds.filter((build) => {
       if (!build.browserCapabilities) {
         return true;
       }
@@ -33,7 +34,7 @@ exports.serve = functions.https.onRequest((req, res) => {
     });
 
     // Fetch the appropriate index.html for the chosen build
-    request(baseUrl + '/index.html')
+    request(baseUrl + '/' + builds[0].name + '/index.html')
       .on('response', (res) => {
         // Tell Firebase Hosting to cache the result based on user-agent
         // Unfortunately this is the only way so far to make sure each

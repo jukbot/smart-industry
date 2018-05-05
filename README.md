@@ -73,11 +73,10 @@ Scheduling optimization involves selecting the appropriate scheduling method by 
 
 | [<img src="https://cdn.rawgit.com/alrra/browser-logos/f50d4cc8/src/edge/edge.png" alt="IE / Edge" width="64px" height="64px" />](http://caniuse.com/#feat=fetch)</br>Edge | [<img src="https://cdn.rawgit.com/alrra/browser-logos/f50d4cc8/src/firefox/firefox.png" alt="Firefox" width="64px" height="64px" />](http://caniuse.com/#feat=fetch)</br>Firefox | [<img src="https://cdn.rawgit.com/alrra/browser-logos/f50d4cc8/src/chrome/chrome.png" alt="Chrome" width="64px" height="64px" />](http://caniuse.com/#feat=fetch)</br>Chrome | [<img src="https://cdn.rawgit.com/alrra/browser-logos/f50d4cc8/src/safari/safari.png" alt="Safari" width="64px" height="64px" />](http://caniuse.com/#feat=fetch)</br>Safari | [<img src="https://cdn.rawgit.com/alrra/browser-logos/f50d4cc8/src/opera/opera.png" alt="Opera" width="64px" height="64px" />](http://caniuse.com/#feat=fetch)</br>Opera | 
 | ---------: | ---------: | ---------: | ---------: | ---------:
-| 16+ *(Flag) | 56+ | 60+ | 11+* | 48+
+| 17+ | 44+ | 46+ | 11.1+ | 33+
 
-Note: Edge and Safari is not supported service worker.
 
-Reference: https://platform-status.mozilla.org/#html-imports
+Reference: https://caniuse.com/#search=web%20component
 
 
 ## About Polymer 2 
@@ -98,103 +97,184 @@ The PRPL pattern, in a nutshell:
 * **Pre-cache** components for remaining routes
 * **Lazy-load** and progressively upgrade next routes on-demand
 
-### Migrating from Polymer Starter Kit v1?
-
-[Check out our blog post that covers what's changed in PSK2 and how to migrate!](https://www.polymer-project.org/1.0/blog/2016-08-18-polymer-starter-kit-or-polymer-cli.html)
 
 ### Setup Project
 
 ##### Prerequisites
 
-NodeJS (required version >= 8.x)
+Install latest NodeJS (required version >= 8.x)
 
-    https://nodejs.org/en/
+Download: https://nodejs.org/en
 
-Install [npm](https://www.npmjs.com) (required version >= 5.x)
+Install latest [npm](https://www.npmjs.com) (required version >= 5.x)
 
-    npm i npm -g
+```bash
+    $ npm i npm -g
+```
 
-Install [Yarn](https://yarnpkg.com/en/) (required version >= 1.0.2)
+Install [Yarn](https://yarnpkg.com/en/) (required version >= 1.6.0)
 
-    npm install -g yarn
+```bash
+    $ npm install -g yarn
+```
 
-Install [polymer-cli](https://github.com/Polymer/polymer-cli): (require version >= 1.5.5)
+Install [polymer-cli](https://github.com/Polymer/polymer-cli): (require version >= 1.6.x)
 
-    yarn add global polymer-cli
+```bash
+    $ yarn add global polymer-cli
+```
 
 `Note: polymer-cli is not able to install with npm version 5.x.x for now. Please use yarn to install.`
 
-Install [bower](https://bower.io/) (require version >= 1.8.2)
+Install [bower](https://bower.io/) (require version >= 1.8.x)
 
-    yarn add global bower
-
+```bash
+    $ yarn add global bower
+```
 
 ### Install dependency packages
 
-    npm install
-    bower install
+```bash
+    $ npm install
+    $ bower install
+```
 
-### Start the development server
+### Start the development
 
 This command serves the app at `http://localhost:8081` and provides basic URL
 routing for the app:
 
-    polymer serve --open
+```bash
+    $ polymer serve --open
+```
 
 ### Start the production server (PRPL Server)
 
 This command serves the app at `http://localhost:8081` and provides basic URL
 routing for the app:
 
-    polymer build
-    npm start
+```bash
+    $ polymer build
+    $ npm start
+```
 
 ### Build Project
 
-This command performs HTML, CSS, and JS minification on the application
-dependencies, and generates a service-worker.js file with code to pre-cache the
-dependencies based on the entrypoint and fragments specified in `polymer.json`.
+This command performs HTML, CSS, and JS minification on the application dependencies, and generates a service-worker.js file with code to pre-cache the dependencies based on the entrypoint and fragments specified in `polymer.json`.
+
 The output files are in `build/default` which suitable for serving from a HTTP/2+Push compatible server.
 
 Build the project: 
-
-    polymer build
+```bash
+    $ polymer build
+```
 
 ### Preview the build
 
-This command serves the production version of the app at `http://localhost:8080`
-generated using fragment bundling:
+This command serves the production version of the app at `http://localhost:8080`generated using fragment bundling:
 
-    polymer serve build/default --open
+```bash
+    $ polymer serve build/es6-unbundled/ --open
+```
 
-### Run lint
+### Run Lint
 
 This command will run
 [Polymer Lint](https://github.com/Polymer/polymer-cli) 
 
-    polymer lint --input src/**/*.html
+```bash
+    $ polymer lint --input src/**/*.html
+```
 
-### Run tests
+### Run Tests (Unit Test)
 
 This command will run
 [Web Component Tester](https://github.com/Polymer/web-component-tester) against the
 browsers currently installed on your machine.
 
-    polymer test
+```bash
+    $ polymer test
+```
+
+### Deploy Project
+
+Polymer 2.x/3.x brought the standards-compliant ES6 class-based syntax for defining Web Components. This works well for most modern browsers and ES6 has a lot of other nice features (like arrow functions) to make your JS code cleaner and more fun to write.
+
+But if you need to support older browsers like IE 11 you will have to compile your code to ES5 which comes with performance drawbacks for modern browsers compared to running ES6 on them directly.
+
+The ideal approach is to use differential serving to serve the ES6 version to modern browsers and a fallback ES5 version to older browser. prpl-server-node is a sample implementation of a Node server that uses this pattern. I took the ideas from this implementation and created a sample based on the polymer-starter-kit on how you can use differential serving on Firebase Hosting using Cloud Functions for Firebase for dynamically sending the right version to the user.
+
+#### Method 1: Deploy on Firebase Hosting (as static site)
+
+After, run polymer build then run this to deploy applicaiton
+(make sure you have login and selected your firebase project)
+```bash
+    $ firebase deploy
+```
+
+#### Method 2: Deploy on PRPL server (proxy with webserver)
+
+`PRPL pattern` defines how a production-ready Polymer app works efficiently by sending only the required resources to the client-side:
+
+* `Push` - critical resources for the initial route.
+* `Render` - initial route.
+* `Pre-cache` - remaining routes.
+* `Lazy-load` - create remaining routes on demand.
+
+<p style="text-align:center">
+<img src="https://cdn-images-1.medium.com/max/1200/0*LfB_SvzCLqUjxe9w.png">
+</p>
+
+In PRPL pattern, the server needs to be able to identify the resources required by each of the app’s routes. Instead of bundling the resources into a single unit for download, it uses HTTP2 push to deliver the individual resources needed to render the requested route. 
+
+When building an app, always consider to prioritize sending the critical resources to render a meaningful view first, and later send the rest of your app resources as per the request. 
+
+<p style="text-align:center">
+<img src="https://cdn-images-1.medium.com/max/1600/1*Y-UiXQ3BAsUVE8JzbHk4Vw.gif">
+</p>
+
+Coming back to our topic, in PRPL pattern, the server and service worker together work to precache the resources for the inactive routes.
+
+When the user switches routes, the app lazy-loads any required resources that haven’t been cached yet, and creates the required views.
+
+`prpl-server` is smart enough to use the user-agent header, detect browser capabilities, and serve the right build for your browser 
+
+<p style="text-align:center">
+<img src="https://cdn-images-1.medium.com/max/1600/1*l48aM2AjKrxgLzipJiuWKg.png">
+</p>
+
+First, let install PRPL server on your local server
+```bash
+   $ yarn global add prpl-server
+```
+
+Then, run PRPL server in project directory
+```bash
+   $ prpl-server --root . --config polymer.json
+```
+
+See more at https://github.com/Polymer/prpl-server-node
 
 
 ## Contribution
 
-If you’ve found an error in this library, please file an issue at: https://github.com/jukbot/smart-industry/issues
+If you found an error or bug in this project, please open an issue at: https://github.com/jukbot/smart-industry/issues
 
 Patches are encouraged, and may be submitted by forking this project and submitting a pull request through GitHub.
 
-### License
+Pull requests and feedback are always welcome. We are alway do our best to process them as fast as possible. 
 
-Copyright 2016-2017 Chukkrit Visitsaktavorn.
+## References
+
+- https://medium.com/platform-engineer/polymer-2-0-building-progressive-web-apps-with-enhanced-web-platform-features-933251824f13
+- 
+
+## License
+
+Copyright 2016-2018 Chukkrit Visitsaktavorn.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 
-http://www.apache.org/licenses/LICENSE-2.0
+(https://www.apache.org/licenses/LICENSE-2.0)
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
