@@ -6,7 +6,8 @@
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
 [![Dependency Status](https://gemnasium.com/badges/github.com/jukbot/smart-industry.svg)](https://gemnasium.com/github.com/jukbot/smart-industry)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/imes-project/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
-[![Polymer 2 supported](https://img.shields.io/badge/Polymer2-supported-blue.svg)](https://github.com/jukbot/smart-industry/)
+[![Polymer 2 supported](https://img.shields.io/badge/Polymer2-Supported-blue.svg)](https://github.com/jukbot/smart-industry/)
+[![Polymer 3 supported](https://img.shields.io/badge/Polymer3-WIP-yellow.svg)](https://github.com/jukbot/smart-industry/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 </div>
@@ -79,7 +80,11 @@ Scheduling optimization involves selecting the appropriate scheduling method by 
 Reference: https://caniuse.com/#search=web%20component
 
 
-## About Polymer 2 
+## About Polymer Project
+
+<p style="text-align:center">
+<img width="500" src="https://cdn-images-1.medium.com/max/1600/1*5GBnqWJWD9-uIrEnTgGAGA.png">
+</p>
 
 This template is a starting point for building apps using a drawer-based
 layout. The layout is provided by `app-layout` elements.
@@ -212,7 +217,7 @@ After, run polymer build then run this to deploy applicaiton
     $ firebase deploy
 ```
 
-#### Method 2: Deploy on PRPL server (proxy with webserver)
+#### Method 2: Deploy on PRPL server (reverse proxy with nginx)
 
 `PRPL pattern` defines how a production-ready Polymer app works efficiently by sending only the required resources to the client-side:
 
@@ -248,12 +253,106 @@ First, let install PRPL server on your local server
    $ yarn global add prpl-server
 ```
 
-Then, run PRPL server in project directory
+Then, go to project directory
+
+To run PRPL server in development
 ```bash
-   $ prpl-server --root ./build --config polymer.json
+   $ prpl-server --root ./build --config polymer.json --host 127.0.0.1
 ```
 
-See more at https://github.com/Polymer/prpl-server-node
+To run PRPL server in production
+```bash
+   $ prpl-server --root ./build --config polymer.json --host 127.0.0.1 --https-redirect
+```
+
+In order to serve app with nginx reverse proxy (http2 supportted) you need to have your certificate. We suggest certbot tool to help generate site certificate.
+
+`Example of nginx configuration files`
+```nginx
+server {
+
+    listen 443      ssl http2; 
+    listen [::]:443 ssl http2;
+    server_name     <yourdomainname>;
+
+    if ($scheme != "https") {
+        return 301 https://$host$request_uri;
+    }  
+
+    root            /var/www/html;
+    index           index.html;
+    charset         utf-8;
+    access_log      off;
+    error_log       /var/log/nginx.error_log error;
+
+    # SSL Certificate config
+    ssl_certificate /etc/letsencrypt/live/<yourdomainname>/fullchain.pem; 
+    ssl_certificate_key /etc/letsencrypt/live/<yourdomainname>/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf; 
+    
+    ssl_session_timeout 10m;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_tickets off;
+
+    # Diffie-Hellman parameter for DHE ciphersuites, recommended 4096 bits
+    # to generate your dhparam.pem file, run $ openssl dhparam -out /etc/letsencrypt/live/<yourdomainname>/dhparam.pem 4096
+    ssl_dhparam  /etc/letsencrypt/live/<yourdomainname>/dhparam.pem;
+
+    # SSL Key exchanges
+    ssl_protocols TLSv1.2 TLSv1.3; #!! TLS 1.3 Requires nginx >= 1.13.0 !!
+    ssl_ecdh_curve secp384r1;
+    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+    ssl_prefer_server_ciphers on;
+
+    # OCSP Stapling - fetch OCSP records from URL in ssl_certificate and cache them for faster handshake
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    ssl_trusted_certificate /etc/letsencrypt/live/<yourdomainname>/fullchain.pem;
+    
+    # DNS for OSCP Resolver - to lookup your upstream domain name URL
+    resolver 8.8.8.8 4.4.4.4 valid=300s ipv6=off;
+    resolver_timeout 10s;
+
+    # Security Header
+    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
+    add_header Referrer-Policy no-referrer-when-downgrade;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Content-Security-Policy upgrade-insecure-requests;
+
+    # Required for LE certificate enrollment using certbot
+    location '/.well-known/acme-challenge' {
+	    default_type "text/plain";
+	    root /var/www/html;
+    }
+    location / {
+	    root /var/www/html;
+    }
+
+    # Reverse proxy
+    location / {
+        http2_push_preload on;
+        proxy_pass http://127.0.0.1:8080/;
+        proxy_set_header X-Forwarded-Proto $scheme;
+#       proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host:$server_port;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_read_timeout 3m;
+        proxy_send_timeout 3m;
+        proxy_buffer_size  128k;
+        proxy_buffers   32 32k;
+        proxy_busy_buffers_size 128k;
+    }
+}
+```
+
+Learn about lets encrypt certificate at https://letsencrypt.org/certificates/
+Learn about nginx config at https://github.com/jukbot/setup-nginx-webserver
+Learn about PRPL server config at https://github.com/Polymer/prpl-server-node
 
 
 ## Contribution
@@ -267,7 +366,8 @@ Pull requests and feedback are always welcome. We are alway do our best to proce
 ## References
 
 - https://medium.com/platform-engineer/polymer-2-0-building-progressive-web-apps-with-enhanced-web-platform-features-933251824f13
-- 
+- https://www.nginx.com/blog/nginx-1-13-9-http2-server-push/#automatic-push
+
 
 ## License
 
