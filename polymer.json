@@ -1,14 +1,15 @@
 {
- "autoBasePath" : true, 
- "builds": [
+  "builds": [
     {
       "name": "modern-es6",
       "browserCapabilities": ["es2015"],
-      "preset": "es6-unbundled"
+      "preset": "es6-unbundled",
+      "basePath": true
     },
     {
       "name": "fallback-es5",
-      "preset": "es5-bundled"
+      "preset": "es5-bundled",
+      "basePath": true
     }
   ],
   "entrypoint": "index.html",
