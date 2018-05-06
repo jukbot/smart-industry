@@ -257,12 +257,14 @@ Then, go to project directory
 
 To run PRPL server in development
 ```bash
-   $ prpl-server --root ./build --config polymer.json --host 127.0.0.1
+   $ npm run start
 ```
 
 To run PRPL server in production
 ```bash
    $ prpl-server --root ./build --config polymer.json --host 127.0.0.1 --https-redirect
+   # or
+   $ npm run start
 ```
 
 In order to serve app with nginx reverse proxy (http2 supportted) you need to have your certificate. We suggest certbot tool to help generate site certificate.
@@ -335,7 +337,7 @@ server {
         http2_push_preload on;
         proxy_pass http://127.0.0.1:8080/;
         proxy_set_header X-Forwarded-Proto $scheme;
-#       proxy_http_version 1.1;
+        #proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

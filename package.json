@@ -54,7 +54,7 @@
     "pre-commit": "lint-staged",
     "serve:dev": "polymer serve",
     "serve:prod": "polymer build && firebase serve --only functions,hosting",
-    "start": "prpl-server --root ./build --config polymer.json --host 127.0.0.1 --https-redirect",
+    "start": "prpl-server --root ./build --config polymer.json --host localhost --port 8080",
     "test": "polymer test"
   },
   "standard": {

@@ -1,33 +1,33 @@
 <!-- POLYMER 2 -->
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="[[importPath]]bower_components/polymer/polymer-element.html">
 <!-- helper elements -->
-<link rel="import" href="../bower_components/polymer/lib/elements/custom-style.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-module.html">
+<link rel="import" href="[[importPath]]bower_components/polymer/lib/elements/custom-style.html">
+<link rel="import" href="[[importPath]]bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="[[importPath]]bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="[[importPath]]bower_components/polymer/lib/elements/dom-module.html">
 <!-- app elements - used for core functions -->
-<link rel="import" href="../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
-<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="[[importPath]]bower_components/app-layout/app-layout.html">
+<link rel="import" href="[[importPath]]bower_components/app-route/app-location.html">
+<link rel="import" href="[[importPath]]bower_components/app-route/app-route.html">
+<link rel="import" href="[[importPath]]bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="[[importPath]]bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
+<link rel="import" href="[[importPath]]bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- paper elements used for component style -->
-<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="[[importPath]]bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="[[importPath]]bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="[[importPath]]bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="[[importPath]]bower_components/paper-button/paper-button.html">
+<link rel="import" href="[[importPath]]bower_components/paper-input/paper-input.html">
 <!-- iron elements used for component functions -->
-<link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="[[importPath]]bower_components/iron-image/iron-image.html">
+<link rel="import" href="[[importPath]]bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="[[importPath]]bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="[[importPath]]bower_components/iron-lazy-pages/iron-lazy-pages.html">
+<link rel="import" href="[[importPath]]bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="[[importPath]]bower_components/iron-icon/iron-icon.html">
 <!-- import 3rd party elements -->
-<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
-<link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="[[importPath]]bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="[[importPath]]bower_components/vaadin-icons/vaadin-icons.html">
 <!-- import custom elements -->
 <link rel="import" href="elements/flat-toast.html">
 <link rel="import" href="elements/flat-dialog.html">
@@ -211,7 +211,7 @@
       }
       connectedCallback() {
         super.connectedCallback()
-        this.loadResources(this.resolveUrl('../data/locales.json'))
+        this.loadResources(this.resolveUrl('[[importPath]]data/locales.json'))
         requestAnimationFrame(this._installListeners.bind(this))
       }
       ready() {
