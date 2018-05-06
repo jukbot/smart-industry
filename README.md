@@ -222,7 +222,7 @@ After, run polymer build then run this to deploy applicaiton
 * `Lazy-load` - create remaining routes on demand.
 
 <p style="text-align:center">
-<img src="https://cdn-images-1.medium.com/max/1200/0*LfB_SvzCLqUjxe9w.png">
+<img width="500" src="https://cdn-images-1.medium.com/max/1200/0*LfB_SvzCLqUjxe9w.png">
 </p>
 
 In PRPL pattern, the server needs to be able to identify the resources required by each of the app’s routes. Instead of bundling the resources into a single unit for download, it uses HTTP2 push to deliver the individual resources needed to render the requested route. 
@@ -230,7 +230,7 @@ In PRPL pattern, the server needs to be able to identify the resources required 
 When building an app, always consider to prioritize sending the critical resources to render a meaningful view first, and later send the rest of your app resources as per the request. 
 
 <p style="text-align:center">
-<img src="https://cdn-images-1.medium.com/max/1600/1*Y-UiXQ3BAsUVE8JzbHk4Vw.gif">
+<img width="500"  src="https://cdn-images-1.medium.com/max/1600/1*Y-UiXQ3BAsUVE8JzbHk4Vw.gif">
 </p>
 
 Coming back to our topic, in PRPL pattern, the server and service worker together work to precache the resources for the inactive routes.
@@ -240,7 +240,7 @@ When the user switches routes, the app lazy-loads any required resources that ha
 `prpl-server` is smart enough to use the user-agent header, detect browser capabilities, and serve the right build for your browser 
 
 <p style="text-align:center">
-<img src="https://cdn-images-1.medium.com/max/1600/1*l48aM2AjKrxgLzipJiuWKg.png">
+<img width="500"  src="https://cdn-images-1.medium.com/max/1600/1*l48aM2AjKrxgLzipJiuWKg.png">
 </p>
 
 First, let install PRPL server on your local server
@@ -250,7 +250,7 @@ First, let install PRPL server on your local server
 
 Then, run PRPL server in project directory
 ```bash
-   $ prpl-server --root . --config polymer.json
+   $ prpl-server --root ./build --config polymer.json
 ```
 
 See more at https://github.com/Polymer/prpl-server-node

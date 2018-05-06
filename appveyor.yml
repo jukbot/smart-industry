@@ -1,6 +1,6 @@
 # Test against this version of Node.js
 environment:
-  nodejs_version: "6.11.2"
+  nodejs_version: "8"
 
 version: 1.0.{build}
 
@@ -26,9 +26,9 @@ cache:
 
 # Install scripts. (runs after repo cloning)
 install:
-  # Get the latest stable version of Node.js or io.js
+  # Get the latest stable version of Node.js
   - ps: Install-Product node $env:nodejs_version
-  # Get npm 3
+  # Get the latest stable version of npm 
   - npm install -g npm@lastest
   - yarn add global bower
   - yarn add global polymer-cli 
@@ -46,7 +46,7 @@ before_build:
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-  - polymer build -v
+  - polymer build --verbose
 
 # Post-install test scripts.
 test_script:
