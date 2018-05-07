@@ -1,8 +1,8 @@
 
 
-<img style="text-align:center" src="imes_splash.png" alt="logo"/>
+<img align="center" src="imes_splash.png" alt="logo"/>
 
-<div style="text-align:center">
+<div align="center">
 
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
@@ -84,8 +84,8 @@ Reference: https://caniuse.com/#search=web%20component
 
 ## About Polymer Project
 
-<p style="text-align:center">
-<img style="text-align:center" width="500" src="https://cdn-images-1.medium.com/max/1600/1*5GBnqWJWD9-uIrEnTgGAGA.png">
+<p align="center">
+<img align="center" width="500" src="https://cdn-images-1.medium.com/max/1600/1*5GBnqWJWD9-uIrEnTgGAGA.png">
 </p>
 
 This template is a starting point for building apps using a drawer-based
@@ -228,7 +228,7 @@ After, run polymer build then run this to deploy applicaiton
 * `Pre-cache` - remaining routes.
 * `Lazy-load` - create remaining routes on demand.
 
-<img style="text-align:center" width="500" src="https://cdn-images-1.medium.com/max/1200/0*LfB_SvzCLqUjxe9w.png">
+<img align="center" width="500" src="https://cdn-images-1.medium.com/max/1200/0*LfB_SvzCLqUjxe9w.png">
 
 
 In PRPL pattern, the server needs to be able to identify the resources required by each of the app’s routes. Instead of bundling the resources into a single unit for download, it uses HTTP2 push to deliver the individual resources needed to render the requested route. 
@@ -236,7 +236,7 @@ In PRPL pattern, the server needs to be able to identify the resources required 
 When building an app, always consider to prioritize sending the critical resources to render a meaningful view first, and later send the rest of your app resources as per the request. 
 
 
-<img style="text-align:center" width="500"  src="https://cdn-images-1.medium.com/max/1600/1*Y-UiXQ3BAsUVE8JzbHk4Vw.gif">
+<img align="center" width="500"  src="https://cdn-images-1.medium.com/max/1600/1*Y-UiXQ3BAsUVE8JzbHk4Vw.gif">
 
 Coming back to our topic, in PRPL pattern, the server and service worker together work to precache the resources for the inactive routes.
 
@@ -245,7 +245,7 @@ When the user switches routes, the app lazy-loads any required resources that ha
 `prpl-server` is smart enough to use the user-agent header, detect browser capabilities, and serve the right build for your browser 
 
 
-<img style="text-align:center" width="500"  src="https://cdn-images-1.medium.com/max/1600/1*l48aM2AjKrxgLzipJiuWKg.png">
+<img align="center" width="500"  src="https://cdn-images-1.medium.com/max/1600/1*l48aM2AjKrxgLzipJiuWKg.png">
 
 
 First, let install PRPL server on your local server
