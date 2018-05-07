@@ -74,19 +74,24 @@ Scheduling optimization involves selecting the appropriate scheduling method by 
 
 ## Browser Supported
 
+<center>
+
 | [<img src="https://cdn.rawgit.com/alrra/browser-logos/f50d4cc8/src/edge/edge.png" alt="IE / Edge" width="64px" height="64px" />](http://caniuse.com/#feat=fetch)</br>Edge | [<img src="https://cdn.rawgit.com/alrra/browser-logos/f50d4cc8/src/firefox/firefox.png" alt="Firefox" width="64px" height="64px" />](http://caniuse.com/#feat=fetch)</br>Firefox | [<img src="https://cdn.rawgit.com/alrra/browser-logos/f50d4cc8/src/chrome/chrome.png" alt="Chrome" width="64px" height="64px" />](http://caniuse.com/#feat=fetch)</br>Chrome | [<img src="https://cdn.rawgit.com/alrra/browser-logos/f50d4cc8/src/safari/safari.png" alt="Safari" width="64px" height="64px" />](http://caniuse.com/#feat=fetch)</br>Safari | [<img src="https://cdn.rawgit.com/alrra/browser-logos/f50d4cc8/src/opera/opera.png" alt="Opera" width="64px" height="64px" />](http://caniuse.com/#feat=fetch)</br>Opera | 
 | ---------: | ---------: | ---------: | ---------: | ---------:
 | 17+ | 44+ | 46+ | 11.1+ | 33+
 
+</center>
 
 Reference: https://caniuse.com/#search=web%20component
 
 
 ## About Polymer Project
 
+
 <p align="center">
 <img align="center" width="500" src="https://cdn-images-1.medium.com/max/1600/1*5GBnqWJWD9-uIrEnTgGAGA.png">
 </p>
+
 
 This template is a starting point for building apps using a drawer-based
 layout. The layout is provided by `app-layout` elements.
