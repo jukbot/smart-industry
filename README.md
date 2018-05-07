@@ -88,9 +88,7 @@ Reference: https://caniuse.com/#search=web%20component
 ## About Polymer Project
 
 
-<p align="center">
 <img align="center" width="500" src="https://cdn-images-1.medium.com/max/1600/1*5GBnqWJWD9-uIrEnTgGAGA.png">
-</p>
 
 
 This template is a starting point for building apps using a drawer-based
