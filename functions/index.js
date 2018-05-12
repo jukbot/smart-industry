@@ -13,7 +13,7 @@ exports.serve = functions.https.onRequest((req, res) => {
   }).then((config) => {
     // Find a build that matches the client browser capabilities
     const client = capabilities.browserCapabilities(req.headers['user-agent']);
-    var builds = config.builds.filter((build) => {
+    let builds = config.builds.filter((build) => {
       if (!build.browserCapabilities) {
         return true;
       }
