@@ -11,7 +11,12 @@ module.exports = {
   runtimeCaching: [
     {
       urlPattern: /https:\/\/fonts\.googleapis\.com.*/,
-      handler: 'cacheFirst'
+      handler: 'cacheFirst',
+      options: {
+        cache: {
+          name: 'google-font-cache',
+        },
+      },
     },
     {
       urlPattern: /\/bower_components\/webcomponentsjs\/.*.js/,

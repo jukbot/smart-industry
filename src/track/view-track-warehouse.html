@@ -164,7 +164,7 @@
                 </div>
             </li>
         </ul>
-        <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
+        <paper-toast id="toastAlert" always-on-top horizontal-align="right">{{localize(toastText)}}</paper-toast>
     </template>
     <script>
         /**
@@ -172,6 +172,7 @@
          * @polymer 
          * @extends {Polymer.Element}
          * @appliesMixin Polymer.AppLocalizeBehavior
+         * @polymerBehavior Polymer.AppLocalizeBehavior
          */
         class ViewTrackWarehouse extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {

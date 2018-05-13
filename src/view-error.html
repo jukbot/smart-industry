@@ -1,9 +1,10 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <dom-module id="view-error">
   <template>
-    <style include="flat-button">
+    <style>
        :host {
         display: block;
         overflow: hidden;
@@ -12,10 +13,6 @@
       iron-icon {
         width: 50px;
         height: 50px;
-      }
-
-      flat-button>* {
-        width: 200px;
       }
 
       h1,
@@ -54,9 +51,8 @@
       <div class="flex-group">
         <iron-icon class="icon" icon="icons:error"></iron-icon>
         <h1>Sorry, Something went wrong</h1>
-        <flat-button>
-          <button on-click="goBack">Go back</button>
-        </flat-button>
+        <paper-button on-click="goBack">Go back
+        </paper-button>
       </div>
     </div>
   </template>

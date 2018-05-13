@@ -5,7 +5,7 @@
 <script src="../utilizes/formatDate.js"></script>
 <dom-module id="view-setup-factory">
     <template>
-        <style include="shared-styles app-grid-style flat-button">
+        <style include="shared-styles app-grid-style">
             :host {
                 margin: 10px;
                 display: block;
@@ -176,12 +176,12 @@
                         <paper-input label="{{localize('delay-between-station')}} ({{localize('minute')}})" name="stationDelay" id="delayBetweenStation"
                             value="[[persistedFactorySchedule.delay]]" type="number" min="0" max="180" step="1" auto-validate
                             error-message="Input out of range" required always-float-label></paper-input>
-                        <flat-button on-click="restoreDefault" class="btn" title="Restore Default">
-                            <button>{{localize('restore')}}</button>
-                        </flat-button>
-                        <flat-button on-click="saveValue" class="shamrock btn" title="Save settings">
-                            <button>{{localize('save-settings')}}</button>
-                        </flat-button>
+                        <paper-button on-click="restoreDefault" class="btn" title="Restore Default">
+                            {{localize('restore')}}
+                        </paper-button>
+                        <paper-button on-click="saveValue" class="shamrock btn" title="Save settings">
+                            {{localize('save-settings')}}
+                        </paper-button>
                     </div>
                 </div>
             </li>

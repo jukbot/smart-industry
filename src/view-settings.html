@@ -1,12 +1,13 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/vaadin-material-theme/vaadin-text-field.html">
 <link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="view-app.html">
 <link rel="import" href="elements/flat-usage-chart.html">
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-settings">
   <template>
-    <style include="shared-styles app-grid-style flat-button">
+    <style include="shared-styles app-grid-style">
       :host {
         display: block;
         padding: 10px;
@@ -78,15 +79,15 @@
               </paper-item>
             </template>
           </vaadin-combo-box>
-          <flat-button on-click="scanDevice" class="btn" title="Search sensor">
-            <button>Search Sensor</button>
-          </flat-button>
-          <flat-button on-click="showDevice" class="btn" title="Show sensor">
-            <button>Show Sensor</button>
-          </flat-button>
-          <flat-button on-click="resetOrderCount" class="btn" title="Reset Order Count">
-            <button>{{localize('reset-order-count')}}</button>
-          </flat-button>
+          <paper-button on-click="scanDevice" class="btn" title="Search sensor">
+            Search Sensor
+          </paper-button>
+          <paper-button on-click="showDevice" class="btn" title="Show sensor">
+            Show Sensor
+          </paper-button>
+          <paper-button on-click="resetOrderCount" class="btn" title="Reset Order Count">
+            {{localize('reset-order-count')}}
+          </paper-button>
           <paper-toggle-button class="switch" value="[[materialCount]]" on-change="changeMaterialCount" id="materialCountSwitch" noink>Raw Materials Calculation</paper-toggle-button>
         </div>
       </li>
@@ -94,19 +95,19 @@
         <div class="card">
           <h1 class="title">{{localize('account-settings')}}</h1>
           <paper-input label="{{localize('display-name')}}" id="displayName" value="[[user.displayName]]" type="text" always-float-label></paper-input>
-          <flat-button on-click="openBrowseImageFile" class="btn" title="{{localize('upload-profile-image')}}">
-            <button>{{localize('change-profile-image')}}</button>
+          <paper-button on-click="openBrowseImageFile" class="btn" title="{{localize('upload-profile-image')}}">
+            {{localize('change-profile-image')}}
             <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
-          </flat-button>
-          <flat-button on-click="deleteProfileImage" class="btn thunderbird" title="{{localize('remove-profile-image')}}">
-            <button>{{localize('remove-profile-image')}}</button>
-          </flat-button>
-          <flat-button on-click="deleteAccount" class="btn thunderbird" title="{{localize('delete-account')}}">
-            <button>{{localize('delete-account')}}</button>
-          </flat-button>
-          <flat-button on-click="saveAccountSettings" class="btn shamrock" title="{{localize('save-settings')}}">
-            <button>{{localize('save-settings')}}</button>
-          </flat-button>
+          </paper-button>
+          <paper-button on-click="deleteProfileImage" class="btn thunderbird" title="{{localize('remove-profile-image')}}">
+            {{localize('remove-profile-image')}}
+          </paper-button>
+          <paper-button on-click="deleteAccount" class="btn thunderbird" title="{{localize('delete-account')}}">
+            {{localize('delete-account')}}
+          </paper-button>
+          <paper-button on-click="saveAccountSettings" class="btn shamrock" title="{{localize('save-settings')}}">
+            {{localize('save-settings')}}
+          </paper-button>
         </div>
       </li>
       <li>
@@ -115,12 +116,12 @@
           <paper-input label="{{localize('email')}}" id="userEmail" type="email" readonly value="[[user.email]]" always-float-label></paper-input>
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password" always-float-label></paper-input>
           <paper-input label="{{localize('new-password')}}" id="newPassword" type="password" always-float-label></paper-input>
-          <flat-button on-click="changePassword" class="btn" title="{{localize('change-password')}}">
-            <button>{{localize('change-password')}}</button>
-          </flat-button>
-          <flat-button on-click="verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]">
-            <button disabled="[[user.emailVerified]]">{{localize('verify-account')}}</button>
-          </flat-button>
+          <paper-button on-click="changePassword" class="btn" title="{{localize('change-password')}}">
+            {{localize('change-password')}}
+          </paper-button>
+          <paper-button on-click="verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]">
+            <button disabled="[[user.emailVerified]]">{{localize('verify-account')}}
+          </paper-button>
         </div>
       </li>
       <li>
@@ -128,13 +129,13 @@
           <h1 class="title">{{localize('backup-settings')}}</h1>
           <p>{{localize('export-or-import-factory-data-to-backup-as-a-file')}}</p>
           <!-- <flat-usage-chart class="center" radius="100" percentage="0.7" current-text="70" subtitle-text="Storage Usage"></flat-usage-chart> -->
-          <flat-button on-click="exportData" class="btn" title="{{localize('export-data')}}">
-            <button>{{localize('export-data')}}</button>
-          </flat-button>
-          <flat-button on-click="importData" class="btn" title="{{localize('import-data')}}">
-            <button>{{localize('import-data')}}</button>
+          <paper-button on-click="exportData" class="btn" title="{{localize('export-data')}}">
+            {{localize('export-data')}}
+          </paper-button>
+          <paper-button on-click="importData" class="btn" title="{{localize('import-data')}}">
+            {{localize('import-data')}}
             <input type="file" accept="application/json,.json" name="import-file" id="importFile" />
-          </flat-button>
+          </paper-button>
         </div>
       </li>
       <li>
@@ -145,9 +146,9 @@
           <p>{{localize('email-notifcation')}}</p>
           <paper-toggle-button class="switch" value="[[emailAlert]]" on-change="changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
           <p>{{localize('user-id')}}: [[user.uid]]</p>
-          <flat-button on-click="openManageUser" class="btn">
-            <button disabled>{{localize('manage-users')}}</button>
-          </flat-button>
+          <paper-button on-click="openManageUser" class="btn">
+            <button disabled>{{localize('manage-users')}}
+          </paper-button>
         </div>
       </li>
       <li>
@@ -160,12 +161,12 @@
             <p>{{localize('data-keychain')}}: [[userdata.key]]</p>
             <p>{{localize('user-role')}}: [[userdata.role]]</p>
           </div>
-          <flat-button on-click="openManageKey" class="btn">
-            <button>{{localize('manage-keychain')}}</button>
-          </flat-button>
-          <flat-button on-click="saveOrganizationSettings" class="btn shamrock" title="{{localize('save-settings')}}">
-            <button>{{localize('save-settings')}}</button>
-          </flat-button>
+          <paper-button on-click="openManageKey" class="btn">
+            {{localize('manage-keychain')}}
+          </paper-button>
+          <paper-button on-click="saveOrganizationSettings" class="btn shamrock" title="{{localize('save-settings')}}">
+            {{localize('save-settings')}}
+          </paper-button>
         </div>
       </li>
     </ul>

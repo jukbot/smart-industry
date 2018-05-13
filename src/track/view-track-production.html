@@ -8,7 +8,7 @@
 
 <dom-module id="view-track-production">
     <template>
-        <style include="shared-styles app-grid-style flat-button">
+        <style include="shared-styles app-grid-style">
             :host {
                 display: block;
                 margin: 10px;
@@ -180,23 +180,23 @@
                                 <p>{{localize('updated')}}: [[timestampToTime(device.update)]]</p>
                             </div>
                             <paper-toggle-button class="switch" checked="[[device.enable]]" id="deviceControlSwitch" noink> {{localize('enabled')}}</paper-toggle-button>
-                            <flat-button class="btn" on-click="resetCounter" device="[[device]]">
-                                <button>{{localize('reset')}}</button>
-                            </flat-button>
-                            <flat-button class="btn" on-click="_openEditMachineCard" device="[[device]]">
-                                <button>{{localize('edit')}}</button>
-                            </flat-button>
-                            <flat-button class="thunderbird btn" on-click="removeDevice" device="[[device]]">
-                                <button>{{localize('remove')}}</button>
-                            </flat-button>
+                            <paper-button class="btn" on-click="resetCounter" device="[[device]]">
+                                {{localize('reset')}}
+                            </paper-button>
+                            <paper-button class="btn" on-click="_openEditMachineCard" device="[[device]]">
+                                {{localize('edit')}}
+                            </paper-button>
+                            <paper-button class="thunderbird btn" on-click="removeDevice" device="[[device]]">
+                                {{localize('remove')}}
+                            </paper-button>
                         </div>
                     </li>
                 </template>
             </ul>
             <div class="center">
-                <flat-button class="big-btn" on-click="openAddDeviceCard">
-                    <button>Add Device</button>
-                </flat-button>
+                <paper-button class="big-btn" on-click="openAddDeviceCard">
+                    Add Device
+                </paper-button>
             </div>
         </div>
         <vaadin-dialog id="reportJobDialog" class="dialog">
@@ -254,6 +254,7 @@
          * @polymer 
          * @extends {Polymer.Element}
          * @appliesMixin Polymer.AppLocalizeBehavior
+         * @polymerBehavior Polymer.AppLocalizeBehavior
          */
         class ViewTrackProduction extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
             Polymer.Element) {

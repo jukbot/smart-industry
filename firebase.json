@@ -3,12 +3,6 @@
     "public": "build",
     "ignore": [
       "**/.*",
-      "**/.travis.yml",
-      "**/.git",
-      "**/.gitignore",
-      "**/.eslintrc.json",
-      "**/.babelrc",
-      "**/.editorconfig",
       "firebase.json"
     ],
     "rewrites": [
@@ -17,9 +11,6 @@
         "function": "serve"
       }, {
         "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
-        "function": "serve"
-      }, {
-        "source": "**/**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
         "function": "serve"
       }
     ],

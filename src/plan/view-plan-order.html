@@ -14,7 +14,7 @@
 
 <dom-module id="view-plan-order">
     <template>
-        <style include="shared-styles app-grid-style flat-button">
+        <style include="shared-styles app-grid-style">
             :host {
                 margin: 10px;
                 display: block;
@@ -115,12 +115,12 @@
                     </vaadin-text-field>
                     <vaadin-date-picker label="{{localize('delivery-date')}}" min="[[todayDate]]" max="2030-01-01" name="delivery" id="deliverySelector"
                         initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
-                    <flat-button on-click="printOrderReport" class="btn" title="Print order report">
-                        <button>{{localize('print-order-report')}}</button>
-                    </flat-button>
-                    <flat-button on-click="createOrder" class="shamrock btn" title="Add order">
-                        <button>{{localize('add-to-schedule')}}</button>
-                    </flat-button>
+                    <paper-button on-click="printOrderReport" class="btn" title="Print order report">
+                        {{localize('print-order-report')}}
+                    </paper-button>
+                    <paper-button on-click="createOrder" class="shamrock btn" title="Add order">
+                        {{localize('add-to-schedule')}}
+                    </paper-button>
                 </div>
             </li>
             <li>

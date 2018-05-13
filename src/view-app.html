@@ -147,10 +147,13 @@
   </template>
   <script>
     /**
+     * #ViewApp
+     * `<view-app>` is the app-shell of application
      * @ViewApp
      * @polymer
-     * * @extends {Polymer.Element}
+     * @extends {Polymer.Element}
      * @appliesMixin Polymer.AppLocalizeBehavior
+     * @polymerBehavior Polymer.AppLocalizeBehavior
      */
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
