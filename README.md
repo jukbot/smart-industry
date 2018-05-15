@@ -17,7 +17,9 @@ IMES is an open source manufacturing execution system application designed for J
 
 </div>
 
-
+## Annoucement
+> Currently, we've temporary paused the project due to discussing with an engineer team for the next phase in road map.
+ 
 ## Demo
 
 [Login here](https://smart-mes.firebaseapp.com/) 
