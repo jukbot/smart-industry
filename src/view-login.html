@@ -355,8 +355,8 @@
       }
 
       _installListeners() {
-        this.$.loginPassword.addEventListener('keyup', (e) => this._onEnterTrigger(e, 0))
-        this.$.resetPasswordEmail.addEventListener('keyup', (e) => this._onEnterTrigger(e, 1))
+        this.$.loginPassword.addEventListener('keydown', (e) => this._onEnterTrigger(e, 0))
+        this.$.resetPasswordEmail.addEventListener('keydown', (e) => this._onEnterTrigger(e, 1))
         this.$.termOfService.addEventListener('click', (e) => this.set('route.path', '/term'))
       }
 
