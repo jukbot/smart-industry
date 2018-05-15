@@ -2,16 +2,21 @@
 
 <img align="center" src="imes_splash.png" alt="logo"/>
 
+# IMES
+IMES is an open source manufacturing execution system application designed for JobShop Manufacturer.
+
 <div align="center">
 
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
 [![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/e2f623891a6047839fddda20d66d3e81)](https://www.codacy.com/app/jukbot/smart-industry?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jukbot/smart-industry&amp;utm_campaign=Badge_Grade)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/imes-project/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 [![Polymer 2 supported](https://img.shields.io/badge/Polymer2-Supported-blue.svg)](https://github.com/jukbot/smart-industry/)
 [![Polymer 3 supported](https://img.shields.io/badge/Polymer3-WIP-yellow.svg)](https://github.com/jukbot/smart-industry/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 </div>
+
 
 ## Demo
 
@@ -23,14 +28,14 @@
 
 Note: If you found any bugs please report me or open an issue, thanks 😊
 
-# Contribution
+## Contribution
 
 Please know that this project is still in development with a lot of bugs, if you want to contribute us (help me) working on this project please read [About Project document](https://github.com/jukbot/smart-industry/blob/master/About%20Project.pdf) for an overview and scope of this project phase I and for the technical information please read [Technical document](https://goo.gl/JNmrPE) to understand how this application will work.
 
 Wanna join chat with us just join this [Gitter room](https://gitter.im/imes-project/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) 
 
 
-# About IMES Project
+## About IMES Project
 
 A manufacturing execution system (MES) involves using computers to track and record the entire manufacturing process from extracting raw materials to producing finished products. They mainly function as stand-alone systems that primarily collect data about the workplace. A MES can be used in a wide variety of industries including packing goods, metal or plastic production, and automation.  The main purpose for using a MES is to improve production, minimize delays, and make delivery of goods easier.
 
