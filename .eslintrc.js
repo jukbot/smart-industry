@@ -8,9 +8,6 @@ module.exports = {
     parser: 'babel-eslint'
   },
   extends: ['plugin:polymer/polymer-2', 'eslint:recommended', 'google'],
-  env: {
-    browser: true,
-  },
   plugins: ['polymer'],
   globals: {
     Polymer: true,
