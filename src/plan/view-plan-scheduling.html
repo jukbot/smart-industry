@@ -11,7 +11,6 @@
 <link rel="import" href="../../lib/lodash.html">
 <link rel="import" href="../../lib/ramda.html">
 <link rel="import" href="../view-app.html">
-<link rel="import" href="../elements/flat-timeline-chart.html">
 <link rel="import" href="../style/shared-styles.html">
 <script src="../elements/randomData.js"></script>
 <dom-module id="view-plan-scheduling">
@@ -491,7 +490,6 @@
                 <div class="card" id="chartContainer" hidden="[[showChartTable]]">
                     <h1 class="title">{{localize('scheduling-chart')}}</h1>
                     <google-chart id="timeline" type="timeline" options="[[timelineOptions]]"></google-chart>
-                    <!-- <flat-timeline-chart data="[[timelineData]]"></flat-timeline-chart> -->
                     <div class="center">
                         <paper-button class="btn">Print</paper-button>
                     </div>
