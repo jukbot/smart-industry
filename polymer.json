@@ -1,16 +1,24 @@
 {
   "builds": [
     {
-      "name": "modern-es6",
-      "browserCapabilities": ["es2015"],
-      "preset": "es6-unbundled"
-    },
-    {
-      "name": "fallback-es5",
-      "preset": "es5-bundled"
+      "name": "es6-unbundled",
+      "browserCapabilities": [
+        "es2015"
+      ],
+      "js": {
+        "minify": false,
+        "transformModulesToAmd": true
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "bundle": false,
+      "addServiceWorker": true
     }
   ],
-  "autoBasePath" : true,  
   "entrypoint": "index.html",
   "extraDependencies": [
     "bower_components/webcomponentsjs/*.js",
@@ -37,5 +45,11 @@
     "rules": ["polymer-2"]
   },
   "shell": "src/view-app.html",
-  "sources": ["src/**/*", "data/**/*", "images/**/*", "lib/**", "bower.json"]
+  "sources": [
+    "src/**/*", 
+    "data/**/*", 
+    "images/**/*", 
+    "lib/**", 
+    "bower.json"
+  ]
 }

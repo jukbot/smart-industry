@@ -3,7 +3,6 @@
 <link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="view-app.html">
-<link rel="import" href="elements/flat-usage-chart.html">
 <link rel="import" href="style/shared-styles.html">
 <dom-module id="view-settings">
   <template>
@@ -128,7 +127,6 @@
         <div class="card">
           <h1 class="title">{{localize('backup-settings')}}</h1>
           <p>{{localize('export-or-import-factory-data-to-backup-as-a-file')}}</p>
-          <!-- <flat-usage-chart class="center" radius="100" percentage="0.7" current-text="70" subtitle-text="Storage Usage"></flat-usage-chart> -->
           <paper-button on-click="exportData" class="btn" title="{{localize('export-data')}}">
             {{localize('export-data')}}
           </paper-button>

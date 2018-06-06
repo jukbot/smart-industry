@@ -1,17 +1,14 @@
 {
   "hosting": {
-    "public": "build",
+    "public": "build/es6-unbundled/",
     "ignore": [
       "**/.*",
       "firebase.json"
     ],
     "rewrites": [
       {
-        "source": "/",
-        "function": "serve"
-      }, {
-        "source": "**/!(*.js|*.html|*.css|*.json|*.svg|*.png|*.jpg|*.jpeg)",
-        "function": "serve"
+        "source": "**",
+        "destination": "/index.html"
       }
     ],
     "headers": [
@@ -25,3 +22,6 @@
     ]
   }
 }
+
+
+
