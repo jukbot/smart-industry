@@ -1,0 +1,143 @@
+[debug] [2018-06-06T19:52:21.311Z] ----------------------------------------------------------------------
+[debug] [2018-06-06T19:52:21.312Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2018-06-06T19:52:21.313Z] CLI Version:   3.18.5
+[debug] [2018-06-06T19:52:21.313Z] Platform:      darwin
+[debug] [2018-06-06T19:52:21.313Z] Node Version:  v8.11.2
+[debug] [2018-06-06T19:52:21.313Z] Time:          Thu Jun 07 2018 02:52:21 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:21.313Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-06-06T19:52:21.326Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-06-06T19:52:21.326Z] > authorizing via signed-in user
+[debug] [2018-06-06T19:52:21.327Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2018-06-06T19:52:21.327Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ { refresh_token: '1/ifVLwxBfL2bFEdGlE51UKvmkmNi-SNfazR-8O2M2Orw',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Thu Jun 07 2018 02:52:21 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:21.572Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-06T19:52:21.580Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/smart-mes  
+  
+ Thu Jun 07 2018 02:52:21 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:23.017Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-06T19:52:23.018Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/smart-mes/tokens  
+  
+ Thu Jun 07 2018 02:52:23 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:24.030Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'smart-mes'...
+[info] 
+[info] i  deploying functions, hosting
+[debug] [2018-06-06T19:52:28.032Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "dependencies": {
+    "browser-capabilities": "^1.1.0",
+    "firebase-admin": "~5.12.0",
+    "firebase-functions": "^1.0.2",
+    "request": "^2.85.0",
+    "request-promise": "^4.2.2"
+  },
+  "private": true
+}
+[info] i  functions: ensuring necessary APIs are enabled...
+[debug] [2018-06-06T19:52:28.033Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/cloudfunctions.googleapis.com/projectSettings/smart-mes?view=CONSUMER_VIEW  
+  
+ Thu Jun 07 2018 02:52:28 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:28.034Z] >>> HTTP REQUEST GET https://servicemanagement.googleapis.com/v1/services/runtimeconfig.googleapis.com/projectSettings/smart-mes?view=CONSUMER_VIEW  
+  
+ Thu Jun 07 2018 02:52:28 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:29.874Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-06T19:52:29.925Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: all necessary APIs are enabled
+[debug] [2018-06-06T19:52:29.927Z] >>> HTTP REQUEST GET https://cloudresourcemanager.googleapis.com/v1/projects/smart-mes  
+  
+ Thu Jun 07 2018 02:52:29 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:31.307Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-06T19:52:31.307Z] >>> HTTP REQUEST GET https://mobilesdk-pa.googleapis.com/v1/projects/253401775445:getServerAppConfig  
+  
+ Thu Jun 07 2018 02:52:31 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:32.542Z] <<< HTTP RESPONSE 200
+[info] i  functions: preparing functions directory for uploading...
+[debug] [2018-06-06T19:52:32.548Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/smart-mes/configs  
+  
+ Thu Jun 07 2018 02:52:32 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:33.314Z] <<< HTTP RESPONSE 200
+[info] i  functions: packaged functions (1.79 KB) for uploading
+[debug] [2018-06-06T19:52:34.244Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/smart-mes/locations/us-central1/functions:generateUploadUrl  
+  
+ Thu Jun 07 2018 02:52:34 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:35.290Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-06T19:52:35.291Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-3d86778d-aa9b-4950-9080-4ad988711a74/d61ad895-6f87-4dd5-8d87-761396da4dc1.zip?GoogleAccessId=service-253401775445@gcf-admin-robot.iam.gserviceaccount.com&Expires=1528316555&Signature=rrx6jewn8vHzWZPdd8CezwH0%2BACxJDIfCEH9KPJXvkP2PoByVuFFqO9xTLpxH49GNvUhb5sca2Eiv8Y2Mp26y%2Ba5EstN8OZApuJWAK%2Fcx3LbdaYm%2FIQgHsYySJYXhP7urx9Fx67T35W3Hngeo3EmWjIDf5ta5R2i98e4hLbb6S3W6oSAcZYMwxLBenrXyaCYEb6Yntl4UmXDizDfnIxpncqGaSiXCa0Cd3m1EvRqQ5tntkmcmZt8hNfHBpuxMkXiS%2B7DFc3Z32oO%2BVh0qbBTCTb5%2FkrDCtFBaS8%2FD3ztRHfOgV4TBCRWKV1UVXsVrC0cUaSZF1Kk5a4%2B%2BrGlxnRwbA%3D%3D  
+ ReadStream {
+  _readableState: 
+   ReadableState {
+     objectMode: false,
+     highWaterMark: 65536,
+     buffer: BufferList { head: [Object], tail: [Object], length: 1 },
+     length: 1828,
+     pipes: null,
+     pipesCount: 0,
+     flowing: null,
+     ended: true,
+     endEmitted: false,
+     reading: false,
+     sync: false,
+     needReadable: false,
+     emittedReadable: true,
+     readableListening: false,
+     resumeScheduled: false,
+     destroyed: false,
+     defaultEncoding: 'utf8',
+     awaitDrain: 0,
+     readingMore: false,
+     decoder: null,
+     encoding: null },
+  readable: true,
+  domain: null,
+  _events: { end: [Function] },
+  _eventsCount: 1,
+  _maxListeners: undefined,
+  path: '/var/folders/f9/nrp8c8y921935tcbwnq0t4kc0000gn/T/firebase-functions-11033zuOIb3NxWqkK.zip',
+  fd: 18,
+  flags: 'r',
+  mode: 438,
+  start: undefined,
+  end: Infinity,
+  autoClose: true,
+  pos: undefined,
+  bytesRead: 1828 } 
+ Thu Jun 07 2018 02:52:35 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:35.908Z] <<< HTTP RESPONSE 200
+[info] ✔  functions: functions folder uploaded successfully
+[info] i  hosting: preparing build/es6-unbundled/ directory for upload...
+[debug] [2018-06-06T19:52:36.343Z] >>> HTTP REQUEST PUT https://deploy.firebase.com/v1/hosting/smart-mes/uploads/-LELe5pSfYAMt5deMTqz?fileCount=346&message=  
+  
+ Thu Jun 07 2018 02:52:36 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:43.299Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-06T19:52:43.300Z] [hosting] .tgz uploaded successfully, waiting for extraction
+[info] ✔  hosting: 346 files uploaded successfully
+[debug] [2018-06-06T19:52:44.307Z] [hosting] deploy completed after 8398ms
+[debug] [2018-06-06T19:52:44.309Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/smart-mes/locations/us-central1/functions  
+  
+ Thu Jun 07 2018 02:52:44 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:45.330Z] <<< HTTP RESPONSE 200
+[info] i  functions: updating function serve...
+[debug] [2018-06-06T19:52:45.334Z] Trigger is:  {"httpsTrigger":{}}
+[debug] [2018-06-06T19:52:45.336Z] >>> HTTP REQUEST PATCH https://cloudfunctions.googleapis.com/v1/projects/smart-mes/locations/us-central1/functions/serve 
+query params: {"updateMask":"sourceUploadUrl,name,labels,httpsTrigger"} 
+ { sourceUploadUrl: 'https://storage.googleapis.com/gcf-upload-us-central1-3d86778d-aa9b-4950-9080-4ad988711a74/d61ad895-6f87-4dd5-8d87-761396da4dc1.zip?GoogleAccessId=service-253401775445@gcf-admin-robot.iam.gserviceaccount.com&Expires=1528316555&Signature=rrx6jewn8vHzWZPdd8CezwH0%2BACxJDIfCEH9KPJXvkP2PoByVuFFqO9xTLpxH49GNvUhb5sca2Eiv8Y2Mp26y%2Ba5EstN8OZApuJWAK%2Fcx3LbdaYm%2FIQgHsYySJYXhP7urx9Fx67T35W3Hngeo3EmWjIDf5ta5R2i98e4hLbb6S3W6oSAcZYMwxLBenrXyaCYEb6Yntl4UmXDizDfnIxpncqGaSiXCa0Cd3m1EvRqQ5tntkmcmZt8hNfHBpuxMkXiS%2B7DFc3Z32oO%2BVh0qbBTCTb5%2FkrDCtFBaS8%2FD3ztRHfOgV4TBCRWKV1UVXsVrC0cUaSZF1Kk5a4%2B%2BrGlxnRwbA%3D%3D',
+  name: 'projects/smart-mes/locations/us-central1/functions/serve',
+  labels: { 'deployment-tool': 'cli-firebase' },
+  httpsTrigger: {} } 
+ Thu Jun 07 2018 02:52:45 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:46.455Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-06T19:52:46.457Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/smart-mes/locations/us-central1/functions  
+  
+ Thu Jun 07 2018 02:52:46 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:47.378Z] <<< HTTP RESPONSE 200
+[debug] [2018-06-06T19:52:47.379Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/operations/c21hcnQtbWVzL3VzLWNlbnRyYWwxL3NlcnZlL1lTRmNnQmRtWWw4  
+  
+ Thu Jun 07 2018 02:52:47 GMT+0700 (+07)
+[debug] [2018-06-06T19:52:48.079Z] <<< HTTP RESPONSE 200
