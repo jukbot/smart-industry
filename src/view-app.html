@@ -207,20 +207,15 @@
       }
       constructor() {
         super()
-        console.log('%cPolymer: ' + Polymer.version + ' on ' + window.location.host, 'color: ')
+        this.removeAttribute('unresolved')
       }
       connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
         requestAnimationFrame(this._installListeners.bind(this))
       }
-      ready() {
-        super.ready()
-        this.removeAttribute('unresolved')
-      }
       _installListeners() {
         Polymer.RenderStatus.afterNextRender(this, () => {
-          this._activateFetch()
           this.addEventListener('show-invalid-url-warning', (e) => this._showPage404.bind(this))
           this.addEventListener('on-error', (e) => this.handleError(e))
           window.addEventListener('online', (e) => this._notifyNetworkStatus(e))
@@ -320,38 +315,6 @@
             true)
         }))
       }
-      _activateFetch() {
-        if ('fetch' in window) {
-          // listen for navigation preload activate
-          self.addEventListener('activate', (e) => {
-            e.waitUntil(async function () {
-              // Feature-detect
-              if (!self.registration.navigationPreload) {
-                return
-              }
-              // Enable navigation preloads
-              await self.registration.navigationPreload.enable()
-            }())
-          })
-          // listen for navigation preload fetch
-          self.addEventListener('fetch', (e) => {
-            console.info(e.request.url)
-            e.respondWith(async function () {
-              // Respond from the cache if we can
-              const cachedResponse = await caches.match(e.request)
-              if (cachedResponse) return cachedResponse
-              // Else, try to use preloaded response
-              const response = await e.preloadResponse
-              if (response) return response
-              // Else try the network.
-              return fetch(e.request)
-            }())
-          })
-        } else {
-          // Browser not support fetch
-          console.warn('Fetch is not support by your browser.')
-        }
-      }
       _signedInChanged(isSignedIn) {
         Polymer.RenderStatus.afterNextRender(this, function () {
           // If singed in but at login page
@@ -416,17 +379,7 @@
               if (registration.navigationPreload) {
                 return registration.navigationPreload.getState()
               }
-              else {
-                console.error('Oh no preload is not support on your f_cking browser. Try Google Chrome!! :)')
-                return
-              }
             })
-        } else {
-          // Browser not support service worker
-          console.error(
-            "%cService Worker is not support by your browser.",
-            crimsonColor
-          );
         }
       }
       _verifyEmailAlert(verified, signedIn) {
