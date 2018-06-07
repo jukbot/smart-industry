@@ -1,4 +1,3 @@
-<!-- POLYMER 2 -->
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <!-- helper elements -->
 <link rel="import" href="../bower_components/polymer/lib/elements/custom-style.html">
@@ -103,7 +102,7 @@
                 <p>[[persistedUserData.company]]</p>
               </paper-tooltip>
               <p>[[persistedUserData.displayname]]</p>
-              <p>{{localize('version')}} 1.1.2</p>
+              <p>{{localize('version')}} 1.1.3</p>
             </div>
           </div>
         </app-drawer>
@@ -152,6 +151,7 @@
      * @appliesMixin Polymer.AppLocalizeBehavior
      * @polymerBehavior Polymer.AppLocalizeBehavior
      */
+
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
         return 'view-app'
@@ -308,7 +308,6 @@
             this.resolveUrl('resources/lazy-resources.html'),
             () => {
               this.loadComplete = true
-              this._registerServiceWorker()
               this._notifyNetworkStatus()
             },
             this._showPage404.bind(this),
@@ -355,32 +354,6 @@
         this.$.userIndexDB.refreshNetworkStatus()
         this.$.userAuth.refreshNetworkStatus()
         this.$.userData.refreshNetworkStatus()
-      }
-      _registerServiceWorker() {
-        const greenColor = "color: green";
-        const crimsonColor = "color: crimson";
-        const purpleColor = "color: purple";
-        const palevioletredColor = "color: palevioletred";
-        if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("service-worker.js", {
-            scope: Polymer.rootPath
-          })
-            .then(registration => {
-              Polymer.swRegistration = registration;
-            })
-            .catch(err => {
-              console.error(
-                "%cService Worker Register Failed 😖: " + err,
-                crimsonColor
-              );
-            });
-          navigator.serviceWorker.ready
-            .then(registration => {
-              if (registration.navigationPreload) {
-                return registration.navigationPreload.getState()
-              }
-            })
-        }
       }
       _verifyEmailAlert(verified, signedIn) {
         if (!verified && signedIn) {

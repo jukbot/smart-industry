@@ -6,7 +6,7 @@
         "es2015"
       ],
       "js": {
-        "minify": false,
+        "minify": true,
         "transformModulesToAmd": true
       },
       "css": {
@@ -17,12 +17,27 @@
       },
       "bundle": false,
       "addServiceWorker": true
+    },
+    {
+      "name": "es5-bundled",
+      "js": {
+        "minify": true,
+        "compile": true,
+        "transformModulesToAmd": true
+      },
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
+      "bundle": true,
+      "addServiceWorker": true
     }
   ],
   "entrypoint": "index.html",
   "extraDependencies": [
     "bower_components/webcomponentsjs/*.js",
-    "bower_components/app-storage/app-indexeddb-mirror/*.js",
     "manifest.json"
   ],
   "fragments": [
@@ -46,7 +61,6 @@
   },
   "shell": "src/view-app.html",
   "sources": [
-    "src/**/*", 
     "data/**/*", 
     "images/**/*", 
     "lib/**", 

@@ -26,14 +26,6 @@
   <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png" />
   <link rel="apple-touch-icon" sizes="256x256" href="images/manifest/icon-256x256.png" />
   <link rel="apple-touch-icon" sizes="512x512" href="images/manifest/icon-512x512.png" />
-  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
-  <script>
-    window.Polymer = {rootPath: '/'};
-         
-//    if (document.querySelector('base').href != '/') {
-//      Polymer.rootPath = document.querySelector('base').href;
-//    }
-  </script>
   <style>
     *,
     *::before,
@@ -295,15 +287,23 @@
       overflow: hidden;
     }
   </style>
+  <link rel="import" href="src/view-app.html">
+  <script> window.Polymer = {rootPath: '/'};</script>
 </head>
-<link rel="import" href="src/view-app.html">
 <body>
-  <view-app unresolved role="main">
+  <view-app unresolved>
     <h1 class="loading">Processing..</h1>
   </view-app>
-  <noscript>
-    Please enable JavaScript to view this application.
-  </noscript>
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js', {
+          scope: window.Polymer.rootPath
+        });
+      });
+    }
+  </script>
+  <noscript>Please enable JavaScript to view this application.</noscript>
 </body>
-
 </html>

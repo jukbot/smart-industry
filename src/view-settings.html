@@ -50,8 +50,6 @@
       }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
-    <firebase-messaging app-name="smart-mes" id="messaging" active="[[active]]" status-known="[[statusKnown]]" push-supported="[[pushSupported]]"
-      on-message="handleMessage" token="{{token}}"></firebase-messaging>
     <firebase-query app-name="smart-mes" id="appRoot" path="/data"></firebase-query>
     <firebase-document app-name="smart-mes" id="appData" path="/data/[[userdata.key]]" data="{{appdata}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{userdata}}"></firebase-document>
@@ -444,15 +442,6 @@
         this.set('notification', this.$.webNotificationSwitch.checked)
         if (this.$.webNotificationSwitch.checked) {
           // Requesting notification permission
-          this.$.messaging.requestPermission()
-            .then(() => {
-              console.log("%cWeb notification permission granted", 'color:green');
-              this.toastText = 'notification-alert-on'
-              this.$.toastAlert.open()
-            })
-            .catch(err => {
-              console.error("Web notification permission denied", err);
-            });
         } else {
           this.toastText = 'notification-alert-off'
           this.$.toastAlert.open()
