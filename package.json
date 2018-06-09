@@ -25,7 +25,7 @@
     "husky": "^0.14.3",
     "lint-staged": "^7.1.3",
     "pre-commit": "^1.2.2",
-    "prettier": "^1.13.4"
+    "prettier": "^1.13.5"
   },
   "engines": {
     "node": ">=8.0"
@@ -47,13 +47,15 @@
   },
   "scripts": {
     "build": "polymer build",
+    "build:firebase": "polymer build --auto-base-path",
     "deploy": "polymer build && firebase deploy",
+    "deploy:firebase": "polymer build --auto-base-path && firebase deploy",
     "dev": "polymer serve -p 8080",
     "lint": "polymer lint",
     "pre-commit": "lint-staged",
     "serve:dev": "polymer serve",
     "serve:prod": "polymer build && firebase serve --only functions,hosting",
-    "start": "prpl-server --root ./build --config polymer.json --host 127.0.0.1 --port 8080",
+    "start": "prpl-server --root ./build --config polymer.json --host 0.0.0.0 --port 8080",
     "test": "polymer test"
   },
   "standard": {
@@ -71,5 +73,5 @@
       "polymer"
     ]
   },
-  "version": "1.0.8"
+  "version": "1.1.3"
 }
