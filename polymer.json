@@ -21,8 +21,8 @@
     {
       "name": "es5-bundled",
       "js": {
+        "compile": "es5",
         "minify": true,
-        "compile": true,
         "transformModulesToAmd": true
       },
       "css": {
@@ -39,21 +39,6 @@
   "extraDependencies": [
     "bower_components/webcomponentsjs/*.js",
     "manifest.json"
-  ],
-  "fragments": [
-    "src/view-dashboard.html",
-    "src/view-setup.html",
-    "src/view-plan.html",
-    "src/view-track.html",
-    "src/view-settings.html",
-    "src/view-login.html",
-    "src/view-404.html",
-    "src/view-help.html",
-    "src/view-term.html",
-    "src/view-error.html",
-    "src/view-offline.html",
-    "src/resources/lazy-resources.html",
-    "src/style/shared-styles.html"
   ],
   "lint": {
     "ignoreWarnings": ["set-unknown-attribute","databind-with-unknown-property"],
