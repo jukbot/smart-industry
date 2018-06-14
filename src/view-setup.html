@@ -35,7 +35,7 @@
           <paper-tabs selected="{{tabs}}" attr-for-selected="name" role="navigation" autoselect noink>
             <template is="dom-repeat" items="[[submenus]]">
               <paper-tab link role="tab" name$="[[item.view]]" disabled="[[item.disable]]">
-                <a href="[[rootPath]]app/setup/[[item.view]]" tabindex="-1">
+                <a href="app/setup/[[item.view]]" tabindex="-1">
                   <paper-icon-button icon="[[item.icon]]" alt="[[item.title]]"></paper-icon-button>
                   <span class="tab-title">{{localize(item.title)}}</span>
                 </a>
@@ -57,7 +57,6 @@
         return {
           route: Object,
           language: String,
-          roothPath: String,
           tabs: {
             type: String,
             reflectToAttribute: true,

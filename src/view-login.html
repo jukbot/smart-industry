@@ -175,7 +175,7 @@
     <section class="flex-container">
       <div class="flex-item">
         <article>
-          <iron-image preload fade class="logo" role="image" title="IMES" alt="Application logo" sizing="contain" src="[[rootPath]]images/logo/logo.svg"></iron-image>
+          <iron-image preload fade class="logo" role="image" title="IMES" alt="Application logo" sizing="contain" src="images/logo/logo.svg"></iron-image>
           <div hidden$="[[!loginForm]]" class="authen-form">
             <div class="form-title">
               <h2>User Login</h2>
@@ -209,7 +209,6 @@
               <a href="javascript:void(0)" tabindex="5" role="link" on-click="showRegister">Don’t have an account? Sign up now.</a>
             </div>
           </div>
-
 
           <div hidden$="[[!registerForm]]" class="authen-form">
             <div class="form-title">
@@ -249,7 +248,7 @@
             </flat-input>
             <div class="link">
               <p>By signing up you agree to IMES’s
-                <a href="[[rootPath]]term" target="_self" id="termOfService" tabindex="4" role="link">Terms of Service</a>
+                <a href="term" target="_self" id="termOfService" tabindex="4" role="link">Terms of Service</a>
             </div>
             </p>
             <flat-button class="btn" on-click="register" title="Register and Login">
@@ -339,8 +338,7 @@
           },
           sampleData: Object,
           errorMessage: String,
-          successMessage: String,
-          rootPath: String
+          successMessage: String
         }
       }
 

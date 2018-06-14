@@ -1,6 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/vaadin-material-theme/vaadin-combo-box.html">
-<link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="view-app.html">
 <link rel="import" href="style/shared-styles.html">
@@ -117,7 +116,7 @@
             {{localize('change-password')}}
           </paper-button>
           <paper-button on-click="verifyAccount" class="btn" title="{{localize('verify-account')}}" hidden="[[user.emailVerified]]">
-            <button disabled="[[user.emailVerified]]">{{localize('verify-account')}}
+            {{localize('verify-account')}}
           </paper-button>
         </div>
       </li>
@@ -143,7 +142,7 @@
           <paper-toggle-button class="switch" value="[[emailAlert]]" on-change="changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
           <p>{{localize('user-id')}}: [[user.uid]]</p>
           <paper-button on-click="openManageUser" class="btn">
-            <button disabled>{{localize('manage-users')}}
+            {{localize('manage-users')}}
           </paper-button>
         </div>
       </li>
@@ -214,8 +213,7 @@
           token: String,
           toastText: String,
           factoryOrderIndex: Object,
-          sampleData: Object,
-          rootPath: String
+          sampleData: Object
         }
       }
       static get observers() {

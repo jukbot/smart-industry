@@ -56,7 +56,7 @@
     </style>
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
     <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{pageData}}" tail="{{subRoute}}"></app-route>
-    <app-route route="{{subRoute}}" pattern="/:page" data="{{subPageData}}" tail="{{subPageRoute}}"></app-route>
+    <app-route route="{{subRoute}}" pattern="/:page" data="{{routeData}}" tail="{{subPageRoute}}"></app-route>
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445" project-id="smart-mes"></firebase-app>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
@@ -109,11 +109,11 @@
           <app-header class="main-header" id="header" slot="header" hidden="[[!signedIn]]">
             <app-toolbar>
               <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
-              <h2 class="page-title" main-title>[[getPageTitle(subPageData.page)]]</h2>
+              <h2 class="page-title" main-title>[[getPageTitle(routeData.page)]]</h2>
             </app-toolbar>
           </app-header>
         </app-header-layout>
-        <iron-lazy-pages selected="[[subPageData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
+        <iron-lazy-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
           role="main" loading="{{loading}}">
           <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]"></view-dashboard>
           <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]"></view-setup>
@@ -195,7 +195,7 @@
       static get observers() {
         return [
           '_routeChanged(subRoute.*)',
-          '_routePageChanged(subPageData.page, visible)',
+          '_routePageChanged(routeData.page)',
           '_verifyEmailAlert(user.emailVerified, signedIn)',
           '_signedInChanged(signedIn)'
         ]
@@ -225,10 +225,9 @@
             .then(() => {
               Polymer.Async.timeOut.run(() => {
                 this.closeToastAlert()
-                this.$.userIndexDB.destroy()
                 this.page = 'login'
                 this.set('route.path', '/login')
-              }, 500)
+              }, 200)
             })
             .catch((error) => {
               this.page = 'error'
@@ -262,15 +261,11 @@
           this.$.drawer.close()
         }
       }
-      _routePageChanged(page, visible) {
-        if (!visible) {
-          return
+      _routePageChanged(page) {
+        if (!this.$.drawer.persistent) {
+          this.$.drawer.close()
         }
-        if (!page) {
-          this.set('route.path', '/app/dashboard');
-        }
-        Polymer.AppLayout.scroll({ top: 0, behavior: 'silent' });
-        this.page = page || 'login'
+        this.page = page || 'dashboard'
       }
       _showPage404() {
         this.page = '404'
@@ -316,9 +311,9 @@
       _signedInChanged(isSignedIn) {
         Polymer.RenderStatus.afterNextRender(this, function () {
           // If singed in but at login page
-          if (isSignedIn && this.route.path === '/login') { // window.location.pathname.match('^/login')
+          if (isSignedIn && this.route.path === '/login') { 
             this.page = 'dashboard'
-            this.set('route.path', '/app/dashboard')
+            this.set('route.path', '/app/dashboard/overview')
           }
           // If not sign in but not at term page
           else if (!isSignedIn && this.route.path !== '/term') {
