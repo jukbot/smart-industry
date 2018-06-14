@@ -1,54 +1,60 @@
 {
   "builds": [
     {
-      "name": "es6-unbundled",
+      "addServiceWorker": true,
       "browserCapabilities": [
         "es2015"
       ],
-      "js": {
-        "minify": true,
-        "transformModulesToAmd": true
-      },
+      "bundle": false,
       "css": {
         "minify": true
       },
       "html": {
         "minify": true
       },
-      "bundle": false,
-      "addServiceWorker": true
+      "js": {
+        "minify": true,
+        "transformModulesToAmd": true
+      },
+      "name": "es6-unbundled"
     },
     {
-      "name": "es5-bundled",
+      "addServiceWorker": true,
+      "bundle": true,
+      "css": {
+        "minify": true
+      },
+      "html": {
+        "minify": true
+      },
       "js": {
         "compile": "es5",
         "minify": true,
         "transformModulesToAmd": true
       },
-      "css": {
-        "minify": true
-      },
-      "html": {
-        "minify": true
-      },
-      "bundle": true,
-      "addServiceWorker": true
+      "name": "es5-bundled"
     }
   ],
   "entrypoint": "index.html",
   "extraDependencies": [
-    "bower_components/webcomponentsjs/*.js",
-    "manifest.json"
+    "manifest.json",
+    "bower_components/webcomponentsjs/*.js"
   ],
   "lint": {
-    "ignoreWarnings": ["databind-with-unknown-property"],
-    "rules": ["polymer-2"]
+    "ignoreWarnings": [
+      "databind-with-unknown-property"
+    ],
+    "rules": [
+      "polymer-2"
+    ]
   },
+  "moduleResolution": "node",
+  "npm": true,
   "shell": "src/view-app.html",
   "sources": [
-    "data/**/*", 
-    "images/**/*", 
-    "lib/**", 
+    "data/**/*",
+    "images/**/*",
+    "lib/**",
     "bower.json"
   ]
 }

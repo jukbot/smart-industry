@@ -47,7 +47,7 @@
   },
   "scripts": {
     "build": "polymer build",
-    "build:firebase": "polymer build --auto-base-path",
+    "build:firebase": "polymer build --auto-base-path && gulp firebase",
     "deploy": "polymer build && firebase deploy",
     "deploy:firebase": "polymer build --auto-base-path && firebase deploy",
     "dev": "polymer serve -p 8080",
