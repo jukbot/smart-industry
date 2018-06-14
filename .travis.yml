@@ -1,6 +1,6 @@
 language: node_js
 sudo: required
-node_js: '9'
+node_js: '8'
 addons:
   firefox: latest
   chrome: stable
@@ -18,8 +18,7 @@ install:
 - yarn install
 - bower install
 before_script:
-- polymer lint --input ./src/**/*.html
-- xvfb-run -s '-screen 0 1024x768x24' wct
+- polymer lint
 script:
 - polymer build --verbose
 - "if [[ \"$TRAVIS_EVENT_TYPE\" != \"pull_request\" && \"$TRAVIS_BRANCH\" != quick/* ]]; then wct --env saucelabs; fi"
