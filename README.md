@@ -8,7 +8,6 @@ IMES is an open source manufacturing execution system application designed for S
 <div align="center">
 
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
-[![Build status](https://ci.appveyor.com/api/projects/status/9xe5idqvwiy1a812/branch/master?svg=true)](https://ci.appveyor.com/project/jukbot/smart-industry/branch/master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e2f623891a6047839fddda20d66d3e81)](https://www.codacy.com/app/jukbot/smart-industry?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jukbot/smart-industry&amp;utm_campaign=Badge_Grade)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/imes-project/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 [![Polymer 2 supported](https://img.shields.io/badge/Polymer2-Supported-blue.svg)](https://github.com/jukbot/smart-industry/)
