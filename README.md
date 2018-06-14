@@ -3,7 +3,7 @@
 <img align="center" src="imes_splash.png" alt="logo"/>
 
 # IMES
-IMES is an open source manufacturing execution system application designed for JobShop Manufacturer.
+IMES is an open source manufacturing execution system application designed for Small-Midsize JobShop Manufacturer.
 
 <div align="center">
 
@@ -17,27 +17,44 @@ IMES is an open source manufacturing execution system application designed for J
 
 </div>
 
-## Annoucement
-> Currently, we've temporary paused the project due to discussing with an engineer team for the next phase in road map.
+## Annoucement 📢
+> Currently, we've temporary paused the project due to discussing  with an engineer team for the next phase in road map. 
+
+
+
+## Todo Plan 📋
+
+- [ ] Migrate App to Polymer 3 / LitElement (Heavy migrate)
+- [ ] Refactoring current components to ES6 modules. (Heavy migrate)
+- [ ] Optimize unused and heavy resources, convert to native.
+- [ ] Create a Production Simulator (Engineers discussing)
+- [ ] Improve Production Performance Board (Engineers discussing)
+- [ ] Improve Production Scheduling Algorithm
+- [ ] Improve Weight and Priority Calculation for JobShop
+- [ ] Fixing Unit test and Add Integration test (Need consult)
+- [x] Discuss and plan new road map for IMES project in 2018-19.
+- [x] Integrate Production Optimization (Linear Programming)
  
-## Demo
+## Demo 🎲
 
 [Login here](https://smart-mes.firebaseapp.com/) 
  
+Username and password for demo 🔑
+
 | E-mail | Password | 
 |---------|---------------|
 | demo@imes.in.th | demouser |  
 
 Note: If you found any bugs please report me or open an issue, thanks 😊
 
-## Contribution
+## Production Use 🏭
 
-Please know that this project is still in development with a lot of bugs, if you want to contribute us (help me) working on this project please read [About Project document](https://github.com/jukbot/smart-industry/blob/master/About%20Project.pdf) for an overview and scope of this project phase I and for the technical information please read [Technical document](https://goo.gl/JNmrPE) to understand how this application will work.
+Please know that this project is still in heavy development 🚧 and can get a lot of bugs 🐞, if you want to contribute us (help us) working on this project please read [About Project document](https://github.com/jukbot/smart-industry/blob/master/About%20Project.pdf) for an overview and scope of this project phase I and for the technical information please read [Technical document](https://goo.gl/JNmrPE) to understand how this application will work.
 
-Wanna join chat with us just join this [Gitter room](https://gitter.im/imes-project/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link) 
+Wanna join chat with us just join this [Gitter room](https://gitter.im/imes-project/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
 
-## About IMES Project
+## About IMES Project 📚
 
 A manufacturing execution system (MES) involves using computers to track and record the entire manufacturing process from extracting raw materials to producing finished products. They mainly function as stand-alone systems that primarily collect data about the workplace. A MES can be used in a wide variety of industries including packing goods, metal or plastic production, and automation.  The main purpose for using a MES is to improve production, minimize delays, and make delivery of goods easier.
 
@@ -58,6 +75,7 @@ This project, involves building a Smart MES web application that will help manuf
 
 
 ### Implementation Techniques
+
 According to the scope, this project uses an Internet connection to connect to an online web-based application. Our implementation will attempt to work using the Javascript language which is cross platform, flexible and able to work on mobile devices. 
 
 
@@ -78,7 +96,7 @@ Original quantity is the quantity of an order that includes the backup order ite
 Scheduling optimization involves selecting the appropriate scheduling method by considering the resources and time available. By implementing the decision making model which analyzes the current job in the system, it rearranges the job priorities to meet the condition and get the best outcome. There are two production scheduling algorithms that will be used in this project. The first is EDD which takes into account the due date of the product and sorts the earliest items first. The second algorithm is SPT which considers the time to process the product. The products with the fastest processing time will take priority. 
 
 
-## Browser Supported
+## Browser Supported 
 
 <center>
 
@@ -91,7 +109,7 @@ Scheduling optimization involves selecting the appropriate scheduling method by 
 Reference: https://caniuse.com/#search=web%20component
 
 
-## About Polymer Project
+## About Polymer Project 🧠
 
 
 <img align="center" width="500" src="https://cdn-images-1.medium.com/max/1600/1*5GBnqWJWD9-uIrEnTgGAGA.png">
@@ -114,7 +132,7 @@ The PRPL pattern, in a nutshell:
 * **Lazy-load** and progressively upgrade next routes on-demand
 
 
-### Setup Project
+### Setup Project 🛠
 
 ##### Prerequisites
 
@@ -174,7 +192,7 @@ routing for the app:
     $ npm start
 ```
 
-### Build Project
+### Build Project 📦
 
 This command performs HTML, CSS, and JS minification on the application dependencies, and generates a service-worker.js file with code to pre-cache the dependencies based on the entrypoint and fragments specified in `polymer.json`.
 
@@ -212,7 +230,7 @@ browsers currently installed on your machine.
     $ polymer test
 ```
 
-### Deploy Project
+### Deploy Project 💻
 
 Polymer 2.x/3.x brought the standards-compliant ES6 class-based syntax for defining Web Components. This works well for most modern browsers and ES6 has a lot of other nice features (like arrow functions) to make your JS code cleaner and more fun to write.
 
@@ -364,7 +382,7 @@ Learn about nginx config at https://github.com/jukbot/setup-nginx-webserver
 Learn about PRPL server config at https://github.com/Polymer/prpl-server-node
 
 
-## Contribution
+## Contribution 👨🏻‍💻
 
 If you found an error or bug in this project, please open an issue at: https://github.com/jukbot/smart-industry/issues
 
