@@ -184,13 +184,13 @@
 
   <script>
     /**
-     * @ViewSettings
+     * # Settings
+     * `<view-settings>` show the settings page of application
+     * @ViewSettigns
      * @polymer 
      * @extends {Polymer.Element}
-     * @appliesMixin Polymer.AppLocalizeBehavior
      */
-    class ViewSettings extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],
-      Polymer.Element) {
+    class ViewSettings extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior],Polymer.Element) {
       static get is() {
         return 'view-settings'
       }
