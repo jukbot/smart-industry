@@ -11,7 +11,7 @@
       }
 
       .number {
-        font-size: 8rem;
+        font-size: 7rem;
         text-align: center;
         margin-top: 20px;
       }
@@ -55,17 +55,26 @@
         :host {
           --app-grid-columns: 1;
         }
+        .number {
+          font-size: 6rem;
+        }
       }
 
       @media (min-width: 769px) and (max-width: 1024px) {
         :host {
           --app-grid-columns: 1;
         }
+        .number {
+          font-size: 6rem;
+        }
       }
 
       @media (min-width: 1025px) and (max-width: 1200px) {
         :host {
           --app-grid-columns: 2;
+        }
+        .number {
+          font-size: 6rem;
         }
       }
 
@@ -140,7 +149,7 @@
         <li>
           <div class="frame">
             <h1 class="title">{{localize('next-reschedule')}}</h1>
-            <h1 class="number" style="font-size: 2.75rem;">[[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</h1>
+            <h1 class="number" style="font-size: 2.76rem;">[[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</h1>
           </div>
         </li>
         <li>
@@ -152,7 +161,7 @@
         <li>
           <div class="frame">
             <h1 class="title">{{localize('operation-time-left')}}</h1>
-            <h1 class="number" style="font-size: 2.75rem;">[[remainOpTime]]</h1>
+            <h1 class="number" style="font-size: 2.76rem;">[[remainOpTime]]</h1>
           </div>
         </li>
       </ul>
@@ -224,6 +233,7 @@
         const opdayArr = opday.split(",");
         const date = new Date();
         let dateText;
+
         switch (date.getDay()) {
           case 0:
             dateText = "sun";

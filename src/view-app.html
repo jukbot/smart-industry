@@ -9,7 +9,6 @@
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
 <!-- paper elements used for component style -->
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -60,9 +59,8 @@
     <firebase-app name="smart-mes" auth-domain="smart-mes.firebaseapp.com" database-url="https://smart-mes.firebaseio.com" api-key="AIzaSyAPkuFs7jRmku7qiNGUkLk0nmtQCy0s3M0"
       storage-bucket="smart-mes.appspot.com" messaging-sender-id="253401775445" project-id="smart-mes"></firebase-app>
     <firebase-auth app-name="smart-mes" id="userAuth" user="{{user}}" online="{{online}}" signed-in="{{signedIn}}" on-error="_handleError"></firebase-auth>
-    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{usr}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[usr.key]]/appData/language" data="[[language]]"></firebase-document>
-    <app-indexeddb-mirror session="[[user.uid]]" id="userIndexDB" key="user-data" data="{{usr}}" persisted-data="{{persistedUserData}}"></app-indexeddb-mirror>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{userData}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="appLanguage" path="/data/[[userData.key]]/appData/language" data="[[language]]"></firebase-document>
     <app-localstorage-document id="appLang" key="app-lang" data="{{language}}"></app-localstorage-document>
     <iron-pages selected="[[pageData.page]]" attr-for-selected="name" fallback-selection="404" role="main">
       <view-term name="term" route="[[subRoute]]" hidden$="[[signedIn]]"></view-term>
@@ -93,16 +91,16 @@
           <div class="flex-center">
             <paper-button class="logout-btn" on-click="logout" title="Logout">{{localize('logout-button')}}</paper-button>
             <div class="user-info">
-              <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" src="[[getUserImage(persistedUserData.photoURL)]]"></iron-image>
+              <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" src="[[getUserImage(userData.photoURL)]]"></iron-image>
               <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="10">
-                <p>[[persistedUserData.email]]</p>
+                <p>[[userData.email]]</p>
                 <p>{{localize('verify-status')}}:
                   <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span>
                 </p>
-                <p>[[persistedUserData.company]]</p>
+                <p>[[userData.company]]</p>
               </paper-tooltip>
-              <p>[[persistedUserData.displayname]]</p>
-              <p>{{localize('version')}} 1.1.3</p>
+              <p>[[userData.displayname]]</p>
+              <p>{{localize('version')}} 1.1.4</p>
             </div>
           </div>
         </app-drawer>
@@ -110,7 +108,7 @@
           <app-header class="main-header" id="header" slot="header" hidden="[[!signedIn]]">
             <app-toolbar>
               <paper-icon-button class="mobile-menu-btn" icon="icons:menu" drawer-toggle></paper-icon-button>
-              <h2 class="page-title" main-title>{{localize(subPageData.page)}}</h2>
+              <h2 class="page-title" main-title>[[getPageTitle(subPageData.page)]]</h2>
             </app-toolbar>
           </app-header>
         </app-header-layout>
@@ -120,7 +118,6 @@
           <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]"></view-setup>
           <view-plan name="plan" route="[[subPageRoute]]" hidden$="[[!user]]"></view-plan>
           <view-track name="track" route="[[subPageRoute]]" hidden$="[[!user]]"></view-track>
-          <view-help name="help" route="[[subPageRoute]]" hidden$="[[!user]]"></view-help>
           <view-settings name="settings" route="[[subPageRoute]]" hidden$="[[!user]]"></view-settings>
           <view-404 name="404" route="[[subPageRoute]]" hidden$="[[!user]]"></view-404>
           <view-offline name="offline" route="[[subPageRoute]]" hidden$="[[!user]]"></view-offline>
@@ -132,7 +129,7 @@
       hidden="true">
       <div class="toast-flex-container">
         <div class="toast-flex-item">
-          <p>{{localize(toastText)}}</p>
+          <p>[[toastText]]</p>
         </div>
         <div class="toast-flex-item">
           <paper-icon-button on-click="closeToastAlert" class="close-toast-button" icon="vaadin:close-big" noink></paper-icon-button>
@@ -179,7 +176,7 @@
             type: Object,
             notify: true
           },
-          persistedUserData: {
+          userData: {
             type: Object,
             notify: true
           },
@@ -255,6 +252,9 @@
       }
       getUserImage(url) {
         return ((url) ? url : 'images/profile/default.svg')
+      }
+      getPageTitle(title) {
+        return this.localize(title)
       }
       _routeChanged(changeRecord) {
         //Close a non-persistent drawer when the page & route are changed.
@@ -363,7 +363,7 @@
         }
       }
       _showAlertToast(text) {
-        this.toastText = text
+        this.toastText = this.localize(text)
         this.$.toastVerify.hidden = false
         this.$.toastVerify.open()
       }

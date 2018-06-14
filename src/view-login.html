@@ -3,7 +3,6 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/app-storage/app-indexeddb-mirror/app-indexeddb-mirror.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
@@ -172,8 +171,7 @@
     <firebase-query app-name="smart-mes" id="factoryDataTree" path="/data"></firebase-query>
     <iron-ajax id="requestSampleData" url="data/sample/sample.json" auto handle-as="json" verbose="true" last-response="{{sampleData}}"></iron-ajax>
     <app-localstorage-document key="keep-session" data="{{remember}}"></app-localstorage-document>
-    <app-indexeddb-mirror key="sampleData" data="{{sampleData}}" persisted-data="{{persistedSampleData}}">
-    </app-indexeddb-mirror>
+
     <section class="flex-container">
       <div class="flex-item">
         <article>
@@ -262,7 +260,6 @@
             </div>
           </div>
 
-
           <div hidden$="[[!resetForm]]" class="authen-form">
             <div class="form-title">
               <h2>Reset your password</h2>
@@ -341,7 +338,6 @@
             value: true
           },
           sampleData: Object,
-          persistedSampleData: Object,
           errorMessage: String,
           successMessage: String,
           rootPath: String
@@ -390,7 +386,7 @@
         const phone = this.$.register_phone.value
         const password = this.$.register_passwd.value
         const username = 'Untitled'
-        if (!this.persistedSampleData) {
+        if (!this.sampleData) {
           const request = this.$.requestSampleData.generateRequest()
           request.completes.then((req) => {
             console.info('%cLoaded sample data status:' + req.status + " " + req.statusText, 'color:green')
@@ -400,7 +396,7 @@
             console.error("Error requesting data: " + error + " of request " + req)
           })
         }
-        if (email && company && phone && password && username && this.persistedSampleData) {
+        if (email && company && phone && password && username && this.sampleData) {
           this.$.userAuth.createUserWithEmailAndPassword(email, password)
             .then((response) => {
               this.$.userAuth.signInWithEmailAndPassword(email, password)

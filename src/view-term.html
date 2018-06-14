@@ -1,19 +1,19 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <dom-module id="view-term">
-    <script>
-        /**
-         * @ViewTerm
-         * @polymer 
-         * @extends {Polymer.Element}
-         */
-        class ViewTerm extends Polymer.Element {
+  <script>
+    /**
+     * @ViewTerm
+     * @polymer 
+     * @extends {Polymer.Element}
+     */
+    class ViewTerm extends Polymer.Element {
 
-            static get is() {
-                return 'view-term'
-            }
+      static get is() {
+        return 'view-term'
+      }
 
-            static get template() {
-                return Polymer.html`
+      static get template() {
+        return Polymer.html `
                <style>
                 :host {
                    display: block;
@@ -187,18 +187,15 @@
                </p>
            </div>
            `
-            }
+      }
 
-            static get properties() {
-                return {
-                    route: {
-                        type: Object,
-                        notify: true
-                    }
-                }
-            }
-
+      static get properties() {
+        return {
+          route: Object
         }
-        window.customElements.define(ViewTerm.is, ViewTerm)
-    </script>
+      }
+
+    }
+    window.customElements.define(ViewTerm.is, ViewTerm)
+  </script>
 </dom-module>

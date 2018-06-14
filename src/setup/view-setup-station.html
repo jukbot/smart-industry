@@ -93,8 +93,6 @@
         <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" data="{{machineItems}}"
             order-by-child="name"></firebase-query>
         <firebase-document app-name="smart-mes" id="editStationQuery" path="/data/[[k.key]]/factoryData/station/[[editKey]]" data="{{editStationItems}}"></firebase-document>
-        <app-indexeddb-mirror session="[[user.uid]]" key="machine-data" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
-        <app-indexeddb-mirror session="[[user.uid]]" key="station-data" data="{{stationItems}}" persisted-data="{{persistedStationData}}"></app-indexeddb-mirror>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <!-- Add Station Card -->
         <div class="card main-card" hidden="[[showAddStation]]">
@@ -103,8 +101,8 @@
                 min="1" max="999" readonly required always-float-label></paper-input>
             <paper-input type="text" id="stationName" name="station-name" label="{{localize('station-name')}}" required error-message="Invalid Input"
                 always-float-label></paper-input>
-            <vaadin-combo-box label="Machine" id="machineSelector" items="[[persistedMachineData]]" name="stationName" item-label-path="name"
-                item-value-path="name" loading="[[!persistedMachineData]]" required always-float-label>
+            <vaadin-combo-box label="Machine" id="machineSelector" items="[[machineItems]]" name="stationName" item-label-path="name"
+                item-value-path="name" loading="[[!machineItems]]" required always-float-label>
                 <template>
                     <paper-item>
                         <paper-item-body>
@@ -141,8 +139,8 @@
                 min="1" max="999" readonly required always-float-label></paper-input>
             <paper-input type="text" id="edit_stationName" name="station name" label="{{localize('station-name')}}" value="[[editStationItems.st_name]]"
                 required error-message="Invalid Input" always-float-label></paper-input>
-            <vaadin-combo-box label="Machine" id="edit_machineSelector" items="[[persistedMachineData]]" name="machine station" item-label-path="name"
-                item-value-path="name" loading="[[!persistedMachineData]]" required always-float-label>
+            <vaadin-combo-box label="Machine" id="edit_machineSelector" items="[[machineItems]]" name="machine station" item-label-path="name"
+                item-value-path="name" loading="[[!machineItems]]" required always-float-label>
                 <template>
                     <paper-item>
                         <paper-item-body>
@@ -179,7 +177,7 @@
                 always-float-label hidden="[[!stationItems]]"></paper-input>
             <h1 class="sub-title center" hidden="[[machineItems]]">{{localize('please-add-machine-before-adding-station')}}</h1>
             <ul class="app-grid">
-                <template is="dom-repeat" filter="{{searchStation(searchString)}}" observe="st_name" index-as="number" items="{{persistedStationData}}"
+                <template is="dom-repeat" filter="{{searchStation(searchString)}}" observe="st_name" index-as="number" items="{{stationItems}}"
                     as="stationItem">
                     <li>
                         <div class="station">

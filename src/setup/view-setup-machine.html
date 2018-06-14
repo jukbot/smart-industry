@@ -43,7 +43,6 @@
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
         <firebase-query app-name="smart-mes" id="machineQuery" path="/data/[[k.key]]/factoryData/machine" data="{{machineItems}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="editMachineQuery" path="/data/[[k.key]]/factoryData/machine/[[editKey]]" data="{{editMachineItems}}"></firebase-document>
-        <app-indexeddb-mirror session="[[user.uid]]" key="machine-data" data="{{machineItems}}" persisted-data="{{persistedMachineData}}"></app-indexeddb-mirror>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <!-- Add Machine Card -->
         <div class="card main-card" hidden="[[showAddMachine]]">
@@ -110,7 +109,7 @@
                 always-float-label hidden="[[!machineItems]]"></paper-input>
             <h1 class="sub-title center" hidden="[[machineItems]]">{{localize('please-add-machine-before-adding-station')}}</h1>
             <ul class="app-grid">
-                <template is="dom-repeat" filter="{{searchMachine(searchString)}}" items="{{persistedMachineData}}" observe="name" index-as="name"
+                <template is="dom-repeat" filter="{{searchMachine(searchString)}}" items="{{machineItems}}" observe="name" index-as="name"
                     as="machineItem">
                     <li>
                         <div class="machine">

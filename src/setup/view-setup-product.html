@@ -138,11 +138,8 @@
             download-url="{{downloadUrl}}">
         </firebase-storage-ref> -->
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-        <app-indexeddb-mirror session="[[user.uid]]" key="product-data" data="{{productData}}" persisted-data="{{persistedProductData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
-
-
 
 
                 <!-- Add product card!-->
@@ -222,13 +219,6 @@
                     </div>
                 </div>
             </li>
-
-
-
-
-
-
-
 
 
             <!-- Edit product card !-->
@@ -317,7 +307,7 @@
                 <div class="card" hidden="[[showListProduct]]">
                     <h1 class="title">{{localize('product-management')}}</h1>
                     <vaadin-grid id="productTable" aria-label="Product Management" active-item="{{activeItem}}" selected-items="{{selectedItem}}"
-                        items="[[persistedProductData]]" size="10">
+                        items="[[productData]]" size="10">
                         <vaadin-grid-column flex="1">
                             <template class="header">
                                 <div class="cell center">{{localize('image')}}</div>

@@ -35,8 +35,6 @@
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
     <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData" order-by-child="created"
       data="{{notificationData}}"></firebase-query>
-    <app-indexeddb-mirror session="[[user.uid]]" key="notification-data" data="{{notificationData}}" persisted-data="{{persistedNotificationData}}">
-    </app-indexeddb-mirror>
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <ul class="app-grid">
       <li>
@@ -56,7 +54,7 @@
             <vaadin-date-picker label="Notification Date" max="2030-01-01" name="notification date" id="notificationDateSelector" initial-position="[[todayDate]]"
               value="{{date}}" error-message="Invalid input" required always-float-label='true'></vaadin-date-picker>
           </div>
-          <vaadin-grid id="notificationTable" aria-label="Notification Center" items="[[filterNotification(persistedNotificationData, date, type)]]">
+          <vaadin-grid id="notificationTable" aria-label="Notification Center" items="[[filterNotification(notificationData, date, type)]]">
             <vaadin-grid-column flex="1">
               <template class="header">
                 <div class="cell">#</div>

@@ -27,7 +27,6 @@
         <firebase-document app-name="smart-mes" id="editInventoryQuery" path="/data/[[k.key]]/factoryData/inventory/[[editKey]]"
             data="{{editInventoryData}}"></firebase-document>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-        <app-indexeddb-mirror session="[[user.uid]]" id="inventoryIndexDB" key="inventory-data" data="{{inventoryData}}" persisted-data="{{persistedInventoryData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
                 <div class="card" hidden="[[!showAddInventory]]">
@@ -76,7 +75,7 @@
             <li>
                 <div class="card" hidden="[[!showListInventory]]">
                     <h1 class="title">{{localize('inventory-management')}}</h1>
-                    <vaadin-grid id="inventoryTable" aria-label="inventory Management" items="[[persistedInventoryData]]" selected-items="{{selectedItem}}">
+                    <vaadin-grid id="inventoryTable" aria-label="inventory Management" items="[[inventoryData]]" selected-items="{{selectedItem}}">
                         <vaadin-grid-selection-column flex="1" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
@@ -213,7 +212,7 @@
 
             static get observers() {
                 return [
-                    '_checkInventory(persistedInventoryData)',
+                    '_checkInventory(inventoryData)',
                 ]
             }
 

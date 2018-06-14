@@ -5,27 +5,26 @@
   <meta charset="utf-8">
   <base href="/">
   <title>IMES - Your Industry Helper</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry" />
-  <meta name="theme-color" content="#FFFFFF" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="IMES" />
-  <meta name="application-name" content="IMES" />
-  <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png" />
-  <meta name="msapplication-TileColor" content="#FFFFFF" />
-  <meta name="msapplication-tap-highlight" content="no" />
-  <meta name="referrer" content="no-referrer" />
-  <link rel="shortcut icon" href="images/favicon.png" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="images/manifest/any.svg" />
-  <link rel="apple-touch-icon" sizes="128x128" href="images/manifest/icon-128x128.png" />
-  <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png" />
-  <link rel="apple-touch-icon" sizes="152x152" href="images/manifest/icon-152x152.png" />
-  <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png" />
-  <link rel="apple-touch-icon" sizes="256x256" href="images/manifest/icon-256x256.png" />
-  <link rel="apple-touch-icon" sizes="512x512" href="images/manifest/icon-512x512.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry"/>
+  <meta name="theme-color" content="#FFFFFF"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="IMES"/>
+  <meta name="application-name" content="IMES"/>
+  <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png"/>
+  <meta name="msapplication-TileColor" content="#FFFFFF"/>
+  <meta name="msapplication-tap-highlight" content="no"/>
+  <link rel="shortcut icon" href="images/favicon.png"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="images/manifest/any.svg"/>
+  <link rel="apple-touch-icon" sizes="128x128" href="images/manifest/icon-128x128.png"/>
+  <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png"/>
+  <link rel="apple-touch-icon" sizes="152x152" href="images/manifest/icon-152x152.png"/>
+  <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png"/>
+  <link rel="apple-touch-icon" sizes="256x256" href="images/manifest/icon-256x256.png"/>
+  <link rel="apple-touch-icon" sizes="512x512" href="images/manifest/icon-512x512.png"/>
   <style>
     *,
     *::before,
@@ -278,23 +277,21 @@
     view-app[unresolved] {
       display: block;
       min-height: 100vh;
-      text-align: center;
       font-size: 1rem;
-      font-weight: 600;
-      letter-spacing: 0.3em;
+      font-weight: 500;
+      letter-spacing: 0.15em;
       color: #202020;
       padding: 0 16px;
       overflow: hidden;
     }
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%)
+    }
   </style>
-  <link rel="import" href="src/view-app.html">
-  <script> window.Polymer = {rootPath: '/'};</script>
-</head>
-<body>
-  <view-app unresolved>
-    <h1 class="loading">Processing..</h1>
-  </view-app>
-  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
@@ -304,6 +301,14 @@
       });
     }
   </script>
+  <script>window.Polymer = {rootPath: '/'};</script>
+</head>
+<body>
+  <view-app unresolved>
+    <h1 class="loading">LOADING CONSOLE</h1>
+  </view-app>
+  <link rel="import" href="src/view-app.html">
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
   <noscript>Please enable JavaScript to view this application.</noscript>
 </body>
 </html>

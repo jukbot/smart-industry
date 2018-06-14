@@ -29,7 +29,6 @@
         <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/factoryData/customer" order-by-child="fname" data="{{customerData}}"></firebase-query>
         <firebase-document app-name="smart-mes" id="editCustomerQuery" path="/data/[[k.key]]/factoryData/customer/[[editKey]]" data="{{editCustomerData}}"></firebase-document>
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-        <app-indexeddb-mirror session="[[user.uid]]" id="customerIndexDB" key="customer-data" data="{{customerData}}" persisted-data="{{persistedCustomerData}}"></app-indexeddb-mirror>
         <ul class="app-grid">
             <li>
                 <div class="card" hidden="[[!showAddCustomer]]">
@@ -82,7 +81,7 @@
             <li>
                 <div class="card" hidden="[[!showListCustomer]]">
                     <h1 class="title">{{localize('customer-management')}}</h1>
-                    <vaadin-grid id="customerTable" aria-label="Customer Management" items="[[persistedCustomerData]]" selected-items="{{selectedItem}}">
+                    <vaadin-grid id="customerTable" aria-label="Customer Management" items="[[customerData]]" selected-items="{{selectedItem}}">
                         <vaadin-grid-selection-column flex="1" select-all="{{selectAll}}">
                             <template class="header">
                                 <paper-checkbox checked="{{selectAll}}"></paper-checkbox>
