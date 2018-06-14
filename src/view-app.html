@@ -299,7 +299,7 @@
       _ensureLazyLoaded() {
         this.loadComplete || (this.loadComplete = true, Polymer.RenderStatus.afterNextRender(this, () => {
           Polymer.importHref(
-            this.resolveUrl('resources/lazy-resources.html'),
+            this.resolveUrl('lazy-resources.html'),
             () => {
               this.loadComplete = true
               this._notifyNetworkStatus()
