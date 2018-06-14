@@ -1,14 +1,19 @@
 {
   "name": "functions",
   "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "serve": "firebase serve --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
   "dependencies": {
-    "browser-capabilities": "^1.1.0",
-    "firebase-admin": "~5.12.0",
-    "firebase-functions": "^1.0.2",
+    "express": "^4.16.3",
+    "firebase-admin": "~5.12.1",
+    "firebase-functions": "^1.0.4",
     "prpl-server": "^1.2.0",
-    "rendertron-middleware": "^0.1.2",
-    "request": "^2.85.0",
-    "request-promise": "^4.2.2"
+    "rendertron-middleware": "^0.1.2"
   },
   "private": true
 }
