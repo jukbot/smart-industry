@@ -5,8 +5,7 @@ module.exports = {
     'manifest.json',
     'images/**/*',
     'data/**/*',
-    'bower_components/webcomponentsjs/*.js',
-    'bower_components/app-storage/app-indexeddb-mirror/*.js',
+    'bower_components/webcomponentsjs/*.js'
   ],
   runtimeCaching: [
     {

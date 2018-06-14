@@ -96,7 +96,7 @@
     <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
     <div class="card main-card">
       <ul class="app-grid">
-        <template is="dom-if" if="[[!k.setup]]">
+        <template is="dom-if" if="[[isInitSetup(k.setup)]]">
           <li>
             <div class="frame warn-blink">
               <h1 class="title new-user">Are you new user?</h1>
@@ -193,7 +193,9 @@
           doneOrderCount: Number,
           wipOrderCount: Number,
           remainOpTime: String,
-          nextInterval: String
+          nextInterval: String,
+          isInitial: Boolean,
+          k: Object
         }
       }
 
@@ -207,9 +209,18 @@
         ]
       }
 
+      constructor() {
+        super();
+        this.isInitial = false;
+      }
+
       connectedCallback() {
-        super.connectedCallback();
-        this.loadResources(this.resolveUrl('../../data/locales.json'));
+        super.connectedCallback()
+        this.loadResources(this.resolveUrl('../../data/locales.json'))
+      }
+
+      isInitSetup(setup) {
+        return !setup || false;
       }
 
       getNextInterval(last_timestamp, interval) {
