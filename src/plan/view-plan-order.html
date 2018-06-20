@@ -5,7 +5,6 @@
 <link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../../lib/sugar.html">
 <link rel="import" href="../../lib/jsLPSolver.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
@@ -524,39 +523,10 @@
 
             // SETUP CALENDAR DATE PICKER FORMAT
             _initialDatePicker() {
-                Sugar.Date.setLocale('en-GB'); // USE SUGAR LIBRARY TO REF FROM LOCALE DATE FORMAT
                 let datepicker = this.$.deliverySelector;
                 datepicker.addEventListener('value-changed', function () {
-                    const deliveryTimeStamp = (new Date(datepicker.value).getTime() / 1000);
-                    this.orderDelivery = deliveryTimeStamp;
+                    this.orderDelivery  = (new Date(datepicker.value).getTime() / 1000);
                 });
-                // INTERNATIONA LOCALIZATION
-                datepicker.i18n = {
-                    week: 'Week',
-                    calendar: 'Calendar',
-                    clear: 'Clear',
-                    today: 'Today',
-                    cancel: 'Cancel',
-                    firstDayOfWeek: 1,
-                    monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'
-                        .split(
-                            '_'),
-                    weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
-                    weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
-                    formatDate: function (date) {
-                        return Sugar.Date.format(date, '{short}');
-                    },
-                    formatTitle: function (monthName, fullYear) {
-                        return monthName + ' ' + fullYear;
-                    },
-                    parseDate: function (dateString) {
-                        let matches = datepicker.i18n.monthNames.filter(function (monthName) {
-                            return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
-                        });
-                        dateString = matches.length === 1 ? matches[0] : dateString;
-                        return Sugar.Date.create(dateString);
-                    }
-                }
             }
 
             // CLEAR INPUT FORM FIELD

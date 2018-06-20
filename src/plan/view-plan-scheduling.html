@@ -6,7 +6,6 @@
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-date-picker.html">
 <link rel="import" href="../../bower_components/google-chart/google-chart.html">
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="../../lib/sugar.html">
 <link rel="import" href="../../lib/lodash.html">
 <link rel="import" href="../../lib/ramda.html">
 <link rel="import" href="../view-app.html">
@@ -207,7 +206,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="40px">
+                        <vaadin-grid-column width="30px">
                             <template class="header">
                                 <div class="cell">{{localize('color')}}</div>
                             </template>
@@ -234,7 +233,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column>
+                        <vaadin-grid-column width="20px">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_product_part">
                                     <div class="cell">
@@ -247,7 +246,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column>
+                        <vaadin-grid-column width="20px">
                             <template class="header">
                                 <vaadin-grid-sorter path="order_quantity">
                                     <div class="cell">
@@ -304,7 +303,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="10px">
+                        <vaadin-grid-column width="15px">
                             <template class="header">
                                 <div class="cell last">{{localize('edit')}}</div>
                             </template>
@@ -315,7 +314,7 @@
                             </template>
                         </vaadin-grid-column>
 
-                        <vaadin-grid-column width="10px">
+                        <vaadin-grid-column width="15px">
                             <template class="header">
                                 <div class="cell numeric last">{{localize('cancel')}}</div>
                             </template>
@@ -648,39 +647,10 @@
             }
 
             _initialDatePicker() {
-                Sugar.Date.setLocale('en-GB'); // USE SUGAR LIBRARY TO REF FROM LOCALE DATE FORMAT
                 let datepicker = this.$.editDeliverySelector;
                 datepicker.addEventListener('value-changed', function () {
-                    const deliveryTimeStamp = (new Date(datepicker.value).getTime() / 1000);
-                    this.orderDelivery = deliveryTimeStamp;
+                   this.orderDelivery = (new Date(datepicker.value).getTime() / 1000);
                 });
-                // INTERNATIONA LOCALIZATION
-                datepicker.i18n = {
-                    week: 'Week',
-                    calendar: 'Calendar',
-                    clear: 'Clear',
-                    today: 'Today',
-                    cancel: 'Cancel',
-                    firstDayOfWeek: 1,
-                    monthNames: 'January_February_March_April_May_June_July_August_September_October_November_December'
-                        .split(
-                            '_'),
-                    weekdays: 'sunday_monday_tuesday_wednesday_thursday_friday_saturday'.split('_'),
-                    weekdaysShort: 'sun_mon_tue_wed_thu_fri_sat'.split('_'),
-                    formatDate: function (date) {
-                        return Sugar.Date.format(date, '{short}');
-                    },
-                    formatTitle: function (monthName, fullYear) {
-                        return monthName + ' ' + fullYear;
-                    },
-                    parseDate: function (dateString) {
-                        let matches = datepicker.i18n.monthNames.filter(function (monthName) {
-                            return monthName.toLowerCase().startsWith(dateString.trim().toLowerCase());
-                        });
-                        dateString = matches.length === 1 ? matches[0] : dateString;
-                        return Sugar.Date.create(dateString);
-                    }
-                }
             }
 
             _clearField() {
@@ -1277,7 +1247,6 @@
                     workload.map((_, i) => {
                         weight[i] = R.mergeWith(R.divide, workloadProcessObj[i], sumWorkloadEachProcess)
                     })
-                    //console.log('Weight ', weight)
 
                     // 10) Calculate available machines
                     let machine_in_station = this.stationItems.map(data => {

@@ -39,7 +39,7 @@
            </paper-tabs>
          </app-header>
          <iron-pages selected="[[tabs]]" attr-for-selected="name" selected-attribute="visible" fallback-selection="404">
-           <view-plan-order id="order" name="order"></view-plan-order>
+           <view-plan-order name="order"></view-plan-order>
            <view-plan-scheduling name="scheduling"></view-plan-scheduling>
            <view-plan-production name="production"></view-plan-production>
          </iron-pages>
@@ -86,13 +86,6 @@
       _tabsChanged(tabs) {
         const resolvedTabsUrl = this.resolveUrl('plan/view-plan-' + tabs + '.html')
         Polymer.importHref(resolvedTabsUrl, null, null, true)
-      }
-
-      ready() {
-        super.ready()
-        this.$.order.addEventListener('closedrawer', (e) => {
-          console.log(e)
-        })
       }
 
       connectedCallback() {

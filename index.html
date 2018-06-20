@@ -6,7 +6,7 @@
   <base href="/">
   <title>IMES - Your Industry Helper</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Intelligent Manufacturing Execution Systems for Small-Midsize industry"/>
+  <meta name="description" content="Intelligent Manufacturing Execution Systems for JobShop Manufacturing"/>
   <meta name="theme-color" content="#FFFFFF"/>
   <meta name="mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -25,12 +25,15 @@
   <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png"/>
   <link rel="apple-touch-icon" sizes="256x256" href="images/manifest/icon-256x256.png"/>
   <link rel="apple-touch-icon" sizes="512x512" href="images/manifest/icon-512x512.png"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
   <style>
     *,
     *::before,
     *::after {
       box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     html {
@@ -41,16 +44,12 @@
 
     body {
       margin: 0;
-      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Helvetica Neue", "Arial", sans-serif;
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, "Roboto", "Helvetica Neue", "Arial", sans-serif;
       height: 100%;
       min-height: 100vh;
       color: #202020;
       background-color: #fafafa;
       font-size: 1rem;
-      text-rendering: optimizeLegibility;
-      -webkit-overflow-scrolling: touch;
-      -webkit-tap-highlight-color: transparent;
-      -webkit-font-smoothing: antialiased;
     }
 
     article,
@@ -275,16 +274,6 @@
       display: none;
     }
 
-    view-app[unresolved] {
-      display: block;
-      min-height: 100vh;
-      font-size: 1rem;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      color: #202020;
-      padding: 0 16px;
-      overflow: hidden;
-    }
     .loading {
       position: absolute;
       top: 50%;
@@ -293,6 +282,14 @@
       transform: translate(-50%, -50%)
     }
   </style>
+  <script>window.Polymer = {rootPath: '/'};</script>
+</head>
+<body>
+  <view-app>
+    <h1 class="loading">LOADING CONSOLE</h1>
+  </view-app>
+  <link rel="import" href="src/view-app.html">
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
@@ -302,14 +299,6 @@
       });
     }
   </script>
-  <script>window.Polymer = {rootPath: '/'};</script>
-</head>
-<body>
-  <view-app unresolved>
-    <h1 class="loading">LOADING CONSOLE</h1>
-  </view-app>
-  <link rel="import" href="src/view-app.html">
-  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
   <noscript>Please enable JavaScript to view this application.</noscript>
 </body>
 </html>

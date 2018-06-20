@@ -1,7 +1,5 @@
 /* eslint no-invalid-this: "error" */
 /* eslint-env es6 */
-
-'use strict';
 // @ts-check
 
 /**
