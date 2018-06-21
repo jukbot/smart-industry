@@ -21,16 +21,22 @@ IMES is an open source manufacturing execution system application designed for S
 
 
 
-## Todo Plan 📋
+## Todo Plan of Software Developer 👨🏻‍💻
 
 - [ ] Migrate App to Polymer 3 / LitElement (Heavy migrate)
-- [ ] Refactoring current components to ES6 modules. (Heavy migrate)
+- [ ] Refactor current components to ES6 modules. (Heavy migrate)
+- [ ] Fix Unit test and Add Integration test (Need consult)
+- [ ] Fix slow unauthen layout when refresh the page.
+- [ ] Export sample database data for user to deploy.
+- [x] Cleanup and remove unused libraries.
+
+## Todo Plan of Production Engineering 👷🏼‍
+
 - [ ] Optimize unused and heavy resources, convert to native.
 - [ ] Create a Production Simulator (Engineers discussing)
 - [ ] Improve Production Performance Board (Engineers discussing)
-- [ ] Improve Production Scheduling Algorithm
+- [ ] Improve Production Scheduling Algorithm (In progress)
 - [ ] Improve Weight and Priority Calculation for JobShop
-- [ ] Fixing Unit test and Add Integration test (Need consult)
 - [x] Discuss and plan new road map for IMES project in 2018-19.
 - [x] Integrate Production Optimization (Linear Programming)
  
@@ -44,7 +50,7 @@ Username and password for demo 🔑
 |---------|---------------|
 | demo@imes.in.th | demouser |  
 
-Note: If you found any bugs please report me or open an issue, thanks 😊
+Note: If you found any bugs 🐞 please report me or open an issue, thanks 😊
 
 ## Production Use 🏭
 
@@ -56,6 +62,13 @@ Wanna join chat with us just join this [Gitter room](https://gitter.im/imes-proj
 ## Software User Guide 📖
 
 https://docs.google.com/document/d/1pmqYlmHHh6zBY-pTad84tMNii69BmYCoIzdapJ916-I/edit?usp=sharing
+
+## Project Branches
+
+There are 2 major branches on this project. Separated by development version.
+
+- `MASTER` - Latest alpha version of software, this branch will update frequency depends on the work. (Not recommended for production use)
+- `PRODUCTION` - Latest stable/beta version of software, this branch will release new update monthly. (Suitable for production use)
 
 
 ## About IMES Project 📚
