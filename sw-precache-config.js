@@ -13,18 +13,18 @@ module.exports = {
       handler: 'cacheFirst',
       options: {
         cache: {
-          name: 'google-font-cache',
-        },
-      },
+          name: 'google-font-cache'
+        }
+      }
     },
     {
       urlPattern: /\/bower_components\/webcomponentsjs\/.*.js/,
       handler: 'fastest',
       options: {
         cache: {
-          name: 'webcomponentsjs-polyfills-cache',
-        },
-      },
+          name: 'webcomponentsjs-polyfills-cache'
+        }
+      }
     },
     {
       urlPattern: /\/images\/.*/,
@@ -32,9 +32,9 @@ module.exports = {
       options: {
         cache: {
           maxEntries: 100,
-          name: 'images-cache',
-        },
-      },
+          name: 'images-cache'
+        }
+      }
     },
     {
       urlPattern: /\/data\/.*json/,
@@ -42,11 +42,11 @@ module.exports = {
       options: {
         cache: {
           maxEntries: 100,
-          name: 'data-cache',
-        },
-      },
-    },
+          name: 'data-cache'
+        }
+      }
+    }
   ],
   navigateFallback: 'index.html',
-  navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/],
-};
+  navigateFallbackWhitelist: [/^(?!.*\.html$|\/data\/).*/]
+}

@@ -176,17 +176,38 @@
                     machineType: {
                         type: Array,
                         value: () => {
-                            return [{
+                            return [
+                            {
+                                "name": "Baking",
+                                "code": "bake"
+                            },
+                            {
+                                "name": "Boiling",
+                                "code": "boil"
+                            },
+                            {
+                                "name": "Compressing",
+                                "code": "comp"
+                            },
+                            {
                                 "name": "Cutting",
                                 "code": "cut"
                             },
                             {
-                                "name": "Folding",
-                                "code": "fold"
+                                "name": "Coating",
+                                "code": "coat"
                             },
                             {
-                                "name": "Slotting",
-                                "code": "slot"
+                                "name": "Chemical reaction",
+                                "code": "react"
+                            },
+                            {
+                                "name": "Freezing",
+                                "code": "freeze"
+                            },
+                            {
+                                "name": "Folding",
+                                "code": "fold"
                             },
                             {
                                 "name": "Gluing",
@@ -195,10 +216,18 @@
                             {
                                 "name": "Drilling",
                                 "code": "drill"
+                            },                            
+                            {
+                                "name": "Labeling",
+                                "code": "lab"
                             },
                             {
-                                "name": "Stitching",
-                                "code": "stich"
+                                "name": "Lathing",
+                                "code": "lathe"
+                            },
+                            {
+                                "name": "Painting",
+                                "code": "paint"
                             },
                             {
                                 "name": "Printing",
@@ -209,24 +238,36 @@
                                 "code": "pack"
                             },
                             {
-                                "name": "Welding",
-                                "code": "welding"
+                                "name": "Rolling",
+                                "code": "roll"
                             },
                             {
-                                "name": "Coating",
-                                "code": "coat"
+                                "name": "Slotting",
+                                "code": "slot"
                             },
                             {
-                                "name": "Painting",
-                                "code": "paint"
+                                "name": "Stitching",
+                                "code": "stich"
                             },
                             {
-                                "name": "Baking",
-                                "code": "bake"
+                                "name": "Squeezing",
+                                "code": "sque"
+                            },
+                            {
+                                "name": "Streaming",
+                                "code": "stream"
+                            },
+                            {
+                                "name": "Stretching",
+                                "code": "stretch"
                             },
                             {
                                 "name": "Washing",
                                 "code": "wash"
+                            },
+                            {
+                                "name": "Welding",
+                                "code": "welding"
                             },
                             {
                                 "name": "CNC",
@@ -243,6 +284,10 @@
                             {
                                 "name": "C&P",
                                 "code": "c&p"
+                            },
+                            {
+                                "name": "Other",
+                                "code": "oth"
                             },
                             ]
                         }

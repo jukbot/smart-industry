@@ -92,8 +92,9 @@
                                 <paper-item>
                                     <paper-icon-item style="padding: 0">
                                         <iron-icon icon="vaadin:[[item.icon]]" slot="item-icon"></iron-icon>
-                                        <paper-item-body style="min-height: 0">
+                                        <paper-item-body two-line style="min-height: 0">
                                             <div readonly>[[item.name]]</div>
+                                            <div secondary>[[item.description]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </paper-item>
@@ -138,8 +139,9 @@
                                 <paper-item>
                                     <paper-icon-item style="padding: 0">
                                         <iron-icon icon="vaadin:[[item.icon]]" slot="item-icon"></iron-icon>
-                                        <paper-item-body style="min-height: 0">
+                                        <paper-item-body two-line style="min-height: 0">
                                             <div readonly>{{localize(item.value)}}</div>
+                                            <div secondary>[[item.description]]</div>
                                         </paper-item-body>
                                     </paper-icon-item>
                                 </paper-item>
@@ -378,17 +380,20 @@
                             return [{
                                 "name": "Increase Profit",
                                 "value": "increase-profit",
-                                "icon": "coin-piles"
+                                "icon": "coin-piles",
+                                "description": "Maximum profit per order"
                             },
                             {
                                 "name": "Reduce Cost",
                                 "value": "reduce-cost",
-                                "icon": "piggy-bank-coin"
+                                "icon": "piggy-bank-coin",
+                                "description": "Minimize the cost per order"
                             },
                             {
                                 "name": "Disabled",
                                 "value": "disabled",
-                                "icon": "close"
+                                "icon": "close",
+                                "description": "No optimization"
                             }
                             ]
                         }
@@ -399,17 +404,20 @@
                             return [{
                                 "name": 'Serial',
                                 "value": "serial",
-                                "icon": "file-tree-sub"
+                                "icon": "file-tree-sub",
+                                "description": "Single part product"
                             },
                             {
                                 "name": "Parallel",
                                 "value": "parallel",
-                                "icon": "file-tree"
+                                "icon": "file-tree",
+                                "description": "Single part product"
                             },
                             {
                                 "name": "Multi-Component (Serial)",
                                 "value": "multi",
-                                "icon": "tree-table"
+                                "icon": "tree-table",
+                                "description": "Multiple parts product"
                             }
                             ]
                         }

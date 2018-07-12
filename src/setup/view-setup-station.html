@@ -2,7 +2,7 @@
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-combo-box.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-<link rel="import" href="redux-mixin-babel.html">
+<link rel="import" href="redux-mixin.html">
 
 <dom-module id="view-setup-station">
     <template>
@@ -105,8 +105,9 @@
                 item-value-path="name" loading="[[!machineItems]]" required always-float-label>
                 <template>
                     <paper-item>
-                        <paper-item-body>
+                        <paper-item-body two-line style="min-height: 0">
                             <div readonly>[[item.name]]</div>
+                            <div secondary>Type [[item.type]] / No. [[item.no]]</div>
                         </paper-item-body>
                     </paper-item>
                 </template>
@@ -364,8 +365,7 @@
                 let selector = this.$.machineSelector
                 if (selector.value) {
                     // if found duplicate it will return index > -1
-                    let isDuplicated = this.machines.map(item => item.number).indexOf(selector.selectedItem.number) >
-                        -1
+                    let isDuplicated = this.machines.map(item => item.number).indexOf(selector.selectedItem.number) > -1
                     if (this.machines.length < this.stationMaxMachine) {
                         if (isDuplicated) {
                             this.toastText = 'notification-already-added-this-machine'
