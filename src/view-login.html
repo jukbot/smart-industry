@@ -242,9 +242,9 @@
             </flat-input>
             <flat-input>
               <input type="tel" id="register_phone" name="Phone" placeholder="Phone" maxlength="15" required aria-labelledby="registerPhoneLabel"
-                pattern="\d{15}" onkeypress='return event.charCode >= 48 && event.charCode <= 57' tabindex="3">
+                pattern="^(\+\d{1,2}\s)?\(?\d{4}\)?[\s]?\d{4}[\s]?\d{1}$" onkeypress='return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 43' tabindex="3">
               <span class="flat-md-decorator" error-message="Invalid Phone Number" aria-hidden="true">
-                <label id="registerPhoneLabel">Phone</label>
+                <label id="registerPhoneLabel">Phone (+XX XXXX XXXX X)</label>
                 <span class="flat-underline"></span>
               </span>
             </flat-input>
@@ -354,6 +354,7 @@
         this.$.loginPassword.addEventListener('keydown', (e) => this._onEnterTrigger(e, 0))
         this.$.resetPasswordEmail.addEventListener('keydown', (e) => this._onEnterTrigger(e, 1))
         this.$.termOfService.addEventListener('click', (e) => this.set('route.path', '/term'))
+        new IMask(this.$.register_phone, { mask: "+00 0000 0000 0" });
       }
 
       _onEnterTrigger(e, type) {
