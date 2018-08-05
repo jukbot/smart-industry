@@ -67,8 +67,9 @@ https://docs.google.com/document/d/1pmqYlmHHh6zBY-pTad84tMNii69BmYCoIzdapJ916-I/
 
 There are 2 major branches on this project. Separated by development version.
 
-- `MASTER` - Latest alpha version of software, this branch will update frequency depends on the work. (Not recommended for production use)
-- `PRODUCTION` - Latest stable/beta version of software, this branch will release new update monthly. (Suitable for production use)
+- `MASTER` - Latest stable/beta version of software, this branch will release new update monthly. (Suitable for production use)
+
+- `DEVELOP` - Latest alpha version of software, this branch will update frequency depends on the work. (Not recommended for production use)
 
 
 ## About IMES Project 📚

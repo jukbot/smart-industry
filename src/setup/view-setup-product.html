@@ -115,11 +115,11 @@
 
             vaadin-grid#productTable {
                 height: 700px;
-
                 --vaadin-grid-body-cell: {
                     height: 200px;
                 }
             }
+
         </style>
         <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
         <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -129,9 +129,6 @@
             data="{{processData}}"></firebase-query>
         <firebase-query app-name="smart-mes" id="inventoryQuery" path="/data/[[k.key]]/factoryData/inventory" order-by-child="name"
             data="{{inventoryData}}"></firebase-query>
-        <!-- <firebase-storage-ref app-name="smart-mes" path="data/[[k.key]]/product" metadata="{{metadata}}" storage-uri="gs://smart-mes.appspot.com/data/[[k.key]]/product"
-            download-url="{{downloadUrl}}">
-        </firebase-storage-ref> -->
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
@@ -505,7 +502,7 @@
                         }
 
                         .btn {
-                            width: 245px;
+                            width: 244px;
                         }
 
                         .block-group {
@@ -622,7 +619,7 @@
                         }
 
                         .btn {
-                            width: 245px;
+                            width: 244px;
                         }
 
                         .block-group {
