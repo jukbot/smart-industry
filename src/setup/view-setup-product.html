@@ -17,7 +17,7 @@
             }
 
             .btn {
-                margin: 20px 10px 0 0;
+                margin: 20px 5px 0 5px;
                 width: 250px;
             }
 
@@ -135,8 +135,6 @@
         <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
         <ul class="app-grid">
             <li>
-
-
                 <!-- Add product card!-->
                 <div class="card" hidden="[[showAddProduct]]">
                     <h1 class="title">{{localize('add-product')}}</h1>
@@ -215,7 +213,6 @@
                 </div>
             </li>
 
-
             <!-- Edit product card !-->
             <li>
                 <div class="card" hidden="[[showEditProduct]]">
@@ -242,7 +239,6 @@
                     </vaadin-combo-box>
                     <paper-input tabindex="5" label="Raw material quantity" id="edit_InventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$"
                         value="{{editProductData.inventory_use}}" required always-float-label></paper-input>
-                    <!-- <paper-progress value="0" min="0" max="100" class="upload-bar" id="uploadProgress"></paper-progress> -->
                     <flat-button on-click="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
                         <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
@@ -509,7 +505,7 @@
                         }
 
                         .btn {
-                            width: 250px;
+                            width: 245px;
                         }
 
                         .block-group {
@@ -606,6 +602,7 @@
                     <style include="view-setup-product">
                         :host {
                             height: 100vh;
+                            width: 70%;
                             margin: 0 auto;
                             --app-primary-color: #202020;
                             --paper-input-container-focus-color: var( --app-primary-color);
@@ -625,7 +622,7 @@
                         }
 
                         .btn {
-                            width: 250px;
+                            width: 245px;
                         }
 
                         .block-group {
@@ -756,7 +753,6 @@
                         type: Boolean,
                         value: false
                     },
-
                     showAddProduct: {
                         type: Boolean,
                         value: true
@@ -765,7 +761,6 @@
                         type: Boolean,
                         value: true
                     },
-
                     showAddPart: {
                         type: Boolean,
                         value: true
