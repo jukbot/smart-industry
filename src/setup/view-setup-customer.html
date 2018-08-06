@@ -31,14 +31,14 @@
                 <div class="card" hidden="[[!showAddCustomer]]">
                     <h1 class="title">{{localize('add-customer')}}</h1>
                     <paper-input label="{{localize('first-name')}}" id="customerFirstName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
-                        error-message="text only" always-float-label></paper-input>
+                        error-message="Text only" always-float-label></paper-input>
                     <paper-input label="{{localize('last-name')}}" id="customerLastName" max-length="40" type="text" auto-validate allowed-pattern="[a-zA-Z]"
-                        error-message="text only" always-float-label></paper-input>
+                        error-message="Text only" always-float-label></paper-input>
                     <paper-input label="{{localize('email')}}" id="customerEmail" max-length="40" type="email" auto-validate error-message="invalid input"
                         always-float-label>
                     </paper-input>
                     <paper-input label="{{localize('mobile')}}" id="customerMobile" max-length="10" type="tel" auto-validate allowed-pattern="^(0|[1-9]\d*)$"
-                        error-message="number only" always-float-label></paper-input>
+                        error-message="Number only" always-float-label></paper-input>
                     <paper-input label="{{localize('address')}}" id="customerAddress" max-length="200" type="text" auto-validate error-message="text only"
                         always-float-label></paper-input>
                     <div class="center">
@@ -59,12 +59,12 @@
                     <paper-input label="{{localize('last-name')}}" id="edit_customerLastName" max-length="40" type="text" value="[[getNamePosition(editCustomerData.name, 1)]]"
                         auto-validate allowed-pattern="[a-zA-Z]" error-message="text only" always-float-label></paper-input>
                     <paper-input label="{{localize('email')}}" id="edit_customerEmail" max-length="40" type="email" value="[[editCustomerData.email]]"
-                        auto-validate error-message="invalid input" always-float-label>
+                        auto-validate error-message="Invalid input" always-float-label>
                     </paper-input>
                     <paper-input label="{{localize('mobile')}}" id="edit_customerMobile" max-length="10" type="tel" value="[[editCustomerData.mobile]]"
-                        auto-validate allowed-pattern="^(0|[1-9]\d*)$" error-message="number only" always-float-label></paper-input>
+                        auto-validate error-message="Number only" always-float-label></paper-input>
                     <paper-input label="{{localize('address')}}" id="edit_customerAddress" max-length="200" type="text" value="[[editCustomerData.address]]"
-                        auto-validate error-message="text only" always-float-label></paper-input>
+                        auto-validate error-message="Text only" always-float-label></paper-input>
                     <div class="center">
                         <flat-button class="btn" on-click="_openCustomerTable">
                             <button>{{localize('dismiss')}}</button>

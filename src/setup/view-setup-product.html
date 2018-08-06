@@ -219,7 +219,7 @@
                     <paper-input tabindex="1" label="{{localize('sku-code')}}*" id="edit_ProductSKU" type="text" value="{{editProductData.sku}}"
                         required always-float-label></paper-input>
                     <paper-input tabindex="2" label="{{localize('cost')}}" id="edit_ProductCost" type="number" maxlength="9" value="{{editProductData.cost}}"
-                        allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only" min="0" max="99999" step="0.01"
+                        error-message="Number only" min="0" max="99999" step="0.01"
                         auto-validate always-float-label></paper-input>
                     <paper-input tabindex="3" label="Description" id="edit_ProductDescription" type="text" value="{{editProductData.description}}"
                         required always-float-label></paper-input>
@@ -556,9 +556,9 @@
                             </paper-item>
                         </template>
                     </vaadin-combo-box>
-                    <paper-input label="Process Cycle Time (second)" id="processCycle" value="{{processCycle}}" type="number" maxlength="9" error-message="number only"
+                    <paper-input label="Process Cycle Time (second)" id="processCycle" value="{{processCycle}}" type="number" maxlength="9" error-message="Number only"
                         min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
-                    <paper-input label="Process Setup Time (second)" id="processSetup" value="{{processSetup}}" type="number" maxlength="9" error-message="number only"
+                    <paper-input label="Process Setup Time (second)" id="processSetup" value="{{processSetup}}" type="number" maxlength="9" error-message="Number only"
                         min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
 
                     <flat-button class="add-btn" on-click="addProcessToPart">
@@ -673,9 +673,9 @@
                         </template>
                     </vaadin-combo-box>
                     <paper-input label="{{localize('cycle-time')}} ({{localize('second')}})" id="processCycle" value="{{processCycle}}" type="number"
-                        maxlength="9" error-message="number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
+                        maxlength="9" error-message="Number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
                     <paper-input label="{{localize('setup-time')}} ({{localize('second')}})" id="processSetup" value="{{processSetup}}" type="number"
-                        maxlength="9" error-message="number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
+                        maxlength="9" error-message="Number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
 
                     <flat-button class="add-btn" on-click="addProcessToPart">
                         <button>Add Process</button>
