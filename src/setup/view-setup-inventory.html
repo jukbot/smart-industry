@@ -34,7 +34,7 @@
                     <paper-input label="{{localize('code')}}" id="inventoryCode" type="text" maxlength="20" auto-validate always-float-label></paper-input>
                     <paper-input label="{{localize('cost')}}" id="inventoryCost" type="number" maxlength="9" allowed-pattern="^[0-9]+(\.\d{2})?$"
                         error-message="Number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
-                    <paper-input label="{{localize('quantity')}}" id="inventoryQuantity" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)$"
+                    <paper-input label="{{localize('quantity')}}" id="inventoryQuantity" type="number" maxlength="9" allowed-pattern="^\d*\.?\d*$"
                         error-message="Number only" min="1" max$="[[maxInput]]" step="1" auto-validate always-float-label>
                     </paper-input>
                     <div class="center">
@@ -55,10 +55,10 @@
                     <paper-input label="{{localize('code')}}" id="edit_inventoryCode" type="text" value="[[editInventoryData.code]]" maxlength="20"
                         auto-validate always-float-label></paper-input>
                     <paper-input label="{{localize('cost')}}" id="edit_inventoryCost" type="number" value="[[editInventoryData.cost]]" maxlength="9"
-                        allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$" error-message="number only" min="0" max="[[maxInput]]" step="0.01"
+                        auto-validate error-message="number only" min="0" max="[[maxInput]]" step="0.01"
                         auto-validate always-float-label></paper-input>
                     <paper-input label="{{localize('quantity')}}" id="edit_inventoryQuantity" type="number" value="[[editInventoryData.quantity]]"
-                        maxlength="9" allowed-pattern="^(0|[1-9]\d*)$" error-message="number only" min="1" max$="[[maxInput]]"
+                        maxlength="9" allowed-pattern="^\d*\.?\d*$" error-message="number only" min="1" max$="[[maxInput]]"
                         step="1" auto-validate always-float-label>
                     </paper-input>
                     <div class="center">
@@ -248,7 +248,7 @@
                 const decimal = /^(0|[1-9]\d*)(\.\d+)?$/ // alow decimal 2 points
                 const integer = /^(0|[1-9]\d*)$/ // alow only positive interger
                 if (name && code && cost && quantity && String(cost).match(decimal) && cost <= this.maxInput &&
-                    quantity.match(integer) && quantity > 0 && quantity <= this.maxInput) {
+                    (quantity.match(decimal) || quantity.match(integer)) && quantity > 0 && quantity <= this.maxInput) {
                     this.disabled = false
                 } else {
                     this.disabled = true

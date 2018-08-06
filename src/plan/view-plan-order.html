@@ -108,7 +108,7 @@
                         </template>
                     </vaadin-combo-box>
                     <vaadin-text-field label="{{localize('quantity')}}" value='{{amount}}' name="order-quantity" id="orderQuantity" error-message="Invalid Input"
-                        allowed-pattern="[0-9]" onkeypress='return event.charCode >= 48 && event.charCode <= 57' required>
+                        onkeypress='return event.charCode >= 48 && event.charCode <= 57' required>
                     </vaadin-text-field>
                     <vaadin-date-picker label="{{localize('delivery-date')}}" min="[[todayDate]]" max="2030-01-01" name="delivery" id="deliverySelector"
                         initial-position="[[todayDate]]" value="{{delivery}}" error-message="Invalid input" required always-float-label></vaadin-date-picker>
@@ -398,7 +398,6 @@
                 const sumSetup = flatSetupArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
                 const sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
                 this.orderDuration = sumDuration;
-                //this._limitOperationTime(sumDuration); DISABLED
                 return this._durationToStr(sumDuration); // convert to hr min sec
             }
 
@@ -536,14 +535,6 @@
                 this.$.orderQuantity.value = 1;
                 this.$.deliverySelector.value = "";
             }
-
-            // DISABLED OVERLOAD LIMIT
-            // _limitOperationTime(duration) {
-            //     if (duration > this.operationTime) {
-            //         window.alert("OVERLOAD WARNING: Order duration time is longer than working operation time.")
-            //         return
-            //     }
-            // }
 
             // PRINT ORDER REPORT
             printOrderReport(e) {

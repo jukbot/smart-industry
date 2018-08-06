@@ -151,7 +151,7 @@
                             </paper-item>
                         </template>
                     </vaadin-combo-box>
-                    <paper-input tabindex="5" label="Raw material quantity" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$"
+                    <paper-input tabindex="5" label="Raw material quantity" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
                         required always-float-label></paper-input>
                     <flat-button on-click="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
@@ -234,7 +234,7 @@
                             </paper-item>
                         </template>
                     </vaadin-combo-box>
-                    <paper-input tabindex="5" label="Raw material quantity" id="edit_InventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)$"
+                    <paper-input tabindex="5" label="Raw material quantity" id="edit_InventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
                         value="{{editProductData.inventory_use}}" required always-float-label></paper-input>
                     <flat-button on-click="openBrowseImageFile" class="btn">
                         <button>{{localize('browse-image')}}</button>
