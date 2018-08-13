@@ -8,1382 +8,1579 @@
 <link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../lib/lodash.html">
 <link rel="import" href="../../lib/ramda.html">
+<link rel="import" href="../../lib/frappe.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
-<script src="../elements/randomData.js"></script>
 <dom-module id="view-plan-scheduling">
-    <template>
-        <style include="shared-styles app-grid-style">
-            :host {
-                margin: 10px;
-                display: block;
-                --app-grid-columns: 1;
-                --app-grid-item-height: 50%;
-            }
-
-            .btn {
-                margin: 20px 10px 0 0;
-                width: 250px;
-            }
-
-            .order-schedule-info {
-                margin: 10px 0;
-            }
-
-            .order-schedule-info>p {
-                margin: 10px 0;
-            }
-
-            .flex-container {
-                display: flex;
-                align-content: center;
-                justify-content: space-between;
-                flex-flow: row nowrap;
-            }
-
-            .station-btn {
-                margin: 5px;
-                width: 200px;
-            }
-
-            .btn-group {
-                margin: 20px 0;
-            }
-
-            .plan-list {
-                height: 300px;
-            }
-
-            .item {
-                display: flex;
-                justify-content: space-between;
-            }
-
-            .item:focus {
-                outline: 0;
-                background-color: #ddd;
-            }
-
-            .subtitle {
-                color: #555555;
-            }
-
-            .select-plan {
-                margin: 20px 0;
-            }
-
-            .badge {
-                color: #fff;
-                display: inline-block;
-                padding: 7px 10px;
-                margin-bottom: 10px;
-                text-align: center;
-                border-radius: 3px;
-                font-size: 1rem;
-            }
-
-            .preview-badge {
-                background-color: purple;
-            }
-
-            .production-badge {
-                background-color: orangered;
-            }
-
-            #chartContainer {
-                min-height: 500px;
-            }
-            
-            @media (min-width: 360px) and (max-width: 768px) {
-                .btn {
-                    width: 100%;
-                }
-            }
-        </style>
-        <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
-        <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
-        <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factoryProfile" path="/data/[[k.key]]/factoryData/profile" data="{{factoryProfile}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="editOrderQuery" path="/data/[[k.key]]/orderData/[[editKey]]" data="{{editOrderItems}}"></firebase-document>
-        <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{chartItems}}"></firebase-document>
-        <!-- NOTIFICATION DATA -->
-        <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
-        <!-- CUSTOMER DATA -->
-        <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/factoryData/customer" order-by-child="fname"
-            data="{{customerItems}}"></firebase-query>
-        <!-- PRODUCT DATA -->
-        <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="name" data="{{productItems}}"></firebase-query>
-        <!-- STATION DATA -->
-        <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
-            data="{{stationItems}}"></firebase-query>
-        <!-- ORDER DATA -->
-        <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
-        <!-- SCHEDULE DATA -->
-        <firebase-query app-name="smart-mes" id="jobQuery" path="/data/[[k.key]]/scheduleData" order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
-        <!-- TRACKING DATA -->
-        <firebase-query app-name="smart-mes" id="trackingQuery" path="/data/[[k.key]]/trackingData"></firebase-query>
-        <!-- PLAN DATA -->
-        <firebase-query app-name="smart-mes" id="planQuery" path="/data/[[k.key]]/planData" data="{{planItems}}"></firebase-query>
-        <!-- STATION QUERY SELECTED BY STATION NUMBER -->
-        <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
-            equal-to="{{selectedStation}}" data="{{filterStationData}}"></firebase-query>
-        <!-- JOB SCHEDULE TABLE SELECTED BY STATION NUMBER -->
-        <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" equal-to="[[selectedStation]]"
-            order-by-child="job_station" data="{{filterScheduleItems}}"></firebase-query>
-
-        <ul class="app-grid">
-            <!-- Edit order card -->
-            <li>
-                <div class="card " hidden="[[showEditOrder]]">
-                    <h1 class="title">{{localize('edit-order')}}</h1>
-                    <vaadin-combo-box label="{{localize('customer-name')}}" value="[[editOrderItems.order_customer]]" name="customer-name" id="editCustomerSelector"
-                        items="[[customerItems]]" item-label-path="name" item-value-path="name" loading="[[!customerItems]]"
-                        required allow-custom-value prevent-invalid-input always-float-label='true'>
-                        <template>
-                            <paper-item>
-                                <paper-icon-item style="padding: 0">
-                                    <iron-icon icon="vaadin:user-card" slot="item-icon"></iron-icon>
-                                    <paper-item-body two-line style="min-height: 0">
-                                        <div>[[item.name]]</div>
-                                        <div secondary>[[item.email]]</div>
-                                    </paper-item-body>
-                                </paper-icon-item>
-                            </paper-item>
-                        </template>
-                    </vaadin-combo-box>
-                    <vaadin-combo-box label="{{localize('product')}}" value="[[editOrderItems.order_product_name]]" name="product" items="[[productItems]]"
-                        id="editProductSelector" item-label-path="name" item-value-path="name" loading="[[!productItems]]" required
-                        prevent-invalid-input always-float-label='true'>
-                        <template>
-                            <paper-icon-item style="padding: 0">
-                                <img src$="[[item.image]]" class="thumbnail" slot="item-icon">
-                                <paper-item-body two-line style="min-height: 0">
-                                    <div>[[item.name]]</div>
-                                    <div secondary>SKU: [[item.sku]]</div>
-                                </paper-item-body>
-                            </paper-icon-item>
-                        </template>
-                    </vaadin-combo-box>
-                    <paper-input label="{{localize('quantity')}}" value="[[editOrderItems.order_quantity]]" name="order-quantity" value='{{amount}}'
-                        id="editOrderQuantity" type="number" min="1" max="100000" step="0.1" required always-float-label></paper-input>
-                    <vaadin-date-picker class="date-picker" value="[[getTimestampToDatePicker(editOrderItems.order_delivery)]]" label="{{localize('delivery-date')}}"
-                        min="[[todayDate]]" max="2030-01-01" name="delivery" id="editDeliverySelector" initial-position="[[todayDate]]"
-                        value="{{delivery}}" error-message="Invalid input" required always-float-label='true'></vaadin-date-picker>
-                    <div class="center">
-                        <paper-button class="btn" on-click="dismissEditOrder">
-                            {{localize('dismiss')}}
-                        </paper-button>
-                        <paper-button class="btn shamrock" on-click="updateOrder">
-                            {{localize('save')}}
-                        </paper-button>
-                    </div>
-                </div>
-            </li>
-            <!-- Order table card -->
-            <li>
-                <div class="card" hidden="[[showOrderTable]]">
-                    <h1 class="title">{{localize('order-table')}}</h1>
-                    <div class="order-schedule-info">
-                        <p>{{localize('next-reschedule')}}: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
-                        <p>{{localize('production-model')}}: [[factoryProfile.model]]</p>
-                        <p id="concurrency">{{localize('station-concurrency')}} : [[factoryProfile.concurrency]] {{localize('order')}} / {{localize('station')}}</p>
-                        <p>{{localize('delay-between-station')}}: [[factorySchedule.delay]] {{localize('minute')}}</p>
-                        <p>{{localize('waiting-order')}}: [[getWaitingOrder(orderItems)]] {{localize('order')}}</p>
-                        <p>{{localize('late-order')}}: [[getLateOrder(orderItems)]] {{localize('order')}}</p>
-                    </div>
-                    <vaadin-grid id="orderTable" items="{{getSortedOrder(orderItems)}}" page-size="20">
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <vaadin-grid-sorter path="order_no">
-                                    <div class="cell">{{localize('order-number')}}</div>
-                                </vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.order_no]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="30px">
-                            <template class="header">
-                                <div class="cell">{{localize('color')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell" style$="color:[[item.order_color]]">&#9608;</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <div class="cell">{{localize('customer')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.order_customer]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <div class="cell">{{localize('product')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.order_product_name]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="20px">
-                            <template class="header">
-                                <vaadin-grid-sorter path="order_product_part">
-                                    <div class="cell">
-                                        <span>{{localize('part')}}</span>
-                                    </div>
-                                </vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.order_product_part.length]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="20px">
-                            <template class="header">
-                                <vaadin-grid-sorter path="order_quantity">
-                                    <div class="cell">
-                                        <span>{{localize('quantity')}}</span>
-                                    </div>
-                                </vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.order_quantity]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <vaadin-grid-sorter path="order_duration">
-                                    <div class="cell">{{localize('duration')}}</div>
-                                </vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                <div class="cell">[[getOrderDuration(item.order_duration)]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <vaadin-grid-sorter path="order_delivery">
-                                    <div class="cell">{{localize('remaining')}}</div>
-                                </vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                <div class="cell">[[getRemainDay(item.order_delivery, item.order_status, item.$key)]] {{localize('day')}}</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <vaadin-grid-sorter path="order_delivery">
-                                    <div class="cell">{{localize('delivery-date')}}</div>
-                                </vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                <div class="cell">[[getDeliveryDate(item.order_delivery)]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="30px">
-                            <template class="header">
-                                <vaadin-grid-sorter path="order_status">
-                                    <div class="cell">{{localize('status')}}</div>
-                                </vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                <div class="cell" style$="color:[[getColorStatus(item.order_status)]]">[[getOrderStatus(item.order_status)]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="15px">
-                            <template class="header">
-                                <div class="cell last">{{localize('edit')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell last">
-                                    <paper-icon-button on-click="openEditOrderCard" order="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
-                                </div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="15px">
-                            <template class="header">
-                                <div class="cell numeric last">{{localize('cancel')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell numeric last">
-                                    <paper-icon-button on-click="deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
-                                </div>
-                            </template>
-                        </vaadin-grid-column>
-
-                    </vaadin-grid>
-                    <div class="center">
-                        <paper-button class="btn" on-click="refreshOrderTable">{{localize('refresh')}}</paper-button>
-                        <paper-button class="btn" on-click="reSchedule">{{localize('reschedule')}}</paper-button>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="card" hidden="[[showScheduleTable]]">
-                    <h1 class="title">{{localize('production-scheduling-table')}}</h1>
-                    <span class="badge preview-badge" hidden="[[!isPreviewMode]]">Preview Mode</span>
-                    <span class="badge production-badge" hidden="[[!isProductionMode]]">Production Mode</span>
-                    <p>Selected Plan: [[factorySchedule.selected_plan]]</p>
-                    <p>{{localize('station')}}: [[selectedStation]]</p>
-                    <p>{{localize('station-name')}}:
-                        <template is="dom-repeat" items="[[filterStationData]]" as="stationItem">[[stationItem.st_name]]</template>
-                    </p>
-                    <p>{{localize('station-machine')}}:
-                        <template is="dom-repeat" items="[[filterStationData]]" as="item">
-                            <template is="dom-repeat" items="[[item.st_machine]]" as="item">[[item.name]] / </template>
-                        </template>
-                    </p>
-                    <p>{{localize('machine-quantity')}}:
-                        <template is="dom-repeat" items="[[filterStationData]]" as="stationItem">[[stationItem.st_machine.length]] {{localize('machine')}}</template>
-                    </p>
-                    <div class="center btn-group">
-                        <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
-                            <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
-                                <paper-button class="station-btn" name="[[stationItem.st_number]]">
-                                    {{localize('station')}} [[stationItem.st_number]]
-                                </paper-button>
-                            </template>
-                        </iron-selector>
-                    </div>
-                    <vaadin-grid id="jobSchedulingTable" items="{{filterScheduleItems}}" page-size="20">
-                        <vaadin-grid-column width="100px" flex="0">
-                            <template class="header">
-                                <div class="cell center">{{localize('station')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell center">[[selectedStation]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <div class="cell">{{localize('order-number')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.order_no]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="40px">
-                            <template class="header">
-                                <vaadin-grid-sorter path="order_status">
-                                    <div class="cell">{{localize('color')}}</div>
-                                </vaadin-grid-sorter>
-                            </template>
-                            <template>
-                                <div class="cell" style$="color:[[item.order_color]]">&#9608;</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <div class="cell">{{localize('product')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.order_product]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="40px">
-                            <template class="header">
-                                <div class="cell">
-                                    <span>{{localize('part')}}</span>
-                                </div>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.job_part]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <div class="cell">
-                                    <span>{{localize('quantity')}}</span>
-                                </div>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.job_quantity]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <div class="cell">{{localize('workload')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[getSecondsToHms(item.job_workload)]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <div class="cell">{{localize('est-start')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[getTimestampToTime(item.start)]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <div class="cell">{{localize('est-end')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[getEstEnd(item.start,item.job_workload)]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <div class="cell">{{localize('used-machine')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell">[[item.job_machine]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column>
-                            <template class="header">
-                                <div class="cell">{{localize('status')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell" style$="color:[[getColorStatus(item.job_status)]]">[[getOrderStatus(item.job_status)]]</div>
-                            </template>
-                        </vaadin-grid-column>
-
-                        <vaadin-grid-column width="100px" flex="0">
-                            <template class="header">
-                                <div class="cell numeric last">{{localize('cancel')}}</div>
-                            </template>
-                            <template>
-                                <div class="cell numeric last">
-                                    <paper-icon-button on-click="deleteJob" job="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.job_status)]]"></paper-icon-button>
-                                </div>
-                            </template>
-                        </vaadin-grid-column>
-                    </vaadin-grid>
-                    <div class="center">
-                        <paper-button class="btn thunderbird" on-click="clearSchedule">{{localize('clear-schedule')}}</paper-button>
-                        <paper-button class="btn" on-click="openManagePlanDialog">Load Plan</paper-button>
-                        <paper-button class="btn" on-click="saveAsPlan" disabled="[[isEmpty(scheduleItems)]]">Save as Plan</paper-button>
-                        <paper-button class="btn shamrock" disabled="[[isEmpty(scheduleItems)]]" on-click="applySchedule">Apply Schedule</paper-button>
-                    </div>
-                </div>
-            </li>
-            <li>
-                <div class="card" id="chartContainer" hidden="[[showChartTable]]">
-                    <h1 class="title">{{localize('scheduling-chart')}}</h1>
-                    <google-chart id="timeline" type="timeline" options="[[timelineOptions]]"></google-chart>
-                    <div class="center">
-                        <paper-button class="btn">Print</paper-button>
-                    </div>
-                </div>
-            </li>
-        </ul>
-        <flat-dialog id="managePlanDialog" scroll-action="lock">
-            <h1 class="center">Scheduling Plan</h1>
-            <p class="select-plan">Selected Plan: [[selected.name]]</p>
-            <div class="frame">
-                <div class="plan-list">
-                    <iron-list id="planList" items="[[planItems]]" as="item" selected-items={{selected}} selection-enabled>
-                        <template>
-                            <div tabindex$="[[tabIndex]]" class="item">
-                                <div class="left">
-                                    <p class="bold">Name: [[item.name]]</p>
-                                    <p class="subtitle">Type: [[item.type]]</p>
-                                </div>
-                                <div class="right">
-                                    <paper-icon-button on-click="removePlan" plan="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
-                                </div>
-                            </div>
-                        </template>
-                    </iron-list>
-                </div>
-            </div>
-            <div class="center">
-                <paper-button class="btn" disabled$="[[disabled]]" on-click="previewSelectedPlan">Preview</paper-button>
-                <paper-button class="btn shamrock" disabled$="[[disabled]]" on-click="loadSelectedPlan">Apply</paper-button>
-                <paper-button class="btn" on-click="closeManagePlanDialog">{{localize('close')}}</paper-button>
-            </div>
-        </flat-dialog>
-        <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
-    </template>
-    <script>
-        /**
-         * @ViewPlanScheduling
-         * @polymer 
-         * @extends {Polymer.Element}
-         */
-        class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
-            Polymer.Element) {
-            static get is() {
-                return 'view-plan-scheduling'
-            }
-
-            static get properties() {
-                return {
-                    selectedStation: {
-                        type: String,
-                        reflectToAttribute: true,
-                        value: 1
-                    },
-                    sortedOrder: {
-                        type: Object
-                    },
-                    scheduleItems: {
-                        type: Object,
-                        notyfy: true,
-                    },
-                    showOrderTable: {
-                        type: Boolean,
-                        value: false
-                    },
-                    showScheduleTable: {
-                        type: Boolean,
-                        value: false
-                    },
-                    showChartTable: {
-                        type: Boolean,
-                        value: false
-                    },
-                    showEditOrder: {
-                        type: Boolean,
-                        value: true
-                    },
-                    isPreviewMode: {
-                        type: Boolean,
-                        value: false
-                    },
-                    isProductionMode: {
-                        type: Boolean,
-                        value: false
-                    },
-                    disabled: {
-                        type: Boolean,
-                        value: true
-                    },
-                    language: String,
-                    status: String,
-                    orderItems: Object,
-                    chartItems: Object,
-                    trackItems: Object,
-                    editOrderItems: Object,
-                    factoryPerformance: Object,
-                    factoryProfile: Object,
-                    factoryOperation: Object,
-                    timelineOptions: Object,
-                    filterScheduleItems: Object,
-                    width: Number,
-                    height: Number,
-                    editKey: String,
-                    toastText: String,
-                }
-            }
-
-            static get observers() {
-                return [
-                    '_isSerialModel(factoryProfile.model)',
-                    'refreshOrderTable(orderItems.*)',
-                ]
-            }
-
-            ready() {
-                super.ready();
-                this._initialDatePicker();
-                this._setOrderDatePosition();
-            }
-
-            connectedCallback() {
-                super.connectedCallback()
-                this.loadResources(this.resolveUrl('../../data/locales.json'))
-                requestAnimationFrame(this._installListeners.bind(this))
-            }
-
-            _installListeners() {
-                this.addEventListener('iron-resize', (e) => this._setChartSize(e))
-                this.$.planList.addEventListener('selected-item-changed', this._validatePlanInput.bind(this))
-            }
-
-            refreshOrderTable() {
-                this.$.orderTable.clearCache();
-                this.toastText = 'notification-refreshing-data'
-                this.$.toastAlert.open()
-            }
-
-            _isSerialModel(production_model) {
-                if (production_model === 'serial' || production_model === 'multi') {
-                    this.$.concurrency.hidden = true
-                } else {
-                    this.$.concurrency.hidden = false
-                }
-            }
-
-            _setOrderDatePosition() {
-                const today = new Date();
-                let dd = today.getDate()
-                let mm = today.getMonth() + 1
-                let yyyy = today.getFullYear()
-                if (dd < 10) {
-                    dd = '0' + dd
-                }
-                if (mm < 10) {
-                    mm = '0' + mm
-                }
-                this.todayDate = yyyy + '-' + mm + '-' + dd
-            }
-
-            _initialDatePicker() {
-                let datepicker = this.$.editDeliverySelector;
-                datepicker.addEventListener('value-changed', function () {
-                   this.orderDelivery = (new Date(datepicker.value).getTime() / 1000);
-                });
-            }
-
-            _clearField() {
-                this.$.editCustomerSelector.value = "";
-                this.$.editProductSelector.value = "";
-                this.$.editOrderQuantity.value = 1;
-                this.$.editDeliverySelector.value = "";
-            }
-
-            _setChartSize() {
-                this.width = this.$.chartContainer.offsetWidth;
-                this.height = this.$.chartContainer.offsetHeight;
-                if (this.$.timeline.offsetHeight > 0) {
-                    this.updateStyles({
-                        '--chart-container-height': this.$.timeline.offsetHeight,
-                        '#chartContainer': this.$.timeline.offsetHeights
-                    });
-                }
-                if (this.width > 0) {
-                    this.timelineOptions = {
-                        width: this.width - 40,
-                        height: this.height,
-                        timeline: {
-                            rowLabelStyle: {
-                                fontSize: 16
-                            },
-                            barLabelStyle: {
-                                fontSize: 16
-                            }
-                        },
-                        tooltip: { isHtml: true },
-                        legend: {
-                            position: 'none'
-                        },
-                        avoidOverlappingGridLines: false
-                    }
-                    google.charts.setOnLoadCallback(this._initialChart())
-                }
-            }
-
-            _initialChart() {
-                let chart = this.$.timeline;
-                let dataTable = new google.visualization.DataTable();
-                dataTable.addColumn({
-                    type: 'string',
-                    id: 'Station'
-                });
-                dataTable.addColumn({
-                    type: 'string',
-                    id: 'Order no.'
-                });
-                dataTable.addColumn({
-                    type: 'string',
-                    role: 'style'
-                });
-                dataTable.addColumn({
-                    type: 'date',
-                    id: 'Start'
-                });
-                dataTable.addColumn({
-                    type: 'date',
-                    id: 'End'
-                });
-                if (this.chartItems.length > 0) {
-                    // convert time stamp to new date 
-                    const result = this.chartItems.map((x) => {
-                        return [this.localize('station') + x[0], x[1], x[2],
-                            new Date(x[3] * 1000),
-                            new Date(x[4] * 1000)
-                        ]
-                    });
-                    dataTable.addRows(result);
-                } else {
-                    dataTable.addRows([
-                        ['\0', 'No data', '#FFFFFF', new Date(1506470400), new Date(1506480400)]
-                    ]);
-                }
-                document.createElement('google-chart-loader').dataTable(
-                    dataTable).then((dataTable) => {
-                    chart.data = dataTable;
-                });
-            }
-
-            _refreshChart() {
-                if (this.scheduleItems.length > 0) {
-                    let newChartData = this.scheduleItems.map((data) => {
-                        return [data.job_station + '' || 'N/A', 'Order ' + data.order_no, data.order_color,
-                            data.start, data.end
-                        ]
-                    })
-                    this.$.chartQuery.ref.remove()
-                    this.$.chartQuery.ref.set(newChartData)
-                }
-            }
-            // PLAN MANAGEMENT
-            _validatePlanInput() {
-                if (this.$.planList.selectedItem) {
-                    this.disabled = false
-                } else {
-                    this.disabled = true
-                }
-            }
-
-            openManagePlanDialog() {
-                this.$.managePlanDialog.opened = true
-            }
-
-            closeManagePlanDialog() {
-                this.$.managePlanDialog.opened = false
-            }
-
-            removePlan(e) {
-                if (confirm("Delete this Plan?")) {
-                    const key = e.currentTarget.plan.$key
-                    this.$.planQuery.ref.child(key).remove()
-                }
-            }
-
-            loadSelectedPlan() {
-                if (this.$.planList.selectedItem.data) {
-                    const planName = this.$.planList.selectedItem.name
-                    const planData = this.$.planList.selectedItem.data
-                    this.set('factorySchedule.selected_plan', planName)
-                    this.isPreviewMode = false;
-                    this.isProductionMode = true;
-                    this.$.scheduleQuery.ref.set(planData);
-                    this.$.trackingQuery.ref.set(planData);
-                    alert(`Plan ${planName} has been added/replaced to your tracking section.`)
-                    this._refreshChart()
-                    this.closeManagePlanDialog();
-                }
-            }
-
-            applySchedule() {
-                this.set('factorySchedule.selected_plan', 'Untitled')
-                this.isPreviewMode = false;
-                this.isProductionMode = true;
-                const scheduleData = Object.assign(...Object.entries(this.scheduleItems)
-                    .map(([i, v]) => {
-                        delete v.$key
-                        return {
-                            [i]: v
-                        }
-                    }));
-                this.$.trackingQuery.ref.set(scheduleData);
-                alert(`This Plan has been added/replaced to your tracking section.`)
-            }
-
-            previewSelectedPlan() {
-                if (this.$.planList.selectedItem.data) {
-                    this.selected_plan = this.$.planList.selectedItem.name
-                    this.isPreviewMode = true;
-                    this.isProductionMode = false;
-                    this.$.scheduleQuery.ref.set(this.$.planList.selectedItem.data);
-                    this._refreshChart()
-                    this.closeManagePlanDialog();
-                }
-            }
-
-            isEmpty(item) {
-                if (item.length > 0) {
-                    return false
-                } else {
-                    return true
-                }
-            }
-
-            saveAsPlan() {
-                let planName = prompt("Please enter plan name", "Untitled");
-                if (planName) {
-                    let newObj = Object.assign(...Object.entries(this.scheduleItems)
-                        .map(([i, v]) => {
-                            delete v.$key
-                            return {
-                                [i]: v
-                            }
-                        }));
-                    this.$.planQuery.ref.push({
-                        name: planName,
-                        type: this.factoryProfile.model,
-                        data: newObj
-                    })
-                }
-            }
-
-            getSortedOrder(order) {
-                // SORT BY EDD THEN BY SPT
-                let sort = order.sort((a, b) => {
-                    return a["order_delivery"] - b["order_delivery"] || a["order_duration"] - b[
-                        "order_duration"];
-                });
-                this.sortedOrder = sort;
-                return sort;
-            }
-
-            getOrderDurationInMinute(part, amount) {
-                let productCycleArr = []
-                let productSetupArr = []
-                productCycleArr = part.map(part => part.cycle); // returns a new array of part cycle iterated
-                productSetupArr = part.map(part => part.setup); // returns a new array of part setup iterated
-                const flatCycleArr = productCycleArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
-                const flatSetupArr = productSetupArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
-                const sumCycle = flatCycleArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumCycle
-                const sumSetup = flatSetupArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
-                const sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
-                return sumDuration;
-            }
-
-            getActualQuantity(amount) {
-                if (!amount) return 0;
-                const accept_waste = this.factoryPerformance.aw;
-                const actual_quantity = Math.ceil((amount / (1 - accept_waste)));
-                this.actualQuantity = actual_quantity;
-                return actual_quantity;
-            }
-
-            getTimestampToDate(timestamp) {
-                const today = new Date(timestamp * 1000);
-                let dd = today.getDate()
-                let mm = today.getMonth() + 1
-                let yyyy = today.getFullYear()
-                if (dd < 10) {
-                    dd = '0' + dd
-                }
-                if (mm < 10) {
-                    mm = '0' + mm
-                }
-                return Array.of(dd, mm, yyyy)
-            }
-
-            getTimestampToTime(timestamp) {
-                let date = new Date(timestamp * 1000);
-                // Hours part from the timestamp
-                let h = date.getHours();
-                // Minutes part from the timestamp
-                let m = date.getMinutes();
-                // Seconds part from the timestamp
-                let s = date.getSeconds();
-                // Will display time in 10:30:23 format
-                return ('0' + h).substr(-2) + ":" + ('0' + m).substr(-2) + ":" + ('0' + s).substr(-2)
-            }
-
-            getSecondsToHms(sec) {
-                sec = Number(sec)
-                const h = Math.floor(sec / 3600)
-                const m = Math.floor(sec % 3600 / 60)
-                const s = Math.floor(sec % 3600 % 60)
-                return ('0' + h).slice(-2) + ":" + ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2)
-            }
-
-            getNextInterval(last_timestamp, interval) {
-                if (!last_timestamp || !interval) return 0
-                let current = Math.floor(Date.now() / 1000)
-                let diff = current - last_timestamp
-                let range = interval * 24 * 60 * 60
-                if (diff <= range) {
-                    let nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 *
-                        1000)
-                    let nextIntervalDate = new Date(nextIntervalStamp)
-                    let dd = nextIntervalDate.getDate()
-                    let mm = nextIntervalDate.getMonth() + 1 // January is 0!
-                    let yyyy = nextIntervalDate.getFullYear()
-                    if (dd < 10) {
-                        dd = '0' + dd
-                    }
-                    if (mm < 10) {
-                        mm = '0' + mm
-                    }
-                    let nextInterval = dd + '/' + mm + '/' + yyyy
-                    return nextInterval
-                } else {
-                    this.set('factorySchedule.start_interval', current)
-                }
-            }
-
-            getOrderDuration(order_duration) {
-                if (!order_duration) return 0
-                return this._durationToStr(order_duration)
-            }
-
-            getRemainDay(delivery_date, status, key) {
-                if (!delivery_date) return 'N/A'
-                const current_date = Math.round(new Date().getTime() / 1000);
-                const remain = Math.round((delivery_date - current_date) / 86400);
-
-                if (remain < 0 && status !== 'done' && status !== 'wip') {
-                    this.setOrderStatus(key, 'late');
-                    return 0;
-                } else if (remain < 0 && (status === 'done' || status === 'wip' || status === 'late')) {
-                    return 0;
-                } else if (remain>= 0 && status === 'late') {
-                    this.setOrderStatus(key, 'waiting');
-                    return remain;
-                } else {
-                    return remain;
-                }
-            }
-
-            getDeliveryDate(timestamp) {
-                let date = this.getTimestampToDate(timestamp)
-                return date[0] + '/' + date[1] + '/' + date[2];
-            }
-
-            getTimestampToDatePicker(timestamp) {
-                let date = this.getTimestampToDate(timestamp)
-                this.todayDate = date[2] + '-' + date[1] + '-' + date[0]
-            }
-
-            getOrderStatus(order_status) {
-                switch (order_status) {
-                    case 'waiting':
-                        return this.localize('waiting')
-                        break;
-                    case 'wip':
-                        return this.localize('wip')
-                        break;
-                    case 'done':
-                        return this.localize('done')
-                        break;
-                    case 'late':
-                        return this.localize('late')
-                        break;
-                    case 'cancel':
-                        return this.localize('cancel')
-                        break;
-                    default:
-                        return 'N/A'
-                }
-            }
-
-            getColorStatus(order_status) {
-                switch (order_status) {
-                    case 'waiting':
-                        return '#FFB300'
-                        break;
-                    case 'wip':
-                        return '#5E35B1'
-                        break;
-                    case 'done':
-                        return '#7CB342'
-                        break;
-                    case 'late':
-                        return '#E53935'
-                        break;
-                    case 'cancel':
-                        return '#E53935'
-                        break;
-                    default:
-                        return '#202020'
-                }
-            }
-
-            getEstEnd(start, workload) {
-                let workload_second = workload
-                let end_timestamp = start + workload_second
-                return this.getTimestampToTime(end_timestamp)
-            }
-
-            getWaitingOrder(order_data) {
-                if (!order_data) return 0
-                return order_data.filter((i) => i.order_status === "waiting").length
-            }
-
-            getLateOrder(order_data) {
-                if (!order_data) return 0
-                return order_data.filter((i) => i.order_status === "late").length
-            }
-            // UTILITY
-            _pushNotification(detail, type) {
-                this.$.notificationQuery.ref.push({
-                    created: Math.round(Date.now() / 1000.0),
-                    detail: detail,
-                    type: type
-                });
-            }
-
-            // CONVERT TIME TO STRING
-            _durationToStr(sec) {
-                sec = Number(sec);
-                let sign = '';
-                let hours = this._leftPad(Math.floor(Math.abs(sec) / 3600));
-                let minutes = this._leftPad(Math.round(Math.abs(sec) % 3600 / 60));
-                let seconds = this._leftPad(Math.round(Math.abs(sec) % 3600 % 60));
-                return hours + 'hrs ' + minutes + 'min' + seconds + 'sec';
-            }
-
-            // ADD 0 to numbers less than 10,Eg: 2 -> 02 
-            _leftPad(number) {
-                return ((number < 10 && number >= 0) ? '0' : '') + number;
-            }
-
-            // ORDER MANAGEMENT
-            openEditOrderCard(e) {
-                this.showEditOrder = false
-                this.showOrderTable = true
-                this.showScheduleTable = true
-                this.showChartTable = true
-                const key = e.currentTarget.order.$key
-                this.editKey = key
-            }
-
-            dismissEditOrder() {
-                this.showEditOrder = true
-                this.showOrderTable = false
-                this.showScheduleTable = false
-                this.showChartTable = false
-                this.editKey = ''
-            }
-
-            setOrderStatus(key, status) {
-                this.$.orderQuery.ref.child(key).update({
-                    order_status: status
-                });
-            }
-
-            isDeletable(status) {
-                return ((status === 'wip') ? true : false)
-            }
-
-            clearSchedule() {
-                if (confirm("Clear all schedule ? The order that are working in process will not be deleted.")) {
-                    this.$.scheduleQuery.ref.remove()
-                    this.$.chartQuery.ref.remove()
-                    this.toastText = 'notification-delete-successfully'
-                    this.$.toastAlert.open()
-                }
-            }
-
-            updateOrder() {
-                const timestamp = Math.round(new Date().getTime() / 1000.0);
-                const orderNo = this.editOrderItems.order_no;
-                const orderCustomerName = this.$.editCustomerSelector.value;
-                const orderProductName = this.$.editProductSelector.value;
-                const orderProductPart = this.$.editProductSelector.selectedItem.part;
-                const orderProductProcess = this.$.editProductSelector.selectedItem.process;
-                const orderProductSKU = this.$.editProductSelector.selectedItem.sku;
-                const orderQuantity = this.getActualQuantity(this.$.editOrderQuantity.value);
-                const orderDuration = this.getOrderDurationInMinute(orderProductPart, orderQuantity);
-                const orderDelivery = (new Date(this.$.editDeliverySelector.value).getTime() / 1000);
-
-                if (this.$.editOrderQuantity.value === 0) {
-                    window.alert("Order product quantity cannot be 0")
-                    return;
-                }
-                if (orderCustomerName !== "" && orderProductName !== "" && orderProductPart !==
-                    "" && orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(
-                        isNaN(orderDelivery))) {
-
-                    this.$.editOrderQuery.ref.update({
-                        order_customer: orderCustomerName,
-                        order_product_name: orderProductName,
-                        order_product_part: orderProductPart,
-                        order_product_dependency: orderProductProcess,
-                        order_product_sku: orderProductSKU,
-                        order_quantity: orderQuantity,
-                        order_duration: orderDuration,
-                        order_delivery: orderDelivery,
-                        order_status: "waiting",
-                    });
-                    this._pushNotification('Edited order no.' + orderNo, 'normal')
-                    this.dismissEditOrder()
-                    this.refreshOrderTable()
-                    this.toastText = 'notification-save-successfully'
-                    this.$.toastAlert.open()
-                } else {
-                    window.alert("Input field cannot be blank, please fill in completely.");
-                }
-            }
-
-            deleteOrder(e) {
-                if (confirm("Delete this order ?")) {
-                    let key = e.currentTarget.order.$key
-                    this.$.orderQuery.ref.child(key).remove()
-                    this.toastText = 'notification-delete-successfully'
-                    this.$.toastAlert.open()
-                }
-            }
-
-            deleteJob(e) {
-                if (confirm("Delete this job ?")) {
-                    let key = e.currentTarget.job.$key;
-                    this.$.jobQuery.ref.child(key).remove();
-                    this.toastText = 'notification-delete-successfully'
-                    this.$.toastAlert.open()
-                    this._refreshChart()
-                }
-            }
-
-            reSchedule() {
-                if (confirm(
-                        "WARNING!! This will clear all schedules data")) {
-                    this.$.scheduleQuery.ref.remove()
-                    this.$.chartQuery.ref.remove()
-
-                    // 1) Filter only waiting, late or wip order 
-                    if (this.sortedOrder) {
-                        switch (this.factoryProfile.model) {
-                            case "serial":
-                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
-                                    .order_product_part.length === 1), 1, 'serial')
-                                break;
-                            case "parallel":
-                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
-                                        .order_product_part.length === 1), this.factoryProfile.concurrency,
-                                    'parallel')
-                                break;
-                            case "multi":
-                                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
-                                    .order_product_part.length > 1), 1, 'multi')
-                                break;
-                            default:
-                                window.alert("Invalid production model")
-                        }
-                        this.toastText = 'notification-refreshing-data'
-                        this.$.toastAlert.open()
-                    } else {
-                        window.alert("No order data found")
-                    }
-                }
-            }
-            _scheduleOrder(undone_order, concurrent, model) {
-                if (this.sortedOrder.length > 0) {
-                    // 2) Copy first concurrent orders from sorted order table 
-                    const selected_order = undone_order.slice(0, concurrent).concat(undone_order.slice(
-                        undone_order.length));
-                    console.table(selected_order)
-
-                    // 3) Set order status to work in progress
-                    selected_order.map((data) => this.setOrderStatus(data.$key, 'wip'))
-                    // 4) Set order part and order quantity data 
-                    let order_quantity = selected_order.map(o => o.order_quantity)
-                    let order_part = selected_order.map(o => o.order_product_part)
-                    let order_product_name = selected_order.map(o => o.order_product_name)
-                    let order_description = selected_order.map(o => o.order_product_description)
-                    let order_no = selected_order.map(o => o.order_no)
-                    let order_duration = selected_order.map(o => o.order_duration)
-                    let order_delivery = selected_order.map(o => o.order_delivery)
-                    let order_customer = selected_order.map(o => o.order_customer)
-                    let order_color = selected_order.map(o => o.order_color)
-                    let order_date = selected_order.map(o => o.order_date)
-
-                    // 5) Flat multiple parts array in to flat parts array
-                    order_part = order_part.reduce((a, b) => a.concat(b), [])
-                    console.table(order_part)
-
-                    // 5.1) Array of cycle 
-                    let cycleArr = order_part.map(element => element.cycle)
-
-                    // 5.2) Array of setup
-                    let setupArr = order_part.map(element => element.setup)
-
-                    // 5.3) Array of process no (index) 
-                    let processArr = order_part.map(element => element.process)
-
-                    // 6) Calculate workload of each process
-                    let multiResult, workload
-                    if (model === 'multi') {
-                        multiResult = cycleArr.map((c, index) => c.map(c => c * order_quantity)) // cycle = time x quantity
-                        workload = multiResult.map((item, index) => {
-                            return item.map((i, j) => {
-                                return i + setupArr[index][j]
-                            })
-                        })
-                    } else {
-                        multiResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q)) // cycle = time x quantity
-                        workload = multiResult.map((item, index) => {
-                            return item.map((i, j) => {
-                                return i + setupArr[index][j]
-                            })
-                        })
-                    }
-
-                    // 7) Convert array into object array
-                    let workloadProcessObj = workload
-                        .map((k, i) => Object.assign({}, ...processArr[i]
-                            .map((process, index) => ({
-                                [process]: workload[i][index]
-                            }))
-                        ))
-
-                    // 8.1) Calculate sum workload of each process (using Ramda)
-                    let sumWorkloadEachProcess = R.reduce(R.mergeWith(R.add), {}, workloadProcessObj)
-
-                    // 8.2) Calculate sum workload of each order
-                    let sumWorkloadEachOrder = workload.map((item) => {
-                        return item.reduce((a, b) => {
-                            return a + b;
-                        });
-                    });
-
-                    // 9) Calculate weight of each process based on workload 
-                    // (workload of n process / total workload of each process)
-                    let weight = []
-                    workload.map((_, i) => {
-                        weight[i] = R.mergeWith(R.divide, workloadProcessObj[i], sumWorkloadEachProcess)
-                    })
-
-                    // 10) Calculate available machines
-                    let machine_in_station = this.stationItems.map(data => {
-                        if (!data.st_machine.length) {
-                            return 0
-                        } else {
-                            return data.st_machine.length
-                        }
-                    })
-
-                    // 10.1) Remove unused weight that > 1
-                    let cleanWeight = weight.map(item => Object.entries(item).filter(([key, value]) => value <=
-                        1).map(([key, value]) => ({
-                        [key]: value
-                    })).reduce(R.merge))
-                    //console.log('Clean Weight ', cleanWeight)
-
-                    // 11) Calculate used machines of each job
-                    let computeAllocatedMachine = (x, i) => {
-                        if (x == 1) {
-                            return 1
-                        } else {
-                            let key = Object.keys(x)
-                            let result = key.map((y, i) => {
-                                let allocated = Math.ceil(x[y] * machine_in_station[parseInt(y) - 1])
-                                if (allocated === 0) {
-                                    return 1
-                                } else if (allocated === machine_in_station[parseInt(y) - 1] && x[y] !==
-                                    1) {
-                                    return allocated - 1
-                                } else {
-                                    return allocated
-                                }
-                            })
-                            return result;
-                        }
-                    }
-                    let machines = cleanWeight.map(computeAllocatedMachine);
-                    let workloadArr = workload.map(data => Object.values(data))
-
-                    // 12) Calculate the duration of each process
-                    let duration = [];
-                    duration = workloadArr.map((w, i) => {
-                        return w.map((wl, j) => wl / parseInt(machines[i]))
-                    });
-
-                    // 13) Map value and key to a new object 
-                    // and reduce to flat array for each part order
-                    let start = []
-                    let end = []
-                    let today = new Date();
-                    let dd = today.getDate();
-                    let months = new Array('Jan', 'Feb', 'Mar', 'Apri', 'May', 'Jun',
-                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
-                    let mm = months[today.getMonth()];
-                    let yyyy = today.getFullYear();
-                    if (dd < 10) {
-                        dd = '0' + dd;
-                    }
-                    let initialStart = Date.parse(dd + ' ' + mm + ' ' + yyyy + ' ' + this.factoryOperation
-                        .op_start + ':00') / 1000
-
-                    let result = processArr.map((station, i) => {
-                        let next = []
-                        let prev = []
-                        duration[i].forEach((duration, index) => {
-                            if (index === 0) {
-                                next.push(initialStart);
-                            } else {
-                                next.push(prev[index - 1] + parseInt(this.factorySchedule.delay *
-                                    60));
-                            }
-                            prev.push(next[index] + duration)
-                        })
-                        start.push(next)
-                        end.push(prev)
-
-                        return {
-                            "start": start[i].filter(value => isNaN(value) ? initialStart : value),
-                            "end": end[i].filter(value => isNaN(value) ? initialStart + 10000 : value),
-                            "job_id": Math.random().toString(36).substr(2, 12),
-                            "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
-                            "job_setup": setupArr[i].filter(value => isNaN(value) ? 0 : value),
-                            "job_workload": workload[i].filter(value => isNaN(value) ? 0 : value),
-                            "job_duration": duration[i].filter(value => isNaN(value) ? 0 : value),
-                            "job_machine": machines[i].filter(value => isNaN(value) ? 0 : value),
-                            "job_station": order_part[i].process,
-                            "job_part": order_part[i].name.toString(),
-                            "job_sku": order_part[i].sku.toString(),
-                            "job_weight": Object.values(cleanWeight[i]).filter(value => isNaN(value) ?
-                                0 : value),
-                            "job_quantity": order_quantity,
-                            "job_status": "waiting",
-                            "job_good": 0,
-                            "job_defect": 0,
-                            "job_dependency": order_part[i].dependency,
-                            "job_complete": 0.00,
-                            "order_customer": order_customer,
-                            "order_delivery": order_delivery,
-                            "order_no": order_no,
-                            "order_date": order_date,
-                            "order_color": order_color.toString(),
-                            "order_product": order_product_name.toString(),
-                            "order_description": order_description.toString(),
-                        }
-                    }).reduce((a, b) => {
-                        return a.concat(b);
-                    }, []); // use reduce only for serial and parallel
-
-                    // 13) Split arr into group of key-value arr using lodash
-                    let splitArr = result.map((data) => _.transform(data, function (result, value, key) {
-                        if (!_.isArray(value)) return;
-                        if (result.length < value.length) {
-                            result.push(..._.times(value.length - result.length, () => _.clone(
-                                data)))
-                        }
-                        value.map((item, index) => result[index][key] = item)
-                    }, []))
-                    console.table(splitArr)
-
-                    // 14) If job schedule table is available then push the order into the table
-                    //  let isDuplicated = this.scheduleItems.map(item => item.job_id).indexOf(resultObject.job_id) > -1
-                    if (this.filterScheduleItems.length <= this.sortedOrder.length) {
-                        splitArr.map((data, i) => {
-                            delete data.$key
-                            data.map((x, j) => this.$.scheduleQuery.ref.push(data[j]))
-                        })
-                        window.alert("Re-schedule successful, please refresh this page to update a chart.")
-                    } else {
-                        window.alert("Full capacity of current concurrency")
-                    }
-                    this._refreshChart()
-                } else {
-                    window.alert("No order to schedule")
-                }
-            }
+  <template>
+    <style include="shared-styles app-grid-style">
+      :host {
+        margin: 10px;
+        display: block;
+        --app-grid-columns: 1;
+        --app-grid-item-height: 50%;
+      }
+
+      .gantt .grid-background {
+        fill: none;
+      }
+
+      .gantt .grid-header {
+        fill: #ffffff;
+        stroke: #e0e0e0;
+        stroke-width: 1.4;
+      }
+
+      .gantt .grid-row {
+        fill: #ffffff;
+      }
+
+      .gantt .grid-row:nth-child(even) {
+        fill: #f5f5f5;
+      }
+
+      .gantt .row-line {
+        stroke: #ebeff2;
+      }
+
+      .gantt .tick {
+        stroke: #e0e0e0;
+        stroke-width: 0.2;
+      }
+
+      .gantt .tick.thick {
+        stroke-width: 0.4;
+      }
+
+      .gantt .today-highlight {
+        fill: #fcf8e3;
+        opacity: 0.5;
+      }
+
+      .gantt .arrow {
+        fill: none;
+        stroke: #666;
+        stroke-width: 1.4;
+      }
+
+      .gantt .bar {
+        fill: #b8c2cc;
+        stroke: #8D99A6;
+        stroke-width: 0;
+        transition: stroke-width .3s ease;
+        user-select: none;
+      }
+
+      .gantt .bar-progress {
+        fill: #a3a3ff;
+      }
+
+      .gantt .bar-invalid {
+        fill: transparent;
+        stroke: #8D99A6;
+        stroke-width: 1;
+        stroke-dasharray: 5;
+      }
+
+      .gantt .bar-invalid~.bar-label {
+        fill: #555;
+      }
+
+      .gantt .bar-label {
+        fill: #fff;
+        dominant-baseline: central;
+        text-anchor: middle;
+        font-size: 12px;
+        font-weight: lighter;
+      }
+
+      .gantt .bar-label.big {
+        fill: #555;
+        text-anchor: start;
+      }
+
+      .gantt .handle {
+        fill: #ddd;
+        cursor: ew-resize;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity .3s ease;
+      }
+
+      .gantt .bar-wrapper {
+        cursor: pointer;
+        outline: none;
+      }
+
+      .gantt .bar-wrapper:hover .bar {
+        fill: #a9b5c1;
+      }
+
+      .gantt .bar-wrapper:hover .bar-progress {
+        fill: #8a8aff;
+      }
+
+      .gantt .bar-wrapper:hover .handle {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .gantt .bar-wrapper.active .bar {
+        fill: #a9b5c1;
+      }
+
+      .gantt .bar-wrapper.active .bar-progress {
+        fill: #8a8aff;
+      }
+
+      .gantt .lower-text,
+      .gantt .upper-text {
+        font-size: 12px;
+        text-anchor: middle;
+      }
+
+      .gantt .upper-text {
+        fill: #555;
+      }
+
+      .gantt .lower-text {
+        fill: #333;
+      }
+
+      .gantt .hide {
+        display: none;
+      }
+
+      .gantt-container {
+        position: relative;
+        overflow: auto;
+        font-size: 12px;
+      }
+
+      .gantt-container .popup-wrapper {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 0;
+        color: #959da5;
+        border-radius: 3px;
+      }
+
+      .gantt-container .popup-wrapper .title {
+        border-bottom: 3px solid #a3a3ff;
+        padding: 10px;
+      }
+
+      .gantt-container .popup-wrapper .subtitle {
+        padding: 10px;
+        color: #dfe2e5;
+      }
+
+      .gantt-container .popup-wrapper .pointer {
+        position: absolute;
+        height: 5px;
+        margin: 0 0 0 -5px;
+        border: 5px solid transparent;
+        border-top-color: rgba(0, 0, 0, 0.8);
+      }
+
+
+      .btn {
+        margin: 20px 10px 0 0;
+        width: 250px;
+      }
+
+      .order-schedule-info {
+        margin: 10px 0;
+      }
+
+      .order-schedule-info>p {
+        margin: 10px 0;
+      }
+
+      .flex-container {
+        display: flex;
+        align-content: center;
+        justify-content: space-between;
+        flex-flow: row nowrap;
+      }
+
+      .station-btn {
+        margin: 5px;
+        width: 200px;
+      }
+
+      .btn-group {
+        margin: 20px 0;
+      }
+
+      .plan-list {
+        height: 300px;
+      }
+
+      .item {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .item:focus {
+        outline: 0;
+        background-color: #ddd;
+      }
+
+      .subtitle {
+        color: #555555;
+      }
+
+      .select-plan {
+        margin: 20px 0;
+      }
+
+      .badge {
+        color: #fff;
+        display: inline-block;
+        padding: 7px 10px;
+        margin-bottom: 10px;
+        text-align: center;
+        border-radius: 3px;
+        font-size: 1rem;
+      }
+
+      .preview-badge {
+        background-color: purple;
+      }
+
+      .production-badge {
+        background-color: orangered;
+      }
+
+      #chartContainer {
+        min-height: 500px;
+      }
+
+      @media (min-width: 360px) and (max-width: 768px) {
+        .btn {
+          width: 100%;
         }
-        customElements.define(ViewPlanScheduling.is, ViewPlanScheduling)
-    </script>
+      }
+
+    </style>
+    <app-localstorage-document key="app-lang" data="{{language}}"></app-localstorage-document>
+    <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
+    <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryProfile" path="/data/[[k.key]]/factoryData/profile" data="{{factoryProfile}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryOperation" path="/data/[[k.key]]/factoryData/operation" data="{{factoryOperation}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="editOrderQuery" path="/data/[[k.key]]/orderData/[[editKey]]" data="{{editOrderItems}}"></firebase-document>
+    <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{chartItems}}"></firebase-document>
+    <!-- NOTIFICATION DATA -->
+    <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
+    <!-- CUSTOMER DATA -->
+    <firebase-query app-name="smart-mes" id="customerQuery" path="/data/[[k.key]]/factoryData/customer" order-by-child="fname"
+      data="{{customerItems}}"></firebase-query>
+    <!-- PRODUCT DATA -->
+    <firebase-query app-name="smart-mes" id="productQuery" path="/data/[[k.key]]/factoryData/product" order-by-child="name" data="{{productItems}}"></firebase-query>
+    <!-- STATION DATA -->
+    <firebase-query app-name="smart-mes" id="stationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
+      data="{{stationItems}}"></firebase-query>
+    <!-- ORDER DATA -->
+    <firebase-query app-name="smart-mes" id="orderQuery" path="/data/[[k.key]]/orderData" order-by-child="order_delivery" data="{{orderItems}}"></firebase-query>
+    <!-- SCHEDULE DATA -->
+    <firebase-query app-name="smart-mes" id="jobQuery" path="/data/[[k.key]]/scheduleData" order-by-child="job_station" data="{{scheduleItems}}"></firebase-query>
+    <!-- TRACKING DATA -->
+    <firebase-query app-name="smart-mes" id="trackingQuery" path="/data/[[k.key]]/trackingData"></firebase-query>
+    <!-- PLAN DATA -->
+    <firebase-query app-name="smart-mes" id="planQuery" path="/data/[[k.key]]/planData" data="{{planItems}}"></firebase-query>
+    <!-- STATION QUERY SELECTED BY STATION NUMBER -->
+    <firebase-query app-name="smart-mes" id="selectStationQuery" path="/data/[[k.key]]/factoryData/station" order-by-child="st_number"
+      equal-to="{{selectedStation}}" data="{{filterStationData}}"></firebase-query>
+    <!-- JOB SCHEDULE TABLE SELECTED BY STATION NUMBER -->
+    <firebase-query app-name="smart-mes" id="scheduleQuery" path="/data/[[k.key]]/scheduleData" equal-to="[[selectedStation]]"
+      order-by-child="job_station" data="{{filterScheduleItems}}"></firebase-query>
+
+    <ul class="app-grid">
+      <!-- Edit order card -->
+      <li>
+        <div class="card " hidden="[[showEditOrder]]">
+          <h1 class="title">{{localize('edit-order')}}</h1>
+          <vaadin-combo-box label="{{localize('customer-name')}}" value="[[editOrderItems.order_customer]]" name="customer-name" id="editCustomerSelector"
+            items="[[customerItems]]" item-label-path="name" item-value-path="name" loading="[[!customerItems]]" required allow-custom-value
+            prevent-invalid-input always-float-label='true'>
+            <template>
+              <paper-item>
+                <paper-icon-item style="padding: 0">
+                  <iron-icon icon="vaadin:user-card" slot="item-icon"></iron-icon>
+                  <paper-item-body two-line style="min-height: 0">
+                    <div>[[item.name]]</div>
+                    <div secondary>[[item.email]]</div>
+                  </paper-item-body>
+                </paper-icon-item>
+              </paper-item>
+            </template>
+          </vaadin-combo-box>
+          <vaadin-combo-box label="{{localize('product')}}" value="[[editOrderItems.order_product_name]]" name="product" items="[[productItems]]"
+            id="editProductSelector" item-label-path="name" item-value-path="name" loading="[[!productItems]]" required prevent-invalid-input
+            always-float-label='true'>
+            <template>
+              <paper-icon-item style="padding: 0">
+                <img src$="[[item.image]]" class="thumbnail" slot="item-icon">
+                <paper-item-body two-line style="min-height: 0">
+                  <div>[[item.name]]</div>
+                  <div secondary>SKU: [[item.sku]]</div>
+                </paper-item-body>
+              </paper-icon-item>
+            </template>
+          </vaadin-combo-box>
+          <paper-input label="{{localize('quantity')}}" value="[[editOrderItems.order_quantity]]" name="order-quantity" value='{{amount}}'
+            id="editOrderQuantity" type="number" min="1" max="100000" step="0.1" required always-float-label></paper-input>
+          <vaadin-date-picker class="date-picker" value="[[getTimestampToDatePicker(editOrderItems.order_delivery)]]" label="{{localize('delivery-date')}}"
+            min="[[todayDate]]" max="2030-01-01" name="delivery" id="editDeliverySelector" initial-position="[[todayDate]]"
+            value="{{delivery}}" error-message="Invalid input" required always-float-label='true'></vaadin-date-picker>
+          <div class="center">
+            <paper-button class="btn" on-click="dismissEditOrder">
+              {{localize('dismiss')}}
+            </paper-button>
+            <paper-button class="btn shamrock" on-click="updateOrder">
+              {{localize('save')}}
+            </paper-button>
+          </div>
+        </div>
+      </li>
+      <!-- Order table card -->
+      <li>
+        <div class="card" hidden="[[showOrderTable]]">
+          <h1 class="title">{{localize('order-table')}}</h1>
+          <div class="order-schedule-info">
+            <p>{{localize('next-reschedule')}}: [[getNextInterval(factorySchedule.start_interval, factorySchedule.interval)]]</p>
+            <p>{{localize('production-model')}}: [[factoryProfile.model]]</p>
+            <p id="concurrency">{{localize('station-concurrency')}} : [[factoryProfile.concurrency]] {{localize('order')}} / {{localize('station')}}</p>
+            <p>{{localize('delay-between-station')}}: [[factorySchedule.delay]] {{localize('minute')}}</p>
+            <p>{{localize('waiting-order')}}: [[getWaitingOrder(orderItems)]] {{localize('order')}}</p>
+            <p>{{localize('late-order')}}: [[getLateOrder(orderItems)]] {{localize('order')}}</p>
+          </div>
+          <vaadin-grid id="orderTable" items="{{getSortedOrder(orderItems)}}" page-size="20">
+            <vaadin-grid-column>
+              <template class="header">
+                <vaadin-grid-sorter path="order_no">
+                  <div class="cell">{{localize('order-number')}}</div>
+                </vaadin-grid-sorter>
+              </template>
+              <template>
+                <div class="cell">[[item.order_no]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="30px">
+              <template class="header">
+                <div class="cell">{{localize('color')}}</div>
+              </template>
+              <template>
+                <div class="cell" style$="color:[[item.order_color]]">&#9608;</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <div class="cell">{{localize('customer')}}</div>
+              </template>
+              <template>
+                <div class="cell">[[item.order_customer]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <div class="cell">{{localize('product')}}</div>
+              </template>
+              <template>
+                <div class="cell">[[item.order_product_name]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="20px">
+              <template class="header">
+                <vaadin-grid-sorter path="order_product_part">
+                  <div class="cell">
+                    <span>{{localize('part')}}</span>
+                  </div>
+                </vaadin-grid-sorter>
+              </template>
+              <template>
+                <div class="cell">[[item.order_product_part.length]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="20px">
+              <template class="header">
+                <vaadin-grid-sorter path="order_quantity">
+                  <div class="cell">
+                    <span>{{localize('quantity')}}</span>
+                  </div>
+                </vaadin-grid-sorter>
+              </template>
+              <template>
+                <div class="cell">[[item.order_quantity]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <vaadin-grid-sorter path="order_duration">
+                  <div class="cell">{{localize('duration')}}</div>
+                </vaadin-grid-sorter>
+              </template>
+              <template>
+                <div class="cell">[[getOrderDuration(item.order_duration)]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <vaadin-grid-sorter path="order_delivery">
+                  <div class="cell">{{localize('remaining')}}</div>
+                </vaadin-grid-sorter>
+              </template>
+              <template>
+                <div class="cell">[[getRemainDay(item.order_delivery, item.order_status, item.$key)]] {{localize('day')}}</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <vaadin-grid-sorter path="order_delivery">
+                  <div class="cell">{{localize('delivery-date')}}</div>
+                </vaadin-grid-sorter>
+              </template>
+              <template>
+                <div class="cell">[[getDeliveryDate(item.order_delivery)]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="30px">
+              <template class="header">
+                <vaadin-grid-sorter path="order_status">
+                  <div class="cell">{{localize('status')}}</div>
+                </vaadin-grid-sorter>
+              </template>
+              <template>
+                <div class="cell" style$="color:[[getColorStatus(item.order_status)]]">[[getOrderStatus(item.order_status)]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15px">
+              <template class="header">
+                <div class="cell last">{{localize('edit')}}</div>
+              </template>
+              <template>
+                <div class="cell last">
+                  <paper-icon-button on-click="openEditOrderCard" order="[[item]]" icon="vaadin:pencil" title="Edit"></paper-icon-button>
+                </div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="15px">
+              <template class="header">
+                <div class="cell numeric last">{{localize('cancel')}}</div>
+              </template>
+              <template>
+                <div class="cell numeric last">
+                  <paper-icon-button on-click="deleteOrder" order="[[item]]" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+                </div>
+              </template>
+            </vaadin-grid-column>
+
+          </vaadin-grid>
+          <div class="center">
+            <paper-button class="btn" on-click="refreshOrderTable">{{localize('refresh')}}</paper-button>
+            <paper-button class="btn" on-click="reSchedule">{{localize('reschedule')}}</paper-button>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="card" hidden="[[showScheduleTable]]">
+          <h1 class="title">{{localize('production-scheduling-table')}}</h1>
+          <span class="badge preview-badge" hidden="[[!isPreviewMode]]">Preview Mode</span>
+          <span class="badge production-badge" hidden="[[!isProductionMode]]">Production Mode</span>
+          <p>Selected Plan: [[factorySchedule.selected_plan]]</p>
+          <p>{{localize('station')}}: [[selectedStation]]</p>
+          <p>{{localize('station-name')}}:
+            <template is="dom-repeat" items="[[filterStationData]]" as="stationItem">[[stationItem.st_name]]</template>
+          </p>
+          <p>{{localize('station-machine')}}:
+            <template is="dom-repeat" items="[[filterStationData]]" as="item">
+              <template is="dom-repeat" items="[[item.st_machine]]" as="item">[[item.name]] / </template>
+            </template>
+          </p>
+          <p>{{localize('machine-quantity')}}:
+            <template is="dom-repeat" items="[[filterStationData]]" as="stationItem">[[stationItem.st_machine.length]] {{localize('machine')}}</template>
+          </p>
+          <div class="center btn-group">
+            <iron-selector selected="{{selectedStation}}" attr-for-selected="name" fallback-selection="1" role="navigation">
+              <template is="dom-repeat" items="[[stationItems]]" as="stationItem">
+                <paper-button class="station-btn" name="[[stationItem.st_number]]">
+                  {{localize('station')}} [[stationItem.st_number]]
+                </paper-button>
+              </template>
+            </iron-selector>
+          </div>
+          <vaadin-grid id="jobSchedulingTable" items="{{filterScheduleItems}}" page-size="20">
+            <vaadin-grid-column width="100px" flex="0">
+              <template class="header">
+                <div class="cell center">{{localize('station')}}</div>
+              </template>
+              <template>
+                <div class="cell center">[[selectedStation]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <div class="cell">{{localize('order-number')}}</div>
+              </template>
+              <template>
+                <div class="cell">[[item.order_no]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="40px">
+              <template class="header">
+                <vaadin-grid-sorter path="order_status">
+                  <div class="cell">{{localize('color')}}</div>
+                </vaadin-grid-sorter>
+              </template>
+              <template>
+                <div class="cell" style$="color:[[item.order_color]]">&#9608;</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <div class="cell">{{localize('product')}}</div>
+              </template>
+              <template>
+                <div class="cell">[[item.order_product]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="40px">
+              <template class="header">
+                <div class="cell">
+                  <span>{{localize('part')}}</span>
+                </div>
+              </template>
+              <template>
+                <div class="cell">[[item.job_part]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <div class="cell">
+                  <span>{{localize('quantity')}}</span>
+                </div>
+              </template>
+              <template>
+                <div class="cell">[[item.job_quantity]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <div class="cell">{{localize('workload')}}</div>
+              </template>
+              <template>
+                <div class="cell">[[getSecondsToHms(item.job_workload)]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <div class="cell">{{localize('est-start')}}</div>
+              </template>
+              <template>
+                <div class="cell">[[getTimestampToTime(item.start)]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <div class="cell">{{localize('est-end')}}</div>
+              </template>
+              <template>
+                <div class="cell">[[getEstEnd(item.start,item.job_workload)]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <div class="cell">{{localize('used-machine')}}</div>
+              </template>
+              <template>
+                <div class="cell">[[item.job_machine]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column>
+              <template class="header">
+                <div class="cell">{{localize('status')}}</div>
+              </template>
+              <template>
+                <div class="cell" style$="color:[[getColorStatus(item.job_status)]]">[[getOrderStatus(item.job_status)]]</div>
+              </template>
+            </vaadin-grid-column>
+
+            <vaadin-grid-column width="100px" flex="0">
+              <template class="header">
+                <div class="cell numeric last">{{localize('cancel')}}</div>
+              </template>
+              <template>
+                <div class="cell numeric last">
+                  <paper-icon-button on-click="deleteJob" job="[[item]]" icon="vaadin:close-small" title="Delete" disabled="[[isDeletable(item.job_status)]]"></paper-icon-button>
+                </div>
+              </template>
+            </vaadin-grid-column>
+          </vaadin-grid>
+          <div class="center">
+            <paper-button class="btn thunderbird" on-click="clearSchedule">{{localize('clear-schedule')}}</paper-button>
+            <paper-button class="btn" on-click="openManagePlanDialog">Load Plan</paper-button>
+            <paper-button class="btn" on-click="saveAsPlan" disabled="[[isEmpty(scheduleItems)]]">Save as Plan</paper-button>
+            <paper-button class="btn shamrock" disabled="[[isEmpty(scheduleItems)]]" on-click="applySchedule">Apply Schedule</paper-button>
+          </div>
+        </div>
+      </li>
+      <li>
+        <div class="card" id="chartContainer" hidden="[[showChartTable]]">
+          <h1 class="title">{{localize('scheduling-chart')}}</h1>
+          <div>
+          <svg id="gantt"></svg>
+          </div>
+          <google-chart id="timeline" type="timeline" options="[[timelineOptions]]"></google-chart>
+          <div class="center">
+            <paper-button on-click="setGanttChart" class="btn">Print</paper-button>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <flat-dialog id="managePlanDialog" scroll-action="lock">
+      <h1 class="center">Scheduling Plan</h1>
+      <p class="select-plan">Selected Plan: [[selected.name]]</p>
+      <div class="frame">
+        <div class="plan-list">
+          <iron-list id="planList" items="[[planItems]]" as="item" selected-items={{selected}} selection-enabled>
+            <template>
+              <div tabindex$="[[tabIndex]]" class="item">
+                <div class="left">
+                  <p class="bold">Name: [[item.name]]</p>
+                  <p class="subtitle">Type: [[item.type]]</p>
+                </div>
+                <div class="right">
+                  <paper-icon-button on-click="removePlan" plan="[[item]]" icon="vaadin:trash" title="Delete"></paper-icon-button>
+                </div>
+              </div>
+            </template>
+          </iron-list>
+        </div>
+      </div>
+      <div class="center">
+        <paper-button class="btn" disabled$="[[disabled]]" on-click="previewSelectedPlan">Preview</paper-button>
+        <paper-button class="btn shamrock" disabled$="[[disabled]]" on-click="loadSelectedPlan">Apply</paper-button>
+        <paper-button class="btn" on-click="closeManagePlanDialog">{{localize('close')}}</paper-button>
+      </div>
+    </flat-dialog>
+    <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{localize(toastText)}}"></paper-toast>
+  </template>
+  <script>
+    /**
+     * @ViewPlanScheduling
+     * @polymer 
+     * @extends {Polymer.Element}
+     */
+    class ViewPlanScheduling extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior, Polymer.IronResizableBehavior],
+      Polymer.Element) {
+      static get is() {
+        return 'view-plan-scheduling'
+      }
+
+      static get properties() {
+        return {
+          ganttChartData: {
+            type: Array
+          },
+          selectedStation: {
+            type: String,
+            reflectToAttribute: true,
+            value: 1
+          },
+          sortedOrder: {
+            type: Object
+          },
+          scheduleItems: {
+            type: Object,
+            notyfy: true,
+          },
+          showOrderTable: {
+            type: Boolean,
+            value: false
+          },
+          showScheduleTable: {
+            type: Boolean,
+            value: false
+          },
+          showChartTable: {
+            type: Boolean,
+            value: false
+          },
+          showEditOrder: {
+            type: Boolean,
+            value: true
+          },
+          isPreviewMode: {
+            type: Boolean,
+            value: false
+          },
+          isProductionMode: {
+            type: Boolean,
+            value: false
+          },
+          disabled: {
+            type: Boolean,
+            value: true
+          },
+          language: String,
+          status: String,
+          orderItems: Object,
+          chartItems: Object,
+          trackItems: Object,
+          editOrderItems: Object,
+          factoryPerformance: Object,
+          factoryProfile: Object,
+          factoryOperation: Object,
+          timelineOptions: Object,
+          filterScheduleItems: Object,
+          width: Number,
+          height: Number,
+          editKey: String,
+          toastText: String,
+        }
+      }
+
+      static get observers() {
+        return [
+          '_isSerialModel(factoryProfile.model)',
+          'refreshOrderTable(orderItems.*)',
+        ]
+      }
+
+      ready() {
+        super.ready();
+        this._initialDatePicker();
+        this._setOrderDatePosition();
+        this.ganttChartData = [{
+          id: 'Task 1',
+          name: 'Redesign website',
+          start: '2018-01-28',
+          end: '2018-01-31',
+          progress: 20,
+          dependencies: 'Task 2, Task 3'
+        }]
+        let gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), this.ganttChartData)
+      }
+
+      setGanttChart() {
+        this.ganttChartData.push({
+          id: 'Task 2',
+          name: 'Redesign website',
+          start: '2016-02-28',
+          end: '2016-02-31',
+          progress: 0,
+          dependencies: 'Task 2, Task 3'
+        })
+        let gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), this.ganttChartData)
+      }
+
+      connectedCallback() {
+        super.connectedCallback()
+        this.loadResources(this.resolveUrl('../../data/locales.json'))
+        requestAnimationFrame(this._installListeners.bind(this))
+      }
+
+      _installListeners() {
+        this.addEventListener('iron-resize', (e) => this._setChartSize(e))
+        this.$.planList.addEventListener('selected-item-changed', this._validatePlanInput.bind(this))
+      }
+
+      refreshOrderTable() {
+        this.$.orderTable.clearCache();
+        this.toastText = 'notification-refreshing-data'
+        this.$.toastAlert.open()
+      }
+
+      _isSerialModel(production_model) {
+        if (production_model === 'serial' || production_model === 'multi') {
+          this.$.concurrency.hidden = true
+        } else {
+          this.$.concurrency.hidden = false
+        }
+      }
+
+      _setOrderDatePosition() {
+        const today = new Date();
+        let dd = today.getDate()
+        let mm = today.getMonth() + 1
+        let yyyy = today.getFullYear()
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        this.todayDate = yyyy + '-' + mm + '-' + dd
+      }
+
+      _initialDatePicker() {
+        let datepicker = this.$.editDeliverySelector;
+        datepicker.addEventListener('value-changed', function () {
+          this.orderDelivery = (new Date(datepicker.value).getTime() / 1000);
+        });
+      }
+
+      _clearField() {
+        this.$.editCustomerSelector.value = "";
+        this.$.editProductSelector.value = "";
+        this.$.editOrderQuantity.value = 1;
+        this.$.editDeliverySelector.value = "";
+      }
+
+      _setChartSize() {
+        this.width = this.$.chartContainer.offsetWidth;
+        this.height = this.$.chartContainer.offsetHeight;
+        if (this.$.timeline.offsetHeight > 0) {
+          this.updateStyles({
+            '--chart-container-height': this.$.timeline.offsetHeight,
+            '#chartContainer': this.$.timeline.offsetHeights
+          });
+        }
+        if (this.width > 0) {
+          this.timelineOptions = {
+            width: this.width - 40,
+            height: this.height,
+            timeline: {
+              rowLabelStyle: {
+                fontSize: 16
+              },
+              barLabelStyle: {
+                fontSize: 16
+              }
+            },
+            tooltip: {
+              isHtml: true
+            },
+            legend: {
+              position: 'none'
+            },
+            avoidOverlappingGridLines: false
+          }
+          google.charts.setOnLoadCallback(this._initialChart())
+        }
+      }
+
+      _initialChart() {
+        let chart = this.$.timeline;
+        let dataTable = new google.visualization.DataTable();
+        dataTable.addColumn({
+          type: 'string',
+          id: 'Station'
+        });
+        dataTable.addColumn({
+          type: 'string',
+          id: 'Order no.'
+        });
+        dataTable.addColumn({
+          type: 'string',
+          role: 'style'
+        });
+        dataTable.addColumn({
+          type: 'date',
+          id: 'Start'
+        });
+        dataTable.addColumn({
+          type: 'date',
+          id: 'End'
+        });
+        if (this.chartItems.length > 0) {
+          // convert time stamp to new date 
+          const result = this.chartItems.map((x) => {
+            return [this.localize('station') + x[0], x[1], x[2],
+              new Date(x[3] * 1000),
+              new Date(x[4] * 1000)
+            ]
+          });
+          dataTable.addRows(result);
+        } else {
+          dataTable.addRows([
+            ['\0', 'No data', '#FFFFFF', new Date(1506470400), new Date(1506480400)]
+          ]);
+        }
+        document.createElement('google-chart-loader').dataTable(
+          dataTable).then((dataTable) => {
+          chart.data = dataTable;
+        });
+      }
+
+      _refreshChart() {
+        if (this.scheduleItems.length > 0) {
+          let newChartData = this.scheduleItems.map((data) => {
+            return [data.job_station + '' || 'N/A', 'Order ' + data.order_no, data.order_color,
+              data.start, data.end
+            ]
+          })
+          this.$.chartQuery.ref.remove()
+          this.$.chartQuery.ref.set(newChartData)
+        }
+      }
+      // PLAN MANAGEMENT
+      _validatePlanInput() {
+        if (this.$.planList.selectedItem) {
+          this.disabled = false
+        } else {
+          this.disabled = true
+        }
+      }
+
+      openManagePlanDialog() {
+        this.$.managePlanDialog.opened = true
+      }
+
+      closeManagePlanDialog() {
+        this.$.managePlanDialog.opened = false
+      }
+
+      removePlan(e) {
+        if (confirm("Delete this Plan?")) {
+          const key = e.currentTarget.plan.$key
+          this.$.planQuery.ref.child(key).remove()
+        }
+      }
+
+      loadSelectedPlan() {
+        if (this.$.planList.selectedItem.data) {
+          const planName = this.$.planList.selectedItem.name
+          const planData = this.$.planList.selectedItem.data
+          this.set('factorySchedule.selected_plan', planName)
+          this.isPreviewMode = false;
+          this.isProductionMode = true;
+          this.$.scheduleQuery.ref.set(planData);
+          this.$.trackingQuery.ref.set(planData);
+          alert(`Plan ${planName} has been added/replaced to your tracking section.`)
+          this._refreshChart()
+          this.closeManagePlanDialog();
+        }
+      }
+
+      applySchedule() {
+        this.set('factorySchedule.selected_plan', 'Untitled')
+        this.isPreviewMode = false;
+        this.isProductionMode = true;
+        const scheduleData = Object.assign(...Object.entries(this.scheduleItems)
+          .map(([i, v]) => {
+            delete v.$key
+            return {
+              [i]: v
+            }
+          }));
+        this.$.trackingQuery.ref.set(scheduleData)
+        console.log(scheduleData)
+        alert(`This Plan has been added/replaced to your tracking section.`)
+      }
+
+      previewSelectedPlan() {
+        if (this.$.planList.selectedItem.data) {
+          this.selected_plan = this.$.planList.selectedItem.name
+          this.isPreviewMode = true;
+          this.isProductionMode = false;
+          this.$.scheduleQuery.ref.set(this.$.planList.selectedItem.data);
+          this._refreshChart()
+          this.closeManagePlanDialog();
+        }
+      }
+
+      isEmpty(item) {
+        if (item.length > 0) {
+          return false
+        } else {
+          return true
+        }
+      }
+
+      saveAsPlan() {
+        let planName = prompt("Please enter plan name", "Untitled");
+        if (planName) {
+          let newObj = Object.assign(...Object.entries(this.scheduleItems)
+            .map(([i, v]) => {
+              delete v.$key
+              return {
+                [i]: v
+              }
+            }));
+          this.$.planQuery.ref.push({
+            name: planName,
+            type: this.factoryProfile.model,
+            data: newObj
+          })
+        }
+      }
+
+      getSortedOrder(order) {
+        // SORT BY EDD THEN BY SPT
+        let sort = order.sort((a, b) => {
+          return a["order_delivery"] - b["order_delivery"] || a["order_duration"] - b[
+            "order_duration"];
+        });
+        this.sortedOrder = sort;
+        return sort;
+      }
+
+      getOrderDurationInMinute(part, amount) {
+        let productCycleArr = []
+        let productSetupArr = []
+        productCycleArr = part.map(part => part.cycle); // returns a new array of part cycle iterated
+        productSetupArr = part.map(part => part.setup); // returns a new array of part setup iterated
+        const flatCycleArr = productCycleArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
+        const flatSetupArr = productSetupArr.reduce((prev, cur) => [...prev, ...cur]) // flat subarr to arr
+        const sumCycle = flatCycleArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumCycle
+        const sumSetup = flatSetupArr.reduce((a, b) => a + b); // apply sum function to all arr items to get sumSetup
+        const sumDuration = (sumSetup + (sumCycle * this.getActualQuantity(amount))); // sumCycle * quantity
+        return sumDuration;
+      }
+
+      getActualQuantity(amount) {
+        if (!amount) return 0;
+        const accept_waste = this.factoryPerformance.aw;
+        const actual_quantity = Math.ceil((amount / (1 - accept_waste)));
+        this.actualQuantity = actual_quantity;
+        return actual_quantity;
+      }
+
+      getTimestampToDate(timestamp) {
+        const today = new Date(timestamp * 1000);
+        let dd = today.getDate()
+        let mm = today.getMonth() + 1
+        let yyyy = today.getFullYear()
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        return Array.of(dd, mm, yyyy)
+      }
+
+      getTimestampToTime(timestamp) {
+        let date = new Date(timestamp * 1000);
+        // Hours part from the timestamp
+        let h = date.getHours();
+        // Minutes part from the timestamp
+        let m = date.getMinutes();
+        // Seconds part from the timestamp
+        let s = date.getSeconds();
+        // Will display time in 10:30:23 format
+        return ('0' + h).substr(-2) + ":" + ('0' + m).substr(-2) + ":" + ('0' + s).substr(-2)
+      }
+
+      getSecondsToHms(sec) {
+        sec = Number(sec)
+        const h = Math.floor(sec / 3600)
+        const m = Math.floor(sec % 3600 / 60)
+        const s = Math.floor(sec % 3600 % 60)
+        return ('0' + h).slice(-2) + ":" + ('0' + m).slice(-2) + ":" + ('0' + s).slice(-2)
+      }
+
+      getNextInterval(last_timestamp, interval) {
+        if (!last_timestamp || !interval) return 0
+        let current = Math.floor(Date.now() / 1000)
+        let diff = current - last_timestamp
+        let range = interval * 24 * 60 * 60
+        if (diff <= range) {
+          let nextIntervalStamp = (last_timestamp * 1000) + (interval * 24 * 60 * 60 *
+            1000)
+          let nextIntervalDate = new Date(nextIntervalStamp)
+          let dd = nextIntervalDate.getDate()
+          let mm = nextIntervalDate.getMonth() + 1 // January is 0!
+          let yyyy = nextIntervalDate.getFullYear()
+          if (dd < 10) {
+            dd = '0' + dd
+          }
+          if (mm < 10) {
+            mm = '0' + mm
+          }
+          let nextInterval = dd + '/' + mm + '/' + yyyy
+          return nextInterval
+        } else {
+          this.set('factorySchedule.start_interval', current)
+        }
+      }
+
+      getOrderDuration(order_duration) {
+        if (!order_duration) return 0
+        return this._durationToStr(order_duration)
+      }
+
+      getRemainDay(delivery_date, status, key) {
+        if (!delivery_date) return 'N/A'
+        const current_date = Math.round(new Date().getTime() / 1000);
+        const remain = Math.round((delivery_date - current_date) / 86400);
+
+        if (remain < 0 && status !== 'done' && status !== 'wip') {
+          this.setOrderStatus(key, 'late');
+          return 0;
+        } else if (remain < 0 && (status === 'done' || status === 'wip' || status === 'late')) {
+          return 0;
+        } else if (remain >= 0 && status === 'late') {
+          this.setOrderStatus(key, 'waiting');
+          return remain;
+        } else {
+          return remain;
+        }
+      }
+
+      getDeliveryDate(timestamp) {
+        let date = this.getTimestampToDate(timestamp)
+        return date[0] + '/' + date[1] + '/' + date[2];
+      }
+
+      getTimestampToDatePicker(timestamp) {
+        let date = this.getTimestampToDate(timestamp)
+        this.todayDate = date[2] + '-' + date[1] + '-' + date[0]
+      }
+
+      getOrderStatus(order_status) {
+        switch (order_status) {
+          case 'waiting':
+            return this.localize('waiting')
+            break;
+          case 'wip':
+            return this.localize('wip')
+            break;
+          case 'done':
+            return this.localize('done')
+            break;
+          case 'late':
+            return this.localize('late')
+            break;
+          case 'cancel':
+            return this.localize('cancel')
+            break;
+          default:
+            return 'N/A'
+        }
+      }
+
+      getColorStatus(order_status) {
+        switch (order_status) {
+          case 'waiting':
+            return '#FFB300'
+            break;
+          case 'wip':
+            return '#5E35B1'
+            break;
+          case 'done':
+            return '#7CB342'
+            break;
+          case 'late':
+            return '#E53935'
+            break;
+          case 'cancel':
+            return '#E53935'
+            break;
+          default:
+            return '#202020'
+        }
+      }
+
+      getEstEnd(start, workload) {
+        let workload_second = workload
+        let end_timestamp = start + workload_second
+        return this.getTimestampToTime(end_timestamp)
+      }
+
+      getWaitingOrder(order_data) {
+        if (!order_data) return 0
+        return order_data.filter((i) => i.order_status === "waiting").length
+      }
+
+      getLateOrder(order_data) {
+        if (!order_data) return 0
+        return order_data.filter((i) => i.order_status === "late").length
+      }
+      // UTILITY
+      _pushNotification(detail, type) {
+        this.$.notificationQuery.ref.push({
+          created: Math.round(Date.now() / 1000.0),
+          detail: detail,
+          type: type
+        });
+      }
+
+      // CONVERT TIME TO STRING
+      _durationToStr(sec) {
+        sec = Number(sec);
+        let sign = '';
+        let hours = this._leftPad(Math.floor(Math.abs(sec) / 3600));
+        let minutes = this._leftPad(Math.round(Math.abs(sec) % 3600 / 60));
+        let seconds = this._leftPad(Math.round(Math.abs(sec) % 3600 % 60));
+        return hours + 'hrs ' + minutes + 'min' + seconds + 'sec';
+      }
+
+      // ADD 0 to numbers less than 10,Eg: 2 -> 02 
+      _leftPad(number) {
+        return ((number < 10 && number >= 0) ? '0' : '') + number;
+      }
+
+      // ORDER MANAGEMENT
+      openEditOrderCard(e) {
+        this.showEditOrder = false
+        this.showOrderTable = true
+        this.showScheduleTable = true
+        this.showChartTable = true
+        const key = e.currentTarget.order.$key
+        this.editKey = key
+      }
+
+      dismissEditOrder() {
+        this.showEditOrder = true
+        this.showOrderTable = false
+        this.showScheduleTable = false
+        this.showChartTable = false
+        this.editKey = ''
+      }
+
+      setOrderStatus(key, status) {
+        this.$.orderQuery.ref.child(key).update({
+          order_status: status
+        });
+      }
+
+      isDeletable(status) {
+        return ((status === 'wip') ? true : false)
+      }
+
+      clearSchedule() {
+        if (confirm("Clear all schedule ? The order that are working in process will not be deleted.")) {
+          this.$.scheduleQuery.ref.remove()
+          this.$.chartQuery.ref.remove()
+          this.toastText = 'notification-delete-successfully'
+          this.$.toastAlert.open()
+        }
+      }
+
+      updateOrder() {
+        const timestamp = Math.round(new Date().getTime() / 1000.0);
+        const orderNo = this.editOrderItems.order_no;
+        const orderCustomerName = this.$.editCustomerSelector.value;
+        const orderProductName = this.$.editProductSelector.value;
+        const orderProductPart = this.$.editProductSelector.selectedItem.part;
+        const orderProductProcess = this.$.editProductSelector.selectedItem.process;
+        const orderProductSKU = this.$.editProductSelector.selectedItem.sku;
+        const orderQuantity = this.getActualQuantity(this.$.editOrderQuantity.value);
+        const orderDuration = this.getOrderDurationInMinute(orderProductPart, orderQuantity);
+        const orderDelivery = (new Date(this.$.editDeliverySelector.value).getTime() / 1000);
+
+        if (this.$.editOrderQuantity.value === 0) {
+          window.alert("Order product quantity cannot be 0")
+          return;
+        }
+        if (orderCustomerName !== "" && orderProductName !== "" && orderProductPart !==
+          "" && orderProductProcess !== "" && orderProductSKU !== "" && orderQuantity !== "" && !(
+            isNaN(orderDelivery))) {
+
+          this.$.editOrderQuery.ref.update({
+            order_customer: orderCustomerName,
+            order_product_name: orderProductName,
+            order_product_part: orderProductPart,
+            order_product_dependency: orderProductProcess,
+            order_product_sku: orderProductSKU,
+            order_quantity: orderQuantity,
+            order_duration: orderDuration,
+            order_delivery: orderDelivery,
+            order_status: "waiting",
+          });
+          this._pushNotification('Edited order no.' + orderNo, 'normal')
+          this.dismissEditOrder()
+          this.refreshOrderTable()
+          this.toastText = 'notification-save-successfully'
+          this.$.toastAlert.open()
+        } else {
+          window.alert("Input field cannot be blank, please fill in completely.");
+        }
+      }
+
+      deleteOrder(e) {
+        if (confirm("Delete this order ?")) {
+          let key = e.currentTarget.order.$key
+          this.$.orderQuery.ref.child(key).remove()
+          this.toastText = 'notification-delete-successfully'
+          this.$.toastAlert.open()
+        }
+      }
+
+      deleteJob(e) {
+        if (confirm("Delete this job ?")) {
+          let key = e.currentTarget.job.$key;
+          this.$.jobQuery.ref.child(key).remove();
+          this.toastText = 'notification-delete-successfully'
+          this.$.toastAlert.open()
+          this._refreshChart()
+        }
+      }
+
+      reSchedule() {
+        if (confirm(
+            "WARNING!! This will clear all schedules data")) {
+          this.$.scheduleQuery.ref.remove()
+          this.$.chartQuery.ref.remove()
+
+          // 1) Filter only waiting, late or wip order 
+          if (this.sortedOrder) {
+            switch (this.factoryProfile.model) {
+              case "serial":
+                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
+                  .order_product_part.length === 1), 1, 'serial')
+                break;
+              case "parallel":
+                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
+                    .order_product_part.length === 1), this.factoryProfile.concurrency,
+                  'parallel')
+                break;
+              case "multi":
+                this._scheduleOrder(this.sortedOrder.filter(o => o.order_status !== 'done' && o
+                  .order_product_part.length > 1), 1, 'multi')
+                break;
+              default:
+                window.alert("Invalid production model")
+            }
+            this.toastText = 'notification-refreshing-data'
+            this.$.toastAlert.open()
+          } else {
+            window.alert("No order data found")
+          }
+        }
+      }
+      _scheduleOrder(undone_order, concurrent, model) {
+        if (this.sortedOrder.length > 0) {
+          // 2) Copy first concurrent orders from sorted order table 
+          const selected_order = undone_order.slice(0, concurrent).concat(undone_order.slice(
+            undone_order.length));
+          console.table(selected_order)
+
+          // 3) Set order status to work in progress
+          selected_order.map((data) => this.setOrderStatus(data.$key, 'wip'))
+          // 4) Set order part and order quantity data 
+          let order_quantity = selected_order.map(o => o.order_quantity)
+          let order_part = selected_order.map(o => o.order_product_part)
+          let order_product_name = selected_order.map(o => o.order_product_name)
+          let order_description = selected_order.map(o => o.order_product_description)
+          let order_no = selected_order.map(o => o.order_no)
+          let order_duration = selected_order.map(o => o.order_duration)
+          let order_delivery = selected_order.map(o => o.order_delivery)
+          let order_customer = selected_order.map(o => o.order_customer)
+          let order_color = selected_order.map(o => o.order_color)
+          let order_date = selected_order.map(o => o.order_date)
+
+          // 5) Flat multiple parts array in to flat parts array
+          order_part = order_part.reduce((a, b) => a.concat(b), [])
+          console.table(order_part)
+
+          // 5.1) Array of cycle 
+          let cycleArr = order_part.map(element => element.cycle)
+
+          // 5.2) Array of setup
+          let setupArr = order_part.map(element => element.setup)
+
+          // 5.3) Array of process no (index) 
+          let processArr = order_part.map(element => element.process)
+
+          // 6) Calculate workload of each process
+          let multiResult, workload
+          if (model === 'multi') {
+            multiResult = cycleArr.map((c, index) => c.map(c => c * order_quantity)) // cycle = time x quantity
+            workload = multiResult.map((item, index) => {
+              return item.map((i, j) => {
+                return i + setupArr[index][j]
+              })
+            })
+          } else {
+            multiResult = order_quantity.map((q, index) => cycleArr[index].map(c => c * q)) // cycle = time x quantity
+            workload = multiResult.map((item, index) => {
+              return item.map((i, j) => {
+                return i + setupArr[index][j]
+              })
+            })
+          }
+
+          // 7) Convert array into object array
+          let workloadProcessObj = workload
+            .map((k, i) => Object.assign({}, ...processArr[i]
+              .map((process, index) => ({
+                [process]: workload[i][index]
+              }))
+            ))
+
+          // 8.1) Calculate sum workload of each process (using Ramda)
+          let sumWorkloadEachProcess = R.reduce(R.mergeWith(R.add), {}, workloadProcessObj)
+
+          // 8.2) Calculate sum workload of each order
+          let sumWorkloadEachOrder = workload.map((item) => {
+            return item.reduce((a, b) => {
+              return a + b;
+            });
+          });
+
+          // 9) Calculate weight of each process based on workload 
+          // (workload of n process / total workload of each process)
+          let weight = []
+          workload.map((_, i) => {
+            weight[i] = R.mergeWith(R.divide, workloadProcessObj[i], sumWorkloadEachProcess)
+          })
+
+          // 10) Calculate available machines
+          let machine_in_station = this.stationItems.map(data => {
+            if (!data.st_machine.length) {
+              return 0
+            } else {
+              return data.st_machine.length
+            }
+          })
+
+          // 10.1) Remove unused weight that > 1
+          let cleanWeight = weight.map(item => Object.entries(item).filter(([key, value]) => value <=
+            1).map(([key, value]) => ({
+            [key]: value
+          })).reduce(R.merge))
+          //console.log('Clean Weight ', cleanWeight)
+
+          // 11) Calculate used machines of each job
+          let computeAllocatedMachine = (x, i) => {
+            if (x == 1) {
+              return 1
+            } else {
+              let key = Object.keys(x)
+              let result = key.map((y, i) => {
+                let allocated = Math.ceil(x[y] * machine_in_station[parseInt(y) - 1])
+                if (allocated === 0) {
+                  return 1
+                } else if (allocated === machine_in_station[parseInt(y) - 1] && x[y] !==
+                  1) {
+                  return allocated - 1
+                } else {
+                  return allocated
+                }
+              })
+              return result;
+            }
+          }
+          let machines = cleanWeight.map(computeAllocatedMachine);
+          let workloadArr = workload.map(data => Object.values(data))
+
+          // 12) Calculate the duration of each process
+          let duration = [];
+          duration = workloadArr.map((w, i) => {
+            return w.map((wl, j) => wl / parseInt(machines[i]))
+          });
+
+          // 13) Map value and key to a new object 
+          // and reduce to flat array for each part order
+          let start = []
+          let end = []
+          let today = new Date();
+          let dd = today.getDate();
+          let months = new Array('Jan', 'Feb', 'Mar', 'Apri', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+          let mm = months[today.getMonth()];
+          let yyyy = today.getFullYear();
+          if (dd < 10) {
+            dd = '0' + dd;
+          }
+          let initialStart = Date.parse(dd + ' ' + mm + ' ' + yyyy + ' ' + this.factoryOperation
+            .op_start + ':00') / 1000
+
+          let result = processArr.map((station, i) => {
+            let next = []
+            let prev = []
+            duration[i].forEach((duration, index) => {
+              if (index === 0) {
+                next.push(initialStart);
+              } else {
+                next.push(prev[index - 1] + parseInt(this.factorySchedule.delay *
+                  60));
+              }
+              prev.push(next[index] + duration)
+            })
+            start.push(next)
+            end.push(prev)
+
+            return {
+              "start": start[i].filter(value => isNaN(value) ? initialStart : value),
+              "end": end[i].filter(value => isNaN(value) ? initialStart + 10000 : value),
+              "job_id": Math.random().toString(36).substr(2, 12),
+              "job_cycle": cycleArr[i].filter(value => isNaN(value) ? 0 : value),
+              "job_setup": setupArr[i].filter(value => isNaN(value) ? 0 : value),
+              "job_workload": workload[i].filter(value => isNaN(value) ? 0 : value),
+              "job_duration": duration[i].filter(value => isNaN(value) ? 0 : value),
+              "job_machine": machines[i].filter(value => isNaN(value) ? 0 : value),
+              "job_station": order_part[i].process,
+              "job_part": order_part[i].name.toString(),
+              "job_sku": order_part[i].sku.toString(),
+              "job_weight": Object.values(cleanWeight[i]).filter(value => isNaN(value) ?
+                0 : value),
+              "job_quantity": order_quantity,
+              "job_status": "waiting",
+              "job_good": 0,
+              "job_defect": 0,
+              "job_dependency": order_part[i].dependency,
+              "job_complete": 0.00,
+              "order_customer": order_customer,
+              "order_delivery": order_delivery,
+              "order_no": order_no,
+              "order_date": order_date,
+              "order_color": order_color.toString(),
+              "order_product": order_product_name.toString(),
+              "order_description": order_description.toString(),
+            }
+          }).reduce((a, b) => {
+            return a.concat(b);
+          }, []); // use reduce only for serial and parallel
+
+          // 13) Split arr into group of key-value arr using lodash
+          let splitArr = result.map((data) => _.transform(data, function (result, value, key) {
+            if (!_.isArray(value)) return;
+            if (result.length < value.length) {
+              result.push(..._.times(value.length - result.length, () => _.clone(
+                data)))
+            }
+            value.map((item, index) => result[index][key] = item)
+          }, []))
+          console.table(splitArr)
+
+          // 14) If job schedule table is available then push the order into the table
+          //  let isDuplicated = this.scheduleItems.map(item => item.job_id).indexOf(resultObject.job_id) > -1
+          if (this.filterScheduleItems.length <= this.sortedOrder.length) {
+            splitArr.map((data, i) => {
+              delete data.$key
+              data.map((x, j) => this.$.scheduleQuery.ref.push(data[j]))
+            })
+            window.alert("Re-schedule successful, please refresh this page to update a chart.")
+          } else {
+            window.alert("Full capacity of current concurrency")
+          }
+          this._refreshChart()
+        } else {
+          window.alert("No order to schedule")
+        }
+      }
+    }
+    customElements.define(ViewPlanScheduling.is, ViewPlanScheduling)
+
+  </script>
 </dom-module>
