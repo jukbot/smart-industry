@@ -351,9 +351,10 @@
       }
       _verifyEmailAlert(verified, signedIn) {
         if (!verified && signedIn) {
-          this._showAlertToast(
-            'we-could-not-verify-your-account'
-          )
+          // Temporary Disable
+          // this._showAlertToast(
+          //   'we-could-not-verify-your-account'
+          // )
         }
       }
       _showAlertToast(text) {
