@@ -21,7 +21,6 @@
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-lazy-pages/iron-lazy-pages.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <!-- import 3rd party elements -->
@@ -114,7 +113,7 @@
             </app-toolbar>
           </app-header>
         </app-header-layout>
-        <iron-lazy-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
+        <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
           role="main" loading="{{loading}}">
           <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]"></view-dashboard>
           <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]"></view-setup>
@@ -124,7 +123,7 @@
           <view-404 name="404" route="[[subPageRoute]]" hidden$="[[!user]]"></view-404>
           <view-offline name="offline" route="[[subPageRoute]]" hidden$="[[!user]]"></view-offline>
           <view-error name="error" route="[[subPageRoute]]" hidden$="[[!user]]"></view-error>
-        </iron-lazy-pages>
+        </iron-pages>
       </app-drawer-layout>
     </iron-pages>
     <paper-toast id="toastVerify" class="toast-verify" always-on-top vertical-align="bottom" class="fit-bottom" duration="5000"
