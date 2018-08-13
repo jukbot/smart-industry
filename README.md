@@ -1,27 +1,26 @@
 
-
 <img align="center" src="imes_splash.png" alt="logo"/>
 
-# IMES
-IMES is an open source manufacturing execution system application designed for Small-Midsize JobShop Manufacturer.
+# IMES Platform
+IMES Platform is an open source manufacturing execution system application designed for Small-Midsize JobShop Manufacturer.
 
 <div align="center">
+
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
 [![Build Status](https://travis-ci.org/jukbot/smart-industry.svg?branch=master)](https://travis-ci.org/jukbot/smart-industry)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e2f623891a6047839fddda20d66d3e81)](https://www.codacy.com/app/jukbot/smart-industry?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jukbot/smart-industry&amp;utm_campaign=Badge_Grade)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/imes-project/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
-[![Polymer 2 supported](https://img.shields.io/badge/Polymer2-Supported-blue.svg)](https://github.com/jukbot/smart-industry/)
-[![Polymer 3 supported](https://img.shields.io/badge/Polymer3-WIP-yellow.svg)](https://github.com/jukbot/smart-industry/)
+[![Polymer 3 supported](https://img.shields.io/badge/Polymer3-Supported-yellow.svg)](https://github.com/jukbot/smart-industry/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 </div>
 
 ## Annoucement 📢
 
-## THIS PROJECT IS IN MIGRATING TO NEW 'IMES PLATFORM'
+## THIS PROJECT IS IN MIGRATING TO 'IMES PLATFORM'
 
-> Currently, we've temporary paused the project due to discussing  with an engineer team for the next phase in road map. 
-
+> Currently, we've temporary paused the project due to heavy migrating to Polymer 3
 
 
 ## Todo Plan of Software Developer 👨🏻‍💻
@@ -61,6 +60,42 @@ Please know that this project is still in heavy development 🚧 and can get a l
 
 Wanna join chat with us just join this [Gitter room](https://gitter.im/imes-project/Lobby?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
+
+
+# Run, Test, Build and Deploy Scripts 🦔
+
+    1) run an application on local server in development (with https)
+    $ npm run dev
+
+    2) run lint an application before testing
+    $ npm run lint
+
+    3) To run test an application before deploy
+    $ npm run test
+
+    4) build an application in production mode
+    $ npm run build
+
+    5) To deploy an application to firebase in production
+    $ npm run deploy
+
+    6) To run an application on production server (port 3000)
+    $ npm run serve:static
+
+
+    To build an application for firebase with PRPL
+    $ npm run build:firebase
+
+    To test an application for firebase with PRPL
+    $ npm run serve:firebase
+
+
+    To build an application on production server with PRPL
+    $ npm run build:prpl-server
+
+    To test an application on production server with PRPL
+    $ npm run server:prpl-server
+    
 
 ## Software User Guide 📖
 
@@ -229,7 +264,7 @@ Build the project:
 This command serves the production version of the app at `http://localhost:8080`generated using fragment bundling:
 
 ```bash
-    $ polymer serve build/es6-bundled/ --open
+    $ polymer serve build/es6-unbundled/ --open
 ```
 
 ### Run Lint
@@ -426,3 +461,89 @@ Licensed under the Apache License, Version 2.0 (the "License"); you may not use 
 (https://www.apache.org/licenses/LICENSE-2.0)
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+
+# Polymer App Toolbox - Starter Kit
+
+This template is a starting point for building apps using a drawer-based
+layout. The layout is provided by `app-layout` elements.
+
+This template, along with the `polymer-cli` toolchain, also demonstrates use
+of the "PRPL pattern" This pattern allows fast first delivery and interaction with
+the content at the initial route requested by the user, along with fast subsequent
+navigation by pre-caching the remaining components required by the app and
+progressively loading them on-demand as the user navigates through the app.
+
+The PRPL pattern, in a nutshell:
+
+* **Push** components required for the initial route
+* **Render** initial route ASAP
+* **Pre-cache** components for remaining routes
+* **Lazy-load** and progressively upgrade next routes on-demand
+
+### Setup
+
+##### Prerequisites
+
+Install [Polymer CLI](https://github.com/Polymer/polymer-cli) using
+[npm](https://www.npmjs.com) (we assume you have pre-installed [node.js](https://nodejs.org)).
+
+    npm install -g polymer-cli@next
+
+##### Initialize project from template
+
+    mkdir my-app
+    cd my-app
+    polymer init polymer-3-starter-kit
+
+### Start the development server
+
+This command serves the app at `http://127.0.0.1:8081` and provides basic URL
+routing for the app:
+
+    npm start
+
+### Build
+
+The `npm run build` command builds your Polymer application for production, using build configuration options provided by the command line or in your project's `polymer.json` file.
+
+You can configure your `polymer.json` file to create multiple builds. This is necessary if you will be serving different builds optimized for different browsers. You can define your own named builds, or use presets. See the documentation on [building your project for production](https://www.polymer-project.org/3.0/toolbox/build-for-production) for more information.
+
+The Polymer Starter Kit is configured to create three builds. These builds will be output to a subdirectory under the `build/` directory as follows:
+
+```
+build/
+  es5-bundled/
+  es6-unbundled/
+  esm-unbundled/ (Disable for temporary)
+```
+
+* `es5-bundled` is a bundled, minified build with a service worker. ES6 code is compiled to ES5 for compatibility with older browsers.
+* `es6-unbundled` is a unbundled, minified build with a service worker. ES6 code is served as-is. This build is for browsers that can handle ES6 code - see [building your project for production](https://www.polymer-project.org/3.0/toolbox/build-for-production#compiling) for a list.
+* `esm-unbundled` is a unbundled, minified build with a service worker. It uses standard ES module import/export statements for browsers that support them. 
+
+Run `polymer help build` for the full list of available options and optimizations. Also, see the documentation on the [polymer.json specification](https://www.polymer-project.org/3.0/docs/tools/polymer-json) and [building your Polymer application for production](https://www.polymer-project.org/3.0/toolbox/build-for-production).
+
+### Preview the build
+
+This command serves your app. Replace `build-folder-name` with the folder name of the build you want to serve.
+
+    npm start build/build-folder-name/
+
+### Run tests
+
+This command will run [Web Component Tester](https://github.com/Polymer/web-component-tester)
+against the browsers currently installed on your machine:
+
+    npm test
+
+If running Windows you will need to set the following environment variables:
+
+- LAUNCHPAD_BROWSERS
+- LAUNCHPAD_CHROME
+
+Read More here [daffl/launchpad](https://github.com/daffl/launchpad#environment-variables-impacting-local-browsers-detection)
+
+---
+
+Looking for our older PSK2 Polycast or migration blog post? See [the previous README](https://github.com/Polymer/polymer-starter-kit/blob/v3.2.1/README.md).

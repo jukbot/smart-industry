@@ -1,30 +1,44 @@
 {
   "author": "KMUTT",
   "dependencies": {
-    "express": "^4.16.3",
+    "@polymer/app-layout": "^3.0.0-pre.21",
+    "@polymer/app-route": "^3.0.0-pre.21",
+    "@polymer/iron-flex-layout": "^3.0.0-pre.21",
+    "@polymer/iron-iconset-svg": "^3.0.0-pre.21",
+    "@polymer/iron-media-query": "^3.0.0-pre.21",
+    "@polymer/iron-pages": "^3.0.0-pre.21",
+    "@polymer/iron-selector": "^3.0.0-pre.21",
+    "@polymer/paper-icon-button": "^3.0.0-pre.21",
+    "@polymer/polymer": "^3.0.5",
+    "@webcomponents/webcomponentsjs": "^2.0.4",
+    "chart.js": "^2.7.2",
+    "chartjs-web-components": "^1.5.0",
     "frappe-gantt": "^0.2.0",
     "imask": "^3.4.0",
     "intl": "^1.2.5",
     "javascript-lp-solver": "^0.4.5",
-    "lodash": "^4.17.10",
     "momentjs": "^2.0.0",
-    "polymer-redux": "^1.0.5",
     "prpl-server": "^1.2.0",
+    "pwa-helpers": "^0.8.3",
     "ramda": "^0.25.0",
     "redux": "^4.0.0",
-    "snapsvg": "^0.5.1"
+    "redux-thunk": "^2.3.0",
+    "reselect": "^3.0.1",
+    "snapsvg": "^0.5.1",
+    "sweetalert2": "^7.26.11"
   },
   "description": "Intelligent Manufacturing Execution System",
   "devDependencies": {
     "babel-eslint": "^8.2.6",
-    "babel-preset-minify": "^0.5.0-alpha.e9f96ffe",
-    "chai-http": "^4.0.0",
+    "babel-jest": "^23.4.2",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-minify": "^0.5.0-alpha.3cc09dcf",
     "cross-env": "^5.2.0",
     "del": "^3.0.0",
     "eslint": "^5.3.0",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-html": "^4.0.5",
-    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
@@ -32,15 +46,21 @@
     "gulp": "^4.0.0",
     "gulp-rename": "^1.4.0",
     "gulp-replace": "^1.0.0",
+    "husky": "^0.14.3",
+    "jest": "^23.5.0",
     "polymer-cli": "^1.7.7",
     "polyserve": "^0.27.12",
-    "prpl-server": "^1.2.0",
-    "puppeteer": "^1.7.0",
     "wct-browser-legacy": "^1.0.1"
   },
   "engines": {
-    "node": ">=8.0",
-    "npm": ">=5.0"
+    "node": ">=8",
+    "npm": ">=6"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint",
+      "pre-push": "yarn test"
+    }
   },
   "license": "Apache-2.0",
   "name": "imes",
@@ -50,13 +70,17 @@
   },
   "scripts": {
     "build": "polymer build",
-    "deploy": "firebase deploy",
-    "dev": "polymer serve -p 8080",
+    "build:firebase": "polymer build --auto-base-path && gulp firebase",
+    "build:prpl-server": "polymer build --auto-base-path && gulp prpl-server",
+    "deploy": "firebase deploy --only functions,hosting",
+    "deploy:firebase": "firebase deploy --only functions,hosting --token $FIREBASE_TOKEN",
+    "dev": "cross-env NODE_ENV=development polyserve --protocol h2 --open --open-path /",
     "lint": "polymer lint",
-    "serve:dev": "polymer serve",
-    "serve:prod": "polymer build && firebase serve --only functions,hosting",
-    "start": "prpl-server --root ./build --config polymer.json --host 0.0.0.0 --port 8080",
-    "test": "polymer test"
+    "serve": "cross-env NODE_ENV=production polymer serve",
+    "serve:firebase": "cross-env NODE_ENV=production firebase serve --only functions,hosting",
+    "serve:prpl-server": "cross-env NODE_ENV=production prpl-server --root server/build",
+    "serve:static": "cross-env NODE_ENV=production polymer serve --port 3000 build/es6-unbundled",
+    "test": "polymer test --module-resolution=node --npm"
   },
-  "version": "1.0.0"
+  "version": "2.0.0"
 }

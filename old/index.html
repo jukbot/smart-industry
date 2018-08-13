@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <base href="/">
+  <title>IMES - Your Industry Helper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Intelligent Manufacturing Execution Systems for JobShop Manufacturing"/>
+  <meta name="theme-color" content="#FFFFFF"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="IMES"/>
+  <meta name="application-name" content="IMES"/>
+  <meta name="msapplication-TileImage" content="images/manifest/icon-144x144.png"/>
+  <meta name="msapplication-TileColor" content="#FFFFFF"/>
+  <meta name="msapplication-tap-highlight" content="no"/>
+  <link rel="icon" type="image/png" href="images/favicon.png"/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="apple-touch-icon" href="images/manifest/any.svg"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
+  <link rel="apple-touch-icon" sizes="128x128" href="images/manifest/icon-128x128.png"/>
+  <link rel="apple-touch-icon" sizes="144x144" href="images/manifest/icon-144x144.png"/>
+  <link rel="apple-touch-icon" sizes="152x152" href="images/manifest/icon-152x152.png"/>
+  <link rel="apple-touch-icon" sizes="192x192" href="images/manifest/icon-192x192.png"/>
+  <link rel="apple-touch-icon" sizes="256x256" href="images/manifest/icon-256x256.png"/>
+  <link rel="apple-touch-icon" sizes="512x512" href="images/manifest/icon-512x512.png"/>
+  <style>
+    html {
+      line-height: 1.15;
+      -ms-text-size-adjust: 100%;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Roboto", "Noto", sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      font-size: 1rem;
+      background-color: #eeeeee;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    [hidden] {
+      display: none;
+    }
+
+    .loading {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%)
+    }
+  </style>
+  <script>window.Polymer = {rootPath: '/'};</script>
+</head>
+<body>
+  <view-app></view-app>
+  <link rel="import" href="src/view-app.html">
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('service-worker.js', {
+          scope: window.Polymer.rootPath
+        });
+      });
+    }
+  </script>
+  <noscript>Please enable JavaScript to view this application.</noscript>
+</body>
+</html>

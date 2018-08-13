@@ -1,0 +1,140 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn add cross-env
+
+PATH: 
+  /Users/juk/flutter/bin:/Users/juk/Library/Python/2.7/bin:/Users/juk/Library/Android/sdk/tools:/Users/juk/Library/Android/sdk/emulator:/Users/juk/Library/Android/sdk/platform-tools:/Users/juk/google-cloud-sdk/bin:Users/juk/.local/bin:/Users/juk/bin:/usr/local/bin:/Library/Frameworks/Python.framework/Versions/2.7/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/go/bin:/usr/local/share/dotnet:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Applications/Wireshark.app/Contents/MacOS:/Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin:/Users/juk/flutter/bin:/Users/juk/Library/Python/2.7/bin:/Users/juk/Library/Android/sdk/tools:/Users/juk/Library/Android/sdk/emulator:/Users/juk/Library/Android/sdk/platform-tools:/Users/juk/google-cloud-sdk/bin:Users/juk/.local/bin:/Users/juk/bin:/Library/Frameworks/Python.framework/Versions/2.7/bin
+
+Yarn version: 
+  1.9.4
+
+Node version: 
+  10.8.0
+
+Platform: 
+  darwin x64
+
+Trace: 
+  SyntaxError: /Users/juk/OneDrive/Projects/smart-industry/package.json: Unexpected token { in JSON at position 1742
+      at JSON.parse (<anonymous>)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:1130:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/lib/node_modules/yarn/lib/cli.js:92:30)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:103:13
+
+npm manifest: 
+  {
+    "author": "KMUTT",
+    "dependencies": {
+      "express": "^4.16.3",
+      "frappe-gantt": "^0.2.0",
+      "imask": "^3.4.0",
+      "intl": "^1.2.5",
+      "javascript-lp-solver": "^0.4.5",
+      "lodash": "^4.17.10",
+      "momentjs": "^2.0.0",
+      "polymer-redux": "^1.0.5",
+      "prpl-server": "^1.2.0",
+      "ramda": "^0.25.0",
+      "redux": "^4.0.0",
+      "snapsvg": "^0.5.1"
+    },
+    "description": "Intelligent Manufacturing Execution System",
+    "devDependencies": {
+      "babel-eslint": "^8.2.6",
+      "babel-preset-minify": "^0.5.0-alpha.e9f96ffe",
+      "chai-http": "^4.0.0",
+      "cross-env": "^5.2.0",
+      "del": "^3.0.0",
+      "eslint": "^5.3.0",
+      "eslint-config-standard": "^11.0.0",
+      "eslint-plugin-html": "^4.0.5",
+      "eslint-plugin-import": "^2.13.0",
+      "eslint-plugin-node": "^7.0.1",
+      "eslint-plugin-promise": "^3.8.0",
+      "eslint-plugin-standard": "^3.1.0",
+      "firebase-tools": "^4.0.3",
+      "gulp": "^4.0.0",
+      "gulp-rename": "^1.4.0",
+      "gulp-replace": "^1.0.0",
+      "polymer-cli": "^1.7.7",
+      "polyserve": "^0.27.12",
+      "prpl-server": "^1.2.0",
+      "puppeteer": "^1.7.0",
+      "wct-browser-legacy": "^1.0.1"
+    },
+    "engines": {
+      "node": ">=8.0",
+      "npm": ">=5.0"
+    },
+    "license": "Apache-2.0",
+    "name": "imes",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/jukbot/smart-industry.git"
+    },
+    "scripts": {
+      "build": "polymer build",
+      "deploy": "firebase deploy",
+      "dev": "polymer serve -p 8080",
+      "lint": "polymer lint",
+      "serve:dev": "polymer serve",
+      "serve:prod": "polymer build && firebase serve --only functions,hosting",
+      "start": "prpl-server --root ./build --config polymer.json --host 0.0.0.0 --port 8080",
+      "test": "polymer test"
+    },
+    "version": "1.0.0"
+  }
+  
+  {
+    "name": "polymer-starter-kit",
+    "version": "2.0.0",
+    "description": "Intelligent Manufacturing Execution System",
+    "author": "KMUTT",
+    "license": "Apache-2.0",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/jukbot/smart-industry.git"
+    },
+    "scripts": {
+      "dev": "cross-env NODE_ENV=development polyserve --protocol h2 --open --open-path /",
+      "serve": "cross-env NODE_ENV=production polymer serve",
+      "build": "polymer build",
+      "deploy": "firebase deploy --only functions,hosting",
+      "serve:static": "cross-env NODE_ENV=production polymer serve --port 3000 build/es6-bundled",
+      "serve:firebase": "cross-env NODE_ENV=production firebase serve --only functions,hosting",
+      "build:firebase": "polymer build --auto-base-path && gulp firebase",
+      "test": "jest",
+      "test:unit": "polymer test --module-resolution=node --npm",
+      "lint": "polymer lint"
+    },
+    "dependencies": {
+      "@polymer/app-layout": "^3.0.0-pre.15",
+      "@polymer/app-route": "^3.0.0-pre.15",
+      "@polymer/iron-flex-layout": "^3.0.0-pre.15",
+      "@polymer/iron-iconset-svg": "^3.0.0-pre.15",
+      "@polymer/iron-media-query": "^3.0.0-pre.15",
+      "@polymer/iron-pages": "^3.0.0-pre.15",
+      "@polymer/iron-selector": "^3.0.0-pre.15",
+      "@polymer/paper-icon-button": "^3.0.0-pre.15",
+      "@polymer/polymer": "^3.0.0",
+      "@webcomponents/webcomponentsjs": "^2.0.0",
+      "frappe-gantt": "^0.2.0",
+      "momentjs": "^2.0.0",
+      "snapsvg": "^0.5.1",
+      "sweetalert2": "^7.26.11"
+    },
+    "devDependencies": {
+      "polymer-cli": "^1.7.1",
+      "wct-browser-legacy": "^1.0.0"
+    },
+    "engines": {
+      "node": ">=8",
+      "npm": ">=6"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

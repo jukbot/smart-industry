@@ -1,7 +1,18 @@
 {
+  "entrypoint": "index.html",
+  "shell": "src/view-app.js",
+  "sources": [
+    "images/**/*"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "node_modules/@webcomponents/webcomponentsjs/*.js",
+    "!node_modules/@webcomponents/webcomponentsjs/gulpfile.js",
+    "node_modules/@webcomponents/webcomponentsjs/bundles/*.js"
+  ],
   "builds": [
     {
-      "name": "es6-bundled",
+      "name": "es6-unbundled",
       "browserCapabilities": [
         "es2015"
       ],
@@ -15,46 +26,31 @@
       "html": {
         "minify": true
       },
-      "bundle": true,
+      "bundle": false,
       "addServiceWorker": true
     },
     {
-      "addServiceWorker": true,
-      "bundle": true,
+      "name": "es5-bundled",
+      "js": {
+        "minify": true,
+        "compile": true,
+        "transformModulesToAmd": true
+      },
       "css": {
         "minify": true
       },
       "html": {
         "minify": true
       },
-      "js": {
-        "compile": "es5",
-        "minify": true,
-        "transformModulesToAmd": true
-      },
-      "name": "es5-bundled"
+      "bundle": true,
+      "addServiceWorker": true
     }
   ],
-  "entrypoint": "index.html",
-  "extraDependencies": [
-    "manifest.json",
-    "bower_components/webcomponentsjs/*.js"
-  ],
-  "lint": {
-    "ignoreWarnings": [
-      "databind-with-unknown-property"
-    ],
-    "rules": [
-      "polymer-2"
-    ]
-  },
   "moduleResolution": "node",
   "npm": true,
-  "shell": "src/view-app.html",
-  "sources": [
-    "data/**/*",
-    "images/**/*",
-    "lib/**",
-    "bower.json"
-  ]
+  "lint": {
+    "rules": [
+      "polymer-3"
+    ]
+  }
 }

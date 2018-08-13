@@ -10,13 +10,11 @@ cache:
     - bower_components
 install: 
 - npm install -g yarn
-- yarn add global bower
 - yarn add global polymer-cli
 - node -v
 - polymer --version
 - yarn --version
 - yarn install
-- bower install
 before_script:
 - polymer lint
 script:

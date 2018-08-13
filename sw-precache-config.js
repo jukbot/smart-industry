@@ -1,28 +1,22 @@
 /* eslint-env node */
 module.exports = {
   staticFileGlobs: [
-    'index.html',
+    'src/**/*',
     'manifest.json',
     'images/**/*',
-    'data/**/*',
-    'bower_components/webcomponentsjs/*.js'
+    'data/**/*'
   ],
   runtimeCaching: [
+    {
+      urlPattern: /\/@webcomponents\/webcomponentsjs\//,
+      handler: 'fastest'
+    },
     {
       urlPattern: /https:\/\/fonts\.googleapis\.com.*/,
       handler: 'cacheFirst',
       options: {
         cache: {
           name: 'google-font-cache'
-        }
-      }
-    },
-    {
-      urlPattern: /\/bower_components\/webcomponentsjs\/.*.js/,
-      handler: 'fastest',
-      options: {
-        cache: {
-          name: 'webcomponentsjs-polyfills-cache'
         }
       }
     },

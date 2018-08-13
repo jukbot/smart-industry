@@ -1,17 +1,14 @@
 {
-  "extends": "standard",
+  "extends": ["standard", "plugin:jest/recommended"],
   "env": {
     "browser": true,
     "node": true,
     "es6": true
   },
-  "parser": "babel-eslint",
   "parserOptions": {
+    "parser": "babel-eslint",
     "ecmaVersion": 2017,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    }
+    "sourceType": "module"
   },
   "plugins": [
     "html"
@@ -19,10 +16,6 @@
   "rules": {
     "no-undef": "off",
     "no-console": "off",
-    "new-cap": ["error", { "capIsNewExceptions": ["Polymer"], "capIsNewExceptionPattern": "Mixin$" }],
     "require-jsdoc": "off"
-  },
-  "globals": {
-    "Polymer": true
   }
 }
