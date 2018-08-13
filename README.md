@@ -17,6 +17,9 @@ IMES is an open source manufacturing execution system application designed for S
 </div>
 
 ## Annoucement 📢
+
+## THIS PROJECT IS IN MIGRATING TO NEW 'IMES PLATFORM'
+
 > Currently, we've temporary paused the project due to discussing  with an engineer team for the next phase in road map. 
 
 
@@ -226,7 +229,7 @@ Build the project:
 This command serves the production version of the app at `http://localhost:8080`generated using fragment bundling:
 
 ```bash
-    $ polymer serve build/es6-unbundled/ --open
+    $ polymer serve build/es6-bundled/ --open
 ```
 
 ### Run Lint

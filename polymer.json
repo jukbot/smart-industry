@@ -1,22 +1,22 @@
 {
   "builds": [
     {
-      "addServiceWorker": true,
+      "name": "es6-bundled",
       "browserCapabilities": [
         "es2015"
       ],
-      "bundle": false,
+      "js": {
+        "minify": true,
+        "transformModulesToAmd": true
+      },
       "css": {
         "minify": true
       },
       "html": {
         "minify": true
       },
-      "js": {
-        "minify": true,
-        "transformModulesToAmd": true
-      },
-      "name": "es6-unbundled"
+      "bundle": true,
+      "addServiceWorker": true
     },
     {
       "addServiceWorker": true,
