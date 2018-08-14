@@ -120,6 +120,13 @@
         }
       }
 
+      paper-tabs {
+          border-bottom: 1px solid rgba(0, 0, 0, .10);
+      }
+
+      .tab-title {
+        color: #202020
+      }
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -137,13 +144,13 @@
           <paper-tabs selected="{{productTabs}}" attr-for-selected="name" role="navigation" autoselect noink>
             <paper-tab link role="tab" name="part">
               <a href="app/setup/[[item.view]]" tabindex="-1">
-                <paper-icon-button icon="" alt="part"></paper-icon-button>
+                <paper-icon-button icon="vaadin:viewport" alt="part"></paper-icon-button>
                 <span class="tab-title">Part</span>
               </a>
             </paper-tab>
             <paper-tab link role="tab" name$="process">
               <a href="app/setup/[[item.view]]" tabindex="-1">
-                <paper-icon-button icon="[[item.icon]]" alt="process"></paper-icon-button>
+                <paper-icon-button icon="vaadin:viewport" alt="process"></paper-icon-button>
                 <span class="tab-title">Process</span>
               </a>
             </paper-tab>
