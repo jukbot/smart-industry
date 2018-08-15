@@ -174,8 +174,8 @@
         <!-- Station Manangement -->
         <div class="card main-card" hidden="[[showListStation]]">
             <h1 class="title">{{localize('station-management')}}</h1>
-            <paper-input class="search-input" label="Search station name" id="searchStationInput" value="{{searchString::input}}" type="text"
-                always-float-label hidden="[[!stationItems]]"></paper-input>
+            <!-- <paper-input class="search-input" label="Search station name" id="searchStationInput" value="{{searchString::input}}" type="text"
+                always-float-label hidden="[[!stationItems]]"></paper-input> -->
             <h1 class="sub-title center" hidden="[[machineItems]]">{{localize('please-add-machine-before-adding-station')}}</h1>
             <ul class="app-grid">
                 <template is="dom-repeat" filter="{{searchStation(searchString)}}" observe="st_name" index-as="number" items="{{stationItems}}"

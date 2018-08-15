@@ -1,37 +1,19 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymer/lib/utils/settings.html">
-<!-- helper elements -->
-<link rel="import" href="../bower_components/polymer/lib/elements/custom-style.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-if.html">
-<link rel="import" href="../bower_components/polymer/lib/elements/dom-module.html">
-<!-- app elements - used for core functions -->
-<link rel="import" href="../bower_components/app-layout/app-layout.html">
-<link rel="import" href="../bower_components/app-route/app-location.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
-<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
-<!-- paper elements used for component style -->
-<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<!-- iron elements used for component functions -->
-<link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <!-- import 3rd party elements -->
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/vaadin-icons/vaadin-icons.html">
-<!-- import custom elements -->
-<link rel="import" href="elements/flat-toast.html">
-<link rel="import" href="elements/flat-dialog.html">
-<link rel="import" href="elements/flat-button.html">
-<link rel="import" href="elements/flat-icons.html">
-<link rel="import" href="elements/app-analytics.html">
+<!-- app elements - used for core functions -->
+<link rel="import" href="../bower_components/app-storage/app-localstorage/app-localstorage-document.html">
+<link rel="import" href="../bower_components/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="../bower_components/app-layout/app-layout.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+
+<!-- iron elements used for component functions -->
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <!-- import page router -->
 <link rel="import" href="view-login.html">
 <link rel="import" href="view-dashboard.html">
@@ -69,7 +51,7 @@
       <view-404 name="404" route="[[subRoute]]"></view-404>
       <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}" name="app">
         <app-drawer id="drawer" slot="drawer" tabindex="-1" swipe-open="[[narrow]]" hidden="[[!signedIn]]">
-          <iron-image preload fade class="app-logo" role="image" title="IMES" alt="Application logo" sizing="contain" src="[[rootPath]]images/logo/logo.svg"></iron-image>
+          <img class="app-logo" title="IMES" alt="Application logo" src="[[rootPath]]images/logo/logo.svg"/>
           <h1 title="IMES" class="main-logo-title">IMES</h1>
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
           <app-analytics key="UA-51514677-9"></app-analytics>
@@ -92,8 +74,8 @@
           <div class="flex-center">
             <paper-button class="logout-btn" on-click="logout" title="Logout">{{localize('logout-button')}}</paper-button>
             <div class="user-info">
-              <iron-image preload fade id="profile" alt="user image" class="profile-image" sizing="contain" src="[[getUserImage(userData.photoURL)]]"></iron-image>
-              <paper-tooltip position="bottom" offset="10" for="profile" class="profile-tooltip" animation-delay="10">
+              <img id="profile" alt="user image" class="profile-image" src="[[getUserImage(userData.photoURL)]]"/>
+              <paper-tooltip position="bottom" for="profile" class="profile-tooltip">
                 <p>[[userData.email]]</p>
                 <p>{{localize('verify-status')}}:
                   <span class="verify">[[getVerifyStatus(user.emailVerified)]]</span>
@@ -308,18 +290,14 @@
         }))
       }
       _signedInChanged(isSignedIn) {
-        Polymer.RenderStatus.afterNextRender(this, function () {
           // If singed in but at login page
           if (isSignedIn && this.route.path === '/login') { 
-            this.page = 'dashboard'
             this.set('route.path', '/app/dashboard/overview')
           }
           // If not sign in but not at term page
           else if (!isSignedIn && this.route.path !== '/term') {
-            this.page = 'login'
             this.set('route.path', '/login')
           }
-        })
       }
       _notifyNetworkStatus() {
         let oldOffline = this.offline

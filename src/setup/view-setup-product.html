@@ -1,6 +1,5 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-combo-box.html">
-<link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-dialog.html">
 <link rel="import" href="../../bower_components/vaadin-material-theme/vaadin-grid.html">
 <link rel="import" href="../view-app.html">
 <link rel="import" href="../style/shared-styles.html">
@@ -11,6 +10,7 @@
     <style include="shared-styles app-grid-style flat-button">
       :host {
         margin: 10px;
+        height: 100%;
         display: block;
         --app-grid-columns: 1;
         --app-grid-item-height: 50%;
@@ -113,6 +113,49 @@
         margin: 20px 0 0 0;
       }
 
+      [part="content"] {
+        padding: 20px 30px;
+      }
+
+      .title {
+        margin: 10px 0 20px 0;
+      }
+
+      .btn {
+        width: 244px;
+      }
+
+      .block-group {
+        margin: 10px 0;
+      }
+
+      .delete-btn {
+        float: right;
+      }
+
+      .process-list {
+        max-height: 200px;
+      }
+
+      .grid-item {
+        border-bottom: 1px solid #eee;
+        padding: 10px;
+        max-height: 100px;
+      }
+
+      .grid-item p {
+        display: block;
+      }
+
+      .grid-item:hover {
+        background-color: #eee;
+      }
+
+      .btn-group {
+        margin-top: 20px;
+        border-top: 1px solid #eee;
+      }
+
       vaadin-grid#productTable {
         height: 700px;
         --vaadin-grid-body-cell: {
@@ -120,13 +163,10 @@
         }
       }
 
-      paper-tabs {
-          border-bottom: 1px solid rgba(0, 0, 0, .10);
-      }
-
       .tab-title {
         color: #202020
       }
+
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -141,86 +181,99 @@
       <li>
         <!-- Add product card!-->
         <div class="card" hidden="[[showAddProduct]]">
-          <paper-tabs selected="{{productTabs}}" attr-for-selected="name" role="navigation" autoselect noink>
-            <paper-tab link role="tab" name="part">
-              <a href="app/setup/[[item.view]]" tabindex="-1">
-                <paper-icon-button icon="vaadin:viewport" alt="part"></paper-icon-button>
-                <span class="tab-title">Part</span>
-              </a>
+          <paper-tabs selected="{{addProductTabs}}">
+            <paper-tab role="tab" name="product">
+              <span class="tab-title">1 Product Info</span>
             </paper-tab>
-            <paper-tab link role="tab" name$="process">
-              <a href="app/setup/[[item.view]]" tabindex="-1">
-                <paper-icon-button icon="vaadin:viewport" alt="process"></paper-icon-button>
-                <span class="tab-title">Process</span>
-              </a>
+            <paper-tab role="tab" name="part">
+              <span class="tab-title">2 Process & Parts</span>
+            </paper-tab>
+            <paper-tab role="tab" name="process">
+              <span class="tab-title">3 Product Review</span>
             </paper-tab>
           </paper-tabs>
-          <h1 class="title">{{localize('add-product')}}</h1>
-          <paper-input tabindex="0" label="{{localize('product-name')}}*" id="productName" type="text" required always-float-label></paper-input>
-          <paper-input tabindex="1" label="{{localize('sku-code')}}*" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$"
-            required always-float-label></paper-input>
-          <paper-input tabindex="2" label="{{localize('cost')}}" id="productCost" type="number" maxlength="9" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
-            error-message="number only" min="0" max="99999" step="0.01" auto-validate always-float-label></paper-input>
-          <paper-input tabindex="3" label="Description" id="productDescription" type="text" maxlength="300" required always-float-label></paper-input>
-          <vaadin-combo-box tabindex="4" label="{{localize('raw-materials-required')}}" id="inventoryCode" items="[[inventoryData]]"
-            item-value-path="code" item-label-path="name" loading="[[!inventoryData]]" theme="always-float-label">
-            <template>
-              <paper-item>
-                <paper-item-body>
-                  <div>[[item.name]]</div>
-                </paper-item-body>
-              </paper-item>
-            </template>
-          </vaadin-combo-box>
-          <paper-input tabindex="5" label="Raw material quantity" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
-            required always-float-label></paper-input>
-          <flat-button on-click="openBrowseImageFile" class="btn">
-            <button>{{localize('browse-image')}}</button>
-            <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
-          </flat-button>
-          <flat-button class="btn" on-click="openAddPartDialog">
-            <button>{{localize('add-part')}}</button>
-          </flat-button>
-          <flat-button class="btn" on-click="clearPartFromProduct">
-            <button>{{localize('clear')}}</button>
-          </flat-button>
-          <div class="frame part-block">
-            <ul class="flex-container wrap">
-              <template is="dom-repeat" items="[[productPart]]" as="part">
-                <li class="flex-item">
-                  <div class="part">
-                    <div class="part-info-group">
-                      <h2 class="title">[[part.name]]</h2>
-                      <p>Part dependency: [[part.part_dependency]]</p>
-                      <p>{{localize('sku-code')}}: [[part.sku]]</p>
-                      <div class="frame part-list">
-                        <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
-                          <template>
-                            <div tabindex$="[[tabIndex]]" class="item">
-                              <p>
-                                <strong>{{localize('process-number')}} [[item.process]]</strong>
-                              </p>
-                              <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
-                              <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
-                            </div>
-                          </template>
-                        </iron-list>
+          <iron-pages selected="{{addProductTabs}}">
+            <div>
+              <h1 class="title">Product Information</h1>
+              <paper-input tabindex="0" label="{{localize('product-name')}}*" id="productName" type="text" required always-float-label></paper-input>
+              <paper-input tabindex="1" label="{{localize('sku-code')}}*" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$"
+                required always-float-label></paper-input>
+              <paper-input tabindex="2" label="{{localize('cost')}}" id="productCost" type="number" maxlength="9" error-message="number only"
+                min="0" max="9999" step="0.01" auto-validate always-float-label></paper-input>
+              <paper-input tabindex="3" label="Description" id="productDescription" type="text" maxlength="300" required always-float-label></paper-input>
+              <flat-button on-click="openBrowseImageFile" class="btn">
+                <button>{{localize('browse-image')}}</button>
+                <input type="file" accept="image/*" name="file" id="uploadImageFile" on-change="_verifyUploadFile" class="inputfile" />
+              </flat-button>
+            </div>
+            <div>
+              <h1 class="title">Part and Process</h1>
+              <vaadin-combo-box tabindex="4" label="{{localize('raw-materials-required')}}" id="inventoryCode" items="[[inventoryData]]"
+                item-value-path="code" item-label-path="name" loading="[[!inventoryData]]" theme="always-float-label">
+                <template>
+                  <paper-item>
+                    <paper-item-body>
+                      <div>[[item.name]]</div>
+                    </paper-item-body>
+                  </paper-item>
+                </template>
+              </vaadin-combo-box>
+              <paper-input tabindex="5" label="Raw material quantity" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
+                required always-float-label></paper-input>
+              <flat-button class="btn" on-click="openAddPartDialog">
+                <button>{{localize('add-part')}}</button>
+              </flat-button>
+              <flat-button class="btn" on-click="clearPartFromProduct">
+                <button>{{localize('clear')}}</button>
+              </flat-button>
+              <div class="frame part-block">
+                <ul class="flex-container wrap">
+                  <template is="dom-repeat" items="[[productPart]]" as="part">
+                    <li class="flex-item">
+                      <div class="part">
+                        <div class="part-info-group">
+                          <h2 class="title">[[part.name]]</h2>
+                          <p>Part dependency: [[part.part_dependency]]</p>
+                          <p>{{localize('sku-code')}}: [[part.sku]]</p>
+                          <div class="frame part-list">
+                            <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
+                              <template>
+                                <div tabindex$="[[tabIndex]]" class="item">
+                                  <p>
+                                    <strong>{{localize('process-number')}} [[item.process]]</strong>
+                                  </p>
+                                  <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
+                                  <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
+                                </div>
+                              </template>
+                            </iron-list>
+                          </div>
+                        </div>
+                        <div class="center">
+                          <flat-button class="btn" on-click="openEditPartDialog" part="[[part]]">
+                            <button>{{localize('edit')}}</button>
+                          </flat-button>
+                          <flat-button class="thunderbird btn" on-click="removePartFromProduct">
+                            <button>{{localize('remove')}}</button>
+                          </flat-button>
+                        </div>
                       </div>
-                    </div>
-                    <div class="center">
-                      <flat-button class="btn" on-click="openEditPartDialog" part="[[part]]">
-                        <button>{{localize('edit')}}</button>
-                      </flat-button>
-                      <flat-button class="thunderbird btn" on-click="removePartFromProduct">
-                        <button>{{localize('remove')}}</button>
-                      </flat-button>
-                    </div>
-                  </div>
-                </li>
-              </template>
-            </ul>
-          </div>
-          <div class="center">
+                    </li>
+                  </template>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <h1 class="title">Review Product</h1>
+              <p>Product Name:</p>
+              <p>Product Description:</p>
+              <p>Product SKU:</p>
+              <p>Product Cost:</p>
+              <p>Product Part:</p>
+            </div>
+          </iron-pages>
+
+          <div class="btn-group center">
             <flat-button class="btn" on-click="openProductList">
               <button>{{localize('dismiss')}}</button>
             </flat-button>
@@ -501,234 +554,125 @@
     </ul>
 
     <!-- ADD Part dialog !-->
-    <vaadin-dialog id="addPartDialog" class="dialog" no-close-on-outside-click>
-      <template id="addPartContent">
-        <custom-style>
-          <style include="view-setup-product">
-            :host {
-              height: 100vh;
-              margin: 0 auto;
-              --app-primary-color: #202020;
-              --paper-input-container-focus-color: var( --app-primary-color);
-              overflow: auto;
-            }
+    <flat-dialog id="addPartDialog" class="dialog" scroll-action="lock">
+      <h1 class="title center">{{localize('add')}} {{localize('product-part')}}</h1>
+      <div class="block-group">
+        <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
+        <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
+        <paper-input label="Part Dependency (skuxxx,skuxxx,..)" id="partDependency" type="text" value="{{partDependency}}" required
+          always-float-label></paper-input>
+      </div>
+      <div class="block-group">
+        <!-- Add Process -->
+        <h3>Process of Part</h3>
+        <p>([[partProcess.length]] / [[maxProcess]])</p>
+        <vaadin-combo-box label="{{localize('process-number')}}" id="processNumber" items="[[processData]]" name="Process selector"
+          item-label-path="st_number" item-value-path="st_number" value="{{selectedProcess}}" error-message="Invalid input"
+          loading="[[!processData]]" required always-float-label='true'>
+          <template>
+            <paper-item>
+              <paper-item-body three-line style="min-height: 0">
+                <div style="text-transform: capitalize">{{localize('process-name')}}: [[item.st_name]]</div>
+                <div secondary>{{localize('process-number')}}: [[item.st_number]]</div>
+                <div secondary>[[item.st_machine.length]] {{localize('machine')}}</div>
+              </paper-item-body>
+            </paper-item>
+          </template>
+        </vaadin-combo-box>
+        <paper-input label="Process Cycle Time (second)" id="processCycle" value="{{processCycle}}" type="number" maxlength="9" error-message="Number only"
+          min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
+        <paper-input label="Process Setup Time (second)" id="processSetup" value="{{processSetup}}" type="number" maxlength="9" error-message="Number only"
+          min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
 
-            [part="content"] {
-              padding: 20px 30px;
-            }
-
-            .title {
-              margin: 10px 0 20px 0;
-            }
-
-            .btn {
-              width: 244px;
-            }
-
-            .block-group {
-              margin: 10px 0;
-            }
-
-            .delete-btn {
-              float: right;
-            }
-
-            .frame {
-              min-height: 250px;
-            }
-
-            .process-list {
-              height: 250px;
-            }
-
-            .grid-item {
-              border-bottom: 1px solid #eee;
-              padding: 10px;
-              height: 100px;
-            }
-
-            .grid-item:hover {
-              background-color: #eee;
-            }
-
-          </style>
-        </custom-style>
-        <h1 class="title center">{{localize('add')}} {{localize('product-part')}}</h1>
-        <div class="block-group">
-          <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
-          <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
-          <paper-input label="Part Dependency (skuxxx,skuxxx,..)" id="partDependency" type="text" value="{{partDependency}}" required
-            always-float-label></paper-input>
-        </div>
-        <div class="block-group">
-          <!-- Add Process -->
-          <h3>Process of Part</h3>
-          <p>([[partProcess.length]] / [[maxProcess]])</p>
-          <vaadin-combo-box label="{{localize('process-number')}}" id="processNumber" items="[[processData]]" name="Process selector"
-            item-label-path="st_number" item-value-path="st_number" value="{{selectedProcess}}" error-message="Invalid input"
-            loading="[[!processData]]" required always-float-label='true'>
+        <flat-button class="add-btn" on-click="addProcessToPart">
+          <button>Add Process</button>
+        </flat-button>
+      </div>
+      <div class="frame">
+        <div class="process-list">
+          <iron-list items="[[processBundle]]" as="item">
             <template>
-              <paper-item>
-                <paper-item-body three-line style="min-height: 0">
-                  <div style="text-transform: capitalize">{{localize('process-name')}}: [[item.st_name]]</div>
-                  <div secondary>{{localize('process-number')}}: [[item.st_number]]</div>
-                  <div secondary>[[item.st_machine.length]] {{localize('machine')}}</div>
-                </paper-item-body>
-              </paper-item>
+              <div tabindex$="[[tabIndex]]" class="grid-item">
+                <p>
+                  <strong>{{localize('process-number')}} [[item.process]]</strong>
+                </p>
+                <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
+                <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
+                <paper-icon-button class="delete-btn" on-click="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+              </div>
             </template>
-          </vaadin-combo-box>
-          <paper-input label="Process Cycle Time (second)" id="processCycle" value="{{processCycle}}" type="number" maxlength="9" error-message="Number only"
-            min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
-          <paper-input label="Process Setup Time (second)" id="processSetup" value="{{processSetup}}" type="number" maxlength="9" error-message="Number only"
-            min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
-
-          <flat-button class="add-btn" on-click="addProcessToPart">
-            <button>Add Process</button>
-          </flat-button>
+          </iron-list>
         </div>
-        <div class="frame">
-          <div class="process-list">
-            <iron-list items="[[processBundle]]" as="item">
-              <template>
-                <div tabindex$="[[tabIndex]]" class="grid-item">
-                  <p>
-                    <strong>{{localize('process-number')}} [[item.process]]</strong>
-                  </p>
-                  <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
-                  <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
-                  <paper-icon-button class="delete-btn" on-click="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
-                </div>
-              </template>
-            </iron-list>
-          </div>
-        </div>
-        <div class="center">
-          <paper-button class="btn" dialog-dismiss on-click="closeAddPartDialog">
-            {{localize('dismiss')}}
-          </paper-button>
-          <paper-button class="btn" dialog-confirm autofocus on-click="addPartToProduct">
-            {{localize('add-part')}}
-          </paper-button>
-        </div>
-      </template>
-    </vaadin-dialog>
+      </div>
+      <div class="center">
+        <paper-button class="btn" dialog-dismiss on-click="closeAddPartDialog">
+          {{localize('dismiss')}}
+        </paper-button>
+        <paper-button class="btn" dialog-confirm autofocus on-click="addPartToProduct">
+          {{localize('add-part')}}
+        </paper-button>
+      </div>
+    </flat-dialog>
 
     <!-- Edit part dialog !-->
-    <vaadin-dialog id="editPartDialog" class="dialog" no-close-on-outside-click>
-      <template id="editPartContent">
-        <custom-style>
-          <style include="view-setup-product">
-            :host {
-              height: 100vh;
-              width: 70%;
-              margin: 0 auto;
-              --app-primary-color: #202020;
-              --paper-input-container-focus-color: var( --app-primary-color);
-              overflow: auto;
-            }
+    <flat-dialog id="editPartDialog" class="dialog" scroll-action="lock">
+      <h1 class="title center">{{localize('edit')}} {{localize('product-part')}}</h1>
+      <div class="block-group">
+        <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" required always-float-label></paper-input>
+        <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" required always-float-label></paper-input>
+        <paper-input label="Part Dependency (skuxxx,skuxxx,..)" id="partDependency" value="{{partDependency}}" type="text" always-float-label></paper-input>
+      </div>
+      <div class="block-group">
+        <!-- Add Process -->
+        <h3>Process of Part</h3>
+        <p>([[partProcess.length]] / [[maxProcess]])</p>
+        <vaadin-combo-box label="{{localize('process-number')}}" id="processNumber" items="[[processData]]" name="Process selector"
+          item-label-path="st_number" item-value-path="st_number" value="{{selectedProcess}}" error-message="Invalid input"
+          loading="[[!processData]]" required always-float-label='true'>
+          <template>
+            <paper-item>
+              <paper-item-body three-line style="min-height: 0">
+                <div style="text-transform: capitalize">{{localize('process-name')}}: [[item.st_name]]</div>
+                <div secondary>{{localize('process-number')}}: [[item.st_number]]</div>
+                <div secondary>[[item.st_machine.length]] {{localize('machine')}}</div>
+              </paper-item-body>
+            </paper-item>
+          </template>
+        </vaadin-combo-box>
+        <paper-input label="{{localize('cycle-time')}} ({{localize('second')}})" id="processCycle" value="{{processCycle}}" type="number"
+          maxlength="9" error-message="Number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
+        <paper-input label="{{localize('setup-time')}} ({{localize('second')}})" id="processSetup" value="{{processSetup}}" type="number"
+          maxlength="9" error-message="Number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
 
-            iron-list {
-              overflow-y: hidden !important;
-            }
-
-            [part="content"] {
-              padding: 20px 30px;
-            }
-
-            .title {
-              margin: 10px 0 20px 0;
-            }
-
-            .btn {
-              width: 244px;
-            }
-
-            .block-group {
-              margin: 10px 0;
-            }
-
-            .delete-btn {
-              float: right;
-            }
-
-            .frame {
-              min-height: 250px;
-            }
-
-            .process-list {
-              height: 250px;
-            }
-
-            .grid-item {
-              border-bottom: 1px solid #eee;
-              padding: 10px;
-              height: 100px;
-            }
-
-            .grid-item:hover {
-              background-color: #eee;
-            }
-
-          </style>
-        </custom-style>
-        <h1 class="title center">{{localize('edit')}} {{localize('product-part')}}</h1>
-        <div class="block-group">
-          <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" required always-float-label></paper-input>
-          <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" required always-float-label></paper-input>
-          <paper-input label="Part Dependency (skuxxx,skuxxx,..)" id="partDependency" value="{{partDependency}}" type="text" always-float-label></paper-input>
-        </div>
-        <div class="block-group">
-          <!-- Add Process -->
-          <h3>Process of Part</h3>
-          <p>([[partProcess.length]] / [[maxProcess]])</p>
-          <vaadin-combo-box label="{{localize('process-number')}}" id="processNumber" items="[[processData]]" name="Process selector"
-            item-label-path="st_number" item-value-path="st_number" value="{{selectedProcess}}" error-message="Invalid input"
-            loading="[[!processData]]" required always-float-label='true'>
+        <flat-button class="add-btn" on-click="addProcessToPart">
+          <button>Add Process</button>
+        </flat-button>
+      </div>
+      <div class="frame">
+        <div class="process-list">
+          <iron-list items="[[processBundle]]" as="item">
             <template>
-              <paper-item>
-                <paper-item-body three-line style="min-height: 0">
-                  <div style="text-transform: capitalize">{{localize('process-name')}}: [[item.st_name]]</div>
-                  <div secondary>{{localize('process-number')}}: [[item.st_number]]</div>
-                  <div secondary>[[item.st_machine.length]] {{localize('machine')}}</div>
-                </paper-item-body>
-              </paper-item>
+              <div tabindex$="[[tabIndex]]" class="grid-item">
+                <p>
+                  <strong>{{localize('process-number')}} [[item.process]]</strong>
+                </p>
+                <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
+                <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
+                <paper-icon-button class="delete-btn" on-click="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+              </div>
             </template>
-          </vaadin-combo-box>
-          <paper-input label="{{localize('cycle-time')}} ({{localize('second')}})" id="processCycle" value="{{processCycle}}" type="number"
-            maxlength="9" error-message="Number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
-          <paper-input label="{{localize('setup-time')}} ({{localize('second')}})" id="processSetup" value="{{processSetup}}" type="number"
-            maxlength="9" error-message="Number only" min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
-
-          <flat-button class="add-btn" on-click="addProcessToPart">
-            <button>Add Process</button>
-          </flat-button>
+          </iron-list>
         </div>
-        <div class="frame">
-          <div class="process-list">
-            <iron-list items="[[processBundle]]" as="item">
-              <template>
-                <div tabindex$="[[tabIndex]]" class="grid-item">
-                  <p>
-                    <strong>{{localize('process-number')}} [[item.process]]</strong>
-                  </p>
-                  <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
-                  <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
-                  <paper-icon-button class="delete-btn" on-click="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
-                </div>
-              </template>
-            </iron-list>
-          </div>
-        </div>
-        <div class="center">
-          <paper-button class="btn" dialog-dismiss on-click="closeEditPartDialog">
-            {{localize('dismiss')}}
-          </paper-button>
-          <paper-button class="btn" dialog-confirm autofocus on-click="addPartToProduct">
-            {{localize('add-part')}}
-          </paper-button>
-        </div>
-      </template>
-    </vaadin-dialog>
+      </div>
+      <div class="center">
+        <paper-button class="btn" dialog-dismiss on-click="closeEditPartDialog">
+          {{localize('dismiss')}}
+        </paper-button>
+        <paper-button class="btn" dialog-confirm autofocus on-click="addPartToProduct">
+          {{localize('add-part')}}
+        </paper-button>
+      </div>
+    </flat-dialog>
 
     <paper-toast id="toastAlert" always-on-top horizontal-align="right" text="{{toastText}}"></paper-toast>
   </template>
@@ -749,6 +693,10 @@
           productData: {
             type: Object,
             notify: true
+          },
+          addProductTabs: {
+            type: Number,
+            value: 0
           },
           processData: Object,
           toastText: String,

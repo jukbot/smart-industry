@@ -1,8 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/vaadin-material-theme/vaadin-combo-box.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="view-app.html">
 <link rel="import" href="style/shared-styles.html">
+<!-- import external library -->
+<link rel="import" href="../lib/imask.html">
 <dom-module id="view-settings">
   <template>
     <style include="shared-styles app-grid-style">
@@ -75,12 +78,13 @@
               </paper-item>
             </template>
           </vaadin-combo-box>
+          <!-- <p>Connect to device via WebUSB*</p>
           <paper-button on-click="scanDevice" class="btn" title="Search sensor">
             Search Sensor
           </paper-button>
           <paper-button on-click="showDevice" class="btn" title="Show sensor">
             Show Sensor
-          </paper-button>
+          </paper-button> -->
           <paper-button on-click="resetOrderCount" class="btn" title="Reset Order Count">
             {{localize('reset-order-count')}}
           </paper-button>
@@ -109,9 +113,12 @@
       <li>
         <div class="card">
           <h1 class="title">{{localize('authentication-settings')}}</h1>
-          <paper-input label="{{localize('email')}}" id="userEmail" type="email" readonly value="[[user.email]]" always-float-label></paper-input>
+          <paper-input label="{{localize('email')}}" id="userEmail" type="email" value="[[user.email]]" always-float-label></paper-input>
           <paper-input label="{{localize('current-password')}}" id="currentPassword" type="password" always-float-label></paper-input>
           <paper-input label="{{localize('new-password')}}" id="newPassword" type="password" always-float-label></paper-input>
+          <paper-button on-click="changeEmail" class="btn" title="Change E-mail">
+            Change E-mail
+          </paper-button>
           <paper-button on-click="changePassword" class="btn" title="{{localize('change-password')}}">
             {{localize('change-password')}}
           </paper-button>
@@ -141,17 +148,17 @@
           <p>{{localize('email-notifcation')}}</p>
           <paper-toggle-button class="switch" value="[[emailAlert]]" on-change="changeEmailAlert" id="emailAlertSwitch" noink>{{localize('email-notification')}}</paper-toggle-button>
           <p>{{localize('user-id')}}: [[user.uid]]</p>
-          <paper-button on-click="openManageUser" class="btn">
+          <!-- <paper-button on-click="openManageUser" class="btn">
             {{localize('manage-users')}}
-          </paper-button>
+          </paper-button> -->
         </div>
       </li>
       <li>
         <div class="card">
           <h1 class="title">{{localize('organization-settings')}}</h1>
           <paper-input label="{{localize('company')}}" id="companyName" value="[[userdata.company]]" type="text" always-float-label></paper-input>
-          <paper-input label="{{localize('phone-number')}}" id="phoneNumber" value="[[userdata.phone]]" type="text" allowed-pattern="[0-9]"
-            onkeypress='return event.charCode >= 48 && event.charCode <= 57' always-float-label></paper-input>
+          <paper-input label="{{localize('phone-number')}}" id="phoneNumber" value="[[userdata.phone]]" type="tel" maxlength="15"
+          pattern="^(\+\d{1,2}\s)?\(?\d{4}\)?[\s]?\d{4}[\s]?\d{1}$" always-float-label></paper-input>
           <div class="meta-data">
             <p>{{localize('data-keychain')}}: [[userdata.key]]</p>
             <p>{{localize('user-role')}}: [[userdata.role]]</p>
@@ -225,10 +232,15 @@
       connectedCallback() {
         super.connectedCallback()
         this.loadResources(this.resolveUrl('../data/locales.json'))
+        requestAnimationFrame(this._installListeners.bind(this))
+      }
+
+      _installListeners() {
+        new IMask(this.$.phoneNumber, { mask: "+00 0000 0000 0" });
       }
 
       resetOrderCount() {
-        if (window.confirm('Reset order number count ?')) {
+        if (window.confirm('WARNING: Reset order number count to 1 ?')) {
           this.set('factoryOrderIndex.order_count', 1)
         }
       }
@@ -253,10 +265,6 @@
 
       closeKeyDialog() {
         this.$.manageKeyDialog.opened = false
-      }
-
-      openManageUser() {
-
       }
 
       getKeyList(key) {
@@ -451,6 +459,20 @@
         } else {
           this.toastText = 'notification-alert-off'
           this.$.toastAlert.open()
+        }
+      }
+
+      changeEmail() {
+        console.log(this.$.auth.currentUser)
+        if(confirm('Are you sure do you want to change this account e-mail ?')) {
+          const user = this.$.auth.currentUser
+          user.updateEmail(this.$.userEmail.value).then(() => {
+            alert('Update E-mail successful. Please re-authen by logout and login again.')
+          }).catch((error) => {
+            alert('Failed to change E-mail, Please contact administrator.')
+          });
+        } else {
+          this.$.userEmail.value = this.user.email
         }
       }
 

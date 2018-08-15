@@ -18,6 +18,7 @@
   "devDependencies": {
     "babel-eslint": "^8.2.6",
     "babel-preset-minify": "^0.5.0-alpha.e9f96ffe",
+    "browser-sync": "^2.24.6",
     "chai-http": "^4.0.0",
     "cross-env": "^5.2.0",
     "del": "^3.0.0",
@@ -51,7 +52,7 @@
   "scripts": {
     "build": "polymer build",
     "deploy": "firebase deploy",
-    "dev": "polymer serve -p 8080",
+    "dev": "polymer serve",
     "lint": "polymer lint",
     "serve:dev": "polymer serve",
     "serve:prod": "polymer build && firebase serve --only functions,hosting",
