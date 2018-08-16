@@ -125,6 +125,36 @@
         opacity: 1;
       }
 
+      /* custom task group classes */
+
+      .gantt .bar-design .bar {
+        fill: darkorchid;
+      }
+
+      .gantt .bar-design .bar-progress {
+        fill: darkmagenta;
+      }
+
+      .gantt .bar-development .bar {
+        fill: limegreen;
+      }
+
+      .gantt .bar-development .bar-progress {
+        fill: lime;
+      }
+
+      .gantt .bar-integration .bar {
+        fill: crimson;
+      }
+
+      .gantt .bar-integration .bar-progress {
+        fill: tomato;
+      }
+
+      .gantt .bar-milestone .bar {
+        fill: orangered;
+      }
+
       .gantt .bar-wrapper.active .bar {
         fill: #a9b5c1;
       }
@@ -597,15 +627,15 @@
             </vaadin-grid-column>
 
             <vaadin-grid-column>
-                <template class="header">
-                  <div class="cell">
-                    <span>SKU</span>
-                  </div>
-                </template>
-                <template>
-                  <div class="cell">[[item.job_sku]]</div>
-                </template>
-              </vaadin-grid-column>
+              <template class="header">
+                <div class="cell">
+                  <span>SKU</span>
+                </div>
+              </template>
+              <template>
+                <div class="cell">[[item.job_sku]]</div>
+              </template>
+            </vaadin-grid-column>
 
             <vaadin-grid-column>
               <template class="header">
@@ -782,15 +812,21 @@
               return {
                 view_mode: 'Quarter Day',
                 bar_height: 30,
+                fixed_label_location: false,
                 custom_popup_html: function (task) {
                   return `
                 <div class="details-container">
-                  <h4>${task.data}</h4>
-                  <p>Station: ${task.id}</p>
+                  <h4>SKU: ${task.id}</h4>
+                  <p>Order: ${task.name}</p>
+                  <p>Start: ${task.start}</p>
+                  <p>End: ${task.end}</p>
                   <p>Dependencies: ${task.dependencies}</p>
                   <p>Progress: ${task.progress}%</p>
                 </div>
               `;
+                },
+                on_click: function (task) {
+                  console.log(task);
                 },
                 on_date_change: function (task, start, end) {
                   console.log(task, start, end);
@@ -805,6 +841,8 @@
             type: Array,
             value: () => {
               return [{
+                value: 'Hour'
+              }, {
                 value: 'Quarter Day'
               }, {
                 value: 'Half Day'
@@ -920,8 +958,8 @@
             return {
               id: data.job_sku,
               name: data.order_no,
-              start: this.dateFromTimeStamp(data.start),
-              end: this.dateFromTimeStamp(data.end),
+              start: this.getTimestampToTime(data.start),
+              end: this.getTimestampToTime(data.end),
               progress: 100,
               dependencies: data.job_dependency || 'None'
             }
@@ -931,20 +969,6 @@
           this.$.chartQuery.ref.set(convertChartData)
           this.gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), convertChartData, this.ganttChartOptions)
         }
-      }
-
-      dateFromTimeStamp(timestamp) {
-        let date = new Date(timestamp * 1000)
-        let dd = date.getDate()
-        let mm = date.getMonth() + 1
-        let yyyy = date.getFullYear()
-        if (dd < 10) {
-          dd = '0' + dd
-        }
-        if (mm < 10) {
-          mm = '0' + mm
-        }
-        return yyyy + '-' + mm + '-' + dd
       }
 
       // PLAN MANAGEMENT
@@ -1090,11 +1114,8 @@
         let mo = date.getMonth() + 1;
         let yr = date.getFullYear();
         let h = date.getHours();
-        // Minutes part from the timestamp
         let m = date.getMinutes();
-        // Seconds part from the timestamp
         let s = date.getSeconds();
-        // Will display time in 10:30:23 format
         return `${yr}-${mo}-${da} ${('0' + h).substr(-2)}:${('0' + m).substr(-2)}:${('0' + s).substr(-2)}`
       }
 
@@ -1156,7 +1177,7 @@
 
       getDeliveryDate(timestamp) {
         let date = this.getTimestampToDate(timestamp)
-        return date[0] + '/' + date[1] + '/' + date[2];
+        return date[2] + '-' + date[1] + '-' + date[0];
       }
 
       getTimestampToDatePicker(timestamp) {

@@ -42,6 +42,10 @@
                 }
             }
 
+            #createOrderCard {
+                height: 697px;
+            }
+
             .frame {
                 padding: 10px;
             }
@@ -498,7 +502,7 @@
                 let hours = this._leftPad(Math.floor(Math.abs(sec) / 3600));
                 let minutes = this._leftPad(Math.round(Math.abs(sec) % 3600 / 60));
                 let seconds = this._leftPad(Math.round(Math.abs(sec) % 3600 % 60));
-                return hours + 'hrs ' + minutes + 'min' + seconds + 'sec';
+                return hours + 'hrs ' + minutes + 'mins ' + seconds + 'sec';
             }
 
             // ADD 0 to numbers less than 10,Eg: 2 -> 02 
