@@ -40,7 +40,6 @@
       -moz-osx-font-smoothing: grayscale;
     }
   </style>
-  <script>window.Polymer = {rootPath: '/'};</script>
   <link rel="import" href="src/view-app.html">
 </head>
 <body>
@@ -49,9 +48,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('service-worker.js', {
-          scope: window.Polymer.rootPath
-        });
+        navigator.serviceWorker.register('service-worker.js');
       });
     }
   </script>

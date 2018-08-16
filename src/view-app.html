@@ -98,8 +98,7 @@
             </app-toolbar>
           </app-header>
         </app-header-layout>
-        <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible"
-          role="main" loading="{{loading}}">
+        <iron-pages selected="[[routeData.page]]" attr-for-selected="name" fallback-selection="404" selected-attribute="visible">
           <view-dashboard name="dashboard" route="[[subPageRoute]]" hidden$="[[!user]]"></view-dashboard>
           <view-setup name="setup" route="[[subPageRoute]]" hidden$="[[!user]]"></view-setup>
           <view-plan name="plan" route="[[subPageRoute]]" hidden$="[[!user]]"></view-plan>
@@ -122,15 +121,12 @@
         </div>
       </div>
     </paper-toast>
-
   </template>
   <script>
     /**
      * #ViewApp
-     * `<view-app>` is the app-shell of application
      * @ViewApp
      * @polymer
-     * @extends {Polymer.Element}
      */
     class ViewApp extends Polymer.mixinBehaviors([Polymer.AppLocalizeBehavior], Polymer.Element) {
       static get is() {
@@ -188,7 +184,7 @@
       constructor() {
         super()
         Polymer.setPassiveTouchGestures(true)
-        Polymer.setRootPath(window.Polymer.rootPath)
+        Polymer.setRootPath('/')
       }
       connectedCallback() {
         super.connectedCallback()
