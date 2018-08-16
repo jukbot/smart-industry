@@ -237,6 +237,16 @@
         margin: 20px 0;
       }
 
+      .details-container {
+        font-size: 1rem;
+        color: #333333;
+        background-color: #FFFFFF;
+        padding: 1rem;
+        border: 1px solid #eeeeee;
+        border-radius: 5px;
+        min-width: 150px;
+      }
+
       .badge {
         color: #fff;
         display: inline-block;
@@ -812,9 +822,10 @@
             custom_popup_html: function(task) {
               return `
                 <div class="details-container">
-                  <h5>${task.name}</h5>
-                  <p>Station ${task.id}</p>
-                  <p>${task.progress}% completed!</p>
+                  <h4>${task.name}</h4>
+                  <p>Station: ${task.id}</p>
+                  <p>Dependencies: ${task.dependencies}</p>
+                  <p>Progress: ${task.progress}%</p>
                 </div>
               `;
             },
