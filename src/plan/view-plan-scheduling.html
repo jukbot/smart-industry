@@ -274,7 +274,8 @@
     <firebase-document app-name="smart-mes" id="factoryPerformance" path="/data/[[k.key]]/factoryData/performance" data="{{factoryPerformance}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="factorySchedule" path="/data/[[k.key]]/factoryData/schedule" data="{{factorySchedule}}"></firebase-document>
     <firebase-document app-name="smart-mes" id="editOrderQuery" path="/data/[[k.key]]/orderData/[[editKey]]" data="{{editOrderItems}}"></firebase-document>
-    <firebase-document app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{chartItems}}"></firebase-document>
+    <!-- GANTT CHART DATA -->
+    <firebase-query app-name="smart-mes" id="chartQuery" path="/data/[[k.key]]/chartData" data="{{ganttChartData}}"></firebase-query>
     <!-- NOTIFICATION DATA -->
     <firebase-query app-name="smart-mes" id="notificationQuery" path="/data/[[k.key]]/notificationData"></firebase-query>
     <!-- CUSTOMER DATA -->
@@ -653,10 +654,19 @@
       <li>
         <div class="card" id="chartContainer" hidden="[[showChartTable]]">
           <h1 class="title">{{localize('scheduling-chart')}}</h1>
+          <vaadin-combo-box label="Schedule View Mode" id="ganttViewMode" on-change="changeGanttChartMode" selected-item="Quarter Day" items="[[viewModeItems]]"
+            item-value-path="value" item-label-path="value" error-message="Invalid Input" required always-float-label>
+            <template>
+              <paper-item>
+                <paper-item-body style="min-height: 0">
+                  <div readonly>[[item.value]]</div>
+                </paper-item-body>
+              </paper-item>
+            </template>
+          </vaadin-combo-box>
           <div>
-          <svg id="gantt"></svg>
+            <svg id="gantt"></svg>
           </div>
-          <google-chart id="timeline" type="timeline" options="[[timelineOptions]]"></google-chart>
           <div class="center">
             <paper-button on-click="setGanttChart" class="btn">Print</paper-button>
           </div>
@@ -705,9 +715,6 @@
 
       static get properties() {
         return {
-          ganttChartData: {
-            type: Array
-          },
           selectedStation: {
             type: String,
             reflectToAttribute: true,
@@ -748,10 +755,26 @@
             type: Boolean,
             value: true
           },
+          viewModeItems: {
+            type: Array,
+            value: () => {
+              return [{
+                value: 'Quarter Day'
+              }, {
+                value: 'Half Day'
+              }, {
+                value: 'Day'
+              }, {
+                value: 'Week'
+              }, {
+                value: 'Month'
+              }]
+            }
+          },
           language: String,
           status: String,
           orderItems: Object,
-          chartItems: Object,
+          chartItems: Array,
           trackItems: Object,
           editOrderItems: Object,
           factoryPerformance: Object,
@@ -769,6 +792,7 @@
       static get observers() {
         return [
           '_isSerialModel(factoryProfile.model)',
+          'setGanttChartData(ganttChartData)',
           'refreshOrderTable(orderItems.*)',
         ]
       }
@@ -777,27 +801,31 @@
         super.ready();
         this._initialDatePicker();
         this._setOrderDatePosition();
-        this.ganttChartData = [{
-          id: 'Task 1',
-          name: 'Redesign website',
-          start: '2018-01-28',
-          end: '2018-01-31',
-          progress: 20,
-          dependencies: 'Task 2, Task 3'
-        }]
-        let gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), this.ganttChartData)
       }
 
-      setGanttChart() {
-        this.ganttChartData.push({
-          id: 'Task 2',
-          name: 'Redesign website',
-          start: '2016-02-01',
-          end: '2016-02-01',
-          progress: 0,
-          dependencies: 'Task 2, Task 3'
-        })
-        let gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), this.ganttChartData)
+      setGanttChartData(data) {
+        this.ganttChartData = data
+        if (data.length > 0) {
+          this.gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), this.ganttChartData, {
+            view_mode: 'Quarter Day',
+            bar_height: 30,
+            custom_popup_html: function(task) {
+              return `
+                <div class="details-container">
+                  <h5>${task.name}</h5>
+                  <p>Station ${task.id}</p>
+                  <p>${task.progress}% completed!</p>
+                </div>
+              `;
+            },
+            on_date_change: function (task, start, end) {
+              console.log(task, start, end);
+            },
+            on_progress_change: function (task, progress) {
+              console.log(task, progress);
+            }
+          })
+        }
       }
 
       connectedCallback() {
@@ -806,8 +834,11 @@
         requestAnimationFrame(this._installListeners.bind(this))
       }
 
+      changeGanttChartMode() {
+        this.gantt.change_view_mode(this.$.ganttViewMode.value)
+      }
+
       _installListeners() {
-        this.addEventListener('iron-resize', (e) => this._setChartSize(e))
         this.$.planList.addEventListener('selected-item-changed', this._validatePlanInput.bind(this))
       }
 
@@ -853,93 +884,38 @@
         this.$.editDeliverySelector.value = "";
       }
 
-      _setChartSize() {
-        this.width = this.$.chartContainer.offsetWidth;
-        this.height = this.$.chartContainer.offsetHeight;
-        if (this.$.timeline.offsetHeight > 0) {
-          this.updateStyles({
-            '--chart-container-height': this.$.timeline.offsetHeight,
-            '#chartContainer': this.$.timeline.offsetHeights
-          });
-        }
-        if (this.width > 0) {
-          this.timelineOptions = {
-            width: this.width - 40,
-            height: this.height,
-            timeline: {
-              rowLabelStyle: {
-                fontSize: 16
-              },
-              barLabelStyle: {
-                fontSize: 16
-              }
-            },
-            tooltip: {
-              isHtml: true
-            },
-            legend: {
-              position: 'none'
-            },
-            avoidOverlappingGridLines: false
-          }
-          google.charts.setOnLoadCallback(this._initialChart())
-        }
-      }
-
-      _initialChart() {
-        let chart = this.$.timeline;
-        let dataTable = new google.visualization.DataTable();
-        dataTable.addColumn({
-          type: 'string',
-          id: 'Station'
-        });
-        dataTable.addColumn({
-          type: 'string',
-          id: 'Order no.'
-        });
-        dataTable.addColumn({
-          type: 'string',
-          role: 'style'
-        });
-        dataTable.addColumn({
-          type: 'date',
-          id: 'Start'
-        });
-        dataTable.addColumn({
-          type: 'date',
-          id: 'End'
-        });
-        if (this.chartItems.length > 0) {
-          // convert time stamp to new date 
-          const result = this.chartItems.map((x) => {
-            return [this.localize('station') + x[0], x[1], x[2],
-              new Date(x[3] * 1000),
-              new Date(x[4] * 1000)
-            ]
-          });
-          dataTable.addRows(result);
-        } else {
-          dataTable.addRows([
-            ['\0', 'No data', '#FFFFFF', new Date(1506470400), new Date(1506480400)]
-          ]);
-        }
-        document.createElement('google-chart-loader').dataTable(
-          dataTable).then((dataTable) => {
-          chart.data = dataTable;
-        });
-      }
-
       _refreshChart() {
         if (this.scheduleItems.length > 0) {
-          let newChartData = this.scheduleItems.map((data) => {
-            return [data.job_station + '' || 'N/A', 'Order ' + data.order_no, data.order_color,
-              data.start, data.end
-            ]
+          let convertChartData = this.scheduleItems.map((data) => {
+            return {
+              id: data.job_station,
+              name: `Order ${data.order_no}`,
+              start: this.dateFromTimeStamp(data.start),
+              end: this.dateFromTimeStamp(data.end),
+              progress: 100,
+              dependencies: 'N/A'
+            }
           })
           this.$.chartQuery.ref.remove()
-          this.$.chartQuery.ref.set(newChartData)
+          this.$.chartQuery.ref.set(convertChartData)
+          this.gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), convertChartData)
         }
       }
+
+      dateFromTimeStamp(timestamp) {
+        let date = new Date(timestamp * 1000)
+        let dd = date.getDate()
+        let mm = date.getMonth() + 1
+        let yyyy = date.getFullYear()
+        if (dd < 10) {
+          dd = '0' + dd
+        }
+        if (mm < 10) {
+          mm = '0' + mm
+        }
+        return yyyy + '-' + mm + '-' + dd
+      }
+
       // PLAN MANAGEMENT
       _validatePlanInput() {
         if (this.$.planList.selectedItem) {
@@ -1088,7 +1064,7 @@
         // Seconds part from the timestamp
         let s = date.getSeconds();
         // Will display time in 10:30:23 format
-        return `${da}/${mo}/${yr} ${('0' + h).substr(-2)}:${('0' + m).substr(-2)}:${('0' + s).substr(-2)}`
+        return `${yr}-${mo}-${da} ${('0' + h).substr(-2)}:${('0' + m).substr(-2)}:${('0' + s).substr(-2)}`
       }
 
       getSecondsToHms(sec) {
@@ -1272,6 +1248,15 @@
         if (confirm("Clear all schedule ? The order that are working in process will not be deleted.")) {
           this.$.scheduleQuery.ref.remove()
           this.$.chartQuery.ref.remove()
+          this.gantt = new Gantt(this.shadowRoot.querySelector('#gantt'),
+          [{
+            id: 'Task 1',
+            name: 'Empty Data',
+            start: '2018-12-28',
+            end: '2018-12-31',
+            progress: 20,
+            dependencies: 'Task 2, Task 3'
+          }])
           this.toastText = 'notification-delete-successfully'
           this.$.toastAlert.open()
         }

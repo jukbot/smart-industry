@@ -9,7 +9,6 @@
 <link rel="import" href="../bower_components/app-layout/app-layout.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-
 <!-- iron elements used for component functions -->
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
@@ -50,7 +49,9 @@
       <view-login name="login" route="[[subRoute]]" hidden$="[[signedIn]]"></view-login>
       <view-404 name="404" route="[[subRoute]]"></view-404>
       <app-drawer-layout id="layout" fullbleed narrow="{{narrow}}" name="app">
+       
         <app-drawer id="drawer" slot="drawer" tabindex="-1" swipe-open="[[narrow]]" hidden="[[!signedIn]]">
+          <div style="height: 100%; overflow: auto;">
           <img class="app-logo" title="IMES" alt="Application logo" src="[[rootPath]]images/logo/logo.svg"/>
           <h1 title="IMES" class="main-logo-title">IMES</h1>
           <h2 title="Smart Industry Helper" class="main-describe">{{localize('app-description')}}</h2>
@@ -86,7 +87,9 @@
               <p>{{localize('version')}} 1.1.5</p>
             </div>
           </div>
+        </div>
         </app-drawer>
+
         <app-header-layout>
           <app-header class="main-header" id="header" slot="header" hidden="[[!signedIn]]">
             <app-toolbar>

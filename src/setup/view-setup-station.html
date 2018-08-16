@@ -107,7 +107,7 @@
                     <paper-item>
                         <paper-item-body two-line style="min-height: 0">
                             <div readonly>[[item.name]]</div>
-                            <div secondary>Type [[item.type]] / No. [[item.no]]</div>
+                            <div secondary>Type [[item.type]] / No. [[item.number]]</div>
                         </paper-item-body>
                     </paper-item>
                 </template>
@@ -174,11 +174,9 @@
         <!-- Station Manangement -->
         <div class="card main-card" hidden="[[showListStation]]">
             <h1 class="title">{{localize('station-management')}}</h1>
-            <!-- <paper-input class="search-input" label="Search station name" id="searchStationInput" value="{{searchString::input}}" type="text"
-                always-float-label hidden="[[!stationItems]]"></paper-input> -->
             <h1 class="sub-title center" hidden="[[machineItems]]">{{localize('please-add-machine-before-adding-station')}}</h1>
             <ul class="app-grid">
-                <template is="dom-repeat" filter="{{searchStation(searchString)}}" observe="st_name" index-as="number" items="{{stationItems}}"
+                <template is="dom-repeat" index-as="number" items="{{stationItems}}"
                     as="stationItem">
                     <li>
                         <div class="station">
@@ -319,21 +317,7 @@
                     'setEditStationMachine(editStationItems.st_machine)'
                 ]
             }
-
-            searchStation(keyword) {
-                if (!keyword) {
-                    // set filter to null to disable filtering
-                    return null;
-                } else {
-                    // return a filter function for the current search keyword
-                    keyword = keyword.toLowerCase()
-                    return ((station) => {
-                        let name = station.st_name.toLowerCase()
-                        return (name.indexOf(keyword) != -1)
-                    });
-                }
-            }
-
+            
             getStationNumber(length) {
                 if (length > 0) {
                     return length + 1

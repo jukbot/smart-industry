@@ -7,9 +7,9 @@
  * @function
  * @return {boolean} - The title of the book.
  */
-function isLeapYear() {
-  let year = new Date().getFullYear();
-  return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0);
+function isLeapYear () {
+  let year = new Date().getFullYear()
+  return year % 400 === 0 || (year % 100 !== 0 && year % 4 === 0)
 }
 
 /**
@@ -18,9 +18,9 @@ function isLeapYear() {
  * @param {number} day
  * @return {string}
  */
-function dateFromDays(day) {
-  let timestamp = new Date(new Date(new Date().getFullYear(), 0)).setDate(day); // initialize a date in `year-01-01`
-  return dateFromTimeStamp(timestamp);
+function dateFromDays (day) {
+  let timestamp = new Date(new Date(new Date().getFullYear(), 0)).setDate(day) // initialize a date in `year-01-01`
+  return dateFromTimeStamp(timestamp)
 }
 
 /**
@@ -29,18 +29,18 @@ function dateFromDays(day) {
  * @param {number} timestamp
  * @return {string}
  */
-function dateFromTimeStamp(timestamp) {
-  let date = new Date(timestamp);
-  let dd = date.getDate();
-  let mm = date.getMonth() + 1;
-  let yyyy = date.getFullYear();
+function dateFromTimeStamp (timestamp) {
+  let date = new Date(timestamp)
+  let dd = date.getDate()
+  let mm = date.getMonth() + 1
+  let yyyy = date.getFullYear()
   if (dd < 10) {
-    dd = '0' + dd;
+    dd = '0' + dd
   }
   if (mm < 10) {
-    mm = '0' + mm;
+    mm = '0' + mm
   }
-  return dd + '/' + mm + '/' + yyyy;
+  return yyyy + '-' + mm + '-' + dd
 }
 
 /**
@@ -48,16 +48,16 @@ function dateFromTimeStamp(timestamp) {
  * @function
  * @return {number}
  */
-function daysOfTheYear() {
-  const now = new Date();
-  const start = new Date(now.getFullYear(), 0, 0);
+function daysOfTheYear () {
+  const now = new Date()
+  const start = new Date(now.getFullYear(), 0, 0)
   const diff =
     now -
     start +
-    (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000;
-  const oneDay = 1000 * 60 * 60 * 24;
-  const day = Math.floor(diff / oneDay);
-  return day;
+    (start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000
+  const oneDay = 1000 * 60 * 60 * 24
+  const day = Math.floor(diff / oneDay)
+  return day
 }
 
 /**
@@ -66,26 +66,26 @@ function daysOfTheYear() {
  * @param {number} timestamp -
  * @return {string}
  */
-function datesInThisYear() {
+function datesInThisYear () {
   const getDates = (startDate, endDate) => {
-    let dates = [];
-    let currentDate = startDate;
-    let addDays = function(days) {
-      let date = new Date(this.valueOf());
-      date.setDate(date.getDate() + days);
-      return date;
-    };
-    while (currentDate <= endDate) {
-      dates.push(currentDate);
-      currentDate = addDays.call(currentDate, 1);
+    let dates = []
+    let currentDate = startDate
+    let addDays = function (days) {
+      let date = new Date(this.valueOf())
+      date.setDate(date.getDate() + days)
+      return date
     }
-    return dates;
-  };
+    while (currentDate <= endDate) {
+      dates.push(currentDate)
+      currentDate = addDays.call(currentDate, 1)
+    }
+    return dates
+  }
 
   // Jan start at 0
   let dates = getDates(
     new Date(new Date().getFullYear(), 0, 1),
     new Date(new Date().getFullYear(), 11, 31)
-  );
-  return dates;
+  )
+  return dates
 }
