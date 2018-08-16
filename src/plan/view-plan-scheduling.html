@@ -90,7 +90,7 @@
         fill: #fff;
         dominant-baseline: central;
         text-anchor: middle;
-        font-size: 12px;
+        font-size: 1rem;
         font-weight: lighter;
       }
 
@@ -243,7 +243,6 @@
         background-color: #FFFFFF;
         padding: 1rem;
         border: 1px solid #eeeeee;
-        border-radius: 5px;
         min-width: 150px;
       }
 
@@ -598,6 +597,17 @@
             </vaadin-grid-column>
 
             <vaadin-grid-column>
+                <template class="header">
+                  <div class="cell">
+                    <span>SKU</span>
+                  </div>
+                </template>
+                <template>
+                  <div class="cell">[[item.job_sku]]</div>
+                </template>
+              </vaadin-grid-column>
+
+            <vaadin-grid-column>
               <template class="header">
                 <div class="cell">{{localize('workload')}}</div>
               </template>
@@ -664,8 +674,9 @@
       <li>
         <div class="card" id="chartContainer" hidden="[[showChartTable]]">
           <h1 class="title">{{localize('scheduling-chart')}}</h1>
-          <vaadin-combo-box label="Schedule View Mode" id="ganttViewMode" on-change="changeGanttChartMode" selected-item="Quarter Day" items="[[viewModeItems]]"
-            item-value-path="value" item-label-path="value" error-message="Invalid Input" required always-float-label>
+          <vaadin-combo-box label="Schedule View Mode" id="ganttViewMode" on-change="changeGanttChartMode" selected-item="Quarter Day"
+            items="[[viewModeItems]]" item-value-path="value" item-label-path="value" error-message="Invalid Input" required
+            always-float-label>
             <template>
               <paper-item>
                 <paper-item-body style="min-height: 0">
@@ -765,6 +776,31 @@
             type: Boolean,
             value: true
           },
+          ganttChartOptions: {
+            type: Object,
+            value: () => {
+              return {
+                view_mode: 'Quarter Day',
+                bar_height: 30,
+                custom_popup_html: function (task) {
+                  return `
+                <div class="details-container">
+                  <h4>${task.data}</h4>
+                  <p>Station: ${task.id}</p>
+                  <p>Dependencies: ${task.dependencies}</p>
+                  <p>Progress: ${task.progress}%</p>
+                </div>
+              `;
+                },
+                on_date_change: function (task, start, end) {
+                  console.log(task, start, end);
+                },
+                on_progress_change: function (task, progress) {
+                  console.log(task, progress);
+                }
+              }
+            }
+          },
           viewModeItems: {
             type: Array,
             value: () => {
@@ -816,26 +852,7 @@
       setGanttChartData(data) {
         this.ganttChartData = data
         if (data.length > 0) {
-          this.gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), this.ganttChartData, {
-            view_mode: 'Quarter Day',
-            bar_height: 30,
-            custom_popup_html: function(task) {
-              return `
-                <div class="details-container">
-                  <h4>${task.name}</h4>
-                  <p>Station: ${task.id}</p>
-                  <p>Dependencies: ${task.dependencies}</p>
-                  <p>Progress: ${task.progress}%</p>
-                </div>
-              `;
-            },
-            on_date_change: function (task, start, end) {
-              console.log(task, start, end);
-            },
-            on_progress_change: function (task, progress) {
-              console.log(task, progress);
-            }
-          })
+          this.gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), this.ganttChartData, this.ganttChartOptions)
         }
       }
 
@@ -896,20 +913,23 @@
       }
 
       _refreshChart() {
+        let convertChartData = null
+        console.log(this.scheduleItems)
         if (this.scheduleItems.length > 0) {
-          let convertChartData = this.scheduleItems.map((data) => {
+          convertChartData = this.scheduleItems.map((data) => {
             return {
-              id: data.job_station,
-              name: `Order ${data.order_no}`,
+              id: data.job_sku,
+              name: data.order_no,
               start: this.dateFromTimeStamp(data.start),
               end: this.dateFromTimeStamp(data.end),
               progress: 100,
-              dependencies: 'N/A'
+              dependencies: data.job_dependency || 'None'
             }
           })
+          console.log(convertChartData)
           this.$.chartQuery.ref.remove()
           this.$.chartQuery.ref.set(convertChartData)
-          this.gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), convertChartData)
+          this.gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), convertChartData, this.ganttChartOptions)
         }
       }
 
@@ -1259,15 +1279,7 @@
         if (confirm("Clear all schedule ? The order that are working in process will not be deleted.")) {
           this.$.scheduleQuery.ref.remove()
           this.$.chartQuery.ref.remove()
-          this.gantt = new Gantt(this.shadowRoot.querySelector('#gantt'),
-          [{
-            id: 'Task 1',
-            name: 'Empty Data',
-            start: '2018-12-28',
-            end: '2018-12-31',
-            progress: 20,
-            dependencies: 'Task 2, Task 3'
-          }])
+          this.gantt = new Gantt(this.shadowRoot.querySelector('#gantt'), [])
           this.toastText = 'notification-delete-successfully'
           this.$.toastAlert.open()
         }
@@ -1568,7 +1580,6 @@
               delete data.$key
               data.map((x, j) => this.$.scheduleQuery.ref.push(data[j]))
             })
-            window.alert("Re-schedule successful, please refresh this page to update a chart.")
           } else {
             window.alert("Full capacity of current concurrency")
           }
