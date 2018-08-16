@@ -295,8 +295,8 @@
         background-color: orangered;
       }
 
-      #chartContainer {
-        min-height: 500px;
+      [part~="cell"] {
+        padding: 0;
       }
 
       @media (min-width: 360px) and (max-width: 768px) {
@@ -703,7 +703,7 @@
         </div>
       </li>
       <li>
-        <div class="card" id="chartContainer" hidden="[[showChartTable]]">
+        <div class="card" hidden="[[showChartTable]]">
           <h1 class="title">{{localize('scheduling-chart')}}</h1>
           <vaadin-combo-box label="Schedule View Mode" id="ganttViewMode" on-change="changeGanttChartMode" selected-item="Quarter Day"
             items="[[viewModeItems]]" item-value-path="value" item-label-path="value" error-message="Invalid Input" required
