@@ -12,25 +12,31 @@
         height: 100%;
         display: block;
       }
+
       .btn {
         margin: 20px 5px 0 5px;
         width: 250px;
       }
+
       .add-btn {
         margin: 10px 0 10px;
         width: 250px;
       }
+
       .btn-block {
         width: 100%;
       }
+
       .item {
         border-bottom: 1px solid #eee;
         padding: 10px;
       }
+
       .product-image {
         height: auto;
         width: 100px;
       }
+
       .image-cell {
         height: 100px;
         width: 100px;
@@ -38,6 +44,7 @@
         justify-content: center;
         align-items: center;
       }
+
       .details {
         padding: 10px;
         display: flex;
@@ -45,45 +52,59 @@
         align-items: center;
         min-height: 70px;
       }
+
       [part~="cell"] {
         padding: 0;
       }
-      .process-list, .part-list {
+
+      .process-list,
+      .part-list {
         height: 200px;
       }
+
       .part {
         margin: 10px;
         padding: 20px;
         border: 1px solid #eee;
         border-radius: 5px;
       }
+
       .part p {
         margin: 10px 0;
       }
+
       .part h1 {
         text-align: center;
       }
+
       .part-info-group {
         margin-bottom: auto;
       }
+
       .part-block {
         margin: 20px 0 0 0;
       }
+
       [part="content"] {
         padding: 20px 30px;
       }
+
       .title {
         margin: 10px 0 20px 0;
       }
+
       .btn {
         width: 244px;
       }
+
       .block-group {
         margin: 10px 0;
       }
+
       .delete-btn {
         float: right;
       }
+
       .grid-item {
         border-bottom: 1px solid #eee;
         padding: 10px;
@@ -91,24 +112,30 @@
         display: flex;
         justify-content: space-between;
       }
+
       .grid-item:hover {
         background-color: #eee;
       }
+
       .grid-child {
         flex: 1;
       }
+
       .btn-group {
         margin-top: 40px;
       }
+
       vaadin-grid#productTable {
         height: 700px;
         --vaadin-grid-body-cell: {
           height: 200px;
         }
       }
+
       .tab-title {
         color: #202020
       }
+
     </style>
     <firebase-auth app-name="smart-mes" id="auth" user="{{user}}"></firebase-auth>
     <firebase-document app-name="smart-mes" id="userData" path="/user/[[user.uid]]" data="{{k}}"></firebase-document>
@@ -131,17 +158,16 @@
               <span class="tab-title">2 Parts & Process</span>
             </paper-tab>
             <paper-tab role="tab" name="process">
-              <span class="tab-title">3 Product Review</span>
+              <span class="tab-title">3 Product Summary</span>
             </paper-tab>
           </paper-tabs>
           <iron-pages selected="{{addProductTabs}}">
             <div>
               <h1 class="title">Product Information</h1>
-              <paper-input tabindex="0" label="{{localize('product-name')}}*" id="productName" type="text" required always-float-label></paper-input>
-              <paper-input tabindex="1" label="{{localize('sku-code')}}*" id="productSKU" type="text" allowed-pattern="^(0|[1-9]\d*)$"
-                required always-float-label></paper-input>
+              <paper-input tabindex="0" label="{{localize('product-name')}}*" id="productName" type="text" value="{{productName}}" required always-float-label></paper-input>
+              <paper-input tabindex="1" label="{{localize('sku-code')}}*" id="productSKU" type="text" value="{{productSKU}}" required always-float-label></paper-input>
               <paper-input tabindex="2" label="{{localize('cost')}}" id="productCost" type="number" maxlength="9" error-message="number only"
-                min="0" max="9999" step="0.01" auto-validate always-float-label></paper-input>
+                min="0" max="9999" step="0.01" value="{{productCost}}" auto-validate always-float-label></paper-input>
               <paper-input tabindex="3" label="Description" id="productDescription" type="text" maxlength="300" required always-float-label></paper-input>
               <paper-button on-click="openBrowseImageFile" class="btn">
                 {{localize('browse-image')}}
@@ -159,9 +185,21 @@
                 <h3>Part Information</h3>
                 <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" always-float-label></paper-input>
                 <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" always-float-label></paper-input>
-                <paper-input label="Part Dependency (skuxxx,skuxxx,..)" id="partDependency" type="text" value="{{partDependency}}" required
-                    always-float-label></paper-input>
-                <h3>Part Process</h3>
+                <paper-input label="Part Dependency (SKU Code)" id="partDependency" type="text" value="{{partDependency}}" required
+                  always-float-label></paper-input>
+                <vaadin-combo-box tabindex="4" label="{{localize('raw-materials-required')}}" id="inventoryCode" items="[[inventoryData]]"
+                  item-value-path="code" item-label-path="name" loading="[[!inventoryData]]" theme="always-float-label">
+                  <template>
+                    <paper-item>
+                      <paper-item-body>
+                        <div>[[item.name]]</div>
+                      </paper-item-body>
+                    </paper-item>
+                  </template>
+                </vaadin-combo-box>
+                <paper-input tabindex="5" label="Raw material quantity" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
+                  required always-float-label></paper-input>
+                <h3 class="btn-group">Part Process</h3>
                 <vaadin-combo-box label="{{localize('process-number')}}" id="processNumber" items="[[processData]]" name="Process selector"
                   item-label-path="st_number" item-value-path="st_number" value="{{selectedProcess}}" error-message="Invalid input"
                   loading="[[!processData]]" required always-float-label='true'>
@@ -179,30 +217,24 @@
                   min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
                 <paper-input label="Process Setup Time (second)" id="processSetup" value="{{processSetup}}" type="number" maxlength="9" error-message="Number only"
                   min="0" max="[[maxInput]]" step="0.01" auto-validate always-float-label></paper-input>
-                <vaadin-combo-box tabindex="4" label="{{localize('raw-materials-required')}}" id="inventoryCode" items="[[inventoryData]]"
-                item-value-path="code" item-label-path="name" loading="[[!inventoryData]]" theme="always-float-label">
-                <template>
-                  <paper-item><paper-item-body><div>[[item.name]]</div></paper-item-body></paper-item>
-                </template>
-              </vaadin-combo-box>
-              <paper-input tabindex="5" label="Raw material quantity" id="inventoryQuantity" type="number" allowed-pattern="^(0|[1-9]\d*)(\.\d+)?$"
-                required always-float-label></paper-input>
-              <paper-button class="add-btn" on-click="addProcessToPart">
-                Add Process
-              </paper-button>
-              <p>Process Limit [[partProcess.length]] / [[maxProcess]]</p>
+                <paper-button class="add-btn" on-click="addProcessToPart">
+                  Add Process
+                </paper-button>
+                <p>Process Limit [[partProcess.length]] / [[maxProcess]]</p>
                 <div class="frame">
                   <div class="process-list">
                     <iron-list items="[[processBundle]]" as="item">
                       <template>
                         <div tabindex$="[[tabIndex]]" class="grid-item">
                           <div class="grid-child">
-                          <p><strong>{{localize('process-number')}} [[item.process]]</strong></p>
-                          <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
-                          <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
+                            <p>
+                              <strong>{{localize('process-number')}} [[item.process]]</strong>
+                            </p>
+                            <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
+                            <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
                           </div>
                           <div class="grid-child">
-                          <paper-icon-button class="delete-btn" on-click="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
+                            <paper-icon-button class="delete-btn" on-click="removeProcessFromPart" icon="vaadin:close-small" title="Delete"></paper-icon-button>
                           </div>
                         </div>
                       </template>
@@ -210,17 +242,16 @@
                   </div>
                 </div>
                 <div class="center">
-                <paper-button class="btn" dialog-confirm on-click="addPartToProduct">
+                  <paper-button class="btn" dialog-confirm on-click="addPartToProduct">
                     {{localize('add-part')}}
-                </paper-button>
-                <paper-button class="btn" on-click="clearPartFromProduct">
+                  </paper-button>
+                  <paper-button class="btn" on-click="clearPartFromProduct">
                     {{localize('clear')}}
-                </paper-button>
+                  </paper-button>
                 </div>
               </div>
-              <hr>
-              <h3>Product Parts Summary</h3>
-              <div class="part-block">  
+              <h3 class="btn-group center">Product Parts Summary</h3>
+              <div class="part-block">
                 <ul class="flex-container wrap">
                   <template is="dom-repeat" items="[[productPart]]" as="part">
                     <li class="flex-item">
@@ -233,7 +264,9 @@
                             <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
                               <template>
                                 <div tabindex$="[[tabIndex]]" class="item">
-                                  <p><strong>{{localize('process-number')}} [[item.process]]</strong></p>
+                                  <p>
+                                    <strong>{{localize('process-number')}} [[item.process]]</strong>
+                                  </p>
                                   <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
                                   <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
                                 </div>
@@ -258,40 +291,41 @@
               </div>
             </div>
             <div>
-              <h1 class="title">Product Review</h1>
+              <h1 class="title">Product Summary</h1>
               <div class="block-group">
-              <p>Product Name:</p>
-              <p>Product Description:</p>
-              <p>Product SKU:</p>
-              <p>Product Cost:</p>
-              <p>Product Part:</p>
+                <p>Product Name: [[productName]]</p>
+                <p>Product SKU: [[productSKU]]</p>
+                <p>Product Cost: [[productCost]]</p>
+                <p>Product Part:</p>
               </div>
-              <div class="part-block">  
-                  <ul class="flex-container wrap">
-                    <template is="dom-repeat" items="[[productPart]]" as="part">
-                      <li class="flex-item">
-                        <div class="part">
-                          <div class="part-info-group">
-                            <h2 class="title">[[part.name]]</h2>
-                            <p>Part dependency: [[part.part_dependency]]</p>
-                            <p>{{localize('sku-code')}}: [[part.sku]]</p>
-                            <div class="part-list">
-                              <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
-                                <template>
-                                  <div tabindex$="[[tabIndex]]" class="item">
-                                    <p><strong>{{localize('process-number')}} [[item.process]]</strong></p>
-                                    <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
-                                    <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
-                                  </div>
-                                </template>
-                              </iron-list>
-                            </div>
+              <div class="part-block">
+                <ul class="flex-container wrap">
+                  <template is="dom-repeat" items="[[productPart]]" as="part">
+                    <li class="flex-item">
+                      <div class="part">
+                        <div class="part-info-group">
+                          <h2 class="title">[[part.name]]</h2>
+                          <p>Part dependency: [[part.part_dependency]]</p>
+                          <p>{{localize('sku-code')}}: [[part.sku]]</p>
+                          <div class="part-list">
+                            <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
+                              <template>
+                                <div tabindex$="[[tabIndex]]" class="item">
+                                  <p>
+                                    <strong>{{localize('process-number')}} [[item.process]]</strong>
+                                  </p>
+                                  <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
+                                  <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
+                                </div>
+                              </template>
+                            </iron-list>
                           </div>
                         </div>
-                      </li>
-                    </template>
-                  </ul>
-                </div>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+              </div>
               <div class="btn-group center">
                 <paper-button class="btn" on-click="openProductList">
                   {{localize('dismiss')}}
@@ -352,7 +386,9 @@
                         <iron-list items="[[getPartBundle(part.process, part.cycle, part.setup)]]" as="item">
                           <template>
                             <div tabindex$="[[tabIndex]]" class="item">
-                              <p><strong>{{localize('process-number')}} [[item.process]]</strong></p>
+                              <p>
+                                <strong>{{localize('process-number')}} [[item.process]]</strong>
+                              </p>
                               <p>{{localize('cycle-time')}} [[item.cycle]] {{localize('second')}}</p>
                               <p>{{localize('setup-time')}} [[item.setup]] {{localize('second')}}</p>
                             </div>
@@ -575,12 +611,12 @@
     <!-- ADD Part dialog !-->
     <flat-dialog id="addPartDialog" class="dialog" scroll-action="lock">
       <h1 class="title center">{{localize('add')}} {{localize('product-part')}}</h1>
-      
+
       <div class="center">
         <paper-button class="btn" dialog-dismiss on-click="closeAddPartDialog">
           {{localize('dismiss')}}
         </paper-button>
-  
+
       </div>
     </flat-dialog>
 
@@ -590,7 +626,7 @@
       <div class="block-group">
         <paper-input label="{{localize('name')}}" id="partName" value="{{partName}}" type="text" required always-float-label></paper-input>
         <paper-input label="{{localize('sku-code')}}" id="partSKU" value="{{partSKU}}" type="text" required always-float-label></paper-input>
-        <paper-input label="Part Dependency (skuxxx,skuxxx,..)" id="partDependency" value="{{partDependency}}" type="text" always-float-label></paper-input>
+        <paper-input label="Part Dependency (Use SKU Code)" id="partDependency" value="{{partDependency}}" type="text" always-float-label></paper-input>
       </div>
       <div class="block-group">
         <!-- Add Process -->
