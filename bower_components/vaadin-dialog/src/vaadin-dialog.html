@@ -1,0 +1,179 @@
+<!--
+@license
+Copyright (c) 2017 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+-->
+
+<link rel="import" href="../../polymer/polymer-element.html">
+<link rel="import" href="../../vaadin-overlay/src/vaadin-overlay.html">
+<link rel="import" href="../../vaadin-element-mixin/vaadin-element-mixin.html">
+
+<dom-module id="vaadin-dialog-overlay-styles" theme-for="vaadin-dialog-overlay">
+  <template>
+    <style>
+      /*
+        NOTE(platosha): Make some min-width to prevent collapsing of the content
+        taking the parent width, e. g., <vaadin-grid> and such.
+      */
+      [part="content"] {
+        min-width: 12em; /* matches the default <vaadin-text-field> width */
+      }
+    </style>
+  </template>
+</dom-module>
+
+<dom-module id="vaadin-dialog">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>
+
+    <vaadin-dialog-overlay id="overlay"
+      on-opened-changed="_onOverlayOpened"
+      with-backdrop
+      focus-trap>
+    </vaadin-dialog-overlay>
+  </template>
+  <script>
+    (function() {
+
+      /**
+       * The overlay element.
+       *
+       * ### Styling
+       *
+       * See [`<vaadin-overlay>` documentation](https://github.com/vaadin/vaadin-overlay/blob/master/src/vaadin-overlay.html)
+       * for `<vaadin-dialog-overlay>` parts.
+       *
+       * @memberof Vaadin
+       * @private
+       */
+      class DialogOverlayElement extends Vaadin.OverlayElement {
+        static get is() {
+          return 'vaadin-dialog-overlay';
+        }
+      }
+
+      customElements.define(DialogOverlayElement.is, DialogOverlayElement);
+
+
+      /**
+       * `<vaadin-dialog>` is a Polymer 2 element for customized modal dialogs.
+       *
+       * ```html
+       * <vaadin-dialog opened>
+       *   <template>
+       *     Sample dialog
+       *   </template>
+       * </vaadin-dialog>
+       * ```
+       *
+       * ### Styling
+       *
+       * See [`<vaadin-overlay>` documentation](https://github.com/vaadin/vaadin-overlay/blob/master/src/vaadin-overlay.html)
+       * for `<vaadin-dialog-overlay>` parts.
+       *
+       * See [ThemableMixin – how to apply styles for shadow parts](https://github.com/vaadin/vaadin-themable-mixin/wiki)
+       *
+       * @memberof Vaadin
+       * @mixes Vaadin.ElementMixin
+       * @demo demo/index.html
+       */
+      class DialogElement extends Vaadin.ElementMixin(Polymer.Element) {
+        static get is() {
+          return 'vaadin-dialog';
+        }
+
+        static get version() {
+          return '2.0.2';
+        }
+
+        static get properties() {
+          return {
+            /**
+             * True if the overlay is currently displayed.
+             */
+            opened: {
+              type: Boolean,
+              value: false,
+              notify: true
+            },
+
+            /**
+             * Set to true to disable closing dialog on outside click
+             */
+            noCloseOnOutsideClick: {
+              type: Boolean,
+              value: false
+            },
+
+            /**
+             * Set to true to disable closing dialog on Escape press
+             */
+            noCloseOnEsc: {
+              type: Boolean,
+              value: false
+            },
+
+            _contentTemplate: Object
+          };
+        }
+
+        static get observers() {
+          return ['_openedChanged(opened)'];
+        }
+
+        ready() {
+          super.ready();
+          this.$.overlay.setAttribute('role', 'dialog');
+          this.$.overlay.addEventListener('vaadin-overlay-outside-click', this._handleOutsideClick.bind(this));
+          this.$.overlay.addEventListener('vaadin-overlay-escape-press', this._handleEscPress.bind(this));
+        }
+
+        disconnectedCallback() {
+          super.disconnectedCallback();
+          this.opened = false;
+        }
+
+        _openedChanged(opened) {
+          if (opened && !this._instance) {
+            this.$.overlay.template = this.querySelector('template');
+          }
+          this.$.overlay.opened = opened;
+        }
+
+        _onOverlayOpened(e) {
+          if (e.detail.value === false) {
+            this.opened = false;
+          }
+        }
+
+        /**
+         * Close the dialog if `noCloseOnOutsideClick` isn't set to true
+         */
+        _handleOutsideClick(e) {
+          if (this.noCloseOnOutsideClick) {
+            e.preventDefault();
+          }
+        }
+
+        /**
+         * Close the dialog if `noCloseOnEsc` isn't set to true
+         */
+        _handleEscPress(e) {
+          if (this.noCloseOnEsc) {
+            e.preventDefault();
+          }
+        }
+      }
+
+      customElements.define(DialogElement.is, DialogElement);
+      /**
+       * @namespace Vaadin
+       */
+      window.Vaadin.DialogElement = DialogElement;
+    })();
+  </script>
+</dom-module>

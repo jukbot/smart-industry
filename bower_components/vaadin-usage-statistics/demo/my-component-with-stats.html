@@ -1,0 +1,30 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../vaadin-development-mode-detector/vaadin-development-mode-detector.html">
+
+<dom-module id="my-component-with-stats">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <template>
+    Component one: <input type="text"><br>
+  </template>
+  <script>
+  class MyComponentWithStats extends Polymer.Element {
+    static get is() {
+      return 'my-component-with-stats';
+    }
+    static get version() {
+      return '12.13.14';
+    }
+  }
+  customElements.define(MyComponentWithStats.is, MyComponentWithStats);
+  window.Vaadin = window.Vaadin || {};
+  Vaadin.MyComponentWithStats = MyComponentWithStats;
+
+  if (Vaadin.runIfDevelopmentMode) {
+    Vaadin.runIfDevelopmentMode("vaadin-usage-statistics");
+  }
+  </script>
+</dom-module>

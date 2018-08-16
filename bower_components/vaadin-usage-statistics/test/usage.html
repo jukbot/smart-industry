@@ -1,0 +1,329 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../vaadin-usage-statistics.js"></script>
+</head>
+
+<body>
+  <script>
+    const Vaadin = window.Vaadin;
+    const UsageStatistics = Vaadin.UsageStatistics;
+    const StatisticsLogger = Vaadin.StatisticsLogger;
+    const StatisticsSender = Vaadin.StatisticsSender;
+    const StatisticsGatherer = Vaadin.StatisticsGatherer;
+
+    const defineClasses = function () {
+      window.DummyLogger = class DummyLogger extends StatisticsLogger {
+        _isDebug() {
+          return false;
+        }
+      }
+      window.LoggingGatherer = class LoggingGatherer extends StatisticsGatherer {
+        constructor() {
+          super(new DummyLogger());
+          this.gatherCalled = 0;
+        }
+        gather() {
+          this.gatherCalled++;
+        }
+      }
+      window.SendLoggingUsageStatistics = class SendLoggingUsageStatistics extends UsageStatistics {
+        constructor() {
+          super();
+          this.sendCalled = 0;
+        }
+        send() {
+          this.sendCalled++;
+        }
+      }
+      window.CaptureSender = class CaptureSender extends StatisticsSender {
+        send(data) {
+          this.sentObject = JSON.parse(data.substring(data.indexOf("{")));
+        }
+      }
+    };
+    window.addEventListener('WebComponentsReady', function () {
+      defineClasses();
+    });
+
+    suite('opt-out', function () {
+      setup(() => {
+        localStorage.clear();
+      });
+      test('opt-out-does-not-gather', function () {
+        const stats = new UsageStatistics();
+        localStorage.setItem(UsageStatistics.optOutKey, "true");
+        stats.gather = new LoggingGatherer();
+        stats.maybeGatherAndSend();
+        assert.equal(stats.gather.gatherCalled, 0);
+      });
+    });
+    suite('first-use', function () {
+      setup(() => {
+        localStorage.clear();
+      });
+      test('first-use-set-properly', function () {
+        const stats = new UsageStatistics();
+        stats.maybeSend();
+        const firstUse = Number(localStorage.getItem(UsageStatistics.firstUseKey));
+        const now = new Date().getTime();
+
+        // firstUse should be set to approximately "now"
+        assert.closeTo(firstUse, now, 2000);
+      });
+      test('nothing-sent-during-initial-delay', function () {
+        const stats = new SendLoggingUsageStatistics();
+        stats.maybeSend();
+        assert.equal(stats.sendCalled, 0);
+      });
+      test('stats-gathered-during-initial-delay', function () {
+        const stats = new UsageStatistics();
+        stats.gatherer = new LoggingGatherer();
+        stats.maybeGatherAndSend();
+        assert.isAtLeast(stats.gatherer.gatherCalled, 1);
+      });
+      test('might-send-after-initial-delay', function () {
+        var lotteryCalled = false;
+        class MockUsageStatistics extends UsageStatistics {
+          lottery() {
+            lotteryCalled = true;
+          }
+        }
+        const stats = new MockUsageStatistics();
+        const firstUse = new Date().getTime() - stats.initialDelay * 1000 - 1;
+        localStorage.setItem(UsageStatistics.firstUseKey, firstUse);
+        stats.maybeSend();
+        assert.isTrue(lotteryCalled);
+      });
+    });
+
+    suite('lottery', function () {
+      setup(() => {
+        localStorage.clear()
+      });
+      test('send-not-called-when-sampling-says-no', function () {
+        var lotteryCalled = false;
+
+        class MockStatistics extends UsageStatistics {
+          lottery() {
+            lotteryCalled = true;
+            return false;
+          }
+        }
+        const stats = new MockStatistics();
+        stats.initialDelay = 0;
+
+        class MockSender extends StatisticsSender {
+          send(data) {
+            this.sendCalled = true;
+          }
+        }
+        stats.sender = new MockSender();
+        stats.maybeSend();
+
+        assert.isTrue(lotteryCalled);
+        assert.isUndefined(stats.sender.sendCalled);
+      });
+      test('send-called-when-sampling-says-yes', function () {
+        var lotteryCalled = false;
+        var sendCalled = false;
+
+        class MockStatistics extends UsageStatistics {
+          lottery() {
+            lotteryCalled = true;
+            return true;
+          }
+        }
+        const stats = new MockStatistics();
+        stats.initialDelay = 0;
+
+        class MockSender extends StatisticsSender {
+          send(data) {
+            sendCalled = true;
+          }
+        }
+        stats.sender = new MockSender();
+        stats.maybeSend();
+
+        assert.isTrue(lotteryCalled);
+        assert.isTrue(sendCalled);
+      });
+      test('5-percent-success-rate', function () {
+        var sendCalled = 0;
+
+        const stats = new UsageStatistics();
+        stats.initialDelay = 0;
+
+        class MockSender extends StatisticsSender {
+          send(data) {
+            sendCalled++;
+          }
+        }
+        stats.sender = new MockSender();
+        for (var i = 0; i < 5000; i++) {
+          localStorage.setItem(UsageStatistics.monthProcessedKey, 0);
+          stats.maybeSend();
+        }
+
+        // Configured to be 5%
+        assert.closeTo(sendCalled, 250, 80);
+      }).timeout(20000);
+    });
+    suite('gather', function () {
+      setup(() => {
+        localStorage.clear();
+        //localStorage.setItem()
+        window.Vaadin = {};
+      });
+      suiteSetup(() => {
+        class FooElement extends HTMLElement {}
+        customElements.define('foo-element', FooElement);
+
+        class BarElement extends HTMLElement {
+          static get version() {
+            return "1.2.3";
+          }
+        }
+        customElements.define('bar-element', BarElement);
+
+        class LumoStyles extends HTMLElement {
+          static get version() {
+            return "2.0.0-alpha5";
+          }
+        }
+        customElements.define('vaadin-lumo-styles', LumoStyles);
+      });
+      test('element-without-version-found', function () {
+        const stats = new UsageStatistics();
+        stats.gatherer.knownVaadinElementNames.push('foo-element');
+
+        stats.gatherer.gather(stats.storage);
+        const data = stats.storage.read();
+
+        assert.equal(data.elements["foo-element"].version, "0.0.0");
+        assert.equal(data.elements["foo-element"].firstUsed, data.elements["foo-element"].lastUsed);
+        assert.closeTo(data.elements["foo-element"].firstUsed, new Date().getTime(), 10000);
+      });
+      test('element-with-version-found', function () {
+        const stats = new UsageStatistics();
+        stats.gatherer.knownVaadinElementNames.push('bar-element');
+
+        stats.gatherer.gather(stats.storage);
+        const data = stats.storage.read();
+
+        assert.equal(data.elements["bar-element"].version, "1.2.3");
+        assert.equal(data.elements["bar-element"].firstUsed, data.elements["bar-element"].lastUsed);
+        assert.closeTo(data.elements["bar-element"].firstUsed, new Date().getTime(), 10000);
+      });
+      test('element-first-used-not-updated', function () {
+        const stats = new UsageStatistics();
+        stats.gatherer.knownVaadinElementNames.push('bar-element');
+        stats.gatherer.gather(stats.storage);
+        const data = stats.storage.read();
+
+        const firstUsed = data.elements["bar-element"].firstUsed;
+        stats.gatherer.gather(stats.storage);
+        const newData = stats.storage.read();
+
+        assert.equal(newData.elements["bar-element"].firstUsed, firstUsed);
+      })
+      test('element-last-used-updated', function () {
+        const stats = new UsageStatistics();
+        stats.gatherer.knownVaadinElementNames.push('bar-element');
+        stats.gatherer.gather(stats.storage);
+        const data = stats.storage.read();
+
+        const initialLastUsed = data.elements["bar-element"].lastUsed;
+
+        // Ensure that the same timestamp is not used
+        stats.gatherer.now = stats.gatherer.now + 10;
+        stats.gatherer.gather(stats.storage);
+        const newData = stats.storage.read();
+
+        assert.isAbove(newData.elements["bar-element"].lastUsed, initialLastUsed);
+      })
+      test('flow-detected', function () {
+        window.Vaadin.Flow = { clients: { foo: { getVersionInfo: function () { return { flow: "1.2.3" }; } } } };
+        const stats = new UsageStatistics();
+        stats.gatherer.gather(stats.storage);
+        const data = stats.storage.read();
+        assert.equal(data.frameworks["Flow"].version, "1.2.3");
+        assert.equal(data.frameworks["Flow"].firstUsed, data.frameworks["Flow"].lastUsed);
+        assert.closeTo(data.frameworks["Flow"].firstUsed, new Date().getTime(), 10000);
+      });
+      test('lumo-detected', function () {
+        const stats = new UsageStatistics();
+        stats.gatherer.gather(stats.storage);
+        const data = stats.storage.read();
+        assert.equal(data.themes["Lumo"].version, "2.0.0-alpha5");
+        assert.equal(data.themes["Lumo"].firstUsed, data.themes["Lumo"].lastUsed);
+        assert.closeTo(data.themes["Lumo"].firstUsed, new Date().getTime(), 10000);
+
+      });
+      test('works with corrupted localstorage', function () {
+        const stats = new UsageStatistics();
+        stats.gatherer.knownVaadinElementNames.push('bar-element');
+        stats.storage.write('{ "foo": "bar" }');
+        stats.gatherer.gather(stats.storage);
+
+        data = stats.storage.read();
+        assert.equal(data.elements["bar-element"].lastUsed, stats.gatherer.now);
+        assert.equal(data.elements["bar-element"].version, "1.2.3");
+      });
+      test('works with corrupted element data in localstorage', function () {
+        const stats = new UsageStatistics();
+        stats.gatherer.knownVaadinElementNames.push('bar-element');
+        stats.storage.write(JSON.stringify({ "elements": { "bar-element": "3.3.3" } }));
+        stats.gatherer.gather(stats.storage);
+
+        data = stats.storage.read();
+        assert.equal(data.elements["bar-element"].lastUsed, stats.now.getTime());
+        assert.equal(data.elements["bar-element"].version, "1.2.3");
+
+      });
+    });
+    suite('sender', function () {
+      setup(() => {
+        localStorage.clear();
+      });
+      test('first-use-sent', function () {
+        localStorage.setItem(UsageStatistics.firstUseKey, "123");
+        const stats = new UsageStatistics();
+        stats.sender = new CaptureSender();
+        stats.send();
+        assert.equal(stats.sender.sentObject["firstUse"], "123");
+      });
+      test('usage-statistics-version-sent', function () {
+        const stats = new UsageStatistics();
+        stats.sender = new CaptureSender();
+        stats.send();
+        assert.equal(stats.sender.sentObject["usageStatisticsVersion"], UsageStatistics.version);
+      });
+      test('element-data-sent', function () {
+        const stats = new UsageStatistics();
+        stats.gatherer.knownVaadinElementNames.push('bar-element');
+        stats.sender = new CaptureSender();
+        stats.send();
+        assert.equal(stats.sender.sentObject.elements["bar-element"].version, "1.2.3");
+        assert.equal(stats.sender.sentObject.elements["bar-element"].firstUsed, stats.gatherer.now);
+        assert.equal(stats.sender.sentObject.elements["bar-element"].lastUsed, stats.gatherer.now);
+      });
+      test('framework-data-sent', function () {
+        window.angular = { version: { full: "1.2.3" } };
+        const stats = new UsageStatistics();
+        stats.sender = new CaptureSender();
+        stats.send();
+        assert.equal(stats.sender.sentObject.frameworks["AngularJs"].version, "1.2.3");
+        assert.equal(stats.sender.sentObject.frameworks["AngularJs"].firstUsed, stats.gatherer.now);
+        assert.equal(stats.sender.sentObject.frameworks["AngularJs"].lastUsed, stats.gatherer.now);
+      });
+    });
+
+  </script>
+</body>
+
+</html>

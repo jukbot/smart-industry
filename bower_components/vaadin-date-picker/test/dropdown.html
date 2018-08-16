@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+  <link rel="import" href="../vaadin-date-picker.html">
+  <link rel="import" href="not-animated-styles.html">
+  <script src="common.js"></script>
+  <script>
+    HTMLImports.whenReady(() => {
+      Polymer({
+        is: 'vaadin-date-picker-wrapper'
+      });
+    });
+  </script>
+</head>
+
+<body>
+
+  <test-fixture id="datepicker">
+    <template>
+      <vaadin-date-picker style="position: fixed;"></vaadin-date-picker>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="datepicker-wrapped">
+    <template>
+      <vaadin-date-picker-wrapper></vaadin-date-picker-wrapper>
+    </template>
+  </test-fixture>
+
+  <dom-module id="vaadin-date-picker-wrapper">
+    <template>
+      <vaadin-date-picker id="datepicker" label="foo"></vaadin-date-picker>
+    </template>
+  </dom-module>
+
+  <script>
+    describe('Dropdown', () => {
+      var datepicker;
+      var overlay;
+      var input;
+      var toggleButton;
+      var overlayContent;
+
+      beforeEach(() => {
+        datepicker = fixture('datepicker');
+        overlay = datepicker.$.overlay;
+        input = datepicker.$.input;
+        toggleButton = datepicker.shadowRoot.querySelector('[part="toggle-button"]');
+        overlayContent = datepicker.$.overlay.content.querySelector('#overlay-content');
+        overlayContent.$.monthScroller.bufferSize = 0;
+        overlayContent.$.yearScroller.bufferSize = 0;
+      });
+
+      afterEach(done => setTimeout(done, 1));
+
+      it('should not close on calendar icon down', done => {
+        datepicker.$.overlay.addEventListener('vaadin-overlay-open', () => {
+          MockInteractions.down(toggleButton);
+          expect(datepicker.$.overlay.opened).to.be.true;
+
+          done();
+        });
+        datepicker.open();
+      });
+
+      it('should update position of the overlay after changing opened property', () => {
+        datepicker.opened = true;
+
+        expect(input.getBoundingClientRect().bottom).to.be.closeTo(overlay.getBoundingClientRect().top, 0.01);
+      });
+
+      if (document.createElement('div').style.webkitOverflowScrolling === '') {
+        it('should handle webkit-overflow-scrolling', done => {
+          document.body.style.webkitOverflowScrolling = 'touch';
+
+          datepicker.$.overlay.addEventListener('vaadin-overlay-open', () => {
+            expect(window.getComputedStyle(document.body).webkitOverflowScrolling).to.equal('auto');
+            datepicker.close();
+          });
+
+          datepicker.$.overlay.addEventListener('vaadin-overlay-close', () => {
+            expect(window.getComputedStyle(document.body).webkitOverflowScrolling).to.equal('touch');
+            done();
+          });
+          datepicker.open();
+        });
+      }
+
+      describe('Sizing', () => {
+
+        beforeEach(() => {
+          var viewport = document.createElement('meta');
+          viewport.setAttribute('name', 'viewport');
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0');
+          document.getElementsByTagName('head')[0].appendChild(viewport);
+
+          datepicker._fullscreenMediaQuery = 'max-width: 520px';
+        });
+
+        it('should select fullscreen/desktop mode', done => {
+          datepicker.$.overlay.addEventListener('vaadin-overlay-open', () => {
+            var viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+            var fullscreen = viewportWidth < 520;
+
+            expect(isFullscreen(datepicker)).to.equal(fullscreen);
+            done();
+          });
+          setTimeout(() => {
+            datepicker.open();
+          });
+        });
+
+      });
+
+    });
+
+    describe('Dropdown-wrapped', () => {
+      var datepicker, overlayContent, clearButton, toggleButton;
+
+      beforeEach(() => {
+        datepicker = fixture('datepicker-wrapped').$.datepicker;
+        toggleButton = datepicker.shadowRoot.querySelector('[part="toggle-button"]');
+        clearButton = datepicker.shadowRoot.querySelector('[part="clear-button"]');
+        overlayContent = datepicker.$.overlay.content.querySelector('#overlay-content');
+        overlayContent.$.monthScroller.bufferSize = 0;
+        overlayContent.$.yearScroller.bufferSize = 0;
+      });
+
+      afterEach(done => {
+        setTimeout(done, 1);
+      });
+
+      it('should not close on calendar icon down', done => {
+        datepicker.$.overlay.addEventListener('vaadin-overlay-open', () => {
+          MockInteractions.down(toggleButton);
+          expect(datepicker.$.overlay.opened).to.be.true;
+
+          done();
+        });
+        datepicker.open();
+      });
+
+      it('should restore attribute focus-ring if it was initially set before opening', () => {
+        datepicker.setAttribute('focus-ring', '');
+        datepicker.opened = true;
+        datepicker.opened = false;
+        expect(datepicker.hasAttribute('focus-ring')).to.be.true;
+      });
+
+      it('should remove attribute focus-ring if it was not initially set before opening', () => {
+        datepicker.opened = true;
+        datepicker.setAttribute('focus-ring', '');
+        datepicker.opened = false;
+        expect(datepicker.focusElement.hasAttribute('focus-ring')).to.be.false;
+      });
+
+      it('should not close on clear-button down', () => {
+        datepicker.open();
+        datepicker.value = '2001-01-01';
+
+        click(clearButton);
+
+        expect(datepicker.$.overlay.opened).to.be.true;
+      });
+
+      it('should not open on clear-button down if was not opened initially', () => {
+        datepicker.value = '2001-01-01';
+
+        click(clearButton);
+
+        expect(datepicker.$.overlay.opened).not.to.be.true;
+      });
+
+    });
+  </script>
+
+</body>
+
+</html>

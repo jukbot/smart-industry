@@ -1,0 +1,32 @@
+dist: trusty
+language: node_js
+sudo: 'false'
+node_js: '9'
+addons:
+  firefox: latest
+  chrome: stable
+before_script:
+  - npm install -g polymer-cli
+  - polymer install --variants
+  - git checkout package-lock.json
+  - >-
+    npm run update-types && git diff --exit-code || (echo -e
+    '\n\033[31mERROR:\033[0m Typings are stale. Please run "npm run
+    update-types".' && false)
+  - >-
+    npm run format && git diff --exit-code || (echo -e '\n\033[31mERROR:\033[0m
+    Project is not formatted. Please run "npm run format".' && false)
+script:
+  - xvfb-run polymer test
+  - >-
+    if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test -s 'default';
+    fi
+env:
+  global:
+    - secure: >-
+        knaOp/2i7IH9eTwkX2rYl8ZTNEaXpz88zSGvxqDdwiKh2SJoO9Altabt/jpzHlqayyn3a0+90t4JKAICv0UtCBJF9GXL0SlyNYUUnU5cd7qifm53KI9xCe2bfkuz3X1npaBJOBu1yg8HZEZ5BYGEKwOW+BmK7jLIsRN9UTDwdMtvcyii4ACSXLSFzPjJo0HAXnoVksAIQwpNPTDsgRkgskUtV3ITSfKsGIIt7wiqFchIKHQcrx7JeQUL5d9wIEVq97dHzrJT7TQ2MFcfET2yFqzMyaDCVgHpzH8+MeIc4japvsKlsE9ixoL40zODki5TtiY1UaNf99H/48qmK+tTHaAHURnZLH6rmOMIn8PBJBR+bIuIa2bDoCE/j8seHIP7oZeEWADvXJkOiUOeq544bL2Kt0OkkSxQyXvEFtdVneI3eF6nycT8W49q33OsL32ayxq9Z9ZpZCvQN7Zixx+AHpLzpDT5JxZ/0bW8bC7vWIrQ5dbi6WDCgDWj8gCmrOSve7q1zX7a8vhThIjcODg/90dyHaqXqs+DvoN4ryhjZ5aZoRThJpwBPudSHkyuUU8euQ2joqpq9AlGA7fMy5znsWGbKTpogW+9Zj2bmITdQAv5lmFTYowkgCgtun5shNjCozG8YDmNqh9BP+p9rcCcuRx8SGWjPT+TKbGQg/1ZehQ=
+    - secure: >-
+        iMmkVELvB4htwJCvrPAulmnxiCl6m0PgnK1QQ1rhNcU/pLLtnvg2fgawLMe5Y+4EEw/T+31JKrmZ6M7z5m/LK9ePa/YB7rrSGz7b0hQvbs4yGb2q6KKw4lqRdPZDqc8iZ9Yrk3U5SHGPP8nCsA08yMGD2KiJHm4bbKYj5GeFx3rcPt+V6ASVEUHfvGAdADpMf3mZYurK4v0TuMj5ySMzHtuf2awIMTdusQ7sEv00VN/4RAEzw0k2jXO/caJ6QFT+PpYELWuzG+u3Ld+C5bStvFp0nnoP2gLtZIJWnv9rdSovpHkmdJAnRvPXNdQBP9GBKm+u53TbC2zMGhXDZrXaittGnGJ1ohkbaAXY11wHyId+/cxw70IrZlgqdkUkqqGUFXchmDnm9kQdvhoWes8qj9OqseMdBoC8yeXJ3QmpoyybJP21zQZrQz+l71AOBmkSuBvSYtagkzDGKp/8W7VXW4tOJ9Ngc5WyC44POl7HqTUlGrDXzNUcFgGReGiDXdFeGJheeA4oGn3s0zYOuMkQ0bIDAadOObhz616p717toYPdmCLhYMnYXAGhzI0t0aY7EODGJzewcfn5XdkFyDVBBc69uRbavX2fhhBGjf32twZvtB5AByzXRto773I45Cs1PfOX9N0PPBj0OSdHP98DEbRR28lw8r/JoKcT7pFM7Xw=
+cache:
+  directories:
+    - node_modules

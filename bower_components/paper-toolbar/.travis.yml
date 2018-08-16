@@ -1,0 +1,29 @@
+language: node_js
+sudo: required
+before_script:
+  - npm install -g polymer-cli
+  - polymer install --variants
+  - >-
+    npm run update-types && git diff --exit-code || (echo -e
+    '\n\033[31mERROR:\033[0m Typings are stale. Please run "npm run
+    update-types".' && false)
+env:
+  global:
+    - secure: >-
+        YhDTyZvC5P5rhCWlBTeIhKJx2izTUgaBPbWWCtVE/ukYfXeO0HY49emFYSOBJe3oKLLlipuTFehbtyZ4QPWmfa7QKEtnyYSfyCnOA3mJFzoMDDt/RVqDfWpa+fjpIdVR045ySCQE7NAbD47i8gAVwmlQ10k/yU+BA9uGxVHPSwo=
+    - secure: >-
+        GvWTJBajnq7yHfbx+Ud7jmG6ZNXf79U7i3UhTsXkDhotqzJr//MlJGzZFBZjbk2Qsgcx+x4cT10ieZR4oixn/ipiz/NfKvIbHl4+0sLauum+5lDd8TmKspJULzSeDkYcVl8tEVKn2vdCTBaTRQituXvDlipat1drAu4Zx3EtmxI=
+node_js: stable
+addons:
+  firefox: latest
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
+script:
+  - xvfb-run polymer test
+  - >-
+    if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test -s 'default';
+    fi
+dist: trusty

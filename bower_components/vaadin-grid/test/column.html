@@ -1,0 +1,287 @@
+<!doctype html>
+
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>iron-list test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+
+  <link rel="import" href="helpers.html">
+  <link rel="import" href="../vaadin-grid.html">
+  <link rel="import" href="../vaadin-grid-column-group.html">
+</head>
+<body>
+
+  <dom-module id="x-grid">
+    <template>
+      <vaadin-grid id="grid" columns="{{columns}}" size="10">
+        <vaadin-grid-column-group>
+          <template class="header">group header1</template>
+          <vaadin-grid-column>
+            <template class="header">header1</template>
+            <template>cell</template>
+            <template class="footer">footer1</template>
+          </vaadin-grid-column>
+          <vaadin-grid-column>
+            <template class="header">header2</template>
+            <template>cell</template>
+            <template class="footer">footer2</template>
+          </vaadin-grid-column>
+        </vaadin-grid-column-group>
+      </vaadin-grid>
+    </template>
+    <script>
+      HTMLImports.whenReady(() => {
+        Polymer({
+          is: 'x-grid'
+        });
+      });
+    </script>
+  </dom-module>
+
+  <test-fixture id="grid">
+    <template>
+      <x-grid></x-grid>
+    </template>
+  </test-fixture>
+
+  <script>
+
+    describe('column', () => {
+      let container, column, grid;
+
+      before(done => HTMLImports.whenReady(done));
+
+      beforeEach(() => {
+        container = fixture('grid');
+        grid = container.$.grid;
+        grid.dataProvider = infiniteDataProvider;
+        column = grid.querySelector('vaadin-grid-column');
+        flushGrid(grid);
+      });
+
+      describe('properties', () => {
+        describe('flex', () => {
+          it('should have default value', () => {
+            expect(column.flexGrow).to.eql(1);
+          });
+
+          it('should be bound to header cells', () => {
+            column.flexGrow = 2;
+
+            const header = grid.$.header;
+
+            expect(getContainerCell(header, 0, 0).style.flexGrow).to.eql('3'); // colspan 2 + 1
+            expect(getContainerCell(header, 1, 0).style.flexGrow).to.eql('2');
+          });
+
+          it('should be bound to row cells', () => {
+            column.flexGrow = 2;
+
+            expect(getContainerCell(grid.$.items, 0, 0).style.flexGrow).to.eql('2');
+          });
+
+          it('should be bound to footer cells', () => {
+            column.flexGrow = 2;
+
+            expect(getContainerCell(grid.$.footer, 0, 0).style.flexGrow).to.eql('2');
+          });
+        });
+
+        describe('width', () => {
+          it('should have default width', () => {
+            expect(column.width).to.eql('100px');
+          });
+
+          it('should be bound to header cells', () => {
+            column.width = '20%';
+
+            const width = getContainerCell(grid.$.header, 0, 0).style.width;
+            expect(width).to.be.oneOf(['calc(20% + 100px)', 'calc(100px + 20%)']);
+          });
+
+          it('should be bound to row cells', () => {
+            column.width = '200px';
+
+            expect(getContainerCell(grid.$.items, 0, 0).style.width).to.eql('200px');
+          });
+
+          it('should be bound to footer cells', () => {
+            column.width = '200px';
+
+            expect(getContainerCell(grid.$.footer, 0, 0).style.width).to.eql('200px');
+          });
+        });
+
+        describe('hidden', () => {
+          it('should default to undefined', () => {
+            expect(column.hidden).to.eql(undefined);
+          });
+
+          it('should not be bound to column-group header cells', () => {
+            column.hidden = true;
+
+            expect(getContainerCell(grid.$.header, 0, 0).style.display).to.eql('');
+          });
+
+          it('should bind colSpan to column-group header cells', () => {
+            expect(getContainerCell(grid.$.header, 0, 0).colSpan).to.eql(2);
+
+            column.hidden = true;
+
+            expect(getContainerCell(grid.$.header, 0, 0).colSpan).to.eql(1);
+          });
+
+          it('should not be bound to column header cells', () => {
+            column.hidden = true;
+
+            expect(window.getComputedStyle(getContainerCell(grid.$.header, 1, 0)).display).to.eql('none');
+          });
+
+          it('should be bound to row cells', () => {
+            column.hidden = true;
+
+            expect(window.getComputedStyle(getContainerCell(grid.$.items, 0, 0)).display).to.eql('none');
+          });
+
+          it('should be bound to footer cells', () => {
+            column.hidden = true;
+
+            expect(window.getComputedStyle(getContainerCell(grid.$.footer, 0, 0)).display).to.eql('none');
+          });
+
+          it('should notify resize', () => {
+            const spy = sinon.spy(grid, 'notifyResize');
+            column.hidden = true;
+            expect(spy.callCount).to.equal(1);
+            column.hidden = false;
+            expect(spy.callCount).to.equal(2);
+          });
+
+          it('should not notify resize', () => {
+            const spy = sinon.spy(grid, 'notifyResize');
+            expect(column.hidden).to.be.undefined;
+            column.hidden = false;
+            expect(spy.called).to.be.false;
+          });
+        });
+      });
+
+      describe('cell template', () => {
+        it('should read template from light DOM', () => {
+          expect(getCellContent(getContainerCell(grid.$.items, 0, 0)).textContent).to.contain('cell');
+        });
+      });
+
+      describe('header templates', () => {
+        it('should read templates from light DOM', () => {
+          expect(getHeaderCellContent(grid, 0, 0).textContent).to.contain('group header1');
+          expect(getHeaderCellContent(grid, 1, 0).textContent).to.contain('header1');
+        });
+      });
+
+      describe('dom observing', () => {
+
+        it('should pickup header template', () => {
+          const column = document.createElement('vaadin-grid-column');
+          const template = document.createElement('template');
+          template.classList.add('header');
+
+          Polymer.dom(column).appendChild(template);
+          column._templateObserver.flush();
+
+          expect(column._headerTemplate).to.eql(template);
+        });
+
+        it('should pickup footer template', () => {
+          const column = document.createElement('vaadin-grid-column');
+          const template = document.createElement('template');
+          template.classList.add('footer');
+
+          Polymer.dom(column).appendChild(template);
+          column._templateObserver.flush();
+
+          expect(column._footerTemplate).to.eql(template);
+        });
+
+        it('should pickup body template', () => {
+          const column = document.createElement('vaadin-grid-column');
+          const template = document.createElement('template');
+
+          Polymer.dom(column).appendChild(template);
+          column._templateObserver.flush();
+
+          expect(column._bodyTemplate).to.eql(template);
+        });
+
+        it('should re-pickup header template', () => {
+          const column = document.createElement('vaadin-grid-column');
+          const template = document.createElement('template');
+          template.classList.add('header');
+          const template2 = document.createElement('template');
+          template2.classList.add('header');
+
+          Polymer.dom(column).appendChild(template);
+          column._templateObserver.flush();
+          Polymer.dom(column).removeChild(template);
+          Polymer.dom(column).appendChild(template2);
+          column._templateObserver.flush();
+          expect(column._headerTemplate).to.eql(template2);
+        });
+
+        it('should pickup new body template', () => {
+          const column = document.createElement('vaadin-grid-column');
+          const template = document.createElement('template');
+          const template2 = document.createElement('template');
+
+          Polymer.dom(column).appendChild(template);
+          column._templateObserver.flush();
+          Polymer.dom(column).removeChild(template);
+          Polymer.dom(column).appendChild(template2);
+          column._templateObserver.flush();
+
+          expect(column._bodyTemplate).to.eql(template2);
+        });
+
+        it('should prepare template when added lazily', () => {
+          const column = document.createElement('vaadin-grid-column');
+          const template = document.createElement('template');
+
+          Polymer.dom(column).appendChild(template);
+          column._templateObserver.flush();
+
+          Polymer.dom(grid).appendChild(column);
+          grid._observer.flush();
+
+          expect(template.templatizer.template).to.eql(template);
+          expect(column._bodyTemplate).to.eql(template);
+        });
+
+        it('should prepare a new template when added lazily', () => {
+          const column = document.createElement('vaadin-grid-column');
+          const template = document.createElement('template');
+          const template2 = document.createElement('template');
+
+          column.appendChild(template);
+          column._templateObserver.flush();
+
+          grid.appendChild(column);
+          grid._observer.flush();
+
+          column.removeChild(template);
+          column.appendChild(template2);
+          column._templateObserver.flush();
+
+          expect(template2.templatizer.template).to.eql(template2);
+          expect(column._bodyTemplate).to.eql(template2);
+        });
+      });
+    });
+
+  </script>
+
+</body>
+</html>

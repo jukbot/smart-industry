@@ -1,0 +1,19 @@
+{
+  "name": "@polymer/iron-a11y-keys",
+  "private": true,
+  "description": "A basic element implementation of iron-a11y-keys-behavior, matching the legacy core-a11y-keys.",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerElements/iron-a11y-keys.git"
+  },
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "@polymer/gen-typescript-declarations": "^1.2.1",
+    "bower": "^1.8.0",
+    "webmat": "^0.2.0"
+  },
+  "scripts": {
+    "update-types": "bower install && gen-typescript-declarations --deleteExisting --outDir .",
+    "format": "webmat && npm run update-types"
+  }
+}

@@ -1,0 +1,31 @@
+language: node_js
+sudo: 'false'
+before_script:
+  - npm install -g polymer-cli
+  - polymer install --variants
+  - >-
+    npm run update-types && git diff --exit-code || (echo -e
+    '\n\033[31mERROR:\033[0m Typings are stale. Please run "npm run
+    update-types".' && false)
+  - >-
+    npm run format && git diff --exit-code || (echo -e '\n\033[31mERROR:\033[0m
+    Project is not formatted. Please run "npm run format".' && false)
+env:
+  global:
+    - secure: >-
+        TunBXHMpmjUfz/kU0bIWd6X6ph1H2gxItZWrTrarjUeJnjf1CG/3IoTKO88EIsesUT55S3UUk05UofSx+CLGriwtpu007YYVNV91L+XXo5ruo/IdeNBUtyKZBu4wFMM5iNnI2h7JznYx74VjHBBVvq5unLykwHMVnBD3uH1pg7Xuaa7V/6EV1ebWU/CGYBWkUszdPv6RJjdriM/WCTkGu0is9ypDonCK9GFCnWm6yHyZ6EV5CLr97mMHjbi06hUAuKsxpnvcKhnv6kJRo6W5fgY4rDOmCgyzydtLbMoQSl0ZIdJIec2jehbWfoCUCq9WXPcI6GXDyyIp9f48DghtdcJ7IWKYqP8eTLzbOVTLE+J53oy18Rey4lf8CWuLw05HdlSjzGaF1UvKudhJGhjCKlf0QrJfGIrDpwhVYvY6AKB8toxm7QuqutiV5tvpN08zR6ABrY2xEQ8lf6j8HMg/ZxjiQcBYOtv4bUHQz24o2SoLROAg113lW1xI9/sn7lMbpKuJVehfT9/M11eVP/Vn44VQsJ/2FXHMm5XkQfyk4+4nJJNprosPU4e+vxe+wq5l/BipizTCmSIahcz9MJQNlaIOEGKvGOJPx5qdXBMB5u9+6liYCq6/VdBSojExdvswYZsBSsj/iql3FUMQOQ/9pUL/v1NkiSKMbBL/Csd3GTY=
+    - secure: >-
+        N+F324OMnxvjYS6gnlWacaf6uiyDc0m2O3xARjHoso/nLWLxPkrYItGA2YyGzyAhL2Fta0E3QS/3hN53jvO1DwDXht6ser2r8bLGolFD4MKhlWKFYJV7Te6WRA21lyLty/mx9YDw+DQIM6b3pa2DtkKEzp1+ho9pqIKnxxj2WbykSd0QVXeZKx5ZLIEWil7Ue875B6DaBxynK8KmYYF0elOmjy+Gx+cchH092YHrybqM4UYO9Zo/CamZgGHxbSwp6tI/gj1tFw/6kgtxdmuVAPYrQWG7C1ephV9av9DxtHuDRcKC8MI5lnBOS/jcfaQEOQMnzPI8Fe9pFezPA5eyAeCIGoxIoEG83uNQ6yXGcaPQm/Wv22VdPLYRzsp0xUixT5H/1lnrf0Sc0jM2j+pG1LIGa9Kn7RSImYvtRzKWO6x4gwlwLnrxffli8c1pskumzhpcfPVsKtzkCSZLvoHA/872BiPhKdG3jqbbBIH0IJA02TSfMn1+XxmVqD5MEmOVd56roTgjJXKeJ1wGSE1wO28neWbb0MR7wDe7iqrtNMIGHhIhrxFZ2JdgJuCILpKNj1Q1vdoomIJ4qNCo7jtxS9fISvyu7rq5iLQbTZhRJsLsvgq9JurJ9XuLZG0R9mJfGtJv5djpb8TlJ87272YvLsU1JIc9i/Q6EbjmAeaIdXI=
+node_js: '9'
+addons:
+  firefox: latest
+  chrome: stable
+script:
+  - xvfb-run polymer test
+  - >-
+    if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test -s 'default';
+    fi
+dist: trusty
+cache:
+  directories:
+    - node_modules

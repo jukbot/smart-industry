@@ -1,0 +1,29 @@
+<link rel="import" href="../../polymer/polymer.html">
+<link rel="import" href="../../vaadin-development-mode-detector/vaadin-development-mode-detector.html">
+
+<dom-module id="my-other-component-with-stats">
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+  <template>
+    The other component
+  </template>
+  <script>
+  class MyOtherComponentWithStats extends Polymer.Element {
+    static get is() {
+      return 'my-other-component-with-stats';
+    }
+    static get version() {
+      return '5.6.6';
+    }
+  }
+  customElements.define(MyOtherComponentWithStats.is, MyOtherComponentWithStats);
+  window.Vaadin = window.Vaadin || {};
+  Vaadin.MyOtherComponentWithStats = MyOtherComponentWithStats;
+  if (Vaadin.runIfDevelopmentMode) {
+    Vaadin.runIfDevelopmentMode("vaadin-usage-statistics");
+  }
+  </script>
+</dom-module>

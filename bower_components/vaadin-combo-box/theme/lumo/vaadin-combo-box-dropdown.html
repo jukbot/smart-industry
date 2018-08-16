@@ -1,0 +1,33 @@
+<link rel="import" href="../../../vaadin-lumo-styles/spacing.html">
+<link rel="import" href="../../../vaadin-lumo-styles/style.html">
+
+<link rel="import" href="../../../vaadin-overlay/theme/lumo/vaadin-overlay.html">
+<link rel="import" href="../../../vaadin-lumo-styles/mixins/menu-overlay.html">
+
+<dom-module id="lumo-combo-box-overlay" theme-for="vaadin-combo-box-overlay">
+  <template>
+    <style include="lumo-overlay lumo-menu-overlay-core">
+      [part="content"] {
+        padding: 0;
+      }
+
+      :host {
+        /* TODO: using a legacy mixin (unsupported) */
+        --iron-list-items-container: {
+          border-width: var(--lumo-space-xs);
+          border-style: solid;
+          border-color: transparent;
+        };
+      }
+
+      /* TODO: workaround ShadyCSS issue when using inside of the dom-if */
+      :host([opened]) {
+        --iron-list-items-container_-_border-width: var(--lumo-space-xs);
+        --iron-list-items-container_-_border-style: solid;
+        --iron-list-items-container_-_border-color: transparent;
+      }
+    </style>
+  </template>
+</dom-module>
+
+<link rel="import" href="../../src/vaadin-combo-box-dropdown.html">

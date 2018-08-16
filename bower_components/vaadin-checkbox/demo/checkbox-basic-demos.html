@@ -1,0 +1,51 @@
+<dom-module id="checkbox-basic-demos">
+  <template>
+    <style include="vaadin-component-demo-shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+    <h3>Basic Checkbox</h3>
+    <vaadin-demo-snippet id="checkbox-basic-demos-default-checkbox">
+      <template preserve-content>
+        <vaadin-checkbox checked>I agree with <a href>Terms & Conditions</a></vaadin-checkbox>
+      </template>
+    </vaadin-demo-snippet>
+
+    <h3>Custom Label</h3>
+    <vaadin-demo-snippet id="checkbox-basic-demos-multiline-checkbox">
+      <template preserve-content>
+        <vaadin-checkbox checked>
+          <iron-icon icon="lumo:bell" style="vertical-align: top;"></iron-icon>
+          Notifications
+          <br>
+          <small>Enable desktop notifications</small>
+        </vaadin-checkbox>
+      </template>
+    </vaadin-demo-snippet>
+
+    <h3>Disabled</h3>
+    <vaadin-demo-snippet id="checkbox-basic-demos-disabled-checkbox">
+      <template preserve-content>
+        <vaadin-checkbox disabled checked>
+          Option two<br>
+          <small>Description for this option</small>
+        </vaadin-checkbox>
+
+        <vaadin-checkbox disabled>Option two</vaadin-checkbox>
+
+        <vaadin-checkbox disabled indeterminate>Indeterminate</vaadin-checkbox>
+      </template>
+    </vaadin-demo-snippet>
+
+  </template>
+  <script>
+    class CheckboxBasicDemos extends DemoReadyEventEmitter(CheckboxDemo(Polymer.Element)) {
+      static get is() {
+        return 'checkbox-basic-demos';
+      }
+    }
+    customElements.define(CheckboxBasicDemos.is, CheckboxBasicDemos);
+  </script>
+</dom-module>

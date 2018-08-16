@@ -1,0 +1,312 @@
+<!doctype html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>vaadin-checkbox tests</title>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../iron-test-helpers/mock-interactions.js"></script>
+  <link rel="import" href="../../polymer/polymer.html">
+  <link rel="import" href="../../iron-form/iron-form.html">
+  <link rel="import" href="../vaadin-checkbox.html">
+</head>
+
+<body>
+  <dom-module id="x-checkbox">
+    <template>
+      <iron-form id="form">
+        <form>
+          <vaadin-checkbox id="boundname" name="[[checkboxName]]"></vaadin-checkbox>
+          <vaadin-checkbox id="attrname" name="attrcheckbox"></vaadin-checkbox>
+        </form>
+      </iron-form>
+    </template>
+    <script>
+      window.addEventListener('WebComponentsReady', () => {
+        class XCheckbox extends Polymer.Element {
+          static get is() {
+            return 'x-checkbox';
+          }
+
+          static get properties() {
+            return {
+              checkboxName: {
+                type: String,
+                value: 'boundcheckbox'
+              }
+            };
+          }
+        }
+        customElements.define(XCheckbox.is, XCheckbox);
+      });
+    </script>
+  </dom-module>
+
+  <test-fixture id="default">
+    <template>
+      <vaadin-checkbox name="test-checkbox">Vaadin <i>Checkbox</i> with <a href="#">Terms &amp; Conditions</a></vaadin-checkbox>
+    </template>
+  </test-fixture>
+
+  <test-fixture id="iron-form-checkbox">
+    <template>
+      <x-checkbox></x-checkbox>
+    </template>
+  </test-fixture>
+
+  <script>
+    describe('vaadin-checkbox', () => {
+      const down = node => {
+        node.dispatchEvent(new CustomEvent('down'));
+      };
+
+      const up = node => {
+        node.dispatchEvent(new CustomEvent('up'));
+      };
+
+      let vaadinCheckbox, nativeCheckbox, label;
+
+      beforeEach(() => {
+        vaadinCheckbox = fixture('default');
+        nativeCheckbox = vaadinCheckbox._nativeCheckbox;
+        label = vaadinCheckbox.shadowRoot.querySelector('[part="label"]');
+      });
+
+      it('should define checkbox label using light DOM', () => {
+        const children = Polymer.dom(label).getEffectiveChildNodes();
+        expect(children[1].textContent).to.be.equal('Vaadin ');
+        expect(children[2].outerHTML).to.be.equal('<i>Checkbox</i>');
+      });
+
+      it('can be disabled imperatively', () => {
+        vaadinCheckbox.disabled = true;
+        expect(nativeCheckbox.hasAttribute('disabled')).to.be.eql(true);
+      });
+
+      it('has default value "on"', () => {
+        expect(vaadinCheckbox.value).to.be.eql('on');
+      });
+
+      it('fires click event', function(done) {
+        vaadinCheckbox.addEventListener('click', () => {
+          done();
+        });
+        MockInteractions.downAndUp(vaadinCheckbox);
+      });
+
+      it('should have proper name', () => {
+        expect(vaadinCheckbox.name).to.eq('');
+        vaadinCheckbox.checked = true;
+        expect(vaadinCheckbox.name).to.eq('test-checkbox');
+      });
+
+      it('should toggle on host click', () => {
+        vaadinCheckbox.click();
+
+        expect(vaadinCheckbox.checked).to.be.true;
+
+        vaadinCheckbox.click();
+
+        expect(vaadinCheckbox.checked).to.be.false;
+      });
+
+      it('should not toggle on link inside host click', () => {
+        const link = Polymer.dom(label).getEffectiveChildNodes()[4];
+        expect(link.outerHTML).to.be.equal('<a href="#">Terms &amp; Conditions</a>');
+        link.click();
+        expect(vaadinCheckbox.checked).to.be.false;
+      });
+
+      it('should bind checked to the native checkbox and vice versa', () => {
+        vaadinCheckbox.checked = true;
+        expect(nativeCheckbox.checked).to.be.eql(true);
+
+        nativeCheckbox.checked = false;
+        nativeCheckbox.dispatchEvent(new CustomEvent('change'));
+        expect(vaadinCheckbox.checked).to.be.eql(false);
+      });
+
+      it('should bind indeterminate to the native checkbox and vice versa', () => {
+        vaadinCheckbox.indeterminate = true;
+        expect(nativeCheckbox.indeterminate).to.be.eql(true);
+
+        nativeCheckbox.indeterminate = false;
+        nativeCheckbox.dispatchEvent(new CustomEvent('change'));
+        expect(vaadinCheckbox.indeterminate).to.be.eql(false);
+      });
+
+      it('should set aria-checked to "true" when checked', () => {
+        vaadinCheckbox.checked = true;
+        expect(vaadinCheckbox.getAttribute('aria-checked')).to.be.eql('true');
+      });
+
+      it('should set aria-checked to "false" when unchecked', () => {
+        vaadinCheckbox.checked = false;
+        expect(vaadinCheckbox.getAttribute('aria-checked')).to.be.eql('false');
+      });
+
+      it('should set aria-checked to "mixed" when indeterminate', () => {
+        vaadinCheckbox.indeterminate = true;
+        expect(vaadinCheckbox.getAttribute('aria-checked')).to.be.eql('mixed');
+      });
+
+      it('should set indeterminate to false when clicked the first time', () => {
+        vaadinCheckbox.indeterminate = true;
+
+        vaadinCheckbox.click();
+
+        expect(vaadinCheckbox.indeterminate).to.be.false;
+      });
+
+      it('native checkbox should have the `presentation` role', () => {
+        expect(vaadinCheckbox.getAttribute('role')).to.be.eql('checkbox');
+      });
+
+      it('host should have the `checkbox` role', () => {
+        expect(vaadinCheckbox.getAttribute('role')).to.be.eql('checkbox');
+      });
+
+      it('should have active attribute on down', () => {
+        down(vaadinCheckbox);
+
+        expect(vaadinCheckbox.hasAttribute('active')).to.be.true;
+      });
+
+      it('should not have active attribute after up', () => {
+        down(vaadinCheckbox);
+
+        up(vaadinCheckbox);
+
+        expect(vaadinCheckbox.hasAttribute('active')).to.be.false;
+      });
+
+      it('should have active attribute on space', () => {
+        MockInteractions.keyDownOn(vaadinCheckbox, 32);
+
+        expect(vaadinCheckbox.hasAttribute('active')).to.be.true;
+      });
+
+      it('should not have active attribute after space', () => {
+        MockInteractions.keyDownOn(vaadinCheckbox, 32);
+
+        MockInteractions.keyUpOn(vaadinCheckbox, 32);
+
+        expect(vaadinCheckbox.hasAttribute('active')).to.be.false;
+      });
+
+      it('should be checked after space when initially checked is false and indeterminate is true', () => {
+        vaadinCheckbox.checked = false;
+        vaadinCheckbox.indeterminate = true;
+
+        MockInteractions.keyDownOn(vaadinCheckbox, 32);
+        MockInteractions.keyUpOn(vaadinCheckbox, 32);
+
+        expect(vaadinCheckbox.checked).to.be.true;
+        expect(vaadinCheckbox.indeterminate).to.be.false;
+        expect(vaadinCheckbox.getAttribute('aria-checked')).to.be.eql('true');
+      });
+
+      it('should not be checked after space when initially checked is true and indeterminate is true', () => {
+        vaadinCheckbox.checked = true;
+        vaadinCheckbox.indeterminate = true;
+
+        MockInteractions.keyDownOn(vaadinCheckbox, 32);
+        MockInteractions.keyUpOn(vaadinCheckbox, 32);
+
+        expect(vaadinCheckbox.checked).to.be.false;
+        expect(vaadinCheckbox.indeterminate).to.be.false;
+        expect(vaadinCheckbox.getAttribute('aria-checked')).to.be.eql('false');
+      });
+
+      it('should be checked after click when initially checked is false and indeterminate is true', () => {
+        vaadinCheckbox.checked = false;
+        vaadinCheckbox.indeterminate = true;
+
+        vaadinCheckbox.click();
+
+        expect(vaadinCheckbox.checked).to.be.true;
+        expect(vaadinCheckbox.indeterminate).to.be.false;
+        expect(vaadinCheckbox.getAttribute('aria-checked')).to.be.eql('true');
+      });
+
+      it('should not be checked after click when initially checked is true and indeterminate is true', () => {
+        vaadinCheckbox.checked = true;
+        vaadinCheckbox.indeterminate = true;
+
+        vaadinCheckbox.click();
+
+        expect(vaadinCheckbox.checked).to.be.false;
+        expect(vaadinCheckbox.indeterminate).to.be.false;
+        expect(vaadinCheckbox.getAttribute('aria-checked')).to.be.eql('false');
+      });
+    });
+
+    describe('change-event', () => {
+      let vaadinCheckbox;
+
+      beforeEach(() => vaadinCheckbox = fixture('default'));
+
+      it('should not fire change-event when changing checked value programatically', () => {
+        vaadinCheckbox.addEventListener('change', () => {
+          throw new Error('Should not come here!');
+        });
+        vaadinCheckbox.checked = true;
+      });
+
+      it('should fire change-event when user checks the element', done => {
+        vaadinCheckbox.addEventListener('change', () => done());
+        vaadinCheckbox.click();
+      });
+
+      it('should fire change-event when user unchecks the element', done => {
+        vaadinCheckbox.checked = true;
+        vaadinCheckbox.addEventListener('change', () => done());
+        vaadinCheckbox.click();
+      });
+    });
+
+    describe('iron-form-checkbox', () => {
+      let boundNameCheckbox, attrNameCheckbox, form;
+
+      beforeEach(() => {
+        const xCheckbox = fixture('iron-form-checkbox');
+        form = xCheckbox.$.form;
+        boundNameCheckbox = xCheckbox.$.boundname;
+        attrNameCheckbox = xCheckbox.$.attrname;
+      });
+
+      it('should serialize', () => {
+        boundNameCheckbox.checked = true;
+        expect(boundNameCheckbox.name).to.equal('boundcheckbox');
+        expect(form.serializeForm().boundcheckbox).to.equal('on');
+      });
+
+      it('should serialize with a custom value', () => {
+        boundNameCheckbox.checked = true;
+        boundNameCheckbox.value = 'foo';
+        expect(form.serializeForm().boundcheckbox).to.equal('foo');
+      });
+
+      it('should not serialize when not checked', () => {
+        expect(boundNameCheckbox.name).to.be.empty;
+        expect(form.serializeForm()).to.be.empty;
+      });
+
+      it('should not serialize without a name', () => {
+        boundNameCheckbox.checked = true;
+        boundNameCheckbox.name = '';
+        expect(form.serializeForm()).to.be.empty;
+      });
+
+      it('should not serialize after unchecked', () => {
+        boundNameCheckbox.checked = true;
+        boundNameCheckbox.checked = false;
+        expect(form.serializeForm()).to.be.empty;
+      });
+
+      it('should define the name from an attribute', () => {
+        attrNameCheckbox.checked = true;
+        expect(form.serializeForm().attrcheckbox).to.equal('on');
+      });
+    });
+  </script>
+</body>

@@ -1,0 +1,39 @@
+<dom-module id="text-field-basic-demos">
+  <template>
+    <style include="vaadin-component-demo-shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+
+    <h3>Label, Placeholder and Value</h3>
+    <vaadin-demo-snippet id="text-field-basic-demos-label-placeholder-value">
+      <template preserve-content>
+        <vaadin-text-field label="Label"></vaadin-text-field>
+        <vaadin-text-field placeholder="Placeholder"></vaadin-text-field>
+        <vaadin-text-field value="Value"></vaadin-text-field>
+      </template>
+    </vaadin-demo-snippet>
+
+
+    <h3>States</h3>
+    <vaadin-demo-snippet id="text-field-basic-demos-states">
+      <template preserve-content>
+        <vaadin-text-field label="Enabled" value="Value"></vaadin-text-field>
+        <vaadin-text-field label="Disabled" value="Value" disabled></vaadin-text-field>
+        <vaadin-text-field label="Read only" value="Value" readonly></vaadin-text-field>
+      </template>
+    </vaadin-demo-snippet>
+
+
+  </template>
+  <script>
+    class TextFieldBasicDemos extends DemoReadyEventEmitter(TextFieldDemo(Polymer.Element)) {
+      static get is() {
+        return 'text-field-basic-demos';
+      }
+    }
+    customElements.define(TextFieldBasicDemos.is, TextFieldBasicDemos);
+  </script>
+</dom-module>

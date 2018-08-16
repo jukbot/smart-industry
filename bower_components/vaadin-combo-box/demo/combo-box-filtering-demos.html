@@ -1,0 +1,66 @@
+<dom-module id="combo-box-filtering-demos">
+  <template>
+    <style include="vaadin-component-demo-shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+
+    <h3>Remote Data Source</h3>
+    <vaadin-demo-snippet id="combo-box-filtering-demos-remote-data-source">
+      <template preserve-content>
+        <dom-bind>
+          <template>
+            <iron-ajax url="https://api.stackexchange.com/2.2/search/advanced?body=vaadin-combo-box&tagged=vaadin&title=[[filter]]&site=stackoverflow" last-response="{{response}}" auto></iron-ajax>
+
+            <vaadin-combo-box filtered-items="[[response.items]]" filter="{{filter}}" item-value-path="question_id" item-label-path="title">
+            </vaadin-combo-box>
+          </template>
+        </dom-bind>
+      </template>
+    </vaadin-demo-snippet>
+
+
+    <h3>Custom Filtering</h3>
+
+    <vaadin-demo-snippet id="combo-box-filtering-demos-custom-filtering">
+      <template preserve-content>
+        <custom-filter></custom-filter>
+        <dom-module id="custom-filter">
+          <template preserve-content>
+            <vaadin-combo-box filtered-items="[[items]]" on-filter-changed="_filterChanged">
+            </vaadin-combo-box>
+          </template>
+          <script>
+            window.addDemoReadyListener('#combo-box-filtering-demos-custom-filtering', function(document) {
+              Polymer({
+                is: 'custom-filter',
+
+                properties: {
+                  items: Array,
+                },
+
+                _filterChanged: function(e) {
+                  // case-sensitive starts-with filtering
+                  this.items = elements.filter(function(el) {
+                    return el.indexOf(e.detail.value) === 0;
+                  });
+                }
+              });
+            });
+          </script>
+        </dom-module>
+      </template>
+    </vaadin-demo-snippet>
+
+  </template>
+  <script>
+    class ComboBoxFilteringDemos extends DemoReadyEventEmitter(ComboBoxDemo(Polymer.Element)) {
+      static get is() {
+        return 'combo-box-filtering-demos';
+      }
+    }
+    customElements.define(ComboBoxFilteringDemos.is, ComboBoxFilteringDemos);
+  </script>
+</dom-module>

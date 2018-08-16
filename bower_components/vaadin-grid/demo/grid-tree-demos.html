@@ -1,0 +1,111 @@
+<dom-module id="grid-tree-demos">
+  <template>
+    <style include="vaadin-component-demo-shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+    <h3>Assigning Tree Data Using Data Provider</h3>
+    <p>
+      Use <code>&lt;vaadin-grid-tree-toggle&gt;</code> in the column body
+      template to make a tree UI inside a grid. Make sure you have bindings
+      for the <code>expanded</code>, <code>level</code>, and <code>leaf</code>
+      properties.
+    </p>
+    <p>
+      <strong>NOTE: You must explicitly import the <code>vaadin-grid-tree-toggle.html</code>
+      file in order to use <code>&lt;vaadin-grid-tree-toggle&gt;</code>.</strong>
+    </p>
+    <vaadin-demo-snippet id="grid-tree-demos-data-provider">
+      <template preserve-content>
+        <x-tree-data-provider-example></x-tree-data-provider-example>
+        <dom-module id="x-tree-data-provider-example">
+          <template preserve-content>
+            <vaadin-grid aria-label="Tree Data Grid Example" data-provider="[[_dataProvider]]">
+
+              <vaadin-grid-column>
+                <template class="header">Name</template>
+                <template>
+                  <vaadin-grid-tree-toggle
+                      leaf="[[!item.hasChildren]]"
+                      expanded="{{expanded}}"
+                      level="[[level]]">
+                    [[item.name]]
+                  </vaadin-grid-tree-toggle>
+                </template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="8em" flex-grow="0">
+                <template class="header">Size</template>
+                <template>[[item.size]]</template>
+              </vaadin-grid-column>
+
+            </vaadin-grid>
+          </template>
+          <script>
+            window.addDemoReadyListener('#grid-tree-demos-data-provider', function(document) {
+              Polymer({
+                is: 'x-tree-data-provider-example',
+
+                _dataProvider: function(params, callback) {
+                  // If the data request concerns a tree sub-level, `params` has an additional
+                  // `parentItem` property that refers to the sub-level's parent item
+                  const parentUuid = params.parentItem ? params.parentItem.uuid : null;
+
+                  // Demo helper API that fetches filesystem data
+                  Vaadin.GridDemo._fetchFilesystem(parentUuid, function(fsItems) {
+                    // Here `fsItems` is an array consisting of items with the following structure:
+                    // {
+                    //   hasChildren: false
+                    //   name: "foo.txt",
+                    //   size: "1 MB",
+                    //   uuid: "4e5563ec-43a2-4f08-9bd0-a8dacc2d1bef"
+                    //   parentUuid: null
+                    // }
+                    // This demo uses the `hasChildren` flag as an indicator of the item having child items.
+                    // The property is bound to `<vaadin-grid-tree-toggle>`'s `leaf` property in
+                    // the template above.
+
+                    // Slice out only the requested items
+                    const startIndex = params.page * params.pageSize;
+                    const pageItems = fsItems.slice(startIndex, startIndex + params.pageSize);
+                    // Inform grid of the requested tree level's full size
+                    const treeLevelSize = fsItems.length;
+                    callback(pageItems, treeLevelSize);
+                  });
+                }
+              });
+            });
+          </script>
+        </dom-module>
+      </template>
+    </vaadin-demo-snippet>
+
+  </template>
+  <script src="fs-data.js"></script>
+  <script>
+    class GridTreeDemos extends DemoReadyEventEmitter(GridDemo(Polymer.Element)) {
+      static get is() {
+        return 'grid-tree-demos';
+      }
+
+      ready() {
+        super.ready();
+
+        window.Vaadin = window.Vaadin || {};
+        window.Vaadin.GridDemo = window.Vaadin.GridDemo || {};
+        window.Vaadin.GridDemo._fetchFilesystem = function(parentUuid, callback) {
+          callback(window.Vaadin.GridDemo._fsData.filter(function(fsItem) {
+            if (parentUuid) {
+              return fsItem.parentUuid === parentUuid;
+            } else {
+              return !fsItem.parentUuid;
+            }
+          }));
+        };
+      }
+    }
+    customElements.define(GridTreeDemos.is, GridTreeDemos);
+  </script>
+</dom-module>

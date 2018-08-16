@@ -1,0 +1,31 @@
+language: node_js
+sudo: 'false'
+before_script:
+  - npm install -g polymer-cli
+  - polymer install --variants
+  - >-
+    npm run update-types && git diff --exit-code || (echo -e
+    '\n\033[31mERROR:\033[0m Typings are stale. Please run "npm run
+    update-types".' && false)
+  - >-
+    npm run format && git diff --exit-code || (echo -e '\n\033[31mERROR:\033[0m
+    Project is not formatted. Please run "npm run format".' && false)
+node_js: '9'
+addons:
+  firefox: latest
+  chrome: stable
+script:
+  - xvfb-run polymer test
+  - >-
+    if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test -s 'default';
+    fi
+dist: trusty
+env:
+  global:
+    - secure: >-
+        pYgk6o0gEXK9FyKHy1H9ZguVpM0A6igZQwTqZGUg8hLWe1ktipiwyPUwMmzBbDyAghqnnb2/s7/HcULRRM/MP0v7cyMdlV4bmz7ksQQVy32t0xadf3LHrHp2eWLozV150iwUzoyRRF/lSvGSQhk7fJLBdQcpLx+LT2Rmpa5pbOiAe87bCAG8zVQzMqYt8hOX6uriXZ9Af+g5nGT9fjLUvjJxXroZc2b6XACjBB4ygbYmI4+agpH48AJuPz/Jxl8NFwWvOBrdH7gnKher6SPOKHxKETpE/H0YCYh+uOMWmeMFdYHUE15YS8HPXLx4dIBMn7xt+NtJTifX7y2HZ3PHxmLxMkcxf0k33rM9w48b6iL+HvIy+wltgwSc1W756B5/eGZNioVe00V/P/ukye1kuhA3H+paaWpZLyK2NMJm5WysOBO8DsRX5xjtYVsrkuyJ2YwffFoNE6beWIEvSTJ3wxgqEq5smPIFDMMNSk++wKALmBf8VCZJs+O8PgWCSK7LF5GA4ncFZRhJKMNxtT1976FXzDFuiLjYRYicXaJnDbi1Fh4G4mp7vr4/Ge7al7iP1Fihb4FRq5XhNTGfuy7QVTy/5odYbKJgL63fVU5kPy0MLS8WVOxIcWDsuFmuIOSTp+SNOdQVxcAu+8T6GMETnwU0PKb80ev4kwW3xBI0ZBA=
+    - secure: >-
+        YmZBg0Ux1VZ7IWTio8aFIWg86toxLiJa8WZBBhG8ge3wETxOhm7AujHUvy4tkAHVw0C6H0rjqDRZUR5xrJngAAiMat8xyrjLXo4KeRN/9JhL8wtSXDzDFRGYNCiYdSFTnEGbvNpj/ncGkkCDky/To/illAHNtvUWHslMWazAwQ2VVpglDq45IjJg8Zk+iRDpMok8wb+BHnCzB1mhM1SgYWJxYLgZF0qxJZAmxfyx/HnMuJb2fESFQNlXaHuEu4mEdSsj7ti60CesCkspOj9YfmC+mX3E84B5W+Uy3LTsURkiVco4mhPy0qB3v4Be8+s6v+7A7u2yJTSMHKPaXpjIzpdxBZbjPRBmHaCI9amXETdx8M/g1dqlNUK3eRHTuBSLQwv7MRvMmBwRvk36JA5zwVoPe8Z4n+gYmO6CjP+Q77IKISn04+zRIfSC1hc0PG+hx98lvW3cgyfCAS6maYfIL+BqqWGBjd2HTebA+T7hEfBi6+ka8dLI9RVc3NnoUOAmsqWUgauDxg98TtKMbfA4JgrkZw28f+W+4EGEgKm487TgGGnGCJLuhqtFBwIOEh2Hbt8LTX2sW8jpBJo1PRLC9QjG6Okjj3yyUPY3pbj2+18Im8B6cV2ULyW3MCfnSN4qyaYsuJ5tSmWVT6Tb2ybqtxCluPfZ7mIQHY3F7r6XDqE=
+cache:
+  directories:
+    - node_modules

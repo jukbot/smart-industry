@@ -1,0 +1,34 @@
+<link rel="import" href="../color.html">
+<link rel="import" href="../font-icons.html">
+<link rel="import" href="../sizing.html">
+
+<dom-module id="lumo-field-button">
+  <template>
+    <style>
+      [part$="button"] {
+        flex: none;
+        width: 1em;
+        height: 1em;
+        line-height: 1;
+        font-size: var(--lumo-icon-size-m);
+        text-align: center;
+        color: var(--lumo-contrast-60pct);
+        transition: 0.2s color;
+        cursor: default;
+      }
+
+      :host(:not([readonly])) [part$="button"]:hover {
+        color: var(--lumo-contrast-90pct);
+      }
+
+      :host([disabled]) [part$="button"],
+      :host([readonly]) [part$="button"] {
+        color: var(--lumo-contrast-20pct);
+      }
+
+      [part$="button"]::before {
+        font-family: "lumo-icons";
+      }
+    </style>
+  </template>
+</dom-module>

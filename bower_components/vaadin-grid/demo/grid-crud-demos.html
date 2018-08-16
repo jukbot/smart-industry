@@ -1,0 +1,153 @@
+<dom-module id="grid-crud-demos">
+  <template>
+    <style include="vaadin-component-demo-shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+    <style>
+      vaadin-grid {
+        text-transform: none;
+      }
+    </style>
+
+
+    <h3>CRUD</h3>
+    <p>
+      Column <code>&lt;template&gt;</code> elements and data binding can be used to implement inline editing.
+    </p>
+    <p>
+      <b>Note:</b> Remember to call <code>grid.clearCache()</code> to show updated data.
+    </p>
+    <vaadin-demo-snippet id='grid-crud-demos-crud'>
+      <template preserve-content>
+        <x-crud></x-crud>
+        <dom-module id="x-crud">
+          <template preserve-content>
+            <style>
+              vaadin-grid vaadin-text-field {
+                width: 100%;
+              }
+            </style>
+            <x-array-data-provider items="{{items}}" size="200"></x-array-data-provider>
+
+            <div style="margin-bottom: 20px">
+              <vaadin-text-field id="firstname" label="First Name"></vaadin-text-field>
+              <vaadin-text-field id="lastname" label="Last Name"></vaadin-text-field>
+              <vaadin-button on-click="_add">Add</vaadin-button>
+            </div>
+
+            <vaadin-grid theme="compact" id="grid" items="[[items]]">
+
+              <vaadin-grid-column resizable>
+                <template class="header">First Name</template>
+                <template>
+                  <vaadin-text-field id="first-[[index]]" value="[[item.name.first]]" on-input="_storeFirst" readonly$="[[!_isEditing(editing, item)]]"></vaadin-text-field>
+                </template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column resizable>
+                <template class="header">Last Name</template>
+                <template>
+                  <vaadin-text-field id="last-[[index]]" value="[[item.name.last]]" readonly$="[[!_isEditing(editing, item)]]"></vaadin-text-field>
+                </template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="12em" resizable>
+                <template class="header">Email</template>
+                <template>
+                  <div>[[item.name.first]].[[item.name.last]]@example.com</div>
+                </template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="14em">
+                <template>
+                  <div style="text-align: right;">
+                    <vaadin-button id="edit-button" hidden="[[editing]]" on-click="_edit" focus-target$="[[!editing]]" theme="icon" aria-label="Edit"><iron-icon icon="lumo:edit"></iron-icon></vaadin-button>
+                    <vaadin-button hidden="[[editing]]" on-click="_remove" theme="icon error" aria-label="Delete"><iron-icon icon="lumo:cross"></iron-icon></vaadin-button>
+                    <vaadin-button hidden="[[!_isEditing(editing, item)]]" on-click="_save" focus-target$="[[editing]]" theme="primary">Save</vaadin-button>
+                    <vaadin-button hidden="[[!_isEditing(editing, item)]]" on-click="_cancel">Cancel</vaadin-button>
+                  </div>
+                </template>
+              </vaadin-grid-column>
+
+            </vaadin-grid>
+          </template>
+          <script>
+            window.addDemoReadyListener('#grid-crud-demos-crud', function(document) {
+              Polymer({
+                is: 'x-crud',
+
+                properties: {
+                  editing: Object
+                },
+
+                ready: function() {
+                  this.editing = null;
+                },
+
+                _isEditing: function(editing, item) {
+                  return item === editing;
+                },
+
+                _edit: function(e) {
+                  var item = e.model.item;
+                  this.editing = item;
+
+                  this.$.grid.querySelector('#first-' + e.model.index).focus();
+                },
+
+                _save: function(e) {
+                  var item = e.model.item;
+                  item.name.first = this.$.grid.querySelector('#first-' + e.model.index).value;
+                  item.name.last = this.$.grid.querySelector('#last-' + e.model.index).value;
+
+                  this.editing = null;
+
+                  this.$.grid.clearCache();
+                  this.$.grid.querySelector('#edit-button').focus();
+                },
+
+                _cancel: function() {
+                  this.editing = null;
+
+                  this.$.grid.clearCache();
+                  this.$.grid.querySelector('#edit-button').focus();
+                },
+
+                _add: function(e) {
+                  if (this.$.firstname.value !== '' && this.$.lastname.value !== '') {
+                    this.items.unshift({name: {first: this.$.firstname.value, last: this.$.lastname.value}});
+                    this.$.grid.clearCache();
+
+                    this.$.firstname.value = '';
+                    this.$.lastname.value = '';
+                  } else {
+                    alert('First Name and Last Name required');
+                  }
+                },
+
+                _remove: function(e) {
+                  var index = this.items.indexOf(e.model.item);
+                  this.items.splice(index, 1);
+
+                  this.$.grid.clearCache();
+                }
+              });
+            });
+          </script>
+        </dom-module>
+      </template>
+    </vaadin-demo-snippet>
+
+  </template>
+  <script>
+    class GridCrudDemos extends DemoReadyEventEmitter(GridDemo(Polymer.Element)) {
+      static get is() {
+        return 'grid-crud-demos';
+      }
+    }
+    customElements.define(GridCrudDemos.is, GridCrudDemos);
+  </script>
+</dom-module>

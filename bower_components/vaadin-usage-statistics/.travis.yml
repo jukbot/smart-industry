@@ -1,0 +1,41 @@
+sudo: true
+dist: trusty
+language: node_js
+node_js: 8.9
+
+cache:
+  directories:
+    - node_modules
+
+addons:
+  firefox: latest
+  chrome: stable
+
+before_script:
+  - npm install bower polymer-cli -g
+  - bower install
+
+env:
+  - POLYMER=2
+  - POLYMER=3
+
+script:
+  - if [[ "$TRAVIS_EVENT_TYPE" != "pull_request" && "$TRAVIS_BRANCH" != quick/* ]]; then
+      if [[ "$POLYMER" = "2" ]]; then
+        npm install &&
+        gulp lint &&
+        polymer lint --rules polymer-2 --input *.html &&
+        polymer test --env saucelabs;
+      fi &&
+      if [[ "$POLYMER" = "3" ]]; then
+        npm install -g yarn magi-cli polymer-modulizer &&
+        rm -rf node_modules &&
+        magi p3-convert --out . &&
+        yarn install --flat &&
+        polymer test --npm --env saucelabs-p3;
+      fi;
+    fi
+  - if [[ "$TRAVIS_EVENT_TYPE" = "cron" ]]; then
+      npm install &&
+      polymer test --env saucelabs-cron;
+    fi

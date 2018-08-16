@@ -1,0 +1,44 @@
+<!--
+@license
+Copyright (c) 2017 Vaadin Ltd.
+This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
+-->
+
+<script>
+  window.Vaadin = window.Vaadin || {};
+  window.Vaadin.Grid = window.Vaadin.Grid || {};
+
+  /**
+   * @polymerMixin
+   */
+  Vaadin.Grid.ActiveItemMixin = superClass => class ActiveItemMixin extends superClass {
+
+    static get properties() {
+      return {
+        /**
+         * The item user has last interacted with. Turns to `null` after user deactivates
+         * the item by re-interacting with the currently active item.
+         */
+        activeItem: {
+          type: Object,
+          notify: true,
+          value: null
+        }
+      };
+    }
+
+    ready() {
+      super.ready();
+      this.addEventListener('cell-activate', this._activateItem.bind(this));
+    }
+
+    _activateItem(e) {
+      const model = e.detail.model;
+      const clickedItem = model ? model.item : null;
+
+      if (clickedItem) {
+        this.activeItem = !this._itemsEqual(this.activeItem, clickedItem) ? clickedItem : null;
+      }
+    }
+  };
+</script>

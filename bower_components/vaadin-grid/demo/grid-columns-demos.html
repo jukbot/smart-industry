@@ -1,0 +1,313 @@
+<dom-module id="grid-columns-demos">
+  <template>
+    <style include="vaadin-component-demo-shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+
+    <h3>Column Grouping</h3>
+    <p>
+      Columns can be grouped together with <code>&lt;vaadin-grid-column-group&gt;</code> elements.
+      Grouped columns can have a common header and footer cells.
+    </p>
+    <p>
+      <b>Note:</b> Remember to define explicit bounds for images in order to avoid glitches once an image has fully loaded.
+    </p>
+    <p>
+      <b>NOTE: You must explicitly import the <code>vaadin-grid-column-group.html</code> in order to use <code>&lt;vaadin-grid-column-group&gt;</code>.</b>
+    </p>
+    <vaadin-demo-snippet id='grid-columns-demos-column-grouping'>
+      <template preserve-content>
+        <dom-bind>
+          <template>
+
+            <x-data-provider data-provider="{{dataProvider}}"></x-data-provider>
+
+            <vaadin-grid aria-label="Column Grouping Example" data-provider="[[dataProvider]]" size="200">
+
+              <vaadin-grid-column width="30px" flex-grow="0">
+                <template class="header">#</template>
+                <template>[[index]]</template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="60px" flex-grow="0">
+                <template class="header">
+                  <div aria-label="Picture"></div>
+                </template>
+                <template>
+                  <iron-image width="30" height="30" sizing="cover" alt="[[item.name.first]] [[item.name.last]]" src="[[item.picture.thumbnail]]"></iron-image>
+                </template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column-group>
+                <template class="header">Name</template>
+
+                <vaadin-grid-column width="calc(25% - 20px)">
+                  <template class="header">First</template>
+                  <template>[[item.name.first]]</template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="calc(25% - 20px)">
+                  <template class="header">Last</template>
+                  <template>[[item.name.last]]</template>
+                </vaadin-grid-column>
+              </vaadin-grid-column-group>
+
+
+              <vaadin-grid-column-group>
+                <template class="header">Location</template>
+
+                <vaadin-grid-column width="calc(25% - 20px)">
+                  <template class="header">City</template>
+                  <template>[[item.location.city]]</template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="calc(25% - 20px)">
+                  <template class="header">State</template>
+                  <template>[[item.location.state]]</template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="200px">
+                  <template class="header">Street</template>
+                  <template><p style="white-space: normal">[[item.location.street]]</p></template>
+                </vaadin-grid-column>
+              </vaadin-grid-column-group>
+
+            </vaadin-grid>
+          </template>
+        </dom-bind>
+      </template>
+    </vaadin-demo-snippet>
+
+
+    <h3>Freezing Columns</h3>
+    <p>
+      Applying <code>frozen</code> on a column will make it frozen. It can be
+      also be applied to a column group to freeze all of its child columns.
+    </p>
+    <p>
+      <b>Note:</b> Columns are frozen in-place, freeze columns from left to right
+      for a consistent outcome.
+    </p>
+    <vaadin-demo-snippet id='grid-columns-demos-freezing-columns'>
+      <template preserve-content>
+        <dom-bind>
+          <template>
+            <x-data-provider data-provider="{{dataProvider}}"></x-data-provider>
+            <vaadin-checkbox checked="{{frozen}}">Freeze First Two Columns</vaadin-checkbox>
+
+            <vaadin-grid aria-label="Freezing Columns Example" data-provider="[[dataProvider]]" size="200">
+
+              <vaadin-grid-column width="60px" flex-grow="0" frozen="[[frozen]]">
+                <template class="header">#</template>
+                <template>[[index]]</template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="60px" flex-grow="0" frozen="[[frozen]]">
+                <template class="header">
+                  <div aria-label="Picture"></div>
+                </template>
+                <template>
+                  <iron-image width="30" height="30" sizing="cover" alt="[[item.name.first]] [[item.name.last]]" src="[[item.picture.thumbnail]]"></iron-image>
+                </template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="33%">
+                <template class="header">First Name</template>
+                <template>[[item.name.first]]</template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="33%">
+                <template class="header">Last Name</template>
+                <template>[[item.name.last]]</template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="33%">
+                <template class="header">Email</template>
+                <template>[[item.email]]</template>
+              </vaadin-grid-column>
+
+            </vaadin-grid>
+          </template>
+        </dom-bind>
+      </template>
+    </vaadin-demo-snippet>
+
+
+    <h3>Hiding Columns</h3>
+    <p>
+      Applying <code>hidden</code> on a column or column group will hide it.
+    </p>
+    <p>
+      <b>Hint:</b> Using <code>hidden</code> together with <code>&lt;iron-media-query&gt;</code>
+      is an easy way to create a responsive grid.
+    </p>
+    <vaadin-demo-snippet id='grid-columns-demos-hiding-columns'>
+      <template preserve-content>
+        <dom-bind>
+          <template>
+            <x-data-provider data-provider="{{dataProvider}}"></x-data-provider>
+            <vaadin-checkbox checked="{{hidden}}">Hide First Two Columns</vaadin-checkbox>
+            <iron-media-query query-matches="{{hidden}}" query="(max-width: 700px)"></iron-media-query>
+
+            <vaadin-grid aria-label="Hiding Columns Example" data-provider="[[dataProvider]]" size="200">
+
+              <vaadin-grid-column width="60px" flex-grow="0" hidden="[[hidden]]">
+                <template class="header">#</template>
+                <template>[[index]]</template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="60px" flex-grow="0" hidden="[[hidden]]">
+                <template class="header">
+                  <div aria-label="Picture"></div>
+                </template>
+                <template>
+                  <iron-image width="30" height="30" sizing="cover" alt="[[item.name.first]] [[item.name.last]]" src="[[item.picture.thumbnail]]"></iron-image>
+                </template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="33%">
+                <template class="header">First Name</template>
+                <template>[[item.name.first]]</template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="33%">
+                <template class="header">Last Name</template>
+                <template>[[item.name.last]]</template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="33%">
+                <template class="header">Email</template>
+                <template>[[item.email]]</template>
+              </vaadin-grid-column>
+
+            </vaadin-grid>
+          </template>
+        </dom-bind>
+      </template>
+    </vaadin-demo-snippet>
+
+
+    <h3>Reordering and Resizing Columns</h3>
+    <p>
+      Applying <code>column-reordering-allowed</code> on the grid will make all
+      columns reorderable.
+    </p>
+    <p>
+      Applying <code>resizable</code> on a column will make it resizable.
+    </p>
+    <p>
+      <b>Note: </b>When using column groups, columns can be reordered only within
+      their parent group.
+    </p>
+    <vaadin-demo-snippet id='grid-columns-demos-reordering-and-resizing-columns'>
+      <template preserve-content>
+        <dom-bind>
+          <template>
+            <x-data-provider data-provider="{{dataProvider}}"></x-data-provider>
+
+            <vaadin-grid aria-label="Reordering and Resizing Columns Example" data-provider="[[dataProvider]]" size="200" column-reordering-allowed>
+
+              <vaadin-grid-column width="30px" flex-grow="0" resizable>
+                <template class="header">#</template>
+                <template>[[index]]</template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column width="60px" flex-grow="0" resizable>
+                <template class="header">
+                  <div aria-label="Picture"></div>
+                </template>
+                <template>
+                  <iron-image width="30" height="30" sizing="cover" alt="[[item.name.first]] [[item.name.last]]" src="[[item.picture.thumbnail]]"></iron-image>
+                </template>
+              </vaadin-grid-column>
+
+              <vaadin-grid-column-group resizable>
+                <template class="header">Name</template>
+
+                <vaadin-grid-column width="calc(25% - 20px)">
+                  <template class="header">First</template>
+                  <template>[[item.name.first]]</template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="calc(25% - 20px)">
+                  <template class="header">Last</template>
+                  <template>[[item.name.last]]</template>
+                </vaadin-grid-column>
+              </vaadin-grid-column-group>
+
+              <vaadin-grid-column-group resizable>
+                <template class="header">Location</template>
+
+                <vaadin-grid-column width="calc(25% - 20px)">
+                  <template class="header">City</template>
+                  <template>[[item.location.city]]</template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="calc(25% - 20px)">
+                  <template class="header">State</template>
+                  <template>[[item.location.state]]</template>
+                </vaadin-grid-column>
+
+                <vaadin-grid-column width="200px" resizable>
+                  <template class="header">Street</template>
+                  <template>[[item.location.street]]</template>
+                </vaadin-grid-column>
+              </vaadin-grid-column-group>
+
+            </vaadin-grid>
+          </template>
+        </dom-bind>
+      </template>
+    </vaadin-demo-snippet>
+
+
+    <h3>Dynamic Columns using dom-repeat</h3>
+    <vaadin-demo-snippet id='grid-columns-demos-dynamic-columns-using-dom-repeat'>
+      <template preserve-content>
+        <x-dynamic-columns></x-dynamic-columns>
+        <dom-module id="x-dynamic-columns">
+          <template preserve-content>
+            <x-data-provider data-provider="{{dataProvider}}"></x-data-provider>
+            <vaadin-grid aria-label="Dynamic Columns Example" id="grid" data-provider="[[dataProvider]]" size="200">
+              <template is="dom-repeat" items="[[columns]]" as="column">
+
+                <vaadin-grid-column>
+                  <template class="header">[[column]]</template>
+                  <template>[[get(column, item)]]</template>
+                </vaadin-grid-column>
+              </template>
+
+            </vaadin-grid>
+          </template>
+          <script>
+            window.addDemoReadyListener('#grid-columns-demos-dynamic-columns-using-dom-repeat', function(document) {
+              Polymer({
+                is: 'x-dynamic-columns',
+
+                properties: {
+                  columns: Array
+                },
+
+                ready: function() {
+                  this.columns = ['name.first', 'name.last', 'email'];
+                }
+              });
+            });
+          </script>
+        </dom-module>
+      </template>
+    </vaadin-demo-snippet>
+
+  </template>
+  <script>
+    class GridColumnsDemos extends DemoReadyEventEmitter(GridDemo(Polymer.Element)) {
+      static get is() {
+        return 'grid-columns-demos';
+      }
+    }
+    customElements.define(GridColumnsDemos.is, GridColumnsDemos);
+  </script>
+</dom-module>
