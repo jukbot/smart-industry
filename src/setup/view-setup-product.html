@@ -48,12 +48,6 @@
         align-items: center;
       }
 
-      .details-group {
-        border-bottom: 1px solid #eee;
-        width: 100%;
-        margin: 0;
-      }
-
       .details {
         padding: 10px;
         display: flex;
@@ -74,7 +68,7 @@
         margin: 10px;
         padding: 20px;
         border: 1px solid #eee;
-        border-radius: 2px;
+        border-radius: 5px;
       }
 
       .part p {
@@ -183,7 +177,7 @@
         <div class="card" hidden="[[showAddProduct]]">
           <paper-tabs selected="{{addProductTabs}}">
             <paper-tab role="tab" name="product">
-              <span class="tab-title">1 Product Info</span>
+              <span class="tab-title">1 Product Information</span>
             </paper-tab>
             <paper-tab role="tab" name="part">
               <span class="tab-title">2 Process & Parts</span>
@@ -270,15 +264,20 @@
               <p>Product SKU:</p>
               <p>Product Cost:</p>
               <p>Product Part:</p>
+              <div class="frame">
+
+              </div>
+              <div class="btn-group center">
+              <flat-button class="btn shamrock" on-click="addProduct">
+                  <button>{{localize('add')}}</button>
+              </flat-button>
+            </div>
             </div>
           </iron-pages>
 
           <div class="btn-group center">
             <flat-button class="btn" on-click="openProductList">
               <button>{{localize('dismiss')}}</button>
-            </flat-button>
-            <flat-button class="btn shamrock" on-click="addProduct">
-              <button>{{localize('add')}}</button>
             </flat-button>
           </div>
         </div>
@@ -488,7 +487,7 @@
 
             <!-- Row detail -->
             <template class="row-details">
-              <div class="details-group">
+              <div>
                 <div class="details">
                   <div class="flex-item">
                     <h3>{{localize('part-name')}}</h3>
