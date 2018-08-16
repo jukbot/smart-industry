@@ -184,7 +184,7 @@
       constructor() {
         super()
         Polymer.setPassiveTouchGestures(true)
-        Polymer.setRootPath('/')
+        Polymer.setRootPath(window.Polymer.rootPath)
       }
       connectedCallback() {
         super.connectedCallback()
