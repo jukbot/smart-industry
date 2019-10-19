@@ -18,6 +18,11 @@ IMES is an open source manufacturing execution system application designed for S
 
 ## Annoucement 📢
 
+## Message From Project Owner 🙂
+
+> Hi everyone, we have a good news that this project has got funded from our supporters to continue develop on this project. We're going to re-structure this project to VueJS and migrate the database for better performance. From now we plan to start maintain this project by Q1 of 2020. This will invole our engineer team for helping us to develop this project.
+
+
 ## THIS PROJECT IS IN MIGRATING TO NEW 'IMES PLATFORM'
 
 > Currently, we've temporary paused the project due to discussing  with an engineer team for the next phase in road map. 
