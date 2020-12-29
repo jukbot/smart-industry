@@ -24,7 +24,7 @@ IMES is an open source manufacturing execution system application designed for S
 
 ## Todo Plan of Software Developer 👨🏻‍💻
 
-- [ ] Migrate App to Polymer 3 / LitElement (Heavy migrate)
+- [ ] Migrate App to React
 - [ ] Refactor current components to ES6 modules. (Heavy migrate)
 - [ ] Fix Unit test and Add Integration test (Need consult)
 - [ ] Fix slow unauthen layout when refresh the page.
