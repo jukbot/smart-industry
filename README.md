@@ -17,7 +17,7 @@ IMES is an open source manufacturing execution system application designed for S
 
 ## Annoucement 📢
 
-## Message From Project Owner 🙂
+## Message From Project Owner 🚨
 
 > Due to COVID-10 situation, the budget of this project has been cut, which temporary paused our deployment phase and project timeline. However our research team are continue to work on this project. Hope that in 2021 we can fully resume to develop on this project.
 
